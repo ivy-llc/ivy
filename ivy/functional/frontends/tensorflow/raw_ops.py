@@ -2,6 +2,11 @@
 import ivy
 
 
+def AddN(*, inputs, name="AddN"):
+    inputs = ivy.array(inputs)
+    return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
+
+
 def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
@@ -63,6 +68,16 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
+def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
+    if incompatible_shape_error:
+        return ivy.equal(x, y)
+
+    try:
+        return ivy.equal(x, y)
+    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+        return ivy.array(False)
+
+
 def Exp(*, x, name="Exp"):
     return ivy.exp(x)
 
@@ -83,6 +98,14 @@ def FloorDiv(*, x, y, name="FloorDiv"):
     return ivy.floor_divide(x, y)
 
 
+def Greater(*, x, y, name="Greater"):
+    return ivy.greater(x, y)
+
+
+def GreaterEqual(*, x, y, name="GreaterEqual"):
+    return ivy.greater_equal(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -95,6 +118,18 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
+def LogicalOr(*, x, y, name="LogicalOr"):
+    return ivy.logical_or(x, y)
+
+
+def LogicalNot(*, x, name="LogicalNot"):
+    return ivy.logical_not(x)
+
+
+def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
+    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
@@ -103,8 +138,30 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Reshape(tensor, shape, name="reshape"):
+def Neg(*, x, name="Neg"):
+    return ivy.negative(x)
+
+
+def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
+    if incompatible_shape_error:
+        return ivy.not_equal(x, y)
+
+    try:
+        return ivy.not_equal(x, y)
+    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+        return ivy.array(False)
+
+
+def Relu(features, name="Relu"):
+    return ivy.relu(features)
+
+
+def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def Shape(*, input, output_type=ivy.int32, name="Shape"):
+    return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
 
 def Sin(*, x, name="Sin"):
@@ -142,3 +199,9 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
+
+
+def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )

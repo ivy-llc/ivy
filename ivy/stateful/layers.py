@@ -61,7 +61,7 @@ class Linear(Module):
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._with_bias = with_bias
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -144,7 +144,7 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        Module.__init__(self, None, None, dtype=dtype)
+        Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -264,9 +264,9 @@ class MultiHeadAttention(Module):
         self._with_to_out_fn = with_to_out_fn
         ivy.Module.__init__(
             self,
-            device,
-            v if v_exists else None,
-            build_mode,
+            device=device,
+            v=v if v_exists else None,
+            build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
         )
@@ -433,7 +433,7 @@ class Conv1D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -559,7 +559,7 @@ class Conv1DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -678,7 +678,7 @@ class Conv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -801,7 +801,7 @@ class Conv2DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -918,7 +918,7 @@ class DepthwiseConv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype):
         """Create internal variables for the layer
@@ -1037,7 +1037,7 @@ class Conv3D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -1161,7 +1161,7 @@ class Conv3DTranspose(Module):
         self._data_format = data_format
         self._dilations = dilations
         self.dtype = dtype
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -1268,7 +1268,7 @@ class LSTM(Module):
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     # Public #
 

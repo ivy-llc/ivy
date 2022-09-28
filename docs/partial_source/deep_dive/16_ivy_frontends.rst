@@ -41,29 +41,29 @@ explanation of how to place a frontend function can be found in a sub-section of
 **Jax**
 
 JAX has two distinct groups of functions, those in the :code:`jax.lax` namespace and
-those in the :code:`jax.numpy` namespace. The former set of functions map very closely
+those in the :mod:`jax.numpy` namespace. The former set of functions map very closely
 to the API for the Accelerated Linear Algebra (`XLA <https://www.tensorflow.org/xla>`_)
 compiler, which is used under the hood to run high performance JAX code. The latter set
 of functions map very closely to NumPy's well known API. In general, all functions in
-the :code:`jax.numpy` namespace are themselves implemented as a composition of the
+the :mod:`jax.numpy` namespace are themselves implemented as a composition of the
 lower-level functions in the :code:`jax.lax` namespace.
 
 When transpiling between frameworks, the first step is to compile the computation graph
 into low level python functions for the source framework using Ivy's graph
 compiler, before then replacing these nodes with the associated functions in Ivy's
 frontend API. Given that all jax code can be decomposed into :code:`jax.lax`
-function calls, when transpiling :code:`jax` code it should always be possible to
+function calls, when transpiling JAX code it should always be possible to
 express the computation graph as a composition of only :code:`jax.lax` functions.
 Therefore, arguably these are the *only* functions we should need to implement in the
 JAX frontend. However, in general we wish to be able to compile a graph in the backend
 framework with varying levels of dynamicism. A graph of only :code:`jax.lax` functions
 chained together in general is more *static* and less *dynamic* than a graph which
-chains :code:`jax.numpy` functions together. We wish to enable varying extents of
+chains :mod:`jax.numpy` functions together. We wish to enable varying extents of
 dynamicism when compiling a graph with our graph compiler, and therefore we also
-implement the functions in the :code:`jax.numpy` namespace in our frontend API for JAX.
+implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
 
-Thus, both :code:`lax` and :code:`numpy` modules are created in the JAX frontend API.
-We start with the function :code:`lax.add` as an example.
+Thus, both :mod:`lax` and :mod:`numpy` modules are created in the JAX frontend API.
+We start with the function :func:`lax.add` as an example.
 
 .. code-block:: python
 
@@ -73,7 +73,7 @@ We start with the function :code:`lax.add` as an example.
 
 :code:`lax.add` is categorised under :code:`operators` as shown in the `jax.lax`_
 package directory. We organize the functions using the same categorizations as the
-original framework, and also mimick the importing behaviour regarding modules and
+original framework, and also mimic the importing behaviour regarding modules and
 namespaces etc.
 
 For the function arguments, these must be identical to the original function in
@@ -93,7 +93,7 @@ Using :code:`lax.tan` as a second example, we can see that this is placed under
 :code:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
 argument. In the same manner as our :code:`add` function, we simply link its return
-to :code:`ivy.tan`, and again the computation then depends on the backend framework.
+to :func:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -144,8 +144,8 @@ arguments seek to control are simply not controllable when using Ivy.
 Similarly, :code:`subok` controls whether or not subclasses of the :code:`numpy.ndarray`
 should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
-enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
-be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
+enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will
+be operating with :class:`ivy.Array` instances rather than :code:`numpy.ndarray`
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.
 
@@ -209,7 +209,7 @@ argument.
 
 Likewise, :code:`tan` is also placed under :code:`math`.
 By referring to the `tf.tan`_ documentation, we add the same arguments,
-and simply wrap :code:`ivy.tan` in this case.
+and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
 **PyTorch**
@@ -228,7 +228,7 @@ and we therefore use the same for our PyTorch frontend :code:`add`.
 We wrap :code:`ivy.add` as usual, but the arguments work slightly different in this
 example. Looking at the PyTorch `torch.add`_ documentation,
 we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimick the original behaviour by simply passing :code:`other * alpha`
+Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
 into :code:`ivy.add`.
 
 .. code-block:: python
@@ -238,8 +238,8 @@ into :code:`ivy.add`.
         return ivy.tan(input, out=out)
 
 :code:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
-framework. Looking at the `torch.tan`_ documentation, we can mimick the same arguments,
-and again simply wrap :code:`ivy.tan`,
+framework. Looking at the `torch.tan`_ documentation, we can mimic the same arguments,
+and again simply wrap :func:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
 
 Unused Arguments
@@ -316,11 +316,11 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
         *,
         exclusive: bool = False,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
-compositionally able to mimick the required behaviour.
+compositionally able to mimic the required behaviour.
 For example, we can simply reverse the result by calling :code:`ivy.flip()` on the
 result of :code:`ivy.cumprod()`.
 
@@ -358,7 +358,7 @@ to be timely and sensible, then we will add this function to the
 "Extend Ivy Functional API"
 `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 At this point in time, you can reserve the function for yourself and get it implemented
-in a unique PR. Once merged, you can then resume working on the frontned function,
+in a unique PR. Once merged, you can then resume working on the frontend function,
 which will now be a much easier task with the new addition to Ivy.
 
 Temporary Compositions
@@ -420,8 +420,8 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
-Instance Methods
-----------------
+Classes and Instance Methods
+----------------------------
 
 Most frameworks include instance methods on their array class for common array
 processing functions, such as :code:`reshape`, :code:`expand_dims` etc.
@@ -460,8 +460,8 @@ replace each of the original instance methods in the extracted computation graph
 these new instance methods defined in the Ivy frontend class.
 
 
-Framework-Specific Classes
---------------------------
+Framework-Specific Argument Types
+---------------------------------
 
 Some of the frontend functions that we need to implement include framework-specific
 classes as the default values for some of the arguments,
@@ -508,11 +508,11 @@ in :code:`test_frontend_function`.
 
 The way we do this is to wrap all framework-specific classes inside a
 :code:`NativeClass` during frontend testing. The :code:`NativeClass` is defined in
-:code:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
+:mod:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, :code:`_native_class`, which holds the reference to the
 special class being used by the targeted framework.
-Then, in order to pass the key and value to the orignal and frontend functions
+Then, in order to pass the key and value to the original and frontend functions
 respectively, :code:`test_frontend_function` detects all :code:`NativeClass` instances
 in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
 to find the corresponding value to the key wrapped inside the :code:`NativeClass`
@@ -528,10 +528,8 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
     Novalue = NativeClass(numpy._NoValue)
     @handle_cmd_line_args
     @given(
-        dtype_x_axis=_dtype_x_axis(
-            available_dtypes=ivy_np.valid_float_dtypes),
-        dtype=st.sampled_from(
-            ivy_np.valid_float_dtypes + (None,)),
+        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+        dtype=helpers.get_dtypes("float", full=False, none=True),
         keep_dims= st.one_of (st.booleans(), Novalue),
         initial=st.one_of(st.floats(), Novalue),
         num_positional_args=helpers.num_positional_args(
@@ -584,3 +582,12 @@ as well if you prefer a video explanation!
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `ivy frontends discussion`_,
 or reach out on `discord`_ in the `ivy frontends channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
+    </iframe>

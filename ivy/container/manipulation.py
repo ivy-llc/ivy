@@ -120,7 +120,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1.]), \
                               b=ivy.array([3., 4.]), \
@@ -136,7 +136,7 @@ class ContainerWithManipulation(ContainerBase):
                           [7.]])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]), \
@@ -510,7 +510,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
                               b=ivy.array([0, 1, 2, 3, 4, 5]))
@@ -672,7 +672,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -683,7 +683,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([5., 3., 4.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -786,7 +786,7 @@ class ContainerWithManipulation(ContainerBase):
     def static_squeeze(
         x: ivy.Container,
         /,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Union[int, Sequence[int]],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -813,7 +813,7 @@ class ContainerWithManipulation(ContainerBase):
     def squeeze(
         self: ivy.Container,
         /,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Union[int, Sequence[int]],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -925,7 +925,7 @@ class ContainerWithManipulation(ContainerBase):
         /,
         repeats: Union[int, Iterable[int]],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -964,7 +964,7 @@ class ContainerWithManipulation(ContainerBase):
         /,
         repeats: Union[int, Iterable[int]],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1250,9 +1250,9 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_unstack(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int,
         /,
         *,
+        axis: int = 0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1291,7 +1291,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
@@ -1328,7 +1328,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "unstack",
             x,
-            axis,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1338,9 +1338,9 @@ class ContainerWithManipulation(ContainerBase):
 
     def unstack(
         self: ivy.Container,
-        axis: int,
         /,
         *,
+        axis: int = 0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1378,7 +1378,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
@@ -1397,7 +1397,7 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_unstack(
             self,
-            axis,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1453,7 +1453,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -1464,7 +1464,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([3., 4., 5.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
