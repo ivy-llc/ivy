@@ -134,7 +134,7 @@ def broadcast_to(
     shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.rank(x) > len(shape):
-        return tf.broadcast_to(tf.reshape(x,-1), shape)
+        return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)
 
 
