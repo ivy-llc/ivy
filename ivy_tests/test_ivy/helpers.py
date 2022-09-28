@@ -3559,7 +3559,6 @@ def get_axis(
 
     axes = len(shape)
     lower_axes_bound = axes if allow_neg else 0
-    unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
         max_size = max(axes, min_size)
@@ -3585,7 +3584,7 @@ def get_axis(
                     st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
-                    unique_by=unique_by,
+                    unique=unique,
                 )
             )
 

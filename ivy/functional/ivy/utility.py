@@ -71,7 +71,7 @@ def all(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.all(x)
@@ -95,14 +95,14 @@ def all(
     >>> print(y)
     ivy.array(False)
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2, 3])
     >>> y = ivy.all(x)
     >>> print(y)
     ivy.array(True)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))
@@ -125,14 +125,14 @@ def all(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = x.all()
     >>> print(y)
     ivy.array(True)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))
@@ -159,7 +159,7 @@ def all(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicit
-    y,but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
@@ -221,7 +221,7 @@ def any(
         Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 4])
     >>> y = ivy.any(x)
@@ -245,14 +245,14 @@ def any(
     >>> print(y)
     ivy.array(True)
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([2, 3, 4])
     >>> y = ivy.any(x)
     >>> print(y)
     ivy.array(True)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))
@@ -275,14 +275,14 @@ def any(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([2, 3, 4])
     >>> y = x.any()
     >>> print(y)
     ivy.array(True)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))

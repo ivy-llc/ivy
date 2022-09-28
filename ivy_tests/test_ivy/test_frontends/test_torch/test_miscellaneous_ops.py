@@ -1,4 +1,6 @@
 # global
+import math
+
 import numpy as np
 from hypothesis import assume, given, strategies as st
 
@@ -6,6 +8,51 @@ from hypothesis import assume, given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
+
+# helpers
+@st.composite
+def _get_repeat_interleaves_args(
+    draw, *, available_dtypes, valid_axis, max_num_dims, max_dim_size
+):
+    values_dtype, values, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=available_dtypes,
+            valid_axis=valid_axis,
+            force_int_axis=True,
+            shape=draw(
+                helpers.get_shape(
+                    allow_none=False,
+                    min_num_dims=0,
+                    max_num_dims=max_num_dims,
+                    min_dim_size=1,
+                    max_dim_size=max_dim_size,
+                )
+            ),
+            ret_shape=True,
+        )
+    )
+
+    if axis is None:
+        generate_repeats_as_integer = draw(st.booleans())
+        num_repeats = 1 if generate_repeats_as_integer else math.prod(tuple(shape))
+    else:
+        num_repeats = shape[axis]
+
+    repeats_dtype, repeats = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=10,
+            shape=[num_repeats],
+        )
+    )
+
+    # Output size is an optional parameter accepted by Torch for optimisation
+    use_output_size = draw(st.booleans())
+    output_size = np.sum(repeats) if use_output_size else None
+
+    return [values_dtype, repeats_dtype], values, repeats, axis, output_size
 
 
 # flip
@@ -41,7 +88,7 @@ def test_torch_flip(
         fw=fw,
         frontend="torch",
         fn_tree="flip",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         dims=axis,
     )
 
@@ -89,7 +136,7 @@ def test_torch_roll(
         fw=fw,
         frontend="torch",
         fn_tree="roll",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         shifts=shift,
         dims=axis,
     )
@@ -123,7 +170,7 @@ def test_torch_fliplr(
         fw=fw,
         frontend="torch",
         fn_tree="fliplr",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
     )
 
 
@@ -163,7 +210,7 @@ def test_torch_cumsum(
         fw=fw,
         frontend="torch",
         fn_tree="cumsum",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         dtype=dtype,
         out=None,
@@ -204,7 +251,7 @@ def test_torch_diagonal(
 ):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offset
-    input = np.asarray(value, dtype=input_dtype)
+    input = value[0]
     num_dims = len(np.shape(input))
     assume(dim1 != dim2)
     if dim1 < 0:
@@ -288,7 +335,6 @@ def test_torch_triu(
     native_array,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -298,7 +344,7 @@ def test_torch_triu(
         fw=fw,
         frontend="torch",
         fn_tree="triu",
-        input=values,
+        input=values[0],
         diagonal=diagonal,
     )
 
@@ -339,7 +385,7 @@ def test_torch_cumprod(
         fw=fw,
         frontend="torch",
         fn_tree="cumprod",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         dtype=dtype,
         out=None,
@@ -366,9 +412,6 @@ def test_torch_trace(
     fw,
 ):
     dtype, value = dtype_and_values
-
-    value = np.asarray(value, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -378,7 +421,7 @@ def test_torch_trace(
         fw=fw,
         frontend="torch",
         fn_tree="trace",
-        input=value,
+        input=value[0],
     )
 
 
@@ -439,7 +482,7 @@ def test_torch_triu_indices(
     fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes="int32",
+        input_dtypes=["int32"],
         with_out=with_out,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -474,7 +517,6 @@ def test_torch_tril(
     native_array,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -484,7 +526,7 @@ def test_torch_tril(
         fw=fw,
         frontend="torch",
         fn_tree="tril",
-        input=values,
+        input=values[0],
         diagonal=diagonal,
     )
 
@@ -575,9 +617,6 @@ def test_torch_flatten(
     fw,
 ):
     dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
-
-    input = np.asarray(input, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -587,7 +626,7 @@ def test_torch_flatten(
         fw=fw,
         frontend="torch",
         fn_tree="flatten",
-        input=input,
+        input=input[0],
         start_dim=start_dim,
         end_dim=end_dim,
     )
@@ -631,8 +670,6 @@ def test_torch_renorm(
     fw,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -642,7 +679,7 @@ def test_torch_renorm(
         fw=fw,
         frontend="torch",
         fn_tree="renorm",
-        input=values,
+        input=values[0],
         p=p,
         dim=dim,
         maxnorm=maxnorm,
@@ -678,8 +715,6 @@ def test_torch_logcumsumexp(
     fw,
 ):
     dtype, input = dtype_and_input
-    input = np.asarray(input, dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -691,50 +726,35 @@ def test_torch_logcumsumexp(
         fn_tree="logcumsumexp",
         atol=1e-2,
         rtol=1e-2,
-        input=input,
+        input=input[0],
         dim=dim,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_input_and_dim=helpers.dtype_values_axis(
+    dtype_values_repeats_axis_output_size=_get_repeat_interleaves_args(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
+        max_num_dims=4,
+        max_dim_size=4,
     ),
-    dtype_and_repeats=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        # Torch requires this.
-        max_num_dims=1,
-        min_num_dims=0,
-    ),
-    # Generating the output size as a strategy would be much more
-    # complicated than necessary.
-    use_output_size=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.repeat_interleave",
     ),
 )
 def test_torch_repeat_interleave(
-    dtype_and_input_and_dim,
-    dtype_and_repeats,
-    use_output_size,
+    dtype_values_repeats_axis_output_size,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, input, dim = dtype_and_input_and_dim
-    repeat_dtype, repeats = dtype_and_repeats
-
-    input = np.asarray(input, dtype=input_dtype)
-    repeats = np.asarray(repeats, dtype=repeat_dtype)
-
-    output_size = np.sum(repeats) if use_output_size else None
+    dtype, values, repeats, axis, output_size = dtype_values_repeats_axis_output_size
 
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, repeat_dtype],
+        input_dtypes=dtype,
         with_out=with_out,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -742,8 +762,8 @@ def test_torch_repeat_interleave(
         fw=fw,
         frontend="torch",
         fn_tree="repeat_interleave",
-        input=input,
+        input=values,
         repeats=repeats,
-        dim=dim,
+        dim=axis,
         output_size=output_size,
     )

@@ -119,3 +119,12 @@ then the arguments should indeed be listed on the same line, together with the f
 
 This would pass the lint checks, and :code:`pre-commit` would allow the code to be
 committed without error.
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">
+    </iframe>
