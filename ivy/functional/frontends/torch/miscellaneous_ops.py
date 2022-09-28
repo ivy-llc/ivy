@@ -156,5 +156,5 @@ def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
 
 
-def cross(input, other, dim=None, *, out=None):
-    return ivy.cross(input, other, out=out)
+def cross(input, other, dim=-1, *, out=None):
+    return ivy.cross(input, other, axis=dim, out=out)
