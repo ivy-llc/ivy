@@ -767,3 +767,46 @@ def test_torch_repeat_interleave(
         dim=axis,
         output_size=output_size,
     )
+
+
+# cross
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=(3,),
+        max_value=1e4,
+        min_value=-1e4,
+        num_arrays=2,
+        shared_dtype=True
+    ),
+    dim=st.integers(min_value=-1, max_value=-1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.cross"
+    ),
+)
+def test_torch_cross(
+    dtype_and_x,
+    dim,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+    fw,
+):
+    (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
+    input_dtype = [input_dtype_x, input_dtype_y]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="cross",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        other=np.asarray(y, dtype=input_dtype[1]),
+        dim=dim,
+        out=None,
+    )
