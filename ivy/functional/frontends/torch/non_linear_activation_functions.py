@@ -67,8 +67,12 @@ def sigmoid(input):
     return ivy.sigmoid(input)
 
 
-def leaky_relu(input, negative_slope=0.01):
-    return ivy.leaky_relu(input, alpha=negative_slope)
+def leaky_relu(input, negative_slope=0.01, inplace=False):
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def softmax(input, dim=None, dtype=None):
@@ -187,14 +191,12 @@ def glu(input, dim=-1):
     return ivy.multiply(a, ivy.sigmoid(b))
 
 
-# ToDo Implement log_softmax in ivy functional API
-# for it to be faster than ivy.log(ivy.softmax) and more mathematical stable
 def log_softmax(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     if dim is None:
         dim = -1
-    return ivy.log(ivy.softmax(input, axis=dim))
+    return ivy.log_softmax(input, axis=dim)
 
 
 def tanhshrink(input):
@@ -203,5 +205,37 @@ def tanhshrink(input):
 
 def leaky_relu_(input, negative_slope=0.01):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
+    ivy.inplace_update(input, ret)
+    return input
+
+
+def hardswish(input, inplace=False):
+    relu6_val = ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6)
+    ret = ivy.multiply(input, ivy.divide(relu6_val, 6))
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def hardsigmoid(input, inplace=False):
+    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
+    less = ivy.where(ivy.less(input, min_val), min_val, input)
+    ret = ivy.where(ivy.greater(input, max_val), max_val, less)
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
+
+
+def hardtanh_(input, min_val=-1.0, max_val=1.0):
+    less = ivy.where(ivy.less(input, min_val), min_val, input)
+    ret = ivy.where(ivy.greater(input, max_val), max_val, less)
     ivy.inplace_update(input, ret)
     return input

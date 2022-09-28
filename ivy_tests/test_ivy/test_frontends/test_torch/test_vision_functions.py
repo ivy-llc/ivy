@@ -1,4 +1,3 @@
-import numpy as np
 from hypothesis import given, assume, strategies as st
 
 # local
@@ -31,7 +30,7 @@ def test_torch_pixel_shuffle(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input = np.asarray(x, dtype=input_dtype)
+    input = x[0]
     assume(ivy.shape(input)[1] % (factor**2) == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -71,7 +70,7 @@ def test_torch_pixel_unshuffle(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input = np.asarray(x, dtype=input_dtype)
+    input = x[0]
     assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
