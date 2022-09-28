@@ -173,8 +173,6 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
         b=x[1],
     )
 
-
-
 # minimum
 @handle_cmd_line_args
 @given(
@@ -198,8 +196,6 @@ def test_tensorflow_minimum(dtype_and_x, as_variable, native_array, fw):
         a=x[0],
         b=x[1],
     )
-
-
 
 # subtract
 @handle_cmd_line_args
