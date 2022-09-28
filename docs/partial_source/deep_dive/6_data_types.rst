@@ -342,7 +342,7 @@ backend-specific implementation.
 Supported and Unsupported Data Types
 ------------------------------------
 
-Some backend functions (implemented in :code`ivy/functional/backends/<some_backend>`)
+Some backend functions (implemented in :mod:`ivy/functional/backends/<some_backend>`)
 have attributes named :attr:`supported_dtypes` or :attr:`unsupported_dtypes`,
 which flag the data types which this particular function does and does not support
 respectively for the associated backend.
@@ -446,7 +446,7 @@ For example, the following code throws an error when ``dtype`` is
 ``torch.int32`` but not when it is ``torch.int64``.
 This is tested with torch version ``1.12.1``,
 which is the latest stable release at the time of writing. This is a
-`know bug <https://github.com/pytorch/pytorch/issues/84530>`_.:
+`known bug <https://github.com/pytorch/pytorch/issues/84530>`_:
 
 .. code-block:: python
 
