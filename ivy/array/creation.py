@@ -17,6 +17,7 @@ class ArrayWithCreation(abc.ABC):
         copy: Optional[bool] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asarray. This method simply wraps the
@@ -29,6 +30,8 @@ class ArrayWithCreation(abc.ABC):
             input data, in any form that can be converted to an array. This includes
             lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
             ndarrays.
+        copy
+            boolean, indicating whether or not to copy the input. Default: ``None``.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
@@ -41,9 +44,8 @@ class ArrayWithCreation(abc.ABC):
         -------
         ret
             An array interpretation of ``self``.
-
         """
-        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device)
+        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device, out=out)
 
     def full_like(
         self: ivy.Array,
@@ -81,23 +83,25 @@ class ArrayWithCreation(abc.ABC):
             an array having the same shape as ``self`` and where every element is equal
             to ``fill_value``.
 
-        Instance Method Examples:
-        ------------------------
+        Examples
+        --------
+        With :code:`int` datatype:
 
-        With int datatype:
         >>> x = ivy.array([1,2,3])
         >>> fill_value = 0
         >>> x.full_like(fill_value)
         ivy.array([0, 0, 0])
 
         With float datatype:
+
         >>> fill_value = 0.000123
         >>> x = ivy.array(ivy.ones(5))
         >>> y = x.full_like(fill_value)
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-        With ivy.Array input:
+        With :class:`ivy.Array` input:
+
         >>> x = ivy.array([1, 2, 3, 4, 5, 6])
         >>> fill_value = 1
         >>> y = x.full_like(fill_value)

@@ -13,7 +13,7 @@ def argsort(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if out is not None:
-        out = tuple([torch.zeros(out.shape, dtype=out.dtype), out])
+        out = tuple([torch.zeros(x.shape, dtype=x.dtype), out.long()])
     _, sorted_indices = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )

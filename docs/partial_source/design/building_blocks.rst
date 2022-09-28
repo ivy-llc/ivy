@@ -3,7 +3,7 @@ Building Blocks
 
 Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
@@ -97,7 +97,7 @@ Calling the different backend files explicitly would work okay, but it would mea
     def prod(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -181,7 +181,7 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 -----------------
 
-All code for setting and unsetting backend resides in the submodule at :code:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
 
 .. code-block:: python
 
@@ -340,7 +340,7 @@ With the design as currently presented, there would be a small performance hit e
 
 The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true
    :align: center
    :width: 75%
 
@@ -370,7 +370,7 @@ As an example, the following 3 pieces of code all compile to the exact same comp
 | ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true
    :align: center
    :width: 75%
 
@@ -401,7 +401,7 @@ For all existing ML frameworks, the functional API is the backbone which underpi
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true
    :align: center
    :width: 75%
 
