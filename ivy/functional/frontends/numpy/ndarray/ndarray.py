@@ -17,6 +17,9 @@ class ndarray:
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
+    def transpose(self, /, axes=None):
+        return np_frontend.transpose(self.data, axes=axes)
+
     def add(
         self,
         value,

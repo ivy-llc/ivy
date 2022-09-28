@@ -437,7 +437,7 @@ class Array(
 
     @_native_wrapper
     def __isub__(self, other):
-        return ivy.add(self._data, other)
+        return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __mul__(self, other):
