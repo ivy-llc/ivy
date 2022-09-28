@@ -70,8 +70,10 @@ def nanmin(
         if axis is not None:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 # introducing the initial in one dimension is enough
-                s[axis[0]] = 1
+                ax = axis[0] % len(s)
+                s[ax] = 1
             else:
+                ax = axis % len(s)
                 s[axis] = 1
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:

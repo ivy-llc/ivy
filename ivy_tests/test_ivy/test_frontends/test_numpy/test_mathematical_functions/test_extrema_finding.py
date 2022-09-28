@@ -167,6 +167,6 @@ def test_numpy_nanmin(
         out=None,
         keepdims=keepdims,
         initial=initial,
-        where=where,
+        where=where[0],
         test_values=False,
     )
