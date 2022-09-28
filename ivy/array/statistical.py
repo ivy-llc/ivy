@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 import abc
 
 # local
@@ -13,7 +13,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -23,7 +23,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -77,7 +77,7 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.mean()
@@ -95,11 +95,11 @@ class ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(1.1)
 
-        >>> x = ivy.array([1, 2, 3, 0, -1])
+        >>> x = ivy.array([1., 2., 3., 0., -1.])
         >>> y = ivy.array(0.)
         >>> ivy.mean(x, out=y)
         >>> print(y)
-        ivy.array(0.)
+        ivy.array(1.)
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
         >>> y = ivy.array([0., 0., 0.])
@@ -120,7 +120,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -207,7 +207,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -218,7 +218,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -229,7 +229,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -241,11 +241,10 @@ class ArrayWithStatistical(abc.ABC):
 
     def cumsum(
         self: ivy.Array,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -316,10 +315,10 @@ class ArrayWithStatistical(abc.ABC):
 
     def cumprod(
         self: ivy.Array,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -359,7 +358,7 @@ class ArrayWithStatistical(abc.ABC):
                    [1, 5],
                    [1, 11]])
         """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
+        return ivy.cumprod(self._data, axis, exclusive, dtype=dtype, out=out)
 
     def einsum(
         self: ivy.Array,

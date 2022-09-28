@@ -10,8 +10,8 @@ Function Arguments
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at
-:code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
-:code:`ivy/functional/backends/backend_name/category_name.py`.
+:mod:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
+:mod:`ivy/functional/backends/backend_name/category_name.py`.
 
 Many of these points are already adressed in the previous sections:
 :ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
@@ -19,9 +19,9 @@ However, we thought it would be convenient to revisit all of these consideration
 dedicated to function arguments.
 
 As for type-hints,
-all functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
+all functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
 Likewise, all backend implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py` should also have full and thorough type-hints.
+:mod:`ivy/functional/backends/backend_name/category_name.py` should also have full and thorough type-hints.
 
 In order to understand the various requirements for function arguments, it's useful to first look at some examples.
 
@@ -29,7 +29,7 @@ Examples
 --------
 
 For the purposes of explanation, we will use four functions as examples:
-:code:`ivy.tan`, :code:`ivy.roll`, :code:`ivy.add` and :code:`ivy.zeros`.
+:func:`ivy.tan`, :func:`ivy.roll`, :func:`ivy.add` and :func:`ivy.zeros`.
 
 We present both the Ivy API signature and also a backend-specific signature for each function:
 
@@ -138,14 +138,14 @@ Arrays
 ------
 
 In each example, we can see that the input arrays have type :code:`Union[ivy.Array, ivy.NativeArray]`
-whereas the output arrays have type :code:`ivy.Array`. This is the case for all functions in the Ivy API.
-We always return an :code:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
-all operators performed on the returned array now handled by the special methods of the :code:`ivy.Array` class,
-and not the special methods of the backend array class (:code:`ivy.NativeArray`). For example,
+whereas the output arrays have type :class:`ivy.Array`. This is the case for all functions in the Ivy API.
+We always return an :class:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
+all operators performed on the returned array now handled by the special methods of the :class:`ivy.Array` class,
+and not the special methods of the backend array class (:class:`ivy.NativeArray`). For example,
 calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__div__` etc.) being called on the array class.
 
-:code:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
+:class:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
 This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no :code:`out` argument is specified.
 This is all explained in more detail in the :ref:`Arrays` section.
@@ -161,11 +161,11 @@ The :code:`out` argument is explained in more detail in the :ref:`Inplace Update
 dtype and device arguments
 --------------------------
 
-In the Ivy API at :code:`ivy/functional/ivy/category_name.py`,
+In the Ivy API at :mod:`ivy/functional/ivy/category_name.py`,
 the :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments,
 with default value of :code:`None`.
 In contrast, these arguments should both be added as required arguments in the backend implementation
-at :code:`ivy/functional/backends/backend_name/category_name.py`.
+at :mod:`ivy/functional/backends/backend_name/category_name.py`.
 In a nutshell, by the time the backend implementation is entered,
 the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
@@ -176,16 +176,16 @@ Numbers in Operator Functions
 
 All operator functions (which have a corresponding
 such as :code:`+`, :code:`-`, :code:`*`, :code:`/`) must also be fully compatible with
-numbers (:code:`float` or :code:`int`) passed into any of the array inputs,
+numbers (float or :code:`int`) passed into any of the array inputs,
 even in the absence of any arrays.
 For example, :code:`ivy.add(1, 2)`, :code:`ivy.add(1.5, 2)` and
 :code:`ivy.add(1.5, ivy.array([2]))` should all run without error.
-Therefore, the type hints for :code:`ivy.add` include :code:`float` as one of the types
+Therefore, the type hints for :func:`ivy.add` include float as one of the types
 in the :code:`Union` for the array inputs,
 and also as one of the types in the :code:`Union` for the output.
 `PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_
 state that "when an argument is annotated as having type float,
-an argument of type int is acceptable". Therefore, we only include :code:`float` in the
+an argument of type int is acceptable". Therefore, we only include float in the
 type hints.
 
 Integer Sequences
@@ -197,21 +197,21 @@ we accept arbitrary integer sequences :code:`Sequence[int]` for such arguments
 (which includes :code:`list`, :code:`tuple` etc.).
 This does not break the standard, as the standard is only intended to define a subset of required behaviour.
 The standard can be freely extended, as we are doing here.
-Good examples of this are the :code:`axis` argument of :code:`ivy.roll`
-and the :code:`shape` argument of :code:`ivy.zeros`, as shown above.
+Good examples of this are the :code:`axis` argument of :func:`ivy.roll`
+and the :code:`shape` argument of :func:`ivy.zeros`, as shown above.
 
 Nestable Functions
 ------------------
 
-Most functions in the Ivy API can also consume and return :code:`ivy.Container` instances in place of the **any** of
-the function arguments. if an :code:`ivy.Container` is passed, then the function is mapped across all of the leaves of
+Most functions in the Ivy API can also consume and return :class:`ivy.Container` instances in place of the **any** of
+the function arguments. if an :class:`ivy.Container` is passed, then the function is mapped across all of the leaves of
 this container. Because of this feature, we refer to these functions as *nestable* functions.
 However, because so many functions in the Ivy API are indeed *nestable* functions,
 and because this flexibility applies to **every** argument in the function,
 every type hint for these functions should technically be extended like so: :code:`Union[original_type, ivy.Container]`.
 
 However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
-Therefore, we simply omit these :code:`ivy.Container` type hints from *nestable* functions,
+Therefore, we simply omit these :class:`ivy.Container` type hints from *nestable* functions,
 and instead mention in the docstring whether the function is *nestable* or not.
 
 **Round Up**

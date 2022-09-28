@@ -53,11 +53,13 @@ def container_types():
     return []
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "tensorflow"
 
 
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if not ivy.is_array(query):
+        return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
     if dtype is tf.bool:
         return tf.boolean_mask(x, query)
@@ -101,17 +103,19 @@ def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=None)
 
 
 def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -317,14 +321,18 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, -1)
+            indices = tf.expand_dims(indices, 0)
 
-        if len(updates.shape) < 2:
-            updates = tf.expand_dims(updates, 0)
-
-    # broadcast updates to indices
-    if updates.shape == ():
-        updates = tf.broadcast_to(updates, indices.shape[:1])
+    # broadcast updates to correct shape
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + shape[indices.shape[-1] :]
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -399,6 +407,7 @@ def scatter_nd(
     return res
 
 
+scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 

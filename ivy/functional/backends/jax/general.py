@@ -23,7 +23,7 @@ def container_types():
     return [FlatMapping]
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "jax"
 
 
@@ -79,15 +79,16 @@ def to_list(x: JaxArray, /) -> list:
 def gather(
     params: JaxArray,
     indices: JaxArray,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take_along_axis(params, indices, axis))
+    return _to_device(jnp.take(params, indices, axis))
 
 
 def gather_nd(
-    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -238,8 +239,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-
+            indices = jnp.expand_dims(indices, 0)
     # keep below commented out, array API tests are passing without this
     # updates = [updates] if isinstance(updates, Number) else updates
 
@@ -249,6 +249,17 @@ def scatter_nd(
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(
+            indices, updates.shape[:1] + (indices.shape[-1],)
+        )._data
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:

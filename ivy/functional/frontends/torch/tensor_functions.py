@@ -5,6 +5,7 @@ import ivy
 def is_tensor(obj):
     return ivy.is_array(obj)
 
+
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
