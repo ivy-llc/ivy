@@ -61,6 +61,34 @@ def test_tensorflow_Acosh(
     )
 
 
+# Add
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Add"
+    ),
+)
+def test_tensorflow_Add(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Add",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
 # for data generation
 dtype_shared = st.shared(st.sampled_from(helpers.get_dtypes("numeric")), key="dtype")
 
@@ -228,6 +256,34 @@ def _dtypes(draw):
             ),
             key="dtype",
         )
+    )
+
+
+# Div
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Div"
+    ),
+)
+def test_tensorflow_Div(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Div",
+        x=xs[0],
+        y=xs[1],
     )
 
 
