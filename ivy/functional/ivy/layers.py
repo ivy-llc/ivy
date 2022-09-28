@@ -1125,6 +1125,7 @@ def conv3d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1184,6 +1185,7 @@ def conv_general_dilated(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1195,6 +1197,7 @@ def conv_general_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -1234,11 +1237,13 @@ def conv_general_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=feature_group_count,
         out=out,
     )
 
 
 @handle_out_argument
+@handle_exceptions
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1256,6 +1261,7 @@ def conv(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     if transpose:
+        assert x_dilations == 1, "x_dilations must be 1 for transpose convolutions."
         return conv_general_transpose(
             x,
             filters,
@@ -1265,6 +1271,7 @@ def conv(
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            feature_group_count=feature_group_count,
             out=out,
         )
     else:
