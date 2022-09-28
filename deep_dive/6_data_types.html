@@ -417,7 +417,7 @@ backend-specific implementation.</p>
 </section>
 <section id="supported-and-unsupported-data-types">
 <h2>Supported and Unsupported Data Types<a class="headerlink" href="#supported-and-unsupported-data-types" title="Permalink to this heading"></a></h2>
-<p>Some backend functions (implemented in :code`ivy/functional/backends/&lt;some_backend&gt;`)
+<p>Some backend functions (implemented in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/</span></code>)
 have attributes named <code class="xref py py-attr docutils literal notranslate"><span class="pre">supported_dtypes</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>,
 which flag the data types which this particular function does and does not support
 respectively for the associated backend.
@@ -506,7 +506,7 @@ repos included in the comment.</p>
 <code class="docutils literal notranslate"><span class="pre">torch.int32</span></code> but not when it is <code class="docutils literal notranslate"><span class="pre">torch.int64</span></code>.
 This is tested with torch version <code class="docutils literal notranslate"><span class="pre">1.12.1</span></code>,
 which is the latest stable release at the time of writing. This is a
-<a class="reference external" href="https://github.com/pytorch/pytorch/issues/84530">know bug</a>.:</p>
+<a class="reference external" href="https://github.com/pytorch/pytorch/issues/84530">known bug</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">int32</span>  <span class="c1"># or torch.int64</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 <span class="n">torch</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
