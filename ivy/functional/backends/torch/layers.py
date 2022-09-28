@@ -586,7 +586,7 @@ def conv_general_transpose(
         _out_shape(
             x.shape[i + 2],
             strides[i],
-            pad_specific[i],
+            padding_list[i],
             dilations[i],
             filters.shape[i + 2],
         )
