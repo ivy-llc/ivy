@@ -68,6 +68,16 @@ def all(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.all.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicit
+    y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
 
@@ -104,8 +114,7 @@ def all(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = ivy.all(x)
     >>> print(y)
     {
@@ -113,8 +122,7 @@ def all(
         b: ivy.array(True)
     }
 
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]),b=ivy.array([3, 4, 5]))
     >>> y = ivy.all(x)
     >>> print(y)
     {
@@ -134,8 +142,7 @@ def all(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.all()
     >>> print(y)
     {
@@ -143,8 +150,7 @@ def all(
         b: ivy.array(True)
     }
 
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.all()
     >>> print(y)
     {
@@ -152,15 +158,7 @@ def all(
         b: ivy.array(True)
     }
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/sig
-    natures.utility_functions.all.html>`_
-    in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicit
-    y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
     """
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -218,7 +216,17 @@ def any(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
 
-        Functional Examples
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.any.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicit
+    y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
     -------------------
 
     With :class:`ivy.Array` input:
@@ -254,8 +262,7 @@ def any(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = ivy.any(x)
     >>> print(y)
     {
@@ -263,8 +270,7 @@ def any(
         b: ivy.array(True)
     }
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.any()
     >>> print(y)
     {
@@ -284,8 +290,7 @@ def any(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.any()
     >>> print(y)
     {
@@ -293,8 +298,7 @@ def any(
         b: ivy.array(True)
     }
 
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.any()
     >>> print(y)
     {
