@@ -157,11 +157,8 @@ def inv(
             ret = tf.linalg.inv(x)
             return ret
         else:
-            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
-            inverse = tf.math.multiply(
-                tf.math.divide(1, tf.linalg.det(x)), tf.transpose(cofactor)
-            )
-            ret = inverse
+            x = tf.linalg.adjoint(x)
+            ret = tf.linalg.inv(x)
             return ret
 
 

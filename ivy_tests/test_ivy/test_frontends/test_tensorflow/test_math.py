@@ -41,6 +41,59 @@ def test_tensorflow_add(
     )
 
 
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
+    )
+    return x_dtype, x, min, max
+
+
+# clip_by_value
+@handle_cmd_line_args
+@given(
+    input_and_ranges=_get_clip_inputs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.clip_by_value"
+    ),
+)
+def test_tensorflow_clip_by_value(
+    input_and_ranges,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="clip_by_value",
+        t=x[0],
+        clip_value_min=min,
+        clip_value_max=max,
+    )
+
+
 # tan
 @handle_cmd_line_args
 @given(
@@ -116,8 +169,8 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
         fw=fw,
         frontend="tensorflow",
         fn_tree="maximum",
-        a=np.asarray(x[0], dtype=input_dtype[0]),
-        b=np.asarray(x[1], dtype=input_dtype[1]),
+        a=x[0],
+        b=x[1],
     )
 
 
@@ -963,8 +1016,8 @@ def test_tensorflow_polyval(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.polyval",
-        coeffs=coeffs[0],
-        x=x[0],
+        coeffs=coeffs,
+        x=x,
     )
 
 

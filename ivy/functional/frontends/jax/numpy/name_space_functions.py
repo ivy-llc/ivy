@@ -6,6 +6,18 @@ def abs(x):
     return ivy.abs(x)
 
 
+def absolute(x):
+    return ivy.abs(x)
+
+
+def add(x1, x2):
+    return ivy.add(x1, x2)
+
+
+def all(a, axis=None, out=None, keepdims=False, *, where=False):
+    return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+
 def _compute_allclose_with_tol(input, other, rtol, atol):
     return ivy.all(
         ivy.less_equal(
@@ -44,3 +56,28 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
             ret[both_nan] = both_nan[both_nan]
         ret = ivy.all(ret)
     return ivy.array(ret, dtype=ivy.bool)
+
+
+def broadcast_to(arr, shape):
+    return ivy.broadcast_to(arr, shape)
+
+
+def clip(a, a_min=None, a_max=None, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min or a_max can be None",
+    )
+    a = ivy.array(a)
+    if a_min is None:
+        return ivy.minimum(a, a_max, out=out)
+    if a_max is None:
+        return ivy.maximum(a, a_min, out=out)
+    return ivy.clip(a, a_min, a_max, out=out)
+
+
+def reshape(a, newshape, order="C"):
+    return ivy.reshape(a, newshape)
