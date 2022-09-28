@@ -1043,16 +1043,19 @@ def matrix_rank(
     With :code: 'ivy.Array' inputs:
 
     1. Full Matrix
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
     ivy.array(2.)
 
     2. Rank Deficient Matrix
+
     >>> x = ivy.array([[1., 0.], [0., 0.]])
     >>> ivy.matrix_rank(x)
     ivy.array(1.)
 
     3. 1 Dimension - rank 1 unless all 0
+
     >>> x = ivy.array([[1., 1.])
     >>> ivy.matrix_rank(x)
     ivy.array(1.)
@@ -1071,7 +1074,10 @@ def matrix_rank(
     >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
                             b = ivy.array([[1., 0.], [0., 0.]]))
     >>> ivy.matrix_rank(x)
-    {a:ivy.array(2.), b:ivy.array(1.)}
+    {
+        a:ivy.array(2.),
+        b:ivy.array(1.)
+    }
 
 
     """
@@ -1758,6 +1764,7 @@ def trace(
 
          The returned array must have the same data type as ``x``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html>`_ # noqa
@@ -2004,9 +2011,7 @@ def vector_norm(
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric
-    matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying
-    :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
+    """Given vector, return the associated skew-symmetric matrix
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
 
     Parameters
