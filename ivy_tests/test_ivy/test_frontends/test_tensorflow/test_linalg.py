@@ -340,7 +340,6 @@ def test_tensorflow_pinv(
 @handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.qr"
     ),
@@ -380,11 +379,9 @@ def test_tensorflow_qr(
         min_value=0.1,
         max_value=10.0,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.svd"
     ),
-    native_array=st.booleans(),
     full_matrices=st.booleans(),
 )
 def test_tensorflow_svd(
@@ -401,7 +398,7 @@ def test_tensorflow_svd(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.svd",
-        tensor=np.asarray(x, dtype=input_dtype),
+        tensor=np.asarray(x, dtype=input_dtype[0]),
         full_matrices=full_matrices,
         name=None,
         test_values=False,
@@ -428,7 +425,12 @@ def test_tensorflow_svd(
     S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
     with ivy.functional.backends.numpy.use:
-        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+        S_mat = (
+            S
+            * ivy.eye(
+                U.data.shape[-1], Vh.data.shape[-2], batch_shape=U.data.shape[:-2]
+            ).data
+        )
         S_mat_gt = (
             S_gt
             * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
