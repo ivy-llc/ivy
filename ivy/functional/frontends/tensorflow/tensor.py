@@ -21,7 +21,7 @@ class Tensor:
         return tf_frontend.Shape(input=self.data)
 
     def __add__(self, y, name="add"):
-        return tf_frontend.add(self.data, y.data, name)
+        return tf_frontend.add(self.data, y.data, name=name)
 
     def __eq__(self, other):
         return tf_frontend.Equal(
@@ -42,3 +42,6 @@ class Tensor:
 
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
+
+    def __sub__(self, y, name="sub"):
+        return tf_frontend.subtract(self.data, y.data, name=name)

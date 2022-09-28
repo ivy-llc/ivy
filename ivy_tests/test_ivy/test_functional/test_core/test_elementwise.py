@@ -356,6 +356,7 @@ def test_atanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
@@ -411,7 +412,9 @@ def test_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -466,6 +469,7 @@ def test_bitwise_invert(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
@@ -522,7 +526,9 @@ def test_bitwise_right_shift(
 
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -544,6 +550,7 @@ def test_bitwise_right_shift(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),

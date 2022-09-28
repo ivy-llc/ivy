@@ -1144,7 +1144,7 @@ def full(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Shape` input:
+    With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
     >>> fill_value = 8.6
@@ -1153,7 +1153,7 @@ def full(
     ivy.array([[8.6, 8.6],
                [8.6, 8.6]])
 
-    With :code:`ivy.NativeShape` input:
+    With :class:`ivy.NativeShape` input:
 
     >>> shape = ivy.NativeShape((2, 2, 2))
     >>> fill_value = True

@@ -981,7 +981,9 @@ def test_torch_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1019,8 +1021,9 @@ def test_torch_bitwise_right_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
-
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

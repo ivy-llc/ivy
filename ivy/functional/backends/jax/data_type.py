@@ -108,6 +108,8 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
+    if x.ndim > len(shape):
+        return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
 
 
