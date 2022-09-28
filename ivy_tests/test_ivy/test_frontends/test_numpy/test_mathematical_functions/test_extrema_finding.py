@@ -146,6 +146,9 @@ def test_numpy_nanmin(
     if initial is None and np.all(where) is not True:
         assume(initial is inf)
 
+    if isinstance(where, list):
+        assume(where is where[0])
+
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
