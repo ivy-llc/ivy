@@ -3,15 +3,15 @@ import functools
 from typing import Callable
 
 
-def _is_same_kind(t1, t2):
+def _is_same_kind_or_safe(t1, t2):
     if ivy.is_float_dtype(t1):
-        return ivy.is_float_dtype(t2)
+        return ivy.is_float_dtype(t2) or ivy.can_cast(t1, t2)
     elif ivy.is_uint_dtype(t1):
-        return ivy.is_uint_dtype(t2)
+        return ivy.is_uint_dtype(t2) or ivy.can_cast(t1, t2)
     elif ivy.is_int_dtype(t1):
-        return ivy.is_int_dtype(t2)
+        return ivy.is_int_dtype(t2) or ivy.can_cast(t1, t2)
     elif ivy.is_bool_dtype(t1):
-        return ivy.is_bool_dtype(t2)
+        return ivy.is_bool_dtype(t2) or ivy.can_cast(t1, t2)
     raise ivy.exceptions.IvyException(
         "dtypes of input must be float, int, uint, or bool"
     )
@@ -35,7 +35,7 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         -------
             The return of the function, or raise IvyException if error is thrown.
         """
-        # TODO: implement!
+        # TODO: dynamic arg number
         ivy.assertions.check_elem_in_list(
             casting,
             ["no", "equiv", "safe", "same_kind", "safe"],
@@ -54,32 +54,39 @@ def handle_numpy_casting(fn: Callable) -> Callable:
                     message="casting is 'no', dtype must be the same as input types",
                 )
         elif casting == "safe":
-            # TODO: check and fix!
-            promoted_type = ivy.promote_types(ivy.dtype(args[0]), ivy.dtype(args[1]))
+            # TODO: test if this is required or handled in backend
+            # promoted_type = ivy.promote_types(ivy.dtype(args[0]), ivy.dtype(args[1]))
             if ivy.exists(dtype):
-                ivy.assertions.check_true(
-                    ivy.can_cast(promoted_type, dtype),
-                    message="type of inputs: {} is incompatible with dtype: {}".format(
-                        promoted_type, dtype
+                ivy.assertions.check_all_or_any_fn(
+                    args[0],
+                    args[1],
+                    fn=lambda x: ivy.can_cast(x, dtype),
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
                     ),
                 )
-                promoted_type = dtype
-            args[0] = ivy.astype(args[0], promoted_type)
-            args[1] = ivy.astype(args[1], promoted_type)
+                args[0] = ivy.astype(args[0], dtype)
+                args[1] = ivy.astype(args[1], dtype)
         elif casting == "same_kind":
-            # TODO: implement!
             if ivy.exists(dtype):
-                pass
-                # if _is_same_kind(ivy.dtype(args[0]), dtype)
-            else:
-                promoted_type = ivy.promote_types(
-                    ivy.dtype(args[0]), ivy.dtype(args[1])
+                ivy.assertions.check_all_or_any_fn(
+                    args[0],
+                    args[1],
+                    fn=lambda x: _is_same_kind_or_safe(
+                        ivy.dtype(x), ivy.as_ivy_dtype(dtype)
+                    ),
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
+                    ),
                 )
-            args[0] = ivy.astype(args[0], promoted_type)
-            args[1] = ivy.astype(args[1], promoted_type)
+                args[0] = ivy.astype(args[0], dtype)
+                args[1] = ivy.astype(args[1], dtype)
         else:
-            pass  # unsafe
+            args[0] = ivy.astype(args[0], dtype)
+            args[1] = ivy.astype(args[1], dtype)
         return fn(*args, **kwargs)
 
-    new_fn.handle_exceptions = True
+    new_fn.handle_numpy_casting = True
     return new_fn
