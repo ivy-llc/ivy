@@ -1357,16 +1357,12 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, fw, native_array):
     ),
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.MatMul"
-    ),
 )
 def test_tensroflow_MatMul(
     dtype_and_x,
     transpose_a,
     transpose_b,
     as_variable,
-    num_positional_args,
     native_array,
     fw,
 ):
@@ -1376,7 +1372,7 @@ def test_tensroflow_MatMul(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=0,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
@@ -1385,6 +1381,56 @@ def test_tensroflow_MatMul(
         b=x[1],
         transpose_a=transpose_a,
         transpose_b=transpose_b,
+    )
+
+
+# Greater
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_Greater(dtype_and_x, as_variable, fw, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Greater",
+        x=x[0],
+        y=x[1],
+    )
+
+
+# GreaterEqual
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_GreaterEqual(dtype_and_x, as_variable, fw, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.GreaterEqual",
+        x=x[0],
+        y=x[1],
     )
 
 
