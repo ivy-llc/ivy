@@ -322,6 +322,8 @@
 <div class="viewcode-block" id="MultiHeadAttention.__init__"><a class="viewcode-back" href="../../../stateful/layers/MultiHeadAttention.html#ivy.stateful.layers.MultiHeadAttention.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query_dim</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">num_heads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
         <span class="n">head_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
         <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -382,7 +384,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v_exists</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;to_q&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;to_kv&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;to_out&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span> <span class="o">=</span> <span class="n">query_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span> <span class="o">=</span> <span class="n">head_dim</span> <span class="o">*</span> <span class="n">num_heads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span> <span class="o">=</span> <span class="n">dropout_rate</span>
@@ -403,45 +404,40 @@
 
     <span class="c1"># noinspection PyAttributeOutsideInit</span>
     <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">agrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span>
-            <span class="k">else</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span>
-            <span class="k">else</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span>
-            <span class="k">else</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">k</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">v</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span>
-                    <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span><span class="p">),</span>
-                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+                <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span>
-            <span class="k">else</span> <span class="kc">None</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">k</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">v</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                    <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span>
+                        <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">ivy</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span><span class="p">),</span>
+                    <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -454,7 +450,15 @@
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
 <span class="sd">             provided. Default is None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">to_kv</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="o">.</span><span class="n">v</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;to_kv&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="o">.</span><span class="n">v</span><span class="p">,</span>
+                    <span class="s2">&quot;v&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="o">.</span><span class="n">v</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -485,12 +489,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_heads</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
             <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
-            <span class="n">to_q_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span><span class="p">,</span>
-            <span class="n">to_kv_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span><span class="p">,</span>
-            <span class="n">to_out_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span><span class="p">,</span>
-            <span class="n">to_q_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_q</span><span class="p">,</span>
-            <span class="n">to_kv_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_kv</span><span class="p">,</span>
-            <span class="n">to_out_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_out</span><span class="p">,</span>
+            <span class="n">to_q_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_kv_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_out_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_q_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_q</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_kv_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_kv</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_out_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_out</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1356,6 +1360,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
         <span class="n">output_channels</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span>
         <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">return_sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
