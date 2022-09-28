@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -15,7 +15,7 @@ def min(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -36,7 +36,7 @@ def max(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -87,17 +87,17 @@ def prod(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if axis is None:
-        axis = 0
     if axis == ():
         return x.type(dtype)
+    if axis is None:
+        return torch.prod(input=x, dtype=dtype)
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
             x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)
@@ -114,7 +114,7 @@ def std(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
