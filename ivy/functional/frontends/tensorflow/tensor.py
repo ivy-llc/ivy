@@ -42,3 +42,6 @@ class Tensor:
 
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
+
+    def __sub__(self, y, name="sub"):
+        return tf_frontend.subtract(self.data, y.data, name)
