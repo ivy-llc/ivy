@@ -14,6 +14,12 @@ class ndarray:
     # Instance Methoods #
     # -------------------#
 
+    # argpartition #
+    def argpartition(
+        self,
+    ):
+        pass
+
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
