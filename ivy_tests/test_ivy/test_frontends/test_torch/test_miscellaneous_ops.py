@@ -743,7 +743,7 @@ def test_torch_repeat_interleave(
         num_arrays=2,
         shared_dtype=True
     ),
-    dim=st.integers(min_value=-1, max_value=0),
+    dim=st.integers(min_value=-1, max_value=-1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cross"
     ),
