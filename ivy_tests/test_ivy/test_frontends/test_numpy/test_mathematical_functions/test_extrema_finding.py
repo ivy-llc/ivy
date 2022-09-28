@@ -6,6 +6,7 @@ from hypothesis import given, assume, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy import inf
 
 
 # minimum
@@ -142,6 +143,9 @@ def test_numpy_nanmin(
     initial,
     keepdims,
 ):
+    if initial is None and np.all(where) is not True:
+        assume(initial is inf)
+
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
