@@ -382,20 +382,10 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-@st.composite
-def _dtype(draw):
-    dtype = draw(
-        helpers.get_dtypes("float", none=True),
-    )
-    if dtype is None:
-        return dtype
-    return dtype
-
-
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype=_dtype(),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.concatenate"
     ),
@@ -469,7 +459,7 @@ def statistical_dtype_values(draw, *, function):
 @handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
-    dtype=_dtype(),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.mean"
     ),
