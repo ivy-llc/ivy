@@ -169,131 +169,142 @@ def test_dropout_layer(
 
 # Attention #
 # ----------#
+@st.composite
+def x_and_mha(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    with_to_q_fn = draw(st.booleans())
+    with_to_kv_fn = draw(st.booleans())
+    with_to_out_fn = draw(st.booleans())
+    query_dim = draw(st.integers(min_value=1, max_value=3))
+    num_heads = draw(st.integers(min_value=1, max_value=3))
+    head_dim = draw(st.integers(min_value=1, max_value=3))
+    dropout_rate = draw(st.floats(min_value=0.0, max_value=0.9))
+    context_dim = draw(st.integers(min_value=1, max_value=3))
+    scale = draw(st.integers(min_value=1, max_value=3))
+
+    batch_shape = draw(st.integers(min_value=1, max_value=3))
+    num_queries = draw(st.integers(min_value=1, max_value=3))
+    # x_feats = draw(st.integers(min_value=1, max_value=3))
+    num_values = draw(st.integers(min_value=1, max_value=3))
+    # cont_feats = draw(st.integers(min_value=1, max_value=3))
+    num_keys = draw(st.integers(min_value=1, max_value=3))
+    if with_to_q_fn:
+        inputs_shape = (num_queries, query_dim)
+    else:
+        inputs_shape = (num_queries, num_heads * head_dim)
+    if with_to_kv_fn:
+        context_shape = (num_keys, context_dim)
+    else:
+        context_shape = (num_keys, num_heads * head_dim * 2)
+    mask_shape = (num_queries, num_keys)
+    x_mha = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=inputs_shape,
+            min_value=0.0999755859375,
+            max_value=1,
+        )
+    )
+    context = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=context_shape,
+            min_value=0.0999755859375,
+            max_value=1,
+        )
+    )
+    mask = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=mask_shape,
+            min_value=0.0999755859375,
+            max_value=1,
+        )
+    )
+    return dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn
 
 # multi_head_attention
+@handle_cmd_line_args
 @given(
-    x_n_s_n_m_n_c_n_gt=st.sampled_from(
-        [([[3.0]], 2.0, [[1.0]], [[4.0, 5.0]], [[0.8066473]])]
-    ),
-    with_v=st.booleans(),
-    build_mode=st.sampled_from(["on_init", "explicit", "on_call"]),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    dtype_mha=x_and_mha(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="MultiHeadAttention.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="MultiHeadAttention._forward"),
+    build_mode=st.just("on_init"),
 )
 def test_multi_head_attention_layer(
-    x_n_s_n_m_n_c_n_gt,
-    with_v,
+    dtype_mha,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
     build_mode,
     as_variable,
+    native_array,
+    container,
+    fw,
     device,
-    compile_graph,
-    dtype,
 ):
-    x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    # smoke test
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-        context = ivy.variable(ivy.array(context, dtype=dtype, device=device))
-        mask = ivy.variable(ivy.array(mask, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-        context = ivy.array(context, dtype=dtype, device=device)
-        mask = ivy.array(mask, dtype=dtype, device=device)
-    query_dim = x.shape[-1]
-    context_dim = context.shape[-1]
-    if with_v:
-        inner_dim = 64 * 8
-        np.random.seed(0)
-        wlim = (6 / (inner_dim + query_dim)) ** 0.5
-        w_to_q = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
-        w_to_k = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        w_to_v = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        wlim = (6 / (query_dim + inner_dim)) ** 0.5
-        w_to_out = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b_to_out = ivy.variable(ivy.zeros([query_dim], device=device))
-        v = Container(
-            {
-                "to_q": {"w": w_to_q},
-                "to_kv": {"k": {"w": w_to_k}, "v": {"w": w_to_v}},
-                "to_out": {"submodules": {"v0": {"w": w_to_out, "b": b_to_out}}},
-            }
-        )
-    else:
-        v = None
-    multi_head_attention_layer = ivy.MultiHeadAttention(
-        query_dim,
-        context_dim=context_dim,
-        scale=scale,
-        device=device,
-        v=v,
-        build_mode=build_mode,
-    )
-    if build_mode == "explicit":
-        multi_head_attention_layer.build()
-    ret = multi_head_attention_layer(x, context, mask)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(np.array(ground_truth).shape)
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(multi_head_attention_layer(x, context, mask)),
-        np.array(ground_truth),
-        rtol=tolerance_dict[dtype],
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # torch.jit compiled functions can't take variable number of arguments,
-        # which torch.einsum takes
-        return
+    input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn = dtype_mha
+    input_dtype = [input_dtype] * 3
+    as_variable = [as_variable] * 3
+    native_array = [native_array] * 3
+    container = [container] * 3
 
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "query_dim": query_dim,
+            "num_heads": num_heads,
+            "head_dim": head_dim,
+            "dropout_rate": dropout_rate,
+            "context_dim": context_dim,
+            "with_to_q_fn": with_to_q_fn,
+            "with_to_kv_fn": with_to_kv_fn,
+            "with_to_out_fn": with_to_out_fn,
+            "build_mode": build_mode,
+            "device": device,
+            "dtype": input_dtype[0],
+
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={
+            "inputs": np.asarray(x_mha, dtype=input_dtype[0]),
+            "context": np.asarray(context, dtype=input_dtype[0]),
+            "mask": np.asarray(mask, dtype=input_dtype[0])
+        },
+        fw=fw,
+        class_name="MultiHeadAttention",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        rtol_=1e-2,
+        atol_=1e-2,
+    )
 
 # Convolutions #
 # -------------#
 
 # conv1d
+@handle_cmd_line_args
 @given(
     x_n_fs_n_pad_n_res=st.sampled_from(
         [
             (
-                [[[0.0], [3.0], [0.0]]],
-                3,
-                "SAME",
-                [[[1.0679483], [2.2363136], [0.5072848]]],
+                    [[[0.0], [3.0], [0.0]]],
+                    3,
+                    "SAME",
+                    [[[1.0679483], [2.2363136], [0.5072848]]],
             ),
             (
-                [[[0.0], [3.0], [0.0]] for _ in range(5)],
-                3,
-                "SAME",
-                [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
+                    [[[0.0], [3.0], [0.0]] for _ in range(5)],
+                    3,
+                    "SAME",
+                    [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
             ),
             ([[[0.0], [3.0], [0.0]]], 3, "VALID", [[[2.2363136]]]),
         ]
@@ -1415,108 +1426,81 @@ def test_conv3d_transpose_layer(
         ivy.to_numpy(conv3d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
     )
 
+#LSTM
 
-#
-# # LSTM #
+
+@st.composite
+def _input_channels_and_dtype_and_values_lstm(draw):
+    input_channels = draw(st.integers(min_value=1, max_value=10))
+    t = draw(st.integers(min_value=1, max_value=3))
+    x_shape = draw(helpers.get_shape()) + (t, input_channels)
+    dtype, vals = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", full=True), shape=x_shape
+        )
+    )
+    return input_channels, dtype, vals
+
+
+@handle_cmd_line_args
 @given(
-    b_t_ic_hc_otf_sctv=st.sampled_from(
-        [
-            (
-                2,
-                3,
-                4,
-                5,
-                [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664],
-                3.708991,
-            ),
-        ]
+    input_dtype_val=_input_channels_and_dtype_and_values_lstm(),
+    output_channels=st.shared(
+        st.integers(min_value=1, max_value=10), key="output_channels"
     ),
-    with_v=st.booleans(),
-    with_initial_state=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    weight_initializer=_sample_initializer(),
+    num_layers=st.integers(min_value=1, max_value=3),
+    return_sequence=st.booleans(),
+    return_state=st.booleans(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="LSTM.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="LSTM._forward"),
 )
 def test_lstm_layer(
-    b_t_ic_hc_otf_sctv,
-    with_v,
-    with_initial_state,
-    dtype,
+    input_dtype_val,
+    output_channels,
+    weight_initializer,
+    num_layers,
+    return_sequence,
+    return_state,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
     as_variable,
+    native_array,
+    container,
+    fw,
     device,
-    compile_graph,
 ):
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv3d
-        # doesn't seem to be able to handle it
-        return
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    # smoke test
-    (
-        b,
-        t,
-        input_channels,
-        hidden_channels,
-        output_true_flat,
-        state_c_true_val,
-    ) = b_t_ic_hc_otf_sctv
-    if as_variable:
-        x = ivy.variable(
-            ivy.asarray(
-                ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
-                dtype=dtype,
-            )
-        )
-    else:
-        x = ivy.asarray(
-            ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
-            dtype=dtype,
-        )
-    if with_initial_state:
-        init_h = ivy.ones([b, hidden_channels], dtype=dtype)
-        init_c = ivy.ones([b, hidden_channels], dtype=dtype)
-        initial_state = ([init_h], [init_c])
-    else:
-        initial_state = None
-    if with_v:
-        kernel = ivy.variable(
-            ivy.ones([input_channels, 4 * hidden_channels], device=device, dtype=dtype)
-            * 0.5
-        )
-        recurrent_kernel = ivy.variable(
-            ivy.ones([hidden_channels, 4 * hidden_channels], device=device, dtype=dtype)
-            * 0.5
-        )
-        v = Container(
-            {
-                "input": {"layer_0": {"w": kernel}},
-                "recurrent": {"layer_0": {"w": recurrent_kernel}},
-            }
-        )
-    else:
-        v = None
-    lstm_layer = ivy.LSTM(
-        input_channels, hidden_channels, device=device, v=v, dtype=dtype
+    input_channels, input_dtype, vals = input_dtype_val
+    return_sequence = return_sequence
+    return_state = return_state
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "weight_initializer": weight_initializer,
+            "num_layers": num_layers,
+            "return_sequence": return_sequence,
+            "return_state": return_state,
+            "device": device,
+            "dtype": input_dtype,
+
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": np.asarray(vals, dtype=input_dtype)},
+        fw=fw,
+        class_name="LSTM",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
     )
-    output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
-    # type test
-    assert ivy.is_ivy_array(output)
-    assert ivy.is_ivy_array(state_h[0])
-    assert ivy.is_ivy_array(state_c[0])
-    # cardinality test
-    assert output.shape == (b, t, hidden_channels)
-    assert state_h[0].shape == (b, hidden_channels)
-    assert state_c[0].shape == (b, hidden_channels)
-    # value test
-    if not with_v or not with_initial_state:
-        return
-    output_true = np.tile(
-        np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels)
-    )
-    state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
-    ret = lstm_layer(x, initial_state=initial_state)
-    output, (state_h, state_c) = ivy.nested_map(ret, ivy.to_numpy)
-    assert np.allclose(output, output_true, atol=1e-6, rtol=tolerance_dict[dtype])
-    assert np.allclose(state_c, state_c_true, atol=1e-6, rtol=tolerance_dict[dtype])
 
 
 # # Sequential #
