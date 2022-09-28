@@ -136,7 +136,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a is True:
         x1 = jnp.transpose(x1)
