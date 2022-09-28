@@ -162,7 +162,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if transpose_a is True:
         x1 = torch.t(x1)
