@@ -20,7 +20,7 @@ class ndarray:
         self,
         kth,
         axis=-1,
-        kind='introselect',
+        kind="introselect",
         order=None,
     ):
         return np.argpartition(self.data, 
