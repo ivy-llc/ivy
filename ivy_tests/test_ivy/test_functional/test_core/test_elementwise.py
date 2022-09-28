@@ -356,6 +356,7 @@ def test_atanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
@@ -468,6 +469,7 @@ def test_bitwise_invert(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
@@ -548,6 +550,7 @@ def test_bitwise_right_shift(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
