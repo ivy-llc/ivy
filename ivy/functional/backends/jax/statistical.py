@@ -153,23 +153,22 @@ def cumprod(
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.swapaxes(x, axis, -1)
-            res = jnp.flip(x, axis=(axis,))
-        elif exclusive:
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.cumprod(x, -1, dtype=dtype)
-            res = jnp.swapaxes(x, axis, -1)
-        elif reverse:
-            x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            res = jnp.flip(x, axis=axis)
-        return res
-    return jnp.cumprod(x, axis, dtype=dtype)
+    if not (exclusive or reverse):
+        return jnp.cumprod(x, axis, dtype=dtype)
+    elif exclusive and not reverse:
+        x = jnp.swapaxes(x, axis, -1)
+        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.cumprod(x, -1, dtype=dtype)
+        return jnp.swapaxes(x, axis, -1)
+    elif reverse and not exclusive:
+        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+        return jnp.flip(x, axis=axis)
+    else:
+        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+        x = jnp.swapaxes(x, axis, -1)
+        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.swapaxes(x, axis, -1)
+        return jnp.flip(x, axis=(axis,))
 
 
 def cumsum(

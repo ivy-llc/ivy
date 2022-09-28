@@ -218,23 +218,23 @@ def cumprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            x = torch.transpose(x, axis, -1)
-            x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.transpose(x, axis, -1)
-            res = torch.flip(x, dims=(axis,))
-        elif exclusive:
-            x = torch.transpose(x, axis, -1)
-            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.cumprod(x, -1, dtype=dtype)
-            res = torch.transpose(x, axis, -1)
-        elif reverse:
-            x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            res = torch.flip(x, dims=(axis,))
-        return res
-    return torch.cumprod(x, axis, dtype=dtype, out=out)
+
+    if not (exclusive or reverse):
+        return torch.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive:
+        x = torch.transpose(x, axis, -1)
+        x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cumprod(x, -1, dtype=dtype)
+        return torch.transpose(x, axis, -1)
+    elif reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        return torch.flip(x, dims=(axis,))
+    else:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        x = torch.transpose(x, axis, -1)
+        x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        return torch.flip(x, dims=(axis,))
 
 
 cumprod.support_native_out = True
