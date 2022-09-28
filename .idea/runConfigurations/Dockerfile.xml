@@ -8,7 +8,7 @@
         <option name="containerName" value="ivy" />
         <option name="entrypoint" value="" />
         <option name="commandLineOptions" value="" />
-        <option name="sourceFilePath" value="Dockerfile" />
+        <option name="sourceFilePath" value="docker/Dockerfile" />
       </settings>
     </deployment>
     <method v="2" />

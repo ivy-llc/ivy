@@ -174,6 +174,33 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
     )
 
 
+
+# minimum
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_minimum(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="minimum",
+        a=x[0],
+        b=x[1],
+    )
+
+
+
 # subtract
 @handle_cmd_line_args
 @given(
