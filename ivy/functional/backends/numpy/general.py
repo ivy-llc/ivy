@@ -50,10 +50,35 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
-    batch_dims: int = None,
+    batch_dims: Optional[int] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.take(params, indices, axis))
+    assert batch_dims < len(
+        indices.shape
+    ), "batch_dims must be less than or equal to rank(indices)."
+    assert batch_dims <= axis, "batch_dims must be less than or equal to axis"
+    assert (
+        params.shape[0:batch_dims] == indices.shape[0:batch_dims]
+    ), "params.shape[0:batch_dims] should be equal to indices.shape[0:batch_dims]"
+    result = []
+    batch_dims = batch_dims % len(indices.shape)
+    if batch_dims == 0:
+        result = np.take(params, indices, axis)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = np.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = np.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def gather_nd(

@@ -159,8 +159,8 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
-        batch_dims: int = None,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

@@ -2890,8 +2890,8 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
-    batch_dims: int = None,
+    axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
@@ -2975,7 +2975,9 @@ def gather(
     }
 
     """
-    return current_backend(params).gather(params, indices, axis, batch_dims, out=out)
+    return current_backend(params).gather(
+        params, indices, axis=axis, batch_dims=batch_dims, out=out
+    )
 
 
 @to_native_arrays_and_back
