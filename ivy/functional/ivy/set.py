@@ -93,7 +93,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     Functional Examples
     -------------------
 
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))
     >>> print(x)
@@ -135,7 +135,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],\
     [-1.2119, -0.3519, -0.6252,  0.4033],[ 0.7443,  0.2577, -0.3707, -0.0545],\
@@ -173,7 +173,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     Instance Method Examples
     ------------------------
 
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],\
     [-1.2119, -0.3519, -0.6252,  0.4033],\
@@ -209,7 +209,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],\
     [-0.071,  1.262, -0.456, -2.114],[-0.349,  0.615, -0.594, -1.335],\
@@ -316,7 +316,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 
     Examples
     --------
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([4,5,3,2,4,1,3])
     >>> y = ivy.unique_inverse(x)
@@ -324,7 +324,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     unique_inverse(values=ivy.array([1, 2, 3, 4, 5]),
     inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
     >>> y = ivy.ivy.unique_inverse(x)
@@ -468,7 +468,7 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 
     Examples
     --------
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
     >>> y = unique_counts(x)
@@ -480,7 +480,7 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(y)
     Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
