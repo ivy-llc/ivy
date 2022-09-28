@@ -24,16 +24,16 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            The input x compute linear transformation on.
+        self
+            The input array to compute linear transformation on.
             *[outer_batch_shape,inner_batch_shape,in_features]*
         weight
             The weight matrix. *[outer_batch_shape,out_features,in_features]*
         bias
             The bias vector, default is None. *[outer_batch_shape,out_features]*
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -43,7 +43,17 @@ class ArrayWithLayers(abc.ABC):
 
         Examples
         --------
-        
+        >>> x = ivy.array([[1.1, 2.2, 3.3], \
+            [4.4, 5.5, 6.6], \
+            [7.7, 8.8, 9.9]])
+        >>> w = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        >>> b = ivy.array([1, 0, -1])
+        >>> y = x.linear(w, bias=b)
+        >>> print(y)
+        ivy.array([[ 16.4,  35.2,  54. ],
+            [ 36.2,  84.7, 133. ],
+            [ 56. , 134. , 212. ]])
+
         """
         return ivy.linear(
             self._data,
@@ -260,7 +270,7 @@ class ArrayWithLayers(abc.ABC):
             dilations=dilations,
             out=out,
         )
-    
+
     def conv2d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
@@ -328,7 +338,7 @@ class ArrayWithLayers(abc.ABC):
             dilations=dilations,
             out=out,
         )
-        
+
     def conv3d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],

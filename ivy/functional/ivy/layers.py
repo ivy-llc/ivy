@@ -37,7 +37,7 @@ def linear(
     Parameters
     ----------
     x
-        The input x compute linear transformation on.
+        The input x to compute linear transformation on.
         *[outer_batch_shape,inner_batch_shape,in_features]*
     weight
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
@@ -73,19 +73,48 @@ def linear(
     >>> print(y)
     ivy.array([[0.666, 1.91 ]])
 
-    >>> x = ivy.array([[1.546, 5.234, 6.487], [0.157, 5.753, 4.52]])
-    >>> w = ivy.array([[[1.545, 2.547, 3.124], \
-    ...                 [0.231, 7.753, 9.147], \
-    ...                 [5.852, 8.753, 6.963]]])   
-    >>> b = ivy.array([1,1,1])
+    >>> x = ivy.array([[1.546, 5.234, 6.487], \
+        [0.157, 5.753, 4.52], \
+        [5.165, 3.159, 7.101]])
+    >>> w = ivy.array([[1.545, 2.547, 3.124], \
+        [5.852, 8.753, 6.963]])   
+    >>> b = ivy.array([-1, 1])
     >>> ivy.linear(x, w, bias=b, out=x)
     >>> print(x)
-    ivy.array([[[ 37. , 101. , 101. ],
-            [ 30. ,  87. ,  83.7]]])
+    ivy.array([[ 35. , 101. ],
+       [ 28. ,  83.7],
+       [ 37.2, 108. ]])
         
     With :class:`ivy.Container` input:
 
+    >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [4, 5, 6]]), \
+        b=ivy.array([1.1, 2.2, 3.3]))
+    >>> w = ivy.Container(a=ivy.array([[1, 2, 3], [-1, 1, 2]]), \
+        b=ivy.array([[0, -1, 1], [0, 1, 1]]))
+    >>> b = ivy.Container(a=ivy.array([1, -1]), b=ivy.array([1, 1]))
+    >>> y = ivy.linear(x, w, bias=b)
+    >>> print(y)
+    {
+        a: ivy.array([[15, 6], 
+                      [33, 12]]),
+        b: ivy.array([2.1, 6.5])
+    }
 
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11, 22, 33]]), \
+        b=ivy.array([[1.245, 0.278, 4.105], [7, 13, 17]]))
+    >>> w = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    >>> b = ivy.Container(a=ivy.array([1, 0, -1]), b=ivy.array([1, 1, 0]))
+    >>> ivy.linear(x, w, bias=b, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[16.4, 35.2, 54.], 
+                      [155., 352., 549.]]),
+        b: ivy.array([[15.1, 32., 47.9], 
+                      [85., 196., 306.]])
+    }
+    
     """
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)
