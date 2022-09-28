@@ -86,11 +86,14 @@ def concatenate(arrays, axis=0, dtype=None):
     return ret
 
 
-def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    ret = ivy.mean(x, axis=axis, out=out, keepdims=keepdims)
-    if dtype:
-        ret = ivy.array(ret, dtype=dtype)
-    return ret
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    a = ivy.array(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype)
 
 
 def reshape(a, newshape, order="C"):
