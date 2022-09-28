@@ -191,10 +191,10 @@ very generalized function which covers most of the unique features among the
 corresponding functions in each framework.</p>
 <p>We strive to implement the superset for primary, compositional and mixed functions. In
 many cases compositional functions do not actually have corresponding backend-specific
-functions, but this is not always the case. For example, <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> is a
-fully compositional function, but <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code> also exists.
-We should therefore make sure the compositional <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> function includes all
-behaviours supported by <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code>.</p>
+functions, but this is not always the case. For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> is a
+fully compositional function, but <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code> also exists.
+We should therefore make sure the compositional <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> function includes all
+behaviours supported by <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code>.</p>
 </section>
 <section id="a-non-duplicate-superset">
 <h2>A Non-Duplicate Superset<a class="headerlink" href="#a-non-duplicate-superset" title="Permalink to this heading"></a></h2>
@@ -206,7 +206,7 @@ for the same behaviour. Looking at the functions
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.cat.html">torch.cat</a>,
 we of course do not want to add both of the arguments <code class="code docutils literal notranslate"><span class="pre">axis</span></code> and <code class="code docutils literal notranslate"><span class="pre">dim</span></code> to
-<code class="code docutils literal notranslate"><span class="pre">ivy.concat</span></code>, as these both represent exactly the same thing: the dimemsion/axis
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.concat()</span></code>, as these both represent exactly the same thing: the dimemsion/axis
 along which to concatenate. In this case, the argument is
 <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html">covered</a>
 in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> and so we opt for <code class="code docutils literal notranslate"><span class="pre">axis</span></code>. In cases where there are
@@ -266,7 +266,7 @@ implemented with very high efficiency in <code class="code docutils literal notr
 first place, only to then be masked out in the immediately subsequent operation.
 For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much more efficient
 than calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
-<code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code> is another example where the superset is too much, as we explain
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code> is another example where the superset is too much, as we explain
 in the extra examples given at the end of this section.</p>
 <p>However, other frameworks are able to compile compositions of python operations directly
 to computation graphs in low-level languages, and are also able to intelligently fuse
@@ -417,7 +417,7 @@ support numeric arrays, while tensorflow supports only boolean arrays.
 With regards to both of these points, Ivy provides the generalized superset
 implementation among the backend frameworks, with support for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument
 and also support for both numeric and boolean arrays in the input.</p>
-<p>However, as discussed above, <code class="code docutils literal notranslate"><span class="pre">np.logical_and</span></code> also supports the <code class="code docutils literal notranslate"><span class="pre">where</span></code>
+<p>However, as discussed above, <code class="xref py py-func docutils literal notranslate"><span class="pre">np.logical_and()</span></code> also supports the <code class="code docutils literal notranslate"><span class="pre">where</span></code>
 argument, which we opt to <strong>not</strong> support in Ivy. This is because the behaviour can
 easily be created as a composition like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.where(mask,</span> <span class="pre">ivy.logical_and(x,</span> <span class="pre">y),</span> <span class="pre">ivy.zeros_like(mask))</span></code>,

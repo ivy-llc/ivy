@@ -305,7 +305,7 @@
  <span class="p">}</span>
 </pre></div>
 </div>
-<p>Check out the section below on Ivy’s stateful API to see how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
+<p>Check out the section below on Ivy’s stateful API to see how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
 </section>
 <section id="access">
 <h2>Access<a class="headerlink" href="#access" title="Permalink to this heading"></a></h2>
@@ -435,7 +435,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The <code class="code docutils literal notranslate"><span class="pre">ivy.Container.diff</span></code> method will also detect differences in the hierarchical structure and key name differences.</p>
+<p>Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.diff()</span></code> method will also detect differences in the hierarchical structure and key name differences.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
        <span class="p">{</span><span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
         <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
@@ -463,7 +463,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Container.diff</span></code> method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.</p>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.diff()</span></code> method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.</p>
 </section>
 <section id="customized-representations">
 <h2>Customized Representations<a class="headerlink" href="#customized-representations" title="Permalink to this heading"></a></h2>
@@ -625,7 +625,7 @@
 </section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h2>
-<p>As briefly alluded to when explaining the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.diff</span></code> method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.</p>
+<p>As briefly alluded to when explaining the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.diff()</span></code> method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.</p>
 </section>
 <section id="data-loading">
 <h2>Data loading<a class="headerlink" href="#data-loading" title="Permalink to this heading"></a></h2>
@@ -682,7 +682,7 @@
 </section>
 <section id="network-weights">
 <h2>Network weights<a class="headerlink" href="#network-weights" title="Permalink to this heading"></a></h2>
-<p>Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.</p>
+<p>Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>

@@ -307,7 +307,7 @@ Returns
 &lt;return value with its description&gt;
 </pre></div>
 </div>
-<p>Let’s take <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> as an example.
+<p>Let’s take <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as an example.
 The docstring for
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191">ivy.add</a>
 is thorough, as explained above.
@@ -337,9 +337,9 @@ wraps the function
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22">ivy.linear</a>,
 but does so in a stateful manner
 with the variables stored internally in the instance of the class.
-Even though the <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> in the forward pass
+Even though the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> in the forward pass
 defined in <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84">ivy.Linear._forward</a>,
-the function signatures of <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Linear._forward</span></code> are still
+the function signatures of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Linear._forward()</span></code> are still
 quite distinct, with the former including all trainable variables explicitly,
 and the latter having these implicit as internal instance attributes of the class.</p>
 <p>Therefore, with the exception of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>

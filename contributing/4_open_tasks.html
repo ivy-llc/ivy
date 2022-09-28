@@ -218,8 +218,8 @@ method, <code class="xref py py-class docutils literal notranslate"><span class=
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method,
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method.</p></li>
 <li><p>Make sure that the aforementioned methods are added into the correct
-category-specific parent class, such as <code class="code docutils literal notranslate"><span class="pre">ivy.ArrayWithElementwise</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.ContainerWithManipulation</span></code> etc.</p></li>
+category-specific parent class, such as <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ArrayWithElementwise</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ContainerWithManipulation</span></code> etc.</p></li>
 <li><p>correct all of the <a class="reference internal" href="../deep_dive/11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every
 function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement
 yourself.</p></li>
@@ -276,11 +276,11 @@ for this task.</p>
 <li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
 <li><p>verify that the tests for your function are passing</p></li>
 </ol>
-<p>If you feel as though there is an ivy function <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> clearly missing,
+<p>If you feel as though there is an ivy function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> clearly missing,
 which would make your frontend function much simpler to implement,
 then you you should first do the following:</p>
 <ol class="arabic simple">
-<li><p>create a new issue with the title <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>, add the labels
+<li><p>create a new issue with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, add the labels
 <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>
 to it, and then simply leave this issue open. At some point, a member of our team
 will assess whether it should be added, and if so, they will add it to another
@@ -297,14 +297,14 @@ PR is merged, your sub-task issue will then be closed as normal.</p></li>
 compositionally, or if this is not feasible, then you can simply choose another
 frontend function to work on. You could also choose to work on another open task
 entirely at this point if you wanted to. For example, you might decide to wait for a
-member of our team to review your suggested addition <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>, and
+member of our team to review your suggested addition <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, and
 potentially add this to an Ivy Extension ToDo list issue (see the open task below).
 In either case, you should add the label “Pending other Issue” to the frontend
 sub-task issue, and leave it open. This issue will then still show up as open in the
 original frontend ToDo list, helpfully preventing others from working on this
 problematic frontend function, which depends on the unimplemented
-<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>. Finally, you should add a comment to the issue with the
-contents: <code class="code docutils literal notranslate"><span class="pre">pending</span> <span class="pre">&lt;issue_link&gt;</span></code>, which links to the <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>. Finally, you should add a comment to the issue with the
+contents: <code class="code docutils literal notranslate"><span class="pre">pending</span> <span class="pre">&lt;issue_link&gt;</span></code>, which links to the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>
 issue, making the “Pending other Issue” label more informative.</p></li>
 </ol>
 <p>There are a few other points to take note of when working on your chosen frontend

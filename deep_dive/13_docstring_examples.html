@@ -165,49 +165,49 @@ the final step is to add helpful examples to the docstrings.</p>
 <p>There are eight types of examples, which each need to be added:</p>
 <p><strong>Functional</strong> examples show the function being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>.</p>
+in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>.</p>
 <p><strong>Container static method</strong> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>.</p>
+docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>.</p>
 <p><strong>Array instance method</strong> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array.&lt;func_name&gt;</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.</span></code>.</p>
 <p><strong>Container instance method</strong> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.&lt;func_name&gt;</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.</span></code>.</p>
 <p><strong>Array operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
 with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__</span></code>.</p>
+docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
 <p><strong>Array reverse operator</strong> examples show an operation being performed like so
 <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
 <p><strong>Container operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
 with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
 docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
 <p><strong>Container reverse operator</strong> examples show an operation being performed like so
 <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
 <p>The first four example types are very common, while the last four, unsurprisingly,
 are only relevant for <em>operator</em> functions
-such as <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>.</p>
+such as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code>.</p>
 <p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
-(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
+(<code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> etc.) being called on the array class.</p>
 <p><strong>Operator</strong> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
-corresponding operator is applied to an array. For example, the functions <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
-are used respectively. Under the hood, these operators first call the special methods <code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respectively, on either the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+corresponding operator is applied to an array. For example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
+are used respectively. Under the hood, these operators first call the special methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> respectively, on either the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p><strong>Functional Examples</strong></p>
 <p>To recap, <em>functional</em> examples show the function being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>.</p>
+in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>.</p>
 <p>Firstly, we should include <em>functional</em> examples with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
 <ol class="arabic simple">
@@ -251,26 +251,26 @@ For example, the following container is okay to use for example purposes:</p>
 <p><strong>Container Static Method Examples</strong></p>
 <p>To recap, <em>container static method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>.</p>
+docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>.</p>
 <p>The static methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are used under the hood when
 supporting the <em>nestable</em> property for all Ivy functions in the API,
 as showcased by the examples for points 6 and 7. We should demonstrate these same
 examples in the static method docstrings also.</p>
 <ol class="arabic simple" start="8">
 <li><p>the example from point 6 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code> docstring. With
-<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> replaced with <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>
+static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code> docstring. With
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>
 in the example.</p></li>
 <li><p>the example from point 7 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code> docstring. With
-<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> replaced with <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>
+static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code> docstring. With
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>
 in the example.</p></li>
 </ol>
 <p><strong>Array Instance Method Example</strong></p>
 <p>To recap, <em>array instance method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array.&lt;func_name&gt;</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.</span></code>.</p>
 <p>These examples are of course only relevant if an instance method for
 the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="10">
@@ -280,7 +280,7 @@ the function exists. If so, this example should simply:</p>
 <p>To recap, <em>container instance method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.&lt;func_name&gt;</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.</span></code>.</p>
 <p>These examples are of course only relevant if an instance method
 for the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="11">
@@ -289,7 +289,7 @@ for the function exists. If so, this example should simply:</p>
 <p><strong>Array Operator Examples</strong></p>
 <p>To recap, <em>array operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
 with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__</span></code>.</p>
+docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
 <p>If the function is an <em>operator</em> function, then the <em>array operator</em> examples should:</p>
 <ol class="arabic simple" start="12">
 <li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
@@ -300,7 +300,7 @@ docstring of the <code class="xref py py-class docutils literal notranslate"><sp
 <p>To recap, <em>array reverse operator</em> examples show an operation being performed like so
 <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
 <p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
 should:</p>
 <ol class="arabic simple" start="14">
@@ -311,7 +311,7 @@ instance on the right</p></li>
 <p>To recap, <em>container operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
 with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
 docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
 <p>If the function is an <em>operator</em> function, then the <em>container operator</em>
 examples should:</p>
 <ol class="arabic simple" start="15">
@@ -326,7 +326,7 @@ examples should:</p>
 <p>To recap, <em>container reverse operator</em> examples show an operation being performed like so
 <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__</span></code>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
 <p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
 should:</p>
 <ol class="arabic simple" start="18">
@@ -438,7 +438,7 @@ Point 7 is not relevant as there is only one input argument
 </div>
 <p><strong>Container Static Method Examples</strong></p>
 <p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example to the docstring of
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_tan</span></code> in order to satisfy point 8.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code> in order to satisfy point 8.
 Point 9 is not relevant as there is only one input argument
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
@@ -455,7 +455,7 @@ With :class:`ivy.Container` input:
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Array.tan</span></code> in order to satisfy
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.tan()</span></code> in order to satisfy
 point 10.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -466,7 +466,7 @@ point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Container.tan</span></code> in order to satisfy
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.tan()</span></code> in order to satisfy
 point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -491,7 +491,7 @@ point 11.</p>
 <section id="ivy-roll">
 <h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this heading"></a></h2>
 <p><strong>Functional Examples</strong></p>
-<p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is as follows:</p>
+<p>The signature for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -582,7 +582,7 @@ in order to satisfy point 7.</p>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
 <p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-for one of the inputs, to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>,
+for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>,
 in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
@@ -600,7 +600,7 @@ With one :class:`ivy.Container` input:
 </pre></div>
 </div>
 <p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>,
 in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
@@ -616,7 +616,7 @@ in order to satisfy point 9.</p>
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Array.roll</span></code>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.roll()</span></code>
 in order to satisfy point 10.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -627,7 +627,7 @@ in order to satisfy point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Container.roll</span></code>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.roll()</span></code>
 in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -642,18 +642,18 @@ in order to satisfy point 11.</p>
 </pre></div>
 </div>
 <p><strong>Array Operator Examples</strong></p>
-<p>Points 12 and 13 are not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
+<p>Points 12 and 13 are not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Array Reverse Operator Example</strong></p>
-<p>Point 14 is not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
+<p>Point 14 is not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Container Operator Examples</strong></p>
-<p>Points 15, 16 and 17 are not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
+<p>Points 15, 16 and 17 are not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Container Reverse Operator Example</strong></p>
-<p>Point 18 is not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
+<p>Point 18 is not relevant as <code class="code docutils literal notranslate"><span class="pre">func.roll</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-add">
 <h2>ivy.add<a class="headerlink" href="#ivy-add" title="Permalink to this heading"></a></h2>
 <p><strong>Functional Examples</strong></p>
-<p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> is as follows:</p>
+<p>The signature for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -748,7 +748,7 @@ in order to satisfy point 7.</p>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
 <p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-for one of the inputs, to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>,
+for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>,
 in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
@@ -771,7 +771,7 @@ With one :class:`ivy.Container` input:
 </pre></div>
 </div>
 <p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, also to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, also to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>,
 in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
@@ -788,7 +788,7 @@ in order to satisfy point 9.</p>
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Array.add</span></code> in order to satisfy
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.add()</span></code> in order to satisfy
 point 10.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -801,7 +801,7 @@ point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Container.add</span></code> in order to satisfy
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.add()</span></code> in order to satisfy
 point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
@@ -819,7 +819,7 @@ point 11.</p>
 </pre></div>
 </div>
 <p><strong>Array Operator Examples</strong></p>
-<p>Point 12 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__add__</span></code>
+<p>Point 12 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code>
 docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
@@ -833,7 +833,7 @@ With :class:`ivy.Array` instances only:
 ivy.array([5, 7, 9])
 </pre></div>
 </div>
-<p>Point 13 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__add__</span></code>
+<p>Point 13 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code>
 docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
@@ -854,7 +854,7 @@ docstring, with the operator called with an <code class="xref py py-class docuti
 </pre></div>
 </div>
 <p><strong>Array Reverse Operator Examples</strong></p>
-<p>Point 14 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__radd__</span></code>
+<p>Point 14 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__radd__()</span></code>
 docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
@@ -868,7 +868,7 @@ docstring, with the operator called with a <code class="code docutils literal no
 </pre></div>
 </div>
 <p><strong>Container Operator Examples</strong></p>
-<p>Point 15 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__add__</span></code>
+<p>Point 15 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
 docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
 <code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
@@ -886,7 +886,7 @@ With :code:`Number` instances at the leaves:
 }
 </pre></div>
 </div>
-<p>Point 16 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__add__</span></code>
+<p>Point 16 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
 docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :class:`ivy.Array` instances at the leaves:
@@ -903,7 +903,7 @@ docstring, with the operator called on two <code class="xref py py-class docutil
 }
 </pre></div>
 </div>
-<p>Point 17 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__add__</span></code>
+<p>Point 17 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
 docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left
 and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
@@ -924,7 +924,7 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p><strong>Container Reverse Operator Example</strong></p>
-<p>Point 18 is satisfied by the following example in the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__radd__</span></code>
+<p>Point 18 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__radd__()</span></code>
 docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>

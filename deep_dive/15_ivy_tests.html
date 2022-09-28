@@ -184,7 +184,7 @@ The standard only mandates a subset of required behaviour, which the Ivy functio
 combinations of parameters. This is great when we want the test to be very thorough,
 but can make the entire test suite very time consuming.
 Before the changes in this commit, there were 300+ separate tests being run in total,
-just for this <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code> function.
+just for this <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.abs()</span></code> function.
 If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.</p>
 <p>A more elegant and efficient solution is to use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> module,
 which intelligently samples from all of the possible combinations within user-specified ranges,
@@ -197,7 +197,7 @@ With the <a class="reference external" href="https://github.com/unifyai/ivy/blob
 these useful properties are also true in Ivy’s GitHub Action <a class="reference external" href="https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows">continuous integration</a> (CI) tests.</p>
 <p>Rather than making use of <code class="code docutils literal notranslate"><span class="pre">pytest.mark.parametrize</span></code>, the Ivy tests make use of hypothesis <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html">search strategies</a>.
 This reference <a class="reference external" href="https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f">commit</a> outlines the difference between using pytest parametrizations and hypothesis,
-for <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code>.
+for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.abs()</span></code>.
 Among other changes, all <code class="code docutils literal notranslate"><span class="pre">pytest.skip()</span></code> calls were replaced with return statements,
 as pytest skipping does not play nicely with hypothesis testing.</p>
 </section>
@@ -704,7 +704,7 @@ the newer output, for the same example -:</p>
 <p>The hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
 but this makes it difficult to manually verify ground truth results for each input variation.
 Therefore, we instead opt to test for self-consistency against the same Ivy function with a NumPy backend.
-This is handled by <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code>, which is a helper function most unit tests defer to.
+This is handled by <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code>, which is a helper function most unit tests defer to.
 This function is explained in more detail in the following sub-section.</p>
 <p>For <em>primary</em> functions, this approach works well.
 Each backend implementation generally wraps an existing backend function,
@@ -716,9 +716,9 @@ and then the bug would be systematic across all backends,
 including the <em>ground truth</em> NumPy which the value tests for all backends compare against.</p>
 <p>Therefore, for all <em>mixed</em> and <em>compositional</em> functions,
 the test should also be appended with known inputs and known ground truth outputs,
-to safeguard against this inability for <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> to catch systematic errors.
+to safeguard against this inability for <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> to catch systematic errors.
 These should be added using <code class="code docutils literal notranslate"><span class="pre">pytest.mark.parametrize</span></code>.
-However, we should still also include <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test,
+However, we should still also include <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> in the test,
 so that we can still test for arbitrary variations in the input arguments.</p>
 </section>
 <section id="id6">
@@ -732,13 +732,13 @@ applying the function to the leaves of the container, and returning the resultan
 <li><p>can be called as an instance method on the ivy.Container</p></li>
 <li><p>is self-consistent with the function return values when using a NumPy backend</p></li>
 </ol>
-<p><code class="code docutils literal notranslate"><span class="pre">array</span></code> in the name <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> simply refers to the fact that the function in question consumes
+<p><code class="code docutils literal notranslate"><span class="pre">array</span></code> in the name <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> simply refers to the fact that the function in question consumes
 arrays in the arguments.</p>
-<p>So when should <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> be used?</p>
+<p>So when should <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> be used?</p>
 <p>The rule is simple, if the test should not pass any arrays in the input,
-then we should not use the helper <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code>.
-For example, <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> does not receive any arrays in the input,
-and so we should not make us of <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test implementation.</p>
+then we should not use the helper <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code>.
+For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.num_gpus()</span></code> does not receive any arrays in the input,
+and so we should not make us of <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> in the test implementation.</p>
 </section>
 <section id="re-running-failed-ivy-tests">
 <h2>Re-Running Failed Ivy Tests<a class="headerlink" href="#re-running-failed-ivy-tests" title="Permalink to this heading"></a></h2>

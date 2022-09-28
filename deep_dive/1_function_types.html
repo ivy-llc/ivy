@@ -202,7 +202,7 @@ implementation.</p>
 </pre></div>
 </div>
 <p>The reason that the Ivy implementation has type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> but PyTorch
-implementation has <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.
+implementation has <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.
 Likewise, the reason that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the Ivy implementation has array type hint <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>
 whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
 </section>
@@ -213,7 +213,7 @@ a <em>composition</em> of other Ivy functions,
 which themselves can be either compositional, primary or mixed (explained below).</p>
 <p>Therefore, compositional functions are only implemented in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and there are no
 implementations in any of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code></p>
-<p>For example, the implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/losses.py</span></code>
+<p>For example, the implementation of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/losses.py</span></code>
 (with docstrings removed) is given below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
     <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -238,7 +238,7 @@ To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are referred to as <em>mixed</em>.</p>
-<p>When using ivy without a backend set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code> has not been called),
+<p>When using ivy without a backend set explicitly (for example <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code> has not been called),
 then the function called is always the one implemented in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
 For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend(array_arg).func_name(...)</span></code>
 will call the backend-specific implementation in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>
@@ -247,7 +247,7 @@ directly. However, as just explained, <em>mixed</em> functions implement a compo
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for <em>mixed</em> functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code> for example),
+Typically the backend should always be set explicitly though (using <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code> for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.</p>
 </section>
 <section id="standalone-functions">

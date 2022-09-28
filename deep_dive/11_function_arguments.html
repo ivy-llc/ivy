@@ -180,7 +180,7 @@ Likewise, all backend implementations at
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <p>For the purposes of explanation, we will use four functions as examples:
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.zeros()</span></code>.</p>
 <p>We present both the Ivy API signature and also a backend-specific signature for each function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ivy</span>
 <span class="nd">to_native_arrays_and_back</span>
@@ -319,7 +319,7 @@ numbers (float or <code class="code docutils literal notranslate"><span class="p
 even in the absence of any arrays.
 For example, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1,</span> <span class="pre">2)</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">2)</span></code> and
 <code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">ivy.array([2]))</span></code> should all run without error.
-Therefore, the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> include float as one of the types
+Therefore, the type hints for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> include float as one of the types
 in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the array inputs,
 and also as one of the types in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the output.
 <a class="reference external" href="https://peps.python.org/pep-0484/#the-numeric-tower">PEP 484 Type Hints</a>
@@ -335,8 +335,8 @@ we accept arbitrary integer sequences <code class="code docutils literal notrans
 (which includes <code class="code docutils literal notranslate"><span class="pre">list</span></code>, <code class="code docutils literal notranslate"><span class="pre">tuple</span></code> etc.).
 This does not break the standard, as the standard is only intended to define a subset of required behaviour.
 The standard can be freely extended, as we are doing here.
-Good examples of this are the <code class="code docutils literal notranslate"><span class="pre">axis</span></code> argument of <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code>
-and the <code class="code docutils literal notranslate"><span class="pre">shape</span></code> argument of <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>, as shown above.</p>
+Good examples of this are the <code class="code docutils literal notranslate"><span class="pre">axis</span></code> argument of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.roll()</span></code>
+and the <code class="code docutils literal notranslate"><span class="pre">shape</span></code> argument of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.zeros()</span></code>, as shown above.</p>
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
