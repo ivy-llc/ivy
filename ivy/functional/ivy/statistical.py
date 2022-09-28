@@ -317,7 +317,7 @@ def mean(
     >>> print(y)
     ivy.array([-1.4,  1.4])
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4., 5.])
     >>> y = ivy.mean(x)
@@ -676,7 +676,7 @@ def sum(
     >>> print(y)
     ivy.array([4, 7, 12])
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.sum(x)
@@ -790,7 +790,7 @@ def var(
     >>> print(x)
     ivy.array(0.07472222)
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.var(x)
