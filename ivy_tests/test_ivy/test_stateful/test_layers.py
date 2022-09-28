@@ -182,10 +182,8 @@ def x_and_mha(draw):
     context_dim = draw(st.integers(min_value=1, max_value=3))
     scale = draw(st.integers(min_value=1, max_value=3))
 
-    batch_shape = draw(st.integers(min_value=1, max_value=3))
     num_queries = draw(st.integers(min_value=1, max_value=3))
     # x_feats = draw(st.integers(min_value=1, max_value=3))
-    num_values = draw(st.integers(min_value=1, max_value=3))
     # cont_feats = draw(st.integers(min_value=1, max_value=3))
     num_keys = draw(st.integers(min_value=1, max_value=3))
     if with_to_q_fn:
@@ -221,7 +219,22 @@ def x_and_mha(draw):
             max_value=1,
         )
     )
-    return dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn
+    return (
+        dtype,
+        x_mha,
+        scale,
+        num_heads,
+        context,
+        mask,
+        query_dim,
+        head_dim,
+        dropout_rate,
+        context_dim,
+        with_to_q_fn,
+        with_to_kv_fn,
+        with_to_out_fn,
+    )
+
 
 # multi_head_attention
 @handle_cmd_line_args
@@ -229,8 +242,12 @@ def x_and_mha(draw):
     dtype_mha=x_and_mha(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="MultiHeadAttention.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="MultiHeadAttention._forward"),
+    num_positional_args_init=helpers.num_positional_args(
+        fn_name="MultiHeadAttention.__init__"
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="MultiHeadAttention._forward"
+    ),
     build_mode=st.just("on_init"),
 )
 def test_multi_head_attention_layer(
@@ -246,7 +263,21 @@ def test_multi_head_attention_layer(
     fw,
     device,
 ):
-    input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn = dtype_mha
+    (
+        input_dtype,
+        x_mha,
+        scale,
+        num_heads,
+        context,
+        mask,
+        query_dim,
+        head_dim,
+        dropout_rate,
+        context_dim,
+        with_to_q_fn,
+        with_to_kv_fn,
+        with_to_out_fn,
+    ) = dtype_mha
     input_dtype = [input_dtype] * 3
     as_variable = [as_variable] * 3
     native_array = [native_array] * 3
@@ -266,7 +297,6 @@ def test_multi_head_attention_layer(
             "build_mode": build_mode,
             "device": device,
             "dtype": input_dtype[0],
-
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
@@ -276,7 +306,7 @@ def test_multi_head_attention_layer(
         all_as_kwargs_np_method={
             "inputs": np.asarray(x_mha, dtype=input_dtype[0]),
             "context": np.asarray(context, dtype=input_dtype[0]),
-            "mask": np.asarray(mask, dtype=input_dtype[0])
+            "mask": np.asarray(mask, dtype=input_dtype[0]),
         },
         fw=fw,
         class_name="MultiHeadAttention",
@@ -286,8 +316,10 @@ def test_multi_head_attention_layer(
         atol_=1e-2,
     )
 
+
 # Convolutions #
 # -------------#
+
 
 # conv1d
 @handle_cmd_line_args
@@ -295,16 +327,16 @@ def test_multi_head_attention_layer(
     x_n_fs_n_pad_n_res=st.sampled_from(
         [
             (
-                    [[[0.0], [3.0], [0.0]]],
-                    3,
-                    "SAME",
-                    [[[1.0679483], [2.2363136], [0.5072848]]],
+                [[[0.0], [3.0], [0.0]]],
+                3,
+                "SAME",
+                [[[1.0679483], [2.2363136], [0.5072848]]],
             ),
             (
-                    [[[0.0], [3.0], [0.0]] for _ in range(5)],
-                    3,
-                    "SAME",
-                    [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
+                [[[0.0], [3.0], [0.0]] for _ in range(5)],
+                3,
+                "SAME",
+                [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
             ),
             ([[[0.0], [3.0], [0.0]]], 3, "VALID", [[[2.2363136]]]),
         ]
@@ -1426,7 +1458,8 @@ def test_conv3d_transpose_layer(
         ivy.to_numpy(conv3d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
     )
 
-#LSTM
+
+# LSTM
 
 
 @st.composite
@@ -1488,7 +1521,6 @@ def test_lstm_layer(
             "return_state": return_state,
             "device": device,
             "dtype": input_dtype,
-
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
