@@ -154,3 +154,26 @@ def logcumsumexp(input, dim, *, out=None):
 
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
+
+
+def vander(x, N=None, increasing=False):
+    lst = [float(i) for i in x]
+    N = N if N is not None else len(lst)
+    ivy.assertions.check_greater(
+        N, 0, allow_equal=True, message=f"{N} must be non-negative")
+    dtype = x.dtype
+    if N == 0:
+        return ivy.array([], dtype=dtype)
+    else:
+        if increasing is True:
+            return ivy.matrix_transpose(
+                ivy.array(
+                    [[float(i)**k for i in x] for k in range(0, N-1)],
+                    dtype=dtype
+                ))
+        else:
+            return ivy.matrix_transpose(
+                ivy.array(
+                    [[float(i)**(N-k) for i in x] for k in range(1, N+1)],
+                    dtype=dtype
+                ))
