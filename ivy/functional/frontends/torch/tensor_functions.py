@@ -2,6 +2,10 @@
 import ivy
 
 
+def is_tensor(obj):
+    return ivy.is_array(obj)
+
+
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
@@ -11,37 +15,44 @@ import ivy
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
 
-# def is_nonzero(obj):
-# 	return ivy.is_nonzero(obj)
-
 # def set_flush_denormal(obj):
 # 	ivy.set_flush_denormal(obj)
-
-# def set_default_dtype(obj):
-# 	ivy.set_default_dtype(obj)
 
 # def set_default_tensor_type(obj):
 # 	ivy.set_default_tensor_type(obj)
 
 
 def numel(input):
+    ivy.assertions.check_true(
+        is_tensor(input),
+        message="input must be a tensor",
+    )
     num = 1
-    input_shape = ivy.asarray(input).shape
+    input_shape = input.shape
     for e in input_shape:
         num = num * e
     return num
 
 
 def is_floating_point(input):
-    return ivy.is_float_dtype(ivy.asarray(input).dtype)
+    ivy.assertions.check_true(
+        is_tensor(input),
+        message="input must be a tensor",
+    )
+    return ivy.is_float_dtype(input)
 
 
 def is_nonzero(input):
+    ivy.assertions.check_true(
+        is_tensor(input),
+        message="input must be a tensor",
+    )
     ivy.assertions.check_equal(
         numel(input),
         1,
-        message="bool value of Tensor with "
-        "more than one or no values "
-        "is ambiguous",
+        message="bool value of tensor with more than one or no values is ambiguous",
     )
-    return not ivy.asarray(input)[0]
+    if input.ndim:
+        return not input[0]
+    else:
+        return not input
