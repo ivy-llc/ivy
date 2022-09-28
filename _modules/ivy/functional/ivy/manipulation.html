@@ -197,9 +197,10 @@
 <span class="sd">        an output array containing the concatenated values. If the input arrays have</span>
 <span class="sd">        different data types, normal Type Promotion Rules apply.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html#signatures.manipulation_functions.concat&gt;`_ : E501</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -211,9 +212,8 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2], [3, 4]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([[5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.concat((x, y))</span>
-<span class="sd">    ivy.array([[1, 2],</span>
-<span class="sd">               [3, 4],</span>
-<span class="sd">               [5, 6]])</span>
+<span class="sd">    ivy.array([[1, 2],[3, 4],[5, 6]])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -254,9 +254,10 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array with its dimension added by one in a given axis.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the `docstring </span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html#signatures.manipulation_functions.expand_dims&gt;`_ </span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -387,6 +388,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -420,12 +422,14 @@
 <span class="sd">                [ 9,  8,  7]]])</span>
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                      b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
@@ -438,12 +442,14 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 <span class="sd">    Using :class:`ivy.Array` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -533,13 +539,12 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[3.],</span>
-<span class="sd">               [4.],</span>
-<span class="sd">               [5.]])</span>
+<span class="sd">    ivy.array([[3.],[4.],[5.]])</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_ : E501</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -587,9 +592,10 @@
 <span class="sd">    ret</span>
 <span class="sd">        an output array having the same data type and elements as x.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape&gt;`_ : E501</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -600,8 +606,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], \</span>
-<span class="sd">                       [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.],[3., 4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x,(3,2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0., 1.],</span>
@@ -635,8 +640,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (2, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0, 1],</span>
-<span class="sd">               [2, 3]])</span>
+<span class="sd">    ivy.array([[0, 1],[2, 3]])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
@@ -644,12 +648,8 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (-1, 1))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[0.],</span>
-<span class="sd">                      [1.],</span>
-<span class="sd">                      [2.]]),</span>
-<span class="sd">        b: ivy.array([[3.],</span>
-<span class="sd">                      [4.],</span>
-<span class="sd">                      [5.]])</span>
+<span class="sd">        a: ivy.array([[0.],[1.],[2.]]),</span>
+<span class="sd">        b: ivy.array([[3.],[4.],[5.]])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -699,9 +699,10 @@
 <span class="sd">        an output array having the same data type as x and whose elements, relative</span>
 <span class="sd">        to x, are shifted.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.roll.html&gt;`_ </span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -809,9 +810,10 @@
 <span class="sd">    ret</span>
 <span class="sd">        an output array having the same data type and elements as x.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html#signatures.manipulation_functions.squeeze&gt;`_ : E501</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -906,9 +908,10 @@
 <span class="sd">           This specification leaves type promotion between data type families (i.e.,</span>
 <span class="sd">           intxx and floatxx) unspecified.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack&gt;`_ : E501</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -959,6 +962,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array with the elements of x, but where values &lt; x_min are replaced with</span>
 <span class="sd">        x_min, and those &gt; x_max with x_max.</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -1079,6 +1083,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
 
+
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
@@ -1119,6 +1124,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The repeated output array.</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -1187,6 +1193,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        A list of sub-arrays.</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -1262,6 +1269,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        x with its axes permuted.</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -1350,6 +1358,11 @@
 <span class="sd">                      [5.]])</span>
 <span class="sd">    }</span>
 
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1403,8 +1416,7 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[0], \</span>
-<span class="sd">                               [1]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[0], [1]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tile(x,(2,2,3))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[0,0,0],</span>
@@ -1423,9 +1435,9 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[0,1,2,0,1,2]]),</span>
-<span class="sd">        b: ivy.array([[3,3],</span>
-<span class="sd">                      [4,4]])</span>
+<span class="sd">        b: ivy.array([[3,3],[4,4]])</span>
 <span class="sd">    }</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -1506,6 +1518,12 @@
 <span class="sd">        b: ivy.array([[[11, 12]],</span>
 <span class="sd">                      [[15, 16]]])</span>
 <span class="sd">    }]</span>
+
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span></div>
 
@@ -1538,6 +1556,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
+
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
