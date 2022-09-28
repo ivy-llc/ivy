@@ -257,7 +257,7 @@ class MultiHeadAttention(Module):
         self._query_dim = query_dim
         self._inner_dim = head_dim * num_heads
         self._dropout_rate = dropout_rate
-        self._context_dim = ivy.default(context_dim, head_dim)
+        self._context_dim = ivy.default(context_dim, query_dim)
         self._scale = ivy.default(scale, head_dim**-0.5)
         self._num_heads = num_heads
         self._with_to_q_fn = with_to_q_fn
