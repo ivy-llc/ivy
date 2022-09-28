@@ -100,7 +100,7 @@ def linear(
         b: ivy.array([2.1, 6.5])
     }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11, 22, 33]]), \
         b=ivy.array([[1.245, 0.278, 4.105], [7, 13, 17]]))
