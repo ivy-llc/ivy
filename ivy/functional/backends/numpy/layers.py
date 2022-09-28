@@ -569,6 +569,7 @@ def conv_general_transpose(
     output_shape=None,
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: np.ndarray = None,
 ) -> np.ndarray:
 
@@ -576,7 +577,6 @@ def conv_general_transpose(
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-
     if output_shape is None:
         new_shape = [
             ivy.deconv_length(
@@ -621,17 +621,27 @@ def conv_general_transpose(
         ],
         "constant",
     )
-
-    x = np.flip(x, tuple([i + 1 for i in range(dims)]))
-    if dims == 1:
-        res = np.flip(conv1d(x, filters, 1, "VALID", data_format="NWC"), (1,))
-    elif dims == 2:
-        res = np.flip(conv2d(x, filters, 1, "VALID", data_format="NHWC"), (1, 2))
-    else:
-        res = np.flip(
-            conv3d(x, filters, 1, "VALID", data_format="NDHWC"),
-            (1, 2, 3),
-        )
+    x = np.flip(x, (*range(1, dims + 1),))
+    res = np.concatenate(
+        [
+            np.flip(
+                conv_general_dilated(
+                    x[..., j : j + filters.shape[-2] // feature_group_count],
+                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
+                    1,
+                    "VALID",
+                    dims=dims,
+                    data_format=ivy.get_x_data_format(dims, "channel_last"),
+                    dilations=1,
+                ),
+                (*range(1, dims + 1),),
+            )
+            for j in range(
+                0, filters.shape[-2], filters.shape[-2] // feature_group_count
+            )
+        ],
+        axis=-1,
+    )
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
