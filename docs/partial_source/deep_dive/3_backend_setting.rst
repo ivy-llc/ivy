@@ -20,16 +20,16 @@ the default backend unless it is explicitly set or is inferred.\
 
 When calling `this function`_ for setting the backend, the following steps are performed:
 
-#. store a global copy of the original :code:`ivy.__dict__` to :code:`ivy_original_dict`, if this is not already stored.
-#. `import the backend module`_, for example :code:`ivy.functional.backends.torch`, \
+#. store a global copy of the original :attr:`ivy.__dict__` to :code:`ivy_original_dict`, if this is not already stored.
+#. `import the backend module`_, for example :mod:`ivy.functional.backends.torch`, \
    if the backend has been passed in as a string. \
    All functions in this unmodified backend module are *primary* functions, because only primary functions are stored \
-   in :code:`ivy.functional.backends.backend_name`. This backend module does not include any *compositional* functions.
+   in :mod:`ivy.functional.backends.backend_name`. This backend module does not include any *compositional* functions.
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and
    (a) add the primary function from the backend if it exists, (b) else add the compositional
    function from :code:`ivy_original_dict`.
 #. `wrap the functions`_ where necessary, extending them with shared repeated functionality and
-   `writing the function`_ to :code:`ivy.__dict__`. Wrapping is used in order to avoid excessive code duplication in
+   `writing the function`_ to :attr:`ivy.__dict__`. Wrapping is used in order to avoid excessive code duplication in
    every backend function implementation. This is explained in more detail in the next section:
    :ref:`Function Wrapping`.
 
@@ -58,7 +58,7 @@ It's helpful to look at an example:
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the \
-backend is unset using the :code:`ivy.unset_backend`, the `implicit_backend`_ will be used as a fallback, which will \
+backend is unset using the :func:`ivy.unset_backend`, the `implicit_backend`_ will be used as a fallback, which will \
 assume the backend from the last run. While the `implicit_backend`_ functionality gives more freedom to the user , the \
 recommended way of doing things would be set the backend explicitly.
 
@@ -66,8 +66,8 @@ recommended way of doing things would be set the backend explicitly.
 Backend and Frontend Version Support
 ------------------------------------
 
-Each time a new ivy backend is set, the backend_handler modifies the :code:`ivy.__dict__` to support the multiple
-versions of functions that are not forward compatible. For example, :code:`torch.ones_like` in the latest stable version :code:`1.12`
+Each time a new ivy backend is set, the backend_handler modifies the :attr:`ivy.__dict__` to support the multiple
+versions of functions that are not forward compatible. For example, :func:`torch.ones_like` in the latest stable version :code:`1.12`
 has many new arguments :code:`dtype=None, layout=None, device=None, requires_grad=False, memory_format=torch.preserve_format`
 compared to the same function at version :code:`0.3.1`. None of these new arguments will cause any forward compatibility issues:
 they weren't used in old code, and they can now just be used in new code if desired. However, the removal of the :code:`out` argument
