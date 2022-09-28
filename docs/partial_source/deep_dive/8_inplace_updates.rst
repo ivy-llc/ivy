@@ -31,13 +31,13 @@ This enables much more control over the memory-efficiency of the program,
 preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
 
 The function `ivy.inplace_update`_ enables explicit inplace updates.
-:code:`ivy.inplace_update` is a *primary* function,
+:func:`ivy.inplace_update` is a *primary* function,
 and the backend-specific implementations for each backend are presented below.
 We also explain the rational for why each implementation is the way it is,
 and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking,
-the function :code:`ivy.inplace_update` will result in subtly different behaviour
+the function :func:`ivy.inplace_update` will result in subtly different behaviour
 for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
 While :class:`ivy.Array` instances will always be inplace updated consistently,
@@ -112,12 +112,12 @@ if provided in the input.
             raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
         return x
 
-TensorFlow **does not** natively support inplace updates for :code:`tf.Tensor` instances,
-and in such cases so there is no way of actually inplace updating the :code:`tf.Tensor` instance :code:`x_native`.
-However, TensorFlow **does** natively support inplace updates for :code:`tf.Variable` instances.
-Therefore, if :code:`x_native` is a :code:`tf.Variable`,
+TensorFlow **does not** natively support inplace updates for :class:`tf.Tensor` instances,
+and in such cases so there is no way of actually inplace updating the :class:`tf.Tensor` instance :code:`x_native`.
+However, TensorFlow **does** natively support inplace updates for :class:`tf.Variable` instances.
+Therefore, if :code:`x_native` is a :class:`tf.Variable`,
 then :code:`x_native` is updated inplace with :code:`val_native`.
-Irrespective of whether the native array is a :code:`tf.Tensor` or a :code:`tf.Variable`,
+Irrespective of whether the native array is a :class:`tf.Tensor` or a :class:`tf.Variable`,
 an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
 
 **PyTorch**:
@@ -142,7 +142,7 @@ and so :code:`x_native` is updated inplace with :code:`val_native`.
 Following this, an inplace update is then also performed on the :class:`ivy.Array` instance,
 if provided in the input.
 
-The function :code:`ivy.inplace_update` is also *nestable*,
+The function :func:`ivy.inplace_update` is also *nestable*,
 meaning it can accept :class:`ivy.Container` instances in the input.
 If an :class:`ivy.Container` instance is provided for the argument :code:`x`,
 then along with the arrays at all of the leaves,
@@ -262,10 +262,10 @@ Take a function which has multiple possible "paths" through the code:
 
     cholesky.support_native_out = True
 
-Here we still have the :code:`support_native_out` attribute since we want to take advantage of the native inplace update
-enabled by :code:`torch.linalg.cholesky` in the first condition. However, in the :code:`else` statement, the last
-operation is :code:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update
-can't be performed by torch here. This is why we need to call :code:`ivy.inplace_update` explicitly here, to ensure the
+Here we still have the :attr:`support_native_out` attribute since we want to take advantage of the native inplace update
+enabled by :func:`torch.linalg.cholesky` in the first condition. However, in the :code:`else` statement, the last
+operation is :func:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update
+can't be performed by torch here. This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensure the
 native inplace update is performed, as well as the :class:`ivy.Array` inplace update.
 
 **Compositional Functions**
@@ -284,7 +284,7 @@ with no wrapping applied at all. This is for a few reasons:
 
 The second and third points are the most important points.
 
-We'll use :code:`ivy.cross_entropy` as an example:
+We'll use :func:`ivy.cross_entropy` as an example:
 
 .. code-block:: python
 
@@ -302,21 +302,21 @@ We'll use :code:`ivy.cross_entropy` as an example:
         return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
 
 By handling the :code:`out` argument in the function, we are able to get the benefits
-outlined above. Firstly, the return of :code:`ivy.sum` is the same shape and type
+outlined above. Firstly, the return of :func:`ivy.sum` is the same shape and type
 as the return of the entire function, and so we can also write
 this output to the :code:`out` argument inplace.
 We can then subsequently overwrite the contents of :code:`out` again with the return
-of the :code:`ivy.negative` function. This minimizes the number of arrays created during
+of the :func:`ivy.negative` function. This minimizes the number of arrays created during
 the execution of the function,
 which is generally the intention when specifying the :code:`out` argument.
-Additionally, with a PyTorch backend, the :code:`ivy.negative` function defers to the
-:code:`out` argument of :code:`torch.negative` function directly, which is the most
+Additionally, with a PyTorch backend, the :func:`ivy.negative` function defers to the
+:code:`out` argument of :func:`torch.negative` function directly, which is the most
 efficient inplace update possible, making use of backend-specific optimizations.
 
 If we had instead simply used the wrapper
 `handle_out_argument`_,
 then we would not leverage any of these benefits, and instead simply call
-:code:`ivy.inplace_update` at the very end of the function call.
+:func:`ivy.inplace_update` at the very end of the function call.
 
 For some compositional functions, the internal function which generates the final return
 value does not itself support the :code:`out` argument. For example,
@@ -324,7 +324,7 @@ value does not itself support the :code:`out` argument. For example,
 includes support for arbitrary functions passed in the input, including :code:`to_out_fn`
 which, if specified, is applied to the outputs before returning.
 For such functions, the inplace update should just be performed using
-:code:`ivy.inplace_update` at the end of the function,
+:func:`ivy.inplace_update` at the end of the function,
 like `so <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254>`_.
 
 Technically, this could be handled using the

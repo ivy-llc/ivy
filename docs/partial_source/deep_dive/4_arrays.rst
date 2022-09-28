@@ -31,7 +31,7 @@ Native Array
 ------------
 
 The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class,
-such as :code:`np.ndarray`, :code:`tf.Tensor` or :code:`torch.Tensor`
+such as :class:`np.ndarray`, :class:`tf.Tensor` or :class:`torch.Tensor`
 
 When no framework is set, this is an `empty class`_.
 When a framework is set, this is `overwritten`_ with the backend-specific array class.
@@ -77,7 +77,7 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.
 Most special methods also simply wrap a corresponding function in the functional API,
 as `is the case`_ in the Array API Standard.
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
-:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide` respectively.
+:func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide` respectively.
 However, for some special methods such as `__setitem__`_,
 there are substantial differences between the backend frameworks
 which must be addressed in the :class:`ivy.Array` implementation.
@@ -85,9 +85,9 @@ which must be addressed in the :class:`ivy.Array` implementation.
 Array Handling
 --------------
 
-When calling backend-specific functions such as :code:`torch.sin`, we must pass in :class:`ivy.NativeArray` instances.
-For example, :code:`torch.sin` will throw an error if we try to pass in an :class:`ivy.Array` instance.
-It must be provided with a :code:`torch.Tensor`, and this is reflected in the `backend type hints`_.
+When calling backend-specific functions such as :func:`torch.sin`, we must pass in :class:`ivy.NativeArray` instances.
+For example, :func:`torch.sin` will throw an error if we try to pass in an :class:`ivy.Array` instance.
+It must be provided with a :class:`torch.Tensor`, and this is reflected in the `backend type hints`_.
 
 However, all Ivy functions must return :class:`ivy.Array` instances, which is reflected in the `Ivy type hints`_.
 The reason we always return :class:`ivy.Array` instances from Ivy functions is to ensure that any subsequent Ivy code is
