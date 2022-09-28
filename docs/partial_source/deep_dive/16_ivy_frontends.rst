@@ -41,29 +41,29 @@ explanation of how to place a frontend function can be found in a sub-section of
 **Jax**
 
 JAX has two distinct groups of functions, those in the :code:`jax.lax` namespace and
-those in the :code:`jax.numpy` namespace. The former set of functions map very closely
+those in the :mod:`jax.numpy` namespace. The former set of functions map very closely
 to the API for the Accelerated Linear Algebra (`XLA <https://www.tensorflow.org/xla>`_)
 compiler, which is used under the hood to run high performance JAX code. The latter set
 of functions map very closely to NumPy's well known API. In general, all functions in
-the :code:`jax.numpy` namespace are themselves implemented as a composition of the
+the :mod:`jax.numpy` namespace are themselves implemented as a composition of the
 lower-level functions in the :code:`jax.lax` namespace.
 
 When transpiling between frameworks, the first step is to compile the computation graph
 into low level python functions for the source framework using Ivy's graph
 compiler, before then replacing these nodes with the associated functions in Ivy's
 frontend API. Given that all jax code can be decomposed into :code:`jax.lax`
-function calls, when transpiling :code:`jax` code it should always be possible to
+function calls, when transpiling JAX code it should always be possible to
 express the computation graph as a composition of only :code:`jax.lax` functions.
 Therefore, arguably these are the *only* functions we should need to implement in the
 JAX frontend. However, in general we wish to be able to compile a graph in the backend
 framework with varying levels of dynamicism. A graph of only :code:`jax.lax` functions
 chained together in general is more *static* and less *dynamic* than a graph which
-chains :code:`jax.numpy` functions together. We wish to enable varying extents of
+chains :mod:`jax.numpy` functions together. We wish to enable varying extents of
 dynamicism when compiling a graph with our graph compiler, and therefore we also
-implement the functions in the :code:`jax.numpy` namespace in our frontend API for JAX.
+implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
 
-Thus, both :code:`lax` and :code:`numpy` modules are created in the JAX frontend API.
-We start with the function :code:`lax.add` as an example.
+Thus, both :mod:`lax` and :mod:`numpy` modules are created in the JAX frontend API.
+We start with the function :func:`lax.add` as an example.
 
 .. code-block:: python
 
@@ -93,7 +93,7 @@ Using :code:`lax.tan` as a second example, we can see that this is placed under
 :code:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
 argument. In the same manner as our :code:`add` function, we simply link its return
-to :code:`ivy.tan`, and again the computation then depends on the backend framework.
+to :func:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -209,7 +209,7 @@ argument.
 
 Likewise, :code:`tan` is also placed under :code:`math`.
 By referring to the `tf.tan`_ documentation, we add the same arguments,
-and simply wrap :code:`ivy.tan` in this case.
+and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
 **PyTorch**
@@ -239,7 +239,7 @@ into :code:`ivy.add`.
 
 :code:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
 framework. Looking at the `torch.tan`_ documentation, we can mimic the same arguments,
-and again simply wrap :code:`ivy.tan`,
+and again simply wrap :func:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
 
 Unused Arguments
@@ -508,7 +508,7 @@ in :code:`test_frontend_function`.
 
 The way we do this is to wrap all framework-specific classes inside a
 :code:`NativeClass` during frontend testing. The :code:`NativeClass` is defined in
-:code:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
+:mod:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, :code:`_native_class`, which holds the reference to the
 special class being used by the targeted framework.

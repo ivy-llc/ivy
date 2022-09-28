@@ -2154,7 +2154,7 @@ def stable_divide(
     >>> print(x)
     0.2
 
-    With :code:`float` input:
+    With float input:
 
     >>> x = ivy.stable_divide(5.0, 3.33)
     >>> print(x)
@@ -3441,9 +3441,10 @@ def vmap(
         and a return value that corresponds
         to that of fun, but with extra array axes
         at positions indicated by out_axes.
+
+
     This docstring is a summarised version of the `docstring
-    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for #
-    noqa vmap from JAX documentation.
+    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for vmap from JAX documentation. # noqa
 
     Examples
     --------

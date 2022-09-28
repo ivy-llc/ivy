@@ -8,13 +8,13 @@ Docstrings
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 
-All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+:mod:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
 on account that these are effectively just different instantiations of the functions at
-:code:`ivy/functional/ivy/category_name.py`.
+:mod:`ivy/functional/ivy/category_name.py`.
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
+In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
@@ -61,7 +61,7 @@ docstring like so:
 
 The `Array API Standard`_ defines a subset of behaviour that each function must adhere to.
 Ivy extends many of these functions with additional behaviour and arguments.
-In the case of :code:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
+In the case of :func:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
 like so:
 
 .. code-block:: diff

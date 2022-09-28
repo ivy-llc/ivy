@@ -67,9 +67,10 @@ def concat(
         an output array containing the concatenated values. If the input arrays have
         different data types, normal Type Promotion Rules apply.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html#signatures.manipulation_functions.concat>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -81,9 +82,8 @@ def concat(
     >>> x = ivy.array([[1, 2], [3, 4]])
     >>> y = ivy.array([[5, 6]])
     >>> ivy.concat((x, y))
-    ivy.array([[1, 2],
-               [3, 4],
-               [5, 6]])
+    ivy.array([[1, 2],[3, 4],[5, 6]])
+
     """
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
@@ -124,9 +124,10 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given axis.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
-    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html#signatures.manipulation_functions.expand_dims>`_ # noqa
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -257,6 +258,7 @@ def flip(
     Functional Examples
     -------------------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.flip(x)
     >>> print(y)
@@ -290,12 +292,14 @@ def flip(
                 [ 9,  8,  7]]])
 
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.flip(x)
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
     >>> y = ivy.flip(x)
@@ -308,12 +312,14 @@ def flip(
     Instance Method Examples
     ------------------------
     Using :class:`ivy.Array` instance method:
+
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.flip()
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     Using :class:`ivy.Container` instance method:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.flip()
     >>> print(y)
@@ -403,13 +409,12 @@ def permute_dims(
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))
     >>> print(y)
-    ivy.array([[3.],
-               [4.],
-               [5.]])
+    ivy.array([[3.],[4.],[5.]])
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -457,9 +462,10 @@ def reshape(
     ret
         an output array having the same data type and elements as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -470,8 +476,7 @@ def reshape(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
     >>> y = ivy.reshape(x,(3,2))
     >>> print(y)
     ivy.array([[0., 1.],
@@ -505,8 +510,7 @@ def reshape(
     >>> x = ivy.native_array([[0, 1, 2, 3]])
     >>> y = ivy.reshape(x, (2, 2))
     >>> print(y)
-    ivy.array([[0, 1],
-               [2, 3]])
+    ivy.array([[0, 1],[2, 3]])
 
     With :class:`ivy.Container` input:
 
@@ -514,12 +518,8 @@ def reshape(
     >>> y = ivy.reshape(x, (-1, 1))
     >>> print(y)
     {
-        a: ivy.array([[0.],
-                      [1.],
-                      [2.]]),
-        b: ivy.array([[3.],
-                      [4.],
-                      [5.]])
+        a: ivy.array([[0.],[1.],[2.]]),
+        b: ivy.array([[3.],[4.],[5.]])
     }
 
     """
@@ -569,9 +569,10 @@ def roll(
         an output array having the same data type as x and whose elements, relative
         to x, are shifted.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.roll.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -679,9 +680,10 @@ def squeeze(
     ret
         an output array having the same data type and elements as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html#signatures.manipulation_functions.squeeze>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -776,9 +778,10 @@ def stack(
            This specification leaves type promotion between data type families (i.e.,
            intxx and floatxx) unspecified.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -829,6 +832,7 @@ def clip(
     ret
         An array with the elements of x, but where values < x_min are replaced with
         x_min, and those > x_max with x_max.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -949,6 +953,7 @@ def constant_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -989,6 +994,7 @@ def repeat(
     -------
     ret
         The repeated output array.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1057,6 +1063,7 @@ def split(
     -------
     ret
         A list of sub-arrays.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1132,6 +1139,7 @@ def swapaxes(
     -------
     ret
         x with its axes permuted.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1220,6 +1228,11 @@ def swapaxes(
                       [5.]])
     }
 
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
@@ -1273,8 +1286,7 @@ def tile(
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[[0], \
-                               [1]]])
+    >>> x = ivy.native_array([[[0], [1]]])
     >>> y = ivy.tile(x,(2,2,3))
     >>> print(y)
     ivy.array([[[0,0,0],
@@ -1293,9 +1305,9 @@ def tile(
     >>> print(y)
     {
         a: ivy.array([[0,1,2,0,1,2]]),
-        b: ivy.array([[3,3],
-                      [4,4]])
+        b: ivy.array([[3,3],[4,4]])
     }
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1376,6 +1388,12 @@ def unstack(
         b: ivy.array([[[11, 12]],
                       [[15, 16]]])
     }]
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
 
@@ -1408,6 +1426,7 @@ def zero_pad(
     -------
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
