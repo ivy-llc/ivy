@@ -180,19 +180,19 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the Cholesky factors for each square matrix. If upper is
+<dd class="field-odd"><p><em>ret</em> – an array containing the Cholesky factors for each square matrix. If upper is
 False, the returned array must contain lower-triangular matrices; otherwise, the
 returned array must contain upper-triangular matrices. The returned array must
 have a floating-point data type determined by Type Promotion Rules and must have
-the same shape as x.</p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
-</p>
+the same shape as x.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
@@ -293,20 +293,16 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the cross products. The returned array must have a data
-type determined by Type Promotion Rules.</p></li>
-<li><p>This method conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html&gt;`_ )</p></li>
-<li><p><em>in the standard. The descriptions above assume an array input for simplicity, but</em></p></li>
-<li><p>the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints</p></li>
-<li><p><em>and also the examples below.</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data
+type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
@@ -363,18 +359,20 @@ for each square matrix. The returned array must have the same data type as
 <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
-<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
 <a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html">docstring</a> 
-in the standard. The descriptions above assume an array input for simplicity, but
-the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints
-and also the examples below.</p>
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-&gt;&gt;&gt; x = ivy.array([[2.,4.],[6.,7.]])
-&gt;&gt;&gt; y = ivy.det(x)
-&gt;&gt;&gt; print(y)
-ivy.array(-10.)</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">4.</span><span class="p">],[</span><span class="mf">6.</span><span class="p">,</span><span class="mf">7.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(-10.)</span>
+</pre></div>
+</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.4</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.9</span><span class="p">],[</span><span class="mf">6.</span><span class="p">,</span><span class="o">-</span><span class="mf">7.4</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="o">-</span><span class="mf">8.5</span><span class="p">,</span><span class="mi">92</span><span class="p">,</span><span class="mf">7.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -441,21 +439,17 @@ of dimensions as the function output.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the diagonals and whose shape is determined by removing the
+<dd class="field-odd"><p><em>ret</em> – an array containing the diagonals and whose shape is determined by removing the
 last two dimensions and appending a dimension equal to the size of the resulting
-diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
-<li><p>This function conforms to the <a href="#id3"><span class="problematic" id="id4">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_ )</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
-</p>
+diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
@@ -551,7 +545,8 @@ matrices) and <code class="docutils literal notranslate"><span class="pre">L</sp
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The function <code class="docutils literal notranslate"><span class="pre">eig</span></code> will be added in a future version of the specification, as
-it requires complex number support.</p>
+it requires complex number support, once complex numbers are supported,
+each square matrix must be Hermitian.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -567,9 +562,9 @@ square matrices. Must have a floating-point data type.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
+<dd class="field-odd"><p><ul class="simple">
 <li><p><em>ret</em> – a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose</p>
-<ul class="simple">
+<ul>
 <li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> (corresponding to
 <code class="docutils literal notranslate"><span class="pre">L</span></code> above) and must be an array consisting of computed eigenvalues. The
 array containing the eigenvalues must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M)</span></code>.</p></li>
@@ -578,21 +573,37 @@ array containing the eigenvalues must have shape <code class="docutils literal n
 matrices contain the computed eigenvectors. These matrices must be
 orthogonal. The array containing the eigenvectors must have shape
 <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.</p></li>
+<li><p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
 </ul>
-<p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </li>
 <li><p><em>.. note::</em> – Eigenvalue sort order is left unspecified and is thus implementation-dependent.</p></li>
 </ul>
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.eigvalsh">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">eigvalsh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UPLO</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#eigvalsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.eigvalsh" title="Permalink to this definition"></a></dt>
-<dd><p>Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
-x.</p>
+<dd><p>Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">eig</span></code> will be added in a future version of the specification, as
+it requires complex number support, once complex numbers are supported,
+each square matrix must be Hermitian.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Whether an array library explicitly checks whether an input array is a symmetric
+matrix (or a stack of symmetric matrices) is implementation-defined.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -610,6 +621,12 @@ inputs broadcast to.</p></li>
 (…, M) and have the same data type as x.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -657,22 +674,17 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the multiplicative inverses. The returned array must have a
+<dd class="field-odd"><p><em>ret</em> – an array containing the multiplicative inverses. The returned array must have a
 floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have the
-same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
-<li><p>This function conforms to the <a href="#id5"><span class="problematic" id="id6">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (<em>//data-apis.org/array-api/</em>)</p></li>
-<li><p>latest/extensions/generated/signatures.linalg.inv.html&gt;`</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
-</p>
+same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
@@ -682,11 +694,13 @@ same shape as <code class="docutils literal notranslate"><span class="pre">x</sp
 <span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
 </pre></div>
 </div>
-<p>Using inplace
-&gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
-&gt;&gt;&gt; ivy.inv(x, out=x)
-&gt;&gt;&gt; print(x)
-ivy.array([[-1., 0.4],[1., -0.2]])</p>
+<p>Using inplace</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[-1., 0.4],[1., -0.2]])</span>
+</pre></div>
+</div>
 <p>Inverses of several matrices can be computed at once:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]],</span>                       <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -695,24 +709,22 @@ ivy.array([[-1., 0.4],[1., -0.2]])</p>
 <span class="go">           [[-1.25, 0.75],[0.75, -0.25]]])</span>
 </pre></div>
 </div>
-<p>Static method for Container
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[11., 100., 10.],                        [300., 40., 20.], [25., 30, 100.]]),                        b=ivy.array([[4., 400., 50.], [10., 10., 15.],                        [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],                        [55, 20., 20.], [55., 50., 100.]]))
-&gt;&gt;&gt; y = ivy.Container.static_inv(x)
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[-0.0012, 0.00342, -0.000565],</dt><dd><p>[0.0104, -0.0003, -0.000981],
-[-0.00282, -0.000766, 0.0104]]),</p>
-</dd>
-<dt>b: ivy.array([[-0.0322, 0.101, 0.00237],</dt><dd><p>[0.000151, -0.00101, 0.00019],
-[0.0214, 0., -0.00171]]),</p>
-</dd>
-<dt>c: ivy.array([[0.0107, 0.03, -0.0167],</dt><dd><p>[-0.0472, -0.0322, 0.0536],
-[0.0177, -0.000429, -0.00762]])</p>
-</dd>
-</dl>
-</div></blockquote>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">11.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">300.</span><span class="p">,</span> <span class="mf">40.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">],</span> <span class="p">[</span><span class="mf">25.</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">100.</span><span class="p">]]),</span>                        <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">400.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">50.</span><span class="p">,</span> <span class="mf">5000.</span><span class="p">,</span> <span class="mf">40.</span><span class="p">]]),</span> <span class="n">c</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">25.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">],</span>                        <span class="p">[</span><span class="mi">55</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">],</span> <span class="p">[</span><span class="mf">55.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[-0.0012, 0.00342, -0.000565],</span>
+<span class="go">                  [0.0104, -0.0003, -0.000981],</span>
+<span class="go">                  [-0.00282, -0.000766, 0.0104]]),</span>
+<span class="go">    b: ivy.array([[-0.0322, 0.101, 0.00237],</span>
+<span class="go">                  [0.000151, -0.00101, 0.00019],</span>
+<span class="go">                  [0.0214, 0., -0.00171]]),</span>
+<span class="go">    c: ivy.array([[0.0107, 0.03, -0.0167],</span>
+<span class="go">                  [-0.0472, -0.0322, 0.0536],</span>
+<span class="go">                  [0.0177, -0.000429, -0.00762]])</span>
+</pre></div>
+</div>
 <p>}</p>
 </dd></dl>
 
@@ -735,14 +747,14 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> –</p>
+<dd class="field-odd"><p><p><em>ret</em> –</p>
 <ul>
 <li><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a
 zero-dimensional array containing the inner product as its only element.</p></li>
 <li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is a
-two-dimensional array having shape (K, N), a two-dimensional array
-containing the conventional matrix product and having shape (M, N).</p></li>
+two-dimensional array having shape (K, N), a two-dimensional array</p>
+<p>containing the conventional matrix product and having shape (M, N).</p>
+</li>
 <li><p>if x1 is a one-dimensional array having shape (K,) and x2 is an array having
 shape (…, K, N), an array having shape (…, N) (i.e., prepended
 dimensions during vector-to-matrix promotion must be removed) and containing
@@ -761,24 +773,30 @@ conventional matrix product for each stacked matrix.</p></li>
 determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and
 containing the conventional matrix product for each stacked matrix.</p></li>
 </ul>
-</li>
-<li><p><em>**Raises**</em></p></li>
-<li><p><em>-   if either x1 or x2 is a zero-dimensional array.</em></p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</em> – array having shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having</em> – shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-<li><p>This function conforms to the <a href="#id7"><span class="problematic" id="id8">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html&gt;`_ )</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
 </p>
 </dd>
 </dl>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul>
+<li><p>if either x1 or x2 is a zero-dimensional array.</p></li>
+<li><p>if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</p>
+<p>array having shape (L,), and K != L.</p>
+</li>
+<li><p>if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
+(…, L, N), and K != L.</p></li>
+<li><p>if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having
+shape (L,), and K != L.</p></li>
+<li><p>if x1 is an array having shape (…, M, K), x2 is an array having shape
+(…, L, N), and K != L.</p></li>
+</ul>
+</div></blockquote>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
@@ -819,8 +837,7 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>With a combination of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<p>With a combination of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -853,18 +870,43 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – Matrix norm of the array at specified axes.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.matrix_power">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">matrix_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_power" title="Permalink to this definition"></a></dt>
-<dd><p>Raises a square matrix (or a stack of square matrices) x to an integer power
-n.</p>
+<dd><p>Raises a square matrix (or a stack of square matrices) x to an integer power n.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – input array having shape (…, M, M) and whose innermost two dimensions form square matrices.
+Should have a floating-point data type.</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer exponent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – if n is equal to zero, an array containing the identity matrix for each square matrix.
+If n is less than zero, an array containing the inverse of each square matrix raised to the absolute value of n,
+provided that each square matrix is invertible.
+If n is greater than zero, an array containing the result of raising each square matrix to the power n.
+The returned array must have the same shape as x and a floating-point data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -900,6 +942,12 @@ data type determined by <span class="xref std std-ref">type-promotion</span> and
 (i.e., must have a shape equal to <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>).</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With :code: ‘ivy.Array’ inputs:</p>
 <p>1. Full Matrix
@@ -957,6 +1005,12 @@ inputs broadcast to.</p></li>
 <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -984,9 +1038,15 @@ inputs broadcast to.</p></li>
 The returned array must have a data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="go">ivy.array([[ 5.,  6.,  7.,  8.],</span>
@@ -1054,16 +1114,26 @@ floating-point data type determined by <span class="xref std std-ref">type-promo
 two dimensions must be transposed).</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
-<p>x = ivy.array([[1., 2.],                  [3., 4.]])
-y = pinv(x, None, None)
-print(y)
-ivy.array([[-2., 1.],               [1.5, -0.5]])</p>
-<p>x = ivy.array([[1., 2.],                  [3., 4.]])
-out = ivy.array()
-pinv(x, 0, out)
-print(out)
-ivy.array([[0.0426, 0.0964],               [0.0605, 0.1368]])</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1113,6 +1183,12 @@ dimensions must have the same size as those of the input x.</p></li>
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1142,6 +1218,12 @@ The natural log of the absolute value of the determinant.</p>
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.slogdet.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1174,6 +1256,12 @@ to B) and must have a floating-point data type determined by Type Promotion
 Rules.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1201,7 +1289,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">True</span
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul>
-<li><p><em>..</em> – NOTE: once complex numbers are supported, each square matrix must be Hermitian.</p></li>
+<li><p><em>.. note::</em> – once complex numbers are supported, each square matrix must be Hermitian.</p></li>
 <li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(U,</span> <span class="pre">S,</span> <span class="pre">Vh)</span></code> whose</p>
 <ul class="simple">
 <li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose
@@ -1232,6 +1320,12 @@ dimensions must have the same shape as those of the input <code class="docutils 
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -1273,6 +1367,12 @@ length <code class="docutils literal notranslate"><span class="pre">K</span></co
 magnitude.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]])</span>
@@ -1367,37 +1467,42 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – The tensor contraction of x1 and x2 over the specified axes.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-1. Axes = 0 : tensor product
-&gt;&gt;&gt; x = ivy.array([[1., 2.], [2., 3.]])
-&gt;&gt;&gt; y = ivy.array([[3., 4.], [4., 5.]])
-&gt;&gt;&gt; res = ivy.tensordot(x, y, axes =0)
-&gt;&gt;&gt; print(res)
-ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</span>
+</pre></div>
+</div>
 <p>With a mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:</p>
-<p>2. Axes = 1 : tensor dot product
-&gt;&gt;&gt; x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
-&gt;&gt;&gt; y = ivy.native_array([[1.], [2.], [3.]])
-&gt;&gt;&gt; res = ivy.tensordot(x, y, axes = 1)
-&gt;&gt;&gt; print(res)
-ivy.array([[ 4.],</p>
-<blockquote>
-<div><p>[26.],
-[20.]])</p>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">ivy.array([[ 4.],</span>
+<span class="go">            [26.],</span>
+<span class="go">            [20.]])</span>
+</pre></div>
+</div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<p>3. Axes = 2: (default) tensor double contraction
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),                          b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),                          b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))
-&gt;&gt;&gt; res = ivy.tensordot(x, y)
-&gt;&gt;&gt; print(res)
-{</p>
-<blockquote>
-<div><p>a: ivy.array(89.),
-b: ivy.array(76.)</p>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array(89.),</span>
+<span class="go">    b: ivy.array(76.)</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1424,7 +1529,8 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the
 last two dimensions and storing the traces in the last array dimension. For
 example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an
 output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
@@ -1432,6 +1538,15 @@ output array has rank <code class="docutils literal notranslate"><span class="pr
 </pre></div>
 </div>
 <p>The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</li>
+<li><p>This function conforms to the <a href="#id39"><span class="problematic" id="id40">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
+<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html&gt;`_ )</p></li>
+<li><p><em>in the standard.</em></p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
 </p>
 </dd>
 </dl>
@@ -1508,22 +1623,27 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional
+<dd class="field-odd"><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional
 containing the dot product; otherwise, a non-zero-dimensional array containing
 the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of
 dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The
-returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p></li>
-<li><p><em>**Raises**</em></p></li>
-<li><ul>
-<li><p>if provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p></li>
-</ul>
-</li>
-<li><p><em>-   if the size of the axis over which to compute the dot product is not the same</em> – for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
-</ul>
-</p>
+returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p></li>
+<li><p>if the size of the axis over which to compute the dot product is not the same
+for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1617,6 +1737,12 @@ array must have a rank which is <code class="docutils literal notranslate"><span
 array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1641,6 +1767,9 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
 </dd>
 </dl>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

@@ -190,37 +190,42 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – The tensor contraction of x1 and x2 over the specified axes.</p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-1. Axes = 0 : tensor product
-&gt;&gt;&gt; x = ivy.array([[1., 2.], [2., 3.]])
-&gt;&gt;&gt; y = ivy.array([[3., 4.], [4., 5.]])
-&gt;&gt;&gt; res = ivy.tensordot(x, y, axes =0)
-&gt;&gt;&gt; print(res)
-ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</span>
+</pre></div>
+</div>
 <p>With a mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:</p>
-<p>2. Axes = 1 : tensor dot product
-&gt;&gt;&gt; x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
-&gt;&gt;&gt; y = ivy.native_array([[1.], [2.], [3.]])
-&gt;&gt;&gt; res = ivy.tensordot(x, y, axes = 1)
-&gt;&gt;&gt; print(res)
-ivy.array([[ 4.],</p>
-<blockquote>
-<div><p>[26.],
-[20.]])</p>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">ivy.array([[ 4.],</span>
+<span class="go">            [26.],</span>
+<span class="go">            [20.]])</span>
+</pre></div>
+</div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<p>3. Axes = 2: (default) tensor double contraction
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),                          b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),                          b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))
-&gt;&gt;&gt; res = ivy.tensordot(x, y)
-&gt;&gt;&gt; print(res)
-{</p>
-<blockquote>
-<div><p>a: ivy.array(89.),
-b: ivy.array(76.)</p>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array(89.),</span>
+<span class="go">    b: ivy.array(76.)</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <table class="colwidths-given docutils align-default" id="id1">

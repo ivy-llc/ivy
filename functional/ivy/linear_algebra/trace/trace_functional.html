@@ -191,7 +191,8 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the
 last two dimensions and storing the traces in the last array dimension. For
 example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an
 output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
@@ -199,6 +200,15 @@ output array has rank <code class="docutils literal notranslate"><span class="pr
 </pre></div>
 </div>
 <p>The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</li>
+<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
+<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html&gt;`_ )</p></li>
+<li><p><em>in the standard.</em></p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
 </p>
 </dd>
 </dl>
@@ -250,8 +260,8 @@ output array has rank <code class="docutils literal notranslate"><span class="pr
 </div>
 </dd></dl>
 
-<table class="colwidths-given docutils align-default" id="id1">
-<caption><span class="caption-text">Device Support</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">Device Support</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 20%" />
 <col style="width: 20%" />

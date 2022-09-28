@@ -191,22 +191,27 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional
+<dd class="field-odd"><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional
 containing the dot product; otherwise, a non-zero-dimensional array containing
 the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of
 dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The
-returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p></li>
-<li><p><em>**Raises**</em></p></li>
-<li><ul>
-<li><p>if provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p></li>
-</ul>
-</li>
-<li><p><em>-   if the size of the axis over which to compute the dot product is not the same</em> – for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
-</ul>
-</p>
+returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p></li>
+<li><p>if the size of the axis over which to compute the dot product is not the same
+for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -191,7 +191,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">True</span
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul>
-<li><p><em>..</em> – NOTE: once complex numbers are supported, each square matrix must be Hermitian.</p></li>
+<li><p><em>.. note::</em> – once complex numbers are supported, each square matrix must be Hermitian.</p></li>
 <li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(U,</span> <span class="pre">S,</span> <span class="pre">Vh)</span></code> whose</p>
 <ul class="simple">
 <li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose
@@ -222,6 +222,12 @@ dimensions must have the same shape as those of the input <code class="docutils 
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

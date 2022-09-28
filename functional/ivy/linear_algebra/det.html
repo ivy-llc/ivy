@@ -189,18 +189,20 @@ for each square matrix. The returned array must have the same data type as
 <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
-<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
 <a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html">docstring</a> 
-in the standard. The descriptions above assume an array input for simplicity, but
-the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints
-and also the examples below.</p>
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-&gt;&gt;&gt; x = ivy.array([[2.,4.],[6.,7.]])
-&gt;&gt;&gt; y = ivy.det(x)
-&gt;&gt;&gt; print(y)
-ivy.array(-10.)</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">4.</span><span class="p">],[</span><span class="mf">6.</span><span class="p">,</span><span class="mf">7.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(-10.)</span>
+</pre></div>
+</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.4</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.9</span><span class="p">],[</span><span class="mf">6.</span><span class="p">,</span><span class="o">-</span><span class="mf">7.4</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="o">-</span><span class="mf">8.5</span><span class="p">,</span><span class="mi">92</span><span class="p">,</span><span class="mf">7.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>

@@ -185,14 +185,14 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> –</p>
+<dd class="field-odd"><p><p><em>ret</em> –</p>
 <ul>
 <li><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a
 zero-dimensional array containing the inner product as its only element.</p></li>
 <li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is a
-two-dimensional array having shape (K, N), a two-dimensional array
-containing the conventional matrix product and having shape (M, N).</p></li>
+two-dimensional array having shape (K, N), a two-dimensional array</p>
+<p>containing the conventional matrix product and having shape (M, N).</p>
+</li>
 <li><p>if x1 is a one-dimensional array having shape (K,) and x2 is an array having
 shape (…, K, N), an array having shape (…, N) (i.e., prepended
 dimensions during vector-to-matrix promotion must be removed) and containing
@@ -211,24 +211,30 @@ conventional matrix product for each stacked matrix.</p></li>
 determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and
 containing the conventional matrix product for each stacked matrix.</p></li>
 </ul>
-</li>
-<li><p><em>**Raises**</em></p></li>
-<li><p><em>-   if either x1 or x2 is a zero-dimensional array.</em></p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</em> – array having shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having</em> – shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html&gt;`_ )</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
 </p>
 </dd>
 </dl>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul>
+<li><p>if either x1 or x2 is a zero-dimensional array.</p></li>
+<li><p>if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</p>
+<p>array having shape (L,), and K != L.</p>
+</li>
+<li><p>if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
+(…, L, N), and K != L.</p></li>
+<li><p>if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having
+shape (L,), and K != L.</p></li>
+<li><p>if x1 is an array having shape (…, M, K), x2 is an array having shape
+(…, L, N), and K != L.</p></li>
+</ul>
+</div></blockquote>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
@@ -269,8 +275,7 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>With a combination of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<p>With a combination of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -359,8 +364,8 @@ that the inputs broadcast to.</p></li>
 </dl>
 </dd></dl>
 
-<table class="colwidths-given docutils align-default" id="id3">
-<caption><span class="caption-text">Device Support</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Device Support</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 20%" />
 <col style="width: 20%" />

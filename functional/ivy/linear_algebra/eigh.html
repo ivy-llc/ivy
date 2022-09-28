@@ -174,7 +174,8 @@ matrices) and <code class="docutils literal notranslate"><span class="pre">L</sp
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The function <code class="docutils literal notranslate"><span class="pre">eig</span></code> will be added in a future version of the specification, as
-it requires complex number support.</p>
+it requires complex number support, once complex numbers are supported,
+each square matrix must be Hermitian.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -190,9 +191,9 @@ square matrices. Must have a floating-point data type.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
+<dd class="field-odd"><p><ul class="simple">
 <li><p><em>ret</em> – a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose</p>
-<ul class="simple">
+<ul>
 <li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> (corresponding to
 <code class="docutils literal notranslate"><span class="pre">L</span></code> above) and must be an array consisting of computed eigenvalues. The
 array containing the eigenvalues must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M)</span></code>.</p></li>
@@ -201,14 +202,20 @@ array containing the eigenvalues must have shape <code class="docutils literal n
 matrices contain the computed eigenvectors. These matrices must be
 orthogonal. The array containing the eigenvectors must have shape
 <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.</p></li>
+<li><p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
 </ul>
-<p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </li>
 <li><p><em>.. note::</em> – Eigenvalue sort order is left unspecified and is thus implementation-dependent.</p></li>
 </ul>
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
