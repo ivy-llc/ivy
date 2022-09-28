@@ -804,7 +804,7 @@ def test_jax_lax_argmax(
         fn_tree="lax.argmax",
         operand=x[0],
         axis=axis,
-        index_dtype=index_dtype,
+        index_dtype=index_dtype[0],
     )
 
 
@@ -843,7 +843,7 @@ def test_jax_lax_argmin(
         fn_tree="lax.argmin",
         operand=x[0],
         axis=axis,
-        index_dtype=index_dtype,
+        index_dtype=index_dtype[0],
     )
 
 
@@ -1516,56 +1516,31 @@ def test_jax_lax_cos(
 
 
 @st.composite
-def _same_dims_min_x_max(draw):
-    dtype = draw(helpers.get_dtypes("numeric", full=False))
-    bound = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=(),
-            large_abs_safety_factor=1.5,
-            small_abs_safety_factor=1.5,
-            safety_factor_scale="log",
+def _get_clamp_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
         )
     )
-    dtypes, x, shape = draw(
+    x_dtype, x = draw(
         helpers.dtype_and_values(
-            dtype=[dtype],
-            ret_shape=True,
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
         )
     )
-    min_val = draw(
-        helpers.array_values(
-            dtype=dtype, shape=shape, max_value=bound, exclude_max=False
-        )
-    )
-    max_val = draw(helpers.array_values(dtype=dtype, shape=shape, min_value=bound))
-    return dtypes, x, min_val, max_val
 
-
-@st.composite
-def _basic_min_x_max(draw):
-    dtype, value = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-        )
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0)
     )
-    min_val = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=(),
-            large_abs_safety_factor=1.5,
-            small_abs_safety_factor=1.5,
-            safety_factor_scale="log",
-            exclude_max=False,
-        )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=1, max_value=25)
     )
-    max_val = draw(helpers.array_values(dtype=dtype[0], shape=(), min_value=min_val))
-    return dtype, value, min_val, max_val
+    return x_dtype, x, min, max
 
 
 @handle_cmd_line_args
 @given(
-    dtype_x_min_max=(_same_dims_min_x_max() | _basic_min_x_max()),
+    dtype_x_min_max=_get_clamp_inputs(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.clamp"
     ),
@@ -1573,7 +1548,6 @@ def _basic_min_x_max(draw):
 def test_jax_lax_clamp(
     dtype_x_min_max,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -1582,7 +1556,7 @@ def test_jax_lax_clamp(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
