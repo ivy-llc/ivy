@@ -149,7 +149,7 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
     try:
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
-        return ivy.array(False)
+        return ivy.array(True)
 
 
 def Relu(features, name="Relu"):
