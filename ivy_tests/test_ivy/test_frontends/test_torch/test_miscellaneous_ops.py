@@ -732,44 +732,33 @@ def test_torch_repeat_interleave(
     )
 
     
-# cross
+# ravel
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=(3,),
-        max_value=1e4,
-        min_value=-1e4,
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
     ),
-    dim=st.integers(min_value=-1, max_value=-1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.cross"
+        fn_name="ivy.functional.frontends.torch.ravel"
     ),
 )
-def test_torch_cross(
+def test_torch_ravel(
     dtype_and_x,
-    dim,
     as_variable,
     num_positional_args,
     native_array,
-    with_out,
     fw,
 ):
-    (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
-    input_dtype = [input_dtype_x, input_dtype_y]
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="cross",
-        input=np.asarray(x, dtype=input_dtype[0]),
-        other=np.asarray(y, dtype=input_dtype[1]),
-        dim=dim,
-        out=None,
+        fn_tree="ravel",
+        input=np.asarray(x, dtype=input_dtype),
     )
