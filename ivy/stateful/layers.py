@@ -272,41 +272,32 @@ class MultiHeadAttention(Module):
             dtype=dtype,
         )
 
-    # noinspection PyAttributeOutsideInit
-    def _build(self, *agrs, **kwargs):
+    def _build(self, *args, **kwargs):
         if self._with_to_q_fn:
-            self._to_q = (
-                ivy.Linear(
-                    self._query_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-                )
+            self._to_q = ivy.Linear(
+                self._query_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
         if self._with_to_kv_fn:
-            self._to_k = (
-                ivy.Linear(
-                    self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-                )
+            self._to_k = ivy.Linear(
+                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
-            self._to_v = (
-                ivy.Linear(
-                    self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-                )
+            self._to_v = ivy.Linear(
+                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
             self._to_kv = lambda context, v=None: (
                 self._to_k(context, v=v.k if v else None),
                 self._to_v(context, v=v.v if v else None),
             )
         if self._with_to_out_fn:
-            self._to_out = (
-                ivy.Sequential(
-                    ivy.Linear(
-                        self._inner_dim,
-                        self._query_dim,
-                        device=self._dev,
-                        dtype=self._dtype,
-                    ),
-                    ivy.Dropout(self._dropout_rate),
+            self._to_out = ivy.Sequential(
+                ivy.Linear(
+                    self._inner_dim,
+                    self._query_dim,
                     device=self._dev,
-                )
+                    dtype=self._dtype,
+                ),
+                ivy.Dropout(self._dropout_rate),
+                device=self._dev,
             )
 
     def _create_variables(self, device, dtype=None):
@@ -321,12 +312,7 @@ class MultiHeadAttention(Module):
              provided. Default is None.
         """
         if self._with_to_kv_fn:
-            return {
-                "to_kv": {
-                    "k": self._to_k.v,
-                    "v": self._to_v.v
-                }
-            }
+            return {"to_kv": {"k": self._to_k.v, "v": self._to_v.v}}
         else:
             return {}
 

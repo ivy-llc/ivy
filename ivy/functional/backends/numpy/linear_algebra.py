@@ -119,7 +119,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if transpose_a is True:
         x1 = np.transpose(x1)
