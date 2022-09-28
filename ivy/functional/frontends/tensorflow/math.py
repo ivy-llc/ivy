@@ -117,6 +117,13 @@ def maximum(a, b):
     return ivy.maximum(a, b)
 
 
+def minimum(a, b):
+    # Cast inputs to ivy array
+    a = ivy.array(a)
+    b = ivy.array(b)
+    return ivy.minimum(a, b)
+
+
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
