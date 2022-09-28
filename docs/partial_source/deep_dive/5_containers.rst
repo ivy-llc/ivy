@@ -101,7 +101,7 @@ with the mapping applied to each of these leaves.
 In such cases, the function in the functional API defers to this *static* :class:`ivy.Container` implementation.
 Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers
 and non-containers, and perform the correct mapping across the leaves.
-Internally, :code:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
+Internally, :meth:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
 In cases where there are no containers passed,
 `ivy.Container.multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
 
@@ -141,9 +141,9 @@ instance method. For example, we do not implement an instance method for
 `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Under the hood, every *instance* method calls the corresponding *static* method.
-For example, `ivy.Container.add`_ calls :code:`ivy.Container.static_add`,
-`ivy.Container.tan`_ calls :code:`ivy.Container.static_tan`,
-and `ivy.Container.roll`_ calls :code:`ivy.Container.static_roll`.
+For example, `ivy.Container.add`_ calls :meth:`ivy.Container.static_add`,
+`ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`,
+and `ivy.Container.roll`_ calls :meth:`ivy.Container.static_roll`.
 
 As is the case for :class:`ivy.Array`,
 the organization of these instance methods follows the same organizational structure as the
@@ -187,10 +187,10 @@ the Deep Dive, these special methods will in turn call the corresponding functio
 the ivy functional API.
  
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make
-calls to :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and
-:code:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
+calls to :func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and
+:func:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of
-the container, such as :code`int`, float, :code`ivy.NativeArray` etc.
+the container, such as int, float, :class:`ivy.NativeArray` etc.
 
 Nestable Functions
 ------------------
@@ -225,9 +225,9 @@ unstacked to multiple containers(as many as the number of arrays), which are the
 *Compositional* functions are composed of other nestable functions, and hence are already **implicitly nestable**. So,
 we do not need to explicitly wrap it at all.
 
-Let's take the function :code:`ivy.cross_entropy` as an example.
-The internally called functions are: :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
-and :code:`ivy.negative`, each of which are themselves *nestable*.
+Let's take the function :func:`ivy.cross_entropy` as an example.
+The internally called functions are: :func:`ivy.clip`, :func:`ivy.log`, :func:`ivy.sum`
+and :func:`ivy.negative`, each of which are themselves *nestable*.
 
 .. code-block:: python
 
@@ -249,17 +249,17 @@ each internal function will, in turn, correctly handle the container, and return
 a new container with the correct operations having been performed. This makes it very
 easy and intuitive to debug the code, as the code is stepped through chronologically.
 In effect, all leaves of the input container are being processed concurrently,
-during the computation steps of the :code:`ivy.cross_entropy` function.
+during the computation steps of the :func:`ivy.cross_entropy` function.
 
 However, what if we had added the
 `handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
-wrapping as a decorator directly to the function :code:`ivy.cross_entropy`?
+wrapping as a decorator directly to the function :func:`ivy.cross_entropy`?
 
-In this case, the :code:`ivy.cross_entropy` function would itself be called
+In this case, the :func:`ivy.cross_entropy` function would itself be called
 multiple times, on each of the leaves of the container.
-The functions :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
-and :code:`ivy.negative` would each only consume and return arrays,
-and debugging the :code:`ivy.cross_entropy` function
+The functions :func:`ivy.clip`, :func:`ivy.log`, :func:`ivy.sum`
+and :func:`ivy.negative` would each only consume and return arrays,
+and debugging the :func:`ivy.cross_entropy` function
 would then become less intuitively chronological,
 with each leaf of the input container now processed sequentially,
 rather than concurrently.

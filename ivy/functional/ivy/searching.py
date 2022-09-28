@@ -287,7 +287,7 @@ def nonzero(
     >>> print(y)
     (ivy.array([1, 4]),)
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)

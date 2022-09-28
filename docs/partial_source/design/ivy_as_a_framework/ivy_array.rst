@@ -93,11 +93,11 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
         def shape(self):
             return ivy.Shape(self._shape)
 
-We can see that the :class:`ivy.Array` class is a simple wrapper around an :class:`ivy.NativeArray` class (such as  :code:`np.ndarray`, :code:`torch.Tensor` etc), stored in the :code:`self._data` attribute.
+We can see that the :class:`ivy.Array` class is a simple wrapper around an :class:`ivy.NativeArray` class (such as  :class:`np.ndarray`, :class:`torch.Tensor` etc), stored in the :code:`self._data` attribute.
 
 This all makes sense, but the first question you might ask is, why do we need a dedicated :class:`ivy.Array` class at all?
 
-Can't we just operate with the native arrays directly such as  :code:`np.ndarray`, :code:`torch.Tensor` etc. when calling ivy methods?
+Can't we just operate with the native arrays directly such as  :class:`np.ndarray`, :class:`torch.Tensor` etc. when calling ivy methods?
 
 This is a great question, and has a couple of answers with varying importance.
 Perhaps the most important motivation for having a dedicated :class:`ivy.Array` class is the unification of array operators,
@@ -119,7 +119,7 @@ Consider the code below:
     print(x)
 
 Let's first assume we use numpy in the backend by calling :code:`ivy.set_backend('numpy')` in the first line.
-:code:`x` would then be a :code:`np.ndarray` instance.
+:code:`x` would then be a :class:`np.ndarray` instance.
 
 In this case, the code will execute without error, printing :code:`array([0, 2, 3])` to the console.
 
@@ -142,10 +142,10 @@ For the purposes of explanation, we can re-write the above code as follows:
     x.__setitem__(0, 0)
     print(x)
 
-If :code:`x` is an :class:`ivy.NativeArray` instance, such as :code:`torch.Tensor` or :code:`np.ndarray`,
-then the :code:`__setitem__` method is defined in the native array class, which is completely outside of our control.
+If :code:`x` is an :class:`ivy.NativeArray` instance, such as :class:`torch.Tensor` or :class:`np.ndarray`,
+then the :meth:`__setitem__` method is defined in the native array class, which is completely outside of our control.
 
-However, if :code:`x` is an :class:`ivy.Array` instance then the :code:`__setitem__` method is defined in the :class:`ivy.Array` class, which we do have control over.
+However, if :code:`x` is an :class:`ivy.Array` instance then the :meth:`__setitem__` method is defined in the :class:`ivy.Array` class, which we do have control over.
 
 Let's take a look at how that method is implemented in the :class:`ivy.Array` class:
 
@@ -162,7 +162,7 @@ Let's take a look at how that method is implemented in the :class:`ivy.Array` cl
             self._dtype = ivy.dtype(self._data)
 
 We can implement inplace updates in the :class:`ivy.Array` class without requiring inplace updates in the backend array classes.
-If the backend does not support inplace updates, then we can use the :code:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
+If the backend does not support inplace updates, then we can use the :func:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
 
 Now, with :class:`ivy.Array` instances, our code will run without error, regardless of which backend is selected. We can genuinely say our code is fully framework-agnostic.
 
@@ -205,7 +205,7 @@ Instance Methods
 Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.
 
-All methods in the Ivy functional API are implemented as public instance methods in the :class:`ivy.Array` class via inheritance. For example, a few functions in :code:`ivy.ArrayWithGeneral` are shown below.
+All methods in the Ivy functional API are implemented as public instance methods in the :class:`ivy.Array` class via inheritance. For example, a few functions in :class:`ivy.ArrayWithGeneral` are shown below.
 
 .. code-block:: python
 

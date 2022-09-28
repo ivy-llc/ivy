@@ -37,10 +37,10 @@ corresponding functions in each framework.
 
 We strive to implement the superset for primary, compositional and mixed functions. In
 many cases compositional functions do not actually have corresponding backend-specific
-functions, but this is not always the case. For example, :code:`ivy.linear` is a
-fully compositional function, but :code:`torch.nn.functional.linear` also exists.
-We should therefore make sure the compositional :code:`ivy.linear` function includes all
-behaviours supported by :code:`torch.nn.functional.linear`.
+functions, but this is not always the case. For example, :func:`ivy.linear` is a
+fully compositional function, but :func:`torch.nn.functional.linear` also exists.
+We should therefore make sure the compositional :func:`ivy.linear` function includes all
+behaviours supported by :func:`torch.nn.functional.linear`.
 
 A Non-Duplicate Superset
 ------------------------
@@ -53,7 +53,7 @@ for the same behaviour. Looking at the functions
 and
 `torch.cat <https://pytorch.org/docs/stable/generated/torch.cat.html>`_,
 we of course do not want to add both of the arguments :code:`axis` and :code:`dim` to
-:code:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
+:func:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
 along which to concatenate. In this case, the argument is
 `covered <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_
 in the `Array API Standard`_ and so we opt for :code:`axis`. In cases where there are
@@ -118,7 +118,7 @@ implemented with very high efficiency in :code:`C`. In this case, the inclusion 
 first place, only to then be masked out in the immediately subsequent operation.
 For these reasons, calling :code:`np.absolute(x, where=mask)` is much more efficient
 than calling :code:`np.where(mask, np.absolute(x), np.empty_like(x))` in NumPy.
-:code:`ivy.logical_and` is another example where the superset is too much, as we explain
+:func:`ivy.logical_and` is another example where the superset is too much, as we explain
 in the extra examples given at the end of this section.
 
 However, other frameworks are able to compile compositions of python operations directly
@@ -295,7 +295,7 @@ With regards to both of these points, Ivy provides the generalized superset
 implementation among the backend frameworks, with support for the :code:`out` argument
 and also support for both numeric and boolean arrays in the input.
 
-However, as discussed above, :code:`np.logical_and` also supports the :code:`where`
+However, as discussed above, :func:`np.logical_and` also supports the :code:`where`
 argument, which we opt to **not** support in Ivy. This is because the behaviour can
 easily be created as a composition like so
 :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`,
