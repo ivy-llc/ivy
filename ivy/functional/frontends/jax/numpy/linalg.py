@@ -22,4 +22,4 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 
 def matrix_power(m, n):
-    return ivy.matrix_power(m, n)
+    return ivy.matrix_power(m**n)
