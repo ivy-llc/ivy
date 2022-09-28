@@ -132,8 +132,6 @@ def Square(*, x, name="Square"):
 
 
 def Softmax(*, x, axis=None, name="Softmax"):
-    if x.dtype not in ["half", "float32", "float64"]:
-        x = ivy.astype(x, float)
     return ivy.softmax(x, axis)
 
 
