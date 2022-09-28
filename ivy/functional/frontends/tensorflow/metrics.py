@@ -146,6 +146,12 @@ def kl_divergence(y_true, y_pred):
     return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1).astype(y_true.dtype)
 
 
+kld = kl_divergence
+
+
+kullback_leibler_divergence = kl_divergence
+
+
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
 
@@ -160,8 +166,14 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return 100.0 * ivy.mean(diff, axis=-1)
 
 
+mape = mean_absolute_percentage_error
+
+
 def mean_squared_error(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
+
+
+mse = mean_squared_error
 
 
 def mean_squared_logarithmic_error(y_true, y_pred):
@@ -169,6 +181,9 @@ def mean_squared_logarithmic_error(y_true, y_pred):
     first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
     second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
     return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)
+
+
+msle = mean_squared_logarithmic_error
 
 
 def poisson(y_true, y_pred):
