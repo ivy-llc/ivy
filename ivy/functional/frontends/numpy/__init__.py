@@ -39,4 +39,10 @@ from .linalg.matrix_and_vector_products import (
     # kron,
 )
 
+from .linalg.decompositions import (
+    cholesky,
+    qr,
+    svd
+)
+
 # from .linalg.norms_and_other_numbers import trace
