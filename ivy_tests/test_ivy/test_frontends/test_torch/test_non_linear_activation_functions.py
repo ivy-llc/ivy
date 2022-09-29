@@ -1041,3 +1041,44 @@ def test_torch_hardtanh_(
         max_val=max_min[0],
         test_values=False,
     )
+
+
+# normalize
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.normalize"
+    ),
+    p=helpers.ints(min_value=2, max_value=5),
+)
+def test_torch_normalize(
+    dtype_x_and_axis,
+    p,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x, axis = dtype_x_and_axis
+    _filter_dtypes(dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.normalize",
+        input=x[0],
+        p=p,
+        dim=axis,
+        eps=1e-12,
+    )

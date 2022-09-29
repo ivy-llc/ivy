@@ -66,6 +66,17 @@ def min(
         containing the minimum values. The returned array must have the same data type
         as x.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -165,9 +176,10 @@ def max(
         containing the maximum values. The returned array must have the same data type
         as ``x``.
 
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -305,7 +317,7 @@ def mean(
     >>> print(y)
     ivy.array([-1.4,  1.4])
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4., 5.])
     >>> y = ivy.mean(x)
@@ -409,6 +421,8 @@ def prod(
 ) -> ivy.Array:
     """Calculates the product of input array x elements.
 
+    Parameters
+    ----------
     x
         input array. Should have a numeric data type.
     axis
@@ -445,6 +459,16 @@ def prod(
         array containing the product; otherwise, a non-zero-dimensional array containing
         the products. The returned array must have a data type as described by the dtype
         parameter above.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     >>> x = ivy.array([1, 2, 3])
     >>> z = ivy.prod(x)
@@ -523,6 +547,16 @@ def std(
         containing the standard deviation; otherwise, an array containing the standard
         deviations. The returned array must have a data type as described by the
         ``dtype`` parameter above.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -606,6 +640,16 @@ def sum(
         containing the sum; otherwise, an array containing the sums. The returned array
         must have a data type as described by the ``dtype`` parameter above.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.sum.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -632,7 +676,7 @@ def sum(
     >>> print(y)
     ivy.array([4, 7, 12])
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.sum(x)
@@ -716,6 +760,16 @@ def var(
         containing the variance; otherwise, a non-zero-dimensional array containing the
         variances. The returned array must have the same data type as x.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -736,7 +790,7 @@ def var(
     >>> print(x)
     ivy.array(0.07472222)
 
-    With :code:`ivy.native_array` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.var(x)
@@ -753,15 +807,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.tan.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -882,10 +927,6 @@ def cumsum(
     ret
         Array which holds the result of applying cumsum at each
         original array elements along the specified axis.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
@@ -1144,7 +1185,7 @@ def einsum(
     Functional Examples
     -------------------
 
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = ivy.einsum('ii', x)
@@ -1209,14 +1250,14 @@ def einsum(
            [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
            [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]])
 
-    With :code:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = ivy.einsum('ii', x)
     >>> print(y)
     ivy.array(12)
 
-    With a mix of code: 'ivy.Array' and code: 'ivy.NativeArray' inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> A = ivy.array([0, 1, 2])
     >>> B = ivy.native_array([[ 0, 1, 2, 3],\
@@ -1242,7 +1283,7 @@ def einsum(
         b: ivy.array([0, 15, 54])
     }
 
-    With :code: 'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
                           b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
@@ -1256,14 +1297,14 @@ def einsum(
     Instance Method Examples
     ------------------------
 
-    Using :code: 'ivy.Array' instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = x.einsum('ii')
     >>> print(y)
     ivy.array(12)
 
-    Using :code: 'ivy.Container' instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
                           b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
