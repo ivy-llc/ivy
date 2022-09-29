@@ -1456,6 +1456,13 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
+    compute_uv
+        If ``True`` then left and right singular vectors will be computed and returned
+        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,
+        which can be significantly faster.
+    .. note::
+        with backend set as torch, svd with still compute left and right singular vectors irrespective
+        of the value of compute_uv, however Ivy will still only return the singular values.
 
     Returns
     -------
@@ -1514,6 +1521,10 @@ def svd(
 
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
+
+    >>> x = ivy.random_normal(shape = (9, 6))
+    >>> S = ivy.svd(x, compute_uv = False)
+    print(S)
 
     """
     return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
