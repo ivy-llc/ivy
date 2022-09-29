@@ -49,6 +49,7 @@ def test_abs(
         instance_method=instance_method,
         fw=fw,
         fn_name="abs",
+        test_gradients=True,
         x=x[0],
     )
 
