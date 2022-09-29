@@ -277,7 +277,7 @@ class ContainerWithSet(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
-        ... b=ivy.array([7,6,4,5,6,3,2]))
+                              b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()
         >>> print(y)
              {
