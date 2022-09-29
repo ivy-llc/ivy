@@ -193,6 +193,7 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
         values = ivy.expand_dims(values, axis=dim)
         indices = ivy.expand_dims(indices, axis=dim)
 
-    # TODO: handle the out argument
-
-    return values, indices
+    ret = (values, indices)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
