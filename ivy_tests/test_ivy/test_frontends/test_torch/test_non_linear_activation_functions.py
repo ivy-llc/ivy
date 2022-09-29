@@ -138,10 +138,12 @@ def test_torch_gelu(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.leaky_relu"
     ),
-    alpha=st.floats(min_value=0, max_value=1),
+    alpha=st.floats(min_value=0.0, max_value=1.0),
+    with_inplace=st.booleans(),
 )
 def test_torch_leaky_relu(
     dtype_and_x,
+    with_inplace,
     num_positional_args,
     as_variable,
     native_array,
@@ -153,7 +155,7 @@ def test_torch_leaky_relu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -965,7 +967,6 @@ def test_torch_hardswish(
         frontend="torch",
         fn_tree="nn.functional.hardswish",
         input=input[0],
-        inplace=False,
     )
 
 
