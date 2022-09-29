@@ -9,9 +9,10 @@ import ivy
 class ArrayWithRandom(abc.ABC):
     def random_uniform(
         self: ivy.Array,
+        /,
+        *,
         high: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -52,24 +53,24 @@ class ArrayWithRandom(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
-        >>> x.random_uniform(10.2)
+        >>> x.random_uniform(high=10.2)
         ivy.array([[9.86, 4.89],
                    [7.06, 7.47]])
 
-        >>> x.random_uniform(10.2, device='cpu')
+        >>> x.random_uniform(high=10.2, device='cpu')
         ivy.array([[9.86, 4.89],
                    [7.06, 7.47]])
 
-        >>> x.random_uniform(14.2, dtype='float16')
+        >>> x.random_uniform(high=14.2, dtype='float16')
         ivy.array([[9.86, 4.89],
                    [7.06, 7.47]])
 
-        >>> x.random_uniform(10.8, device='cpu', dtype='float64')
+        >>> x.random_uniform(high=10.8, device='cpu', dtype='float64')
         ivy.array([[9.86, 4.89],
                    [7.06, 7.47]])
 
         >>> z = ivy.ones((2,2))
-        >>> x.random_uniform(11.2, device='cpu', dtype='float64', out=z)
+        >>> x.random_uniform(high=11.2, device='cpu', dtype='float64', out=z)
         ivy.array([[10.1 ,  6.53],
                    [ 7.94,  8.85]])
 
@@ -78,23 +79,23 @@ class ArrayWithRandom(abc.ABC):
         >>> x.random_uniform(y)
         ivy.array([12.1, 14. ])
 
-        >>> x.random_uniform(y, device='cpu')
+        >>> x.random_uniform(high=y, device='cpu')
         ivy.array([12.1, 14. ])
 
-        >>> x.random_uniform(y, dtype='float16')
+        >>> x.random_uniform(high=y, dtype='float16')
         ivy.array([12.1, 14. ])
 
-        >>> x.random_uniform(y, device='cpu', dtype='float64')
+        >>> x.random_uniform(high=y, device='cpu', dtype='float64')
         ivy.array([12.1, 14. ])
 
         >>> z = ivy.ones((2,))
-        >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+        >>> x.random_uniform(high=y, device='cpu', dtype='float64', out=z)
         ivy.array([12.1, 14. ])
         """
         return ivy.random_uniform(
-            self._data,
-            high,
-            shape,
+            low=self._data,
+            high=high,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
@@ -102,9 +103,10 @@ class ArrayWithRandom(abc.ABC):
 
     def random_normal(
         self: ivy.Array,
+        /,
+        *,
         std: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -143,49 +145,49 @@ class ArrayWithRandom(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
-        >>> x.random_normal(10.2)
+        >>> x.random_normal(std=10.2)
         ivy.array([[19.   , -6.44 ],
                    [ 5.72 ,  0.235]])
 
-        >>> x.random_normal(10.2, device='cpu')
+        >>> x.random_normal(std=10.2, device='cpu')
         ivy.array([[18.7 , 25.2 ],
                    [27.5 , -3.22]])
 
-        >>> x.random_normal(14.2, dtype='float16')
+        >>> x.random_normal(std=14.2, dtype='float16')
         ivy.array([[26.6 , 12.1 ],
                    [ 4.56,  5.49]])
 
-        >>> x.random_normal(10.8, device='cpu', dtype='float64')
+        >>> x.random_normal(std=10.8, device='cpu', dtype='float64')
         ivy.array([[ 1.02, -1.39],
                    [14.2 , -1.  ]])
 
         >>> z = ivy.ones((2,2))
-        >>> x.random_normal(11.2, device='cpu', dtype='float64', out=z)
+        >>> x.random_normal(std=11.2, device='cpu', dtype='float64', out=z)
         ivy.array([[ 7.72, -8.32],
                    [ 4.95, 15.8 ]])
 
         >>> x = ivy.array([8.7, 9.3])
         >>> y = ivy.array([12.8, 14.5])
-        >>> x.random_normal(y)
+        >>> x.random_normal(std=y)
         ivy.array([-10.8,  12.1])
 
-        >>> x.random_normal(y, device='cpu')
+        >>> x.random_normal(std=y, device='cpu')
         ivy.array([ 13. , -26.9])
 
-        >>> x.random_normal(y, dtype='float16')
+        >>> x.random_normal(std=y, dtype='float16')
         ivy.array([14.3  , -0.807])
 
-        >>> x.random_normal(y, device='cpu', dtype='float64')
+        >>> x.random_normal(std=y, device='cpu', dtype='float64')
         ivy.array([21.3 ,  3.85])
 
         >>> z = ivy.ones((2,))
-        >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
+        >>> x.random_normal(std=y, device='cpu', dtype='float64', out=z)
         ivy.array([ 4.32, 42.2 ])
         """
         return ivy.random_normal(
-            self._data,
-            std,
-            shape,
+            mean=self._data,
+            std=std,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
@@ -195,9 +197,10 @@ class ArrayWithRandom(abc.ABC):
         self: ivy.Array,
         population_size: int,
         num_samples: int,
+        /,
+        *,
         batch_size: int = 1,
         replace: bool = True,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -233,9 +236,9 @@ class ArrayWithRandom(abc.ABC):
         return ivy.multinomial(
             population_size,
             num_samples,
-            batch_size,
-            self._data,
-            replace,
+            batch_size=batch_size,
+            probs=self._data,
+            replace=replace,
             device=device,
             out=out,
         )
@@ -243,8 +246,9 @@ class ArrayWithRandom(abc.ABC):
     def randint(
         self: ivy.Array,
         high: Union[int, ivy.Array, ivy.NativeArray],
-        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        /,
         *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -325,13 +329,13 @@ class ArrayWithRandom(abc.ABC):
         return ivy.randint(
             self._data,
             high,
-            shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
         )
 
-    def shuffle(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def shuffle(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """ivy.Array instance method variant of ivy.shuffle. This method simply
         wraps the function, and so the docstring for ivy.shuffle also applies to
         this method with minimal changes.

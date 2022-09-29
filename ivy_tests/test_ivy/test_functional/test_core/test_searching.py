@@ -1,14 +1,9 @@
 """Collection of tests for searching functions."""
 
-# Gloabl
-from datetime import timedelta
-
-import hypothesis.extra.numpy as hnp
-import numpy as np
-from hypothesis import given, strategies as st, settings
+# Global
+from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -21,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def _dtype_x_limited_axis(draw, *, allow_none=False):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=1,
             min_dim_size=1,
             ret_shape=True,
@@ -30,36 +25,39 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     if allow_none and draw(st.booleans()):
         return dtype, x, None
 
-    axis = draw(st.integers(min_value=0, max_value=len(shape) - 1))
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
     return dtype, x, axis
 
 
 @st.composite
 def _broadcastable_trio(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
-
-    shapes_st = hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
-    cond_shape, x1_shape, x2_shape = draw(shapes_st).input_shapes
-    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    x1 = draw(hnp.arrays(dtype, x1_shape))
-    x2 = draw(hnp.arrays(dtype, x2_shape))
-    return cond, x1, x2, dtype
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    return cond, xs, dtypes
 
 
 # Functions #
 #############
 
 
+@handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmax"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_argmax(
     *,
-    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -81,22 +79,20 @@ def test_argmax(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmax",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmin"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_argmin(
     *,
-    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -118,31 +114,33 @@ def test_argmin(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmin",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
 
 
-@settings(deadline=timedelta(milliseconds=500))
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
+    as_tuple=st.booleans(),
+    size=st.integers(min_value=1, max_value=5),
+    fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_nonzero(
     *,
-    data,
     dtype_and_x,
+    as_tuple,
+    size,
+    fill_value,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,
@@ -160,19 +158,20 @@ def test_nonzero(
         instance_method=instance_method,
         fw=fw,
         fn_name="nonzero",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
+        as_tuple=as_tuple,
+        size=size,
+        fill_value=fill_value,
     )
 
 
+@handle_cmd_line_args
 @given(
     broadcastables=_broadcastable_trio(),
     num_positional_args=helpers.num_positional_args(fn_name="where"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_where(
     *,
-    data,
     broadcastables,
     as_variable,
     with_out,
@@ -182,10 +181,10 @@ def test_where(
     instance_method,
     fw,
 ):
-    cond, x1, x2, dtype = broadcastables
+    cond, xs, dtypes = broadcastables
 
     helpers.test_function(
-        input_dtypes=["bool", dtype, dtype],
+        input_dtypes=["bool"] + dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -195,6 +194,38 @@ def test_where(
         fw=fw,
         fn_name="where",
         condition=cond,
-        x1=x1,
-        x2=x2,
+        x1=xs[0],
+        x2=xs[1],
+    )
+
+
+# argwhere
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    num_positional_args=helpers.num_positional_args(fn_name="argwhere"),
+)
+def test_argwhere(
+    *,
+    x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argwhere",
+        x=x[0],
     )

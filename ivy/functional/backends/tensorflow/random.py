@@ -20,13 +20,13 @@ from ivy.functional.ivy.random import (
 
 
 def random_uniform(
+    *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    *,
     dtype: DType,
     device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = _check_bounds_and_get_shape(low, high, shape)
     low = tf.cast(low, dtype)
@@ -36,13 +36,13 @@ def random_uniform(
 
 
 def random_normal(
+    *,
     mean: Union[float, tf.Tensor, tf.Variable] = 0.0,
     std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    *,
     dtype: DType,
     device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
@@ -55,15 +55,17 @@ def random_normal(
 def multinomial(
     population_size: int,
     num_samples: int,
+    /,
+    *,
     batch_size: int = 1,
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
-    *,
     device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not replace:
-        raise Exception("TensorFlow does not support multinomial without replacement")
+    ivy.assertions.check_true(
+        replace, message="TensorFlow does not support multinomial without replacement"
+    )
     with tf.device(device):
         if probs is None:
             probs = (
@@ -78,14 +80,18 @@ def multinomial(
         return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
+multinomial.unsupported_dtypes = ("bfloat16",)
+
+
 def randint(
     low: Union[float, tf.Tensor, tf.Variable],
     high: Union[float, tf.Tensor, tf.Variable],
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    /,
     *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not dtype:
         dtype = ivy.default_int_dtype()
@@ -98,13 +104,14 @@ def randint(
         return tf.cast(tf.random.uniform(shape, low, high, "float32"), dtype)
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
 
 
 def shuffle(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.random.shuffle(x)

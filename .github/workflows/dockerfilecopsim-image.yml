@@ -10,9 +10,12 @@ on:
 jobs:
 
   build:
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Build Docker Files')}}
     runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
     - name: Build DockerfileCopsim
-      run: docker build . --file DockerfileCopsim --tag unifyai/ivy:copsim$(date +%s)
+      run: |
+      cd docker
+      docker build . --file DockerfileCopsim --tag unifyai/ivy:copsim$(date +%s)

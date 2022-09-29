@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.backend_handler import backend_stack
+from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -21,19 +22,30 @@ from ivy.backend_handler import backend_stack
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
-            raise Exception(
-                "`shape` argument can only be specified when `low` \
-                              and `high` arguments are numerics (not arrays)"
-            )
+        ivy.assertions.check_all_or_any_fn(
+            low,
+            high,
+            fn=lambda x: isinstance(x, (int, float)),
+            type="all",
+            message="low and high bounds must be numerics when shape is specified",
+        )
         return shape
-    valid_types = (ivy.Array, ivy.NativeArray)
+
+    valid_types = (
+        ivy.Array,
+        ivy.get_backend("torch").NativeArray,
+        ivy.get_backend("jax").NativeArray,
+        ivy.get_backend("numpy").NativeArray,
+        ivy.get_backend("tensorflow").NativeArray,
+    )
+
     if len(backend_stack) == 0:
         valid_types += (ivy.current_backend().NativeArray,)
+    else:
+        valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            if ivy.shape(low) != ivy.shape(high):
-                raise Exception("shape of bounds have to be the same")
+            ivy.assertions.check_equal(ivy.shape(low), ivy.shape(high))
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
@@ -41,19 +53,31 @@ def _check_bounds_and_get_shape(low, high, shape):
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
-    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        raise Exception("randint cannot take `float` dtype")
-    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
-        raise Exception("`low` and `high` cannot take `uint` dtype")
-    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
-        raise Exception("`low` and `high` cannot take `float` dtype")
-    if ivy.any(ivy.greater_equal(low, high)):
-        raise Exception("`low` must be smaller than `high`")
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_uint_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type uint",
+    )
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_float_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type float",
+    )
+    ivy.assertions.check_less(low, high)
 
 
 def _check_valid_scale(std):
-    if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
-        raise Exception("`std` must be non-negative")
+    ivy.assertions.check_greater(
+        std, 0, allow_equal=True, message="std must be non-negative"
+    )
 
 
 # Extra #
@@ -65,11 +89,12 @@ def _check_valid_scale(std):
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_uniform(
+    *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -120,50 +145,52 @@ def random_uniform(
     ivy.array([[0.929 , 0.545 , 0.789 ],
                [0.519 , 0.0435, 0.381 ]])
 
-    >>> ivy.random_uniform(3.0, 6.0)
+    >>> ivy.random_uniform(low=3.0, high=6.0)
     ivy.array(3.4608004)
 
-    >>> ivy.random_uniform(1.0, 2.0, (2,1))
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,1))
     ivy.array([[1.85],
                [1.81]])
 
     >>> z = ivy.zeros(())
-    >>> ivy.random_uniform(1.0, 2.0, out=z)
+    >>> ivy.random_uniform(low=1.0, high=2.0, out=z)
     ivy.array(1.8458502)
 
-    >>> ivy.random_uniform(1.0, 2.0, (2,2), device='cpu')
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,2), device='cpu')
     ivy.array([[1.81, 1.8 ],
                [1.32, 1.43]])
 
-    >>> ivy.random_uniform(1.0, 2.0, (2,2), device='cpu', dtype='int32')
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,2), device='cpu', \
+                           dtype='int32')
     ivy.array([[1, 1],
                [1, 1]])
 
     >>> z = ivy.zeros((1,2))
-    >>> ivy.random_uniform(1.0, 2.0, (1,2), device='cpu', dtype='float64', out=z)
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(1,2), device='cpu', \
+                           dtype='float64', out=z)
     ivy.array([[1.34, 1.02]])
 
     >>> x = ivy.array([4.8, 5.6])
     >>> y = ivy.array([9.8, 7.4])
-    >>> ivy.random_uniform(x, y)
+    >>> ivy.random_uniform(low=x, high=y)
     ivy.array([0.475, 0.878])
 
     >>> z = ivy.zeros((2,))
-    >>> ivy.random_uniform(x, y, out=z)
+    >>> ivy.random_uniform(low=x, high=y, out=z)
     ivy.array([9.41, 7.17])
 
-    >>> ivy.random_uniform(x, y, device='cpu')
+    >>> ivy.random_uniform(low=x, high=y, device='cpu')
     ivy.array([6.88, 6.75])
 
-    >>> ivy.random_uniform(x, y, device='cpu', dtype='float64')
+    >>> ivy.random_uniform(low=x, high=y, device='cpu', dtype='float64')
     ivy.array([8.62, 6.47])
 
     >>> z = ivy.zeros((2,))
-    >>> ivy.random_uniform(x, y, device='cpu', dtype='float64', out=z)
+    >>> ivy.random_uniform(low=x, high=y, device='cpu', dtype='float64', out=z)
     ivy.array([5. , 7.3])
     """
     return ivy.current_backend().random_uniform(
-        low, high, shape, device=device, dtype=dtype, out=out
+        low=low, high=high, shape=shape, device=device, dtype=dtype, out=out
     )
 
 
@@ -172,15 +199,16 @@ def random_uniform(
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_normal(
+    *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """
     Draws samples from a normal distribution.
 
@@ -224,50 +252,52 @@ def random_normal(
     ivy.array([[-0.361 ,  0.596 , -0.247 ],
                [-1.39  ,  0.0426, -0.627 ]])
 
-    >>> ivy.random_normal(3.0, 6.0)
+    >>> ivy.random_normal(mean=3.0, std=6.0)
     ivy.array(4.9213753)
 
-    >>> ivy.random_normal(1.0, 2.0, (2,1))
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,1))
     ivy.array([[2.19],
                [2.78]])
 
     >>> z = ivy.zeros(())
-    >>> ivy.random_normal(1.0, 2.0, out=z)
+    >>> ivy.random_normal(mean=1.0, std=2.0, out=z)
     ivy.array(0.12818667)
 
-    >>> ivy.random_normal(1.0, 2.0, (2,2), device='cpu')
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,2), device='cpu')
     ivy.array([[ 2.91 ,  1.3  ],
                [ 3.37 , -0.799]])
 
-    >>> ivy.random_normal(1.0, 2.0, (2,2), device='cpu', dtype='int32')
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,2), device='cpu', \
+                          dtype='int32')
     ivy.array([[ 0, -1],
                [ 0,  3]])
 
     >>> z = ivy.zeros((1,2))
-    >>> ivy.random_normal(1.0, 2.0, (1,2), device='cpu', dtype='float64', out=z)
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(1,2), device='cpu', \
+                          dtype='float64', out=z)
     ivy.array([[-2.01, -1.95]])
 
     >>> x = ivy.array([4.8, 5.6])
     >>> y = ivy.array([9.8, 7.4])
-    >>> ivy.random_normal(x, y)
+    >>> ivy.random_normal(mean=x, std=y)
     ivy.array([ 4.43 , -0.469])
 
     >>> z = ivy.zeros((2,))
-    >>> ivy.random_normal(x, y, out=z)
+    >>> ivy.random_normal(mean=x, std=y, out=z)
     ivy.array([0.287, 8.55 ])
 
-    >>> ivy.random_normal(x, y, device='cpu')
+    >>> ivy.random_normal(mean=x, std=y, device='cpu')
     ivy.array([18.9, 15.2])
 
-    >>> ivy.random_normal(x, y, device='cpu', dtype='float64')
+    >>> ivy.random_normal(mean=x, std=y, device='cpu', dtype='float64')
     ivy.array([-4.1   , -0.0366])
 
     >>> z = ivy.zeros((2,))
-    >>> ivy.random_normal(x, y, device='cpu', dtype='float64', out=z)
+    >>> ivy.random_normal(mean=x, std=y, device='cpu', dtype='float64', out=z)
     ivy.array([12.4, 11. ])
     """
     return ivy.current_backend().random_normal(
-        mean, std, shape, dtype=dtype, device=device, out=out
+        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
     )
 
 
@@ -275,13 +305,15 @@ def random_normal(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def multinomial(
     population_size: int,
     num_samples: int,
+    /,
+    *,
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
@@ -330,7 +362,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 4, 7, 0]])
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
@@ -345,7 +377,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
@@ -363,7 +395,13 @@ def multinomial(
 
     """
     return ivy.current_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device=device, out=out
+        population_size,
+        num_samples,
+        batch_size=batch_size,
+        probs=probs,
+        replace=replace,
+        device=device,
+        out=out,
     )
 
 
@@ -371,11 +409,13 @@ def multinomial(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    /,
     *,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -412,21 +452,21 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, (1,1))
+    >>> y = ivy.randint(0, 9, shape=(1,1))
     >>> print(y)
     ivy.array([[5]])
 
-    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
+    >>> y = ivy.randint(2, 20, shape=(2, 2), device='cpu')
     >>> print(y)
     ivy.array([[5,8],[9,3]])
 
     >>> x = ivy.array([1, 2, 3])
-    >>> ivy.randint(0, 10, (3,), out=x)
+    >>> ivy.randint(0, 10, shape=(3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
     >>> y = ivy.zeros((3, 3))
-    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
+    >>> ivy.randint(3, 15, shape=(3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
@@ -434,12 +474,13 @@ def randint(
 
     """
     return ivy.current_backend().randint(
-        low, high, shape, device=device, dtype=dtype, out=out
+        low, high, shape=shape, device=device, dtype=dtype, out=out
     )
 
 
 @handle_nestable
-def seed(seed_value: int = 0) -> None:
+@handle_exceptions
+def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -450,17 +491,18 @@ def seed(seed_value: int = 0) -> None:
 
     Examples
     --------
-    >>> ivy.seed(42)
+    >>> ivy.seed(seed_value=42)
 
     """
-    return ivy.current_backend().seed(seed_value)
+    return ivy.current_backend().seed(seed_value=seed_value)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 

@@ -1,17 +1,16 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -20,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -30,16 +29,15 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_num_dims=1,
         min_dim_size=2,
     ),
-    axis=helpers.integers(min_value=-1, max_value=0),
-    epsilon=st.floats(min_value=0, max_value=0.49),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
+    reduction,
     axis,
     epsilon,
     as_variable,
@@ -54,7 +52,7 @@ def test_cross_entropy(
     true_dtype, true = dtype_and_true
 
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -63,18 +61,20 @@ def test_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        rtol_=1e-03,
+        true=true[0],
+        pred=pred[0],
         axis=axis,
         epsilon=epsilon,
-        rtol_=1e-03,
+        reduction=reduction,
     )
 
 
 # binary_cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -83,7 +83,7 @@ def test_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -93,15 +93,14 @@ def test_cross_entropy(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    epsilon=st.floats(min_value=0, max_value=0.49),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_binary_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
+    reduction,
     epsilon,
     as_variable,
     with_out,
@@ -113,9 +112,8 @@ def test_binary_cross_entropy(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
-
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -124,16 +122,18 @@ def test_binary_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="binary_cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=true[0],
+        pred=pred[0],
         epsilon=epsilon,
+        reduction=reduction,
     )
 
 
 # sparse_cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=2,
         allow_inf=False,
@@ -142,7 +142,7 @@ def test_binary_cross_entropy(
         min_dim_size=3,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -152,16 +152,15 @@ def test_binary_cross_entropy(
         max_num_dims=1,
         min_dim_size=3,
     ),
-    axis=helpers.integers(min_value=-1, max_value=0),
-    epsilon=st.floats(min_value=0, max_value=0.49),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sparse_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
+    reduction,
     axis,
     epsilon,
     as_variable,
@@ -174,9 +173,8 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -185,8 +183,9 @@ def test_sparse_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="sparse_cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=true[0],
+        pred=pred[0],
         axis=axis,
         epsilon=epsilon,
+        reduction=reduction,
     )

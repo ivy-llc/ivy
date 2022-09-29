@@ -6,6 +6,7 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -68,6 +69,21 @@ class Finfo:
         return float(self._tf_finfo.tiny)
 
 
+class Bfloat16Finfo:
+    def __init__(self):
+        self.resolution = 0.01
+        self.bits = 16
+        self.eps = 0.0078125
+        self.max = 3.38953e38
+        self.min = -3.38953e38
+        self.tiny = 1.17549e-38
+
+    def __repr__(self):
+        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
+            self.resolution, self.min, self.max, "bfloat16"
+        )
+
+
 # Array API Standard #
 # -------------------#
 
@@ -75,6 +91,7 @@ class Finfo:
 def astype(
     x: Union[tf.Tensor, tf.Variable],
     dtype: tf.DType,
+    /,
     *,
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -116,10 +133,12 @@ def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
+    if tf.rank(x) > len(shape):
+        return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
@@ -142,12 +161,16 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
+    if ivy.as_native_dtype(type) == tf.bfloat16:
+        return Finfo(Bfloat16Finfo())
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
@@ -166,6 +189,9 @@ def result_type(
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
     return as_ivy_dtype(result)
+
+
+result_type.unsupported_dtypes = ("bfloat16",)
 
 
 # Extra #
@@ -201,3 +227,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("bfloat", "")
         .replace("float", "")
     )
+
+
+# ToDo:
+# 1. result_type: Add support for bfloat16 with int16

@@ -67,7 +67,7 @@ Using pytest fixtures (such as the ones removed in this `commit`_) cause a grid 
 combinations of parameters. This is great when we want the test to be very thorough,
 but can make the entire test suite very time consuming.
 Before the changes in this commit, there were 300+ separate tests being run in total,
-just for this :code:`ivy.abs` function.
+just for this :func:`ivy.abs` function.
 If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.
 
 A more elegant and efficient solution is to use the `hypothesis`_ module,
@@ -82,7 +82,7 @@ these useful properties are also true in Ivy's GitHub Action `continuous integra
 
 Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of hypothesis `search strategies`_.
 This reference `commit`_ outlines the difference between using pytest parametrizations and hypothesis,
-for :code:`ivy.abs`.
+for :func:`ivy.abs`.
 Among other changes, all :code:`pytest.skip()` calls were replaced with return statements,
 as pytest skipping does not play nicely with hypothesis testing.
 
@@ -171,7 +171,7 @@ For example, this `line`_ here, can also be written as -:
 
 .. code-block:: python
 
-    st.one_of(st.none(), st.integers(-ndim, ndim -1))
+    st.one_of(st.none(), helpers.ints(min_value=-ndim, max_value=ndim -1))
 
 9. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
 the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
@@ -211,14 +211,11 @@ and passing them as inputs to the test. For example, in this code snippet here -
 
 .. code-block:: python
 
+    @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
-    alpha=st.floats(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.ints(min_value=0, max_value=2),
+    alpha=helpers.floats(),
     )
     def test_leaky_relu(
     dtype_and_x,
@@ -249,7 +246,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
    			x=np.asarray(x, dtype=dtype),
    			alpha=alpha,)
 
-In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
+In the test above, all parameters being exhaustively drawn inside the decorator :code:`@handle_cmd_line_args` and :code:`@given` from hypothesis either
 **directly** (*native_array, num_positional, instance_methods, alpha*) or **indirectly** (*dtype_and_x, as_variable, container*)
 with the *helper* functions.
 
@@ -268,7 +265,7 @@ Let's look at the data produced by this strategy -:
     ('float64', [9433925.0, -1.401298464324817e-45])
     ('float64', [[574352379.0, -0.99999], [2.2250738585072014e-308, -6.103515625e-05]])
 
-These values are then unpacked, converted to :code:`ivy.array` class, with corresponding dtypes. The test then runs on the newly
+These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on the newly
 created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.
 
 Why do we need helper functions
@@ -309,7 +306,7 @@ returns -:
 .. code-block:: python
 
     #a sequence of floats with arbitrary lengths ranging from [1,5]
-    print_hypothesis_examples(array_dtypes(st.integers(1,5)))
+    print_hypothesis_examples(array_dtypes(helpers.ints(min_value=1, max_value=5)))
 
     ['float16', 'float32', 'float16', 'float16', 'float32']
     ['float64', 'float64', 'float32', 'float32', 'float16']
@@ -320,7 +317,7 @@ This function should be used whenever we are testing an ivy function that accept
 
 .. code-block:: python
 
-    print_hypothesis_examples(array_bools(na = st.integers(1,5)))
+    print_hypothesis_examples(array_bools(na = helpers.ints(min_value=1, max_value=5)))
 
     [False, True, True, False, True]
     [False]
@@ -333,12 +330,12 @@ for each input we have three boolean values associated with it that define addit
 3. **lists** - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
 in `test_device`_ file, it is used to generate a list of array_shapes, in `test_manipulation`_, it is used to generate a list
 of common_shapes, and more in `test_layers`_. The function takes in 3 arguments, first is the strategy by which the elements
-are to be generated, in majority of the cases this is **st.integers**, with range specified, and the other arguments are
+are to be generated, in majority of the cases this is **helpers.ints**, with range specified, and the other arguments are
 sequence arguments as specified in **array_dtypes**. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(lists(st.integers(1,6), min_size = 0,max_size = 5))
+    print_hypothesis_examples(lists(helpers.ints(min_value=1, max_value=6), min_size = 0,max_size = 5))
 
     [2, 5, 6]
     [1]
@@ -349,14 +346,14 @@ The generated values are then passed to the array creation functions inside the 
 
 .. code-block:: python
 
-    print_hypothesis_examples(valid_axes(st.integers(2,3), size_bounds = [1,3]))
+    print_hypothesis_examples(valid_axes(helpers.ints(min_value=2, max_value=3), size_bounds = [1,3]))
 
     (-3, 1, -1)
     (1, -2)
 
 It should be used in functions which expect axes as a required or an optional argument.
 
-5. **integers** - This is similar to the *st.integers* strategy, with the only difference being that here the range can
+5. **integers** - This is similar to the *helpers.ints* strategy, with the only difference being that here the range can
 either be specified manually, or a shared key can be provided. The way shared keys work has been discussed in the
 *Important Strategies* sections above.
 
@@ -375,7 +372,7 @@ second element is a list/nested list containing floating point numbers of that p
 
 This function contains a list of `keyword`_ arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one :code:`ivy.array`.
+which expects at least one :class:`ivy.Array`.
 
 7. **reshape_shapes** - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:
@@ -623,19 +620,19 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png
    :width: 600
 
 
@@ -648,7 +645,7 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
@@ -668,7 +665,7 @@ Self-Consistent and Explicit Testing
 The hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
 but this makes it difficult to manually verify ground truth results for each input variation.
 Therefore, we instead opt to test for self-consistency against the same Ivy function with a NumPy backend.
-This is handled by :code:`test_array_function`, which is a helper function most unit tests defer to.
+This is handled by :func:`test_array_function`, which is a helper function most unit tests defer to.
 This function is explained in more detail in the following sub-section.
 
 For *primary* functions, this approach works well.
@@ -683,9 +680,9 @@ including the *ground truth* NumPy which the value tests for all backends compar
 
 Therefore, for all *mixed* and *compositional* functions,
 the test should also be appended with known inputs and known ground truth outputs,
-to safeguard against this inability for :code:`test_array_function` to catch systematic errors.
+to safeguard against this inability for :func:`test_array_function` to catch systematic errors.
 These should be added using :code:`pytest.mark.parametrize`.
-However, we should still also include :code:`test_array_function` in the test,
+However, we should still also include :func:`test_array_function` in the test,
 so that we can still test for arbitrary variations in the input arguments.
 
 test_array_function
@@ -700,15 +697,54 @@ The helper `test_array_function`_ tests that the function:
 #. can be called as an instance method on the ivy.Container
 #. is self-consistent with the function return values when using a NumPy backend
 
-:code:`array` in the name :code:`test_array_function` simply refers to the fact that the function in question consumes
+:code:`array` in the name :func:`test_array_function` simply refers to the fact that the function in question consumes
 arrays in the arguments.
 
-So when should :code:`test_array_function` be used?
+So when should :func:`test_array_function` be used?
 
 The rule is simple, if the test should not pass any arrays in the input,
-then we should not use the helper :code:`test_array_function`.
-For example, :code:`ivy.num_gpus` does not receive any arrays in the input,
-and so we should not make us of :code:`test_array_function` in the test implementation.
+then we should not use the helper :func:`test_array_function`.
+For example, :func:`ivy.num_gpus` does not receive any arrays in the input,
+and so we should not make us of :func:`test_array_function` in the test implementation.
+
+Re-Running Failed Ivy Tests
+---------------------------
+
+When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+For example, in the :code:`test_result_type` Test, we find the following output on running the test:
+
+.. code-block::
+
+        Falsifying example: test_result_type(
+            dtype_and_x=(['bfloat16', 'int16'], [-0.9090909090909091, -1]),
+            as_variable=False,
+            num_positional_args=2,
+            native_array=False,
+            container=False,
+            instance_method=False,
+            fw='torch',
+        )
+
+It is always efficient to fix this particular example first, before running any other examples.
+In order to achieve this functionality, we can use the :code:`@example` Hypothesis decorator.
+The :code:`@example` decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
+For the :code:`test_result_type` Test, we can add the decorator as follows:
+
+.. code-block::
+
+        @example(
+            dtype_and_x=(['bfloat16', 'int16'], [-0.9090909090909091, -1]),
+            as_variable=False,
+            num_positional_args=2,
+            native_array=False,
+            container=False,
+            instance_method=False,
+            fw='torch',
+        )
+
+This ensures that the given example is always tested while running the test, allowing one to debug the failure
+efficiently.
+
 
 **Round Up**
 

@@ -1,6 +1,8 @@
 """Base Container Object."""
 
 # global
+import inspect
+from itertools import chain
 import re
 import abc
 import copy
@@ -18,7 +20,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -125,14 +127,14 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
             else:
                 dict_in = dict()
         elif kwargs:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
@@ -149,7 +151,7 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=alphabetical_keys,
         )
         self._config = dict()
-        self.inplace_update(dict_in, **self._config_in)
+        self.cont_inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
     # --------------#
@@ -164,11 +166,11 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
-        arg_cont_idxs = ivy.nested_indices_where(
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
+        arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        kwarg_cont_idxs = ivy.nested_indices_where(
+        kwarg_cont_idxs = ivy.nested_argwhere(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
         # retrieve all the containers in args and kwargs
@@ -176,22 +178,34 @@ class ContainerBase(dict, abc.ABC):
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
-        conts = arg_conts + kwarg_conts
-        if not conts:
-            raise Exception("no containers found in arguments")
+        with_out = (
+            inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None
+            and out is not None
+        )
+        if with_out:
+            conts = arg_conts + kwarg_conts + [out]
+        else:
+            conts = arg_conts + kwarg_conts
+        ivy.assertions.check_exists(conts, message="no containers found in arguments")
         cont0 = conts[0]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
         fn = cont0.ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
+            if with_out:
+                out = vals[-1]
+                del vals[-1]
             arg_vals = vals[:num_arg_conts]
             a = ivy.copy_nest(args, to_mutable=True)
             ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
             kwarg_vals = vals[num_arg_conts:]
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-            return fn(*a, **kw)
+            if with_out:
+                return fn(*a, out=out, **kw)
+            else:
+                return fn(*a, **kw)
 
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
@@ -444,11 +458,7 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-        if mode not in ["all", "same_only", "diff_only"]:
-            raise Exception(
-                'mode must be one of [ "all" | "same_only" | "diff_only" ], '
-                "but found {}".format(mode)
-            )
+        ivy.assertions.check_elem_in_list(mode, ["all", "same_only", "diff_only"])
 
         # if inputs are not dicts, then compare their values to determine the diff dict
         num_containers = len(containers)
@@ -479,7 +489,7 @@ class ContainerBase(dict, abc.ABC):
                 idxs_added = list()
                 for idx in cont_range:
                     if idx not in idxs_added:
-                        idxs_to_add = ivy.indices_where(equal_mat[idx])
+                        idxs_to_add = ivy.argwhere(equal_mat[idx])
                         idxs_to_add_list = sorted(
                             ivy.to_numpy(idxs_to_add).reshape(-1).tolist()
                         )
@@ -488,7 +498,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             key = diff_keys[idx]
                         else:
-                            raise Exception(
+                            raise ivy.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -537,7 +547,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             diff_dict[diff_keys[i]] = cont[key]
                         else:
-                            raise Exception(
+                            raise ivy.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -645,10 +655,10 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(cont, ivy.Container):
                 container0 = cont
                 break
-        if container0 is None:
-            raise Exception(
-                "No containers found in the inputs to " "ivy.Container.multi_map"
-            )
+        ivy.assertions.check_exists(
+            container0,
+            message="No containers found in the inputs to ivy.Container.multi_map",
+        )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
@@ -857,17 +867,20 @@ class ContainerBase(dict, abc.ABC):
             Default is False.
 
         """
-        assert ivy.Container.identical(
-            containers,
-            check_types,
-            check_shapes,
-            same_arrays,
-            arrays_equal,
-            key_chains,
-            to_apply,
-            partial,
-        ), "Containers were not identical:\n\n{}".format(
-            ivy.Container.diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical(
+                containers,
+                check_types,
+                check_shapes,
+                same_arrays,
+                arrays_equal,
+                key_chains,
+                to_apply,
+                partial,
+            ),
+            "Containers were not identical:\n\n{}".format(
+                ivy.Container.diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -953,10 +966,13 @@ class ContainerBase(dict, abc.ABC):
             Default is False.
 
         """
-        assert ivy.Container.identical_structure(
-            containers, check_types, check_shapes, key_chains, to_apply, partial
-        ), "Containers did not have identical structure:\n\n{}".format(
-            ivy.Container.structural_diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical_structure(
+                containers, check_types, check_shapes, key_chains, to_apply, partial
+            ),
+            "Containers did not have identical structure:\n\n{}".format(
+                ivy.Container.structural_diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -970,7 +986,7 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
 
         """
-        assert len(containers) > 1
+        ivy.assertions.check_greater(len(containers), 1)
         configs = [cont.config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1036,11 +1052,11 @@ class ContainerBase(dict, abc.ABC):
             Container loaded from disk
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to load hdf5 files from "
-                "disk into a container."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to load hdf5 \
+            files from disk into a container.",
+        )
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
@@ -1057,7 +1073,7 @@ class ContainerBase(dict, abc.ABC):
                     list(value[slice_obj])
                 )
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return ivy.Container(container_dict, ivyh=ivyh)
@@ -1120,11 +1136,11 @@ class ContainerBase(dict, abc.ABC):
             Size of h5 file contents, and batch size.
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to determine the size "
-                "of hdf5 files."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to determine \
+            the size of hdf5 files.",
+        )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
@@ -1141,7 +1157,7 @@ class ContainerBase(dict, abc.ABC):
                 size += reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return size, batch_size
@@ -1159,11 +1175,11 @@ class ContainerBase(dict, abc.ABC):
             random seed to use for array shuffling (Default value = 0)
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to "
-                "shuffle hdf5 files on disk."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to shuffle \
+            hdf5 files on disk.",
+        )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
         if type(h5_obj_or_filepath) is str:
@@ -1179,7 +1195,7 @@ class ContainerBase(dict, abc.ABC):
                 # noinspection PyTypeChecker
                 random.shuffle(value)
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         if isinstance(h5_obj, h5py.File):
@@ -1219,7 +1235,7 @@ class ContainerBase(dict, abc.ABC):
             try:
                 return reduction(containers)
             except Exception as e:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     str(e)
                     + "\nContainer reduce operation only valid for containers of arrays"
                 )
@@ -1458,13 +1474,34 @@ class ContainerBase(dict, abc.ABC):
     # Public Methods #
     # ---------------#
 
+    def duplicate_array_keychains(self):
+        duplciates = ()
+        key_chains = self.all_key_chains()
+        skips = set()
+        for i in range(len(key_chains)):
+            temp_duplicates = ()
+            if key_chains[i] in skips:
+                continue
+            for j in range(i + 1, len(key_chains)):
+                if key_chains[j] in skips:
+                    continue
+                if self[key_chains[i]] is self[key_chains[j]]:
+                    if key_chains[i] not in temp_duplicates:
+                        temp_duplicates += (key_chains[i],)
+                    if key_chains[j] not in temp_duplicates:
+                        temp_duplicates += (key_chains[j],)
+            if len(temp_duplicates) > 0:
+                duplciates += (temp_duplicates,)
+            skips = chain.from_iterable(duplciates)
+        return duplciates
+
     def update_config(self, **config):
         new_config = dict()
         for k, v in config.items():
             att_name = "_" + k
             if k in self._config_in:
                 if k == "types_to_iteratively_nest":
-                    v = ivy.default(lambda: tuple(v), (), True)
+                    v = ivy.default(lambda: tuple(v), (), catch_exceptions=True)
                 elif k == "keyword_color_dict":
                     v = ivy.default(v, {})
                 elif k == "ivyh":
@@ -1474,7 +1511,7 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(
+    def cont_inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
@@ -1507,7 +1544,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
         else:
-            raise Exception("invalid input {}".format(dict_in))
+            raise ivy.exceptions.IvyException("invalid input {}".format(dict_in))
         items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
         for key, value in items:
             if (
@@ -1519,7 +1556,10 @@ class ContainerBase(dict, abc.ABC):
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
             else:
-                self[key] = value
+                if key in self and isinstance(self[key], ivy.Container):
+                    self[key].cont_inplace_update(value)
+                else:
+                    self[key] = value
 
     def set_framework(self, ivyh):
         """Update the framework to use for the container.
@@ -1625,274 +1665,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def minimum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise minimum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        x2
-            The other container or number to compute the minimum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the minimum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def maximum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise maximum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        other
-            The other container or number to compute the maximum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the maximum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def clip(
-        self,
-        x_min,
-        x_max,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise clipped values between this container and clip_min
-        and clip_max containers or numbers.
-
-        Parameters
-        ----------
-        x_min
-            The minimum container or number to clip against.
-        x_max
-            The maximum container or number to clip against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the clipped values returned.
-
-        """
-        min_is_container = isinstance(x_min, ivy.Container)
-        max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip(
-                    x,
-                    x_min[kc] if min_is_container else x_min,
-                    x_max[kc] if max_is_container else x_max,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def vector_norm(
-        self,
-        ord=2,
-        axis=None,
-        keepdims=False,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute vector p-norm for each array in the container.
-
-        Parameters
-        ----------
-        ord
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            vector norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        global_norm
-            Whether to compute the norm across all the concattenated sub-arrays.
-            Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with the vector norms for each sub-array returned.
-
-        """
-        p_is_container = isinstance(ord, ivy.Container)
-        if global_norm:
-            if p_is_container:
-                raise Exception(
-                    "global_norm can only be computed for scalar p argument,"
-                    "but found {} of type {}".format(ord, type(ord))
-                )
-            return sum(
-                [
-                    v
-                    for k, v in self.map(
-                        lambda x, kc: self._ivy.sum(x**ord)
-                    ).to_iterator()
-                ]
-            ) ** (1 / ord)
-        return self.map(
-            lambda x, kc: self._ivy.vector_norm(
-                x, axis, keepdims, ord[kc] if p_is_container else ord
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def matrix_norm(
-        self,
-        ord=2,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute matrix p-norm for each array in the container.
-
-        Parameters
-        ----------
-        p
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            matrix norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        ord
-            Default value = 2)
-
-        Returns
-        -------
-            Container object with the matrix norms for each sub-array returned.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def slice_via_key(self, slice_key):
         """Get slice of container, based on key.
 
@@ -1950,7 +1722,7 @@ class ContainerBase(dict, abc.ABC):
 
         def _ret_bool(x):
             if assert_is_bool:
-                assert isinstance(x, bool)
+                ivy.assertions.check_isinstance(x, bool)
                 return x
             return bool(x)
 
@@ -2065,7 +1837,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return sum(
-            self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values()
+            self.map(
+                lambda x, kc: ivy.is_array(x, exclusive=exclusive)
+            ).to_iterator_values()
         )
 
     def size_ordered_arrays(self, exclusive=False):
@@ -2082,7 +1856,7 @@ class ContainerBase(dict, abc.ABC):
         array_dict = {
             ivy.Container.flatten_key_chain(kc): v
             for kc, v in self.to_iterator()
-            if ivy.is_array(v, exclusive)
+            if ivy.is_array(v, exclusive=exclusive)
         }
         return ivy.Container(
             dict(
@@ -2113,11 +1887,11 @@ class ContainerBase(dict, abc.ABC):
             appending to file. (Default value = None)
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to save containers "
-                "to disk as hdf5 files."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to save \
+            containers to disk as hdf5 files.",
+        )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
@@ -2189,11 +1963,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list
@@ -2204,7 +1978,7 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
         ret
-             Container data in it's raw form.
+             Container data in its raw form.
 
         """
         return_item = dict()
@@ -2475,15 +2249,15 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            assert self.contains_sub_container(sub_cont, partial)
-        except AssertionError:
+            ivy.assertions.check_true(self.contains_sub_container(sub_cont, partial))
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
                     ivy.Container.diff(self[key_chain], sub_cont)
                 )
@@ -2570,15 +2344,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            assert self.contains_sub_structure(sub_cont, check_shapes, partial)
-        except AssertionError:
+            ivy.assertions.check_true(
+                self.contains_sub_structure(sub_cont, check_shapes, partial)
+            )
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
                     ivy.Container.structural_diff(
                         self[key_chain],
@@ -2682,7 +2458,7 @@ class ContainerBase(dict, abc.ABC):
             except KeyError as e:
                 if ignore_key_errors:
                     return
-                raise e
+                raise ivy.exceptions.IvyException(repr(e))
         return ret
 
     def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
@@ -2719,7 +2495,7 @@ class ContainerBase(dict, abc.ABC):
                 [key_chains], ignore_key_errors=ignore_key_errors
             )
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict"
                 " or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -2832,17 +2608,19 @@ class ContainerBase(dict, abc.ABC):
             cont = self.copy()
         sub_cont = cont
         for key in keys[:-1]:
-            if key not in sub_cont:
-                raise Exception(
-                    "key chain must already exist in container in order "
-                    "to call overwrite_at_key_chain"
-                )
-            sub_cont = sub_cont[key]
-        if keys[-1] not in sub_cont:
-            raise Exception(
-                "key chain must already exist in container in order "
-                "to call overwrite_at_key_chain"
+            ivy.assertions.check_elem_in_list(
+                key,
+                sub_cont,
+                message="key chain must already exist in container in order to \
+                call overwrite_at_key_chain",
             )
+            sub_cont = sub_cont[key]
+        ivy.assertions.check_elem_in_list(
+            keys[-1],
+            sub_cont,
+            message="key chain must already exist in container in order to \
+            call overwrite_at_key_chain",
+        )
         sub_cont[keys[-1]] = val
         return cont
 
@@ -2901,11 +2679,12 @@ class ContainerBase(dict, abc.ABC):
             else:
                 return_dict = self.copy()
         for k, v in target_dict.items():
-            if k not in return_dict:
-                raise Exception(
-                    "key chain must already exist in container in order "
-                    "to call overwrite_at_key_chains"
-                )
+            ivy.assertions.check_elem_in_list(
+                k,
+                return_dict,
+                message="key chain must already exist in container in order to \
+                call overwrite_at_key_chain",
+            )
             if isinstance(v, dict):
                 return_dict[k] = self.overwrite_at_key_chains(
                     v, return_dict[k], inplace
@@ -3013,7 +2792,7 @@ class ContainerBase(dict, abc.ABC):
         elif isinstance(key_chains, str):
             return self._prune_key_chains_input_as_seq([key_chains])
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict "
                 "or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -3094,10 +2873,14 @@ class ContainerBase(dict, abc.ABC):
             removed from the chain.
 
         """
-        if not absolute and not containing:
-            raise Exception(
-                "At least one of absolute or containing arguments must be specified."
-            )
+        ivy.assertions.check_all_or_any_fn(
+            absolute,
+            containing,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at least one of absolute or containing must be specified",
+        )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
             if (absolute and key == absolute) or (containing and containing in key):
@@ -3129,10 +2912,14 @@ class ContainerBase(dict, abc.ABC):
             key chains removed from the chain.
 
         """
-        if not absolute and not containing:
-            raise Exception(
-                "At least one of absolute or containing arguments must be specified."
-            )
+        ivy.assertions.check_all_or_any_fn(
+            absolute,
+            containing,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at least one of absolute or containing must be specified",
+        )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
             if (absolute and key in absolute) or (
@@ -3529,8 +3316,8 @@ class ContainerBase(dict, abc.ABC):
     def _slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
-            assert len(key_slice) == 3 and key_slice[1] == ":"
-            assert self._alphabetical_keys
+            ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
+            ivy.assertions.check_true(self._alphabetical_keys)
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
@@ -4028,7 +3815,7 @@ class ContainerBase(dict, abc.ABC):
                 range(query[0].start, query[0].stop, ivy.default(query[0].step, 1))
             )
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )

@@ -8,7 +8,7 @@ Contributing
 We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community,
 regardless of skill-level!
 
-Whether you're a veterned developer 🥷 or a total beginner 🤷,
+Whether you're a veteran developer 🥷 or a total beginner 🤷,
 everyone is welcome to create `issues`_, start `discussions`_, and create `pull-requests`_.
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
@@ -34,6 +34,9 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 |
 | (e) :ref:`Open Tasks`
 | See where you can help us out! 🙋
+|
+| (f) :ref:`Applied Libraries`
+| Getting started with our applied libraries! 📚
 
 .. toctree::
    :hidden:
@@ -45,6 +48,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/building_the_docs.rst
    deep_dive.rst
    contributing/4_open_tasks.rst
+   contributing/5_applied_libraries.rst
 
 **Video**
 

@@ -11,13 +11,15 @@ class ContainerWithLosses(ContainerBase):
     def static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -60,7 +62,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -71,7 +73,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array(1.83258148)
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([0, 0, 1])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -88,6 +90,7 @@ class ContainerWithLosses(ContainerBase):
             pred,
             axis=axis,
             epsilon=epsilon,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -98,13 +101,15 @@ class ContainerWithLosses(ContainerBase):
     def cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -159,12 +164,13 @@ class ContainerWithLosses(ContainerBase):
         return self.static_cross_entropy(
             self,
             pred,
-            axis,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -172,12 +178,14 @@ class ContainerWithLosses(ContainerBase):
     def static_binary_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "none",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -216,7 +224,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -227,7 +235,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([1.61, 0.223, 1.61])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))
@@ -243,6 +251,7 @@ class ContainerWithLosses(ContainerBase):
             true,
             pred,
             epsilon=epsilon,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -253,12 +262,14 @@ class ContainerWithLosses(ContainerBase):
     def binary_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "none",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -309,11 +320,12 @@ class ContainerWithLosses(ContainerBase):
         return self.static_binary_cross_entropy(
             self,
             pred,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            epsilon=epsilon,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -321,13 +333,15 @@ class ContainerWithLosses(ContainerBase):
     def static_sparse_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -369,7 +383,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -380,7 +394,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([0.223, 0.223, 1.61])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))
@@ -397,6 +411,7 @@ class ContainerWithLosses(ContainerBase):
             pred,
             axis=axis,
             epsilon=epsilon,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -407,13 +422,15 @@ class ContainerWithLosses(ContainerBase):
     def sparse_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
+        reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -467,11 +484,12 @@ class ContainerWithLosses(ContainerBase):
         return self.static_sparse_cross_entropy(
             self,
             pred,
-            axis,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

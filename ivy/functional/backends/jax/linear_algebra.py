@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
 from collections import namedtuple
 
 # local
@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def cholesky(
-    x: JaxArray, upper: bool = False, *, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -24,31 +24,44 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = ("float16",)
+cholesky.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.cross(a=x1, b=x2, axis=axis)
-    return ret
+    return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
-def det(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.linalg.det(x)
-    return ret
+def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def diagonal(
     x: JaxArray,
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
         ret = jnp.diagonal(x, offset, axis1, axis2)
@@ -62,44 +75,83 @@ def diagonal(
     return ret
 
 
-def eigh(x: JaxArray) -> JaxArray:
-    ret = jnp.linalg.eigh(x)
-    return ret
+def eigh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigh(x, UPLO=UPLO)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def eigvalsh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.linalg.eigvalsh(x)
-    return ret
+def eigvalsh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return jnp.inner(x1, x2)
+
+
+def inv(
+    x: JaxArray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = jnp.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = jnp.linalg.inv(x)
+            return ret
+        else:
+            x = jnp.transpose(x)
+            ret = jnp.linalg.inv(x)
+            return ret
 
 
-inv.unsupported_dtypes = ("float16",)
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 
 
-def matmul(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.matmul(x1, x2)
-    return ret
+def matmul(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if transpose_a is True:
+        x1 = jnp.transpose(x1)
+    if transpose_b is True:
+        x2 = jnp.transpose(x2)
+    return jnp.matmul(x1, x2)
 
 
 def matrix_norm(
     x: JaxArray,
+    /,
+    *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.size == 0:
         if keepdims:
@@ -111,49 +163,72 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.unsupported_dtypes = ("float16",)
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def matrix_power(x: JaxArray, n: int, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 
 
 def matrix_rank(
     x: JaxArray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
-    out: Optional[JaxArray] = None
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.size == 0:
-        ret = 0
-    elif x.size == 1:
-        ret = jnp.count_nonzero(x)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) == 2:
+        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    elif len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = jnp.asarray(
+            [
+                jnp.linalg.svd(split[0], compute_uv=False)
+                for split in jnp.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return jnp.array(0, dtype=x.dtype)
+    max_values = jnp.max(singular_values, axis=axis)
+    if rtol:
+        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
     else:
-        if x.ndim > 2:
-            x = x.reshape([-1])
-        ret = jnp.linalg.matrix_rank(x, rtol)
-    ret = jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
-    return ret
+        ret = jnp.sum(singular_values != 0, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.swapaxes(x, -1, -2)
-    return ret
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
+
+def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.swapaxes(x, -1, -2)
 
 
 matrix_transpose.unsupported_dtypes = ("float16", "int8")
 
 
-def outer(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def outer(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.outer(x1, x2)
 
 
 def pinv(
     x: JaxArray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
-    out: Optional[JaxArray] = None
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if rtol is None:
         ret = jnp.linalg.pinv(x)
@@ -162,32 +237,37 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = ("float16",)
+pinv.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
+def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
-    ret = res(q, r)
-    return ret
+    return res(q, r)
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[JaxArray] = None
-) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
-    ret = results(sign, logabsdet)
-    return ret
+    return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
@@ -213,45 +293,53 @@ def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
 
     if expanded_last:
         ret = jnp.squeeze(ret, axis=-1)
-    ret = jnp.asarray(ret, dtype=x1.dtype)
-    return ret
+    return jnp.asarray(ret, dtype=x1.dtype)
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
-    x: JaxArray, full_matrices: bool = True
+    x: JaxArray, /, *, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
-    ret = results(U, D, VT)
-    return ret
+    return results(U, D, VT)
 
 
-svd.unsupported_dtypes = ("float16",)
+svd.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def svdvals(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.linalg.svd(x, compute_uv=False)
-    return ret
+def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
 
 
-svdvals.unsupported_dtypes = ("float16",)
+svdvals.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def tensordot(
     x1: JaxArray,
     x2: JaxArray,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
-    out: Optional[JaxArray] = None
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.tensordot(x1, x2, axes)
-    return ret
+    return jnp.tensordot(x1, x2, axes)
 
 
-def trace(x: JaxArray, offset: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def trace(
+    x: JaxArray, /, *, offset: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
 
 
@@ -259,19 +347,19 @@ trace.unsupported_dtypes = ("float16",)
 
 
 def vecdot(
-    x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.tensordot(x1, x2, (axis, axis))
-    return ret
+    return jnp.tensordot(x1, x2, axes=(axis, axis))
 
 
 def vector_norm(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
@@ -290,7 +378,7 @@ def vector_norm(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: JaxArray, *, out: Optional[JaxArray] = None
+    vector: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -306,5 +394,4 @@ def vector_to_skew_symmetric_matrix(
     row2 = jnp.concatenate((a3s, zs, -a1s), -1)
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    ret = jnp.concatenate((row1, row2, row3), -2)
-    return ret
+    return jnp.concatenate((row1, row2, row3), -2)

@@ -4,6 +4,7 @@ from typing import Union, Sequence, List
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -51,7 +52,9 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.Tensor:
+def astype(
+    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)
@@ -75,13 +78,12 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
+    if x.ndim > len(shape):
+        return torch.broadcast_to(x.reshape(-1), shape)
     return torch.broadcast_to(x, shape)
 
 
-broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
-def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
+def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
         from_ = from_.dtype
     from_str = str(from_)
@@ -104,12 +106,14 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
@@ -160,7 +164,7 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
 

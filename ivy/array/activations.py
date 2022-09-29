@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -10,7 +10,7 @@ import ivy
 
 
 class ArrayWithActivations(abc.ABC):
-    def relu(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method
@@ -27,9 +27,10 @@ class ArrayWithActivations(abc.ABC):
 
     def leaky_relu(
         self: ivy.Array,
-        alpha: Optional[float] = 0.2,
+        /,
         *,
-        out: Optional[ivy.Array] = None
+        alpha: float = 0.2,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
@@ -43,13 +44,14 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([ 0.39, -0.17])
         """
-        return ivy.leaky_relu(self._data, alpha, out=out)
+        return ivy.leaky_relu(self._data, alpha=alpha, out=out)
 
     def gelu(
         self: ivy.Array,
-        approximate: Optional[bool] = True,
+        /,
         *,
-        out: Optional[ivy.Array] = None
+        approximate: bool = True,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
@@ -63,40 +65,9 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([ 0.185, -0.046])
         """
-        return ivy.gelu(self._data, approximate, out=out)
+        return ivy.gelu(self._data, approximate=approximate, out=out)
 
-    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.tanh. This method simply wraps the
-        function, and so the docstring for ivy.tanh also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array whose elements each represent a hyperbolic angle.
-            Should have a real-valued floating-point data type.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing the hyperbolic tangent of each element in ``self``.
-            The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
-
-        Examples
-        --------
-        >>> x = ivy.array([0., 1., 2.])
-        >>> y = x.tanh()
-        >>> print(y)
-        ivy.array([0., 0.762, 0.964])
-        """
-        return ivy.tanh(self._data, out=out)
-
-    def sigmoid(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
         function, and so the docstring for ivy.sigmoid also applies to this method
@@ -112,7 +83,11 @@ class ArrayWithActivations(abc.ABC):
         return ivy.sigmoid(self._data, out=out)
 
     def softmax(
-        self: ivy.Array, axis: Optional[int] = None, *, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softmax. This method simply wraps the
@@ -126,9 +101,16 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(self._data, axis, out=out)
+        return ivy.softmax(self._data, axis=axis, out=out)
 
-    def softplus(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def softplus(
+        self: ivy.Array,
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
@@ -140,5 +122,42 @@ class ArrayWithActivations(abc.ABC):
         >>> y = x.softplus()
         >>> print(y)
         ivy.array([0.535, 0.42 ])
+
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.softplus(beta=0.5)
+        >>> print(y)
+        ivy.array([1.22, 1.09])
+
+        >>> x = ivy.array([1.31, 2., 2.])
+        >>> x.softplus(threshold=2)
+        >>> print(x)
+        ivy.array([1.31, 2.  , 2.  ])
+
         """
-        return ivy.softplus(self._data, out=out)
+        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
+
+    def log_softmax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.log_softmax.
+        This method simply wraps the function,
+        and so the docstring for ivy.log_softmax also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1.0, -0.98, 2.3])
+        >>> y = x.log_softmax()
+        >>> print(y)
+        ivy.array([-3.37, -3.35, -0.0719])
+
+        >>> x = ivy.array([2.0, 3.4, -4.2])
+        >>> y = x.log_softmax(x)
+        ivy.array([-1.62, -0.221, -7.82 ])
+        """
+        return ivy.log_softmax(self._data, axis=axis, out=out)

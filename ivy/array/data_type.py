@@ -8,9 +8,59 @@ import ivy
 
 class ArrayWithDataTypes(abc.ABC):
     def astype(
-        self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
+        self: ivy.Array,
+        dtype: ivy.Dtype,
+        /,
+        *,
+        copy: bool = True,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+        """Copies an array to a specified data type irrespective of
+        :ref:`type-promotion` rules.
+
+        .. note::
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
+        is not specified and is implementation-dependent.
+
+        .. note::
+        When casting a boolean input array to a numeric data type, a value of ``True``
+        must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+        to a numeric value equal to ``0``.
+
+        When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+        ``False``, and a non-zero value must cast to ``True``.
+
+        Parameters
+        ----------
+        self
+            array to cast.
+        dtype
+            desired data type.
+        copy
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array having the specified data type. The returned array must have
+            the same shape as ``x``.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[-1, -2], [0, 2]])
+        >>> print(x.astype(ivy.float64))
+        ivy.array([[-1., -2.],  [0.,  2.]])
+        """
+        return ivy.astype(self._data, dtype, copy=copy, out=out)
 
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
@@ -35,9 +85,10 @@ class ArrayWithDataTypes(abc.ABC):
         -------
         ret
             A list containing broadcasted arrays of type `ivy.Array`
+
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([1, 2])
         >>> x2 = ivy.array([0.2, 0.])
@@ -46,7 +97,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(y)
         [ivy.array([1, 2]), ivy.array([0.2, 0. ]), ivy.array([0., 0.])]
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([-1., 3.4])
         >>> x2 = ivy.native_array([2.4, 5.1])
@@ -81,10 +132,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-
-        Instance Method Examples
-        ------------------------
-        With :code: `ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.broadcast_to((3,3))
@@ -123,9 +171,19 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(x.can_cast(ivy.float64))
         True
         """
-        return ivy.can_cast(from_=self._data, to=to)
+        return ivy.can_cast(self._data, to)
 
-    def dtype(self: ivy.Array, as_native: Optional[bool] = False) -> ivy.Dtype:
+    def dtype(
+        self: ivy.Array, as_native: bool = False
+    ) -> Union[ivy.Dtype, ivy.NativeDtype]:
+        """
+        Examples
+        -------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.dtype()
+        >>> print(y)
+        int32
+        """
         return ivy.dtype(self._data, as_native)
 
     def finfo(self: ivy.Array):
@@ -138,6 +196,26 @@ class ArrayWithDataTypes(abc.ABC):
         return ivy.is_bool_dtype(self._data)
 
     def is_float_dtype(self: ivy.Array) -> bool:
+        """
+        `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply
+        checks to see if the array is of type `float`.
+
+        Parameters
+        ----------
+        self
+            input array from which to check for float dtype.
+
+        Returns
+        -------
+        ret
+            Boolean value of whether the array is of type `float`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
+        >>> x.is_float_dtype()
+        False
+        """
         return ivy.is_float_dtype(self._data)
 
     def is_int_dtype(self: ivy.Array) -> bool:
@@ -148,7 +226,7 @@ class ArrayWithDataTypes(abc.ABC):
 
     def result_type(
         self: ivy.Array,
-        *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+        *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype],
     ) -> ivy.Dtype:
         """
         `ivy.Array` instance method variant of `ivy.result_type`. This method simply

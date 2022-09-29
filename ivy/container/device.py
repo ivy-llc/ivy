@@ -10,7 +10,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
     @staticmethod
-    def static_dev(x: ivy.Container, as_native: bool = False) -> ivy.Container:
+    def static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
@@ -32,13 +32,14 @@ class ContainerWithDevice(ContainerBase):
     def static_to_device(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         device: Union[ivy.Device, ivy.NativeDevice],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         stream: Optional[Union[int, Any]] = None,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.to_device. This method
@@ -97,7 +98,7 @@ class ContainerWithDevice(ContainerBase):
         map_sequences: bool = False,
         *,
         stream: Optional[Union[int, Any]] = None,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.to_device. This method
@@ -138,10 +139,10 @@ class ContainerWithDevice(ContainerBase):
         return self.static_to_device(
             self,
             device,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             stream=stream,
             out=out,
         )

@@ -8,6 +8,7 @@ from typing import Union, Sequence, List
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
@@ -87,7 +88,7 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
+def astype(x: JaxArray, dtype: jnp.dtype, /, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
@@ -107,10 +108,12 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
+    if x.ndim > len(shape):
+        return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
     if type(from_) in [
         jax.interpreters.xla._DeviceArray,
         jaxlib.xla_extension.DeviceArray,
@@ -125,10 +128,12 @@ def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
     return jnp.can_cast(from_, to)
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
     return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 

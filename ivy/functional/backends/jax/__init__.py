@@ -44,6 +44,15 @@ NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
 
+NativeSparseArray = None
+
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")
@@ -57,7 +66,7 @@ native_bfloat16 = jnp.dtype("bfloat16")
 native_float16 = jnp.dtype("float16")
 native_float32 = jnp.dtype("float32")
 native_float64 = jnp.dtype("float64")
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = jnp.dtype("bool")
 
 # valid data types
@@ -143,6 +152,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients

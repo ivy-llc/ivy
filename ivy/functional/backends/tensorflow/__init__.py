@@ -17,6 +17,15 @@ NativeDevice = str
 NativeDtype = DType
 NativeShape = TensorShape
 
+NativeSparseArray = tf.SparseTensor
+
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = tf.int8
 native_int16 = tf.int16
@@ -30,7 +39,7 @@ native_bfloat16 = tf.bfloat16
 native_float16 = tf.float16
 native_float32 = tf.float32
 native_float64 = tf.float64
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = tf.bool
 
 # valid data types
@@ -110,6 +119,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients

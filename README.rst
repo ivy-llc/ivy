@@ -1,4 +1,4 @@
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/repos/ivy/logo.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true
    :width: 100%
 
 .. raw:: html
@@ -78,7 +78,7 @@ Contents
 Overview
 --------
 
-Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, and Numpy.
 We’re very excited for you to try it out!
 
 Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
@@ -101,10 +101,6 @@ Expect breaking changes and sharp edges until we release version 1.2.0 in the ne
 If you would like to contribute,
 please check out our `contributor guide`_,
 and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
-
-If you'd like to ask us questions, feel free to join in on any of our weekly "Ask us Anything!" online sessions!
-To see when the next one will be, check out the Events tab at the top left our
-`discord server <https://discord.gg/G4aR9Q7DTN>`_ 🙂
 
 Quick Start
 -----------
@@ -144,7 +140,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
     print('Finished training!')
 
 This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, JAX, or MXNet.
+but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.
 
 **Framework Agnostic Functions**
 
@@ -156,7 +152,6 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
     import jax.numpy as jnp
     import tensorflow as tf
     import numpy as np
-    import mxnet as mx
     import torch
 
     import ivy
@@ -164,7 +159,6 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
     jax_concatted   = ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1)
     tf_concatted    = ivy.concat((tf.ones((1,)), tf.ones((1,))), -1)
     np_concatted    = ivy.concat((np.ones((1,)), np.ones((1,))), -1)
-    mx_concatted    = ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
     torch_concatted = ivy.concat((torch.ones((1,)), torch.ones((1,))), -1)
 
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
@@ -231,7 +225,7 @@ Design
 |
 | The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 

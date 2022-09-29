@@ -6,6 +6,9 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
+.. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
+.. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -49,9 +52,9 @@ We can always suggest a more suitable location when reviewing your pull request 
 Submodule Design
 ----------------
 
-Ivy is designed so that all methods are called directly from the :code:`ivy` namespace, such as :code:`ivy.matmul`,
-and not :code:`ivy.some_namespace.matmul`. Therefore, inside any of the folders :code:`ivy.functional.ivy`,
-:code:`ivy.functional.backends.some_backend`, :code:`ivy.functional.backends.another_backend` the functions can be moved
+Ivy is designed so that all methods are called directly from the :mod:`ivy` namespace, such as :func:`ivy.matmul`,
+and not :func:`ivy.some_namespace.matmul`. Therefore, inside any of the folders :mod:`ivy.functional.ivy`,
+:mod:`ivy.functional.backends.some_backend`, :mod:`ivy.functional.backends.another_backend` the functions can be moved
 to different files or folders without breaking anything at all. This makes it very simple to refactor and re-organize
 parts of the code structure in an ongoing manner.
 
@@ -74,7 +77,7 @@ is given below:
 Ivy API
 -------
 
-All function signatures for the Ivy API are defined in the :code:`ivy.functional.ivy` submodule. Functions written here
+All function signatures for the Ivy API are defined in the :mod:`ivy.functional.ivy` submodule. Functions written here
 look something like the following, (explained in much more detail in the following sections):
 
 
@@ -83,7 +86,8 @@ look something like the following, (explained in much more detail in the followi
 
     def my_func(
         x: Union[ivy.Array, ivy.NativeArray],
-        axes: Union[int, Tuple[int], List[int]],
+        /,
+        axes: Union[int, Sequence[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -129,22 +133,33 @@ look something like the following, (explained in much more detail in the followi
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
+We follow the `Array API Standard convention`_ about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
+* Optional parameters must be keyword-only arguments
+
+This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
+of argument names when calling functions, and this will increase our flexibility for extending function behaviour in
+future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
+rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
+
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
 Backend API
 -----------
 
-Code in the backend submodules such as :code:`ivy.functional.backends.torch` should then look something like:
+Code in the backend submodules such as :mod:`ivy.functional.backends.torch` should then look something like:
 
 .. code-block:: python
 
 
     def my_func(
         x: torch.Tensor,
-        axes: Union[int, Tuple[int], List[int]],
+        /,
+        axes: Union[int, Sequence[int]],
         *,
         dtype: torch.dtype,
         device: torch.device,
@@ -154,10 +169,152 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
 but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
-All arrays also now have the same type hint :code:`torch.Tensor`,
-rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+All arrays also now have the same type hint :class:`torch.Tensor`,
+rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
+
+Submodule Helper Functions
+--------------------------
+
+At times, helper functions specific to submodule is required to:
+
+* keep the code clean and readable
+* be imported in their respective backend implementations
+
+To have a better idea on this, let's look at an example!
+
+**Helper in Ivy**
+
+.. code-block:: python
+
+    # in ivy/functional/ivy/creation.py
+    def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+        assert (
+            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+            and isinstance(fill_value, int)
+        ) or (
+            ivy.is_float_dtype(dtype)
+            and isinstance(fill_value, float)
+            or (isinstance(fill_value, bool))
+        ), "the fill_value and data type are not compatible"
+
+In the :code:`full_like` function in :code:`creation.py`, the types of
+:code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
+check has to be applied to all backends, which means the related code is common
+and identical. In this case, we can extract the code to be a helper function on
+its own, placed in its related submodule (:code:`creation.py` here). In this
+example, the helper function is named as
+:code:`_assert_fill_value_and_dtype_are_compatible`.
+
+Then, we import this submodule-specific helper function to the respective backends,
+where examples for each backend is shown below.
+
+**Jax**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/jax/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: JaxArray,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: jnp.dtype,
+        device: jaxlib.xla_extension.Device,
+        out: Optional[JaxArray] = None
+    ) -> JaxArray:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return _to_device(
+            jnp.full_like(x, fill_value, dtype=dtype),
+            device=device,
+        )
+
+**NumPy**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/numpy/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: np.ndarray,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: np.dtype,
+        device: str,
+        out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
+
+**TensorFlow**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/tensorflow/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: tf.DType,
+        device: str,
+        out: Union[tf.Tensor, tf.Variable] = None
+    ) -> Union[tf.Tensor, tf.Variable]:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        with tf.device(device):
+            return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
+
+**Torch**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/torch/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: torch.Tensor,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: torch.dtype,
+        device: torch.device,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return torch.full_like(x, fill_value, dtype=dtype, device=device)
+
+Version Pinning
+---------------
+
+At any point in time, Ivy's development will be predominantly focused around a
+particular version (and all prior versions) for each of the backend frameworks.
+These are the pinned versions shown in the
+`optional.txt <https://github.com/unifyai/ivy/blob/master/requirements/optional.txt>`_
+file.
+
+At the time of pinning, these will be the most up-to-date versions for each framework,
+but new releases of the backend frameworks will then of course be made and there will
+sometimes be a short period of time in which we are working towards the next Ivy
+release, and we opt to keep the repo pinned to the older version until the next release
+is out. This helps to prevent our work growing in an unbounded manner, as we work
+towards getting all tests passing and everything in good shape before making the release.
+If we always pulled the latest version of every framework into master, we might end up
+constantly battling new subtle bugs, without knowing whether the bugs come from the
+change in version or our own incremental changes to the code. Therefore, when working
+towards an Ivy release, keeping the backends temporarily pinned essentially ensures that
+our development target remains fixed for this period of time.
+
+As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`,
+whereas Ivy is pinned to version :code:`1.11.0`.
+Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not
+include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
 
 **Round Up**
 

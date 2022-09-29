@@ -1,18 +1,16 @@
-# For Review
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-    as_ivy_dtype,
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
 )
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
 
 # Array API Standard #
@@ -21,12 +19,13 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
     *,
     dtype: Optional[tf.DType] = None,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
         stop = start
@@ -49,65 +48,77 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = as_native_dtype(default_dtype(dtype))
+            dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
 
+arange.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
+
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
-    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
+    obj: Union[
+        tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
+    ],
+    /,
     *,
     copy: Optional[bool] = None,
     dtype: tf.DType = None,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if copy:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return tf.identity(object_in)
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return tf.identity(obj)
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    dtype = default_dtype(item=object_in, as_native=True)
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    dtype = ivy.default_dtype(item=obj, as_native=True)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype, object_in, True)
+                    dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
         else:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return object_in
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return obj
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    return tf.convert_to_tensor(object_in)
+                    return tf.convert_to_tensor(obj)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                    dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -118,7 +129,7 @@ def empty(
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
@@ -126,10 +137,11 @@ def empty(
 
 def empty_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
@@ -138,12 +150,13 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
-    batch_shape: Optional[Union[int, Sequence[int]]] = None,
+    /,
     *,
+    k: int = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if n_cols is None:
@@ -189,7 +202,10 @@ eye.unsupported_dtypes = ("uint16",)
 
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
@@ -201,10 +217,10 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.fill(
             shape,
@@ -214,13 +230,18 @@ def full(
 
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     fill_value: Union[int, float],
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+ numpy_sort
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+master
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
@@ -228,13 +249,14 @@ def full_like(
 def linspace(
     start: Union[tf.Tensor, tf.Variable, float],
     stop: Union[tf.Tensor, tf.Variable, float],
+    /,
     num: int,
+    *,
     axis: Optional[int] = None,
     endpoint: bool = True,
-    *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if axis is None:
         axis = -1
@@ -260,7 +282,7 @@ def ones(
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.ones(shape, dtype)
@@ -268,10 +290,11 @@ def ones(
 
 def ones_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.ones_like(x, dtype=dtype)
@@ -279,18 +302,20 @@ def ones_like(
 
 def tril(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    k: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.tril(x, k)
 
 
 def triu(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    k: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.triu(x, k)
 
@@ -300,7 +325,7 @@ def zeros(
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.zeros(shape, dtype)
@@ -308,10 +333,11 @@ def zeros(
 
 def zeros_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.zeros_like(x, dtype=dtype)
@@ -324,16 +350,41 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.identity(x)
+
+
 def logspace(
     start: Union[tf.Tensor, tf.Variable, int],
     stop: Union[tf.Tensor, tf.Variable, int],
+    /,
     num: int,
+    *,
     base: float = 10.0,
     axis: Optional[int] = None,
-    *,
     dtype: tf.DType,
     device: str,
-    out: Union[tf.Tensor, tf.Variable] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
+    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
     return base**power_seq
+
+
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    *,
+    device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    device = ivy.default_device(device)
+    dtype = indices.dtype
+    if device is not None:
+        indices = tf.cast(indices, tf.int64)
+        with tf.device(ivy.as_native_dev(device)):
+            return tf.one_hot(indices, depth, dtype=dtype)
+    return tf.one_hot(indices, depth, dtype=dtype)

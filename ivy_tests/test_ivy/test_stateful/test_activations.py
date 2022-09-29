@@ -3,74 +3,49 @@
 # global
 import pytest
 import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # GELU
-@pytest.mark.parametrize(
-    "bs_oc_target",
-    [
-        (
-            [1, 2],
-            10,
-            [
-                [
-                    [
-                        0.0,
-                        0.0604706,
-                        0.13065024,
-                        0.21018247,
-                        0.2984952,
-                        0.39483193,
-                        0.49829122,
-                        0.6078729,
-                        0.7225253,
-                        0.841192,
-                    ],
-                    [
-                        0.0,
-                        0.0604706,
-                        0.13065024,
-                        0.21018247,
-                        0.2984952,
-                        0.39483193,
-                        0.49829122,
-                        0.6078729,
-                        0.7225253,
-                        0.841192,
-                    ],
-                ]
-            ],
-        )
-    ],
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    approximate=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="GELU.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="GELU._forward"),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
-    # smoke test
-    batch_shape, output_channels, target = bs_oc_target
-    x = ivy.asarray(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels),
-        dtype="float32",
+def test_gelu(
+    *,
+    dtype_and_x,
+    approximate,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={"approximate": approximate},
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"x": x[0]},
+        fw=fw,
+        class_name="GELU",
     )
-    gelu_layer = ivy.GELU()
-
-    # return
-    ret = gelu_layer(x)
-
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == tuple(batch_shape + [output_channels])
-    # value test
-    assert np.allclose(call(gelu_layer, x), np.array(target))
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
 
 
 # GEGLU
@@ -113,7 +88,7 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
+def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
@@ -132,4 +107,4 @@ def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
     # cardinality test
     assert ret.shape == tuple(batch_shape + [output_channels])
     # value test
-    assert np.allclose(call(geglu_layer, x), np.array(target))
+    assert np.allclose(ivy.to_numpy(geglu_layer(x)), np.array(target))
