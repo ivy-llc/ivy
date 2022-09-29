@@ -606,7 +606,7 @@ def zeros_like(
     Functional Examples
     -------------------
 
-    With :class:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
     >>> y1 = ivy.zeros_like(x1)
@@ -624,7 +624,7 @@ def zeros_like(
     >>> ivy.zeros_like(x3, out=y3)
     ivy.array([0., 0., 0.])
 
-    With :class:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
     >>> y1 = ivy.zeros_like(x1)
@@ -639,7 +639,7 @@ def zeros_like(
 
     # Array ``y2`` is now stored on the CPU.
 
-    With :class:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
     >>> y = ivy.zeros_like(x)
@@ -652,7 +652,7 @@ def zeros_like(
     Instance Method Examples
     -------------------
 
-    With :class:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 8, 2, 1])
     >>> y = x.zeros_like()
