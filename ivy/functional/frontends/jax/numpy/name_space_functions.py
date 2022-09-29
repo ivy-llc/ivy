@@ -98,3 +98,6 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
 
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+def amin(a, axis=None, out=None, keepdims=None, initial=None, where=None):
+    return ivy.min(a, axis=axis, out=out, keepdims=keepdims)

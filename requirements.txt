@@ -1,0 +1,9 @@
+numpy~=1.23.0
+termcolor~=1.1.0
+colorama~=0.4.5
+psutil~=5.9.1
+einops~=0.4.1
+packaging~=21.3
+setuptools~=60.2.0
+hypothesis~=6.54.6
+pytest~=7.1.3
