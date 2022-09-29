@@ -102,5 +102,4 @@ def reshape(a, newshape, order="C"):
 
 def amin(a, axis=None, out=None, keepdims=None, initial=None, where=None):
     return ivy.min(a, axis=axis, out=out, keepdims=keepdims)
-
-    
+  
