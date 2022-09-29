@@ -31,7 +31,7 @@ def add(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        x2 = alpha * x2
+        x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
 
 
