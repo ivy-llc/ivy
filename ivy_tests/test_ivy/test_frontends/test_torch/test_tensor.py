@@ -92,16 +92,23 @@ def test_torch_instance_reshape(
     fw,
 ):
     input_dtype, x, shape = dtypes_x_reshape
-    helpers.test_frontend_array_instance_method(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "shape": shape,
+        },
         fw=fw,
         frontend="torch",
-        frontend_class=Tensor,
-        fn_tree="Tensor.reshape",
-        self=x[0],
-        shape=shape,
+        class_name="Tensor",
+        method_name="reshape",
     )
