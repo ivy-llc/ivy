@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -760,5 +760,51 @@ def test_torch_maximum(
         fn_tree="maximum",
         input=np.asarray(inputs[0], dtype=input_dtype[0]),
         other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+# kthvalue
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    k=st.integers(min_value=1),
+    keepdim=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.kthvalue"
+    ),
+)
+def test_torch_kthvalue(
+    dtype_input_axis,
+    k,
+    keepdim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input, dim = dtype_input_axis
+    input = np.asarray(input, dtype=input_dtype)
+    assume(k <= input.shape[dim])
+    assume(input_dtype != "float16")  # unsupported by torch.kthvalue
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="kthvalue",
+        input=input,
+        k=k,
+        dim=dim,
+        keepdim=keepdim,
         out=None,
     )

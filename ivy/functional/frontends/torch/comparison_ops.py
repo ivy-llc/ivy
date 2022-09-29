@@ -179,3 +179,20 @@ def msort(input, *, out=None):
 
 def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
+
+
+def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
+
+    sorted_input = ivy.sort(input, axis=dim)
+    sort_indices = ivy.argsort(input, axis=dim)
+
+    values = ivy.asarray(ivy.gather(sorted_input, k - 1, axis=dim), dtype=input.dtype)
+    indices = ivy.asarray(ivy.gather(sort_indices, k - 1, axis=dim), dtype="int64")
+
+    if keepdim:
+        values = ivy.expand_dims(values, axis=dim)
+        indices = ivy.expand_dims(indices, axis=dim)
+
+    # TODO: handle the out argument
+
+    return values, indices
