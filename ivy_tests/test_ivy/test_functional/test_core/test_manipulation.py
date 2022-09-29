@@ -717,7 +717,6 @@ def test_split(
     num_or_size_splits,
     axis,
     with_remainder,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -731,7 +730,7 @@ def test_split(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
