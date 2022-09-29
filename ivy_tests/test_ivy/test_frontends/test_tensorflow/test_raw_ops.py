@@ -1,8 +1,6 @@
 # global
 import ivy
-import numpy as np
 from hypothesis import given, strategies as st
-
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -32,7 +30,7 @@ def test_tensorflow_Acos(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Acos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -59,7 +57,7 @@ def test_tensorflow_Acosh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Acosh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -85,7 +83,7 @@ def test_tensorflow_BroadcastTo(
 ):
     x, to_shape = array_and_shape
     helpers.test_frontend_function(
-        input_dtypes=x.dtype,
+        input_dtypes=[x.dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -153,7 +151,6 @@ def test_tensorflow_Concat(
     fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -191,7 +188,7 @@ def test_tensorflow_Cos(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -218,7 +215,7 @@ def test_tensorflow_Cosh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cosh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -308,7 +305,7 @@ def test_tensorflow_Asin(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Asin",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -348,7 +345,7 @@ def test_tensorflow_ArgMax(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.ArgMax",
-        input=np.asarray(x, dtype=dtype),
+        input=x[0],
         dimension=axis,
         output_type=output_type,
     )
@@ -390,7 +387,7 @@ def test_tensorflow_ArgMin(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.ArgMin",
-        input=np.asarray(x, dtype=dtype),
+        input=x[0],
         dimension=axis,
         output_type=output_type,
     )
@@ -419,7 +416,7 @@ def test_tensorflow_Atan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Atan",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -438,7 +435,7 @@ def test_tensorflow_Atan(
 def test_tensorflow_BitwiseAnd(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -448,8 +445,8 @@ def test_tensorflow_BitwiseAnd(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseAnd",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -468,7 +465,7 @@ def test_tensorflow_BitwiseAnd(
 def test_tensorflow_BitwiseOr(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -478,8 +475,8 @@ def test_tensorflow_BitwiseOr(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseOr",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -498,7 +495,7 @@ def test_tensorflow_BitwiseOr(
 def test_tensorflow_BitwiseXor(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -508,8 +505,8 @@ def test_tensorflow_BitwiseXor(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseXor",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -536,7 +533,7 @@ def test_tensorflow_Atanh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Atanh",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -563,7 +560,7 @@ def test_tensorflow_Tan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Tan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -590,7 +587,7 @@ def test_tensorflow_Square(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Square",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -617,7 +614,7 @@ def test_tensorflow_Sqrt(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -644,7 +641,7 @@ def test_tensorflow_Tanh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Tanh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -681,7 +678,7 @@ def test_tensorflow_transpose(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Transpose",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         perm=perm,
     )
 
@@ -701,7 +698,7 @@ def test_tensorflow_transpose(
 def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -711,8 +708,8 @@ def test_tensorflow_Maximum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Maximum",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -731,7 +728,7 @@ def test_tensorflow_Maximum(
 def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -741,8 +738,8 @@ def test_tensorflow_Minimum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Minimum",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -759,7 +756,7 @@ def test_tensorflow_Minimum(
 def test_tensorflow_Sub(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    dtype, x = dtype_and_x
+    dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -769,8 +766,8 @@ def test_tensorflow_Sub(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sub",
-        x=np.asarray(x[0], dtype=dtype[0]),
-        y=np.asarray(x[1], dtype=dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -789,7 +786,7 @@ def test_tensorflow_Sub(
 def test_tensorflow_Less(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -799,8 +796,8 @@ def test_tensorflow_Less(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Less",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -819,7 +816,7 @@ def test_tensorflow_Less(
 def test_tensorflow_LessEqual(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -829,8 +826,8 @@ def test_tensorflow_LessEqual(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.LessEqual",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -857,7 +854,7 @@ def test_tensorflow_Floor(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Floor",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -876,7 +873,7 @@ def test_tensorflow_Floor(
 def test_tensorflow_FloorDiv(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -886,8 +883,8 @@ def test_tensorflow_FloorDiv(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.FloorDiv",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -914,7 +911,7 @@ def test_tensorflow_Exp(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Exp",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -941,7 +938,7 @@ def test_tensorflow_Expm1(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Expm1",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -968,7 +965,7 @@ def test_tensorflow_Log(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Log",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -993,7 +990,7 @@ def test_tensorflow_Sinh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sinh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -1003,8 +1000,8 @@ def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
     shape = draw(helpers.get_shape(min_num_dims=1))
     reshape_shape = draw(helpers.reshape_shapes(shape=shape))
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    x = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     return x, dtype, reshape_shape
 
 
@@ -1032,7 +1029,7 @@ def test_tensorflow_Reshape(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Reshape",
-        tensor=np.asarray(x, dtype=dtype),
+        tensor=x[0],
         shape=shape,
     )
 
@@ -1058,7 +1055,7 @@ def test_tensorflow_zeros_like(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.ZerosLike",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -1087,8 +1084,8 @@ def test_tensorflow_LogicalOr(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.LogicalOr",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -1117,7 +1114,7 @@ def test_tensorflow_LogicalNot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.LogicalNot",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -1145,7 +1142,7 @@ def test_tensorflow_Shape(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Shape",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
     )
 
 
@@ -1208,7 +1205,7 @@ def test_tensorflow_Neg(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Neg",
-        x=x,
+        x=x[0],
     )
 
 
@@ -1237,8 +1234,8 @@ def test_tensorflow_Equal(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Equal",
-        x=np.array(x[0], dtype=input_dtype[0]),
-        y=np.array(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -1267,6 +1264,125 @@ def test_tensorflow_NotEqual(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.NotEqual",
-        x=np.array(x[0], dtype=input_dtype[0]),
-        y=np.array(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
+    )
+
+
+# Cumsum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Cumsum"
+    ),
+)
+def test_tensorflow_Cumsum(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+    native_array,
+    exclusive,
+    reverse,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Cumsum",
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# Relu
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Relu(dtype_and_x, as_variable, fw, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Relu",
+        features=x[0],
+    )
+
+
+# MatMul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "bfloat16",
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    transpose_a=st.booleans(),
+    transpose_b=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.MatMul"
+    ),
+)
+def test_tensroflow_MatMul(
+    dtype_and_x,
+    transpose_a,
+    transpose_b,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatMul",
+        a=x[0],
+        b=x[1],
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
     )
