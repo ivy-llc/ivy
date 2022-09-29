@@ -1325,12 +1325,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
         return ContainerBase.multi_map_in_static_method(
             "svd",
             x,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1346,6 +1348,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
@@ -1355,6 +1358,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             out=out,
         )

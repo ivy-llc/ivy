@@ -310,9 +310,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices=full_matrices)
+        return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)

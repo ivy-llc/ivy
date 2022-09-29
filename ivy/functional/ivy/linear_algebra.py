@@ -1434,6 +1434,7 @@ def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
@@ -1514,7 +1515,7 @@ def svd(
     ivy.array(0)
 
     """
-    return current_backend(x).svd(x, full_matrices=full_matrices)
+    return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
 
 
 @to_native_arrays_and_back

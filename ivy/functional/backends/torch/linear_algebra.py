@@ -162,7 +162,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if transpose_a is True:
         x1 = torch.t(x1)
@@ -329,12 +329,20 @@ solve.unsupported_dtypes = (
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True
+    x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        svd = torch.linalg.svd(x, full_matrices=full_matrices)
+        # torch.linalg.svd returns a tuple with U, S, and Vh
+        D = svd[1]
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16", "bfloat16")
