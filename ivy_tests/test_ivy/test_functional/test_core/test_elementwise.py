@@ -88,6 +88,7 @@ def test_acosh(
         fn_name="acosh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 

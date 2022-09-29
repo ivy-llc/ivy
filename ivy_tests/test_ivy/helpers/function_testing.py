@@ -745,13 +745,14 @@ def gradient_test(
     )
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
-    # value test
-    value_test(
-        ret_np_flat=grads_np_flat,
-        ret_np_from_gt_flat=grads_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-    )
+    if np.all(np.isfinite(grads_np_flat)) or np.all(np.isfinite(grads_np_from_gt_flat)):
+        # value test
+        value_test(
+            ret_np_flat=grads_np_flat,
+            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_method(
