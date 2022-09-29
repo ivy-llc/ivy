@@ -467,6 +467,7 @@ def test_jax_numpy_mean(
         where=where,
     )
 
+
 # amin
 @handle_cmd_line_args
 @given(
@@ -504,5 +505,4 @@ def test_jax_numpy_amin(
         axis=axis,
         keepdims=keep_dims,
         out=None,
-
     )
