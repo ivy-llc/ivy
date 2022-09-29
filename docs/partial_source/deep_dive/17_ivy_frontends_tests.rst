@@ -519,7 +519,6 @@ ivy.add()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
-    # add
     @handle_cmd_line_args
     @given(
         dtype_and_x=helpers.dtype_and_values(
@@ -549,8 +548,8 @@ ivy.add()
             frontend="jax",
             frontend_class=DeviceArray,
             fn_tree="DeviceArray.add",
-            self=np.asarray(x[0], dtype=input_dtype[0]),
-            other=np.asarray(x[1], dtype=input_dtype[1]),
+            self=x[0],
+            other=x[1],
         )
 
 * We use :code:`test_frontend_array_instance_method()` to test the instance method.
@@ -562,57 +561,39 @@ ivy.add()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
-    # add
     @handle_cmd_line_args
     @given(
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
         ),
-        dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-        where=np_frontend_helpers.where(),
-        as_variable=helpers.array_bools(),
-        with_out=st.booleans(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.ndarray.add"
-        ),
-        native_array=helpers.array_bools(),
     )
-    def test_numpy_instance_add(
+    def test_numpy_ndarray_add(
         dtype_and_x,
-        dtype,
-        where,
         as_variable,
-        with_out,
-        num_positional_args,
         native_array,
         fw,
     ):
         input_dtype, x = dtype_and_x
-        where = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
-        )
-        np_frontend_helpers.test_frontend_array_instance_method(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
+        helpers.test_frontend_method(
+            input_dtypes_init=input_dtype,
+            as_variable_flags_init=as_variable,
+            num_positional_args_init=0,
+            native_array_flags_init=native_array,
+            all_as_kwargs_np_init={
+                "data": x[0],
+            },
+            input_dtypes_method=[input_dtype[1]],
+            as_variable_flags_method=as_variable,
+            num_positional_args_method=0,
+            native_array_flags_method=native_array,
+            all_as_kwargs_np_method={
+                "value": x[1],
+            },
             fw=fw,
             frontend="numpy",
-            frontend_class=ndarray,
-            fn_tree="ndarray.add",
-            self=np.asarray(x[0], dtype=input_dtype[0]),
-            other=np.asarray(x[1], dtype=input_dtype[1]),
-            out=None,
-            where=where,
-            casting="same_kind",
-            order="k",
-            dtype=dtype,
-            subok=True,
-            test_values=False,
+            class_name="ndarray",
+            method_name="add",
         )
 
 * We use :code:`np_frontend_helpers.test_frontend_array_instance_method()` to test the instance method. This handles the :code:`where` argument.
@@ -624,13 +605,10 @@ ivy.add()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py
-    # add
     @handle_cmd_line_args
     @given(
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=tuple(
-                set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-            ),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shared_dtype=True,
         ),
@@ -652,8 +630,8 @@ ivy.add()
             frontend="tensorflow",
             frontend_class=Tensor,
             fn_tree="Tensor.add",
-            self=np.asarray(x[0], dtype=input_dtype[0]),
-            y=np.asarray(x[1], dtype=input_dtype[1]),
+            self=x[0],
+            y=x[1],
         )
 
 * We import the frontend class :code:`Tensor` from :code:`frontends.tensorflow.tensor` and pass it to the :code:`frontend_class` argument.
@@ -664,15 +642,10 @@ ivy.add()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py
-    # add
     @handle_cmd_line_args
     @given(
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_torch.valid_float_dtypes)
-                )
-            ),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             min_value=-1e04,
             max_value=1e04,
@@ -704,8 +677,8 @@ ivy.add()
             frontend_class=Tensor,
             fn_tree="Tensor.add",
             rtol=1e-04,
-            self=np.asarray(x[0], dtype=input_dtype[0]),
-            other=np.asarray(x[1], dtype=input_dtype[1]),
+            self=x[0],
+            other=x[1],
             alpha=alpha,
             out=None,
         )
@@ -713,236 +686,6 @@ ivy.add()
 * We import the frontend class :code:`Tensor` from :code:`frontends.torch.tensor` and pass it to the :code:`frontend_class` argument.
 * We specify the :code:`fn_tree` to be :code:`Tensor.add` which is the path to the function in the frontend class.
 
-ivy.reshape()
-^^^^^^^^^^^^^
-
-**Jax**
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
-    # reshape
-    @st.composite
-    def _reshape_helper(draw):
-        # generate a shape s.t len(shape) > 0
-        shape = draw(helpers.get_shape(min_num_dims=1))
-
-        reshape_shape = draw(helpers.reshape_shapes(shape=shape))
-
-        dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-        x = draw(helpers.array_values(dtype=dtype, shape=shape))
-
-        is_dim = draw(st.booleans())
-        if is_dim:
-            # generate a permutation of [0, 1, 2, ... len(shape) - 1]
-            permut = draw(st.permutations(list(range(len(shape)))))
-            return x, dtype, reshape_shape, permut
-        else:
-            return x, dtype, reshape_shape, None
-
-
-    @handle_cmd_line_args
-    @given(
-        x_reshape_permut=_reshape_helper(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.jax.DeviceArray.reshape"
-        ),
-    )
-    def test_jax_instance_reshape(
-        x_reshape_permut,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        x, dtype, shape, dimensions = x_reshape_permut
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="jax",
-            frontend_class=DeviceArray,
-            fn_tree="DeviceArray.reshape",
-            self=np.asarray(x, dtype=dtype),
-            new_sizes=shape,
-            dimensions=dimensions,
-        )
-
-* For :code:`jax.reshape()`, we create a helper function to generate correct data to test the function.
-
-**NumPy**
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
-    # reshape
-    @st.composite
-    def dtypes_x_reshape(draw):
-        dtypes, x = draw(
-            helpers.dtype_and_values(
-                shape=helpers.get_shape(
-                    allow_none=False,
-                    min_num_dims=1,
-                    max_num_dims=5,
-                    min_dim_size=1,
-                    max_dim_size=10,
-                )
-            )
-        )
-        shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
-        return dtypes, x, shape
-
-
-    @handle_cmd_line_args
-    @given(
-        dtypes_x_shape=dtypes_x_reshape(),
-        copy=st.booleans(),
-        with_out=st.booleans(),
-        as_variable=helpers.array_bools(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.ndarray.reshape"
-        ),
-        native_array=helpers.array_bools(),
-    )
-    def test_numpy_instance_reshape(
-        dtypes_x_shape,
-        copy,
-        with_out,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        dtypes, x, shape = dtypes_x_shape
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=dtypes,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="numpy",
-            frontend_class=ndarray,
-            fn_tree="ndarray.reshape",
-            self=x,
-            shape=shape,
-            copy=copy,
-        )
-
-* For :code:`NumPy.reshape()`, we create a helper function to generate correct data to test the function.
-
-**TensorFlow**
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py
-    # reshape
-    @st.composite
-    def dtypes_x_reshape(draw):
-        dtypes, x = draw(
-            helpers.dtype_and_values(
-                shape=helpers.get_shape(
-                    allow_none=False,
-                    min_num_dims=1,
-                    max_num_dims=5,
-                    min_dim_size=1,
-                    max_dim_size=10,
-                )
-            )
-        )
-        shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
-        return dtypes, x, shape
-
-
-    @handle_cmd_line_args
-    @given(
-        dtypes_x_shape=dtypes_x_reshape(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.tensorflow.Tensor.Reshape",
-        ),
-    )
-    def test_tensorflow_instance_Reshape(
-        dtypes_x_shape,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        dtypes, x, shape = dtypes_x_shape
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=dtypes,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="tensorflow",
-            frontend_class=Tensor,
-            fn_tree="Tensor.Reshape",
-            self=np.asarray(x, dtype=dtypes),
-            shape=shape,
-        )
-
-* For :code:`tensorflow.Reshape()`, we create a helper function to generate correct data to test the function.
-
-**PyTorch**
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py
-    # reshape
-    @st.composite
-    def dtypes_x_reshape(draw):
-        dtypes, x = draw(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float", full=True),
-                shape=helpers.get_shape(
-                    allow_none=False,
-                    min_num_dims=1,
-                    max_num_dims=5,
-                    min_dim_size=1,
-                    max_dim_size=10,
-                )
-            )
-        )
-        shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
-        return dtypes, x, shape
-
-
-    @handle_cmd_line_args
-    @given(
-        dtypes_x_reshape=dtypes_x_reshape(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.Tensor.reshape",
-        ),
-    )
-    def test_torch_instance_reshape(
-        dtypes_x_reshape,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        input_dtype, x, shape = dtypes_x_reshape
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="torch",
-            frontend_class=Tensor,
-            fn_tree="Tensor.reshape",
-            self=np.asarray(x, dtype=input_dtype),
-            shape=shape,
-        )
-
-* For :code:`torch.reshape()`, we create a helper function to generate correct data to test the function.
 
 Hypothesis Helpers
 ------------------
