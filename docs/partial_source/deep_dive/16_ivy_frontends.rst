@@ -36,7 +36,7 @@ The Basics
 frontend functions.
 
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
 
 **Jax**
 
@@ -226,11 +226,7 @@ the `torch`_ framework.
 
 In this case, the native `torch.add`_ has both positional and keyword arguments,
 and we therefore use the same for our PyTorch frontend :code:`add`.
-We wrap :code:`ivy.add` as usual, but the arguments work slightly different in this
-example. Looking at the PyTorch `torch.add`_ documentation,
-we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
-into :code:`ivy.add`.
+We wrap :code:`ivy.add` as usual.
 
 .. code-block:: python
 
@@ -436,13 +432,13 @@ the framework-specific array classes (:code:`tf.Tensor`, :code:`torch.Tensor`,
 
 For an example of how these are implemented, we first show the instance method for
 :code:`np.ndarray.reshape`, which is implemented in the frontend
-`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+`ndarray class <https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def reshape(self, shape, order="C"):
+        return np_frontend.reshape(self.data, shape)
 
 Under the hood, this simply calls the frontend :code:`np_frontend.reshape` function,
 which itself is implemented as follows:
@@ -450,8 +446,8 @@ which itself is implemented as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
-    def reshape(x, /, shape, *, copy=None):
-        return ivy.reshape(x, shape, copy=copy)
+    def reshape(x, /, newshape, order="C"):
+        return ivy.reshape(x, shape=newshape)
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
@@ -478,11 +474,11 @@ use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtyp
 `source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
 
 We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
-`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
+framework, there is a dictionary named :code:`<backend>_classes_to_ivy_classes` in
+:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
 This holds pairs of framework-specific classes and the corresponding Ivy or
 native Python classes to map to.
-For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
+For example, in :code:`ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
 
@@ -522,17 +518,15 @@ correctly.
 
 
 As an example, we show how :code:`NativeClass` is used in the frontend test for the
-:code:`sum` function in the NumPy frontend:
+:code:`sum` function in the NumPy frontend: # ToDo outdated or not implemented yet?
 
 .. code-block:: python
-    # sum
-    Novalue = NativeClass(numpy._NoValue)
     @handle_cmd_line_args
     @given(
-        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+        dtype_x_axis=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("float")),
         dtype=helpers.get_dtypes("float", full=False, none=True),
-        keep_dims= st.one_of (st.booleans(), Novalue),
-        initial=st.one_of(st.floats(), Novalue),
+        keep_dims=st.booleans(),
+        initial=st.one_of(st.floats(), st.none()),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.numpy.sum"
         ),
@@ -548,9 +542,9 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
         with_out,
         fw,
     ):
-        (input_dtype, x, axis), where = dtype_x_axis
-        if where is None:
-            where = Novalue
+        input_dtype, x, axis = dtype_x_axis
+        if initial is None:
+            where = True
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
@@ -560,9 +554,9 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
             fw=fw,
             frontend="numpy",
             fn_tree="sum",
-            x=np.asarray(x, dtype=input_dtype[0]),
+            x=x[0],
             axis=axis,
-            dtype=dtype,
+            dtype=dtype[0],
             keepdims=keep_dims,
             initial=initial,
             where=where,
