@@ -2,7 +2,6 @@ check_true
 ==========
 
 .. autofunction:: ivy.assertions.check_true
-
 |
 | **Supported Frameworks:**
 

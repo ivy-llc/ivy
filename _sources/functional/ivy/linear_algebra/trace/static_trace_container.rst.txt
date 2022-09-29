@@ -1,27 +1,6 @@
 ivy.Container.static_trace
 ==========================
 .. autofunction:: ivy.container.container_methods.static_trace
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

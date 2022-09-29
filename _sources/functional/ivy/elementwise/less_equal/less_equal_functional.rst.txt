@@ -1,27 +1,6 @@
 ivy.less_equal
 ==============
 .. autofunction:: ivy.functional.ivy.elementwise.less_equal
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

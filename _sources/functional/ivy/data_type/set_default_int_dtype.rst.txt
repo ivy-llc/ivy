@@ -2,27 +2,6 @@ set_default_int_dtype
 =====================
 
 .. autofunction:: ivy.functional.ivy.data_type.set_default_int_dtype
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

@@ -1,27 +1,6 @@
 ivy.Array.atan2
 ===============
 .. autofunction:: ivy.array.array_methods.atan2
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

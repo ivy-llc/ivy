@@ -2,27 +2,6 @@ get_all_arrays_in_memory
 ========================
 
 .. autofunction:: ivy.functional.ivy.general.get_all_arrays_in_memory
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

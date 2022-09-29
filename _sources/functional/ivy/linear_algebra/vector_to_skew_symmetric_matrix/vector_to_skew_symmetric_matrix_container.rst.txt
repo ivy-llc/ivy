@@ -1,27 +1,6 @@
 ivy.Container.vector_to_skew_symmetric_matrix
 =============================================
 .. autofunction:: ivy.container.container_methods.vector_to_skew_symmetric_matrix
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

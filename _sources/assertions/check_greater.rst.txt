@@ -2,7 +2,6 @@ check_greater
 =============
 
 .. autofunction:: ivy.assertions.check_greater
-
 |
 | **Supported Frameworks:**
 

@@ -2,7 +2,6 @@ check_elem_in_list
 ==================
 
 .. autofunction:: ivy.assertions.check_elem_in_list
-
 |
 | **Supported Frameworks:**
 

@@ -2,7 +2,6 @@ check_equal
 ===========
 
 .. autofunction:: ivy.assertions.check_equal
-
 |
 | **Supported Frameworks:**
 

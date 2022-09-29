@@ -8,27 +8,6 @@ floor_divide
 .. autofunction:: ivy.container.container_methods.floor_divide
 
 .. autofunction:: ivy.container.container_methods.static_floor_divide
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

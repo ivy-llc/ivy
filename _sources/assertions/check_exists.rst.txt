@@ -2,7 +2,6 @@ check_exists
 ============
 
 .. autofunction:: ivy.assertions.check_exists
-
 |
 | **Supported Frameworks:**
 

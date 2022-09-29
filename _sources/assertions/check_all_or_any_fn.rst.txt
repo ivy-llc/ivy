@@ -2,7 +2,6 @@ check_all_or_any_fn
 ===================
 
 .. autofunction:: ivy.assertions.check_all_or_any_fn
-
 |
 | **Supported Frameworks:**
 

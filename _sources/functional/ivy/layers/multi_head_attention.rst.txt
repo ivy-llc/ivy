@@ -8,27 +8,6 @@ multi_head_attention
 .. autofunction:: ivy.container.container_methods.multi_head_attention
 
 .. autofunction:: ivy.container.container_methods.static_multi_head_attention
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

@@ -8,27 +8,6 @@ assert_supports_inplace
 .. autofunction:: ivy.container.container_methods.assert_supports_inplace
 
 .. autofunction:: ivy.container.container_methods.static_assert_supports_inplace
-
-.. list-table:: Device Support
-   :widths: 20 20 20 20 20
-   :header-rows: 1
-
-   * - Device
-     - JAX
-     - NumPy
-     - TensorFlow
-     - PyTorch
-   * - CPU
-     - ✅
-     - ✅
-     - ✅
-     - ✅
-   * - GPU
-     - ❌
-     - ❌
-     - ❌
-     - ❌
-
 |
 | **Supported Frameworks:**
 

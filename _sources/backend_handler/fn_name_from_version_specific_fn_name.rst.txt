@@ -2,7 +2,6 @@ fn_name_from_version_specific_fn_name
 =====================================
 
 .. autofunction:: ivy.backend_handler.fn_name_from_version_specific_fn_name
-
 |
 | **Supported Frameworks:**
 
