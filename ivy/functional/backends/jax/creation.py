@@ -1,5 +1,7 @@
 # global
+from numbers import Number
 from typing import Union, Optional, List, Sequence
+
 import jax.dlpack
 import jax.numpy as jnp
 import jaxlib.xla_extension
@@ -315,11 +317,34 @@ def logspace(
 def one_hot(
     indices: JaxArray,
     depth: int,
+    /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    res = jnp.eye(depth, dtype=indices.dtype)[
-        jnp.array(indices, dtype="int64").reshape(-1)
-    ]
-    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = jnp.float32
+        else:
+            if not on_none:
+                dtype = jnp.array(on_value).dtype
+            elif not off_none:
+                dtype = jnp.array(off_value).dtype
+
+    res = jnp.eye(depth, dtype=dtype)[jnp.array(indices, dtype="int64").reshape(-1)]
+    res = res.reshape(list(indices.shape) + [depth])
+
+    if not on_none and not off_none:
+        res = jnp.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = jnp.moveaxis(res, -1, axis)
+
+    return _to_device(res, device)

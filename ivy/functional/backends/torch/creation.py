@@ -491,10 +491,38 @@ logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 def one_hot(
     indices: torch.Tensor,
     depth: int,
+    /,
     *,
+    on_value: Optional[torch.Tensor] = None,
+    off_value: Optional[torch.Tensor] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[torch.dtype] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
-        device, indices.dtype
-    )
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = torch.float32
+        else:
+            if not on_none:
+                dtype = torch.tensor(on_value).dtype
+            elif not off_none:
+                dtype = torch.tensor(off_value).dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
+
+    on_value = torch.tensor(1.0) if on_none else torch.tensor(on_value, dtype=dtype)
+    off_value = torch.tensor(0.0) if off_none else torch.tensor(off_value, dtype=dtype)
+
+    res = torch.nn.functional.one_hot(indices.to(torch.int64), depth)
+
+    if not on_none or not off_none:
+        res = torch.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = torch.moveaxis(res, -1, axis)
+
+    return res.to(device, dtype)
