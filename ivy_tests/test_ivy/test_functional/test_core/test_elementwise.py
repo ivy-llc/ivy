@@ -1643,9 +1643,7 @@ def pow_helper(draw, available_dtypes=None):
         max_val = ivy.iinfo(dtype2).max
     else:
         max_val = ivy.finfo(dtype2).max
-    max_x1 = (
-        np.max(np.abs(np.asarray(x1[0]))) if isinstance(x1[0], list) else abs(x1[0])
-    )
+    max_x1 = np.max(np.abs(x1[0]))
     if max_x1 in [0, 1]:
         max_value = None
     else:
