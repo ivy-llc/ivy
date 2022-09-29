@@ -198,6 +198,16 @@ try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5NKOLrn-9BM" class="video">
+    </iframe>
+
+
 MacOS
 ****
 
