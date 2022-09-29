@@ -762,7 +762,7 @@ def array_values(
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
-    array = np.array(values, dtype=dtype)
+    array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return array
