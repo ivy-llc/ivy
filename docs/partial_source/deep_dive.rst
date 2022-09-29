@@ -73,6 +73,9 @@ We're excited for you to get involved!  🦾
 |
 | (s) :ref:`Exception Handling`
 | How to handle exceptions and assertions in a function ⚠️
+|
+| (t) :ref:`Continuous Integration`
+| How to run and interpret the results of tests running on the Repository ?
 
 .. toctree::
    :hidden:
