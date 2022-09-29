@@ -60,15 +60,12 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
-    #tan
     @handle_cmd_line_args
     @given(
-        dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float")
-        ),
+        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.jax.lax.tan"
-        )
+        ),
     )
     def test_jax_lax_tan(
         dtype_and_x,
@@ -87,7 +84,7 @@ ivy.tan()
             fw=fw,
             frontend="jax",
             fn_tree="lax.tan",
-            x=np.asarray(x, dtype=input_dtype),
+            x=x[0],
         )
 
 * As you can see we generate almost everything we need to test a frontend function within the :code:`@given` and :code:`@handle_cmd_line_args` decorators.

@@ -154,6 +154,7 @@ See the section "Unused Arguments" below for more details.
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
+    @from_zero_dim_arrays_to_float
     def tan(
         x,
         /,
@@ -161,7 +162,7 @@ See the section "Unused Arguments" below for more details.
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
@@ -217,8 +218,8 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
-    def add(input, other, *, alpha=1, out=None):
-        return ivy.add(input, other * alpha, out=out)
+    def add(input, other, *, alpha=None, out=None):
+        return ivy.add(input, other, alpha=alpha, out=out)
 
 For PyTorch, :code:`add` is categorised under :code:`pointwise_ops` as is the case in
 the `torch`_ framework.
@@ -308,16 +309,16 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/general.py
+    # in ivy/functional/ivy/statistical.py
     def cumprod(
         x: Union[ivy.Array, ivy.NativeArray],
-        /,
         axis: int = 0,
-        *,
         exclusive: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return current_backend(x).cumprod(x, axis, exclusive, out=out)
+        return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
 compositionally able to mimic the required behaviour.
