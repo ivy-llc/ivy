@@ -491,7 +491,7 @@ def test_jax_numpy_amin(
     fw,
     keep_dims
 ):
-    input_dtype, x , axis= dtype_x_axis
+    input_dtype, x , axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
