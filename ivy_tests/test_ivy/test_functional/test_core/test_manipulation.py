@@ -651,35 +651,25 @@ def test_repeat(
         instance_method=instance_method,
         fw=fw,
         fn_name="repeat",
-        x=value,
+        x=value[0],
         repeats=repeat,
         axis=axis,
     )
 
 
 @st.composite
-def _split_helper(draw):
+def _get_splits(draw):
     """
-    _split_helper is a composite strategy used to generate valid values for the split
-    functions num_or_size_splits (noss) parameter. Noss can be either an integer or a
-    tuple of integers. The value(s) of noss have different requirements depending on if
-    noss is a tuple or an integer
+    Generate valid splits, either by generating an integer that evenly divides the axis
+    or a list of splits that sum to the length of the axis being split.
     """
-    noss_is_int = draw(
-        st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type").map(
-            lambda x: x == 1
-        )
-    )
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
     )
 
-    """
-    If noss is an integer, then it must be an integer that is a factor of size of the
-    dimension chosen from the shape of the array generated.
-    """
-    if noss_is_int:
+    @st.composite
+    def get_int_split(draw):
         if shape[axis] == 0:
             return 0
         factors = []
@@ -688,26 +678,20 @@ def _split_helper(draw):
                 factors.append(i)
         return draw(st.sampled_from(factors))
 
-    """
-    If noss is a tuple, then the sum of the values in the tuple must equal the size of
-    the dimension chosen from the shape of the array generated.
-    """
-    noss_dtype = draw(st.sampled_from(draw(helpers.get_dtypes("integer"))))
-    num_or_size_splits = []
-    while sum(num_or_size_splits) < shape[axis]:
-        split_value = draw(
-            helpers.array_values(
-                dtype=noss_dtype,
-                shape=(),
-                min_value=0,
-                max_value=shape[axis] - sum(num_or_size_splits),
-                exclude_min=False,
-                exclude_max=False,
+    @st.composite
+    def get_list_split(draw):
+        num_or_size_splits = []
+        while sum(num_or_size_splits) < shape[axis]:
+            split_value = draw(
+                helpers.ints(
+                    min_value=1,
+                    max_value=shape[axis] - sum(num_or_size_splits),
+                )
             )
-        )
-        num_or_size_splits.append(split_value[0])
+            num_or_size_splits.append(split_value)
+        return num_or_size_splits
 
-    return tuple(num_or_size_splits)
+    return draw(get_list_split() | get_int_split() | st.none())
 
 
 @handle_cmd_line_args
@@ -724,7 +708,7 @@ def _split_helper(draw):
         key="target_axis",
     ),
     with_remainder=st.booleans(),
-    num_or_size_splits=_split_helper(),
+    num_or_size_splits=_get_splits(),
     num_positional_args=helpers.num_positional_args(fn_name="split"),
 )
 def test_split(
@@ -733,7 +717,6 @@ def test_split(
     num_or_size_splits,
     axis,
     with_remainder,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -743,10 +726,11 @@ def test_split(
 ):
 
     dtype, value = dtype_value
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,

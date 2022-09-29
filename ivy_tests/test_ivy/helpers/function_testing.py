@@ -727,7 +727,11 @@ def gradient_test(
         return
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
         kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable_flags,
         native_array_flags=native_array_flags,
@@ -741,13 +745,14 @@ def gradient_test(
     )
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
-    # value test
-    value_test(
-        ret_np_flat=grads_np_flat,
-        ret_np_from_gt_flat=grads_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-    )
+    if np.all(np.isfinite(grads_np_flat)) or np.all(np.isfinite(grads_np_from_gt_flat)):
+        # value test
+        value_test(
+            ret_np_flat=grads_np_flat,
+            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_method(
@@ -969,8 +974,7 @@ def test_method(
                 ins._create_variables(device=device_, dtype=input_dtypes_method[0])
             )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
-        else:
-            v = ins.__getattribute__("v")
+        v = ins.__getattribute__("v")
         v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)

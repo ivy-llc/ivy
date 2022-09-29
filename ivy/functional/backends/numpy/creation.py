@@ -5,7 +5,6 @@ from typing import Union, Optional, List, Sequence
 # local
 import ivy
 from .data_type import as_native_dtype
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
@@ -57,13 +56,13 @@ def asarray(
     if isinstance(obj, np.ndarray) and dtype is None:
         dtype = obj.dtype
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = default_dtype(item=obj, as_native=True)
+        dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
             return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
         else:
             return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype=dtype, item=obj)
+        dtype = ivy.default_dtype(dtype=dtype, item=obj)
     if copy is True:
         return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
     else:

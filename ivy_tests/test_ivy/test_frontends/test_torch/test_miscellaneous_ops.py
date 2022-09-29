@@ -320,7 +320,7 @@ def test_torch_cartesian_prod(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,  # Torch requires this.
     ),
-    diagonal=st.integers(),
+    diagonal=st.integers(min_value=-100, max_value=100),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.triu"
     ),
@@ -499,10 +499,10 @@ def test_torch_triu_indices(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,  # Torch requires this.
     ),
-    diagonal=st.integers(),
+    diagonal=st.integers(min_value=-100, max_value=100),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.tril"
     ),
