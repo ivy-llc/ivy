@@ -78,16 +78,17 @@ def test_acosh(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
+        as_variable_flags=[True],
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        container_flags=[False],
+        instance_method=False,
         fw=fw,
         fn_name="acosh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
