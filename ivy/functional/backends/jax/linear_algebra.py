@@ -63,6 +63,14 @@ def diagonal(
         ret = jnp.diagonal(x, offset, axis1, axis2)
     return ret
 
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+	return jnp.linalg.eig(x)
+	
+eig.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
 
 def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigh(x)
