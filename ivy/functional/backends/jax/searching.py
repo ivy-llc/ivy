@@ -35,6 +35,8 @@ def argmin(
 def nonzero(
     x: JaxArray,
     /,
+    *,
+    as_tuple: bool,
 ) -> Tuple[JaxArray]:
     return jnp.nonzero(x)
 

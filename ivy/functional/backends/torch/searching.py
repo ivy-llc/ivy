@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Literal, Union
 
 import ivy
 import torch
@@ -41,8 +41,10 @@ argmin.support_native_out = True
 def nonzero(
     x: torch.Tensor,
     /,
+    *,
+    as_tuple: Union[Literal[True], Literal[False]],
 ) -> Tuple[torch.Tensor]:
-    return torch.nonzero(x, as_tuple=True)
+    return torch.nonzero(x, as_tuple=as_tuple)
 
 
 def where(

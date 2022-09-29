@@ -41,6 +41,8 @@ argmin.support_native_out = True
 def nonzero(
     x: np.ndarray,
     /,
+    *,
+    as_tuple: bool,
 ) -> Tuple[np.ndarray]:
     return np.nonzero(x)
 

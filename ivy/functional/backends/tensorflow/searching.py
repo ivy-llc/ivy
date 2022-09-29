@@ -38,6 +38,8 @@ def argmin(
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
     /,
+    *,
+    as_tuple: bool,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     return tuple(tf.experimental.numpy.nonzero(x))
 

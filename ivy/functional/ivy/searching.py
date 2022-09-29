@@ -223,7 +223,12 @@ def argmin(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_tuple: bool = True,
+) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -231,15 +236,23 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
+    as_tuple
+        If this is set to False, the function returns a tensor containing the indices
+        of all non-zero elements of input.
+        Otherwise, the function returns a tuple of 1-D tensors, one for each
+        dimension in input.
 
     Returns
     -------
     ret
-        a tuple of `k` arrays, one for each dimension of `x` and each of size `n`
-        (where `n` is the total number of non-zero elements), containing the indices of
-        the non-zero elements in that dimension. The indices must be returned in
-        row-major, C-style order. The returned array must have the default array index
-        data type.
+        If as_tuple is True, a tuple of `k` arrays, one for each dimension of `x`
+        and each of size `n` (where `n` is the total number of non-zero elements),
+        containing the indices of the non-zero elements in that dimension.
+        If as_tuple is False, a tensor of size n×z (where 'z' is the number of
+        dimensions in the input tensor and `n` is the total number of non-zero
+        elements), containing the indices of all non-zero elements of the input.
+        The indices must be returned in row-major, C-style order.
+        The returned array(s) must have the default array index data type.
 
     Functional Examples
     -------------------
@@ -255,6 +268,16 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
+
+    >>> x = ivy.array([[4., 0., -1.], [2., 0, 6], [2., -3., 0]])
+    >>> y = ivy.nonzero(x, as_tuple=False)
+    >>> print(y)
+    ivy.array([[0, 0],
+               [0, 2],
+               [1, 0],
+               [1, 2],
+               [2, 0],
+               [2, 1]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -317,7 +340,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x)
+    return current_backend(x).nonzero(x, as_tuple=as_tuple)
 
 
 @to_native_arrays_and_back

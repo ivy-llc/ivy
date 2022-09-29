@@ -15,10 +15,7 @@ def chunk(input, chunks, dim=0):
 
 
 def nonzero(input, *, out=None, as_tuple=False):
-    ret = ivy.nonzero(input)
-    if as_tuple is False:
-        ret = ivy.matrix_transpose(ivy.stack(ret))
-
+    ret = ivy.nonzero(input, as_tuple=as_tuple)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

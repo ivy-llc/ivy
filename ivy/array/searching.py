@@ -86,7 +86,12 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
 
-    def nonzero(self: ivy.Array, /) -> ivy.Array:
+    def nonzero(
+        self: ivy.Array,
+        /,
+        *,
+        as_tuple: bool,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -96,6 +101,11 @@ class ArrayWithSearching(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        as_tuple
+            If this is set to False, the function returns a tensor containing the
+            indices of all non-zero elements of input.
+            Otherwise, the function returns a tuple of 1-D tensors, one for each
+            dimension in input.
 
         Returns
         -------
@@ -103,7 +113,7 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the non-zero values.
 
         """
-        return ivy.nonzero(self._data)
+        return ivy.nonzero(self._data, as_tuple=as_tuple)
 
     def where(
         self: ivy.Array,
