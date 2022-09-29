@@ -593,7 +593,9 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
-    return torch.remainder(x1, x2, out=out)
+    floor_div = torch.floor(torch.div(x1, x2)).to(x1.dtype)
+    res = x1 - floor_div * x2
+    return res.to(x1.dtype)
 
 
 remainder.support_native_out = True
@@ -617,7 +619,6 @@ def bitwise_right_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     x2 = torch.clamp(x2, min=0, max=torch.iinfo(x2.dtype).bits - 1)
     return torch.bitwise_right_shift(x1, x2, out=out)
 
@@ -633,7 +634,6 @@ def bitwise_left_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return torch.bitwise_left_shift(x1, x2, out=out)
 
 
