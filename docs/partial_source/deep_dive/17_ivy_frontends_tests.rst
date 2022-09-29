@@ -3,7 +3,7 @@ Ivy Frontend Tests
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
-.. _`test_ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
+.. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
@@ -16,7 +16,7 @@ Introduction
 ------------
 
 Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder
-`test_ivy`_. In this section of the deep dive we are going to jump into Ivy Frontend Tests!
+`test ivy`_. In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Tests**
 
@@ -26,37 +26,29 @@ implement them for testing.
 
 **Important Helper Functions**
 
-* :code:`handle_cmd_line_args()` a decorator that should be added to every test function. For more information, visit the
-`Function Wrapping`_ section of the docs.
+* :code:`handle_cmd_line_args()` a decorator that should be added to every test function. For more information, visit the `Function Wrapping`_ section of the docs.
 
-* :code:`helpers.test_frontend_function()` helper function that is designed to do the heavy lifting and make testing Ivy
-Frontends easy! one of the many `Function Testing Helpers`_ It is used to test a frontend function for the current backend
-by comparing the result with the function in the associated framework.
+* :code:`helpers.test_frontend_function()` helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! one of the many `Function Testing Helpers`_ It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
 
-* :code:`helpers.get_dtypes()` helper function that returns either a full list of data types or a single data type, we
-should **always** be using `helpers.get_dtypes` to sample data types.
+* :code:`helpers.get_dtypes()` helper function that returns either a full list of data types or a single data type, we should **always** be using `helpers.get_dtypes` to sample data types.
 
 * :code:`helpers.dtype_and_values()` is a convenience function that allows you to generate arrays of any dimension and
 their associated data types, returned as :code:`([dtypes], [np.array])`.
 
-* :code:`helpers.num_positional_args()` is a convenience function that specifies the number of positional arguments for a
-particular function.
+* :code:`helpers.num_positional_args()` is a convenience function that specifies the number of positional arguments for a particular function.
 
 * :code:`helpers.get_shape()` is a convenience function that allows you to generate an array shape of type :code:`tuple`
 
 * :code:`np_frontend_helpers.where()` a generation strategy to generate values for NumPy's optional :code:`where` argument.
 
-* :code:`np_frontend_helpers.test_frontend_function()` behaves identical to :code:`helpers.test_frontend_function()` but
-handles NumPy's optional :code:`where` argument
+* :code:`np_frontend_helpers.test_frontend_function()` behaves identical to :code:`helpers.test_frontend_function()` but handles NumPy's optional :code:`where` argument
 
 **Useful Notes**
 
 * We should always ensure that our data type generation is complete. Generating float data types only for a function
 that accepts all numeric data types is not complete, a complete set would include **all** numeric data types.
 
-* The :code:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native
-namespace not just the function name. For example :code:`lax.tan` is needed for some functions in Jax, :code:`nn.functional.relu`
-is needed for some functions in PyTorch etc.
+* The :code:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name. For example :code:`lax.tan` is needed for some functions in Jax, :code:`nn.functional.relu` is needed for some functions in PyTorch etc.
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
@@ -102,8 +94,7 @@ ivy.tan()
         )
 
 * As you can see we generate almost everything we need to test a frontend function within the :code:`@given` and :code:`@handle_cmd_line_args` decorators.
-* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types
-specifically for Jax.
+* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for Jax.
 * We pass :code:`fn_name` to :code:`helpers.num_positional_args` which is used to determine the number of positional arguments for :code:`jax.lax.tan`.
 * We do not generate any values for :code:`fw`, these values are generated by :code:`handle_cmd_line_args` and are only passed as an argument to :code:`test_jax_lax_tan()`.
 * We unpack the :code:`dtype_and_x` to :code:`input_dtype` and :code:`x`.
@@ -160,13 +151,11 @@ specifically for Jax.
             dtype=dtype[0],
         )
 
-* Here we use :code:`helpers.get_dtypes("numeric")` to generate :code:`available_dtypes`, these are valid :code:`numeric`
-data types specifically for NumPy.
+* Here we use :code:`helpers.get_dtypes("numeric")` to generate :code:`available_dtypes`, these are valid :code:`numeric` data types specifically for NumPy.
 * NumPy has an optional argument :code:`where` which is generated using :code:`np_frontend_helpers.where()`.
 * :code:`numpy.tan()` supports :code:`out` arguments so we set generate values for :code:`with_out`.
 * Using :code:`np_frontend_helpers.handle_where_and_array_bools()` we do some processing on the generated :code:`where` value.
-* Instead of :code:`helpers.test_frontend_function()` we use :code:`np_frontend_helpers.test_frontend_function()` which
-behaves the same but has some extra code to handle the :code:`where` argument.
+* Instead of :code:`helpers.test_frontend_function()` we use :code:`np_frontend_helpers.test_frontend_function()` which behaves the same but has some extra code to handle the :code:`where` argument.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the NumPy namespace.
 * :code:`casting`, :code:`order`, :code:`subok` and are other other optional arguments for :code:`numpy.tan()`.
 
@@ -198,8 +187,7 @@ behaves the same but has some extra code to handle the :code:`where` argument.
             x=x[0],
         )
 
-* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data
-types specifically for TensorFlow.
+* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the TensorFlow namespace.
 
 
@@ -239,8 +227,7 @@ types specifically for TensorFlow.
             out=None,
         )
 
-* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data
-types specifically for PyTorch.
+* We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for PyTorch.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
 
 ivy.full()
@@ -304,13 +291,10 @@ This function requires us to create extra functions for generating :code:`shape`
             dtype=dtypes[0],
         )
 
-* The custom function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value`
-argument but handles the complications of :code:`int` and :code:`uint` types correctly.
+* The custom function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value` argument but handles the complications of :code:`int` and :code:`uint` types correctly.
 * We use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
-* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically
-for Jax. This is used to specify the data type of the output array.
-* :code:`full()` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`native_array_flags` to :code:`[False]`
-and :code:`with_out` :code:`False`.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
+* :code:`full()` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`native_array_flags` to :code:`[False]` and :code:`with_out` :code:`False`.
 
 
 **NumPy**
@@ -486,8 +470,7 @@ and :code:`with_out` :code:`False`.
             requires_grad=requires_grad,
         )
 
-* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument.
-This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
+* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :code:`torch.full()` supports :code:`out` so we generate :code:`with_out`.
 
@@ -705,19 +688,18 @@ Clearly, this helper would also be very useful for testing the various frontend
 concatenation functions, such as :code:`jax.numpy.concatenate`,
 :code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
 We could simply copy and paste the implementation from
-:code:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`
+:code:`/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`
 into each file
-:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`,
+:code:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`,
 but this would result in needless duplication.
 Instead, we should simply import the helper function from the ivy test file into the
-frontend test file, like so
-:code:`from ivy_tests.test_ivy.test_frontends.test_manipulation import _arrays_idx_n_dtypes`.
+frontend test file, like so :code:`from ivy_tests.test_ivy.test_frontends.test_manipulation import _arrays_idx_n_dtypes`.
 
 In cases where a helper function is uniquely useful for a frontend function without
 being useful for an Ivy function, then it should be implemented directly in
-:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`
+:code:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`
 rather than in
-:code:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
+:code:`/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
 However, as shown above, in many cases the same helper function can be shared between
 the Ivy API tests and the frontend tests,
 and we should strive for as much sharing as possible to minimize the amount of code.
