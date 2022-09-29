@@ -53,3 +53,20 @@ class ndarray:
             keepdims,
             where=where
         )
+
+
+    def any(
+        self,
+        axis=None, 
+        out=None, 
+        keepdims=False, 
+        *, 
+        where=True
+    ):
+        return np_frontend.any(
+            self.data,
+            axis,
+            out,
+            keepdims,
+            where=where
+        )
