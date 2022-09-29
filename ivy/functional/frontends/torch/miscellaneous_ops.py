@@ -158,5 +158,4 @@ def repeat_interleave(input, repeats, dim=None, *, output_size=None):
 
 def ravel(input):
     reshape_shape = (int(ivy.prod(ivy.array(tuple(input.shape)))), 1)
-    return ivy.array(
-        ivy.array(input, dtype=input.dtype).reshape(reshape_shape))
+    return ivy.array(input, dtype=input.dtype).reshape(reshape_shape)
