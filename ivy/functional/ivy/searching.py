@@ -56,6 +56,16 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     --------
 
@@ -71,28 +81,21 @@ def argmax(
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], \
-                     [-2., 3., 2.]])
+    >>> x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis= 1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
     >>> y = ivy.argmax(x, axis= 1, keepdims= True)
     >>> print(y)
-    ivy.array([[0], \
-              [2]])
+    ivy.array([[0], [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
     >>> z= ivy.zeros((1,3), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
     >>> print(z)
-    ivy.array([[0], \
-               [2], \
-               [2]])
+    ivy.array([[0],[2],[2]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -153,6 +156,16 @@ def argmin(
     -------
     ret
         Array containing the indices of the minimum values across the specified axis.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     --------
@@ -261,6 +274,16 @@ def nonzero(
         the non-zero elements in that dimension. The indices must be returned in
         row-major, C-style order. The returned array must have the default array index
         data type.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -377,6 +400,16 @@ def where(
     ret
         An array with elements from x1 where condition is True, and elements from x2
         elsewhere.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
