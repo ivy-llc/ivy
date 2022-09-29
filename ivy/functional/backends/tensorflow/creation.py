@@ -275,9 +275,22 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable], sparse: bool = False, indexing: str = "xy"
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.meshgrid(*arrays, indexing=indexing)
+    if not sparse:
+        return tf.meshgrid(*arrays, indexing=indexing)
+
+    sd = (1,) * len(arrays)
+    res = [
+        tf.reshape(tf.convert_to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = tf.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = tf.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(

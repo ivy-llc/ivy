@@ -288,6 +288,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
+        sparse=False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
         list_arrays = [self._data] + list(arrays)
@@ -317,7 +318,7 @@ class ArrayWithCreation(abc.ABC):
             one-dimensional arrays having lengths ``Ni = len(xi)``.
         
         """
-        return ivy.meshgrid(*list_arrays, indexing=indexing)
+        return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,

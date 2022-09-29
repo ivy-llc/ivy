@@ -982,7 +982,9 @@ def linspace(
 @handle_nestable
 @handle_exceptions
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -991,7 +993,8 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
-
+    sparse
+        if True, a sparse grid is returned in order to conserve memory. Default: False.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1060,6 +1063,17 @@ def meshgrid(
                [4, 1],
                [4, 1]])
 
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+        >>> print(xv)
+        ivy.array([[1, 2, 3]])
+
+        >>> print(yv)
+        ivy.array([[4],
+                [5],
+                [6]])
+
         With :class:`ivy.NativeArray` input:
 
         >>> x = ivy.native_array([1, 2])
@@ -1074,7 +1088,7 @@ def meshgrid(
                [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 @outputs_to_ivy_arrays

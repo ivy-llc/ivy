@@ -376,8 +376,23 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
     return res.to(device)
 
 
-def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
-    return list(torch.meshgrid(*arrays, indexing=indexing))
+def meshgrid(
+    *arrays: torch.Tensor, sparse: bool = False, indexing="xy"
+) -> List[torch.Tensor]:
+    if not sparse:
+        return list(torch.meshgrid(*arrays, indexing=indexing))
+
+    sd = (1,) * len(arrays)
+    res = [
+        torch.reshape(torch.as_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = torch.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = torch.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(

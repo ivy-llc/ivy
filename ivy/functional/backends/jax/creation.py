@@ -227,8 +227,10 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
-    return jnp.meshgrid(*arrays, indexing=indexing)
+def meshgrid(
+    *arrays: JaxArray, sparse: bool = False, indexing: str = "xy"
+) -> List[JaxArray]:
+    return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(

@@ -538,11 +538,13 @@ def test_full_like(
         max_num_dims=1,
         shared_dtype=True,
     ),
+    sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
 )
 def test_meshgrid(
     *,
     dtype_and_arrays,
+    sparse,
     indexing,
     fw,
 ):
@@ -566,6 +568,7 @@ def test_meshgrid(
         fw=fw,
         fn_name="meshgrid",
         **kw,
+        sparse=sparse,
         indexing=indexing,
     )
 

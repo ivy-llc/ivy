@@ -169,8 +169,10 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:
-    return np.meshgrid(*arrays, indexing=indexing)
+def meshgrid(
+    *arrays: np.ndarray, sparse: bool = False, indexing: str = "xy"
+) -> List[np.ndarray]:
+    return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(

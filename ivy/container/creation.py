@@ -726,6 +726,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -736,6 +737,7 @@ class ContainerWithCreation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "meshgrid",
             *arrays,
+            sparse,
             indexing,
             key_chains,
             to_apply,
@@ -748,6 +750,7 @@ class ContainerWithCreation(ContainerBase):
         self: ivy.Container,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -760,6 +763,8 @@ class ContainerWithCreation(ContainerBase):
                 lambda x_: ivy.meshgrid([x_._data] + list(arrays))
                 if ivy.is_array(x_)
                 else x_,
+                sparse,
+                indexing,
                 key_chains,
                 to_apply,
                 prune_unapplied,
