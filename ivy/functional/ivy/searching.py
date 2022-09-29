@@ -414,7 +414,7 @@ def where(
     Functional Examples
     -------------------
 
-    With `ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
@@ -423,7 +423,7 @@ def where(
     >>> print(res)
     ivy.array([[1,6],[3,4]])
 
-    With `ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> condition = ivy.array([[True, False], [False, True]])
     >>> x1 = ivy.native_array([[1, 2], [3, 4]])
@@ -432,7 +432,7 @@ def where(
     >>> print(res)
     array([[1, 6], [7, 4]])
 
-    With a mix of `ivy.Array` and `ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
     >>> x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
@@ -440,7 +440,7 @@ def where(
     >>> print(res)
     ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
 
-    With `ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
@@ -451,7 +451,7 @@ def where(
         b: ivy.array([3, 8, 6])
     }
 
-    With a mix of `ivy.Array` and `ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))
@@ -465,7 +465,7 @@ def where(
     Instance Method Examples
     -------------------
 
-    With `ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
@@ -474,7 +474,7 @@ def where(
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
 
-    With `ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
