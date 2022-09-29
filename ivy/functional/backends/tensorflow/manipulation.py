@@ -184,10 +184,10 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -207,8 +207,7 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
-    if not isinstance(num_or_size_splits, int):
-        num_or_size_splits = tf.cast(num_or_size_splits, tf.int64)
+
     return tf.split(x, num_or_size_splits, axis)
 
 
