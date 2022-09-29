@@ -423,41 +423,99 @@ as this is a limitation of the entire framework, and this limitation is already
 Classes and Instance Methods
 ----------------------------
 
-Most frameworks include instance methods on their array class for common array
-processing functions, such as :func:`reshape`, :func:`expand_dims` etc.
-This simple design choice comes with many advantages,
-some of which are explained in our :ref:`Ivy Array` section.
+Most frameworks include instance methods and special methods on their array class
+for common array processing functions, such as :func:`reshape`, :func:`expand_dims`
+and :func:`add`.
+This simple design choice comes with many advantages, some of which are explained
+in our :ref:`Ivy Array` section.
 
 In order to implement Ivy's frontend APIs to the extent that is required for arbitrary
-code transpilations, it's necessary for us to also implement these instance methods of
-the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`,
-:class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
+code transpilations, it's necessary for us to also implement these instance methods
+and special methods of the framework-specific array classes (:class:`tf.Tensor`,
+:class:`torch.Tensor`, :class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
+
+**Instance Method**
 
 For an example of how these are implemented, we first show the instance method for
-:meth:`np.ndarray.reshape`, which is implemented in the frontend
-`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+:meth:`np.ndarray.add`, which is implemented in the frontend
+`ndarray class <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23>`_:
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def add(
+        self,
+        value,
+    ):
+        return np_frontend.add(
+            self.data,
+            value,
+        )
 
-Under the hood, this simply calls the frontend :func:`np_frontend.reshape` function,
+Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 which itself is implemented as follows:
 
 .. code-block:: python
 
-    # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
-    def reshape(x, /, shape, *, copy=None):
-        return ivy.reshape(x, shape, copy=copy)
+    # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    def add(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+    ):
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.add(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
-We need to create these frontend array classes and all of their instance methods such
-that we are able to transpile code which makes use of instance methods.
-As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the
-computation graph in the source framework. In the case of instance methods, we then
-replace each of the original instance methods in the extracted computation graph with
-these new instance methods defined in the Ivy frontend class.
+**Special Method**
+
+Some examples referring to the special methods would make things more clear. For
+example lets take a look at how :meth:`tf.tensor.__add__` is implemented and how
+it's reverse :meth:`tf.tensor.__radd__` is implemented.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/tensor.py
+    def __add__(self, y, name="add"):
+        return tf_frontend.add(self.data, y, name=name)
+
+For the reverse operator of :func:`add`.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/tensor.py
+    def __radd__(self, x, name="radd"):
+        return tf_frontend.add(x, self.data, name=name)
+
+Here also, both of them simply call the frontend :func:`tf_frontend.add` under the
+hood. The functions with reverse operators should call the same frontend function
+as shown in the examples above. The implementation for the :func:`tf_frontend.add`
+is shown as follows:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    def add(x, y, name=None):
+    return ivy.add(x, y)
+
+We need to create these frontend array classes and all of their instance methods and
+also their special methods such that we are able to transpile code which makes use
+of these methods. As explained in :ref:`Ivy as a Transpiler`, when transpiling
+code we first extract the computation graph in the source framework. In the case of
+instance methods, we then replace each of the original instance methods in the
+extracted computation graph with these new instance methods defined in the Ivy
+frontend class.
 
 
 Framework-Specific Argument Types
