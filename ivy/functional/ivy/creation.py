@@ -1,8 +1,8 @@
 # global
+from __future__ import annotations
 import functools
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
-
 import numpy as np
 
 # local
@@ -123,7 +123,7 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> _T_co:
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
         ...
 
     def __len__(self, /) -> int:
