@@ -506,3 +506,4 @@ def test_jax_numpy_amin(
         keepdims=keep_dims,
         out=None,
     )
+    
