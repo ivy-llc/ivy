@@ -87,14 +87,11 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 def dot(a, b, *, precision=None):
-    # TODO: precision handling
     return ivy.vecdot(a, b)
 
 
-# def einsum(*operands, out=None, optimize="optimal", precision=None,
-# _use_xeinsum=False):
-#     # TODO: optimize, precision handling
-
+def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
+    return ivy.einsum(equation=optimize, *operands, out=out)
 
 
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):

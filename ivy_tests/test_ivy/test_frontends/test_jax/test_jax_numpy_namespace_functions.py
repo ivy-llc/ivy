@@ -1,5 +1,6 @@
 # global
 from hypothesis import given, strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -466,7 +467,7 @@ def test_jax_numpy_mean(
         keepdims=keepdims,
         where=where,
     )
-    
+
 
 # var
 @handle_cmd_line_args
@@ -536,7 +537,8 @@ def test_jax_numpy_var(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=10,
-        large_abs_safety_factor=2,
+        large_abs_safety_factor=3,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.dot"
@@ -562,4 +564,43 @@ def test_jax_numpy_dot(
         a=x[0],
         b=x[1],
         precision=None,
+    )
+
+
+# einsum
+@handle_cmd_line_args
+@given(
+    eq_n_op_n_shp=st.sampled_from(
+        [
+            ("ii", (np.arange(25).reshape(5, 5),), ()),
+            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_numpy_einsum(
+    eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
+):
+    eq, operands, true_shape = eq_n_op_n_shp
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    num_positional_args = len(operands)
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.einsum",
+        **kw,
+        out=None,
+        optimize=eq,
+        precision=None,
+        _use_xeinsum=False,
     )
