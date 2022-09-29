@@ -29,7 +29,6 @@ class ndarray:
             value,
         )
 
-
     def any(
         self,
         axis=None, 
