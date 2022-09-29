@@ -256,27 +256,15 @@ This function requires us to create extra functions for generating :code:`shape`
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
-    # full
-    @st.composite
-    def _dtypes(draw):
-        return draw(
-            st.shared(
-                helpers.list_of_length(
-                    x=st.sampled_from(ivy_jax.valid_numeric_dtypes), length=1
-                ),
-                key="dtype",
-            )
-        )
-
-
     @st.composite
     def _fill_value(draw):
-        dtype = draw(_dtypes())[0]
+        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
         if ivy.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
-        elif ivy.is_int_dtype(dtype):
+        if ivy.is_int_dtype(dtype):
             return draw(helpers.ints(min_value=-5, max_value=5))
         return draw(helpers.floats(min_value=-5, max_value=5))
+
 
     @handle_cmd_line_args
     @given(
@@ -288,7 +276,7 @@ This function requires us to create extra functions for generating :code:`shape`
             max_dim_size=10,
         ),
         fill_value=_fill_value(),
-        dtypes=_dtypes(),
+        dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.jax.lax.full"
         ),
@@ -298,14 +286,16 @@ This function requires us to create extra functions for generating :code:`shape`
         fill_value,
         dtypes,
         num_positional_args,
+        as_variable,
+        native_array,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="jax",
             fn_tree="lax.full",
@@ -314,11 +304,13 @@ This function requires us to create extra functions for generating :code:`shape`
             dtype=dtypes[0],
         )
 
-* The first extra function we use is :code:`_dtypes` which generates a :code:`list` of :code:`dtypes` to use for the :code:`dtype` argument. Notice how we use :code:`st.shared` to generate a dtype which is unique to that test instance.
-* The second extra function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value` argument but handles the complications of :code:`int` and :code:`uint` types correctly
+* The custom function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value`
+argument but handles the complications of :code:`int` and :code:`uint` types correctly.
 * We use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
-* We use :code:`ivy_jax.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
-* :code:`full()` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically
+for Jax. This is used to specify the data type of the output array.
+* :code:`full()` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`native_array_flags` to :code:`[False]`
+and :code:`with_out` :code:`False`.
 
 
 **NumPy**
@@ -326,22 +318,9 @@ This function requires us to create extra functions for generating :code:`shape`
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/creation_routines/test_from_shape_or_value.py
-    # full
-    @st.composite
-    def _dtypes(draw):
-        return draw(
-            st.shared(
-                helpers.list_of_length(
-                    x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
-                ),
-                key="dtype",
-            )
-        )
-
-
     @st.composite
     def _fill_value(draw):
-        dtype = draw(_dtypes())[0]
+        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
         if ivy.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
@@ -358,7 +337,7 @@ This function requires us to create extra functions for generating :code:`shape`
             max_dim_size=10,
         ),
         fill_value=_fill_value(),
-        dtypes=_dtypes(),
+        dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.numpy.full"
         ),
@@ -384,7 +363,7 @@ This function requires us to create extra functions for generating :code:`shape`
             dtype=dtypes[0],
         )
 
-* We use :code:`ivy_np.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
 * :code:`numpy.full()` does not have a :code:`where` argument so we can use :code:`helpers.test_frontend_function()`
 
 **TensorFlow**
@@ -392,22 +371,9 @@ This function requires us to create extra functions for generating :code:`shape`
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
-    # full
-    @st.composite
-    def _dtypes(draw):
-        return draw(
-            st.shared(
-                helpers.list_of_length(
-                    x=st.sampled_from(ivy_tf.valid_numeric_dtypes), length=1
-                ),
-                key="dtype",
-            )
-        )
-
-
     @st.composite
     def _fill_value(draw):
-        dtype = draw(_dtypes())[0]
+        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
         if ivy.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
@@ -424,7 +390,7 @@ This function requires us to create extra functions for generating :code:`shape`
             max_dim_size=10,
         ),
         fill_value=_fill_value(),
-        dtypes=_dtypes(),
+        dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.tensorflow.fill"
         ),
@@ -450,7 +416,7 @@ This function requires us to create extra functions for generating :code:`shape`
             rtol=1e-05,
         )
 
-* We use :code:`ivy_tf.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for TensorFlow.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for TensorFlow.
 * Tensorflow's version of :code:`full()` is named :code:`fill()` therefore we specify the :code:`fn_tree` argument to be :code:`"fill"`
 * When running the test there where some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance.
 
@@ -460,22 +426,9 @@ This function requires us to create extra functions for generating :code:`shape`
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_creation_ops.py
-    # full
-    @st.composite
-    def _dtypes(draw):
-        return draw(
-            st.shared(
-                helpers.list_of_length(
-                    x=st.sampled_from(ivy_torch.valid_numeric_dtypes), length=1
-                ),
-                key="dtype",
-            )
-        )
-
-
     @st.composite
     def _fill_value(draw):
-        dtype = draw(_dtypes())[0]
+        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
         if ivy.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
@@ -485,14 +438,13 @@ This function requires us to create extra functions for generating :code:`shape`
 
     @st.composite
     def _requires_grad(draw):
-        dtype = draw(_dtypes())[0]
+        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
         if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
             return draw(st.just(False))
         else:
             return draw(st.booleans())
 
 
-    # full
     @handle_cmd_line_args
     @given(
         shape=helpers.get_shape(
@@ -503,7 +455,7 @@ This function requires us to create extra functions for generating :code:`shape`
             max_dim_size=10,
         ),
         fill_value=_fill_value(),
-        dtypes=_dtypes(),
+        dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
         requires_grad=_requires_grad(),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.torch.full"
@@ -534,8 +486,9 @@ This function requires us to create extra functions for generating :code:`shape`
             requires_grad=requires_grad,
         )
 
-* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
-* We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
+* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument.
+This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :code:`torch.full()` supports :code:`out` so we generate :code:`with_out`.
 
 
