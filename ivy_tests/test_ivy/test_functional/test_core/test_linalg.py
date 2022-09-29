@@ -1097,6 +1097,7 @@ def test_qr(
         max_value=10.0,
     ),
     fm=st.booleans(),
+    uv=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="svd",
     ),
@@ -1110,6 +1111,7 @@ def test_svd(
     container,
     instance_method,
     fw,
+    uv,
     fm,
 ):
     dtype, x = dtype_x
@@ -1125,6 +1127,7 @@ def test_svd(
         fw=fw,
         fn_name="svd",
         x=x[0],
+        compute_uv=uv,
         full_matrices=fm,
         test_values=False,
         return_flat_np_arrays=True,
@@ -1134,25 +1137,35 @@ def test_svd(
 
     # value test based on recreating the original matrix and testing the consistency
     ret_flat_np, ret_from_gt_flat_np = results
-    U, S, Vh = ret_flat_np
-    m = U.shape[-1]
-    n = Vh.shape[-1]
-    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-    U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
-    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    with ivy.functional.backends.numpy.use:
-        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
-        S_mat_gt = (
-            S_gt
-            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
-        )
-    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
-    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+    if uv:
+        U, S, Vh = ret_flat_np
+        m = U.shape[-1]
+        n = Vh.shape[-1]
+        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+        S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    # value test
-    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
-    helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+        with ivy.functional.backends.numpy.use:
+            S_mat = (
+                S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+            )
+            S_mat_gt = (
+                S_gt
+                * ivy.eye(
+                    U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
+                ).data
+            )
+        reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+        reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+        # value test
+        helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+        helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+    else:
+        S = ret_flat_np
+        S_gt = ret_from_gt_flat_np
+        helpers.assert_all_close(S[0], S_gt[0], atol=1e-04)
 
 
 # matrix_norm
