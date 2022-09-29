@@ -374,37 +374,66 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "channel_first":
+        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     if dims == 1:
-        res = conv1d_transpose(
-            x,
-            filters,
-            strides,
-            padding,
-            output_shape=output_shape,
-            data_format=ivy.get_x_data_format(dims, data_format),
-            dilations=dilations,
+        res = tf.concat(
+            [
+                conv1d_transpose(
+                    x[..., j : j + filters.shape[-2] // feature_group_count],
+                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
+                    strides,
+                    padding,
+                    output_shape=output_shape,
+                    data_format="NWC",
+                    dilations=dilations,
+                )
+                for j in range(
+                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                )
+            ],
+            axis=-1,
         )
     elif dims == 2:
-        res = conv2d_transpose(
-            x,
-            filters,
-            strides,
-            padding,
-            output_shape=output_shape,
-            data_format=ivy.get_x_data_format(dims, data_format),
-            dilations=dilations,
+        res = tf.concat(
+            [
+                conv2d_transpose(
+                    x[..., j : j + filters.shape[-2] // feature_group_count],
+                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
+                    strides,
+                    padding,
+                    output_shape=output_shape,
+                    data_format="NHWC",
+                    dilations=dilations,
+                )
+                for j in range(
+                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                )
+            ],
+            axis=-1,
         )
     else:
-        res = conv3d_transpose(
-            x,
-            filters,
-            strides,
-            padding,
-            output_shape=output_shape,
-            data_format=ivy.get_x_data_format(dims, data_format),
-            dilations=dilations,
+        res = tf.concat(
+            [
+                conv3d_transpose(
+                    x[..., j : j + filters.shape[-2] // feature_group_count],
+                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
+                    strides,
+                    padding,
+                    output_shape=output_shape,
+                    data_format="NDHWC",
+                    dilations=dilations,
+                )
+                for j in range(
+                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                )
+            ],
+            axis=-1,
         )
+    if data_format == "channel_first":
+        res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
 

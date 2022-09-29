@@ -962,7 +962,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     >>> print(yType)
     int8
 
-    With :code:`ivy.Native_dtype` inputs:
+    With :class:`ivy.NativeDtype` inputs:
 
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
@@ -1349,7 +1349,7 @@ def dtype(
     >>> print(y)
     float32
 
-    With :code:`ivy.Native_Array` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.native_array([1, 0, 1, -1, 0])
     >>> y = ivy.dtype(x1)

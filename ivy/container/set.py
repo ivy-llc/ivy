@@ -153,6 +153,7 @@ class ContainerWithSet(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                               b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_counts()

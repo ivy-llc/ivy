@@ -86,8 +86,8 @@ Some common important tasks are:
    :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method,
    :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct
-   category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
-   :code:`ivy.ContainerWithManipulation` etc.
+   category-specific parent class, such as :class:`ivy.ArrayWithElementwise`,
+   :class:`ivy.ContainerWithManipulation` etc.
 #. correct all of the :ref:`Function Arguments` and the type hints for every
    function **and** its *relevant methods*, including those you did not implement
    yourself.
@@ -161,11 +161,11 @@ The general workflow for this task is:
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
 
-If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing,
+If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing,
 which would make your frontend function much simpler to implement,
 then you you should first do the following:
 
-#. create a new issue with the title :code:`ivy.<func_name>`, add the labels
+#. create a new issue with the title :func:`ivy.<func_name>`, add the labels
    :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`
    to it, and then simply leave this issue open. At some point, a member of our team
    will assess whether it should be added, and if so, they will add it to another
@@ -182,14 +182,14 @@ After this, you then have two options for how to proceed:
    compositionally, or if this is not feasible, then you can simply choose another
    frontend function to work on. You could also choose to work on another open task
    entirely at this point if you wanted to. For example, you might decide to wait for a
-   member of our team to review your suggested addition :code:`ivy.<func_name>`, and
+   member of our team to review your suggested addition :func:`ivy.<func_name>`, and
    potentially add this to an Ivy Extension ToDo list issue (see the open task below).
    In either case, you should add the label "Pending other Issue" to the frontend
    sub-task issue, and leave it open. This issue will then still show up as open in the
    original frontend ToDo list, helpfully preventing others from working on this
    problematic frontend function, which depends on the unimplemented
-   :code:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
-   contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>`
+   :func:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
+   contents: :code:`pending <issue_link>`, which links to the :func:`ivy.<func_name>`
    issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend

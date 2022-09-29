@@ -579,6 +579,7 @@ def conv_general_transpose(
     output_shape=None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -634,6 +635,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[:, :, :-1]
@@ -646,6 +648,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :]
@@ -660,12 +663,13 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :, :]
         if not_valid_pad[1]:
             res = res[..., :, :-1, :]
-        if not_valid_pad[1]:
+        if not_valid_pad[2]:
             res = res[..., :, :, :-1]
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)

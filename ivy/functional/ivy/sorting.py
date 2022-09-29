@@ -69,7 +69,7 @@ def argsort(
 
     Examples
     --------
-    With: code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)

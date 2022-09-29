@@ -3449,7 +3449,7 @@ def vmap(
 
     Examples
     --------
-    With :code:`ivy.matmul` func and :class:`ivy.Array` input:
+    With :func:`ivy.matmul` and :class:`ivy.Array` input:
 
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
