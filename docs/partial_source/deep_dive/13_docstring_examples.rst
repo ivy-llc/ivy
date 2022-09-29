@@ -13,53 +13,53 @@ There are eight types of examples, which each need to be added:
 
 **Functional** examples show the function being called like so
 :code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
-in the Ivy API :code:`ivy.<func_name>`.
+in the Ivy API :func:`ivy.<func_name>`.
 
 **Container static method** examples show the method being called like so
 :code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
-docstring of the static container method :code:`ivy.Container.static_<func_name>`.
+docstring of the static container method :meth:`ivy.Container.static_<func_name>`.
 
 **Array instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Array` instance,
 and these should be added to the docstring of the :class:`ivy.Array` instance method
-:code:`ivy.Array.<func_name>`.
+:meth:`ivy.Array.<func_name>`.
 
 **Container instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Container` instance,
 and these should be added to the docstring of the :class:`ivy.Container` instance method
-:code:`ivy.Container.<func_name>`.
+:meth:`ivy.Container.<func_name>`.
 
 **Array operator** examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :class:`ivy.Array` instance, and these should be added to the
-docstring of the :class:`ivy.Array` special method :code:`ivy.Array.__<op_name>__`.
+docstring of the :class:`ivy.Array` special method :meth:`ivy.Array.__<op_name>__`.
 
 **Array reverse operator** examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :class:`ivy.Array` instance. These should be added to the docstring of the
-:class:`ivy.Array` reverse special method :code:`ivy.Array.__r<op_name>__`.
+:class:`ivy.Array` reverse special method :meth:`ivy.Array.__r<op_name>__`.
 
 **Container operator** examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :class:`ivy.Container` instance, and these should be added to the
 docstring of the :class:`ivy.Container` special method
-:code:`ivy.Container.__<op_name>__`.
+:meth:`ivy.Container.__<op_name>__`.
 
 **Container reverse operator** examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :class:`ivy.Container` instance. These should be added to the docstring of the
-:class:`ivy.Container` reverse special method :code:`ivy.Container.__r<op_name>__`.
+:class:`ivy.Container` reverse special method :meth:`ivy.Container.__r<op_name>__`.
 
 The first four example types are very common, while the last four, unsurprisingly,
 are only relevant for *operator* functions
-such as :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`.
+such as :func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide`.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
-(:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
+(:meth:`__add__`, :meth:`__sub__`, :meth:`__mul__`, :meth:`__truediv__` etc.) being called on the array class.
 
 **Operator** examples are only relevant for *operator* functions. These are functions which are called when a
-corresponding operator is applied to an array. For example, the functions :code:`ivy.add`, `ivy.subtract`,
-:code:`ivy.multiply` and :code:`ivy.divide` are called when the operators :code:`+`, :code:`-`, :code:`*` and :code:`/`
-are used respectively. Under the hood, these operators first call the special methods :code:`__add__`, :code:`__sub__`,
-:code:`__mul__` and :code:`__truediv__` respectively, on either the :class:`ivy.Array` or :class:`ivy.Container`
+corresponding operator is applied to an array. For example, the functions :func:`ivy.add`, :func:`ivy.subtract`,
+:func:`ivy.multiply` and :func:`ivy.divide` are called when the operators :code:`+`, :code:`-`, :code:`*` and :code:`/`
+are used respectively. Under the hood, these operators first call the special methods :meth:`__add__`, :meth:`__sub__`,
+:meth:`__mul__` and :meth:`__truediv__` respectively, on either the :class:`ivy.Array` or :class:`ivy.Container`
 instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.
 
@@ -67,7 +67,7 @@ These special methods in turn call the functions in the Ivy API mentioned above.
 
 To recap, *functional* examples show the function being called like so
 :code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
-in the Ivy API :code:`ivy.<func_name>`.
+in the Ivy API :func:`ivy.<func_name>`.
 
 Firstly, we should include *functional* examples with :class:`ivy.Array` instances in the input.
 
@@ -125,7 +125,7 @@ Whereas the following container is not okay to use for example purposes:
 
 To recap, *container static method* examples show the method being called like so
 :code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
-docstring of the static container method :code:`ivy.Container.static_<func_name>`.
+docstring of the static container method :meth:`ivy.Container.static_<func_name>`.
 
 The static methods of the :class:`ivy.Container` class are used under the hood when
 supporting the *nestable* property for all Ivy functions in the API,
@@ -133,13 +133,13 @@ as showcased by the examples for points 6 and 7. We should demonstrate these sam
 examples in the static method docstrings also.
 
 8. the example from point 6 should be replicated, but added to the :class:`ivy.Container`
-   static method :code:`ivy.Container.static_<func_name>` docstring. With
-   :code:`ivy.<func_name>` replaced with :code:`ivy.Container.static_<func_name>`
+   static method :meth:`ivy.Container.static_<func_name>` docstring. With
+   :func:`ivy.<func_name>` replaced with :meth:`ivy.Container.static_<func_name>`
    in the example.
 
 9. the example from point 7 should be replicated, but added to the :class:`ivy.Container`
-   static method :code:`ivy.Container.static_<func_name>` docstring. With
-   :code:`ivy.<func_name>` replaced with :code:`ivy.Container.static_<func_name>`
+   static method :meth:`ivy.Container.static_<func_name>` docstring. With
+   :func:`ivy.<func_name>` replaced with :meth:`ivy.Container.static_<func_name>`
    in the example.
 
 **Array Instance Method Example**
@@ -147,7 +147,7 @@ examples in the static method docstrings also.
 To recap, *array instance method* examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Array` instance,
 and these should be added to the docstring of the :class:`ivy.Array` instance method
-:code:`ivy.Array.<func_name>`.
+:meth:`ivy.Array.<func_name>`.
 
 These examples are of course only relevant if an instance method for
 the function exists. If so, this example should simply:
@@ -159,7 +159,7 @@ the function exists. If so, this example should simply:
 To recap, *container instance method* examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Container` instance,
 and these should be added to the docstring of the :class:`ivy.Container` instance method
-:code:`ivy.Container.<func_name>`.
+:meth:`ivy.Container.<func_name>`.
 
 These examples are of course only relevant if an instance method
 for the function exists. If so, this example should simply:
@@ -170,7 +170,7 @@ for the function exists. If so, this example should simply:
 
 To recap, *array operator* examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :class:`ivy.Array` instance, and these should be added to the
-docstring of the :class:`ivy.Array` special method :code:`ivy.Array.__<op_name>__`.
+docstring of the :class:`ivy.Array` special method :meth:`ivy.Array.__<op_name>__`.
 
 If the function is an *operator* function, then the *array operator* examples should:
 
@@ -183,7 +183,7 @@ If the function is an *operator* function, then the *array operator* examples sh
 To recap, *array reverse operator* examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :class:`ivy.Array` instance. These should be added to the docstring of the
-:class:`ivy.Array` reverse special method :code:`ivy.Array.__r<op_name>__`.
+:class:`ivy.Array` reverse special method :meth:`ivy.Array.__r<op_name>__`.
 
 If the function is an *operator* function, then the *array reverse operator* example
 should:
@@ -196,7 +196,7 @@ should:
 To recap, *container operator* examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :class:`ivy.Container` instance, and these should be added to the
 docstring of the :class:`ivy.Container` special method
-:code:`ivy.Container.__<op_name>__`.
+:meth:`ivy.Container.__<op_name>__`.
 
 If the function is an *operator* function, then the *container operator*
 examples should:
@@ -213,7 +213,7 @@ examples should:
 To recap, *container reverse operator* examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :class:`ivy.Container` instance. These should be added to the docstring of the
-:class:`ivy.Container` reverse special method :code:`ivy.Container.__r<op_name>__`.
+:class:`ivy.Container` reverse special method :meth:`ivy.Container.__r<op_name>__`.
 
 If the function is an *operator* function, then the *array reverse operator* example
 should:
@@ -277,7 +277,7 @@ ivy.tan
 
 **Functional Examples**
 
-The signature for :code:`ivy.tan` is as follows:
+The signature for :func:`ivy.tan` is as follows:
 
 .. code-block:: python
 
@@ -354,7 +354,7 @@ Point 7 is not relevant as there is only one input argument
 **Container Static Method Examples**
 
 We then add an :class:`ivy.Container` static method example to the docstring of
-:code:`ivy.Container.static_tan` in order to satisfy point 8.
+:meth:`ivy.Container.static_tan` in order to satisfy point 8.
 Point 9 is not relevant as there is only one input argument
 (excluding :code:`out` which does not count, as it essentially acts as an output).
 
@@ -374,7 +374,7 @@ Point 9 is not relevant as there is only one input argument
 
 **Array Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Array.tan` in order to satisfy
+We then add an instance method example to :meth:`ivy.Array.tan` in order to satisfy
 point 10.
 
 .. code-block:: python
@@ -388,7 +388,7 @@ point 10.
 
 **Container Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Container.tan` in order to satisfy
+We then add an instance method example to :meth:`ivy.Container.tan` in order to satisfy
 point 11.
 
 .. code-block:: python
@@ -405,26 +405,26 @@ point 11.
 
 **Array Operator Examples**
 
-Points 12 and 13 are not relevant as :code:`ivy.tan` is not an *operator* function.
+Points 12 and 13 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Array Reverse Operator Example**
 
-Point 14 is not relevant as :code:`ivy.tan` is not an *operator* function.
+Point 14 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 15, 16 and 17 are not relevant as :code:`ivy.tan` is not an *operator* function.
+Points 15, 16 and 17 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
-Point 18 is not relevant as :code:`ivy.tan` is not an *operator* function.
+Point 18 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 ivy.roll
 --------
 
 **Functional Examples**
 
-The signature for :code:`ivy.roll` is as follows:
+The signature for :func:`ivy.roll` is as follows:
 
 .. code-block:: python
 
@@ -474,8 +474,8 @@ These examples cover points 1, 2, 3, 4 and 5.
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
 to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
 
-Point 1 is a bit less trivial to satisfy than it was for :code:`ivy.tan` above. While :code:`x` again only has one
-variation (for the same reason as explained in the :code:`ivy.tan` example above), :code:`shift` has two variations
+Point 1 is a bit less trivial to satisfy than it was for :func:`ivy.tan` above. While :code:`x` again only has one
+variation (for the same reason as explained in the :func:`ivy.tan` example above), :code:`shift` has two variations
 (:code:`int` or sequence of :code:`int`), and :code:`axis` has three variations
 (:code:`int`, :sequence of :code:`int`, or :code:`None`).
 
@@ -510,7 +510,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
         b: ivy.array([5., 3., 4.])
     }
 
-Unlike :code:`ivy.tan`, point 7 is relevant in this case,
+Unlike :func:`ivy.tan`, point 7 is relevant in this case,
 as there are three function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs,
 in order to satisfy point 7.
@@ -532,7 +532,7 @@ in order to satisfy point 7.
 **Container Static Method Examples**
 
 We then add an :class:`ivy.Container` static method example with an :class:`ivy.Container`
-for one of the inputs, to the docstring of :code:`ivy.Container.static_roll`,
+for one of the inputs, to the docstring of :meth:`ivy.Container.static_roll`,
 in order to satisfy point 8.
 
 .. code-block:: python
@@ -552,7 +552,7 @@ in order to satisfy point 8.
     }
 
 We then add an :class:`ivy.Container` static method example with multiple
-:class:`ivy.Container` inputs, to the docstring of :code:`ivy.Container.static_roll`,
+:class:`ivy.Container` inputs, to the docstring of :meth:`ivy.Container.static_roll`,
 in order to satisfy point 9.
 
 .. code-block:: python
@@ -571,7 +571,7 @@ in order to satisfy point 9.
 
 **Array Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Array.roll`
+We then add an instance method example to :meth:`ivy.Array.roll`
 in order to satisfy point 10.
 
 .. code-block:: python
@@ -585,7 +585,7 @@ in order to satisfy point 10.
 
 **Container Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Container.roll`
+We then add an instance method example to :meth:`ivy.Container.roll`
 in order to satisfy point 11.
 
 .. code-block:: python
@@ -604,26 +604,26 @@ in order to satisfy point 11.
 
 **Array Operator Examples**
 
-Points 12 and 13 are not relevant as :code:`ivy.roll` is not an *operator* function.
+Points 12 and 13 are not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Array Reverse Operator Example**
 
-Point 14 is not relevant as :code:`ivy.roll` is not an *operator* function.
+Point 14 is not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 15, 16 and 17 are not relevant as :code:`ivy.roll` is not an *operator* function.
+Points 15, 16 and 17 are not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
-Point 18 is not relevant as :code:`ivy.roll` is not an *operator* function.
+Point 18 is not relevant as :code:`func.roll` is not an *operator* function.
 
 ivy.add
 -------
 
 **Functional Examples**
 
-The signature for :code:`ivy.add` is as follows:
+The signature for :func:`ivy.add` is as follows:
 
 .. code-block:: python
 
@@ -672,7 +672,7 @@ These examples cover points 1, 2, 3, 4 and 5.
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
 to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
 
-Point 1 is again trivial to satisfy, as was the case for :code:`ivy.tan`.
+Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7,
 and also ignoring the *nestable* nature of the function which is covered by points 8 and 9,
 then as far as point 1 is concerned, inputs :code:`x1` and :code:`x2` both only have one possible variation.
@@ -711,7 +711,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
                       [8.1, 9.3, 3.4]])
     }
 
-Again, unlike :code:`ivy.tan`, point 7 is relevant in this case,
+Again, unlike :func:`ivy.tan`, point 7 is relevant in this case,
 as there are two function inputs in total (exluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs,
 in order to satisfy point 7.
@@ -734,7 +734,7 @@ in order to satisfy point 7.
 **Container Static Method Examples**
 
 We then add an :class:`ivy.Container` static method example with an :class:`ivy.Container`
-for one of the inputs, to the docstring of :code:`ivy.Container.static_add`,
+for one of the inputs, to the docstring of :meth:`ivy.Container.static_add`,
 in order to satisfy point 8.
 
 .. code-block:: python
@@ -759,7 +759,7 @@ in order to satisfy point 8.
     }
 
 We then add an :class:`ivy.Container` static method example with multiple
-:class:`ivy.Container` inputs, also to the docstring of :code:`ivy.Container.static_add`,
+:class:`ivy.Container` inputs, also to the docstring of :meth:`ivy.Container.static_add`,
 in order to satisfy point 9.
 
 .. code-block:: python
@@ -779,7 +779,7 @@ in order to satisfy point 9.
 
 **Array Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Array.add` in order to satisfy
+We then add an instance method example to :meth:`ivy.Array.add` in order to satisfy
 point 10.
 
 .. code-block:: python
@@ -795,7 +795,7 @@ point 10.
 
 **Container Instance Method Example**
 
-We then add an instance method example to :code:`ivy.Container.add` in order to satisfy
+We then add an instance method example to :meth:`ivy.Container.add` in order to satisfy
 point 11.
 
 .. code-block:: python
@@ -816,7 +816,7 @@ point 11.
 
 **Array Operator Examples**
 
-Point 12 is satisfied by the following example in the :code:`ivy.Array.__add__`
+Point 12 is satisfied by the following example in the :meth:`ivy.Array.__add__`
 docstring, with the operator called on two :class:`ivy.Array` instances.
 
 .. code-block:: python
@@ -832,7 +832,7 @@ docstring, with the operator called on two :class:`ivy.Array` instances.
     >>> print(z)
     ivy.array([5, 7, 9])
 
-Point 13 is satisfied by the following example in the :code:`ivy.Array.__add__`
+Point 13 is satisfied by the following example in the :meth:`ivy.Array.__add__`
 docstring, with the operator called with an :class:`ivy.Array` instance on the left and
 :class:`ivy.Container` on the right.
 
@@ -856,7 +856,7 @@ docstring, with the operator called with an :class:`ivy.Array` instance on the l
 
 **Array Reverse Operator Examples**
 
-Point 14 is satisfied by the following example in the :code:`ivy.Array.__radd__`
+Point 14 is satisfied by the following example in the :meth:`ivy.Array.__radd__`
 docstring, with the operator called with a :code:`Number` on the left and an
 :class:`ivy.Array` instance on the right.
 
@@ -873,7 +873,7 @@ docstring, with the operator called with a :code:`Number` on the left and an
 
 **Container Operator Examples**
 
-Point 15 is satisfied by the following example in the :code:`ivy.Container.__add__`
+Point 15 is satisfied by the following example in the :meth:`ivy.Container.__add__`
 docstring, with the operator called on two :class:`ivy.Container` instances containing
 :code:`Number` instances at the leaves.
 
@@ -893,7 +893,7 @@ docstring, with the operator called on two :class:`ivy.Container` instances cont
         b: 6
     }
 
-Point 16 is satisfied by the following example in the :code:`ivy.Container.__add__`
+Point 16 is satisfied by the following example in the :meth:`ivy.Container.__add__`
 docstring, with the operator called on two :class:`ivy.Container` instances containing
 :class:`ivy.Array` instances at the leaves.
 
@@ -912,7 +912,7 @@ docstring, with the operator called on two :class:`ivy.Container` instances cont
         b: ivy.array([7, 9, 11])
     }
 
-Point 17 is satisfied by the following example in the :code:`ivy.Container.__add__`
+Point 17 is satisfied by the following example in the :meth:`ivy.Container.__add__`
 docstring, with the operator called with an :class:`ivy.Container` instance on the left
 and :class:`ivy.Array` on the right.
 
@@ -936,7 +936,7 @@ and :class:`ivy.Array` on the right.
 
 **Container Reverse Operator Example**
 
-Point 18 is satisfied by the following example in the :code:`ivy.Container.__radd__`
+Point 18 is satisfied by the following example in the :meth:`ivy.Container.__radd__`
 docstring, with the operator called with a :code:`Number` on the left and an
 :class:`ivy.Container` instance on the right.
 

@@ -103,6 +103,7 @@ def dtype_and_values(
     shared_dtype=False,
     ret_shape=False,
     dtype=None,
+    array_api_dtypes=False,
 ):
     """Draws a list of arrays with elements from the given corresponding data types.
 
@@ -170,6 +171,9 @@ def dtype_and_values(
         if True, the shape of the arrays is also returned.
     dtype
         A list of data types for the given arrays.
+    array_api_dtypes
+        if True, use data types that can be promoted with the array_api_promotion
+        table.
 
     Returns
     -------
@@ -189,6 +193,7 @@ def dtype_and_values(
                 num_arrays=num_arrays,
                 available_dtypes=available_dtypes,
                 shared_dtype=shared_dtype,
+                array_api_dtypes=array_api_dtypes,
             )
         )
     if shape is not None:
@@ -762,10 +767,10 @@ def array_values(
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
-    array = np.array(values, dtype=dtype)
+    array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
-    return array
+    return np.asarray(array)
 
 
 #      From array-api repo     #

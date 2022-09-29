@@ -6,11 +6,6 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-    as_ivy_dtype,
-)
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -55,7 +50,7 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = as_native_dtype(default_dtype(dtype=dtype))
+            dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
@@ -88,17 +83,17 @@ def asarray(
                 return tf.identity(obj)
             if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    dtype = default_dtype(item=obj, as_native=True)
+                    dtype = ivy.default_dtype(item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype=dtype, item=obj, as_native=True)
+                    dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
                         ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
@@ -114,13 +109,13 @@ def asarray(
                 try:
                     return tf.convert_to_tensor(obj)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
+                    dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(
                         ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):

@@ -7,11 +7,8 @@ from torch import Tensor
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-)
-from ivy.functional.backends.numpy.data_type import as_ivy_dtype
+
+# from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -67,7 +64,7 @@ def arange(
         else:
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
-        dtype = as_native_dtype(default_dtype(dtype=dtype))
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
@@ -98,16 +95,16 @@ def asarray(
     if isinstance(obj, torch.Tensor) and dtype is None:
         dtype = obj.dtype
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = default_dtype(item=obj, as_native=True)
+        dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
             return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
         else:
             return torch.as_tensor(obj, dtype=dtype).to(device)
 
     elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = as_native_dtype(as_ivy_dtype(obj.dtype))
+        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype))
     else:
-        dtype = as_native_dtype((default_dtype(dtype=dtype, item=obj)))
+        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:

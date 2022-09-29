@@ -1,8 +1,8 @@
 # global
+from __future__ import annotations
 import functools
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
-
 import numpy as np
 
 # local
@@ -123,7 +123,7 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> _T_co:
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
         ...
 
     def __len__(self, /) -> int:
@@ -189,6 +189,7 @@ def arange(
         output array must be ceil((stop-start)/step) if stop - start and step have the
         same sign, and length 0 otherwise.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
@@ -197,6 +198,7 @@ def arange(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -245,6 +247,7 @@ def asarray(
     ret
         An array interpretation of x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
@@ -291,6 +294,7 @@ def zeros(
     -------
     ret
         an array containing zeros.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -346,6 +350,7 @@ def ones(
     -------
     ret
         an array containing ones.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -409,6 +414,7 @@ def full_like(
         an array having the same shape as ``x`` and where every element is equal to
         ``fill_value``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
@@ -434,7 +440,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With :code:`float` datatype:
+    With float datatype:
 
     >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     >>> fill_value = 0.000123
@@ -458,8 +464,7 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                           b=ivy.array([4.123,5.23,6.23]))
+    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -481,8 +486,7 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1,2,3]), \
-                           b=ivy.array([4,5,6]))
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
     >>> fill_value = 10
     >>> y = x.full_like(fill_value)
     >>> print(y)
@@ -531,6 +535,7 @@ def ones_like(
     -------
     ret
         an array having the same shape as x and filled with ones.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -588,6 +593,7 @@ def zeros_like(
     ret
         an array having the same shape as ``x`` and filled with ``zeros``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
@@ -600,69 +606,69 @@ def zeros_like(
     Functional Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-        >>> y2 = ivy.zeros_like(x2)
-        >>> print(y2)
-        ivy.array([[0., 0., 0.],
-               [0., 0., 0.]])
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.zeros_like(x2)
+    >>> print(y2)
+    ivy.array([[0., 0., 0.],
+            [0., 0., 0.]])
 
-        >>> x3 = ivy.array([3., 2., 1.])
-        >>> y3 = ivy.ones(3)
-        >>> ivy.zeros_like(x3, out=y3)
-        ivy.array([0., 0., 0.])
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.ones(3)
+    >>> ivy.zeros_like(x3, out=y3)
+    ivy.array([0., 0., 0.])
 
-    With 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
-        >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([[0, 0, 0],
-               [0, 0, 0]])
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([[0, 0, 0],[0, 0, 0]])
 
 
-        >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-        >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-        >>> print(y2)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        # Array ``y2`` is now stored on the CPU.
+    # Array ``y2`` is now stored on the CPU.
 
-    With 'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
-        >>> y = ivy.zeros_like(x)
-        >>> print(y)
-        {
-            a: ivy.array([0, 0, 0]),
-            b: ivy.array([0, 0, 0])
-        }
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 0, 0]),
+        b: ivy.array([0, 0, 0])
+    }
 
     Instance Method Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x = ivy.array([2, 3, 8, 2, 1])
-        >>> y = x.zeros_like()
-        >>> print(y)
-        ivy.array([0, 0, 0, 0, 0])
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.zeros_like()
+    >>> print(y)
+    ivy.array([0, 0, 0, 0, 0])
 
-    With 'ivy.Container' input:
+    With :class:'ivy.Container' input:
 
-        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
-        >>> y = x.zeros_like()
-        >>> print(y)
-        {
-            a: ivy.array([0., 0.]),
-            b: ivy.array([0., 0.])
-        }
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.zeros_like()
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.]),
+        b: ivy.array([0., 0.])
+    }
+
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -699,6 +705,7 @@ def tril(
         an array containing the lower triangular part(s). The returned array must have
         the same shape and data type as x. All elements above the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -746,6 +753,7 @@ def triu(
         the same shape and data type as x. All elements below the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
@@ -791,6 +799,7 @@ def empty(
     -------
     ret
         an uninitialized array having a specified shape
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -839,6 +848,7 @@ def empty_like(
     -------
     ret
         an array having the same shape as x and containing uninitialized data.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -895,6 +905,7 @@ def eye(
     -------
     ret
         device on which to place the created array. Default: None.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -955,6 +966,7 @@ def linspace(
     -------
     ret
         Tensor of evenly-spaced values.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1025,43 +1037,44 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
-        This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
-        in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    in the standard.
 
-        Functional Examples
-        -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
-        With :class:`ivy.Array` input:
+    Functional Examples
+    -------------------
 
-        >>> x = ivy.array([1, 2])
-        >>> y = ivy.array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
-        >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
+    With :class:`ivy.Array` input:
 
-        >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
 
-        >>> x = ivy.array([1, 2, 5])
-        >>> y = ivy.array([4, 1])
-        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
-        >>> print(xv)
-        ivy.array([[1, 1],
-               [2, 2],
-               [5, 5]])
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
 
-        >>> print(yv)
-        ivy.array([[4, 1],
-               [4, 1],
-               [4, 1]])
+    >>> x = ivy.array([1, 2, 5])
+    >>> y = ivy.array([4, 1])
+    >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+    >>> print(xv)
+    ivy.array([[1, 1],
+            [2, 2],
+            [5, 5]])
+
+    >>> print(yv)
+    ivy.array([[4, 1],
+            [4, 1],
+            [4, 1]])
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
@@ -1074,18 +1087,18 @@ def meshgrid(
                 [5],
                 [6]])
 
-        With :class:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
-        >>> x = ivy.native_array([1, 2])
-        >>> y = ivy.native_array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
-        >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
 
-        >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
 
     """
     return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
@@ -1130,6 +1143,7 @@ def full(
     ret
         an array where every element is equal to `fill_value`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
@@ -1142,7 +1156,7 @@ def full(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Shape` input:
+    With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
     >>> fill_value = 8.6
@@ -1151,7 +1165,7 @@ def full(
     ivy.array([[8.6, 8.6],
                [8.6, 8.6]])
 
-    With :code:`ivy.NativeShape` input:
+    With :class:`ivy.NativeShape` input:
 
     >>> shape = ivy.NativeShape((2, 2, 2))
     >>> fill_value = True
@@ -1164,7 +1178,7 @@ def full(
                [[True,  True],
                 [True,  True]]])
 
-    With :code:`ivy.NativeDevice` input:
+    With :class:`ivy.NativeDevice` input:
 
     >>> shape = ivy.NativeShape((1, 2))
     >>> fill_value = 0.68
@@ -1224,6 +1238,7 @@ def from_dlpack(
 
            The returned array may be either a copy or a view. See
            :ref:`data-interchange` for details.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1301,8 +1316,7 @@ def copy_array(
         a: ivy.array([-1, 0, 1])
     }
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
     >>> y = ivy.copy_array(x)
     >>> print(y)
     {
@@ -1312,8 +1326,7 @@ def copy_array(
 
     With one :class:`ivy.Container` static method:
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
     >>> y = ivy.Container.static_copy_array(x)
     >>> print(y)
     {
@@ -1335,8 +1348,7 @@ def copy_array(
 
     With :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1]))
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),b=ivy.array([-1, 0, 1, 1]))
     >>> y = x.copy_array()
     >>> print(y)
     {

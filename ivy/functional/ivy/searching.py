@@ -1,15 +1,16 @@
 # global
+from numbers import Number
 from typing import Union, Optional, Tuple
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -55,6 +56,16 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     --------
 
@@ -70,28 +81,21 @@ def argmax(
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], \
-                     [-2., 3., 2.]])
+    >>> x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis= 1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
     >>> y = ivy.argmax(x, axis= 1, keepdims= True)
     >>> print(y)
-    ivy.array([[0], \
-              [2]])
+    ivy.array([[0], [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
     >>> z= ivy.zeros((1,3), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
     >>> print(z)
-    ivy.array([[0], \
-               [2], \
-               [2]])
+    ivy.array([[0],[2],[2]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -152,6 +156,16 @@ def argmin(
     -------
     ret
         Array containing the indices of the minimum values across the specified axis.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     --------
@@ -223,7 +237,14 @@ def argmin(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -231,6 +252,19 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
+    as_tuple
+        if True, the output is returned as a tuple of indices, one for each
+        dimension of the input, containing the indices of the true elements in that
+        dimension. If False, the coordinates are returned in a (N, ndim) array,
+        where N is the number of true elements. Default = True.
+    size
+        if specified, the function will return an array of shape (size, ndim).
+        If the number of non-zero elements is fewer than size, the remaining elements
+        will be filled with fill_value. Default = None.
+    fill_value
+        when size is specified and there are fewer than size number of elements,
+        the remaining elements in the output array will be filled with fill_value.
+        Default = 0.
 
     Returns
     -------
@@ -240,6 +274,16 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
         the non-zero elements in that dimension. The indices must be returned in
         row-major, C-style order. The returned array must have the default array index
         data type.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -255,6 +299,16 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
+
+    >>> x = ivy.array([[0, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x, as_tuple=False)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([0, 1])
+    >>> y = ivy.nonzero(x, size=2, fill_value=4)
+    >>> print(y)
+    (ivy.array([1, 4]),)
 
     With :class:`ivy.NativeArray` input:
 
@@ -310,7 +364,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x)
+    return current_backend(x).nonzero(
+        x, as_tuple=as_tuple, size=size, fill_value=fill_value
+    )
 
 
 @to_native_arrays_and_back
@@ -344,6 +400,16 @@ def where(
     ret
         An array with elements from x1 where condition is True, and elements from x2
         elsewhere.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------

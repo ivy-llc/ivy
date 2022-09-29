@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -22,6 +22,11 @@ def _generate_prelu_arrays(draw):
     return dtype, input_weight
 
 
+def _filter_dtypes(input_dtype):
+    assume(("bfloat16" not in input_dtype) and ("float16" not in input_dtype))
+
+
+# sigmoid
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -53,6 +58,7 @@ def test_torch_sigmoid(
     )
 
 
+# softmax
 @handle_cmd_line_args
 @given(
     dtype_x_and_axis=helpers.dtype_values_axis(
@@ -91,6 +97,7 @@ def test_torch_softmax(
     )
 
 
+# gelu
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -122,6 +129,7 @@ def test_torch_gelu(
     )
 
 
+# leaky_relu
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -130,10 +138,12 @@ def test_torch_gelu(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.leaky_relu"
     ),
-    alpha=st.floats(min_value=0, max_value=1),
+    alpha=st.floats(min_value=0.0, max_value=1.0),
+    with_inplace=st.booleans(),
 )
 def test_torch_leaky_relu(
     dtype_and_x,
+    with_inplace,
     num_positional_args,
     as_variable,
     native_array,
@@ -145,6 +155,7 @@ def test_torch_leaky_relu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -155,6 +166,7 @@ def test_torch_leaky_relu(
     )
 
 
+# tanh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -186,6 +198,7 @@ def test_torch_tanh(
     )
 
 
+# logsigmoid
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -216,6 +229,7 @@ def test_torch_logsigmoid(
     )
 
 
+# softmin
 @handle_cmd_line_args
 @given(
     dtype_x_and_axis=helpers.dtype_values_axis(
@@ -263,28 +277,35 @@ def test_torch_softmin(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold"
     ),
+    threshold=helpers.floats(min_value=0.0, max_value=1.0),
+    value=helpers.ints(min_value=5, max_value=20),
+    with_inplace=st.booleans(),
 )
 def test_torch_threshold(
     dtype_and_input,
+    threshold,
+    value,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.threshold",
         input=input[0],
-        threshold=0.5,
-        value=20,
+        threshold=threshold,
+        value=value,
     )
 
 
@@ -297,28 +318,35 @@ def test_torch_threshold(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold_"
     ),
+    threshold=helpers.floats(min_value=0.0, max_value=1.0),
+    value=helpers.ints(min_value=5, max_value=20),
+    with_inplace=st.booleans(),
 )
 def test_torch_threshold_(
     dtype_and_input,
+    threshold,
+    value,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.threshold_",
         input=input[0],
-        threshold=0.5,
-        value=20,
+        threshold=threshold,
+        value=value,
     )
 
 
@@ -331,20 +359,23 @@ def test_torch_threshold_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.relu6"
     ),
+    with_inplace=st.booleans(),
 )
 def test_torch_relu6(
     dtype_and_input,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -364,21 +395,24 @@ def test_torch_relu6(
         fn_name="ivy.functional.frontends.torch.elu"
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_elu(
     dtype_and_input,
     alpha,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -389,7 +423,6 @@ def test_torch_elu(
     )
 
 
-# ToDo test for values once inplace test implemented
 # elu_
 @handle_cmd_line_args
 @given(
@@ -400,21 +433,24 @@ def test_torch_elu(
         fn_name="ivy.functional.frontends.torch.elu_"
     ),
     alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_elu_(
     dtype_and_input,
     alpha,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -436,21 +472,24 @@ def test_torch_elu_(
         fn_name="ivy.functional.frontends.torch.celu"
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_celu(
     dtype_and_input,
     alpha,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -470,20 +509,23 @@ def test_torch_celu(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.selu"
     ),
+    with_inplace=st.booleans(),
 )
 def test_torch_selu(
     dtype_and_input,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -509,6 +551,7 @@ def test_torch_prelu(
     fw,
 ):
     dtype, inputs = dtype_input_and_weight
+    _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -534,22 +577,25 @@ def test_torch_prelu(
     ),
     lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
     upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_rrelu(
     dtype_and_input,
     lower,
     upper,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=True,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -561,7 +607,6 @@ def test_torch_rrelu(
     )
 
 
-# ToDo test for values once inplace test implemented
 # rrelu_
 @handle_cmd_line_args
 @given(
@@ -573,21 +618,25 @@ def test_torch_rrelu(
     ),
     lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
     upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_rrelu_(
     dtype_and_input,
     lower,
     upper,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -620,6 +669,7 @@ def test_torch_hardshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -685,6 +735,7 @@ def test_torch_softshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -708,9 +759,11 @@ def test_torch_softshrink(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.silu"
     ),
+    with_inplace=st.booleans(),
 )
 def test_torch_silu(
     dtype_and_input,
+    with_inplace,
     as_variable,
     num_positional_args,
     native_array,
@@ -721,13 +774,13 @@ def test_torch_silu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.silu",
         input=input[0],
-        inplace=False,
     )
 
 
@@ -737,7 +790,7 @@ def _glu_arrays(draw):
     shape = draw(st.shared(helpers.ints(min_value=1, max_value=5)))
     shape = shape * 2
     input = draw(helpers.array_values(dtype=dtype[0], shape=(shape, shape)))
-    dim = draw(st.shared(helpers.get_axis(shape=(shape, shape), force_int=True)))
+    dim = draw(st.shared(helpers.get_axis(shape=(shape,), force_int=True)))
     return dtype, input, dim
 
 
@@ -757,6 +810,7 @@ def test_torch_glu(
     fw,
 ):
     input_dtype, input, dim = dtype_input_dim
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -852,20 +906,23 @@ def test_torch_tanhshrink(
         fn_name="ivy.functional.frontends.torch.leaky_relu_"
     ),
     alpha=st.floats(min_value=0, max_value=1, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_leaky_relu_(
     dtype_and_x,
+    alpha,
+    with_inplace,
     num_positional_args,
     as_variable,
     native_array,
     fw,
-    alpha,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -884,32 +941,36 @@ def test_torch_leaky_relu_(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
     ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hardswish"
+    ),
+    with_inplace=st.booleans(),
 )
 def test_torch_hardswish(
     dtype_and_input,
+    with_inplace,
+    num_positional_args,
     as_variable,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        with_inplace=with_inplace,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardswish",
         input=input[0],
-        inplace=False,
     )
 
 
 # hardsigmoid
-# ToDo Test inplace once inplace testing implemented
-# It was validated to work outside of the testing framework,
-# but causes errors in the testing framework.
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
@@ -918,28 +979,29 @@ def test_torch_hardswish(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.hardsigmoid"
     ),
+    with_inplace=st.booleans(),
 )
 def test_torch_hardsigmoid(
     dtype_and_input,
+    with_inplace,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardsigmoid",
         input=input[0],
-        inplace=False,
-        test_values=False,
     )
 
 
@@ -953,10 +1015,12 @@ def test_torch_hardsigmoid(
         fn_name="ivy.functional.frontends.torch.hardtanh"
     ),
     max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_hardtanh(
     dtype_and_x,
     max_val,
+    with_inplace,
     num_positional_args,
     as_variable,
     native_array,
@@ -964,10 +1028,12 @@ def test_torch_hardtanh(
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -980,7 +1046,6 @@ def test_torch_hardtanh(
 
 
 # hardtanh_
-# ToDo test for value test once inplace testing is fixed
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -990,10 +1055,12 @@ def test_torch_hardtanh(
         fn_name="ivy.functional.frontends.torch.hardtanh_"
     ),
     max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
+    with_inplace=st.booleans(),
 )
 def test_torch_hardtanh_(
     dtype_and_x,
     max_val,
+    with_inplace,
     num_positional_args,
     as_variable,
     native_array,
@@ -1001,10 +1068,12 @@ def test_torch_hardtanh_(
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -1014,4 +1083,47 @@ def test_torch_hardtanh_(
         min_val=max_min[1],
         max_val=max_min[0],
         test_values=False,
+    )
+
+
+# normalize
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.normalize"
+    ),
+    p=helpers.ints(min_value=2, max_value=5),
+    without=st.booleans(),
+)
+def test_torch_normalize(
+    dtype_x_and_axis,
+    p,
+    without,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x, axis = dtype_x_and_axis
+    _filter_dtypes(dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=without,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.normalize",
+        input=x[0],
+        p=p,
+        dim=axis,
+        eps=1e-12,
     )

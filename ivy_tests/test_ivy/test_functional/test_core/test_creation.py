@@ -15,7 +15,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         dtype=ivy.valid_numeric_dtypes,
-        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -205,7 +204,6 @@ def test_arange(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=1,
@@ -290,7 +288,6 @@ def test_empty(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -383,7 +380,6 @@ def test_eye(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -394,7 +390,6 @@ def test_eye(
 def test_from_dlpack(
     *,
     dtype_and_x,
-    as_variable,
     with_out,
     num_positional_args,
     native_array,
@@ -417,18 +412,8 @@ def test_from_dlpack(
 
 
 @st.composite
-def _dtypes(draw):
-    return draw(
-        st.shared(
-            helpers.get_dtypes("numeric", full=False),
-            key="dtype",
-        )
-    )
-
-
-@st.composite
 def _fill_value(draw):
-    dtype = draw(_dtypes())[0]
+    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
         return draw(helpers.ints(min_value=0, max_value=5))
     if ivy.is_int_dtype(dtype):
@@ -447,7 +432,7 @@ def _fill_value(draw):
         max_dim_size=5,
     ),
     fill_value=_fill_value(),
-    dtypes=_dtypes(),
+    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
 )
 def test_full(
@@ -481,12 +466,11 @@ def test_full(
 def _dtype_and_values(draw):
     return draw(
         helpers.dtype_and_values(
-            num_arrays=1,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=5,
-            dtype=draw(_dtypes()),
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="dtype")),
         )
     )
 
@@ -616,7 +600,6 @@ def test_ones(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -657,7 +640,6 @@ def test_ones_like(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -699,7 +681,6 @@ def test_tril(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -779,7 +760,6 @@ def test_zeros(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
