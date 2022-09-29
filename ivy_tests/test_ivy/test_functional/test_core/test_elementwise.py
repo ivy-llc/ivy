@@ -362,7 +362,6 @@ def test_atanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        shared_dtype=True,
         num_arrays=2,
         array_api_dtypes=True,
     ),
