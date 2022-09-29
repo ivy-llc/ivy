@@ -188,6 +188,11 @@ class Array(
     # Built-ins #
     # ----------#
 
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs={}):
+        args, kwargs = args_to_native(*args, **kwargs)
+        return func(*args, **kwargs)
+
     @_native_wrapper
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
