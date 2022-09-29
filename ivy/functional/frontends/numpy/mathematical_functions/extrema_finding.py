@@ -62,10 +62,11 @@ def nanmin(
 ):
     nan_mask = ivy.isnan(a)
     a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(+ivy.inf))
+    where_mask = None
     if initial is not None:
         if ivy.is_array(where):
             a = ivy.where(where, a, a.full_like(initial))
-            nan_mask = ivy.where(where, nan_mask, nan_mask.full_like(True))
+            where_mask = ivy.all(ivy.logical_not(where), axis=axis, keepdims=keepdims)
         s = ivy.shape(a, as_array=True)
         if axis is not None:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -84,7 +85,6 @@ def nanmin(
         else:
             a = ivy.concat([a, header], axis=0)
     res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
-    mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims)
-    if ivy.any(mask):
-        res = ivy.where(ivy.logical_not(mask), res, ivy.nan, out=out)
+    if where_mask is not None and ivy.any(where_mask):
+        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
