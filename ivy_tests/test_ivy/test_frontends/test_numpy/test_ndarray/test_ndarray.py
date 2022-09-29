@@ -139,6 +139,7 @@ def test_numpy_ndarray_transpose(
         method_name="transpose",
     )
 
+
 # all
 @handle_cmd_line_args
 @given(

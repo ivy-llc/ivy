@@ -24,7 +24,6 @@ class ndarray:
             shape
         )
 
-
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
@@ -36,7 +35,6 @@ class ndarray:
             self.data,
             value,
         )
-
 
     def all(
         self,
