@@ -767,3 +767,42 @@ def test_torch_repeat_interleave(
         dim=axis,
         output_size=output_size,
     )
+
+
+# combinations
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    r=st.integers(min_value=1),
+    with_replacement=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.combinations"
+    ),
+)
+def test_torch_combinations(
+    dtype_and_x,
+    r,
+    with_replacement,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="combinations",
+        input=np.asarray(x, dtype=input_dtype),
+        r=2,
+        with_replacement=False,
+    )
