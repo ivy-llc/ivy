@@ -2,7 +2,7 @@ Ivy Tests
 =========
 
 .. _`test suite`: https://github.com/data-apis/array-api-tests
-.. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
+.. _`Hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
 .. _`test_ivy`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
 .. _`commit`: https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f
@@ -66,6 +66,37 @@ These tests serve two purposes:
 
 As done in the `test suite`_, we also make use of `hypothesis`_ for performing property based testing.
 
+Testing Pipeline
+----------------
+
+An abstract look at Ivy testing cycle.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/15_ivy_tests/testing_pipeline.png?raw=true
+   :align: center
+   :width: 100%
+
+1. Test Data Generation: At this stage, we generate our test data for the testing function, using `Hypothesis`_
+and `test helpers`_ strategies. This is the most **important** step, we should ensure that our data generation is complete
+and covers all of the possible inputs. We generate the input data inside the :ref:`@given <given_intro>` decorator that wraps every
+test.
+
+2. Pre-execution Test Processing: After the data is generated, more input processing is needed before testing the function,
+This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require a different input processing form `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.
+One of the required pre-processing step for any test function is converting the array input to valid framework specific
+array, later in the testing process we call the backend framework function, for example TensorFlow's :code:`abs` function
+requires the input to be a :code:`tf.Tensor`, not an `ivy.Array`.
+
+3. Test Execution: After the input data is generated and processed, we assert that the result of the functions is correct,
+this includes, asserting the result has the correct values, shape and data type. And that this is consistent across all
+of our backends.
+
+.. note:: Some functions are not tested for values when this is not possible, for example, we can not assert that random
+functions produce the same values, in this case, we should assert that the data has some properties, asserting that the
+values have specified bounds is a good start.
+
+4. Test Results: If a test fails, `Hypothesis`_ and `test helpers`_ will print an exhaustive log. Including the generated
+test case, the results of the function, etc.
+
 Hypothesis
 ----------
 
@@ -76,21 +107,21 @@ Before the changes in this commit, there were 300+ separate tests being run in t
 just for this :code:`ivy.abs` function.
 If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.
 
-A more elegant and efficient solution is to use the `hypothesis`_ module,
+A more elegant and efficient solution is to use the `Hypothesis`_ module,
 which intelligently samples from all of the possible combinations within user-specified ranges,
 rather than grid searching all of them every single time.
-The intelligent sampling is possible because hypothesis enables the results of previous test runs to be cached,
+The intelligent sampling is possible because Hypothesis enables the results of previous test runs to be cached,
 and then the new samples on subsequent runs are selected intelligently,
 avoiding samples which previously passed the tests, and sampling for unexplored combinations.
 Combinations which are known to have failed on previous runs are also repeatedly tested for.
 With the `uploading`_ and `downloading`_ of the :code:`.hypothesis` cache as an `artifact`_,
 these useful properties are also true in Ivy's GitHub Action `continuous integration`_ (CI) tests.
 
-Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of hypothesis `search strategies`_.
-This reference `commit`_ outlines the difference between using pytest parametrizations and hypothesis,
+Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of Hypothesis `search strategies`_.
+This reference `commit`_ outlines the difference between using pytest parametrizations and Hypothesis,
 for :code:`ivy.abs`.
 Among other changes, all :code:`pytest.skip()` calls were replaced with return statements,
-as pytest skipping does not play nicely with hypothesis testing.
+as pytest skipping does not play nicely with Hypothesis testing.
 
 Data Generation
 ---------------
@@ -107,7 +138,7 @@ that have been used widely in each of Ivy's functional and stateful submodule te
 that is used by Hypothesis to generate data for the test. For example, let's write a strategy that generates a random
 data type -:
 
-Let’s define a template function for printing examples generated by the hypothesis integrated test functions.
+Let’s define a template function for printing examples generated by the Hypothesis integrated test functions.
 
 .. code-block:: python
 
@@ -215,7 +246,7 @@ strategy across our test suite. refer to the Hypothesis docs for more info on th
 
 Integration of Strategies into Ivy Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+.. _given_intro:
 Once a strategy is initialised the **given** decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:
 
@@ -660,7 +691,7 @@ b. **deadline** - If an input takes longer than expected, it should be treated a
 Self-Consistent and Explicit Testing
 ------------------------------------
 
-The hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
+The Hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
 but this makes it difficult to manually verify ground truth results for each input variation.
 Therefore, we instead opt to test for self-consistency against the same Ivy function with a NumPy backend.
 This is handled by :code:`test_array_function`, which is a helper function most unit tests defer to.
@@ -708,7 +739,7 @@ and so we should not make us of :code:`test_array_function` in the test implemen
 Re-Running Failed Ivy Tests
 ---------------------------
 
-When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+When a Hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
 For example, in the :code:`test_result_type` Test, we find the following output on running the test:
 
 .. code-block::
