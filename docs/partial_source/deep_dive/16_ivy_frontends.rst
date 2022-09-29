@@ -521,6 +521,7 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
 :code:`sum` function in the NumPy frontend: # ToDo outdated or not implemented yet?
 
 .. code-block:: python
+
     @handle_cmd_line_args
     @given(
         dtype_x_axis=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("float")),
