@@ -727,7 +727,11 @@ def gradient_test(
         return
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
         kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable_flags,
         native_array_flags=native_array_flags,
