@@ -1,4 +1,5 @@
 import ivy
+import itertools
 
 
 def flip(input, dims):
@@ -154,3 +155,21 @@ def logcumsumexp(input, dim, *, out=None):
 
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
+
+
+def combinations(input, r=2, with_replacement=False):
+    if input.ndim > 1:
+        raise ivy.exception(f"Expect a 1D vector, but got shape\
+        {list(tuple(input.shape))}")
+    elif input.ndim < 1:
+        raise ivy.exception(f"Expect a positive number, but got {r}")
+    else:
+        array_dtype = input.dtype
+        lst = [float(x) for x in input]
+        if with_replacement is False:
+            return ivy.array(list(itertools.combinations(lst, r)),
+                             dtype=array_dtype)
+        else:
+            return ivy.array(
+                list(itertools.scombinations_with_replacement(lst, r)),
+                dtype=array_dtype)
