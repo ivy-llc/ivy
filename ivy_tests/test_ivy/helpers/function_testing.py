@@ -745,7 +745,19 @@ def gradient_test(
     )
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
-    # value test
+
+    def where_cond(x):
+        x in [np.inf, -np.inf, np.nan]
+
+    grads_np_flat = np.where(
+        where_cond, np.asarray(0.0, dtype=grads_np_flat.dtype), grads_np_flat
+    )
+    grads_np_from_gt_flat = np.where(
+        where_cond,
+        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        grads_np_from_gt_flat,
+    )
+
     value_test(
         ret_np_flat=grads_np_flat,
         ret_np_from_gt_flat=grads_np_from_gt_flat,

@@ -88,6 +88,7 @@ def test_acosh(
         fn_name="acosh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -126,6 +127,7 @@ def test_acos(
         fn_name="acos",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -169,6 +171,7 @@ def test_add(
         fn_name="add",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
