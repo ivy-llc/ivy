@@ -582,3 +582,12 @@ as well if you prefer a video explanation!
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `ivy frontends discussion`_,
 or reach out on `discord`_ in the `ivy frontends channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
+    </iframe>
