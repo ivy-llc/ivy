@@ -544,7 +544,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With `ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [True, True]])</span>
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1, 2], [3, 4]])</span>
@@ -553,7 +553,7 @@
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    ivy.array([[1,6],[3,4]])</span>
 
-<span class="sd">    With `ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [False, True]])</span>
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([[1, 2], [3, 4]])</span>
@@ -562,7 +562,7 @@
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    array([[1, 6], [7, 4]])</span>
 
-<span class="sd">    With a mix of `ivy.Array` and `ivy.NativeArray` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])</span>
@@ -570,7 +570,7 @@
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])</span>
 
-<span class="sd">    With `ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
@@ -581,7 +581,7 @@
 <span class="sd">        b: ivy.array([3, 8, 6])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of `ivy.Array` and `ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))</span>
@@ -595,7 +595,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With `ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [True, True]])</span>
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1, 2], [3, 4]])</span>
@@ -604,7 +604,7 @@
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    ivy.array([[1, 6], [3, 4]])</span>
 
-<span class="sd">    With `ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
