@@ -765,7 +765,7 @@ def array_values(
     array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
-    return array
+    return np.asarray(array)
 
 
 #      From array-api repo     #

@@ -133,7 +133,11 @@ def test_acos(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
     alpha=st.integers(min_value=1, max_value=5),
@@ -162,6 +166,8 @@ def test_add(
         instance_method=instance_method,
         fw=fw,
         fn_name="add",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
