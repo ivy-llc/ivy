@@ -1218,6 +1218,27 @@ def test_frontend_method(
     )
     # End Method #
 
+    args_constructor_ivy, kwargs_constructor_ivy = ivy.args_to_ivy(
+        *args_constructor, **kwargs_constructor
+    )
+    args_method_ivy, kwargs_method_ivy = ivy.args_to_ivy(*args_method, **kwargs_method)
+    args_constructor_np = ivy.nested_map(
+        args_constructor_ivy,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+    )
+    kwargs_constructor_np = ivy.nested_map(
+        kwargs_constructor_ivy,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+    )
+    args_method_np = ivy.nested_map(
+        args_method_ivy,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+    )
+    kwargs_method_np = ivy.nested_map(
+        kwargs_method_ivy,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+    )
+
     # Run testing
     class_name = class_name.split(".")
     ins_class = ivy.functional.frontends.__dict__[frontend]
@@ -1230,10 +1251,29 @@ def test_frontend_method(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
 
-    # Compute the return with a Ground Truth backend
+    # Compute the return with the native frontend framework
     ivy.set_backend(frontend)
-    ins_gt = frontend_class(*args_constructor, **kwargs_constructor)
-    frontend_ret = ins_gt.__getattribute__(method_name)(*args_method, **kwargs_method)
+    args_constructor_frontend = ivy.nested_map(
+        args_constructor_np,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+    )
+    kwargs_constructor_frontend = ivy.nested_map(
+        kwargs_constructor_np,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+    )
+    args_method_frontend = ivy.nested_map(
+        args_method_np,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+    )
+    kwargs_method_frontend = ivy.nested_map(
+        kwargs_method_np,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+    )
+
+    ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
+    frontend_ret = ins_gt.__getattribute__(method_name)(
+        *args_method_frontend, **kwargs_method_frontend
+    )
     frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
     frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
     frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
