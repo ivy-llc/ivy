@@ -196,3 +196,6 @@ def divide(input, other, *, rounding_mode=None, out=None):
         return ivy.floor_divide(input, other, out=out)
     else:
         raise ValueError(f"{rounding_mode} is not a valid value for rounding_mode")
+
+
+divide.unsupported_dtypes = ("float16",)

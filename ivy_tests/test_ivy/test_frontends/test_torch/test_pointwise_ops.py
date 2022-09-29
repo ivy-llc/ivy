@@ -1203,7 +1203,7 @@ def test_torch_absolute(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
