@@ -790,7 +790,7 @@ def test_torch_kthvalue(
     fw,
 ):
     input_dtype, input, dim = dtype_input_axis
-    input = np.asarray(input, dtype=input_dtype)
+    input = np.asarray(input)
     assume(k <= input.shape[dim])
     assume(input_dtype != "float16")  # unsupported by torch.kthvalue
     helpers.test_frontend_function(
