@@ -21,11 +21,7 @@ def numel(input):
         is_tensor(input),
         message="input must be a tensor",
     )
-    num = 1
-    input_shape = input.shape
-    for e in input_shape:
-        num = num * e
-    return num
+    return input.size
 
 
 def is_floating_point(input):
