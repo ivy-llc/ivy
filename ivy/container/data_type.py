@@ -566,8 +566,7 @@ class ContainerWithDataTypes(ContainerBase):
         """
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-        ...                   b=ivy.array([2, 3, 4]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
         >>> y = x.dtype()
         >>> print(y)
         {

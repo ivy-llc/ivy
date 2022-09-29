@@ -1338,7 +1338,7 @@ def dtype(
     Returns
     -------
     ret
-        Data type of the array
+        Data type of the array.
 
     Examples
     --------
@@ -1358,8 +1358,8 @@ def dtype(
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),
-    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))
+    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),\
+                          b=ivy.native_array([1, 0, 0, 0, 1]))
     >>> y = ivy.dtype(x.a)
     >>> print(y)
     float32
