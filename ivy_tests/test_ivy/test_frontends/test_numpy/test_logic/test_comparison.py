@@ -58,14 +58,12 @@ def test_numpy_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
     equal_nan=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.array_equal"
-    )
+    ),
 )
 def test_numpy_array_equal(
     dtype_and_x,
@@ -87,7 +85,7 @@ def test_numpy_array_equal(
         fn_tree="array_equal",
         a1=np.asarray(x[0], dtype=dtype[0]),
         a2=np.asarray(x[1], dtype=dtype[1]),
-        equal_nan=equal_nan
+        equal_nan=equal_nan,
     )
 
 
@@ -101,7 +99,7 @@ def test_numpy_array_equal(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.greater"
-    )
+    ),
 )
 def test_numpy_greater(
     dtype_and_x,
@@ -150,7 +148,7 @@ def test_numpy_greater(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.greater_equal"
-    )
+    ),
 )
 def test_numpy_greater_equal(
     dtype_and_x,
@@ -199,7 +197,7 @@ def test_numpy_greater_equal(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.less"
-    )
+    ),
 )
 def test_numpy_less(
     dtype_and_x,
@@ -248,7 +246,7 @@ def test_numpy_less(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.less_equal"
-    )
+    ),
 )
 def test_numpy_less_equal(
     dtype_and_x,
@@ -297,7 +295,7 @@ def test_numpy_less_equal(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.not_equal"
-    )
+    ),
 )
 def test_numpy_not_equal(
     dtype_and_x,
@@ -339,22 +337,15 @@ def test_numpy_not_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
     factor=helpers.ints(min_value=1, max_value=4),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.array_equiv"
-    )
+    ),
 )
 def test_numpy_array_equiv(
-    dtype_and_x,
-    factor,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, factor, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -367,5 +358,5 @@ def test_numpy_array_equiv(
         frontend="numpy",
         fn_tree="array_equiv",
         a1=np.asarray(x, dtype=dtype),
-        a2=np.asarray(factor * [x], dtype=dtype)
+        a2=np.asarray(factor * [x], dtype=dtype),
     )
