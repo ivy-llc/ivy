@@ -79,6 +79,13 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+def concatenate(arrays, axis=0, dtype=None):
+    ret = ivy.concat(arrays, axis=axis)
+    if dtype:
+        ret = ivy.array(ret, dtype=dtype)
+    return ret
+
+
 def dot(a, b, *, precision=None):
     # TODO: precision handling
     return ivy.vecdot(a, b)
@@ -87,7 +94,17 @@ def dot(a, b, *, precision=None):
 # def einsum(*operands, out=None, optimize="optimal", precision=None,
 # _use_xeinsum=False):
 #     # TODO: optimize, precision handling
-#     return ivy.eimsum(equation=optimize, *operands, out=out)
+
+
+
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    a = ivy.array(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype)
 
 
 def reshape(a, newshape, order="C"):

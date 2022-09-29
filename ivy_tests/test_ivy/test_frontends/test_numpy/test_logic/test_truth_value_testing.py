@@ -123,7 +123,7 @@ def test_numpy_any(
     element=st.booleans() | st.floats() | st.integers(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isscalar"
-    )
+    ),
 )
 def test_numpy_isscalar(element, as_variable, native_array, num_positional_args, fw):
     helpers.test_frontend_function(
@@ -135,5 +135,5 @@ def test_numpy_isscalar(element, as_variable, native_array, num_positional_args,
         fw=fw,
         frontend="numpy",
         fn_tree="isscalar",
-        element=element
+        element=element,
     )

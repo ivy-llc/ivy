@@ -198,7 +198,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -207,6 +207,8 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+    if not isinstance(num_or_size_splits, int):
+        num_or_size_splits = tf.cast(num_or_size_splits, tf.int64)
     return tf.split(x, num_or_size_splits, axis)
 
 

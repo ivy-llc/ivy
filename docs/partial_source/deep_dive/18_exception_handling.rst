@@ -84,7 +84,7 @@ to handle functions in the :code:`try/except` block.
         return new_fn
 
 The decorator is then added to each function for wrapping.
-Let's look at an example of :code:`ivy.all`.
+Let's look at an example of :func:`ivy.all`.
 
 .. code-block:: python
 
@@ -164,7 +164,7 @@ Inconsistency is observed such as some functions:
 To unify the behaviours, our policy is to use conditional blocks and
 raise :code:`IvyException` whenever a check is required.
 Moreover, to reduce code redundancy, conditions which are commonly used are collected
-as helper functions with custom parameters in :code:`ivy/assertions.py`.
+as helper functions with custom parameters in :mod:`ivy/assertions.py`.
 This allows them to be reused and promotes cleaner code.
 
 Let's look at an example!
