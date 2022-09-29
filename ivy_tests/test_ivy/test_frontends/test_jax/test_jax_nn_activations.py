@@ -3,6 +3,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 
 
 @handle_cmd_line_args
@@ -291,21 +292,35 @@ def test_jax_nn_one_hot(
         min_num_dims=1,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
+    where=np_helpers.where(),
+    initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softmax"
     ),
 )
 def test_jax_nn_softmax(
     dtype_and_x,
-    axis,
     as_variable,
+    axis,
+    where,
+    initial,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x = dtype_and_x
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    if initial is None:
+        where = None
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -315,6 +330,8 @@ def test_jax_nn_softmax(
         fn_tree="nn.softmax",
         x=x[0],
         axis=axis,
+        where=where,
+        initial=initial,
     )
 
 
