@@ -87,7 +87,7 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 def dot(a, b, *, precision=None):
-    return ivy.vecdot(a, b)
+    return ivy.matmul(a, b)
 
 
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):

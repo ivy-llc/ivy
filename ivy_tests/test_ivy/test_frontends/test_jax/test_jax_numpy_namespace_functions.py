@@ -528,18 +528,45 @@ def test_jax_numpy_var(
 
 
 # dot
+@st.composite
+def _get_dtype_input_and_vectors(draw):
+    dim_size = draw(helpers.ints(min_value=0, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    if dim_size == 0:
+        vec1 = draw(
+            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
+        )
+        vec2 = draw(
+            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
+        )
+    elif dim_size == 1:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+    else:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    return dtype, vec1, vec2
+
+
 @handle_cmd_line_args
 @given(
-    dtype_x_y=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=10,
-        large_abs_safety_factor=3,
-        shared_dtype=True,
-    ),
+    dtype_x_y=_get_dtype_input_and_vectors(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.dot"
     ),
@@ -551,9 +578,9 @@ def test_jax_numpy_dot(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_x_y
+    input_dtype, x, y = dtype_x_y
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         num_positional_args=num_positional_args,
         with_out=False,
@@ -561,8 +588,8 @@ def test_jax_numpy_dot(
         fw=fw,
         frontend="jax",
         fn_tree="numpy.dot",
-        a=x[0],
-        b=x[1],
+        a=x,
+        b=y,
         precision=None,
     )
 
