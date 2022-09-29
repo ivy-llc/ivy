@@ -1,0 +1,93 @@
+name: test-array-api
+on:
+  push:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened, review_requested]
+  workflow_dispatch:
+
+jobs:
+  run-array-api-tests:
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+    strategy:
+      matrix:
+        backends: [numpy, torch, jax, tensorflow]
+        submodules: [array_object, constants, creation_functions, data_type_functions,
+                    has_names, linalg, manipulation_functions, operators_and_elementwise_functions,
+                    searching_functions, set_functions, signatures, sorting_functions,
+                    special_cases, statistical_functions, type_promotion, utility_functions]
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: 'recursive'
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api.yml
+          workflow_conclusion: completed
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
+          path: |
+            ivy/.hypothesis/
+        continue-on-error: true
+
+      - name: Unzip Hypothesis Examples
+        id: unzip
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+        continue-on-error: true
+
+      - name: Create Hypothesis Directory
+        if: steps.unzip.outcome != 'success'
+        run: |
+          cd ivy
+          mkdir -p .hypothesis
+          cd .hypothesis
+          mkdir -p examples
+        continue-on-error: true
+
+      - name: Run Array Api Tests
+        id: tests
+        run: |
+          cd ivy
+          ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}}
+        continue-on-error: true
+
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+        continue-on-error: true
+
+      - name: Upload hypothesis
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
+          path: |
+            ivy/.hypothesis/examples.zip
+        continue-on-error: true
+
+      - name: Install Mongo Python Client
+        uses: BSFishy/pip-action@v1
+        with:
+            packages: |
+                pymongo[srv]
+
+      - name: Update Database
+        if: (github.event_name == 'push')
+        env:
+            MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        run: |
+            cd ivy/automation_tools/dashboard_automation/
+            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} "${{ matrix.backends }}-${{ matrix.submodules }}" ${{ steps.tests.outcome }} ${{ github.run_id }}
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+

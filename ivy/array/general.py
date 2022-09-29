@@ -12,7 +12,10 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def is_native_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        exclusive: bool = False,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
@@ -32,7 +35,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_native_array(self, exclusive=exclusive)
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
@@ -77,7 +80,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_array(self, exclusive=exclusive, out=out)
 
     def is_ivy_container(
         self: ivy.Array, /, *, out: Optional[ivy.Array] = None
@@ -97,7 +100,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy container.
         """
-        return ivy.is_ivy_container(self._data, out=out)
+        return ivy.is_ivy_container(self, out=out)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
@@ -169,7 +172,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Parameters
         ----------
-        params
+        self
             The array from which to gather values.
         indices
             The array which indicates the indices that will be gathered along
@@ -211,9 +214,7 @@ class ArrayWithGeneral(abc.ABC):
         Parameters
         ----------
         self
-            The tensor in which to scatter the results
-        indices
-            Tensor of indices
+            array of indices
         updates
             values to update input tensor with
         shape
@@ -233,6 +234,7 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         scatter values into an array
+
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
@@ -241,6 +243,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
+
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
@@ -269,9 +272,6 @@ class ArrayWithGeneral(abc.ABC):
             The array from which to gather values.
         indices
             Index array.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -365,8 +365,8 @@ class ArrayWithGeneral(abc.ABC):
                        [11, 2]],
                       [[3, 5],
                        [9, 7]]])
-        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
@@ -374,11 +374,10 @@ class ArrayWithGeneral(abc.ABC):
                         [11, 2, 9]],
                        [[3, 5, 7],
                         [9, 7, 1]]])
-        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
-
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -417,16 +416,16 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([5,4])
-        >>> repeated = x.einops_repeat('a -> a c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a -> a c', c=3)
+        >>> print(y)
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
 
         >>> x = ivy.array([[5,4],
                     [2, 3]])
-        >>> repeated = x.einops_repeat('a b ->  a b c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a b ->  a b c', c=3)
+        >>> print(y)
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
