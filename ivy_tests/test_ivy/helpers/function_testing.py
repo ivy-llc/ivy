@@ -1287,6 +1287,7 @@ def test_frontend_method(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
+        ground_truth_backend=frontend,
     )
 
 
