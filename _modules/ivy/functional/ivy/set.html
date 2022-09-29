@@ -211,14 +211,15 @@
 <span class="sd">           The order of unique elements is not specified and may vary between</span>
 <span class="sd">           implementations.</span>
 
-<span class="sd">    This method conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of</span>
-<span class="sd">    the `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
-<span class="sd">    generated/signatures.elementwise_functions.tan.html&gt;`_</span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">    and also the examples below.</span>
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -436,13 +437,15 @@
 <span class="sd">           The order of unique elements is not specified and may vary between</span>
 <span class="sd">           implementations.</span>
 
-<span class="sd">    This method conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of</span>
-<span class="sd">    the `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
-<span class="sd">    generated/signatures..set_functions.unique_inverse.html&gt;`_</span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_inverse.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -531,6 +534,16 @@
 <span class="sd">           The order of unique elements is not specified and may vary between</span>
 <span class="sd">           implementations.</span>
 
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_values.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -587,14 +600,15 @@
 <span class="sd">           The order of unique elements is not specified and may vary between</span>
 <span class="sd">           implementations.</span>
 
-<span class="sd">    This method conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`. This docstring is an extension of</span>
-<span class="sd">    the `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
-<span class="sd">    generated/signatures.set_functions.unique_counts.html&gt;` in the standard.</span>
-<span class="sd">    The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">    and also the examples below.</span>
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_counts.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

@@ -187,8 +187,7 @@ should be aggregated as a single count.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
-<li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code> whose
+<dd class="field-odd"><p><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code> whose
 - first element must have the field name <code class="docutils literal notranslate"><span class="pre">values</span></code> and must be an array</p>
 <blockquote>
 <div><p>containing the unique elements of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The array must have the same data
@@ -213,19 +212,15 @@ array index data type.</p></li>
 <p>The order of unique elements is not specified and may vary between
 implementations.</p>
 </div>
-</li>
-<li><p>This method conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of)</p></li>
-<li><p><strong>the `docstring &lt;https</strong> (<em>//data-apis.org/array-api/latest/API_specification/</em>)</p></li>
-<li><p>generated/signatures.elementwise_functions.tan.html&gt;`_</p></li>
-<li><p><em>in the standard. The descriptions above assume an array input for simplicity, but</em></p></li>
-<li><p>the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints</p></li>
-<li><p><em>and also the examples below.</em></p></li>
-</ul>
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>

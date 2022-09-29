@@ -186,6 +186,16 @@
 <span class="sd">        containing the indices of the maximum values. The returned array must have be</span>
 <span class="sd">        the default array index data type.</span>
 
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    Functional Examples</span>
 <span class="sd">    --------</span>
 
@@ -201,28 +211,21 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([1])</span>
 
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([[1., -0., -1.], \</span>
-<span class="sd">                     [-2., 3., 2.]])</span>
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.argmax(x, axis= 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0, 1])</span>
 
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([[4., 0., -1.], \</span>
-<span class="sd">                     [2., -3., 6]])</span>
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[4., 0., -1.], [2., -3., 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.argmax(x, axis= 1, keepdims= True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0], \</span>
-<span class="sd">              [2]])</span>
+<span class="sd">    ivy.array([[0], [2]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([[4., 0., -1.], \</span>
-<span class="sd">                     [2., -3., 6], \</span>
-<span class="sd">                     [2., -3., 6]])</span>
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])</span>
 <span class="sd">    &gt;&gt;&gt; z= ivy.zeros((1,3), dtype=ivy.int64)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.argmax(x, axis= 1, keepdims= True, out= z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[0], \</span>
-<span class="sd">               [2], \</span>
-<span class="sd">               [2]])</span>
+<span class="sd">    ivy.array([[0],[2],[2]])</span>
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
@@ -283,6 +286,16 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Array containing the indices of the minimum values across the specified axis.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    --------</span>
@@ -391,6 +404,16 @@
 <span class="sd">        the non-zero elements in that dimension. The indices must be returned in</span>
 <span class="sd">        row-major, C-style order. The returned array must have the default array index</span>
 <span class="sd">        data type.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -507,6 +530,16 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array with elements from x1 where condition is True, and elements from x2</span>
 <span class="sd">        elsewhere.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
