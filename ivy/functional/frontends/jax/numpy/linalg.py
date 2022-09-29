@@ -19,3 +19,9 @@ def eigh(a, UPLO="L", symmetrize_input=True):
         a = symmetrize(a)
 
     return ivy.eigh(a, UPLO=UPLO)
+
+
+# slogdet
+def slogdet(a):
+    (sign, logdet) = ivy.slogdet(a, out=None)
+    return (float(sign), float(logdet))
