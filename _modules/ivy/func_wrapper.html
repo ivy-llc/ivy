@@ -133,56 +133,6 @@
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="n">FW_FN_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">[],</span>
-<span class="p">}</span>
-
-<span class="n">NATIVE_KEYS_TO_SKIP</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;device&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;platform&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;clone&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;block_host_until_ready&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;block_until_ready&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;copy_to_device&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;copy_to_host_async&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;copy_to_remote_device&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;is_deleted&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;is_known_ready&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;is_ready&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;on_device_size_in_bytes&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;to_py&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;unsafe_buffer_pointer&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;xla_dynamic_shape&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;xla_shape&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;default_prng_impl&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;flattened_fun_in_tree&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;flatten_fun&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;flatten_fun_nokwargs&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;get_aval&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;concrete_aval&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;function transformation_with_aux&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;flatten_fun_for_vmap&quot;</span><span class="p">,</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;classes&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;is_grad_enabled&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;get_default_dtype&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;numel&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;clone&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;set_&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;requires_grad_&quot;</span><span class="p">,</span>
-    <span class="p">],</span>
-<span class="p">}</span>
 
 <span class="c1"># for wrapping (sequence matters)</span>
 <span class="n">FN_DECORATORS</span> <span class="o">=</span> <span class="p">[</span>
@@ -201,7 +151,6 @@
 <span class="c1"># --------#</span>
 
 
-<span class="c1"># noinspection DuplicatedCode</span>
 <span class="k">def</span> <span class="nf">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># ToDo: make this more efficient, with function ivy.nested_nth_index_where</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="kc">None</span>
