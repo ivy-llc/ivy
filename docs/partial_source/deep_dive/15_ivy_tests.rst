@@ -67,7 +67,7 @@ Using pytest fixtures (such as the ones removed in this `commit`_) cause a grid 
 combinations of parameters. This is great when we want the test to be very thorough,
 but can make the entire test suite very time consuming.
 Before the changes in this commit, there were 300+ separate tests being run in total,
-just for this :code:`ivy.abs` function.
+just for this :func:`ivy.abs` function.
 If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.
 
 A more elegant and efficient solution is to use the `hypothesis`_ module,
@@ -82,7 +82,7 @@ these useful properties are also true in Ivy's GitHub Action `continuous integra
 
 Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of hypothesis `search strategies`_.
 This reference `commit`_ outlines the difference between using pytest parametrizations and hypothesis,
-for :code:`ivy.abs`.
+for :func:`ivy.abs`.
 Among other changes, all :code:`pytest.skip()` calls were replaced with return statements,
 as pytest skipping does not play nicely with hypothesis testing.
 
@@ -265,7 +265,7 @@ Let's look at the data produced by this strategy -:
     ('float64', [9433925.0, -1.401298464324817e-45])
     ('float64', [[574352379.0, -0.99999], [2.2250738585072014e-308, -6.103515625e-05]])
 
-These values are then unpacked, converted to :code:`ivy.array` class, with corresponding dtypes. The test then runs on the newly
+These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on the newly
 created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.
 
 Why do we need helper functions
@@ -372,7 +372,7 @@ second element is a list/nested list containing floating point numbers of that p
 
 This function contains a list of `keyword`_ arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one :code:`ivy.array`.
+which expects at least one :class:`ivy.Array`.
 
 7. **reshape_shapes** - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:
@@ -665,7 +665,7 @@ Self-Consistent and Explicit Testing
 The hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
 but this makes it difficult to manually verify ground truth results for each input variation.
 Therefore, we instead opt to test for self-consistency against the same Ivy function with a NumPy backend.
-This is handled by :code:`test_array_function`, which is a helper function most unit tests defer to.
+This is handled by :func:`test_array_function`, which is a helper function most unit tests defer to.
 This function is explained in more detail in the following sub-section.
 
 For *primary* functions, this approach works well.
@@ -680,9 +680,9 @@ including the *ground truth* NumPy which the value tests for all backends compar
 
 Therefore, for all *mixed* and *compositional* functions,
 the test should also be appended with known inputs and known ground truth outputs,
-to safeguard against this inability for :code:`test_array_function` to catch systematic errors.
+to safeguard against this inability for :func:`test_array_function` to catch systematic errors.
 These should be added using :code:`pytest.mark.parametrize`.
-However, we should still also include :code:`test_array_function` in the test,
+However, we should still also include :func:`test_array_function` in the test,
 so that we can still test for arbitrary variations in the input arguments.
 
 test_array_function
@@ -697,15 +697,15 @@ The helper `test_array_function`_ tests that the function:
 #. can be called as an instance method on the ivy.Container
 #. is self-consistent with the function return values when using a NumPy backend
 
-:code:`array` in the name :code:`test_array_function` simply refers to the fact that the function in question consumes
+:code:`array` in the name :func:`test_array_function` simply refers to the fact that the function in question consumes
 arrays in the arguments.
 
-So when should :code:`test_array_function` be used?
+So when should :func:`test_array_function` be used?
 
 The rule is simple, if the test should not pass any arrays in the input,
-then we should not use the helper :code:`test_array_function`.
-For example, :code:`ivy.num_gpus` does not receive any arrays in the input,
-and so we should not make us of :code:`test_array_function` in the test implementation.
+then we should not use the helper :func:`test_array_function`.
+For example, :func:`ivy.num_gpus` does not receive any arrays in the input,
+and so we should not make us of :func:`test_array_function` in the test implementation.
 
 Re-Running Failed Ivy Tests
 ---------------------------

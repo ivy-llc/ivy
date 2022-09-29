@@ -85,6 +85,7 @@ def dtype_and_values(
     *,
     available_dtypes=ivy_np.valid_dtypes,
     num_arrays=1,
+    abs_smallest_val=None,
     min_value=None,
     max_value=None,
     large_abs_safety_factor=1.1,
@@ -102,6 +103,7 @@ def dtype_and_values(
     shared_dtype=False,
     ret_shape=False,
     dtype=None,
+    array_api_dtypes=False,
 ):
     """Draws a list of arrays with elements from the given corresponding data types.
 
@@ -114,6 +116,10 @@ def dtype_and_values(
         if dtype is None, data types are drawn from this list randomly.
     num_arrays
         Number of arrays to be drawn.
+    abs_smallest_val
+        sets the absolute smallest value to be generated for float data types,
+        this has no effect on integer data types. If none, the default data type
+        absolute smallest value is used.
     min_value
         minimum value of elements in each array.
     max_value
@@ -165,6 +171,9 @@ def dtype_and_values(
         if True, the shape of the arrays is also returned.
     dtype
         A list of data types for the given arrays.
+    array_api_dtypes
+        if True, use data types that can be promoted with the array_api_promotion
+        table.
 
     Returns
     -------
@@ -184,6 +193,7 @@ def dtype_and_values(
                 num_arrays=num_arrays,
                 available_dtypes=available_dtypes,
                 shared_dtype=shared_dtype,
+                array_api_dtypes=array_api_dtypes,
             )
         )
     if shape is not None:
@@ -208,6 +218,7 @@ def dtype_and_values(
                 array_values(
                     dtype=dtype[i],
                     shape=shape,
+                    abs_smallest_val=abs_smallest_val,
                     min_value=min_value,
                     max_value=max_value,
                     allow_inf=allow_inf,
@@ -230,6 +241,7 @@ def dtype_values_axis(
     draw,
     *,
     available_dtypes,
+    abs_smallest_val=None,
     min_value=None,
     max_value=None,
     large_abs_safety_factor=1.1,
@@ -264,6 +276,10 @@ def dtype_values_axis(
         data-set (ex. list).
     available_dtypes
         if dtype is None, data type is drawn from this list randomly.
+    abs_smallest_val
+        sets the absolute smallest value to be generated for float data types,
+        this has no effect on integer data types. If none, the default data type
+        absolute smallest value is used.
     min_value
         minimum value of elements in the array.
     max_value
@@ -335,6 +351,7 @@ def dtype_values_axis(
     results = draw(
         dtype_and_values(
             available_dtypes=available_dtypes,
+            abs_smallest_val=abs_smallest_val,
             min_value=min_value,
             max_value=max_value,
             large_abs_safety_factor=large_abs_safety_factor,
@@ -533,6 +550,7 @@ def array_values(
     *,
     dtype,
     shape,
+    abs_smallest_val=None,
     min_value=None,
     max_value=None,
     allow_nan=False,
@@ -555,6 +573,10 @@ def array_values(
         data type of the elements of the list.
     shape
         shape of the required list.
+    abs_smallest_val
+        sets the absolute smallest value to be generated for float data types,
+        this has no effect on integer data types. If none, the default data type
+        absolute smallest value is used.
     min_value
         minimum value of elements in the list.
     max_value
@@ -652,7 +674,7 @@ def array_values(
                 min_value = min_value / large_abs_safety_factor
             if b_scale_max:
                 max_value = max_value / large_abs_safety_factor
-            if kind_dtype == "float":
+            if kind_dtype == "float" and not abs_smallest_val:
                 abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
         elif safety_factor_scale == "log":
             if b_scale_min:
@@ -661,7 +683,7 @@ def array_values(
             if b_scale_max:
                 max_sign = math.copysign(1, max_value)
                 max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
-            if kind_dtype == "float":
+            if kind_dtype == "float" and not abs_smallest_val:
                 m, e = math.frexp(dtype_info.smallest_normal)
                 abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
         else:
@@ -745,10 +767,10 @@ def array_values(
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
-    array = np.array(values, dtype=dtype)
+    array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
-    return array
+    return np.asarray(array)
 
 
 #      From array-api repo     #

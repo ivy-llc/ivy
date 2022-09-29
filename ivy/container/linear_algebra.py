@@ -169,7 +169,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \
                               b=ivy.array([[2., 1.], [1., 1.]]))
         >>> y = ivy.Container.static_cholesky(x, upper='false')
@@ -180,7 +180,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([[1.41, 0.707],
                             [0., 0.707]])
          }
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \
                               b=ivy.array([[2., 1.], [1., 1.]]))
         >>> upper = ivy.Container(a=1, b=-1)
@@ -328,7 +328,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([9., 0., 3.])
         >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
@@ -339,7 +339,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([0., -6., 0.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
         >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
@@ -655,7 +655,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
                               b=ivy.array([[4., 4.], [2., 1.]]))
@@ -1019,7 +1019,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
                               b=ivy.array([[1., 0.], [0., 0.]]))
@@ -1095,7 +1095,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
                                 b=ivy.array([[1., 0.], [0., 0.]]))
         >>> y = x.matrix_rank()
@@ -1497,7 +1497,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
                            [1, 3, 5],\
@@ -1577,7 +1577,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
                            [1, 3, 5],\

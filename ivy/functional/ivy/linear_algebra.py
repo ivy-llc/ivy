@@ -53,13 +53,19 @@ def cholesky(
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html>`_ # noqa
+    in the standard.
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
                        [1.0, 0.5, 0.0, 0.0, 0.0], \
@@ -101,7 +107,7 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -109,7 +115,7 @@ def cholesky(
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
@@ -122,7 +128,7 @@ def cholesky(
                         [0., 0.707]])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
@@ -136,7 +142,7 @@ def cholesky(
                         [0., 0.707]])
     }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> upper = ivy.Container(a=1, b=-1)
@@ -189,17 +195,19 @@ def cross(
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
 
-    This method conforms to the `Array API Standard
+
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
@@ -207,7 +215,7 @@ def cross(
     >>> print(z)
     ivy.array([0., 0., 1.])
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
                           b=ivy.array([0., 0., 2.]))
@@ -220,7 +228,7 @@ def cross(
         b: ivy.array([0., 6., 0.])
     }
 
-    With a combination of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0., 3.])
     >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), \
@@ -264,17 +272,19 @@ def det(
         ``x``.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
@@ -285,14 +295,14 @@ def det(
     >>> print(y)
     ivy.array(293.46997)
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
     ivy.array(293.46997)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
                                  b = ivy.array([[2., 1.], [1., 1.]]))
@@ -303,14 +313,14 @@ def det(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = x.det()
     >>> print(y)
     ivy.array(-10.)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
                                     b = ivy.array([[2., 1.], [1., 1.]]))
@@ -371,19 +381,20 @@ def diagonal(
         last two dimensions and appending a dimension equal to the size of the resulting
         diagonals. The returned array must have the same data type as ``x``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     ------------------
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
@@ -450,7 +461,7 @@ def diagonal(
     ivy.array([[3.],
                [4.]])
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.],\
                               [3., 4.]])
@@ -481,7 +492,7 @@ def diagonal(
     ivy.array([0, 4, 8])
 
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
@@ -520,9 +531,9 @@ def eigh(
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
-       it requires complex number support.
-    ..
-      NOTE: once complex numbers are supported, each square matrix must be Hermitian.
+       it requires complex number support, once complex numbers are supported,
+       each square matrix must be Hermitian.
+
     .. note::
        Whether an array library explicitly checks whether an input array is a symmetric
        matrix (or a stack of symmetric matrices) is implementation-defined.
@@ -547,10 +558,21 @@ def eigh(
             orthogonal. The array containing the eigenvectors must have shape
             ``(..., M, M)``.
 
-        Each returned array must have the same floating-point data type as ``x``.
+        -   Each returned array must have the same floating-point data type as ``x``.
 
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
@@ -566,8 +588,16 @@ def eigvalsh(
     UPLO: Optional[str] = "L",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
-    x.
+    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+
+    .. note::
+       The function ``eig`` will be added in a future version of the specification, as
+       it requires complex number support, once complex numbers are supported,
+       each square matrix must be Hermitian.
+
+    .. note::
+       Whether an array library explicitly checks whether an input array is a symmetric
+       matrix (or a stack of symmetric matrices) is implementation-defined.
 
     Parameters
     ----------
@@ -583,6 +613,16 @@ def eigvalsh(
     ret
         an array containing the computed eigenvalues. The returned array must have shape
         (..., M) and have the same data type as x.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
@@ -620,6 +660,7 @@ def inner(
     ret
         a two-dimensional array containing the inner product and whose shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
+
     """
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
@@ -654,19 +695,19 @@ def inv(
         floating-point data type determined by :ref:`type-promotion` and must have the
         same shape as ``x``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/
-    latest/extensions/generated/signatures.linalg.inv.html>`
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> y = ivy.zeros(3)
@@ -675,6 +716,7 @@ def inv(
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Using inplace
+    
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
@@ -689,7 +731,8 @@ def inv(
     ivy.array([[[-2., 1.],[1.5, -0.5]],
                [[-1.25, 0.75],[0.75, -0.25]]])
 
-    Static method for Container
+    With :class:`ivy.Container` inputs
+
     >>> x = ivy.Container(a=ivy.array([[11., 100., 10.],\
                         [300., 40., 20.], [25., 30, 100.]]),\
                         b=ivy.array([[4., 400., 50.], [10., 10., 15.],\
@@ -746,51 +789,64 @@ def matmul(
     ret
         -   if both x1 and x2 are one-dimensional arrays having shape (N,), a
             zero-dimensional array containing the inner product as its only element.
+
         -   if x1 is a two-dimensional array having shape (M, K) and x2 is a
             two-dimensional array having shape (K, N), a two-dimensional array
+
             containing the conventional matrix product and having shape (M, N).
         -   if x1 is a one-dimensional array having shape (K,) and x2 is an array having
             shape (..., K, N), an array having shape (..., N) (i.e., prepended
             dimensions during vector-to-matrix promotion must be removed) and containing
             the conventional matrix product.
+
         -   if x1 is an array having shape (..., M, K) and x2 is a one-dimensional array
             having shape (K,), an array having shape (..., M) (i.e., appended dimensions
             during vector-to-matrix promotion must be removed) and containing the
             conventional matrix product.
+
         -   if x1 is a two-dimensional array having shape (M, K) and x2 is an array
             having shape (..., K, N), an array having shape (..., M, N) and containing
             the conventional matrix product for each stacked matrix.
+
         -   if x1 is an array having shape (..., M, K) and x2 is a two-dimensional array
             having shape (K, N), an array having shape (..., M, N) and containing the
             conventional matrix product for each stacked matrix.
+
         -   if either x1 or x2 has more than two dimensions, an array having a shape
             determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and
             containing the conventional matrix product for each stacked matrix.
 
+
     **Raises**
 
-    -   if either x1 or x2 is a zero-dimensional array.
-    -   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional
-        array having shape (L,), and K != L.
-    -   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
-        (..., L, N), and K != L.
-    -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having
-        shape (L,), and K != L.
-    -   if x1 is an array having shape (..., M, K), x2 is an array having shape
-        (..., L, N), and K != L.
+        -   if either x1 or x2 is a zero-dimensional array.
+
+        -   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional
+
+            array having shape (L,), and K != L.
+
+        -   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
+            (..., L, N), and K != L.
+
+        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having
+            shape (L,), and K != L.
+
+        -   if x1 is an array having shape (..., M, K), x2 is an array having shape
+            (..., L, N), and K != L.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([2., 0., 3.])
     >>> y = ivy.array([4., 1., 8.])
@@ -798,7 +854,7 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.], [0., 1.]])
     >>> y = ivy.native_array([[2., 0.], [0., 3.]])
@@ -806,7 +862,7 @@ def matmul(
     >>> print(z)
     ivy.array([[2., 6.],[0., 3.]])
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))
     >>> y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))
@@ -817,8 +873,8 @@ def matmul(
         b: ivy.array(3.)
     }
 
-    With a combination of :code:`ivy.Array`
-    and :code:`ivy.Container` inputs:
+    With a combination of :class:`ivy.Array`
+    and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0.])
     >>> y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))
@@ -829,8 +885,7 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :code:`ivy.NativeArray`
-    and :code:`ivy.Array` inputs:
+    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:
 
     >>> x = ivy.native_array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
@@ -877,6 +932,16 @@ def matrix_norm(
     ret
         Matrix norm of the array at specified axes.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).matrix_norm(x, ord=ord, keepdims=keepdims, out=out)
 
@@ -888,8 +953,35 @@ def matrix_norm(
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Raises a square matrix (or a stack of square matrices) x to an integer power
-    n.
+    """Raises a square matrix (or a stack of square matrices) x to an integer power n.
+
+    Parameters
+    ----------
+        x
+            input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+            Should have a floating-point data type.
+        n
+            integer exponent.
+
+    Returns
+    -------
+        ret
+            if n is equal to zero, an array containing the identity matrix for each square matrix.
+            If n is less than zero, an array containing the inverse of each square matrix raised to the absolute value of n,
+            provided that each square matrix is invertible.
+            If n is greater than zero, an array containing the result of raising each square matrix to the power n.
+            The returned array must have the same shape as x and a floating-point data type determined by Type Promotion Rules.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).matrix_power(x, n, out=out)
 
@@ -936,21 +1028,34 @@ def matrix_rank(
         data type determined by :ref:`type-promotion` and must have shape ``(...)``
         (i.e., must have a shape equal to ``shape(x)[:-2]``).
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code: 'ivy.Array' inputs:
 
     1. Full Matrix
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
     ivy.array(2.)
 
     2. Rank Deficient Matrix
+
     >>> x = ivy.array([[1., 0.], [0., 0.]])
     >>> ivy.matrix_rank(x)
     ivy.array(1.)
 
     3. 1 Dimension - rank 1 unless all 0
+
     >>> x = ivy.array([[1., 1.])
     >>> ivy.matrix_rank(x)
     ivy.array(1.)
@@ -969,7 +1074,10 @@ def matrix_rank(
     >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
                             b = ivy.array([[1., 0.], [0., 0.]]))
     >>> ivy.matrix_rank(x)
-    {a:ivy.array(2.), b:ivy.array(1.)}
+    {
+        a:ivy.array(2.),
+        b:ivy.array(1.)
+    }
 
 
     """
@@ -999,6 +1107,16 @@ def matrix_transpose(
     ret
         an array containing the transpose for each matrix and having shape
         ``(..., N, M)``. The returned array must have the same data type as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).matrix_transpose(x, out=out)
@@ -1038,12 +1156,19 @@ def outer(
         The returned array must have a data type determined by Type Promotion Rules.
 
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    >>> x = ivy.array([[1., 2.],\
-                       [3., 4.]])
-    >>> y = ivy.array([[5., 6.],\
-                       [7., 8.]])
+    >>> x = ivy.array([[1., 2.],[3., 4.]])
+    >>> y = ivy.array([[5., 6.],[7., 8.]])
     >>> d = ivy.outer(x,y)
     >>> print(d)
     ivy.array([[ 5.,  6.,  7.,  8.],
@@ -1123,24 +1248,30 @@ def pinv(
         floating-point data type determined by :ref:`type-promotion` and must have shape
         ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
         two dimensions must be transposed).
-    
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    x = ivy.array([[1., 2.],\
-                  [3., 4.]])
-    y = pinv(x, None, None)
-    print(y)
-    ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
-    
-    x = ivy.array([[1., 2.],\
-                  [3., 4.]])
-    out = ivy.array()
-    pinv(x, 0, out)
-    print(out)
-    ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
-    
+    >>> x = ivy.array([[1., 2.],[3., 4.]])
+    >>> y = ivy.pinv(x)
+    >>> print(y)
+    ivy.array([[-2., 1.],[1.5, -0.5]])
+
+    >>> x = ivy.array([[1., 2.],[3., 4.]])
+    >>> out = ivy.zeros(x.shape)
+    >>> ivy.pinv(x, out=out)
+    >>> print(out)
+    ivy.array([[-2., 1.],[1.5, -0.5]])
+
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
@@ -1188,6 +1319,16 @@ def qr(
           array must have shape (..., K, N), where K = min(M, N). The first x.ndim-2
           dimensions must have the same size as those of the input x.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).qr(x, mode=mode)
 
@@ -1218,6 +1359,16 @@ def slogdet(
 
             logdet:
             The natural log of the absolute value of the determinant.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.slogdet.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).slogdet(x, out=out)
@@ -1262,6 +1413,16 @@ def solve(
         to B) and must have a floating-point data type determined by Type Promotion
         Rules.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
@@ -1280,6 +1441,7 @@ def svd(
     columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
     is a matrix (or a stack of matrices) with orthonormal rows.
 
+
     Parameters
     ----------
     x
@@ -1295,8 +1457,9 @@ def svd(
 
     Returns
     -------
-    ..
-      NOTE: once complex numbers are supported, each square matrix must be Hermitian.
+    .. note::
+        once complex numbers are supported, each square matrix must be Hermitian.
+
     ret
         a namedtuple ``(U, S, Vh)`` whose
 
@@ -1323,6 +1486,16 @@ def svd(
             dimensions must have the same shape as those of the input ``x``.
 
         Each returned array must have the same floating-point data type as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -1369,10 +1542,20 @@ def svdvals(
         length ``K``, where K = min(M, N). The values are sorted in descending order by
         magnitude.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
     >>> S = ivy.svdvals(x)
@@ -1389,7 +1572,7 @@ def svdvals(
     >>> print(error)
     ivy.array([0.,0.])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
@@ -1410,7 +1593,7 @@ def svdvals(
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],\
                                        [1.0, 3.0], [3.0, 5.0]]),\
@@ -1428,7 +1611,7 @@ def svdvals(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
                        [2.0, 1.0], [3.0, 4.0],\
@@ -1437,7 +1620,7 @@ def svdvals(
     >>> print(y)
     ivy.array([13.4, 3.88])
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
                                        [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),\
@@ -1451,7 +1634,6 @@ def svdvals(
         a: ivy.array([13., 4.64, 2.55]),
         b: ivy.array([23.2, 10.4, 4.31, 1.36])
     }
-
 
     """
     return current_backend(x).svdvals(x, out=out)
@@ -1491,19 +1673,27 @@ def tensordot(
         The tensor contraction of x1 and x2 over the specified axes.
 
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
-    1. Axes = 0 : tensor product
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([[1., 2.], [2., 3.]])
     >>> y = ivy.array([[3., 4.], [4., 5.]])
     >>> res = ivy.tensordot(x, y, axes =0)
     >>> print(res)
     ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
-    2. Axes = 1 : tensor dot product
     >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
     >>> y = ivy.native_array([[1.], [2.], [3.]])
     >>> res = ivy.tensordot(x, y, axes = 1)
@@ -1512,9 +1702,8 @@ def tensordot(
                 [26.],
                 [20.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
-    3. Axes = 2: (default) tensor double contraction
     >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),\
                           b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
     >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),\
@@ -1575,9 +1764,20 @@ def trace(
 
          The returned array must have the same data type as ``x``.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[2., 0., 3.],\
                         [3., 5., 6.]])
@@ -1593,7 +1793,7 @@ def trace(
     >>> print(y)
     ivy.array([2., 6.])
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
     >>> y = ivy.trace(x, offset=0)
@@ -1607,7 +1807,7 @@ def trace(
     >>> print(y)
     ivy.array(12)
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
@@ -1684,11 +1884,24 @@ def vecdot(
         dimensions) of the shape determined according to :ref:`broadcasting`. The
         returned array must have a data type determined by :ref:`type-promotion`.
 
+
     **Raises**
 
-    -   if provided an invalid ``axis``.
-    -   if the size of the axis over which to compute the dot product is not the same
-        for both ``x1`` and ``x2``.
+        -   if provided an invalid ``axis``.
+
+        -   if the size of the axis over which to compute the dot product is not the same
+            for both ``x1`` and ``x2``.
+
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
@@ -1771,6 +1984,16 @@ def vector_norm(
         array must have a rank which is ``n`` less than the rank of ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, out=out
@@ -1788,9 +2011,7 @@ def vector_norm(
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric
-    matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying
-    :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
+    """Given vector, return the associated skew-symmetric matrix
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
 
     Parameters
@@ -1805,6 +2026,11 @@ def vector_to_skew_symmetric_matrix(
     -------
     ret
         Skew-symmetric matrix *[batch_shape,3,3]*.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)

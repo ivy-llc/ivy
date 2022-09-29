@@ -133,7 +133,11 @@ def test_acos(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
     alpha=st.integers(min_value=1, max_value=5),
@@ -162,6 +166,8 @@ def test_add(
         instance_method=instance_method,
         fw=fw,
         fn_name="add",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
@@ -357,6 +363,7 @@ def test_atanh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
 )
@@ -392,8 +399,8 @@ def test_bitwise_and(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
@@ -411,7 +418,9 @@ def test_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -431,7 +440,8 @@ def test_bitwise_left_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer"))
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
 )
@@ -467,6 +477,7 @@ def test_bitwise_invert(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
 )
@@ -502,8 +513,8 @@ def test_bitwise_or(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
@@ -522,7 +533,9 @@ def test_bitwise_right_shift(
 
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -545,6 +558,7 @@ def test_bitwise_right_shift(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
 )
@@ -1630,9 +1644,7 @@ def pow_helper(draw, available_dtypes=None):
         max_val = ivy.iinfo(dtype2).max
     else:
         max_val = ivy.finfo(dtype2).max
-    max_x1 = (
-        np.max(np.abs(np.asarray(x1[0]))) if isinstance(x1[0], list) else abs(x1[0])
-    )
+    max_x1 = np.max(np.abs(x1[0]))
     if max_x1 in [0, 1]:
         max_value = None
     else:
@@ -1956,7 +1968,11 @@ def test_sqrt(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
     alpha=st.integers(min_value=1, max_value=5),
@@ -1984,6 +2000,8 @@ def test_subtract(
         instance_method=instance_method,
         fw=fw,
         fn_name="subtract",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
         alpha=alpha,

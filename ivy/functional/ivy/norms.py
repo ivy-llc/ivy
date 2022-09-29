@@ -56,7 +56,7 @@ def layer_norm(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> y = ivy.layer_norm(x, [0, 1], new_std=2.0)
@@ -81,7 +81,7 @@ def layer_norm(
                [ 0.581,  0.891,  1.33 ],
                [ 1.01 , -0.579, -0.931]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
@@ -94,7 +94,7 @@ def layer_norm(
                       [-1.33, 0.2, 1.73]])
     }
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                            'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
@@ -107,7 +107,7 @@ def layer_norm(
                       [0.241, 0.241, 0.241]])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                            'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
@@ -123,7 +123,7 @@ def layer_norm(
     }
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """

@@ -25,13 +25,13 @@ Arrays
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 
-There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
+There are two types of array in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
 
 Native Array
 ------------
 
-The :code:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class,
-such as :code:`np.ndarray`, :code:`tf.Tensor` or :code:`torch.Tensor`
+The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class,
+such as :class:`np.ndarray`, :class:`tf.Tensor` or :class:`torch.Tensor`
 
 When no framework is set, this is an `empty class`_.
 When a framework is set, this is `overwritten`_ with the backend-specific array class.
@@ -39,11 +39,11 @@ When a framework is set, this is `overwritten`_ with the backend-specific array 
 Ivy Array
 ---------
 
-The :code:`ivy.Array` is a simple wrapper class, which wraps around the :code:`ivy.NativeArray`,
+The :class:`ivy.Array` is a simple wrapper class, which wraps around the :class:`ivy.NativeArray`,
 storing it in `self._data`_.
 
 All functions in the Ivy functional API which accept *at least one array argument* in
-the input are implemented as instance methods in the :code:`ivy.Array` class.
+the input are implemented as instance methods in the :class:`ivy.Array` class.
 The only exceptions to this are functions in the
 `nest <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py>`_
 module and the
@@ -52,7 +52,7 @@ module, which have no instance method implementations.
 
 The organization of these instance methods follows the same organizational structure as the
 files in the functional API.
-The :code:`ivy.Array` class `inherits`_ from many category-specific array classes,
+The :class:`ivy.Array` class `inherits`_ from many category-specific array classes,
 such as `ArrayWithElementwise`_,
 each of which implement the category-specific instance methods.
 
@@ -77,57 +77,57 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.
 Most special methods also simply wrap a corresponding function in the functional API,
 as `is the case`_ in the Array API Standard.
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
-:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide` respectively.
+:func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide` respectively.
 However, for some special methods such as `__setitem__`_,
 there are substantial differences between the backend frameworks
-which must be addressed in the :code:`ivy.Array` implementation.
+which must be addressed in the :class:`ivy.Array` implementation.
 
 Array Handling
 --------------
 
-When calling backend-specific functions such as :code:`torch.sin`, we must pass in :code:`ivy.NativeArray` instances.
-For example, :code:`torch.sin` will throw an error if we try to pass in an :code:`ivy.Array` instance.
-It must be provided with a :code:`torch.Tensor`, and this is reflected in the `backend type hints`_.
+When calling backend-specific functions such as :func:`torch.sin`, we must pass in :class:`ivy.NativeArray` instances.
+For example, :func:`torch.sin` will throw an error if we try to pass in an :class:`ivy.Array` instance.
+It must be provided with a :class:`torch.Tensor`, and this is reflected in the `backend type hints`_.
 
-However, all Ivy functions must return :code:`ivy.Array` instances, which is reflected in the `Ivy type hints`_.
-The reason we always return :code:`ivy.Array` instances from Ivy functions is to ensure that any subsequent Ivy code is
+However, all Ivy functions must return :class:`ivy.Array` instances, which is reflected in the `Ivy type hints`_.
+The reason we always return :class:`ivy.Array` instances from Ivy functions is to ensure that any subsequent Ivy code is
 fully framework-agnostic, with all operators performed on the returned array being handled by the special methods of the
-:code:`ivy.Array` class, and not the special methods of the backend :code:`ivy.NativeArray` class.
+:class:`ivy.Array` class, and not the special methods of the backend :class:`ivy.NativeArray` class.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
 
-For most special methods, calling them on the :code:`ivy.NativeArray` would not be a problem
+For most special methods, calling them on the :class:`ivy.NativeArray` would not be a problem
 because all backends are generally quite consistent,
 but as explained above, for some functions such as `__setitem__`_
-there are substantial differences which must be addressed in the :code:`ivy.Array` implementation
+there are substantial differences which must be addressed in the :class:`ivy.Array` implementation
 in order to guarantee unified behaviour.
 
-Given that all Ivy functions return :code:`ivy.Array` instances,
-all Ivy functions must also support :code:`ivy.Array` instances in the input,
+Given that all Ivy functions return :class:`ivy.Array` instances,
+all Ivy functions must also support :class:`ivy.Array` instances in the input,
 otherwise it would be impossible to chain functions together!
 
 Therefore, most functions in Ivy must adopt the following pipeline:
 
-#. convert all :code:`ivy.Array` instances in the input arguments to :code:`ivy.NativeArray` instances
-#. call the backend-specific function, passing in these :code:`ivy.NativeArray` instances
-#. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
-   :code:`ivy.Array` instances, and return
+#. convert all :class:`ivy.Array` instances in the input arguments to :class:`ivy.NativeArray` instances
+#. call the backend-specific function, passing in these :class:`ivy.NativeArray` instances
+#. convert all of the :class:`ivy.NativeArray` instances which are returned from the backend function back into \
+   :class:`ivy.Array` instances, and return
 
 Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and
 `outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
 
-All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
+All Ivy functions *also* accept :class:`ivy.NativeArray` instances in the input.
 This is for a couple of reasons.
-Firstly, :code:`ivy.Array` instances must be converted to :code:`ivy.NativeArray` instances anyway,
+Firstly, :class:`ivy.Array` instances must be converted to :class:`ivy.NativeArray` instances anyway,
 and so supporting them in the input is not a problem.
 Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`,
-whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
+whereas the output arrays have type :class:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
 
-However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
+However, :class:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
 This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
@@ -135,11 +135,11 @@ serves the same purpose as the function return. This is further explained in the
 As a final point, extra attention is required for *compositional* functions,
 as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array,
-then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
+then this will call the special methods on an :class:`ivy.NativeArray` and not on an :class:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a separate piece of `wrapped logic`_ to ensure that all :code:`ivy.NativeArray`
-instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
+Therefore, all compositional functions have a separate piece of `wrapped logic`_ to ensure that all :class:`ivy.NativeArray`
+instances are converted to :class:`ivy.Array` instances before entering into the compositional function.
 
 **Round Up**
 

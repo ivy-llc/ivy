@@ -362,7 +362,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 4, 7, 0]])
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
@@ -377,7 +377,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
