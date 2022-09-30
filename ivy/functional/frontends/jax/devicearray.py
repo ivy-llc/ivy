@@ -24,6 +24,12 @@ class DeviceArray:
     def __eq__(self, other):
         return jax_frontend.eq(self.data, other)
 
+    def __lt__(self, other):
+        return jax_frontend.lt(self.data, other)
+
+    def __le__(self, other):
+        return jax_frontend.le(self.data, other)
+
     def __gt__(self, other):
         return jax_frontend.gt(self.data, other)
 
