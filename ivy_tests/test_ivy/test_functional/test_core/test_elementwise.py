@@ -361,6 +361,7 @@ def test_atanh(
         fn_name="atanh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
