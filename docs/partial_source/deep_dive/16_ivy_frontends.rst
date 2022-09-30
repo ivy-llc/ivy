@@ -531,8 +531,8 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
     @given(
         dtype_x_axis=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("float")),
         dtype=helpers.get_dtypes("float", full=False, none=True),
-        keep_dims=st.booleans(),
-        initial=st.one_of(st.floats(), st.none()),
+        keep_dims=st.one_of(st.booleans(), Novalue),
+        initial=st.one_of(st.floats(), Novalue),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.numpy.sum"
         ),
