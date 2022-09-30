@@ -1432,3 +1432,46 @@ def test_tensorflow_GreaterEqual(dtype_and_x, as_variable, fw, native_array):
         x=x[0],
         y=x[1],
     )
+
+
+# Mean
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-10,
+        max_value=3,
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Mean"
+    ),
+)
+def test_tensorflow_Mean(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+    native_array,
+    keep_dims,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Mean",
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+        rtol=1e-02,
+        atol=1e-02,
+    )
