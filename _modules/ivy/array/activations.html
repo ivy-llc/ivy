@@ -249,20 +249,14 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([-0.3461, -0.6491])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.softplus()</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        ivy.array([0.535, 0.42 ])</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([-0.3461, -0.6491])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.softplus(beta=0.5)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([1.22, 1.09])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1.31, 2., 2.])</span>
-<span class="sd">        &gt;&gt;&gt; x.softplus(threshold=2)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.softplus(threshold=2, out=x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        ivy.array([1.31, 2.  , 2.  ])</span>
-
+<span class="sd">        ivy.array([1.55, 2.13, 2.13])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
