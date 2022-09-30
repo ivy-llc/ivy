@@ -248,8 +248,8 @@ If the only array argument is the <code class="code docutils literal notranslate
 instance method. For example, we do not implement an instance method for
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116">ivy.zeros</a>.</p>
 <p>Under the hood, every <em>instance</em> method calls the corresponding <em>static</em> method.
-For example, <a href="#id4"><span class="problematic" id="id5">`ivy.Container.add`_</span></a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259">ivy.Container.tan</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code>,
+For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92">ivy.Container.add</a>
+calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259">ivy.Container.tan</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158">ivy.Container.roll</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>.</p>
 <p>As is the case for <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 the organization of these instance methods follows the same organizational structure as the
