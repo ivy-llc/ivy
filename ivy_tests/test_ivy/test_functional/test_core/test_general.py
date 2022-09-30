@@ -198,7 +198,7 @@ def array_and_boolean_mask(
             max_dim_size=max_dim_size,
         )
     )
-    return [x_dtype, boolean_mask_dtype], x, boolean_mask
+    return [x_dtype[0], boolean_mask_dtype[0]], x[0], boolean_mask[0]
 
 
 @handle_cmd_line_args
@@ -233,7 +233,7 @@ def test_get_item(
         instance_method=False,
         fw=fw,
         fn_name="get_item",
-        x=x[0],
+        x=x,
         query=indices,
     )
 
@@ -761,7 +761,7 @@ def array_and_ndindices(
                 )
                 nd_index.append(axis_index)
             indices.append(nd_index)
-    return [x_dtype, indices_dtype], x, indices
+    return [x_dtype[0], indices_dtype], x[0], indices
 
 
 # gather_nd
@@ -803,7 +803,7 @@ def test_gather_nd(
         fw=fw,
         fn_name="gather_nd",
         params=params,
-        indices=ndindices,
+        indices=np.asarray(ndindices, dtypes[1]),
     )
 
 
