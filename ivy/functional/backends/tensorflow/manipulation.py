@@ -3,7 +3,7 @@ import ivy
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Literal
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
@@ -251,6 +251,23 @@ tile.unsupported_dtypes = (
     "int8",
     "int16",
 )
+
+
+def pad(
+    x: tf.Tensor,
+    /,
+    pad_width: Union[tf.Tensor, int],
+    *,
+    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+    stat_length: Optional[tf.Tensor, int] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width, mode=mode, constant_values=constant_values)
 
 
 def constant_pad(

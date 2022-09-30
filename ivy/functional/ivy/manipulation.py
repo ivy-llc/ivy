@@ -1,6 +1,6 @@
 # For Review
 # global
-from typing import Union, Optional, Tuple, List, Iterable, Sequence
+from typing import Union, Optional, Tuple, List, Iterable, Sequence, Callable, Literal
 from numbers import Number
 from numpy.core.numeric import normalize_axis_tuple
 
@@ -918,6 +918,144 @@ def clip(
 
     """
     return current_backend(x).clip(x, x_min, x_max)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def pad(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    pad_width: Union[Sequence[int], int],
+    *,
+    mode: Optional[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Optional[Sequence[int], int] = None,
+    constant_values: Optional[Sequence[Number], Number] = 0,
+    end_values: Optional[Sequence[Number], Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Pads an array.
+
+    Parameters
+    ----------
+    x
+        Input array to pad.
+    pad_width
+        Number of values padded to the edges of each axis.
+         - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
+           for each axis.
+         - ((before, after),) yields same before and after pad for each axis.
+         - (pad,) or int is a shortcut for before = after = pad width for all axes.
+    mode
+        One of the following string values or a user supplied function.
+             - "constant": Pads with a constant value.
+             - "edge": Pads with the edge values of array.
+             - "linear_ramp": Pads with the linear ramp between end_value
+               and the array edge value.
+             - "maximum": Pads with the maximum value of all or part of the vector
+               along each axis.
+             - "mean": Pads with the mean value of all or part of the vector along
+               each axis.
+             - "median": Pads with the median value of all or part of the vector
+               along each axis.
+             - "minimum": Pads with the minimum value of all or part of the vector
+               along each axis.
+             - "reflect": Pads with the reflection mirrored on the first and last
+               values of the vector along each axis.
+             - "symmetric": Pads with the reflection of the vector mirrored along
+               the edge of the array.
+             - "wrap": Pads with the wrap of the vector along the axis.
+               The first values are used to pad the end and the end values are used
+               to pad the beginning.
+             - "empty": Pads with undefined values.
+             - <function>: Pads with a user-defined padding function.
+                 The padding function should modify an array in-place.
+                 It has the following signature:
+                 padding_func(vector, iaxis_pad_width, iaxis, kwargs), where:
+                     - vector is
+                       An array already padded with zeros. Padded values are
+                       vector[:iaxis_pad_width[0]] and vector[-iaxis_pad_width[1]:].
+                     - iaxis_pad_width is
+                       A 2-tuple of ints, where iaxis_pad_width[0] represents the
+                       number of values padded at the beginning of vector and
+                       iaxis_pad_width[1] represents the number of values padded
+                       at the end of vector.
+                     - iaxis is
+                       The axis currently being calculated.
+                     - kwargs is
+                       A dict of any keyword arguments the function requires.
+    stat_length
+        Used in "maximum", "mean", "median", and "minimum".
+        Number of values at edge of each axis used to calculate the statistic value.
+         - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
+           lengths for each axis.
+         - ((before, after),) yields same before and after statistic lengths for
+           each axis.
+         - (stat_length,) or int is a shortcut for before = after = statistic length
+           for all axes.
+         - None uses the entire axis.
+    constant_values
+        Used in "constant". The values to set the padded values for each axis.
+         - ((before_1, after_1), ... (before_N, after_N)) yields unique pad constants
+           for each axis.
+         - ((before, after),) yields same before and after constants for each axis.
+         - (constant,) or constant is a shortcut for before = after = constant for
+           all axes.
+    end_values
+        Used in "linear_ramp". The values used for the ending value of the linear_ramp
+        and that will form the edge of the padded array.
+         - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
+           for each axis.
+         - ((before, after),) yields same before and after end values for each axis.
+         - (constant,) or constant is a shortcut for before = after = constant for
+           all axes.
+    reflect_type
+        Used in "reflect", and "symmetric". The "even" style is the default with an
+        unaltered reflection around the edge value. For the "odd" style, the extended
+        part of the array is created by subtracting the reflected values from two
+        times the edge value.
+    out
+        optional output array, for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Padded array of rank equal to x with shape increased according to pad_width.
+
+
+    Both the description and the type hints above assumes an array input for simplicity
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(x).pad(
+        x,
+        pad_width,
+        mode=mode,
+        stat_length=stat_length,
+        constant_values=constant_values,
+        end_values=end_values,
+        reflect_type=reflect_type,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back

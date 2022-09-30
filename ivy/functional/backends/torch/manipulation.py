@@ -3,7 +3,7 @@ import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Union, Optional, Tuple, List, Sequence, Iterable, Literal
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
@@ -225,6 +225,34 @@ def tile(
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
     return x.repeat(reps)
+
+
+def pad(
+    x: torch.Tensor,
+    /,
+    pad_width: Union[torch.Tensor, int],
+    *,
+    mode: Optional[Literal["constant", "reflect", "edge", "wrap"]] = "constant",
+    stat_length: Optional[torch.Tensor, int] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[torch.Tensor, torch.Variable]] = None,
+) -> torch.Tensor:
+    if x.shape == ():
+        x = x.unsqueeze(0)
+    if isinstance(pad_width, torch.Tensor):
+        pad_width = pad_width.detach().cpu().numpy().tolist()
+    pad_width.reverse()
+    pad_width_flat: List[int] = list()
+    for pad_width_sec in pad_width:
+        for item in pad_width_sec:
+            pad_width_flat.append(item)
+    if mode == "edge":
+        mode = "replicate"
+    elif mode == "wrap":
+        mode = "circular"
+    return torch.nn.functional.pad(x, pad_width_flat, mode=mode, value=constant_values)
 
 
 def constant_pad(

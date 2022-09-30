@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
+from typing import Union, Tuple, Optional, List, Sequence, Iterable, Callable, Literal
 from numbers import Number
 
 # local
@@ -210,6 +210,44 @@ def clip(
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
     return jnp.clip(x, x_min, x_max)
+
+
+def pad(
+    x: JaxArray,
+    /,
+    pad_width: Union[List[List[int]], int],
+    *,
+    mode: Optional[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Optional[List[List[int]], int] = None,
+    constant_values: Optional[List[List[Number]], Number] = 0,
+    end_values: Optional[List[List[Number]], Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.pad(
+        _flat_array_to_1_dim_array(x),
+        pad_width,
+        mode=mode,
+        stat_length=stat_length,
+        constant_values=constant_values,
+        end_values=end_values,
+        reflect_type=reflect_type,
+    )
 
 
 def constant_pad(

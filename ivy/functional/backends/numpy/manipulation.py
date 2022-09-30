@@ -2,7 +2,7 @@
 import ivy
 import numpy as np
 import math
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Callable, Literal
 from numbers import Number
 
 
@@ -179,6 +179,44 @@ def tile(
     x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.tile(x, reps)
+
+
+def pad(
+    x: np.ndarray,
+    /,
+    pad_width: Union[List[List[int]], int],
+    *,
+    mode: Optional[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Optional[List[List[int]], int] = None,
+    constant_values: Optional[List[List[Number]], Number] = 0,
+    end_values: Optional[List[List[Number]], Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.pad(
+        _flat_array_to_1_dim_array(x),
+        pad_width,
+        mode=mode,
+        stat_length=stat_length,
+        constant_values=constant_values,
+        end_values=end_values,
+        reflect_type=reflect_type,
+    )
 
 
 def constant_pad(
