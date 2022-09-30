@@ -21,8 +21,14 @@ class DeviceArray:
     # Special Methods #
     # --------------- #
 
+    def __neg__(self):
+        return jax_frontend.neg(self.data)
+
     def __eq__(self, other):
         return jax_frontend.eq(self.data, other)
+
+    def __ne__(self, other):
+        return jax_frontend.ne(self.data, other)
 
     def __lt__(self, other):
         return jax_frontend.lt(self.data, other)
