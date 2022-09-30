@@ -136,8 +136,8 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
-<div class="viewcode-block" id="ContainerWithElementwise"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithElementwise.html#ivy.container.extensions.ContainerWithElementwise">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithElementwise</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithElementwise.static_sinc"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithElementwise.html#ivy.container.extensions.ContainerWithElementwise.static_sinc">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithExtensions"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithExtensions.html#ivy.container.extensions.ContainerWithExtensions">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithExtensions</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerWithExtensions.static_sinc"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithExtensions.html#ivy.container.extensions.ContainerWithExtensions.static_sinc">[docs]</a>    <span class="nd">staticmethod</span>
     <span class="k">def</span> <span class="nf">static_sinc</span><span class="p">(</span>
             <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
             <span class="o">/</span><span class="p">,</span>
@@ -200,7 +200,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementwise.sinc"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithElementwise.html#ivy.container.extensions.ContainerWithElementwise.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithExtensions.sinc"><a class="viewcode-back" href="../../../data_classes/container/extensions/ContainerWithExtensions.html#ivy.container.extensions.ContainerWithExtensions.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
