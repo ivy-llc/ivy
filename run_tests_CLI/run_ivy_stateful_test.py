@@ -31,5 +31,5 @@ submodule = submodules[j]
 with open("./fwsubmod.txt", "w") as outfile:
     outfile.write(f"{backend}-{submodule}")
 
-
-os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+    
+exit(os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}"))
