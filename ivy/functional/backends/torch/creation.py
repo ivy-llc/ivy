@@ -1,8 +1,9 @@
 # global
+from typing import Union, List, Optional, Sequence
+
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -15,6 +16,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+
 
 # Array API Standard #
 # -------------------#
@@ -264,9 +266,8 @@ def linspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
-            :-1
-        ]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)
+        ans = ans[:-1]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if (
@@ -372,8 +373,23 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
     return res.to(device)
 
 
-def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
-    return list(torch.meshgrid(*arrays, indexing=indexing))
+def meshgrid(
+    *arrays: torch.Tensor, sparse: bool = False, indexing="xy"
+) -> List[torch.Tensor]:
+    if not sparse:
+        return list(torch.meshgrid(*arrays, indexing=indexing))
+
+    sd = (1,) * len(arrays)
+    res = [
+        torch.reshape(torch.as_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = torch.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = torch.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(
@@ -487,10 +503,38 @@ logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 def one_hot(
     indices: torch.Tensor,
     depth: int,
+    /,
     *,
+    on_value: Optional[torch.Tensor] = None,
+    off_value: Optional[torch.Tensor] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[torch.dtype] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
-        device, indices.dtype
-    )
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = torch.float32
+        else:
+            if not on_none:
+                dtype = torch.tensor(on_value).dtype
+            elif not off_none:
+                dtype = torch.tensor(off_value).dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
+
+    on_value = torch.tensor(1.0) if on_none else torch.tensor(on_value, dtype=dtype)
+    off_value = torch.tensor(0.0) if off_none else torch.tensor(off_value, dtype=dtype)
+
+    res = torch.nn.functional.one_hot(indices.to(torch.int64), depth)
+
+    if not on_none or not off_none:
+        res = torch.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = torch.moveaxis(res, -1, axis)
+
+    return res.to(device, dtype)
