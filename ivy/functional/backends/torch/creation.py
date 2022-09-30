@@ -237,17 +237,6 @@ def full(
 
 full.support_native_out = True
 
-
-def full_like(
-    x: torch.Tensor,
-    /,
-    fill_value: Union[int, float],
-    *,
-    dtype: torch.dtype,
-    device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-numpy_sort
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
     ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
