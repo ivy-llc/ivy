@@ -9,6 +9,7 @@ import numpy as np
 import ivy
 from ivy import to_ivy, to_native
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
@@ -17,7 +18,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -994,7 +994,9 @@ def linspace(
 @handle_nestable
 @handle_exceptions
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1003,7 +1005,8 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
-
+    sparse
+        if True, a sparse grid is returned in order to conserve memory. Default: False.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1073,6 +1076,17 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+        >>> print(xv)
+        ivy.array([[1, 2, 3]])
+
+        >>> print(yv)
+        ivy.array([[4],
+                [5],
+                [6]])
+
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2])
@@ -1087,7 +1101,7 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 @outputs_to_ivy_arrays
@@ -1389,10 +1403,14 @@ def one_hot(
     depth: int,
     /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a one-hot array.
+    """Returns a one-hot array. The locations represented by indices in the parameter
+    indices take value on_value, while all other locations take value off_value.
 
     Parameters
     ----------
@@ -1400,6 +1418,14 @@ def one_hot(
         Indices for where the ones should be scattered *[batch_shape, dim]*
     depth
         Scalar defining the depth of the one-hot dimension.
+    on_value
+        Scalar defining the value to fill in output when indices[j] == i. Default: 1.
+    off_value
+        Scalar defining the value to fill in output when indices[j] != i. Default: 0.
+    axis
+        Axis to scatter on. The default is -1, a new inner-most axis is created.
+    dtype
+        The data type of the output tensor.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
@@ -1414,7 +1440,15 @@ def one_hot(
         overrides.
 
     """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
+    return current_backend(indices).one_hot(
+        indices,
+        depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        device=device,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -1453,6 +1487,10 @@ def logspace(
         The base of the log space. Default is 10.0
     axis
         Axis along which the operation is performed.
+    dtype
+        The data type of the output tensor. If None, the dtype of on_value is used or if
+        that is None, the dtype of off_value is used, or if that is None, defaults to
+        float32.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out

@@ -2,6 +2,8 @@
 import copy
 from typing import Union, List
 import numpy as np
+import jax
+import tensorflow as tf
 import importlib
 import inspect
 
@@ -746,16 +748,15 @@ def gradient_test(
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
 
-    def where_cond(x):
-        x in [np.inf, -np.inf, np.nan]
-
+    condition_np_flat = np.isfinite(grads_np_flat)
     grads_np_flat = np.where(
-        where_cond, np.asarray(0.0, dtype=grads_np_flat.dtype), grads_np_flat
+        condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
     )
+    condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
     grads_np_from_gt_flat = np.where(
-        where_cond,
-        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        condition_np_from_gt_flat,
         grads_np_from_gt_flat,
+        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
     )
 
     value_test(
@@ -1120,6 +1121,11 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    ARR_INS_METHOD = {
+        "DeviceArray": jax.numpy.array,
+        "ndarray": np.array,
+        "Tensor": tf.constant,
+    }
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1257,10 +1263,15 @@ def test_frontend_method(
     # Run testing
     class_name = class_name.split(".")
     ins_class = ivy.functional.frontends.__dict__[frontend]
-    frontend_class = importlib.import_module(frontend)
-    for c_n in class_name:
-        ins_class = getattr(ins_class, c_n)
-        frontend_class = getattr(frontend_class, c_n)
+    if class_name[-1] in ARR_INS_METHOD and frontend != "torch":
+        frontend_class = ARR_INS_METHOD[class_name[-1]]
+        for c_n in class_name:
+            ins_class = getattr(ins_class, c_n)
+    else:
+        frontend_class = importlib.import_module(frontend)
+        for c_n in class_name:
+            ins_class = getattr(ins_class, c_n)
+            frontend_class = getattr(frontend_class, c_n)
     ins = ins_class(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
@@ -1268,6 +1279,7 @@ def test_frontend_method(
 
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend)
+    backend_returned_scalar = False
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1289,10 +1301,25 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+        backend_returned_scalar = True
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    elif frontend == "tensorflow" and not isinstance(frontend_ret, tf.Tensor):
+        frontend_ret_np_flat = [ivy.array(frontend_ret).to_numpy()]
+    else:
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
+
+    if backend_returned_scalar:
+        ret_np_flat = ivy.to_numpy([ret])
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
