@@ -71,7 +71,6 @@ def diag(
     # 1 * padding_value + x_i - padding_value == x_i
     ret += np.diag(x - padding_value, k=offset)
 
-
     return ret
 
 def diagonal(
