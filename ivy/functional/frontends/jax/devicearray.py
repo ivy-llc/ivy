@@ -16,3 +16,9 @@ class DeviceArray:
 
     def add(self, other):
         return jax_frontend.add(self.data, other)
+
+    # Special Methods #
+    # --------------- #
+
+    def __abs__(self):
+        return jax_frontend.abs(self.data)
