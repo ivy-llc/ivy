@@ -542,7 +542,9 @@ def _dtype_from_version(dic, version):
 def _versioned_attribute_factory(attribute_function, base):
     class VersionedAttributes(base):
         """
-        A class that allows for versioned attributes
+        Creates a class which inherits `base` this way if isinstance is called on an
+        instance of the class, it will return True if testing for the baseclass, such as
+        isinstance(instance, tuple) if `base` is tuple.
         """
 
         def __init__(self):
@@ -553,6 +555,7 @@ def _versioned_attribute_factory(attribute_function, base):
             return self.attribute_function()
 
         def __iter__(self):
+            # iter allows for iteration over current version that's selected
             return iter(self.__get__())
 
         def __repr__(self):
@@ -562,11 +565,28 @@ def _versioned_attribute_factory(attribute_function, base):
 
 
 def _dtype_device_wrapper_creator(attrib, t):
+    """
+    Creates a wrapper for a dtype or device attribute, which returns the correct
+    dtype or device for the current version of the backend.
+    Parameters
+    ----------
+    attrib
+        The attribute name to be wrapped. for example, "unsupported_dtypes"
+    t
+        The type of the attribute. for example, "tuple"
+
+    Returns
+    -------
+    A wrapper function for the attribute.
+
+    """
+
     def _wrapper_outer(version_dict, version):
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
             )
+            # set the attribute on the function and return the function as is
             setattr(func, attrib, val)
             return func
 
