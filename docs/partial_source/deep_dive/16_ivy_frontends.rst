@@ -417,6 +417,11 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
+Another common case, If the function supports a data type, but a backend framework does not. the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_
+do support all data types, but PyTorch does not support :code:`bfloat16` for the function :code:`cumprod`, even though
+the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
+function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
+
 Classes and Instance Methods
 ----------------------------
 
