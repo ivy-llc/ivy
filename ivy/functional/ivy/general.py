@@ -2872,9 +2872,10 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
 
     Parameters
@@ -2886,9 +2887,11 @@ def gather(
         the specified axis.
     axis
         optional int, the axis from which to gather from. Default is -1.
+    batch_dims
+        optional int, lets you gather different items from each element of a batch.
     out
-        An array for writing the result to. It must have a shape
-        that the inputs broadcast to. (Optional)
+        optional array, for writing the result to. It must have a shape 
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -2954,7 +2957,30 @@ def gather(
     }
 
     """
-    return current_backend(params).gather(params, indices, axis=axis, out=out)
+    axis = axis % len(indices.shape)
+    batch_dims = batch_dims % len(indices.shape)
+
+    if batch_dims > axis:
+        raise ivy.exceptions.IvyException(
+            "batch_dims ("
+            + str(batch_dims)
+            + ") must be less \
+            than or equal to axis ("
+            + str(axis)
+            + ")."
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "params.shape[0:batch_dims] "
+            + str(params.shape[0:batch_dims])
+            + " should \
+            be equal to indices.shape[0:batch_dims]"
+            + str(indices.shape[0:batch_dims])
+            + "."
+        )
+    return current_backend(params, indices).gather(
+        params, indices, axis=axis, batch_dims=batch_dims, out=out
+    )
 
 
 @to_native_arrays_and_back

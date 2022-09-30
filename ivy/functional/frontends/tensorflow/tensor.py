@@ -14,19 +14,15 @@ class Tensor:
     # Instance Methods #
     # -------------------#
 
-    def Reshape(self, shape, name="Reshape"):
-        return tf_frontend.Reshape(tensor=self.data, shape=shape, name=name)
-
     def get_shape(self):
         return tf_frontend.Shape(input=self.data)
 
     def __add__(self, y, name="add"):
-        return tf_frontend.add(self.data, y, name=name)
+        # return tf_frontend.add(self.data, y.data, name=name)
+        return y.__radd__(self.data)
 
     def __eq__(self, other):
-        return tf_frontend.Equal(
-            x=self.data, y=other.data, incompatible_shape_error=False
-        )
+        return tf_frontend.Equal(x=self.data, y=other, incompatible_shape_error=False)
 
     def __floordiv__(self, y, name="floordiv"):
         return y.__rfloordiv__(self.data)
