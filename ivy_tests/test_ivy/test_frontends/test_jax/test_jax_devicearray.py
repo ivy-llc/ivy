@@ -112,3 +112,23 @@ def test_jax_special_pos(
             ret_from_gt=ret_gt,
             ground_truth_backend="jax",
         )
+
+
+# __neg__
+@handle_cmd_line_args
+@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
+def test_jax_special_neg(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = -DeviceArray(x[0])
+    ret_gt = -jnp.array(x[0], dtype=input_dtype[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
