@@ -37,5 +37,8 @@ submodule = submodules[j]
 with open("./fwsubmod.txt", "w") as outfile:
     outfile.write(f"{backend}-{submodule}")
 
-with open("./arguments.txt", "w") as f:
-    f.write(f"{backend} test_{submodule}")
+with open("./backend.txt", "w") as f:
+    f.write(f"{backend}")
+    
+with open("./submodule.txt", "w") as f:
+    f.write(f"test_{submodule}")
