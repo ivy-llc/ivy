@@ -43,7 +43,7 @@ def index_nest(
     >>> print(z)
     1
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.], \
                        [3., 4.]])
@@ -114,7 +114,8 @@ def set_nest_at_index(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = (1, 1)
     >>> z = 5.
@@ -130,6 +131,7 @@ def set_nest_at_index(
     ivy.array([1., 5., 3., 4.])
 
     With :code:`Dict` input:
+
     >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
     >>> y = (1, 1)
     >>> z = 2
@@ -138,6 +140,7 @@ def set_nest_at_index(
     {1: [1, 2], 2: (4, 5)}
 
     With :code:`List` inputs:
+
     >>> x = [['a', 'b', 'c'], \
              ['d', 'e', 'f'], \
              ['g', ['h', 'i']]]
@@ -147,16 +150,17 @@ def set_nest_at_index(
     >>> print(x)
     [['a','b','c'],['d','e','f'],['g',['H','i']]]
 
-     With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
     >>> y = ('b',)
     >>> z = ivy.array([3., 4.])
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    {\
-    a: ivy.array([1., 2.]),\
-    b: ivy.array([3., 4.])\
-    }\
+    {
+        a: ivy.array([1., 2.]),
+        b: ivy.array([3., 4.])
+    }
     """
     if len(index) == 1:
         nest[index[0]] = value
@@ -260,7 +264,7 @@ def set_nest_at_indices(
 
     With :code:`Tuple` inputs:
 
-    >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
+    >>> nest = [['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b']]
     >>> indices = ((0, 1),(1, 2))
     >>> values = ('ivy', 'x')
     >>> ivy.set_nest_at_indices(nest, indices, values)
@@ -276,7 +280,7 @@ def set_nest_at_indices(
     >>> print(nest)
     {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
     >>> indices = ((0, 1),(1, 2))
@@ -355,7 +359,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> print(nest)
     {'a': [8.0, 16.0, 23.0], 'b': [11.0, 44.0, 81.0], 'c': [9.0, 76.0, 37.0]}
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> nest = ivy.array([[-9., 8., -17.],[11., -3., 5.]])
     >>> indices = ((0, 1),(1, 1),(1, 2))
@@ -368,7 +372,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
 
 
 @handle_exceptions
-def nested_indices_where(
+def nested_argwhere(
     nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
@@ -411,7 +415,7 @@ def nested_indices_where(
 
     >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun)
     >>> print(nested_indices)
     [
         [0, 0, 0], [0, 0, 1],
@@ -425,7 +429,7 @@ def nested_indices_where(
 
     >>> nest = ([-5, 9, 2], [0.3, 4.])
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun, stop_after_n_found=4)
     >>> print(nested_indices)
     [[0, 0], [0, 1], [0, 2], [1, 0]]
 
@@ -433,7 +437,7 @@ def nested_indices_where(
 
     >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun)
     >>> print(nested_indices)
     [
         ['a', 0], ['a', 1],
@@ -449,7 +453,7 @@ def nested_indices_where(
         _indices = []
         for i, item in enumerate(nest):
             ind = (
-                nested_indices_where(
+                nested_argwhere(
                     item,
                     fn,
                     check_nests,
@@ -459,7 +463,7 @@ def nested_indices_where(
                     stop_after_n_found - n,
                 )
                 if stop_after_n_found is not None
-                else nested_indices_where(
+                else nested_argwhere(
                     item, fn, check_nests, to_ignore, _index + [i], False
                 )
             )
@@ -481,7 +485,7 @@ def nested_indices_where(
         _indices = []
         for k, v in nest.items():
             ind = (
-                nested_indices_where(
+                nested_argwhere(
                     v,
                     fn,
                     check_nests,
@@ -491,9 +495,7 @@ def nested_indices_where(
                     stop_after_n_found - n,
                 )
                 if stop_after_n_found is not None
-                else nested_indices_where(
-                    v, fn, check_nests, to_ignore, _index + [k], False
-                )
+                else nested_argwhere(v, fn, check_nests, to_ignore, _index + [k], False)
             )
             if stop_after_n_found is not None and ind:
                 if n < stop_after_n_found:
@@ -629,7 +631,7 @@ def map(
     >>> print(results)
     [1. 2.]
 
-    With :code:`float` inputs:
+    With float inputs:
 
     >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
     >>> results = ivy.map(fn = linear_model, \
@@ -639,7 +641,7 @@ def map(
     >>> print(results)
     [1.0, 11.0, 21.0]
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> results = ivy.map(fn = linear_model, \
         constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
@@ -877,7 +879,7 @@ def copy_nest(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])
     >>> copied_nest = ivy.copy_nest(nest)

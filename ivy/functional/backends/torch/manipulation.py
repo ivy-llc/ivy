@@ -165,8 +165,8 @@ def split(
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -285,7 +285,9 @@ clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

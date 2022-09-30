@@ -24,16 +24,24 @@ def clip(
     dtype=None,
     subok=True,
 ):
-
-    if not dtype:
-        dtype = a.dtype
-    ret = ivy.where(
-        ivy.broadcast_to(where, a.shape),
-        ivy.clip(a, a_min, a_max),
-        ivy.default(out, a),
-        out=out,
+    ivy.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min and a_max can be None",
     )
-    return ivy.astype(ret, dtype, out=out)
+    a = ivy.array(a, dtype=dtype)
+    if a_min is None:
+        ret = ivy.minimum(a, a_max, out=out)
+    elif a_max is None:
+        ret = ivy.maximum(a, a_min, out=out)
+    else:
+        ret = ivy.clip(a, a_min, a_max, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
 
 @from_zero_dim_arrays_to_float
@@ -218,10 +226,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    assert xp.ndim == 1 and fp.ndim == 1
-    assert xp.shape[0] == fp.shape[0]
+    ivy.assertions.check_equal(xp.ndim, 1)
+    ivy.assertions.check_equal(fp.ndim, 1)
+    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        assert period != 0
+        ivy.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)

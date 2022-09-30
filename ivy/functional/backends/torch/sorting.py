@@ -12,7 +12,15 @@ def argsort(
     stable: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.argsort(x, dim=axis, descending=descending)
+    if out is not None:
+        out = tuple([torch.zeros(x.shape, dtype=x.dtype), out.long()])
+    _, sorted_indices = torch.sort(
+        x, dim=axis, descending=descending, stable=stable, out=out
+    )
+    return sorted_indices
+
+
+argsort.support_native_out = True
 
 
 def sort(
