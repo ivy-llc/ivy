@@ -138,8 +138,7 @@ def full_like(
  numpy_sort
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
- master
+
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
