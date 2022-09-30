@@ -37,4 +37,5 @@ submodule = submodules[j]
 with open("./fwsubmod.txt", "w") as outfile:
     outfile.write(f"{backend}-{submodule}")
 
-os.system(f"./run_tests_CLI/test_ivy_core.sh {backend} test_{submodule}")
+with open("./arguments.txt", "w") as f:
+    f.write(f"{backend} test_{submodule}")
