@@ -6,7 +6,7 @@ from typing import Optional
 import ivy
 
 
-class ArrayWithElementwise(abc.ABC):
+class ArrayWithExtensions(abc.ABC):
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the
