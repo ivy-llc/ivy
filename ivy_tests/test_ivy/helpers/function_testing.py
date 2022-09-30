@@ -1311,7 +1311,6 @@ def test_frontend_method(
         if not isinstance(frontend_ret, tuple):
             frontend_ret = (frontend_ret,)
         frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-        print(frontend_ret)
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
