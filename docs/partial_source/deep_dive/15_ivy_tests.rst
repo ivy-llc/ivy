@@ -566,13 +566,10 @@ It would be helpful to keep in mind the following points while writing test -:
 - Don't use :code:`data.draw` in the function body.
 - Don't use any unreproducible data generation (i.e. np.random_uniform) in the function body.
 - Don't skip anything or use return statement in the function body.
-- The function should only call helpers.test_function, and then possibly perform a custom value test if
-   :code:`test_values=False` in the arguments.
+- The function should only call helpers.test_function, and then possibly perform a custom value test if :code:`test_values=False` in the arguments.
 - We should add as many possibilities as we can while generating data, covering all the function arguments.
-- If you find yourself using repeating some logic which is specific to a particular submodule, then create a private
-   helper function and add this to the submodule.
-- If the logic is general enough, this can instead be added to the :code:`helpers`, enabling it to be used for tests
-   in other submodules
+- If you find yourself using repeating some logic which is specific to a particular submodule, then create a private helper function and add this to the submodule.
+- If the logic is general enough, this can instead be added to the :code:`helpers`, enabling it to be used for tests in other submodules
 
 
 Bonus: Hypothesis' Extended Features
@@ -676,11 +673,9 @@ Like the output above, Hypothesis will print all the examples for which the test
 
 3. Some performance related settings which might be helpful to know are-:
 
-a. **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down
-                      will have an impact on the speed as well as the rigorousness of the tests.
+a. **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down will have an impact on the speed as well as the rigorousness of the tests.
 
-b. **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird
-                  performance issues.
+b. **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird performance issues.
 
 Self-Consistent and Explicit Testing
 ------------------------------------
@@ -715,8 +710,7 @@ The helper `test_array_function`_ tests that the function:
 
 #. can handle the :code:`out` argument correctly
 #. can be called as an instance method of the ivy.Array class
-#. can accept ivy.Container instances in place of any arguments for *nestable* functions,
-   applying the function to the leaves of the container, and returning the resultant container
+#. can accept ivy.Container instances in place of any arguments for *nestable* functions, applying the function to the leaves of the container, and returning the resultant container
 #. can be called as an instance method on the ivy.Container
 #. is self-consistent with the function return values when using a NumPy backend
 

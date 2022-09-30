@@ -44,8 +44,7 @@ implement them for testing.
 
 **Useful Notes**
 
-* We should always ensure that our data type generation is complete. Generating float data types only for a function
-that accepts all numeric data types is not complete, a complete set would include **all** numeric data types.
+* We should always ensure that our data type generation is complete. Generating float data types only for a function that accepts all numeric data types is not complete, a complete set would include **all** numeric data types.
 
 * The :func:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name. For example :func:`lax.tan` is needed for some functions in Jax, :func:`nn.functional.relu` is needed for some functions in PyTorch etc.
 
@@ -482,8 +481,7 @@ of testing the function directly we test the instance method of the frontend cla
 
 **Important Helper Functions**
 
-* :func:`helpers.test_frontend_instance_method` is used to test frontend instance methods.
-It is used in the same way as :func:`helpers.test_frontend_function`.
+:func:`helpers.test_frontend_instance_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
 
 **Useful Notes**
 The :func:`helpers.test_frontend_instance_method` takes an argument :code:`frontend_class`
