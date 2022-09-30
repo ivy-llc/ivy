@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def cholesky(
-    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
