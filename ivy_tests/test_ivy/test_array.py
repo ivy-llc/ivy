@@ -315,3 +315,213 @@ def test_array__add__(
         class_name="Array",
         method_name="__add__",
     )
+
+
+# __radd__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__radd__"),
+)
+def test_array__radd__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        fw=fw,
+        class_name="Array",
+        method_name="__radd__",
+    )
+
+
+# __iadd__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__iadd__"),
+)
+def test_array__iadd__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        fw=fw,
+        class_name="Array",
+        method_name="__iadd__",
+    )
+
+
+# __sub__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__sub__"),
+)
+def test_array__sub__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        fw=fw,
+        class_name="Array",
+        method_name="__sub__",
+    )
+
+
+# __rsub__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__rsub__"),
+)
+def test_array__rsub__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        fw=fw,
+        class_name="Array",
+        method_name="__rsub__",
+    )
+
+
+# __isub__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__isub__"),
+)
+def test_array__isub__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        fw=fw,
+        class_name="Array",
+        method_name="__isub__",
+    )
