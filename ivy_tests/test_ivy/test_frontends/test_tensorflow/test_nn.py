@@ -651,14 +651,8 @@ def test_tensorflow_dropout(
         fw=fw,
         frontend="tensorflow",
         fn_tree="nn.dropout",
-        x=np.asarray(x, dtype=input_dtype),
-<<<<<<< HEAD
-        rate=np.asarray(rate, dtype=input_dtype),
-        noise_shape=np.asarray(noise_shape, dtype=input_dtype),
-        seed=np.asarray(seed, dtype=input_dtype),
-=======
+        x=x[0],
         prob=prob,
         scale=scale,
->>>>>>> 71b3cddb4aed45865800d1ac64c90b08b0f87126
     )
     
