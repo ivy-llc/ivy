@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithElementwise(ContainerBase):
+class ContainerWithExtensions(ContainerBase):
     @staticmethod
     def static_sinc(
             x: ivy.Container,
