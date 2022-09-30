@@ -129,9 +129,7 @@ def full(
 
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
-
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
-
 
 def linspace(
     start: Union[np.ndarray, float],
