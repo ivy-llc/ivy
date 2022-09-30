@@ -215,6 +215,7 @@ qr.unsupported_dtypes = ("float16",)
 
 def slogdet(
     x: np.ndarray,
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -224,6 +225,7 @@ def slogdet(
     logabsdet = (
         np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
     )
+
     return results(sign, logabsdet)
 
 
