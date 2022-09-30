@@ -21,6 +21,7 @@ class Tensor:
         return tf_frontend.Shape(input=self.data)
 
     def __add__(self, y, name="add"):
+        # return tf_frontend.add(self.data, y.data, name=name)
         return y.__radd__(self.data)
 
     def __eq__(self, other):
