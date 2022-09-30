@@ -26,9 +26,6 @@ def logdet(matrix, name=None):
     return ivy.det(matrix).log()
 
 
-logdet.supported_dtypes = ("float16", "float32", "float64")
-
-
 def slogdet(input, name=None):
     return ivy.slogdet(input)
 
