@@ -22,9 +22,7 @@ class Tensor:
         return y.__radd__(self.data)
 
     def __eq__(self, other):
-        return tf_frontend.Equal(
-            x=self.data, y=other.data, incompatible_shape_error=False
-        )
+        return tf_frontend.Equal(x=self.data, y=other, incompatible_shape_error=False)
 
     def __floordiv__(self, y, name="floordiv"):
         return y.__rfloordiv__(self.data)
