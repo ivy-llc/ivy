@@ -44,3 +44,16 @@ class ndarray:
             keepdims,
             where=where
         )
+    def argmin(
+        self,
+        axis=None,
+        out=None,
+        *,
+        keepdims=False
+    ):
+        return np_frontend.argmin(
+            self.data,
+            axis,
+            out,
+            keepdims
+        )
