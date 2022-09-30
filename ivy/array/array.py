@@ -304,7 +304,7 @@ class Array(
 
     @_native_wrapper
     def __rpow__(self, power):
-        return ivy.pow(power, self)
+        return ivy.pow(power, self._data)
 
     @_native_wrapper
     def __ipow__(self, power):

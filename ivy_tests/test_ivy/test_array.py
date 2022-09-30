@@ -74,34 +74,23 @@ def _pow_helper(draw, available_dtypes=None):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__pos__"),
 )
 def test_array__pos__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={},
-        fw=fw,
-        class_name="Array",
-        method_name="__pos__",
-    )
+    x_ = ivy.asarray(x[0], dtype=dtype[0])
+    ret = +x_
+    np_ret = +x[0]
+    assert np.allclose(ivy.to_numpy(ret), +x[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __neg__
@@ -110,48 +99,32 @@ def test_array__pos__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__neg__"),
 )
 def test_array__neg__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=["int64", dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={},
-        fw=fw,
-        class_name="Array",
-        method_name="__neg__",
-    )
+    x_ = ivy.asarray(x[0], dtype=dtype[0])
+    ret = -x_
+    np_ret = -x[0]
+    assert np.allclose(ivy.to_numpy(ret), np_ret)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __pow__
 @handle_cmd_line_args
 @given(
     dtype_and_x=_pow_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__pow__"),
 )
 def test_array__pow__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -163,38 +136,27 @@ def test_array__pow__(
         x[1] = np.abs(x[1])
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    helpers.test_method(
-        input_dtypes_init=["int64", dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={"power": x[1]},
-        fw=fw,
-        class_name="Array",
-        method_name="__pow__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    power = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data**power
+    np_ret = x[0] ** x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __rpow__
 @handle_cmd_line_args
 @given(
     dtype_and_x=_pow_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__rpow__"),
 )
 def test_array__rpow__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -209,40 +171,27 @@ def test_array__rpow__(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    helpers.test_method(
-        input_dtypes_init=["int64", dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[1],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "power": x[0],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__rpow__",
-    )
+    data = ivy.asarray(x[1], dtype=dtype[1])
+    power = ivy.asarray(x[0], dtype=dtype[0])
+    ret = data.__rpow__(power)
+    np_ret = x[1].__rpow__(x[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __ipow__
 @handle_cmd_line_args
 @given(
     dtype_and_x=_pow_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__ipow__"),
 )
 def test_array__ipow__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -255,24 +204,18 @@ def test_array__ipow__(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    helpers.test_method(
-        input_dtypes_init=["int64", dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={"power": x[1]},
-        fw=fw,
-        class_name="Array",
-        method_name="__ipow__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    power = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data.__ipow__(power)
+    np_ret = x[0] ** x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __add__
@@ -285,36 +228,23 @@ def test_array__ipow__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__add__"),
 )
 def test_array__add__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__add__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data + other
+    np_ret = x[0] + x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __radd__
@@ -327,36 +257,23 @@ def test_array__add__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__radd__"),
 )
 def test_array__radd__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__radd__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data.__radd__(other)
+    np_ret = x[0] + x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __iadd__
@@ -369,36 +286,23 @@ def test_array__radd__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__iadd__"),
 )
 def test_array__iadd__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__iadd__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data.__iadd__(other)
+    np_ret = x[0] + x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __sub__
@@ -411,36 +315,23 @@ def test_array__iadd__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__sub__"),
 )
 def test_array__sub__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__sub__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data - other
+    np_ret = x[0] - x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __rsub__
@@ -453,36 +344,23 @@ def test_array__sub__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__rsub__"),
 )
 def test_array__rsub__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__rsub__",
-    )
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data.__rsub__(other)
+    np_ret = x[1] - x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __isub__
@@ -495,33 +373,21 @@ def test_array__rsub__(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__isub__"),
 )
 def test_array__isub__(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={
-            "other": x[1],
-        },
-        fw=fw,
-        class_name="Array",
-        method_name="__isub__",
-    )
+    dtype, x = dtype_and_x
+    data = ivy.asarray(x[0], dtype=dtype[0])
+    other = ivy.asarray(x[1], dtype=dtype[1])
+    ret = data.__isub__(other)
+    np_ret = x[0] - x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
