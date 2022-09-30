@@ -1208,7 +1208,7 @@ def slogdet(
     >>> y = x.slogdet()
     >>> print(y)
     {
-        a: (list[2], <class ivy.array.array.Array> shape=[3])
+        a: (list[2], <class ivy.array.array.Array> shape=[])
     }
 
     """
