@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)

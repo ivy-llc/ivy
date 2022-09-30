@@ -16,7 +16,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
