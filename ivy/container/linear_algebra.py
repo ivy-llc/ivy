@@ -1120,7 +1120,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], [3.0, 4.0]])
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], \
+                                           [3.0, 4.0]]))
         >>> y = x.slogdet()
         >>> print(y)
         {
