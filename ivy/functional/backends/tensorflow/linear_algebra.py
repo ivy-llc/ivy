@@ -432,7 +432,8 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
