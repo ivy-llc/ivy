@@ -726,6 +726,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -736,6 +737,7 @@ class ContainerWithCreation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "meshgrid",
             *arrays,
+            sparse,
             indexing,
             key_chains,
             to_apply,
@@ -748,6 +750,7 @@ class ContainerWithCreation(ContainerBase):
         self: ivy.Container,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -760,6 +763,8 @@ class ContainerWithCreation(ContainerBase):
                 lambda x_: ivy.meshgrid([x_._data] + list(arrays))
                 if ivy.is_array(x_)
                 else x_,
+                sparse,
+                indexing,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -902,6 +907,10 @@ class ContainerWithCreation(ContainerBase):
         depth: int,
         /,
         *,
+        on_value: Optional[Number] = None,
+        off_value: Optional[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -919,6 +928,15 @@ class ContainerWithCreation(ContainerBase):
             Indices for where the ones should be scattered *[batch_shape, dim]*
         depth
             Scalar defining the depth of the one-hot dimension.
+        on_value
+            Value to fill in output when indices[j] = i. If None, defaults to 1.
+        off_value
+            Value to fill in output when indices[j] != i. If None, defaults to 0.
+        axis
+            Axis to scatter on. The default is -1, a new inner-most axis is created.
+        dtype
+            The data type of the output tensor. If None, defaults to the on_value dtype
+            or the off_value dtype. If both are None, defaults to float32.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -940,6 +958,10 @@ class ContainerWithCreation(ContainerBase):
             "one_hot",
             indices,
             depth,
+            on_value=on_value,
+            off_value=off_value,
+            axis=axis,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -952,6 +974,10 @@ class ContainerWithCreation(ContainerBase):
         depth: int,
         /,
         *,
+        on_value: Optional[Number] = None,
+        off_value: Optional[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -969,6 +995,15 @@ class ContainerWithCreation(ContainerBase):
             Indices for where the ones should be scattered *[batch_shape, dim]*
         depth
             Scalar defining the depth of the one-hot dimension.
+        on_value
+            Value to fill in output when indices[j] == i. If None, defaults to 1.
+        off_value
+            Value to fill in output when indices[j] != i. If None, defaults to 0.
+        axis
+            Axis to scatter on. The default is -1, a new inner-most axis is created.
+        dtype
+            The dtype of the returned tensor. If None, defaults to the on_value dtype
+            or the off_value dtype. If both are None, defaults to float32.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -979,6 +1014,9 @@ class ContainerWithCreation(ContainerBase):
             is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
@@ -989,6 +1027,10 @@ class ContainerWithCreation(ContainerBase):
         return self.static_one_hot(
             self,
             depth,
+            on_value=on_value,
+            off_value=off_value,
+            axis=axis,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
