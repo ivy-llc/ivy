@@ -53,7 +53,6 @@ def test_numpy_ndarray_reshape(
         all_as_kwargs_np_method={
             "shape": shape,
         },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
         method_name="reshape",
@@ -90,7 +89,6 @@ def test_numpy_ndarray_add(
         all_as_kwargs_np_method={
             "value": x[1],
         },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
         method_name="add",
@@ -120,20 +118,19 @@ def test_numpy_ndarray_transpose(
     array, dtype, axes = array_and_axes
     helpers.test_frontend_method(
         input_dtypes_init=dtype,
-        input_dtypes_method=dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
-        num_positional_args_method=num_positional_args,
         native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
         all_as_kwargs_np_init={
             "data": np.array(array),
         },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "axes": axes,
         },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
         method_name="transpose",
@@ -150,7 +147,7 @@ def test_numpy_ndarray_transpose(
         min_dim_size=1,
         valid_axis=True,
         force_int_axis=True,
-        allow_neg_axes=True
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -178,23 +175,22 @@ def test_numpy_ndarray_any(
     )
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
-        num_positional_args_method=num_positional_args,
         native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
         all_as_kwargs_np_init={
             "data": x[0],
         },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "axis": axis,
             "out": None,
             "keepdims": keepdims,
-            "where": where
+            "where": where,
         },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
         method_name="any",
