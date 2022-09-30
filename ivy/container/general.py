@@ -2788,13 +2788,6 @@ class ContainerWithGeneral(ContainerBase):
             c: -1
         }
 
-        >>> print(ivy.is_int_dtype(y))
-        {
-            a: true,
-            b: true,
-            c: true
-        }
-
         """
         return self.static_to_scalar(
             self,
