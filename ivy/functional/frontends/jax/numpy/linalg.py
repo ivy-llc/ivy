@@ -23,5 +23,4 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 # slogdet
 def slogdet(a):
-    (sign, logdet) = ivy.slogdet(a, out=None)
-    return (float(sign), float(logdet))
+    return ivy.slogdet(a)
