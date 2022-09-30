@@ -98,6 +98,8 @@ def asarray(
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         if dtype is None:
             dtype = default_dtype(item=obj, as_native=True)
+
+        # if `obj` is a list of specifically tensors
         if isinstance(obj[0], torch.Tensor):
             if copy is True:
                 return (
@@ -106,22 +108,16 @@ def asarray(
                     .detach()
                     .to(device)
                 )
-                # return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
             else:
                 return torch.stack(
                     tuple([torch.as_tensor(i, dtype=dtype) for i in obj])
                 ).to(device)
-                # return torch.as_tensor(obj, dtype=dtype).to(device)
+
+        # if obj is a list of other objects, expected to be a numerical type.
         else:
             if copy is True:
-                # return torch.stack(tuple(
-                # [torch.as_tensor(i, dtype=dtype) for i in obj]))
-                # .clone().detach().to(device)
                 return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
             else:
-                # return torch.stack(tuple(
-                # [torch.as_tensor(i, dtype=dtype) for i in obj]))
-                # .to(device)
                 return torch.as_tensor(obj, dtype=dtype).to(device)
 
     elif isinstance(obj, np.ndarray) and dtype is None:
