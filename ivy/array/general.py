@@ -158,7 +158,8 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -175,9 +176,11 @@ class ArrayWithGeneral(abc.ABC):
             the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
-            An array for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -193,7 +196,9 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(self._data, indices, axis=axis, out=out)
+        return ivy.gather(
+            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
+        )
 
     def scatter_nd(
         self: ivy.Array,
