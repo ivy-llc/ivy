@@ -23,14 +23,14 @@ def _sparse_categorical_matches(y_true, y_pred):
     reshape = False
     y_true = ivy.array(y_true)
     y_pred = ivy.array(y_pred)
-    y_true_org_shape = y_true.shape
+    y_true_org_shape = ivy.shape(y_true)
     y_true_rank = y_true.ndim
     y_pred_rank = y_pred.ndim
     # y_true shape to (num_samples,)
     if (
         (y_true_rank is not None)
         and (y_pred_rank is not None)
-        and (len(y_true.shape) == len(y_pred.shape))
+        and (len(ivy.shape(y_true)) == len(ivy.shape(y_pred)))
     ):
         y_true = ivy.squeeze(y_true, axis=-1)
         reshape = True
@@ -53,8 +53,8 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
         ivy.assertions.check_equal(
             predictions.ndim, 2, message="predictions must be 2-dimensional"
         )
-        targets_batch = targets.shape[0]
-        pred_batch = predictions.shape[0]
+        targets_batch = ivy.shape(targets)[0]
+        pred_batch = ivy.shape(predictions)[0]
         ivy.assertions.check_equal(
             targets_batch,
             pred_batch,
@@ -79,7 +79,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
         top_k = _top_k(predictions, topk)
 
-        labels = predictions.shape[1]
+        labels = ivy.shape(predictions)[1]
         # float comparison?
         return ivy.array(
             [
@@ -94,7 +94,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     reshape = False
     y_true = ivy.array(y_true)
     y_pred = ivy.array(y_pred)
-    y_true_org_shape = y_true.shape
+    y_true_org_shape = ivy.shape(y_true)
     y_true_rank = y_true.ndim
     y_pred_rank = y_pred.ndim
 
