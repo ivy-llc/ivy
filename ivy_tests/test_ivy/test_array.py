@@ -222,7 +222,9 @@ def test_array__rpow__(
         num_positional_args_method=num_positional_args,
         native_array_flags_method=native_array,
         container_flags_method=False,
-        all_as_kwargs_np_method={"power": x[0]},
+        all_as_kwargs_np_method={
+            "power": x[0],
+        },
         fw=fw,
         class_name="Array",
         method_name="__rpow__",
