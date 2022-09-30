@@ -85,7 +85,6 @@ def test_sparse_coo(
         native_array_flags_method=native_array,
         container_flags_method=False,
         all_as_kwargs_np_method={},
-        fw=fw,
         class_name="SparseArray",
         method_name="to_dense_array",
     )
@@ -119,7 +118,6 @@ def test_sparse_csr(
         native_array_flags_method=[],
         container_flags_method=False,
         all_as_kwargs_np_method={},
-        fw=fw,
         class_name="SparseArray",
         method_name="to_dense_array",
     )
