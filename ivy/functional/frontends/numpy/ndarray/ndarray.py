@@ -17,6 +17,9 @@ class ndarray:
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
+    def transpose(self, /, axes=None):
+        return np_frontend.transpose(self.data, axes=axes)
+
     def add(
         self,
         value,
@@ -24,4 +27,20 @@ class ndarray:
         return np_frontend.add(
             self.data,
             value,
+        )
+
+    def any(
+        self,
+        axis=None, 
+        out=None, 
+        keepdims=False, 
+        *, 
+        where=True
+    ):
+        return np_frontend.any(
+            self.data,
+            axis,
+            out,
+            keepdims,
+            where=where
         )

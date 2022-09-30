@@ -168,32 +168,61 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
     assert res == true_res
 
 
+@st.composite
+def array_and_boolean_mask(
+    draw,
+    *,
+    array_dtypes,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    boolean_mask_dtype, boolean_mask = draw(
+        helpers.dtype_and_values(
+            dtype=["bool"],
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    return [x_dtype, boolean_mask_dtype], x, boolean_mask
+
+
 @handle_cmd_line_args
 @given(
-    dtype_x_indices_axis=st.one_of(
-        helpers.array_n_indices_n_axis(
+    dtype_x_indices=st.one_of(
+        helpers.array_indices_axis(
             array_dtypes=helpers.get_dtypes("valid"),
             indices_dtypes=helpers.get_dtypes("integer"),
             disable_random_axis=True,
             first_dimension_only=True,
         ),
-        helpers.array_n_indices_n_axis(
-            array_dtypes=helpers.get_dtypes("valid"),
-            boolean_mask=True,
-            disable_random_axis=True,
-        ),
+        array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="get_item"),
 )
 def test_get_item(
-    dtype_x_indices_axis,
+    dtype_x_indices,
     as_variable,
     num_positional_args,
     native_array,
     fw,
     device,
 ):
-    dtypes, x, indices, _ = dtype_x_indices_axis
+    dtypes, x, indices = dtype_x_indices
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -606,7 +635,6 @@ def test_scatter_nd(
     fw,
 ):
     (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
-    ivy.set_backend("tensorflow")
     shape = vals.shape
     helpers.test_function(
         input_dtypes=[ind_dtype, update_dtype],
@@ -628,12 +656,9 @@ def test_scatter_nd(
 # gather
 @handle_cmd_line_args
 @given(
-    params_n_indices_n_axis=helpers.array_n_indices_n_axis(
+    params_indices_others=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
-        disable_random_axis=False,
-        boolean_mask=False,
-        allow_inf=False,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -647,7 +672,7 @@ def test_scatter_nd(
     instance_method=st.booleans(),
 )
 def test_gather(
-    params_n_indices_n_axis,
+    params_indices_others,
     as_variable,
     with_out,
     num_positional_args,
@@ -656,7 +681,7 @@ def test_gather(
     instance_method,
     fw,
 ):
-    dtypes, params, indices, axis = params_n_indices_n_axis
+    dtypes, params, indices, axis, batch_dims = params_indices_others
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -670,6 +695,7 @@ def test_gather(
         params=params,
         indices=indices,
         axis=axis,
+        batch_dims=batch_dims,
     )
 
 

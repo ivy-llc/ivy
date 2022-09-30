@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def cholesky(
-    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -118,9 +118,8 @@ def inv(
             ret = jnp.linalg.inv(x)
             return ret
         else:
-            cofactor = jnp.linalg.inv(x).T * jnp.linalg.det(x)
-            inverse = jnp.multiply(jnp.divide(1, jnp.linalg.det(x)), cofactor.T)
-            ret = inverse
+            x = jnp.transpose(x)
+            ret = jnp.linalg.inv(x)
             return ret
 
 
@@ -131,8 +130,18 @@ inv.unsupported_dtypes = (
 
 
 def matmul(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if transpose_a is True:
+        x1 = jnp.transpose(x1)
+    if transpose_b is True:
+        x2 = jnp.transpose(x2)
     return jnp.matmul(x1, x2)
 
 
@@ -246,7 +255,9 @@ qr.unsupported_dtypes = (
 )
 
 
-def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
+def slogdet(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)

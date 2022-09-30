@@ -355,10 +355,16 @@ def x_and_filters(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
     )
+    dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
-    dilations = draw(st.integers(1, 2))
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    group_list = [i for i in range(1, 6)]
+    if not transpose:
+        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+    else:
+        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+    fc = draw(st.sampled_from(group_list)) if general else 1
+    dilations = draw(st.integers(1, 1))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -383,10 +389,14 @@ def x_and_filters(
     else:
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-            x_dim.append(draw(st.integers(min_x, 100)))
+            x_dim.append(draw(st.integers(min_x, 20)))
         x_dim = tuple(x_dim)
     if not depthwise:
-        filter_shape = filter_shape + (input_channels, output_channels)
+        if not transpose:
+            filter_shape = filter_shape + (input_channels // fc, output_channels * fc)
+        else:
+            input_channels = input_channels * fc
+            filter_shape = filter_shape + (input_channels, output_channels // fc)
     else:
         filter_shape = filter_shape + (input_channels,)
     channel_first = True
@@ -412,6 +422,8 @@ def x_and_filters(
         )
     )
     if transpose:
+        if general:
+            data_format = "channel_first" if channel_first else "channel_last"
         return (
             dtype,
             vals,
@@ -421,9 +433,11 @@ def x_and_filters(
             strides,
             padding,
             output_shape,
+            fc,
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
+        return dtype, vals, filters, dilations, data_format, strides, padding, fc
 
     return dtype, vals, filters, dilations, data_format, strides, padding
 
@@ -501,6 +515,7 @@ def test_conv1d_transpose(
         fn_name="conv1d_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -589,6 +604,7 @@ def test_conv2d_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         device_=device,
+        # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -635,6 +651,7 @@ def test_depthwise_conv2d(
         fn_name="depthwise_conv2d",
         rtol_=1e-2,
         atol_=1e-2,
+        # tensorflow does not support dilations > 1 and stride > 1
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -690,9 +707,60 @@ def test_conv3d(
 @given(
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
+    x_dilations=st.integers(1, 3),
     num_positional_args=helpers.num_positional_args(fn_name="conv_general_dilated"),
 )
 def test_conv_general_dilated(
+    *,
+    dims,
+    x_f_d_df,
+    x_dilations,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv_general_dilated",
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
+        ground_truth_backend="jax",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        dims=dims,
+        data_format=data_format,
+        feature_group_count=fc,
+        x_dilations=x_dilations,
+        dilations=dilations,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(
+        dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="conv_general_transpose"),
+)
+def test_conv_general_transpose(
     *,
     dims,
     x_f_d_df,
@@ -705,7 +773,7 @@ def test_conv_general_dilated(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
@@ -713,20 +781,23 @@ def test_conv_general_dilated(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
+        container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="conv_general_dilated",
+        fn_name="conv_general_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
         padding=pad,
         dims=dims,
+        output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=fc,
     )
 
 

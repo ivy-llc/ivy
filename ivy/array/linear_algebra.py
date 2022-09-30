@@ -20,7 +20,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Examples
         ------------------------
 
-        With :code:`ivy.Array` instance inputs:
+        With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 4.])
         >>> y = ivy.array([3., 2.])
@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: bool = False,
+        upper: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -119,7 +119,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance inputs:
+        With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
@@ -169,7 +169,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
         >>> y = ivy.inv(x)

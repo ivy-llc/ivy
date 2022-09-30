@@ -106,10 +106,10 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=None)
+    return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
 def gather_nd(
