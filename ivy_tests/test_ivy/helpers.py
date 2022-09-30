@@ -2521,13 +2521,12 @@ def subsets(draw, *, elements):
 
 
 @st.composite
-def array_n_indices_n_axis(
+def array_indices_axis(
     draw,
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
     disable_random_axis=False,
-    boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -2565,7 +2564,7 @@ def array_n_indices_n_axis(
     Examples
     --------
     @given(
-        array_n_indices_n_axis=array_n_indices_n_axis(
+        array_indices_axis=array_indices_axis(
             array_dtypes=helpers.get_dtypes("valid"),
             indices_dtypes=helpers.get_dtypes("integer"),
             boolean_mask=False,
@@ -2589,6 +2588,8 @@ def array_n_indices_n_axis(
     )
     if disable_random_axis:
         axis = -1
+        batch_dims = 0
+        batch_shape = x_shape[0:0]
     else:
         axis = draw(
             ints(
@@ -2596,30 +2597,35 @@ def array_n_indices_n_axis(
                 max_value=len(x_shape) - 1,
             )
         )
-    if boolean_mask:
-        indices_dtype, indices = draw(
-            dtype_and_values(
-                dtype=["bool"],
-                min_num_dims=min_num_dims,
-                max_num_dims=max_num_dims,
-                min_dim_size=min_dim_size,
-                max_dim_size=max_dim_size,
-            )
-        )
-    else:
-        indices_dtype, indices = draw(
-            dtype_and_values(
-                available_dtypes=indices_dtypes,
-                allow_inf=False,
+        batch_dims = draw(
+            ints(
                 min_value=0,
-                max_value=max(x_shape[axis] - 1, 0),
-                min_num_dims=min_num_dims,
-                max_num_dims=max_num_dims,
-                min_dim_size=min_dim_size,
-                max_dim_size=max_dim_size,
+                max_value=max(0, axis),
             )
         )
-    return [x_dtype, indices_dtype], x, indices, axis
+        batch_shape = x_shape[0:batch_dims]
+    shape_var = draw(
+        get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims - batch_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    indices_shape = batch_shape + shape_var
+    indices_dtype, indices = draw(
+        dtype_and_values(
+            available_dtypes=indices_dtypes,
+            allow_inf=False,
+            min_value=0,
+            max_value=max(x_shape[axis] - 1, 0),
+            shape=indices_shape,
+        )
+    )
+    if disable_random_axis:
+        return [x_dtype, indices_dtype], x, indices
+    return [x_dtype, indices_dtype], x, indices, axis, batch_dims
 
 
 def _zeroing_and_casting(x, cast_type):

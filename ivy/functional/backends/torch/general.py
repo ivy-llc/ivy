@@ -115,15 +115,7 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert batch_dims < len(
-        indices.shape
-    ), "batch_dims must be less than or equal to rank(indices)."
-    assert batch_dims <= axis, "batch_dims must be less than or equal to axis"
-    assert (
-        params.shape[0:batch_dims] == indices.shape[0:batch_dims]
-    ), "params.shape[0:batch_dims] should be equal to indices.shape[0:batch_dims]"
     result = []
-    batch_dims = batch_dims % len(indices.shape)
     if batch_dims == 0:
         result = params[
             (slice(None),) * (axis % params.ndim) + (indices.type(torch.int64),)
@@ -138,7 +130,9 @@ def gather(
                 ]
         for z in zip_list:
             p, i = z
-            r = p[(slice(None),) * (axis % p.ndim) + (i.type(torch.int64),)]
+            r = p[
+                (slice(None),) * (axis - batch_dims % p.ndim) + (i.type(torch.int64),)
+            ]
             result.append(r)
         result = torch.stack(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])

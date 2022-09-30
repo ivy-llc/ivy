@@ -197,7 +197,9 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(self._data, indices, axis=axis, out=out)
+        return ivy.gather(
+            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
+        )
 
     def scatter_nd(
         self: ivy.Array,

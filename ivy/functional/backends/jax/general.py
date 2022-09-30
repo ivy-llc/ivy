@@ -85,15 +85,7 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    assert batch_dims < len(
-        indices.shape
-    ), "batch_dims must be less than or equal to rank(indices)."
-    assert batch_dims <= axis, "batch_dims must be less than or equal to axis"
-    assert (
-        params.shape[0:batch_dims] == indices.shape[0:batch_dims]
-    ), "params.shape[0:batch_dims] should be equal to indices.shape[0:batch_dims]"
     result = []
-    batch_dims = batch_dims % len(indices.shape)
     if batch_dims == 0:
         result = jnp.take(params, indices, axis)
     else:
