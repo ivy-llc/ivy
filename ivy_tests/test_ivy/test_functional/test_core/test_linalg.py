@@ -1260,9 +1260,6 @@ def test_matrix_rank(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1])) != 0
     ),
     upper=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
