@@ -120,12 +120,6 @@ ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod_
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is -0) -> NaN]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]
 
-############################# Ivy only skips - torch #############################
-
-# Test is sending unsupported torch dtypes
-ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_prod
-ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_sum
-
 ### Failing for other reasons ###
 
 # output differs from expected
@@ -159,6 +153,31 @@ ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_mask
 ############################# Ivy only skips - numpy ####################################
 # tolerance issue when asserting isequal()
 ivy_tests/test_array_api/array_api_tests/test_linalg.py::test_matrix_norm
+
+############################# Ivy only skips - torch #############################
+
+# Test is sending unsupported torch dtypes
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_prod
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_sum
+
+# Torch remainder implementation deviates from standard. Current implementation can't pass all special cases
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i > 0) -> +0]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> NaN]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i > 0 and x2_i is +infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> x2_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i < 0 and x2_i is -infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is +0 and x2_i > 0) -> +0]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i > 0 and x2_i is +infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> x2_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> x2_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i < 0 and x2_i is -infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is +0 and x2_i > 0) -> +0]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[__mod__(isfinite(x1_i) and x1_i > 0 and x2_i is +infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[__mod__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> x2_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[__mod__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> x2_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_binary[__mod__(isfinite(x1_i) and x1_i < 0 and x2_i is -infinity) -> x1_i]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> x2_i]
+
 
 ############################# Ivy only skips - values error #############################
 

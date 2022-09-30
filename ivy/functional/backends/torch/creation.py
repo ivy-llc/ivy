@@ -2,21 +2,18 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-)
-from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
-# noinspection PyProtectedMember
+# from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
 )
 
 # Array API Standard #
@@ -65,7 +62,7 @@ def arange(
         else:
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
-        dtype = as_native_dtype(default_dtype(dtype=dtype))
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
@@ -77,7 +74,15 @@ arange.unsupported_dtypes = ("float16",)
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
+    obj: Union[
+        torch.Tensor,
+        np.ndarray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -85,40 +90,32 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(object_in, torch.Tensor) and dtype is None:
-        dtype = object_in.dtype
-    elif (
-        isinstance(object_in, (list, tuple, dict))
-        and len(object_in) != 0
-        and dtype is None
-    ):
+    if isinstance(obj, torch.Tensor) and dtype is None:
+        dtype = obj.dtype
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
+        dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(device)
+            return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
         else:
-            return torch.as_tensor(object_in).to(device)
+            return torch.as_tensor(obj, dtype=dtype).to(device)
 
-        dtype = default_dtype(item=object_in, as_native=True)
-
-    elif isinstance(object_in, np.ndarray) and dtype is None:
-        dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
+    elif isinstance(obj, np.ndarray) and dtype is None:
+        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype))
     else:
-        dtype = as_native_dtype((default_dtype(dtype=dtype, item=object_in)))
+        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
-    if dtype == torch.bfloat16 and isinstance(object_in, np.ndarray):
+    if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:
             return (
-                torch.as_tensor(object_in.tolist(), dtype=dtype)
-                .clone()
-                .detach()
-                .to(device)
+                torch.as_tensor(obj.tolist(), dtype=dtype).clone().detach().to(device)
             )
         else:
-            return torch.as_tensor(object_in.tolist(), dtype=dtype).to(device)
+            return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
 
     if copy is True:
-        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
+        return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
     else:
-        return torch.as_tensor(object_in, dtype=dtype).to(device)
+        return torch.as_tensor(obj, dtype=dtype).to(device)
 
 
 def empty(
@@ -209,6 +206,7 @@ def eye(
 
 
 eye.support_native_out = True
+eye.unsupported_dtypes = ("bfloat16",)
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):

@@ -133,10 +133,12 @@ def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
+    if tf.rank(x) > len(shape):
+        return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)

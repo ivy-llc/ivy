@@ -17,10 +17,13 @@ from . import ndarray
 from .ndarray import *
 from . import matrix
 from .matrix import *
+from . import random
+from .random import *
 
 from . import ma
 from . import fft
 from . import random
+from . import ndarray
 from . import ufunc
 
 from . import linalg
@@ -34,6 +37,12 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     # kron,
+)
+
+from .linalg.decompositions import (
+    cholesky,
+    qr,
+    svd
 )
 
 # from .linalg.norms_and_other_numbers import trace
