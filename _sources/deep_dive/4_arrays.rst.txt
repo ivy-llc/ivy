@@ -31,7 +31,7 @@ Native Array
 ------------
 
 The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class,
-such as :class:`np.ndarray`, :class:`tf.Tensor` or :class:`torch.Tensor`
+such as :class:`np.ndarray`, :class:`tf.Tensor`, :class:`torch.Tensor` or :class:`jaxlib.xla_extension.DeviceArray`.
 
 When no framework is set, this is an `empty class`_.
 When a framework is set, this is `overwritten`_ with the backend-specific array class.
@@ -95,7 +95,7 @@ fully framework-agnostic, with all operators performed on the returned array bei
 :class:`ivy.Array` class, and not the special methods of the backend :class:`ivy.NativeArray` class.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
-(:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
+(:meth:`__add__`, :meth:`__sub__`, :meth:`__mul__`, :meth:`__truediv__` etc.) being called on the array class.
 
 For most special methods, calling them on the :class:`ivy.NativeArray` would not be a problem
 because all backends are generally quite consistent,

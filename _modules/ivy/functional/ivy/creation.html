@@ -139,6 +139,7 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">to_ivy</span><span class="p">,</span> <span class="n">to_native</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">infer_device</span><span class="p">,</span>
     <span class="n">infer_dtype</span><span class="p">,</span>
@@ -147,7 +148,6 @@
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -1124,7 +1124,9 @@
 <span class="nd">handle_nestable</span>
 <span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">meshgrid</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">indexing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;xy&quot;</span>
+    <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">indexing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;xy&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns coordinate matrices from coordinate vectors.</span>
 
@@ -1133,7 +1135,8 @@
 <span class="sd">    arrays</span>
 <span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates.</span>
 <span class="sd">        Each array should have the same numeric data type.</span>
-
+<span class="sd">    sparse</span>
+<span class="sd">        if True, a sparse grid is returned in order to conserve memory. Default: False.</span>
 <span class="sd">    indexing</span>
 <span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero or</span>
 <span class="sd">        one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,</span>
@@ -1203,6 +1206,17 @@
 <span class="sd">            [4, 1],</span>
 <span class="sd">            [4, 1]])</span>
 
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y, sparse=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(xv)</span>
+<span class="sd">        ivy.array([[1, 2, 3]])</span>
+
+<span class="sd">        &gt;&gt;&gt; print(yv)</span>
+<span class="sd">        ivy.array([[4],</span>
+<span class="sd">                [5],</span>
+<span class="sd">                [6]])</span>
+
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 2])</span>
@@ -1217,7 +1231,7 @@
 <span class="sd">            [4, 4]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../functional/ivy/creation/full.html#ivy.functional.ivy.creation.full">[docs]</a><span class="nd">outputs_to_ivy_arrays</span>
@@ -1519,10 +1533,14 @@
     <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">on_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">off_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a one-hot array.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a one-hot array. The locations represented by indices in the parameter</span>
+<span class="sd">    indices take value on_value, while all other locations take value off_value.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1530,6 +1548,14 @@
 <span class="sd">        Indices for where the ones should be scattered *[batch_shape, dim]*</span>
 <span class="sd">    depth</span>
 <span class="sd">        Scalar defining the depth of the one-hot dimension.</span>
+<span class="sd">    on_value</span>
+<span class="sd">        Scalar defining the value to fill in output when indices[j] == i. Default: 1.</span>
+<span class="sd">    off_value</span>
+<span class="sd">        Scalar defining the value to fill in output when indices[j] != i. Default: 0.</span>
+<span class="sd">    axis</span>
+<span class="sd">        Axis to scatter on. The default is -1, a new inner-most axis is created.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The data type of the output tensor.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if</span>
 <span class="sd">        None.</span>
@@ -1544,7 +1570,15 @@
 <span class="sd">        overrides.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span>
+        <span class="n">indices</span><span class="p">,</span>
+        <span class="n">depth</span><span class="p">,</span>
+        <span class="n">on_value</span><span class="o">=</span><span class="n">on_value</span><span class="p">,</span>
+        <span class="n">off_value</span><span class="o">=</span><span class="n">off_value</span><span class="p">,</span>
+        <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/logspace/logspace_functional.html#ivy.functional.ivy.creation.logspace">[docs]</a><span class="nd">to_native_arrays_and_back</span>
@@ -1583,6 +1617,10 @@
 <span class="sd">        The base of the log space. Default is 10.0</span>
 <span class="sd">    axis</span>
 <span class="sd">        Axis along which the operation is performed.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The data type of the output tensor. If None, the dtype of on_value is used or if</span>
+<span class="sd">        that is None, the dtype of off_value is used, or if that is None, defaults to</span>
+<span class="sd">        float32.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">    out</span>
