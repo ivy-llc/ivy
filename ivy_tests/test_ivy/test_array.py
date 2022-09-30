@@ -183,6 +183,52 @@ def test_array__pow__(
     )
 
 
+# __rpow__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_pow_helper(),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.Array.__rpow__"),
+)
+def test_array__rpow__(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
+
+    # check if power isn't a float when x1 is integer
+    assume(not (ivy.is_int_dtype(dtype[0]) and ivy.is_float_dtype(dtype[1])))
+
+    # make power a non-negative data when both are integers
+    if ivy.is_int_dtype(dtype[1]) and ivy.is_int_dtype(dtype[0]):
+        x[1] = np.abs(x[1])
+
+    x[0] = _not_too_close_to_zero(x[0])
+    x[1] = _not_too_close_to_zero(x[1])
+    helpers.test_method(
+        input_dtypes_init=["int64", dtype],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[1],
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={"power": x[0]},
+        fw=fw,
+        class_name="Array",
+        method_name="__rpow__",
+    )
+
+
 # __ipow__
 @handle_cmd_line_args
 @given(
