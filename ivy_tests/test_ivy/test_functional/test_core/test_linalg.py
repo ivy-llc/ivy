@@ -10,6 +10,7 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers.testing_helpers import num_positional_args
 
 
 @st.composite
@@ -1349,6 +1350,61 @@ def test_cross(
         axis=axis,
     )
 
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    offset=helpers.ints(),
+    dtype_padding_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
+    num_rows=helpers.ints(),
+    num_cols=helpers.ints(),
+    
+    num_positional_args=helpers.num_positional_args(fn_name="diag"),
+
+    #padding_value: Optional[float] = 0,
+    #align: Optional[str] = "RIGHT_LEFT",
+    #num_rows: Optional[int] = None,
+    #num_cols: Optional[int] = None,
+    #out: Optional[np.ndarray] = None,
+)
+def test_diag(
+    *,
+    dtype_x,
+    dtype_padding_value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    offset,
+    align,
+    num_rows,
+    num_cols,
+):
+    x_dtype, x = dtype_x
+    padding_value_dtype, padding_value = dtype_padding_value
+    helpers.test_function(
+        input_dtypes=[dtype_x, dtype_padding_value],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="diagonal",
+        x=x,
+        offset=offset,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+    )
 
 # diagonal
 @handle_cmd_line_args
