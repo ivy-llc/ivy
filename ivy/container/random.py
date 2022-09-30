@@ -299,6 +299,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.random_normal. This method
@@ -333,6 +334,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -376,6 +379,7 @@ class ContainerWithRandom(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -395,6 +399,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.random_normal. This method
@@ -560,6 +565,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 

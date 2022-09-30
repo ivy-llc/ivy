@@ -36,10 +36,13 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: np.dtype,
+    seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
+    if seed is not None:
+        np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
