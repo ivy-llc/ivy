@@ -1,5 +1,4 @@
 import sys
-import os
 
 run = int(sys.argv[1])
 backends = ["numpy", "torch", "jax", "tensorflow"]
@@ -27,6 +26,6 @@ with open("./fwsubmod.txt", "w") as outfile:
 
 with open("./backend.txt", "w") as f:
     f.write(f"{backend}")
-    
+
 with open("./submodule.txt", "w") as f:
     f.write(f"test_{submodule}")
