@@ -2154,7 +2154,7 @@ def stable_divide(
     >>> print(x)
     0.2
 
-    With :code:`float` input:
+    With float input:
 
     >>> x = ivy.stable_divide(5.0, 3.33)
     >>> print(x)
@@ -2864,9 +2864,10 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
 
     Parameters
@@ -2878,9 +2879,11 @@ def gather(
         the specified axis.
     axis
         optional int, the axis from which to gather from. Default is -1.
+    batch_dims
+        optional int, lets you gather different items from each element of a batch.
     out
-        An array for writing the result to. It must have a shape
-        that the inputs broadcast to. (Optional)
+        optional array, for writing the result to. It must have a shape 
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -2946,7 +2949,30 @@ def gather(
     }
 
     """
-    return current_backend(params).gather(params, indices, axis=axis, out=out)
+    axis = axis % len(indices.shape)
+    batch_dims = batch_dims % len(indices.shape)
+
+    if batch_dims > axis:
+        raise ivy.exceptions.IvyException(
+            "batch_dims ("
+            + str(batch_dims)
+            + ") must be less \
+            than or equal to axis ("
+            + str(axis)
+            + ")."
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "params.shape[0:batch_dims] "
+            + str(params.shape[0:batch_dims])
+            + " should \
+            be equal to indices.shape[0:batch_dims]"
+            + str(indices.shape[0:batch_dims])
+            + "."
+        )
+    return current_backend(params, indices).gather(
+        params, indices, axis=axis, batch_dims=batch_dims, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -3441,13 +3467,14 @@ def vmap(
         and a return value that corresponds
         to that of fun, but with extra array axes
         at positions indicated by out_axes.
+
+
     This docstring is a summarised version of the `docstring
-    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for #
-    noqa vmap from JAX documentation.
+    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for vmap from JAX documentation. # noqa
 
     Examples
     --------
-    With :code:`ivy.matmul` func and :class:`ivy.Array` input:
+    With :func:`ivy.matmul` and :class:`ivy.Array` input:
 
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))

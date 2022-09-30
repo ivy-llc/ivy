@@ -177,9 +177,9 @@ def test_jax_nn_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -201,6 +201,8 @@ def test_jax_nn_gelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        atol=1e-02,
+        rtol=1e-02,
         fw=fw,
         frontend="jax",
         fn_tree="nn.gelu",

@@ -55,13 +55,7 @@ def test_relu(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=helpers.array_values(
-        dtype=helpers.get_dtypes("float", full=False, key="leaky_relu"),
-        shape=(),
-        large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
-        safety_factor_scale="log",
-    ),
+    alpha=st.floats(min_value=-1e06, max_value=1e06),
 )
 def test_leaky_relu(
     *,

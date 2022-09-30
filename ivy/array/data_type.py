@@ -173,7 +173,17 @@ class ArrayWithDataTypes(abc.ABC):
         """
         return ivy.can_cast(self._data, to)
 
-    def dtype(self: ivy.Array, as_native: bool = False) -> ivy.Dtype:
+    def dtype(
+        self: ivy.Array, as_native: bool = False
+    ) -> Union[ivy.Dtype, ivy.NativeDtype]:
+        """
+        Examples
+        -------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.dtype()
+        >>> print(y)
+        int32
+        """
         return ivy.dtype(self._data, as_native)
 
     def finfo(self: ivy.Array):

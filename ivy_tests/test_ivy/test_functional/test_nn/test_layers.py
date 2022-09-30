@@ -359,9 +359,12 @@ def x_and_filters(
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
     group_list = [i for i in range(1, 6)]
-    group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
-    fc = draw(st.sampled_from(group_list)) if general and not transpose else 1
-    dilations = draw(st.integers(1, 2))
+    if not transpose:
+        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+    else:
+        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+    fc = draw(st.sampled_from(group_list)) if general else 1
+    dilations = draw(st.integers(1, 1))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -389,9 +392,11 @@ def x_and_filters(
             x_dim.append(draw(st.integers(min_x, 20)))
         x_dim = tuple(x_dim)
     if not depthwise:
-        if fc != 1:
-            output_channels = output_channels * fc
-        filter_shape = filter_shape + (input_channels // fc, output_channels)
+        if not transpose:
+            filter_shape = filter_shape + (input_channels // fc, output_channels * fc)
+        else:
+            input_channels = input_channels * fc
+            filter_shape = filter_shape + (input_channels, output_channels // fc)
     else:
         filter_shape = filter_shape + (input_channels,)
     channel_first = True
@@ -428,6 +433,7 @@ def x_and_filters(
             strides,
             padding,
             output_shape,
+            fc,
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
@@ -748,7 +754,7 @@ def test_conv_general_dilated(
 
 @handle_cmd_line_args
 @given(
-    dims=st.shared(st.integers(1, 1), key="dims"),
+    dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
     ),
@@ -767,7 +773,7 @@ def test_conv_general_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
@@ -791,6 +797,7 @@ def test_conv_general_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=fc,
     )
 
 

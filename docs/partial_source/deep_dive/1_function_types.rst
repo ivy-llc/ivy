@@ -44,19 +44,19 @@ Primary Functions
 
 *Primary* functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
 backend-specific implementation for each backend specified in
-:code:`ivy/functional/backends/backend_name/category_name.py`. These are generally implemented as light wrapping
+:mod:`ivy/functional/backends/backend_name/category_name.py`. These are generally implemented as light wrapping
 around an existing function in the backend framework, which serves a near-identical purpose.
 
-Primary functions must both be specified in :code:`ivy/functional/ivy/category_name.py` and also in each of
-the backend files :code:`ivy/functional/backends/backend_name/category_name.py`
+Primary functions must both be specified in :mod:`ivy/functional/ivy/category_name.py` and also in each of
+the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`
 
-The function in :code:`ivy/functional/ivy/category_name.py` includes the type hints, docstring and docstring examples
+The function in :mod:`ivy/functional/ivy/category_name.py` includes the type hints, docstring and docstring examples
 (explained in more detail in the subsequent sections), but does not include an actual implementation.
 
-Instead, in :code:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific
+Instead, in :mod:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific
 implementation.
 
-For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwise.py`
+For example, the code for :func:`ivy.tan` in :mod:`ivy/functional/ivy/elementwise.py`
 (with docstrings removed) is given below:
 
 .. code-block:: python
@@ -69,8 +69,8 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
     ) -> ivy.Array:
         return ivy.current_backend(x).tan(x, out=out)
 
-The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
-:code:`ivy/functional/backends/torch/elementwise.py` is given below:
+The backend-specific implementation of :func:`ivy.tan`  for PyTorch in
+:mod:`ivy/functional/backends/torch/elementwise.py` is given below:
 
 .. code-block:: python
 
@@ -83,7 +83,7 @@ The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
         return torch.tan(x, out=out)
 
 The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch
-implementation has :code:`torch.Tensor` is explained in the :ref:`Arrays` section.
+implementation has :class:`torch.Tensor` is explained in the :ref:`Arrays` section.
 Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :class:`ivy.Array`
 whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the :ref:`Arrays` section.
 
@@ -94,10 +94,10 @@ Compositional Functions
 a *composition* of other Ivy functions,
 which themselves can be either compositional, primary or mixed (explained below).
 
-Therefore, compositional functions are only implemented in :code:`ivy/functional/ivy/category_name.py`, and there are no
-implementations in any of the backend files :code:`ivy/functional/backends/backend_name/category_name.py`
+Therefore, compositional functions are only implemented in :mod:`ivy/functional/ivy/category_name.py`, and there are no
+implementations in any of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`
 
-For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/functional/ivy/losses.py`
+For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functional/ivy/losses.py`
 (with docstrings removed) is given below:
 
 .. code-block:: python
@@ -120,22 +120,22 @@ Mixed Functions
 ---------------
 
 Some functions have some backend-specific implementations in
-:code:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends.
+:mod:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends.
 To support backends that do not have a backend-specific implementation,
-a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
+a compositional implementation is also provided in :mod:`ivy/functional/ivy/category_name.py`.
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are referred to as *mixed*.
 
-When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
-then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
+When using ivy without a backend set explicitly (for example :func:`ivy.set_backend` has not been called),
+then the function called is always the one implemented in :mod:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
-will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
+will call the backend-specific implementation in :mod:`ivy/functional/backends/backend_name/category_name.py`
 directly. However, as just explained, *mixed* functions implement a compositional approach in
-:code:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
+:mod:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using :code:`ivy.set_backend()` for example),
+Typically the backend should always be set explicitly though (using :func:`ivy.set_backend` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Standalone Functions

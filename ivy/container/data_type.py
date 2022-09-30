@@ -563,6 +563,17 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+        >>> y = x.dtype()
+        >>> print(y)
+        {
+            a: int32,
+            b: int32
+        }
+        """
         return self.static_dtype(
             self,
             as_native,

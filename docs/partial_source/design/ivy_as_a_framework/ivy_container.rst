@@ -168,7 +168,7 @@ All built-in methods also apply recursively. For example, performing a gradient 
         }
     }
 
-Check out the section below on Ivy’s stateful API to see how the :class:`ivy.Container` is used for storing all network weights in :code:`ivy.Module` instances!
+Check out the section below on Ivy’s stateful API to see how the :class:`ivy.Container` is used for storing all network weights in :class:`ivy.Module` instances!
 
 Access
 ------
@@ -312,7 +312,7 @@ Comparing differences between containers can be achieved on a per-leaf basis. Th
         }
     }
 
-Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The :code:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
+Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The :meth:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
 
 .. code-block:: python
 
@@ -341,7 +341,7 @@ Or perhaps we saved JSON configuration files to disk for two different experimen
             diff_0: ADAM
         }
     }
-The :code:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
+The :meth:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
 -------------------------
@@ -520,7 +520,7 @@ Of course, this argument holds for the use of custom classes or built-in contain
 Configuration
 --------------
 
-As briefly alluded to when explaining the :code:`ivy.Container.diff` method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
+As briefly alluded to when explaining the :meth:`ivy.Container.diff` method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading
 -----------
@@ -582,7 +582,7 @@ We can then load this Dataset with a configurable batch size like so, and we can
 Network weights
 --------------
 
-Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :code:`ivy.Module` class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
+Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :class:`ivy.Module` class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
 
 .. code-block:: python
 

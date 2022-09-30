@@ -981,7 +981,9 @@ def test_torch_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1019,8 +1021,9 @@ def test_torch_bitwise_right_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
-
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1376,7 +1379,7 @@ def _get_clip_inputs(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
         )
     )
@@ -1385,13 +1388,13 @@ def _get_clip_inputs(draw):
         max = draw(st.booleans())
         min = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
             )
         )
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
                 )
             )
             if max
@@ -1401,7 +1404,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
             )
         )
     return x_dtype, x, min, max
@@ -1412,7 +1415,7 @@ def _get_clip_inputs(draw):
 @given(
     input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clamp"
+        fn_name="ivy.functional.frontends.torch.clamp"
     ),
 )
 def test_torch_clamp(
@@ -1445,7 +1448,7 @@ def test_torch_clamp(
 @given(
     input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clip"
+        fn_name="ivy.functional.frontends.torch.clip"
     ),
 )
 def test_torch_clip(

@@ -16,7 +16,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -161,11 +161,8 @@ def inv(
             ret = tf.linalg.inv(x)
             return ret
         else:
-            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
-            inverse = tf.math.multiply(
-                tf.math.divide(1, tf.linalg.det(x)), tf.transpose(cofactor)
-            )
-            ret = inverse
+            x = tf.linalg.adjoint(x)
+            ret = tf.linalg.inv(x)
             return ret
 
 
@@ -435,7 +432,8 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
@@ -645,4 +643,3 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "float16",
     "float64",
 )
-# vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")
