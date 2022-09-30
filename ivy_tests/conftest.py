@@ -1,9 +1,27 @@
+import os
+import redis
 from hypothesis import settings, HealthCheck
+from hypothesis.extra.redis import RedisExampleDatabase
 from pytest import mark
 from pathlib import Path
 
-settings.register_profile("ci", suppress_health_check=(HealthCheck(3), HealthCheck(2)))
-settings.load_profile("ci")
+if "REDIS_CONNECTION_URL" in os.environ:
+    r = redis.Redis.from_url(
+        os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
+    )
+    settings.register_profile(
+        "ci_with_db",
+        database=RedisExampleDatabase(r, key_prefix=b"hypothesis-example:"),
+        suppress_health_check=(HealthCheck(3), HealthCheck(2)),
+    )
+    settings.load_profile("ci_with_db")
+
+else:
+    settings.register_profile(
+        "ci", suppress_health_check=(HealthCheck(3), HealthCheck(2))
+    )
+    settings.load_profile("ci")
+
 
 skip_ids = []
 skips_path = Path(__file__).parent / "skips.txt"
