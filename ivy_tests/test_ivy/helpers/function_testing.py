@@ -386,7 +386,6 @@ def test_frontend_function(
     with_inplace: bool = False,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
-    fw: str,
     device="cpu",
     frontend: str,
     fn_tree: str,
@@ -418,8 +417,6 @@ def test_frontend_function(
     native_array_flags
         dictates whether the corresponding input argument should be treated
         as a native array.
-    fw
-        current backend (framework).
     frontend
         current frontend (framework).
     fn_tree
