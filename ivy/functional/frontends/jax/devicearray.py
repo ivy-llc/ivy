@@ -1,6 +1,7 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.array.array import _native_wrapper
 
 
 class DeviceArray:
@@ -16,3 +17,27 @@ class DeviceArray:
 
     def add(self, other):
         return jax_frontend.add(self.data, other)
+
+    @_native_wrapper
+    def __add__(self, other):
+        return jax_frontend.add(self.data, other)
+
+    @_native_wrapper
+    def __radd__(self, other):
+        return jax_frontend.add(other, self.data)
+
+    @_native_wrapper
+    def __sub__(self, other):
+        return jax_frontend.sub(self.data, other)
+
+    @_native_wrapper
+    def __rsub__(self, other):
+        return jax_frontend.sub(other, self.data)
+
+    @_native_wrapper
+    def __mul__(self, other):
+        return jax_frontend.mul(self.data, other)
+
+    @_native_wrapper
+    def __rmul__(self, other):
+        return jax_frontend.mul(other, self.data)
