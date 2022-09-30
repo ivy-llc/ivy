@@ -1,7 +1,6 @@
 """Collection of tests for normalization layers."""
 
 # global
-import numpy as np
 from hypothesis import given
 from hypothesis import strategies as st
 
@@ -32,18 +31,16 @@ def test_layer_norm_layer(
     device,
 ):
     input_dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=input_dtype)
-    shape = x.shape
     helpers.test_method(
         num_positional_args_init=1,
         num_positional_args_method=5,
         all_as_kwargs_np_init={
-            "normalized_shape": shape,
+            "normalized_shape": x[0].shape,
             "epsilon": ivy._MIN_BASE,
             "elementwise_affine": True,
             "new_std": new_std,
             "device": device,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
@@ -51,7 +48,7 @@ def test_layer_norm_layer(
         container_flags_method=container,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        all_as_kwargs_np_method={"inputs": x},
+        all_as_kwargs_np_method={"inputs": x[0]},
         fw=fw,
         class_name="LayerNorm",
     )

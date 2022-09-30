@@ -23,7 +23,7 @@ def container_types():
     return [FlatMapping]
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "jax"
 
 
@@ -48,6 +48,10 @@ def is_native_array(x, /, *, exclusive=False):
             jax.interpreters.partial_eval.DynamicJaxprTracer,
         ),
     )
+
+
+def get_item(x: JaxArray, query: JaxArray) -> JaxArray:
+    return x.__getitem__(query)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
@@ -75,15 +79,34 @@ def to_list(x: JaxArray, /) -> list:
 def gather(
     params: JaxArray,
     indices: JaxArray,
-    axis: int = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take_along_axis(params, indices, axis))
+    result = []
+    if batch_dims == 0:
+        result = jnp.take(params, indices, axis)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = jnp.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = jnp.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def gather_nd(
-    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -234,8 +257,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-
+            indices = jnp.expand_dims(indices, 0)
     # keep below commented out, array API tests are passing without this
     # updates = [updates] if isinstance(updates, Number) else updates
 
@@ -245,6 +267,17 @@ def scatter_nd(
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(
+            indices, updates.shape[:1] + (indices.shape[-1],)
+        )._data
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:
@@ -274,7 +307,7 @@ def scatter_nd(
         if not target_given:
             target = jnp.asarray(
                 jnp.where(target == 1e12, 0.0, target), dtype=updates.dtype
-                )
+            )
     elif reduction == "max":
         if not target_given:
             target = jnp.ones(shape, dtype=updates.dtype) * -1e12
@@ -282,7 +315,7 @@ def scatter_nd(
         if not target_given:
             target = jnp.asarray(
                 jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
-                )
+            )
     else:
         raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(

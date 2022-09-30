@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -56,12 +55,10 @@ def _dtype_n_with_out(draw):
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
     dtype_n_with_out=_dtype_n_with_out(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.concatenate"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
@@ -73,7 +70,6 @@ def test_numpy_concatenate(
 ):
     dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,

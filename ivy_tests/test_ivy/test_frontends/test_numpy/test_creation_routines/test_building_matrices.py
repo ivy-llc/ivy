@@ -1,13 +1,11 @@
 # global
 # import ivy
-import numpy as np
 
 from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 
-# import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -26,22 +24,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.tril"
     ),
 )
-def test_numpy_tril(
-    dtype_and_x,
-    k,
-    num_positional_args,
-    fw,
-):
+def test_numpy_tril(dtype_and_x, k, num_positional_args, fw, native_array):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
-        as_variable_flags=False,
+        input_dtypes=dtype,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
         fn_tree="tril",
-        m=np.asarray(x),
+        m=x[0],
         k=k,
     )
