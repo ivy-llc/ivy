@@ -1279,6 +1279,7 @@ def test_frontend_method(
 
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend)
+    backend_returned_scalar = False
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1300,10 +1301,26 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+        backend_returned_scalar = True
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    elif frontend == "tensorflow" and not isinstance(frontend_ret, tf.Tensor):
+        frontend_ret_np_flat = [ivy.array(frontend_ret).to_numpy()]
+    else:
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+        print(frontend_ret)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
+
+    if backend_returned_scalar:
+        ret_np_flat = ivy.to_numpy([ret])
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret

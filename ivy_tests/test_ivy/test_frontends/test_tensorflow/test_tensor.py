@@ -46,6 +46,8 @@ def test_tensorflow_instance_add(dtype_and_x, as_variable, native_array, fw):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
     ),
 )
 def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array, fw):
@@ -53,16 +55,17 @@ def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array, f
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
+        num_positional_args_init=1,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": x,
+            "data": x[0],
         },
         input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
+        as_variable_flags_method=[],
         num_positional_args_method=0,
-        native_array_flags_method=native_array,
+        native_array_flags_method=[],
         all_as_kwargs_np_method={},
+        # test_values = False,
         fw=fw,
         frontend="tensorflow",
         class_name="Tensor",
