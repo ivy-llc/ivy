@@ -209,12 +209,13 @@ ivy.tan()
             fn_name="ivy.functional.frontends.torch.leaky_relu"
         ),
         alpha=st.floats(min_value=0, max_value=1),
+        with_inplace=st.booleans(),
     )
     def test_torch_leaky_relu(
         dtype_and_x,
+        with_inplace,
         num_positional_args,
         as_variable,
-        with_out,
         native_array,
         fw,
         alpha,
@@ -223,8 +224,8 @@ ivy.tan()
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=with_out,
-            with_inplace=True,
+            with_out=False,
+            with_inplace=with_inplace,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
