@@ -1390,8 +1390,8 @@ def test_cross(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
-    num_rows=helpers.ints(),
-    num_cols=helpers.ints(),
+    num_rows=helpers.ints(min_value=1),
+    num_cols=helpers.ints(min_value=1),
     num_positional_args=helpers.num_positional_args(fn_name="diag"),
 )
 def test_diag(
