@@ -72,10 +72,13 @@ def multinomial(
     probs: Optional[JaxArray] = None,
     replace: bool = True,
     device: jaxlib.xla_extension.Device,
+    seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
     if probs is None:
         probs = (
             jnp.ones(

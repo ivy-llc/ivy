@@ -157,10 +157,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -190,6 +192,7 @@ def test_multinomial(
         batch_size=batch_size,
         probs=probs[0] if probs is not None else probs,
         replace=replace,
+        seed=seed,
         device=device,
     )
     if not ivy.exists(ret):

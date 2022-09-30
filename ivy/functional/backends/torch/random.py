@@ -58,6 +58,7 @@ def multinomial(
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
     device: torch.device,
+    seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if probs is None:
@@ -70,6 +71,8 @@ def multinomial(
             )
             / population_size
         )
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
 
