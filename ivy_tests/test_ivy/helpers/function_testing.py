@@ -746,16 +746,15 @@ def gradient_test(
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
 
-    def where_cond(x):
-        x in [np.inf, -np.inf, np.nan]
-
+    condition_np_flat = np.isfinite(grads_np_flat)
     grads_np_flat = np.where(
-        where_cond, np.asarray(0.0, dtype=grads_np_flat.dtype), grads_np_flat
+        condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
     )
+    condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
     grads_np_from_gt_flat = np.where(
-        where_cond,
-        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        condition_np_from_gt_flat,
         grads_np_from_gt_flat,
+        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
     )
 
     value_test(
