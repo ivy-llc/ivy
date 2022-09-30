@@ -777,7 +777,6 @@ def test_method(
     native_array_flags_method: Union[bool, List[bool]],
     container_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
-    fw: str,
     class_name: str,
     method_name: str = "__call__",
     init_with_v: bool = False,
@@ -823,8 +822,6 @@ def test_method(
         be treated as an ivy Container.
     all_as_kwargs_np_method:
         input arguments to the method as keyword arguments.
-    fw
-        current backend (framework).
     class_name
         name of the class to test.
     method_name
