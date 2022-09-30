@@ -132,3 +132,107 @@ def test_jax_special_neg(
             ret_from_gt=ret_gt,
             ground_truth_backend="jax",
         )
+
+
+# __eq__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    )
+)
+def test_jax_special_eq(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) == DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) == jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __ne__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    )
+)
+def test_jax_special_ne(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) != DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) != jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __lt__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    )
+)
+def test_jax_special_lt(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) < DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) < jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __le__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    )
+)
+def test_jax_special_le(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) <= DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) <= jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
