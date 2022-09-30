@@ -1,6 +1,12 @@
 import ivy
 
 
+def svd(x, /, *, full_matrices=True, compute_uv=True):
+    if not compute_uv:
+        return ivy.svdvals(x)
+    return ivy.svd(x, full_matrices=full_matrices)
+
+
 def cholesky(x, /, *, symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added

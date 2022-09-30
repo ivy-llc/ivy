@@ -52,6 +52,8 @@ jobs:
          id: tests
          run: |
            cd ivy
+           export REDIS_URL=${{ secrets.REDIS_CONNECTION_URL }}
+           export REDIS_PASSWD=${{ secrets.REDIS_PASSWORD }}
            ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 

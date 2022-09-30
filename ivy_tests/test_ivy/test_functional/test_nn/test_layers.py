@@ -501,7 +501,7 @@ def test_conv1d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
@@ -589,7 +589,7 @@ def test_conv2d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
@@ -822,7 +822,7 @@ def test_conv3d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,

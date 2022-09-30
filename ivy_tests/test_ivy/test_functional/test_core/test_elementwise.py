@@ -212,6 +212,7 @@ def test_asin(
         fn_name="asin",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -250,6 +251,7 @@ def test_asinh(
         fn_name="asinh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -282,6 +284,7 @@ def test_atan(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -322,6 +325,7 @@ def test_atan2(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan2",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -357,6 +361,7 @@ def test_atanh(
         fn_name="atanh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
