@@ -74,13 +74,13 @@ and is used for uniquely identifying parts of the compiled computation graph dur
 logging and debugging. This has nothing to do with the mathematics of the function, and
 so is *not* included in the superset considerations when implementing Ivy functions.
 Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the
-:code:`numpy.ndarray` class should be permitted, and :code:`order` controls the
+:class:`numpy.ndarray` class should be permitted, and :code:`order` controls the
 low-level memory layout of the array, both of which are included for many functions,
 such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
 Finally, in JAX the argument :code:`precision` is quite common, which controls the
 precision of the return values, as used in
 `jax.lax.conv <https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html>`_
-for example. Similarly, the functions :code:`jacfwd` and :code:`jacrev` in JAX are
+for example. Similarly, the functions :func:`jacfwd` and :func:`jacrev` in JAX are
 actually mathematically identical, and these functions differ *only* in their underlying
 algorithm, either forward mode or reverse mode.
 
@@ -135,11 +135,11 @@ Balancing Generalization with Efficiency
 ---------------------------------------
 
 Sometimes, the simplest way to implement superset behaviour comes at the direct expense
-of runtime efficiency. We explore this through the examples of :code:`softplus`.
+of runtime efficiency. We explore this through the examples of :func:`softplus`.
 
 **ivy.softplus**
 
-When looking at the :code:`softplus` (or closest equivalent) implementations for
+When looking at the :func:`softplus` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/activations/softplus/softplus_functional.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html>`_,
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/softplus>`_,
@@ -147,7 +147,7 @@ and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html>`_,
 we can see that torch is the only framework which supports the inclusion of the
 :code:`beta` and :code:`threshold` arguments, which are added for improved numerical
-stability. We can also see that numpy does not support a :code:`softplus`
+stability. We can also see that numpy does not support a :func:`softplus`
 function at all. Ivy should also support the :code:`beta` and :code:`threshold`
 arguments, in order to provide the generalized superset implementation among the backend
 frameworks.
@@ -164,7 +164,7 @@ simple, with only a single tensorflow function called under the hood.
                  out: Optional[Tensor] = None) -> Tensor:
         return tf.nn.softplus(x)
 
-The simplest approach would be to implement :code:`softplus` in each Ivy backend as
+The simplest approach would be to implement :func:`softplus` in each Ivy backend as
 a simple composition. For example, a simple composition in the tensorflow
 backend would look like the following:
 
@@ -181,15 +181,15 @@ backend would look like the following:
 
 This approach uses the default argument values used by PyTorch, and it does indeed
 extend the behaviour correctly. However, the implementation now uses **six**
-tensorflow function calls instead of one, being: :code:`__mul__`,
-:code:`tf.nn.softplus`, :code:`__div__`, :code:`__mul__`, :code:`__gt__`,
-:code:`tf.where` in order of execution respectively. If a user doesn't care about the
-extra :code:`threshold` and :code:`beta` arguments, then a :code:`6×` increase in
-backend functions is a heavy price to pay effiency-wise.
+tensorflow function calls instead of one, being: :func:`__mul__`,
+:func:`tf.nn.softplus`, :func:`__div__`, :func:`__mul__`, :func:`__gt__`,
+:func:`tf.where` in order of execution. If a user doesn't care about the
+extra :code:`threshold` and :code:`beta` arguments, then a 6× increase in
+backend functions is a heavy price to pay efficiency-wise.
 
 Therefore, we should in general adopt a different approach when implementing superset
 behaviour. We should still implement the superset, but keep this extended behaviour as
-optional as possible, with maximal effiency and minimal intrusion in the case that this
+optional as possible, with maximal efficiency and minimal intrusion in the case that this
 extended behaviour is not required. The following would be a much better solution:
 
 .. code-block:: python
@@ -213,14 +213,14 @@ extended behaviour is not required. The following would be a much better solutio
 You will notice that this implementation involves more lines of code, but this should
 not be confused with added complexity. All Ivy code should be graph compiled for
 efficiency, and in this case all the :code:`if` and :code:`else` statements are removed,
-and all that remain are the backend functions which were executed. This new
-implementation will compiled to a graph of either one, three, four or six functions
+and all that remains is the backend functions which were executed. This new
+implementation will be compiled to a graph of either one, three, four or six functions
 depending on the values of :code:`beta` and :code:`threshold`, while the previous
 implementation would *always* compile to six functions.
 
 This does mean we do not adopt the default values used by PyTorch, but that's okay.
 Implementing the superset does not mean adopting the same default values for arguments,
-it simply means equiping the Ivy function with the capabilities to execute the superset
+it simply means equipping the Ivy function with the capabilities to execute the superset
 of behaviours.
 
 More Examples
@@ -233,7 +233,7 @@ implement the full superset, for some of the reasons explained above.
 
 **ivy.linspace**
 
-When looking at the :code:`linspace` (or closest equivalent) implementations for
+When looking at the :func:`linspace` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_,
 `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_,
@@ -249,7 +249,7 @@ frameworks.
 
 **ivy.eye**
 
-When looking at the :code:`eye` (or closest equivalent) implementations for
+When looking at the :func:`eye` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_,
 `NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_,
@@ -264,7 +264,7 @@ backend frameworks.
 
 **ivy.scatter_nd**
 
-When looking at the :code:`scatter_nd` (or closest equivalent) implementations for
+When looking at the :func:`scatter_nd` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_,
 `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_,
@@ -280,7 +280,7 @@ frameworks.
 
 **ivy.logical_and**
 
-When looking at the :code:`logical_and` (or closest equivalent) implementations for
+When looking at the :func:`logical_and` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html>`_,
 `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html>`_,
