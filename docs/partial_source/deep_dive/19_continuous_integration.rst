@@ -1,10 +1,10 @@
-Continuous Integration (CI)
+Continuous Integration (CI) 🔁
 =====================
 
 We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository. This makes sure that:
 
-#. The commit doesn't introduce new errors, in the code base.
-#. The developer can easily debug the code when finding the source of an error.
+#. The commit doesn't introduce any new errors, in the code base. ✅
+#. The developer can easily debug the code when finding the source of an error. 🔍
 
 We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
 
@@ -99,7 +99,7 @@ The following workflows run the Frontend tests for the corresponding backend:
 Each of these workflows can also be Manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html>`_.
 
 
-CI Pipeline
+CI Pipeline ➡️
 =========
 The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.
 
