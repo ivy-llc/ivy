@@ -1317,3 +1317,92 @@ def einsum(
 
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def dirichlet(
+    alpha: ivy.Array,
+    size: Optional[Union[int, Sequence[int]]],
+    *,
+    out: Optional[ivy.Array] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+) -> ivy.Array:
+    """Draw size samples of dimension k from a Dirichlet distribution. 
+    A Dirichlet-distributed random variable can be seen as a multivariate
+    generalization of a Beta distribution. The Dirichlet distribution is
+    a conjugate prior of a multinomial distribution in Bayesian inference.
+    
+    Parameters
+    ----------
+    alpha
+        Input array of length k 
+    size
+        optional int or tuple of ints, Output shape. If the given shape is,
+        e.g., (m, n), then m * n * k samples are drawn. Default is None,
+        in which case a vector of length k is returned.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The drawn samples, of shape (size, k).
+
+    Functional Examples
+    -------------------
+
+    With :code: 'ivy.Array' input:
+
+    >>> alpha = ivy.array([1,2,3])
+    >>> print(alpha)
+    ivy.array([0.08812053, 0.21853086, 0.69334861])
+
+    >>> alpha = ivy.array([1,2,3])
+    >>> print(alpha, size = (2,3))
+    ivy.array([[[0.48926701, 0.17841151, 0.33232148],
+        [0.12634574, 0.57150038, 0.30215388],
+        [0.0731946 , 0.75307338, 0.17373202]],
+
+       [[0.02726438, 0.56313618, 0.40959944],
+        [0.01554968, 0.2011584 , 0.78329192],
+        [0.26483532, 0.48201896, 0.25314572]]])
+
+    With :code:'ivy.NativeArray' input:
+
+    >>> alpha = ivy.native_array([1,2,3])
+    >>> print(alpha)
+    ivy.array([0.02085881, 0.12270865, 0.85643254])
+    
+    With :code: 'ivy.Container' input:
+
+    >>> alpha = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([4, 5, 6]))
+    >>> print(alpha)
+    {
+        a: ivy.array([0.04170548, 0.24173488, 0.71655965]),
+        b: ivy.array([0.19703118, 0.33306214, 0.46990668]))
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code: 'ivy.Array' instance method:
+
+    >>> alpha = ivy.array([1,2,3])
+    >>> print(alpha)
+    ivy.array([0.33236424, 0.44677371, 0.22086206])
+
+    Using :code: 'ivy.Container' instance method:
+
+    >>> alpha = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([4, 5, 6]))
+    >>> print(alpha)
+    {
+        a: ivy.array([0.17405065, 0.09940241, 0.72654694]),
+        b: ivy.array([0.40641465, 0.21859894, 0.37498641]))
+    }
+    """
+    return current_backend().dirichlet(alpha, size, out=out, dtype=dtype)

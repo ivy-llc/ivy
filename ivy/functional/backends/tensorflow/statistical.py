@@ -1,6 +1,7 @@
 # global
 _round = round
 import tensorflow as tf
+from tensorflow_probability import distributions as tfd
 from typing import Union, Optional, Sequence
 
 # local
@@ -181,3 +182,22 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.einsum(equation, *operands)
+
+
+def dirichlet(
+    alpha: tf.Tensor,
+    size: Optional[Union[int, Sequence[int]]] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    dtype: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.Tensor(
+        tfd.Dirichlet(
+            concentration=alpha,
+            validate_args=False,
+            allow_nan_stats=True,
+            force_probs_to_zero_outside_support=False,
+            name='Dirichlet'
+            ),
+        value_index=0,
+        dtype=tf.float64)

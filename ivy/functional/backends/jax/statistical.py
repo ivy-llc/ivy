@@ -1,4 +1,5 @@
 # global
+from jax.random import dirichlet, PRNGKey
 import jax.numpy as jnp
 from typing import Union, Optional, Sequence
 
@@ -197,3 +198,13 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+
+def dirichlet(
+    alpha: JaxArray,
+    size: Optional[Union[int, Sequence[int]]] = None,
+    *, 
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return dirichlet(alpha, shape=size, key=PRNGKey(), dtype=dtype)
