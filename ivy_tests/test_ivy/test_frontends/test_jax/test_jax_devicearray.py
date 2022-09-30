@@ -96,7 +96,7 @@ def test_jax_instance_add(
 
 # __pos__
 @handle_cmd_line_args
-@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")))
+@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
 def test_jax_special_pos(
     dtype_x,
     fw,
