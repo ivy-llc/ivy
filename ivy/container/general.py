@@ -1360,7 +1360,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1381,6 +1382,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1392,8 +1395,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            A container for writing the result to. It must have a shapethat the inputs 
-            broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
 
         Returns
@@ -1433,6 +1436,7 @@ class ContainerWithGeneral(ContainerBase):
             params,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1445,7 +1449,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1466,6 +1471,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1478,8 +1485,8 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            A container for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -1504,6 +1511,7 @@ class ContainerWithGeneral(ContainerBase):
             self,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
