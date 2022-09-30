@@ -134,9 +134,7 @@ def full_like(
     fill_value: float,
     *,
     dtype: np.dtype,
-    device: str,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+    
  numpy_sort
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
