@@ -236,9 +236,9 @@ ivy.tan()
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for PyTorch.
-* We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
-* We set :code:`with_inplace` to :code:`True` as the function supports direct inplace update in a special way: updating the :code:`input` argument according to the :code:`inplace` argument.
-* We also set :code:`with_inplace` to :code:`True` when we deal with the special In-place versions of PyTorch functions that always do inplace update.
+* We set :code:`fn_tree` to :code:`nn.functional.leaky_relu` which is the path to the function in the PyTorch namespace.
+* We get :code:`with_inplace` with hypothesis to test the function that supports direct inplace update in its arguments: when :code:`with_inplace` is :code:`True` the function updates the :code:`input` argument with return value and the return value has the same reference as the input.
+* When :code:`with_inplace` is :code:`True` for the special In-place versions of PyTorch functions that always do inplace update, the :code:`input` argument is also updated with return value and the returned value has the same reference as the input.
 
 ivy.full()
 ^^^^^^^^^^
