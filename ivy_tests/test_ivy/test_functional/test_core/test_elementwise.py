@@ -284,6 +284,7 @@ def test_atan(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan",
+        test_gradients=True,
         x=x[0],
     )
 
