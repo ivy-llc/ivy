@@ -1,4 +1,3 @@
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -35,7 +34,7 @@ def test_jax_nn_relu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.relu",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -68,7 +67,7 @@ def test_jax_nn_relu6(
         fw=fw,
         frontend="jax",
         fn_tree="nn.relu6",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -92,7 +91,6 @@ def test_jax_nn_soft_sign(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -102,7 +100,7 @@ def test_jax_nn_soft_sign(
         fw=fw,
         frontend="jax",
         fn_tree="nn.soft_sign",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -126,7 +124,6 @@ def test_jax_nn_silu(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -136,7 +133,7 @@ def test_jax_nn_silu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.silu",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -162,7 +159,6 @@ def test_jax_nn_leaky_relu(
     negative_slope,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -172,7 +168,7 @@ def test_jax_nn_leaky_relu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.leaky_relu",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         negative_slope=negative_slope,
     )
 
@@ -181,9 +177,9 @@ def test_jax_nn_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -199,17 +195,18 @@ def test_jax_nn_gelu(
     approximate,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        atol=1e-02,
+        rtol=1e-02,
         fw=fw,
         frontend="jax",
         fn_tree="nn.gelu",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         approximate=approximate,
     )
 
@@ -234,7 +231,6 @@ def test_jax_nn_sigmoid(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -244,7 +240,7 @@ def test_jax_nn_sigmoid(
         fw=fw,
         frontend="jax",
         fn_tree="nn.sigmoid",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -272,7 +268,6 @@ def test_jax_nn_one_hot(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -282,7 +277,7 @@ def test_jax_nn_one_hot(
         fw=fw,
         frontend="jax",
         fn_tree="nn.one_hot",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         num_classes=num_classes,
     )
 
@@ -311,7 +306,6 @@ def test_jax_nn_softmax(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -321,7 +315,7 @@ def test_jax_nn_softmax(
         fw=fw,
         frontend="jax",
         fn_tree="nn.softmax",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
     )
 
@@ -346,7 +340,6 @@ def test_jax_nn_softplus(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -356,7 +349,7 @@ def test_jax_nn_softplus(
         fw=fw,
         frontend="jax",
         fn_tree="nn.softplus",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -389,7 +382,7 @@ def test_jax_nn_log_sigmoid(
         fw=fw,
         frontend="jax",
         fn_tree="nn.log_sigmoid",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -428,7 +421,7 @@ def test_jax_nn_log_softmax(
         fn_tree="nn.log_softmax",
         rtol=1e-3,
         atol=1e-3,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
     )
 
@@ -470,7 +463,7 @@ def test_jax_nn_glu(
         fn_tree="nn.glu",
         rtol=1e-3,
         atol=1e-3,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
     )
 
@@ -516,10 +509,10 @@ def test_jax_nn_normalize(
         fw=fw,
         frontend="jax",
         fn_tree="nn.normalize",
-        x=np.asarray(xs[0], dtype=input_dtypes[0]),
+        x=xs[0],
         axis=axis,
-        mean=np.asarray(xs[1], dtype=input_dtypes[1]),
-        variance=np.asarray(xs[2], dtype=input_dtypes[2]),
+        mean=xs[1],
+        variance=xs[2],
         epsilon=epsilon,
         where=where,
     )
@@ -554,7 +547,7 @@ def test_jax_nn_hard_tanh(
         fw=fw,
         frontend="jax",
         fn_tree="nn.hard_tanh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -589,8 +582,8 @@ def test_jax_nn_celu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.celu",
-        x=np.asarray(xs[0], dtype=input_dtypes[0]),
-        alpha=np.asarray(xs[1], dtype=input_dtypes[1]),
+        x=xs[0],
+        alpha=xs[1],
     )
 
 
@@ -625,8 +618,8 @@ def test_jax_nn_elu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.elu",
-        x=np.asarray(xs[0], dtype=input_dtypes[0]),
-        alpha=np.asarray(xs[1], dtype=input_dtypes[1]),
+        x=xs[0],
+        alpha=xs[1],
     )
 
 
@@ -667,9 +660,9 @@ def test_jax_nn_logsumexp(
         fw=fw,
         frontend="jax",
         fn_tree="nn.logsumexp",
-        a=np.asarray(xs[0], dtype=input_dtypes[0]),
+        a=xs[0],
         axis=axis,
-        b=np.asarray(xs[1], dtype=input_dtypes[1]),
+        b=xs[1],
         keepdims=keepdims,
         return_sign=return_sign,
     )
@@ -704,7 +697,7 @@ def test_jax_nn_swish(
         fw=fw,
         frontend="jax",
         fn_tree="nn.swish",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -737,5 +730,5 @@ def test_jax_nn_hard_swish(
         fw=fw,
         frontend="jax",
         fn_tree="nn.hard_swish",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )

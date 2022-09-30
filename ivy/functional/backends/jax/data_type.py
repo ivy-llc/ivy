@@ -108,10 +108,12 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
+    if x.ndim > len(shape):
+        return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
     if type(from_) in [
         jax.interpreters.xla._DeviceArray,
         jaxlib.xla_extension.DeviceArray,

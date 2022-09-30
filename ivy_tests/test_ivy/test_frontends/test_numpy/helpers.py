@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @st.composite
 def where(draw):
-    _, values = draw(helpers.dtype_and_values(available_dtypes=("bool",)))
+    _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
     return draw(st.just(values) | st.just(True))
 
 
@@ -18,6 +18,65 @@ def dtype_x_bounded_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
     return dtype, x, axis
+
+
+@st.composite
+def _array_and_axes_permute_helper(
+    draw,
+    *,
+    min_num_dims,
+    max_num_dims,
+    min_dim_size,
+    max_dim_size,
+):
+    """Returns array, its dtype and either the random permutation of its axes or None.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_num_dims
+        minimum number of array dimensions
+    max_num_dims
+        maximum number of array dimensions
+    min_dim_size
+        minimum size of the dimension
+    max_dim_size
+        maximum size of the dimension
+
+    Returns
+    -------
+    A strategy that draws an array, its dtype and axes (or None).
+    """
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
+    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    axes = draw(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=shape,
+                allow_neg=False,
+                allow_none=False,
+                sorted=False,
+                unique=True,
+                min_size=len(shape),
+                max_size=len(shape),
+                force_tuple=True,
+                force_int=False,
+            ),
+        ).filter(lambda x: x != tuple(range(len(shape))))
+    )
+    return (array, dtype, axes)
 
 
 # noinspection PyShadowingNames
@@ -83,25 +142,8 @@ def test_frontend_array_instance_method(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
-def handle_where_and_array_bools(
-    where, input_dtype=None, as_variable=None, native_array=None
-):
-    where_array = isinstance(where, list)
-    if where_array:
-        where = np.asarray(where, dtype=np.bool_)
-        if ivy.exists(input_dtype):
-            try:
-                input_dtype += ["bool"]
-            except TypeError:
-                input_dtype = [input_dtype, "bool"]
-        if ivy.exists(as_variable):
-            try:
-                as_variable += [False]
-            except TypeError:
-                as_variable = [as_variable, False]
-        if ivy.exists(native_array):
-            try:
-                native_array += [False]
-            except TypeError:
-                native_array = [native_array, False]
-    return where
+def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
+    if isinstance(where, list):
+        input_dtype += ["bool"]
+        return where, as_variable + [False], native_array + [False]
+    return where, as_variable, native_array

@@ -61,7 +61,7 @@ class Linear(Module):
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._with_bias = with_bias
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -144,7 +144,7 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        Module.__init__(self, None, None, dtype=dtype)
+        Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -192,6 +192,8 @@ class MultiHeadAttention(Module):
     def __init__(
         self,
         query_dim,
+        /,
+        *,
         num_heads=8,
         head_dim=64,
         dropout_rate=0.0,
@@ -252,7 +254,6 @@ class MultiHeadAttention(Module):
 
         """
         v_exists = ivy.exists(v)
-        v = ivy.default(v, ivy.Container({"to_q": None, "to_kv": None, "to_out": None}))
         self._query_dim = query_dim
         self._inner_dim = head_dim * num_heads
         self._dropout_rate = dropout_rate
@@ -264,42 +265,31 @@ class MultiHeadAttention(Module):
         self._with_to_out_fn = with_to_out_fn
         ivy.Module.__init__(
             self,
-            device,
-            v if v_exists else None,
-            build_mode,
+            device=device,
+            v=v if v_exists else None,
+            build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
         )
 
-    # noinspection PyAttributeOutsideInit
-    def _build(self, *agrs, **kwargs):
-        self._to_q = (
-            ivy.Linear(
+    def _build(self, *args, **kwargs):
+        if self._with_to_q_fn:
+            self._to_q = ivy.Linear(
                 self._query_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
-            if self._with_to_q_fn
-            else None
-        )
-        self._to_k = (
-            ivy.Linear(
+        if self._with_to_kv_fn:
+            self._to_k = ivy.Linear(
                 self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
-            if self._with_to_kv_fn
-            else None
-        )
-        self._to_v = (
-            ivy.Linear(
+            self._to_v = ivy.Linear(
                 self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
             )
-            if self._with_to_kv_fn
-            else None
-        )
-        self._to_kv = lambda context, v=None: (
-            self._to_k(context, v=v.k if v else None),
-            self._to_v(context, v=v.v if v else None),
-        )
-        self._to_out = (
-            ivy.Sequential(
+            self._to_kv = lambda context, v=None: (
+                self._to_k(context, v=v.k if v else None),
+                self._to_v(context, v=v.v if v else None),
+            )
+        if self._with_to_out_fn:
+            self._to_out = ivy.Sequential(
                 ivy.Linear(
                     self._inner_dim,
                     self._query_dim,
@@ -309,9 +299,6 @@ class MultiHeadAttention(Module):
                 ivy.Dropout(self._dropout_rate),
                 device=self._dev,
             )
-            if self._with_to_out_fn
-            else None
-        )
 
     def _create_variables(self, device, dtype=None):
         """
@@ -324,7 +311,10 @@ class MultiHeadAttention(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is None.
         """
-        return ivy.Container(to_kv={"k": self._to_k.v, "v": self._to_v.v})
+        if self._with_to_kv_fn:
+            return {"to_kv": {"k": self._to_k.v, "v": self._to_v.v}}
+        else:
+            return {}
 
     def _forward(self, inputs, context=None, mask=None):
         """
@@ -355,12 +345,12 @@ class MultiHeadAttention(Module):
             self._num_heads,
             context=context,
             mask=mask,
-            to_q_fn=self._to_q,
-            to_kv_fn=self._to_kv,
-            to_out_fn=self._to_out,
-            to_q_v=self.v.to_q,
-            to_kv_v=self.v.to_kv,
-            to_out_v=self.v.to_out,
+            to_q_fn=self._to_q if self._with_to_q_fn else None,
+            to_kv_fn=self._to_kv if self._with_to_kv_fn else None,
+            to_out_fn=self._to_out if self._with_to_out_fn else None,
+            to_q_v=self.v.to_q if self._with_to_q_fn else None,
+            to_kv_v=self.v.to_kv if self._with_to_kv_fn else None,
+            to_out_v=self.v.to_out if self._with_to_out_fn else None,
         )
 
 
@@ -433,7 +423,7 @@ class Conv1D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -559,7 +549,7 @@ class Conv1DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -678,7 +668,7 @@ class Conv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -801,7 +791,7 @@ class Conv2DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -918,7 +908,7 @@ class DepthwiseConv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype):
         """Create internal variables for the layer
@@ -1037,7 +1027,7 @@ class Conv3D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -1161,7 +1151,7 @@ class Conv3DTranspose(Module):
         self._data_format = data_format
         self._dilations = dilations
         self.dtype = dtype
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
@@ -1226,6 +1216,8 @@ class LSTM(Module):
         self,
         input_channels,
         output_channels,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         num_layers=1,
         return_sequence=True,
@@ -1268,7 +1260,7 @@ class LSTM(Module):
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     # Public #
 

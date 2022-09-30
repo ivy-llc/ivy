@@ -35,7 +35,7 @@ def test_constant(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -74,7 +74,7 @@ def test_zeros(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -112,7 +112,7 @@ def test_ones(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -173,7 +173,7 @@ def test_uniform(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -232,7 +232,7 @@ def test_glorot_uniform(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -281,7 +281,7 @@ def test_first_layer_siren(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -331,7 +331,7 @@ def test_siren(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",
@@ -389,7 +389,7 @@ def test_kaiming_normal(
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=[False],
         all_as_kwargs_np_method={
             "var_shape": var_shape,
             "device": "cpu",

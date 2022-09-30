@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -13,6 +13,59 @@ inf = float("inf")
 
 # noinspection PyMissingConstructor,PyMethodParameters
 class ContainerWithLinearAlgebra(ContainerBase):
+    @staticmethod
+    def static_matmul(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.matmul. This method simply wraps
+        the function, and so the docstring for ivy.matul also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input array
+        x2
+            second input array
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            the matrix multiplication result of x1 and x2
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "matmul",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def matmul(
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -21,43 +74,47 @@ class ContainerWithLinearAlgebra(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Examples
-        --------
+        ivy.Container instance method variant of ivy.matmul. This method simply wraps
+        the function, and so the docstring for ivy.matmul also applies to this method
+        with minimal changes.
 
-        With :code:`ivy.Container` instance inputs:
+        Parameters
+        ----------
+        self
+            first input array
+        x2
+            second input array
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
-        >>> x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))
-        >>> y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))
-        >>> z = x.matmul(y)
-        >>> print(z)
-        {
-            a: ivy.array(39.),
-            b: ivy.array(8.)
-        }
+        Returns
+        -------
+        ret
+            the matrix multiplication result of self and x2
         """
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        cont_keys = conts.keys()
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.matmul(**dict(zip(cont_keys, xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_nests=map_nests,
-            ),
-            out,
+        return self.static_matmul(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -65,7 +122,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        upper: Union[int, Tuple[int, ...], ivy.Container] = False,
+        upper: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -112,7 +169,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \
                               b=ivy.array([[2., 1.], [1., 1.]]))
         >>> y = ivy.Container.static_cholesky(x, upper='false')
@@ -123,7 +180,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([[1.41, 0.707],
                             [0., 0.707]])
          }
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \
                               b=ivy.array([[2., 1.], [1., 1.]]))
         >>> upper = ivy.Container(a=1, b=-1)
@@ -151,7 +208,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        upper: Union[int, Tuple[int, ...], ivy.Container] = False,
+        upper: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -271,7 +328,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([9., 0., 3.])
         >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
@@ -282,7 +339,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([0., -6., 0.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
         >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
@@ -541,6 +598,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+
         return ContainerBase.multi_map_in_static_method(
             "inv",
             x,
@@ -561,12 +619,182 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inv.
+        This method simply wraps the function, and so the docstring for
+        ivy.inv also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Ivy container having shape ``(..., M, M)`` and whose
+            innermost two dimensions form square matrices.
+            Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+        out
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the multiplicative inverses.
+            The returned array must have a floating-point data type
+            determined by :ref:`type-promotion` and must have the
+            same shape as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
+                              b=ivy.array([[4., 4.], [2., 1.]]))
+        >>> y = ivy.inv(x)
+        >>> print(y)
+        {
+            a: ivy.array([[-1, 0.25], [1., 0.]]),
+            b: ivy.array([-0.25, 1.], [0.5, -1.])
+        }
+
+        """
         return self.static_inv(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_pinv(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container special method variant of ivy.pinv.
+        This method simply wraps the function, and so the docstring
+        for ivy.pinv also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+        ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+            relative tolerance for small singular values approximately less
+            than or equal to ``rtol * largest_singular_value`` are set to zero. 
+        out
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the pseudo-inverses. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
+    
+        Examples
+        --------
+        x = ivy.Container(a= ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        y = pinv(x, None, None)
+        print(y)
+        {
+            a: ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+        }
+    
+        x = ivy.Container(a=ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        out = ivy.Container(a=ivy.array())
+        pinv(x, 0, out)
+        print(out)
+        {
+            a: ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "pinv",
+            x,
+            rtol=rtol,
+            out=out,
+        )
+
+    def pinv(
+        self: ivy.Container,
+        /,
+        *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.pinv.
+        This method simply wraps the function, and so the docstring
+        for ivy.pinv also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+            ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+        relative tolerance for small singular values approximately less than or equal to 
+            ``rtol * largest_singular_value`` are set to zero. 
+        out
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the pseudo-inverses. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
+    
+    
+        Examples
+        --------
+        x = ivy.Container(a= ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        y = pinv(x, None, None)
+        print(y)
+        {
+            a: ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+        }
+    
+        x = ivy.Container(a=ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        out = ivy.Container(a=ivy.array())
+        pinv(x, 0, out)
+        print(out)
+        {
+            a: ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        }
+    
+        """
+        return self.static_pinv(
+            self,
+            rtol=rtol,
             out=out,
         )
 
@@ -607,10 +835,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -790,7 +1019,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code: `ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
                               b=ivy.array([[1., 0.], [0., 0.]]))
@@ -866,7 +1095,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code: `ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
                                 b=ivy.array([[1., 0.], [0., 0.]]))
         >>> y = x.matrix_rank()
@@ -1359,7 +1588,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code: `ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
                            [1, 3, 5],\
@@ -1439,7 +1668,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        With :code: `ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
                            [1, 3, 5],\
@@ -1519,7 +1748,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,
@@ -1619,7 +1848,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,

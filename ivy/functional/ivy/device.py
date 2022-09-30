@@ -69,6 +69,7 @@ class DefaultDevice:
         Examples
         --------
         A "cpu" as device:
+
         >>> with ivy.DefaultDevice("cpu") as device:
         >>>     # with block calls device.__enter__()
         >>>     print(device._dev)
@@ -90,6 +91,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -97,6 +99,7 @@ class DefaultDevice:
         "cpu"
 
         A "tpu" as device:
+
         >>> with ivy.DefaultDevice("tpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -179,7 +182,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -207,7 +210,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     4
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -235,7 +238,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     0
 
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
 
     >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -263,7 +266,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     4
 
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+    With a mix of :class:`ivy.Container` and :class:`ivy.NativeArray` input:
 
     >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -363,14 +366,14 @@ def dev(
     Functional Examples
     --------------------
 
-    With :code:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 1, 4, 5])
     >>> y = ivy.dev(x)
     >>> print(y)
     cpu
 
-    With :code:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[2, 5, 4], [3, 1, 5]])
     >>> y = ivy.dev(x, as_native=True)
@@ -380,7 +383,7 @@ def dev(
     Array Instance Method Examples
     ------------------------------
 
-    With :code:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
     >>> y = x.dev(as_native=True)
@@ -390,7 +393,7 @@ def dev(
     Container Static Method Examples
     ---------------------------------
 
-    With :code:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\
                           b=ivy.native_array([1, 2, 4, 5, 7]))
@@ -405,7 +408,7 @@ def dev(
     Container Instance Method Examples
     ----------------------------
 
-    With :code:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\
                           b=ivy.native_array([[1, 2], [4, 5]]))
@@ -898,7 +901,7 @@ def to_device(
     *,
     stream: Optional[Union[int, Any]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Move the input array x to the desired device, specified by device string.
 
     Parameters
@@ -1175,7 +1178,10 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
-    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(ALL_DEVICES).difference(supported)
         return supported
@@ -1190,6 +1196,8 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
             ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 

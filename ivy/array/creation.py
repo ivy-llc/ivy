@@ -1,9 +1,11 @@
 # global
 import abc
+from numbers import Number
 from typing import Optional, Union, List
 
 # local
 import ivy
+
 
 # Array API Standard #
 # -------------------#
@@ -17,6 +19,7 @@ class ArrayWithCreation(abc.ABC):
         copy: Optional[bool] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asarray. This method simply wraps the
@@ -29,6 +32,8 @@ class ArrayWithCreation(abc.ABC):
             input data, in any form that can be converted to an array. This includes
             lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
             ndarrays.
+        copy
+            boolean, indicating whether or not to copy the input. Default: ``None``.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
@@ -41,9 +46,8 @@ class ArrayWithCreation(abc.ABC):
         -------
         ret
             An array interpretation of ``self``.
-
         """
-        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device)
+        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device, out=out)
 
     def full_like(
         self: ivy.Array,
@@ -81,23 +85,25 @@ class ArrayWithCreation(abc.ABC):
             an array having the same shape as ``self`` and where every element is equal
             to ``fill_value``.
 
-        Instance Method Examples:
-        ------------------------
+        Examples
+        --------
+        With :code:`int` datatype:
 
-        With int datatype:
         >>> x = ivy.array([1,2,3])
         >>> fill_value = 0
         >>> x.full_like(fill_value)
         ivy.array([0, 0, 0])
 
         With float datatype:
+
         >>> fill_value = 0.000123
         >>> x = ivy.array(ivy.ones(5))
         >>> y = x.full_like(fill_value)
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-        With ivy.Array input:
+        With :class:`ivy.Array` input:
+
         >>> x = ivy.array([1, 2, 3, 4, 5, 6])
         >>> fill_value = 1
         >>> y = x.full_like(fill_value)
@@ -282,6 +288,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
+        sparse=False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
         list_arrays = [self._data] + list(arrays)
@@ -311,7 +318,7 @@ class ArrayWithCreation(abc.ABC):
             one-dimensional arrays having lengths ``Ni = len(xi)``.
         
         """
-        return ivy.meshgrid(*list_arrays, indexing=indexing)
+        return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
@@ -396,7 +403,12 @@ class ArrayWithCreation(abc.ABC):
     def one_hot(
         self: ivy.Array,
         depth: int,
+        /,
         *,
+        on_value: Union[Number] = None,
+        off_value: Union[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Union[ivy.Device, ivy.NativeDevice] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -411,6 +423,16 @@ class ArrayWithCreation(abc.ABC):
             input array containing the indices for which the ones should be scattered
         depth
             Scalar defining the depth of the one-hot dimension.
+        on_value
+            Value to fill in output when ``indices[j] == i``. Default 1.
+        off_value
+            Value to fill in output when ``indices[j] != i``. Default 0.
+        axis
+            The axis to scatter on. The default is -1 which is the last axis.
+        dtype
+            The data type of the output array. If None, the data type of the on_value is
+            used, or if that is None, the data type of the off_value is used. Default
+            float32.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             Same as x if None.
@@ -425,4 +447,13 @@ class ArrayWithCreation(abc.ABC):
             which overrides.
 
         """
-        return ivy.one_hot(self, depth, device=device, out=out)
+        return ivy.one_hot(
+            self,
+            depth,
+            on_value=on_value,
+            off_value=off_value,
+            axis=axis,
+            dtype=dtype,
+            device=device,
+            out=out,
+        )

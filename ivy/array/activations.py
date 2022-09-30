@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -103,7 +103,14 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.softmax(self._data, axis=axis, out=out)
 
-    def softplus(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def softplus(
+        self: ivy.Array,
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
@@ -112,8 +119,39 @@ class ArrayWithActivations(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-0.3461, -0.6491])
-        >>> y = x.softplus()
+        >>> y = x.softplus(beta=0.5)
         >>> print(y)
-        ivy.array([0.535, 0.42 ])
+        ivy.array([1.22, 1.09])
+
+        >>> x = ivy.array([1.31, 2., 2.])
+        >>> y = x.softplus(threshold=2, out=x)
+        >>> print(x)
+        ivy.array([1.55, 2.13, 2.13])
         """
-        return ivy.softplus(self._data, out=out)
+        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
+
+    def log_softmax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.log_softmax.
+        This method simply wraps the function,
+        and so the docstring for ivy.log_softmax also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1.0, -0.98, 2.3])
+        >>> y = x.log_softmax()
+        >>> print(y)
+        ivy.array([-3.37, -3.35, -0.0719])
+
+        >>> x = ivy.array([2.0, 3.4, -4.2])
+        >>> y = x.log_softmax(x)
+        ivy.array([-1.62, -0.221, -7.82 ])
+        """
+        return ivy.log_softmax(self._data, axis=axis, out=out)
