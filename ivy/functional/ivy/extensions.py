@@ -1,5 +1,12 @@
+from typing import Optional, Union
 import ivy
-from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+    integer_arrays_to_float,
+    inputs_to_native_arrays
+)
 from ivy.exceptions import handle_exceptions
 
 
@@ -369,3 +376,80 @@ def native_sparse_array(
 @handle_exceptions
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def sinc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates an implementation-dependent approximation of the principal value of
+    the normalized sinc function, having domain ``(-infinity, +infinity)`` and
+    codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
+    Each element ``x_i`` is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If x_i is NaN, the result is NaN.
+    - If ``x_i`` is ``0``, the result is ``1``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the normalized sinc function of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
+    >>> y = x.sinc()
+    >>> print(y)
+    ivy.array([0.637,-0.212,0.127,-0.0909])
+
+    >>> x = ivy.array([1.5, 0.5, -1.5])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sinc(x, out=y)
+    >>> print(y)
+    ivy.array(([-0.212,0.637,-0.212])
+
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
+    >>> y = ivy.sinc(x)
+    >>> print(y)
+    ivy.array([0.637,-0.212,0.127,-0.0909])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
+                          b=ivy.array([3.5, 4.5, 5.5]))
+    >>> y = x.sinc()
+    >>> print(y)
+    {
+        a: ivy.array([0.637,-0.212,0.127]),
+        b: ivy.array([-0.0909,0.0707,-0.0579])
+    }
+
+    """
+    return ivy.current_backend(x).sinc(x, out=out)
