@@ -22,7 +22,6 @@ else:
     )
     settings.load_profile("ci")
 
-
 skip_ids = []
 skips_path = Path(__file__).parent / "skips.txt"
 if skips_path.exists():
