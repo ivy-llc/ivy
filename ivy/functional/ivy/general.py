@@ -744,9 +744,7 @@ def to_numpy(
 @handle_nestable
 @handle_exceptions
 def to_scalar(
-    # x: Union[ivy.Array, ivy.NativeArray, ivy.variable]
-    x: Union[ivy.Array, ivy.NativeArray],
-    /) -> Number:
+    x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
     Parameters
