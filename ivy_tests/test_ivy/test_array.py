@@ -4,6 +4,7 @@ import math
 import numpy as np
 
 # local
+from ivy.array import Array
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -78,11 +79,10 @@ def _pow_helper(draw, available_dtypes=None):
 def test_array__pos__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
-    x_ = ivy.asarray(x[0], dtype=dtype[0])
+    _, x = dtype_and_x
+    x_ = Array(x[0])
     ret = +x_
     np_ret = +x[0]
-    assert np.allclose(ivy.to_numpy(ret), +x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -103,11 +103,10 @@ def test_array__pos__(
 def test_array__neg__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
-    x_ = ivy.asarray(x[0], dtype=dtype[0])
+    _, x = dtype_and_x
+    x_ = Array(x[0])
     ret = -x_
     np_ret = -x[0]
-    assert np.allclose(ivy.to_numpy(ret), np_ret)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -136,10 +135,10 @@ def test_array__pow__(
         x[1] = np.abs(x[1])
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    power = ivy.asarray(x[1], dtype=dtype[1])
-    ret = data**power
-    np_ret = x[0] ** x[1]
+    data = Array(x[0])
+    power = Array(x[1])
+    ret = pow(data, power)
+    np_ret = pow(x[0], x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -161,18 +160,16 @@ def test_array__rpow__(
     dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-
     # check if power isn't a float when x1 is integer
     assume(not (ivy.is_int_dtype(dtype[0]) and ivy.is_float_dtype(dtype[1])))
-
     # make power a non-negative data when both are integers
     if ivy.is_int_dtype(dtype[1]) and ivy.is_int_dtype(dtype[0]):
         x[1] = np.abs(x[1])
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = ivy.asarray(x[1], dtype=dtype[1])
-    power = ivy.asarray(x[0], dtype=dtype[0])
+    data = Array(x[1])
+    power = Array(x[0])
     ret = data.__rpow__(power)
     np_ret = x[1].__rpow__(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -204,10 +201,10 @@ def test_array__ipow__(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    power = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    power = Array(x[1])
     ret = data.__ipow__(power)
-    np_ret = x[0] ** x[1]
+    np_ret = pow(x[0], x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -233,8 +230,8 @@ def test_array__add__(
     dtype_and_x,
 ):
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data + other
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -262,8 +259,8 @@ def test_array__radd__(
     dtype_and_x,
 ):
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data.__radd__(other)
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -291,8 +288,8 @@ def test_array__iadd__(
     dtype_and_x,
 ):
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data.__iadd__(other)
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -320,8 +317,8 @@ def test_array__sub__(
     dtype_and_x,
 ):
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data - other
     np_ret = x[0] - x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -349,8 +346,8 @@ def test_array__rsub__(
     dtype_and_x,
 ):
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data.__rsub__(other)
     np_ret = x[1] - x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -379,8 +376,8 @@ def test_array__isub__(
 ):
     dtype, x = dtype_and_x
     dtype, x = dtype_and_x
-    data = ivy.asarray(x[0], dtype=dtype[0])
-    other = ivy.asarray(x[1], dtype=dtype[1])
+    data = Array(x[0])
+    other = Array(x[1])
     ret = data.__isub__(other)
     np_ret = x[0] - x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
