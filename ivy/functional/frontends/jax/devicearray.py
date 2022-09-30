@@ -21,6 +21,9 @@ class DeviceArray:
     # Special Methods #
     # --------------- #
 
+    def __pos__(self):
+        return ivy.positive(self.data)
+
     def __neg__(self):
         return jax_frontend.neg(self.data)
 
