@@ -4,36 +4,8 @@ from typing import Optional, Union, Sequence, List
 
 # local
 import ivy
-from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info, ivy_dtype_dict
 
-
-ivy_dtype_dict = {
-    np.dtype("int8"): "int8",
-    np.dtype("int16"): "int16",
-    np.dtype("int32"): "int32",
-    np.dtype("int64"): "int64",
-    np.dtype("uint8"): "uint8",
-    np.dtype("uint16"): "uint16",
-    np.dtype("uint32"): "uint32",
-    np.dtype("uint64"): "uint64",
-    np.dtype("bfloat16"): "bfloat16",
-    np.dtype("float16"): "float16",
-    np.dtype("float32"): "float32",
-    np.dtype("float64"): "float64",
-    np.dtype("bool"): "bool",
-    np.int8: "int8",
-    np.int16: "int16",
-    np.int32: "int32",
-    np.int64: "int64",
-    np.uint8: "uint8",
-    np.uint16: "uint16",
-    np.uint32: "uint32",
-    np.uint64: "uint64",
-    np.float16: "float16",
-    np.float32: "float32",
-    np.float64: "float64",
-    np.bool_: "bool",
-}
 
 native_dtype_dict = {
     "int8": np.dtype("int8"),
