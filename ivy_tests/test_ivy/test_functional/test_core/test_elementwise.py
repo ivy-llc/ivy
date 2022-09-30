@@ -317,14 +317,15 @@ def test_atan2(
     assume(not (np.any(np.isclose(x[0], 0)) or np.any(np.isclose(x[1], 0))))
     helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
+        as_variable_flags=[True],
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        container_flags=[False],
+        instance_method=False,
         fw=fw,
         fn_name="atan2",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
