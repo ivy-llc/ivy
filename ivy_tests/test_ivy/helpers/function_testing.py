@@ -1340,7 +1340,6 @@ def test_frontend_array_instance_method(
     with_out: bool,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
-    fw: str,
     frontend: str,
     frontend_class: object,
     fn_tree: str,
@@ -1367,8 +1366,6 @@ def test_frontend_array_instance_method(
     native_array_flags
         dictates whether the corresponding input argument should be treated
         as a native array.
-    fw
-        current backend (framework).
     frontend
         current frontend (framework).
     frontend_class
