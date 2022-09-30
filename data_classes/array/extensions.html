@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="General" href="general.html" />
+    <link rel="next" title="ArrayWithElementwise" href="extensions/ArrayWithElementwise.html" />
     <link rel="prev" title="ArrayWithElementwise" href="elementwise/ArrayWithElementwise.html" /> 
 </head>
 
@@ -86,7 +86,8 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type.html">Data type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise.html">Elementwise</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Extensions</a><ul class="simple">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/ArrayWithElementwise.html">ArrayWithElementwise</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="general.html">General</a></li>
@@ -159,6 +160,45 @@
              
   <section id="module-ivy.array.extensions">
 <span id="extensions"></span><h1>Extensions<a class="headerlink" href="#module-ivy.array.extensions" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.array.extensions.ArrayWithElementwise">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.array.extensions.</span></span><span class="sig-name descname"><span class="pre">ArrayWithElementwise</span></span><a class="reference internal" href="../../_modules/ivy/array/extensions.html#ArrayWithElementwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.extensions.ArrayWithElementwise" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.extensions.ArrayWithElementwise.sinc">
+<span class="sig-name descname"><span class="pre">sinc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/extensions.html#ArrayWithElementwise.sinc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.extensions.ArrayWithElementwise.sinc" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.sinc. This method simply wraps the
+function, and so the docstring for ivy.sinc also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array whose elements are each expressed in radians. Should have a
+floating-point data type.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the sinc of each element in <code class="docutils literal notranslate"><span class="pre">self</span></code>. The returned
+array must have a floating-point data type determined by
+<span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sinc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0.637,-0.212,0.127,-0.0909])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -168,7 +208,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="elementwise/ArrayWithElementwise.html" class="btn btn-neutral float-left" title="ArrayWithElementwise" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="extensions/ArrayWithElementwise.html" class="btn btn-neutral float-right" title="ArrayWithElementwise" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

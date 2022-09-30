@@ -17,6 +17,7 @@ Extensions
    extensions/is_native_sparse_array.rst
    extensions/native_sparse_array.rst
    extensions/native_sparse_array_to_indices_values_and_shape.rst
+   extensions/sinc.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:

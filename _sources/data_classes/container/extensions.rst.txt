@@ -13,4 +13,5 @@ Extensions
    :maxdepth: -1
    :caption: Extensions
 
+   extensions/ContainerWithElementwise.rst
 
