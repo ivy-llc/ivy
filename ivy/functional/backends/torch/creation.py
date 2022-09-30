@@ -239,8 +239,6 @@ full.support_native_out = True
 
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-master
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
