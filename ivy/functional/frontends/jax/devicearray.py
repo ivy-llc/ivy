@@ -23,5 +23,11 @@ class DeviceArray:
     def __eq__(self, other):
         return jax_frontend.eq(self.data, other)
 
+    def __gt__(self, other):
+        return jax_frontend.gt(self.data, other)
+
+    def __ge__(self, other):
+        return jax_frontend.ge(self.data, other)
+
     def __abs__(self):
         return jax_frontend.abs(self.data)
