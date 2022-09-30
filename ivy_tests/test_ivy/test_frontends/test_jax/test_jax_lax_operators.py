@@ -176,22 +176,9 @@ def test_jax_lax_concat(
     )
 
 
-# full
-@st.composite
-def _dtypes(draw):
-    return draw(
-        st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(ivy.valid_numeric_dtypes), length=1
-            ),
-            key="dtype",
-        )
-    )
-
-
 @st.composite
 def _fill_value(draw):
-    dtype = draw(_dtypes())[0]
+    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
@@ -209,7 +196,7 @@ def _fill_value(draw):
         max_dim_size=10,
     ),
     fill_value=_fill_value(),
-    dtypes=_dtypes(),
+    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.full"
     ),
@@ -881,29 +868,16 @@ def test_jax_lax_bitwise_xor(
     )
 
 
-@st.composite
-def _dtype_and_values(draw, **kwargs):
-    return draw(
-        helpers.dtype_and_values(
-            **kwargs,
-            dtype=draw(_dtypes()),
-        )
-    )
-
-
-@st.composite
-def _shape_or_none(draw):
-    return draw(helpers.get_shape() | st.none())
-
-
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False, key="dtype")
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.full_like"
     ),
     fill_val=_fill_value(),
-    shape=_shape_or_none(),
+    shape=st.one_of(helpers.get_shape() | st.none()),
 )
 def test_jax_lax_full_like(
     dtype_and_x,
@@ -964,15 +938,16 @@ def test_jax_lax_exp(
 
 @st.composite
 def _sample_castable_numeric_dtype(draw):
-    dtype = draw(_dtypes())[0]
-    to_dtype = draw(helpers.get_dtypes("numeric", full=False))
+    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
+    to_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
     assume(ivy.can_cast(dtype, to_dtype))
     return to_dtype
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
         num_arrays=1,
         min_num_dims=1,
         min_value=-5,
