@@ -10,6 +10,9 @@ from hypothesis.extra.redis import RedisExampleDatabase
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
+for name, value in os.environ.items():
+    print("{0}: {1}".format(name, value))
+    
 r = None
 if "REDIS_URL" in os.environ:
     r = redis.Redis.from_url(
