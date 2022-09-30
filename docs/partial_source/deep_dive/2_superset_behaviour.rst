@@ -37,10 +37,10 @@ corresponding functions in each framework.
 
 We strive to implement the superset for primary, compositional and mixed functions. In
 many cases compositional functions do not actually have corresponding backend-specific
-functions, but this is not always the case. For example, :code:`ivy.linear` is a
-fully compositional function, but :code:`torch.nn.functional.linear` also exists.
-We should therefore make sure the compositional :code:`ivy.linear` function includes all
-behaviours supported by :code:`torch.nn.functional.linear`.
+functions, but this is not always the case. For example, :func:`ivy.linear` is a
+fully compositional function, but :func:`torch.nn.functional.linear` also exists.
+We should therefore make sure the compositional :func:`ivy.linear` function includes all
+behaviours supported by :func:`torch.nn.functional.linear`.
 
 A Non-Duplicate Superset
 ------------------------
@@ -53,7 +53,7 @@ for the same behaviour. Looking at the functions
 and
 `torch.cat <https://pytorch.org/docs/stable/generated/torch.cat.html>`_,
 we of course do not want to add both of the arguments :code:`axis` and :code:`dim` to
-:code:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
+:func:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
 along which to concatenate. In this case, the argument is
 `covered <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_
 in the `Array API Standard`_ and so we opt for :code:`axis`. In cases where there are
@@ -118,7 +118,7 @@ implemented with very high efficiency in :code:`C`. In this case, the inclusion 
 first place, only to then be masked out in the immediately subsequent operation.
 For these reasons, calling :code:`np.absolute(x, where=mask)` is much more efficient
 than calling :code:`np.where(mask, np.absolute(x), np.empty_like(x))` in NumPy.
-:code:`ivy.logical_and` is another example where the superset is too much, as we explain
+:func:`ivy.logical_and` is another example where the superset is too much, as we explain
 in the extra examples given at the end of this section.
 
 However, other frameworks are able to compile compositions of python operations directly
@@ -145,16 +145,16 @@ When looking at the :code:`softplus` (or closest equivalent) implementations for
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/softplus>`_,
 and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html>`_,
-we can see that :code:`torch` is the only framework which supports the inclusion of the
+we can see that torch is the only framework which supports the inclusion of the
 :code:`beta` and :code:`threshold` arguments, which are added for improved numerical
-stability. We can also see that :code:`numpy` does not support a :code:`softplus`
+stability. We can also see that numpy does not support a :code:`softplus`
 function at all. Ivy should also support the :code:`beta` and :code:`threshold`
 arguments, in order to provide the generalized superset implementation among the backend
 frameworks.
 
-Let's take the :code:`tensorflow` backend implementation as an example when assessing
+Let's take the tensorflow backend implementation as an example when assessing
 the necessary changes. Without superset behaviour, the implementation is incredibly
-simple, with only a single :code:`tensorflow` function called under the hood.
+simple, with only a single tensorflow function called under the hood.
 
 .. code-block:: python
 
@@ -165,7 +165,7 @@ simple, with only a single :code:`tensorflow` function called under the hood.
         return tf.nn.softplus(x)
 
 The simplest approach would be to implement :code:`softplus` in each Ivy backend as
-a simple composition. For example, a simple composition in the :code:`tensorflow`
+a simple composition. For example, a simple composition in the tensorflow
 backend would look like the following:
 
 .. code-block:: python
@@ -181,7 +181,7 @@ backend would look like the following:
 
 This approach uses the default argument values used by PyTorch, and it does indeed
 extend the behaviour correctly. However, the implementation now uses **six**
-:code:`tensorflow` function calls instead of one, being: :code:`__mul__`,
+tensorflow function calls instead of one, being: :code:`__mul__`,
 :code:`tf.nn.softplus`, :code:`__div__`, :code:`__mul__`, :code:`__gt__`,
 :code:`tf.where` in order of execution respectively. If a user doesn't care about the
 extra :code:`threshold` and :code:`beta` arguments, then a :code:`6×` increase in
@@ -240,8 +240,8 @@ When looking at the :code:`linspace` (or closest equivalent) implementations for
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_,
 and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_,
-we can see that :code:`torch` does not support arrays for the :code:`start` and
-:code:`end` arguments, while :code:`jax`, :code:`numpy` and :code:`tensorflow` all do.
+we can see that torch does not support arrays for the :code:`start` and
+:code:`end` arguments, while JAX, numpy and tensorflow all do.
 Likewise, Ivy also supports arrays for the :code:`start` and :code:`stop` arguments,
 and in doing so provides the generalized superset implementation among the backend
 frameworks.
@@ -256,7 +256,7 @@ When looking at the :code:`eye` (or closest equivalent) implementations for
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_,
 and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_,
-we can see that :code:`tensorflow` is the only framework which supports a
+we can see that tensorflow is the only framework which supports a
 :code:`batch_shape` argument. Likewise, Ivy also supports a :code:`batch_shape`
 argument, and in doing so provides the generalized superset implementation among the
 backend frameworks.
@@ -271,7 +271,7 @@ When looking at the :code:`scatter_nd` (or closest equivalent) implementations f
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_,
 and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_,
-we can see that :code:`torch` only supports scattering along a single dimension,
+we can see that torch only supports scattering along a single dimension,
 while all other frameworks support scattering across multiple dimensions at once.
 Likewise, Ivy also supports scattering across multiple dimensions at once,
 and in doing so provides the generalized superset implementation among the backend
@@ -287,15 +287,15 @@ When looking at the :code:`logical_and` (or closest equivalent) implementations 
 `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/logical_and>`_,
 and
 `PyTorch <https://pytorch.org/docs/stable/generated/torch.logical_and.html>`_,
-we can see that :code:`numpy` and :code:`torch` support the :code:`out` argument for
-performing inplace updates, while :code:`jax` and :code:`tensorflow` do not.
-With regards to the supported data types, :code:`jax`, :code:`numpy` and :code:`torch`
-support numeric arrays, while :code:`tensorflow` supports only boolean arrays.
+we can see that numpy and torch support the :code:`out` argument for
+performing inplace updates, while JAX and tensorflow do not.
+With regards to the supported data types, JAX, numpy and torch
+support numeric arrays, while tensorflow supports only boolean arrays.
 With regards to both of these points, Ivy provides the generalized superset
 implementation among the backend frameworks, with support for the :code:`out` argument
 and also support for both numeric and boolean arrays in the input.
 
-However, as discussed above, :code:`np.logical_and` also supports the :code:`where`
+However, as discussed above, :func:`np.logical_and` also supports the :code:`where`
 argument, which we opt to **not** support in Ivy. This is because the behaviour can
 easily be created as a composition like so
 :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`,

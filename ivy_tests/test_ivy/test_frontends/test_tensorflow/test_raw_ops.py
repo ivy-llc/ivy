@@ -2,7 +2,6 @@
 import ivy
 from hypothesis import given, strategies as st
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -1265,6 +1264,171 @@ def test_tensorflow_NotEqual(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.NotEqual",
+        x=x[0],
+        y=x[1],
+    )
+
+
+# Cumsum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Cumsum"
+    ),
+)
+def test_tensorflow_Cumsum(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+    native_array,
+    exclusive,
+    reverse,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Cumsum",
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# Relu
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Relu(dtype_and_x, as_variable, fw, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Relu",
+        features=x[0],
+    )
+
+
+# MatMul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "bfloat16",
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    transpose_a=st.booleans(),
+    transpose_b=st.booleans(),
+)
+def test_tensroflow_MatMul(
+    dtype_and_x,
+    transpose_a,
+    transpose_b,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatMul",
+        a=x[0],
+        b=x[1],
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+    )
+
+
+# Greater
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_Greater(dtype_and_x, as_variable, fw, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Greater",
+        x=x[0],
+        y=x[1],
+    )
+
+
+# GreaterEqual
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_GreaterEqual(dtype_and_x, as_variable, fw, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.GreaterEqual",
         x=x[0],
         y=x[1],
     )

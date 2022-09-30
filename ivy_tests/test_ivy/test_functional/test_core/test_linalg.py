@@ -539,7 +539,7 @@ def test_inner(
         small_abs_safety_factor=2,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
@@ -554,7 +554,6 @@ def test_inv(
     fw,
 ):
     input_dtype, x = dtype_x
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -644,6 +643,7 @@ def test_outer(
 
 
 # slogdet
+# TODO: add with_out testing when testing with tuples is supported
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
@@ -652,9 +652,6 @@ def test_outer(
         large_abs_safety_factor=72,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
-        != 0.0
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
@@ -662,7 +659,6 @@ def test_slogdet(
     *,
     dtype_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,
@@ -673,7 +669,7 @@ def test_slogdet(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
