@@ -102,7 +102,7 @@ def asarray(
             return torch.as_tensor(obj, dtype=dtype).to(device)
 
     elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype))
+        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
