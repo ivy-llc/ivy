@@ -119,20 +119,14 @@ class ArrayWithActivations(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-0.3461, -0.6491])
-        >>> y = x.softplus()
-        >>> print(y)
-        ivy.array([0.535, 0.42 ])
-
-        >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = x.softplus(beta=0.5)
         >>> print(y)
         ivy.array([1.22, 1.09])
 
         >>> x = ivy.array([1.31, 2., 2.])
-        >>> x.softplus(threshold=2)
+        >>> y = x.softplus(threshold=2, out=x)
         >>> print(x)
-        ivy.array([1.31, 2.  , 2.  ])
-
+        ivy.array([1.55, 2.13, 2.13])
         """
         return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
 
