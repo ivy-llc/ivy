@@ -6,23 +6,8 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
-from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info, ivy_dtype_dict
 
-ivy_dtype_dict = {
-    tf.int8: "int8",
-    tf.int16: "int16",
-    tf.int32: "int32",
-    tf.int64: "int64",
-    tf.uint8: "uint8",
-    tf.uint16: "uint16",
-    tf.uint32: "uint32",
-    tf.uint64: "uint64",
-    tf.bfloat16: "bfloat16",
-    tf.float16: "float16",
-    tf.float32: "float32",
-    tf.float64: "float64",
-    tf.bool: "bool",
-}
 
 native_dtype_dict = {
     "int8": tf.int8,

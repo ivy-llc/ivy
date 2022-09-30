@@ -5,6 +5,9 @@ import math
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable
 import numpy as np
+import jax.numpy as jnp
+import tensorflow as tf
+import torch
 
 # local
 import ivy
@@ -20,6 +23,84 @@ from ivy.exceptions import handle_exceptions
 
 # Helpers #
 # --------#
+
+
+ivy_dtype_dict = {
+    np.dtype("int8"): "int8",
+    np.dtype("int16"): "int16",
+    np.dtype("int32"): "int32",
+    np.dtype("int64"): "int64",
+    np.dtype("uint8"): "uint8",
+    np.dtype("uint16"): "uint16",
+    np.dtype("uint32"): "uint32",
+    np.dtype("uint64"): "uint64",
+    np.dtype("bfloat16"): "bfloat16",
+    np.dtype("float16"): "float16",
+    np.dtype("float32"): "float32",
+    np.dtype("float64"): "float64",
+    np.dtype("bool"): "bool",
+    np.int8: "int8",
+    np.int16: "int16",
+    np.int32: "int32",
+    np.int64: "int64",
+    np.uint8: "uint8",
+    np.uint16: "uint16",
+    np.uint32: "uint32",
+    np.uint64: "uint64",
+    np.float16: "float16",
+    np.float32: "float32",
+    np.float64: "float64",
+    np.bool_: "bool",
+    torch.int8: "int8",
+    torch.int16: "int16",
+    torch.int32: "int32",
+    torch.int64: "int64",
+    torch.uint8: "uint8",
+    torch.bfloat16: "bfloat16",
+    torch.float16: "float16",
+    torch.float32: "float32",
+    torch.float64: "float64",
+    torch.bool: "bool",
+    tf.int8: "int8",
+    tf.int16: "int16",
+    tf.int32: "int32",
+    tf.int64: "int64",
+    tf.uint8: "uint8",
+    tf.uint16: "uint16",
+    tf.uint32: "uint32",
+    tf.uint64: "uint64",
+    tf.bfloat16: "bfloat16",
+    tf.float16: "float16",
+    tf.float32: "float32",
+    tf.float64: "float64",
+    tf.bool: "bool",
+    jnp.dtype("int8"): "int8",
+    jnp.dtype("int16"): "int16",
+    jnp.dtype("int32"): "int32",
+    jnp.dtype("int64"): "int64",
+    jnp.dtype("uint8"): "uint8",
+    jnp.dtype("uint16"): "uint16",
+    jnp.dtype("uint32"): "uint32",
+    jnp.dtype("uint64"): "uint64",
+    jnp.dtype("bfloat16"): "bfloat16",
+    jnp.dtype("float16"): "float16",
+    jnp.dtype("float32"): "float32",
+    jnp.dtype("float64"): "float64",
+    jnp.dtype("bool"): "bool",
+    jnp.int8: "int8",
+    jnp.int16: "int16",
+    jnp.int32: "int32",
+    jnp.int64: "int64",
+    jnp.uint8: "uint8",
+    jnp.uint16: "uint16",
+    jnp.uint32: "uint32",
+    jnp.uint64: "uint64",
+    jnp.bfloat16: "bfloat16",
+    jnp.float16: "float16",
+    jnp.float32: "float32",
+    jnp.float64: "float64",
+    jnp.bool_: "bool",
+}
 
 
 def _is_valid_dtypes_attributes(fn: Callable) -> bool:

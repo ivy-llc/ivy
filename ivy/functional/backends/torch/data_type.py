@@ -4,7 +4,7 @@ from typing import Union, Sequence, List
 
 # local
 import ivy
-from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info, ivy_dtype_dict
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -142,20 +142,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(
-        {
-            torch.int8: "int8",
-            torch.int16: "int16",
-            torch.int32: "int32",
-            torch.int64: "int64",
-            torch.uint8: "uint8",
-            torch.bfloat16: "bfloat16",
-            torch.float16: "float16",
-            torch.float32: "float32",
-            torch.float64: "float64",
-            torch.bool: "bool",
-        }[dtype_in]
-    )
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
