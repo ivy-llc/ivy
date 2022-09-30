@@ -522,11 +522,13 @@ def test_full_like(
         max_num_dims=1,
         shared_dtype=True,
     ),
+    sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
 )
 def test_meshgrid(
     *,
     dtype_and_arrays,
+    sparse,
     indexing,
     fw,
 ):
@@ -550,6 +552,7 @@ def test_meshgrid(
         fw=fw,
         fn_name="meshgrid",
         **kw,
+        sparse=sparse,
         indexing=indexing,
     )
 
@@ -812,28 +815,43 @@ def test_copy_array(dtype_and_x, device, fw):
 
 
 @st.composite
-def _dtype_indices_depth(draw):
+def _dtype_indices_depth_axis(draw):
     depth = draw(helpers.ints(min_value=2, max_value=100))
-    dtype, indices = draw(
+    dtype, indices, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             min_value=0,
             max_value=depth - 1,
             small_abs_safety_factor=4,
-            safety_factor_scale="linear",
+            ret_shape=True,
         )
     )
-    return dtype, indices, depth
+
+    axis = draw(st.integers(min_value=-1, max_value=len(shape) - 1))
+    return dtype, indices, depth, axis
+
+
+@st.composite
+def _on_off_dtype(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(2,)
+        )
+    )
+    [on_value, off_value] = value[0]
+    return on_value, off_value, dtype[0]
 
 
 # one_hot
 @handle_cmd_line_args
 @given(
-    dtype_indices_depth=_dtype_indices_depth(),
+    dtype_indices_depth_axis=_dtype_indices_depth_axis(),
+    on_off_dtype=_on_off_dtype(),
     num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(
-    dtype_indices_depth,
+    dtype_indices_depth_axis,
+    on_off_dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -843,9 +861,11 @@ def test_one_hot(
     device,
     fw,
 ):
-    dtype, indices, depth = dtype_indices_depth
+    input_dtype, indices, depth, axis = dtype_indices_depth_axis
+    on_value, off_value, dtype = on_off_dtype
+
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -856,4 +876,8 @@ def test_one_hot(
         fn_name="one_hot",
         indices=indices[0],
         depth=depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        dtype=dtype,
     )
