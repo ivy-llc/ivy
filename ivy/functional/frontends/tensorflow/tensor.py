@@ -14,9 +14,6 @@ class Tensor:
     # Instance Methods #
     # -------------------#
 
-    def Reshape(self, shape, name="Reshape"):
-        return tf_frontend.Reshape(tensor=self.data, shape=shape, name=name)
-
     def get_shape(self):
         return tf_frontend.Shape(input=self.data)
 

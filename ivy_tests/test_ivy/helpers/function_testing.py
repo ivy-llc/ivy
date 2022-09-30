@@ -2,6 +2,8 @@
 import copy
 from typing import Union, List
 import numpy as np
+import jax
+import tensorflow as tf
 import importlib
 import inspect
 
@@ -1119,6 +1121,11 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    ARR_INS_METHOD = {
+        "DeviceArray": jax.numpy.array,
+        "ndarray": np.array,
+        "Tensor": tf.constant,
+    }
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1256,10 +1263,15 @@ def test_frontend_method(
     # Run testing
     class_name = class_name.split(".")
     ins_class = ivy.functional.frontends.__dict__[frontend]
-    frontend_class = importlib.import_module(frontend)
-    for c_n in class_name:
-        ins_class = getattr(ins_class, c_n)
-        frontend_class = getattr(frontend_class, c_n)
+    if class_name[-1] in ARR_INS_METHOD and frontend != "torch":
+        frontend_class = ARR_INS_METHOD[class_name[-1]]
+        for c_n in class_name:
+            ins_class = getattr(ins_class, c_n)
+    else:
+        frontend_class = importlib.import_module(frontend)
+        for c_n in class_name:
+            ins_class = getattr(ins_class, c_n)
+            frontend_class = getattr(frontend_class, c_n)
     ins = ins_class(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
