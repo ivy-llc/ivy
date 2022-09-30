@@ -255,7 +255,9 @@ qr.unsupported_dtypes = (
 )
 
 
-def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
+def slogdet(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)
