@@ -457,6 +457,8 @@ def array_indices_axis(
             max_dim_size=max_dim_size,
         )
     )
+    x_dtype = x_dtype[0]
+    x = x[0]
     if disable_random_axis:
         axis = -1
         batch_dims = 0
@@ -497,6 +499,8 @@ def array_indices_axis(
             shape=indices_shape,
         )
     )
+    indices_dtype = indices_dtype[0]
+    indices = indices[0]
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
     return [x_dtype, indices_dtype], x, indices, axis, batch_dims
