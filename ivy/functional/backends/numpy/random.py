@@ -88,6 +88,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not dtype:
@@ -95,6 +96,8 @@ def randint(
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
+    if seed is not None:
+        np.random.seed(seed)
     return np.random.randint(low, high, shape, dtype=dtype)
 
 

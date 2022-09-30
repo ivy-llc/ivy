@@ -229,10 +229,12 @@ def _gen_randint_data(draw):
 @handle_cmd_line_args
 @given(
     dtype_low_high=_gen_randint_data(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
     dtype_low_high,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -258,6 +260,7 @@ def test_randint(
         high=high,
         shape=None,
         dtype=dtype[0],
+        seed=seed,
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)

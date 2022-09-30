@@ -110,6 +110,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not dtype:
@@ -119,6 +120,8 @@ def randint(
     shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
     return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
 
 

@@ -84,6 +84,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: torch.device,
     dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not dtype:
@@ -92,6 +93,8 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
