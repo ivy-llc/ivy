@@ -228,16 +228,6 @@ def full(
         )
 
 
-def full_like(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    fill_value: Union[int, float],
-    *,
-    dtype: tf.DType,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
- numpy_sort
     # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
 
     ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
