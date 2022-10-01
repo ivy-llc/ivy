@@ -117,6 +117,19 @@ def check_all_or_any_fn(
         raise ivy.exceptions.IvyException("type must be all or any")
 
 
+def check_shape(x1, x2, message=""):
+    x1_shape = ivy.shape(x1)
+    x2_shape = ivy.shape(x2)
+    message = message if message != "" else "{} and {} must have the same shape ({} vs {})".format(
+        x1,
+        x2,
+        x1_shape,
+        x2_shape
+    )
+    if (x1_shape != x2_shape):
+        raise ivy.exceptions.IvyException(message)
+
+
 # Creation #
 # -------- #
 
