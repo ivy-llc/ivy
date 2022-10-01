@@ -33,6 +33,15 @@ from .assertions import (
     check_unsupported_device_and_dtype,
 )
 
+
+# ToDo, this is temporary until unsupported_dtype is embedded
+# into helpers.get_dtypes
+def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
+    for dtype in input_dtypes:
+        if dtype not in ivy.valid_dtypes:
+            raise Exception(f"{dtype} is not a valid data type.")
+
+
 # Function testing
 
 
@@ -141,6 +150,7 @@ def test_function(
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
     """
+    _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -437,6 +447,7 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -860,6 +871,8 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    _assert_dtypes_are_valid(input_dtypes_init)
+    _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1115,6 +1128,8 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    _assert_dtypes_are_valid(input_dtypes_init)
+    _assert_dtypes_are_valid(input_dtypes_method)
     ARR_INS_METHOD = {
         "DeviceArray": jax.numpy.array,
         "ndarray": np.array,
