@@ -229,7 +229,7 @@ def test_array__ipow__(
 def test_array__add__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data + other
@@ -258,7 +258,7 @@ def test_array__add__(
 def test_array__radd__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__radd__(other)
@@ -287,7 +287,7 @@ def test_array__radd__(
 def test_array__iadd__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__iadd__(other)
@@ -316,7 +316,7 @@ def test_array__iadd__(
 def test_array__sub__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data - other
@@ -345,7 +345,7 @@ def test_array__sub__(
 def test_array__rsub__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__rsub__(other)
@@ -374,8 +374,7 @@ def test_array__rsub__(
 def test_array__isub__(
     dtype_and_x,
 ):
-    dtype, x = dtype_and_x
-    dtype, x = dtype_and_x
+    _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__isub__(other)
