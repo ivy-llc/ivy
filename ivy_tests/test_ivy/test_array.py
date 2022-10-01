@@ -388,3 +388,32 @@ def test_array__isub__(
             ret_from_gt=ret_gt,
             ground_truth_backend="numpy",
         )
+
+
+# __mul__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__mul__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data * other
+    np_ret = x[0] * x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
