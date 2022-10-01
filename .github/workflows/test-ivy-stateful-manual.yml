@@ -50,10 +50,12 @@ jobs:
 
        - name: Run Stateful Tests
          id: tests
+         env:
+           REDIS_URL: ${{ secrets.REDIS_CONNECTION_URL }}
+           REDIS_PASSWD: ${{ secrets.REDIS_PASSWORD }}
          run: |
            cd ivy
-           echo "REDIS_URL=${{secrets.REDIS_CONNECTION_URL}}" >> $GITHUB_ENV
-           echo "REDIS_PASSWD=${{secrets.REDIS_PASSWORD}}" >> $GITHUB_ENV
+           python -c 'import os;print(os.environ)'
            ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 
