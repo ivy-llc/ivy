@@ -17,7 +17,7 @@ def _frontend_wrapper(f):
                 if isinstance(arg, jax_frontend.DeviceArray):
                     args[i] = arg.data
                 i += 1
-            for u, v in kwargs:
+            for u, v in kwargs.items():
                 if isinstance(v, jax_frontend.DeviceArray):
                     kwargs[u] = v.data
             return f(self, *args, **kwargs)
