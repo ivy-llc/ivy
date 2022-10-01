@@ -295,6 +295,7 @@ def zero_fraction(value, name="zero_fraction"):
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
+
 def truediv(x, y, name=None):
     x_dtype = ivy.dtype(x)
     assert x_dtype == ivy.dtype(y)

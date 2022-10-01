@@ -1069,6 +1069,7 @@ def test_tensorflow_zero_fraction(
         value=x[0],
     )
 
+
 # truediv
 @handle_cmd_line_args
 @given(
@@ -1097,3 +1098,4 @@ def test_tensorflow_truediv(
         x=x[0],
         y=x[1],
     )
+    
