@@ -1,7 +1,6 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-import numpy as np
 from hypothesis import given, strategies as st, assume
 
 # local
@@ -37,12 +36,16 @@ def x_and_linear(draw, dtypes):
     weight_shape = outer_batch_shape + (out_features,) + (in_features,)
     bias_shape = outer_batch_shape + (out_features,)
 
-    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
+    x = draw(
+        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
+    )
     weight = draw(
-        helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=1
+        )
     )
     bias = draw(
-        helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
     )
     return dtype, x, weight, bias
 
@@ -51,7 +54,7 @@ def x_and_linear(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
 )
@@ -69,10 +72,6 @@ def test_linear(
 ):
 
     dtype, x, weight, bias = dtype_x_weight_bias
-    as_variable = [as_variable, as_variable, as_variable]
-    native_array = [native_array, native_array, native_array]
-    container = [container, container, container]
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -83,11 +82,12 @@ def test_linear(
         instance_method=instance_method,
         fw=fw,
         fn_name="linear",
-        rtol_=1e-03,
-        atol_=1e-03,
-        x=np.asarray(x, dtype=dtype),
-        weight=np.asarray(weight, dtype=dtype),
-        bias=np.asarray(bias, dtype=dtype),
+        ground_truth_backend="jax",
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x,
+        weight=weight,
+        bias=bias,
     )
 
 
@@ -98,7 +98,7 @@ def test_linear(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         allow_inf=False,
@@ -125,7 +125,6 @@ def test_dropout(
     device,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
     ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -137,7 +136,7 @@ def test_dropout(
         fw=fw,
         fn_name="dropout",
         test_values=False,
-        x=x,
+        x=x[0],
         prob=prob,
         scale=scale,
         dtype=dtype,
@@ -145,7 +144,7 @@ def test_dropout(
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
-        assert u.shape == x.shape
+        assert u.shape == x[0].shape
 
 
 # Attention #
@@ -172,16 +171,23 @@ def x_and_scaled_attention(draw, dtypes):
     v_shape = batch_shape + (num_keys,) + (feat_dim,)
     mask_shape = batch_shape + (num_queries,) + (num_keys,)
 
-    q = draw(helpers.array_values(dtype=dtype, shape=q_shape, min_value=0, max_value=1))
-    k = draw(helpers.array_values(dtype=dtype, shape=k_shape, min_value=0, max_value=1))
-    v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
+    q = draw(
+        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=1)
+    )
+    k = draw(
+        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=1)
+    )
+    v = draw(
+        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=1)
+    )
     mask = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=1,
+            large_abs_safety_factor=2,
+            safety_factor_scale="linear",
         )
     )
     return dtype, q, k, v, mask, scale
@@ -191,7 +197,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
@@ -210,11 +216,6 @@ def test_scaled_dot_product_attention(
     device,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
-    dtype = [dtype] * 4
-    as_variable = [as_variable] * 4
-    native_array = [native_array] * 4
-    container = [container] * 4
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -226,11 +227,13 @@ def test_scaled_dot_product_attention(
         fw=fw,
         fn_name="scaled_dot_product_attention",
         ground_truth_backend="jax",
-        q=np.asarray(q, dtype=dtype[0]),
-        k=np.asarray(k, dtype=dtype[0]),
-        v=np.asarray(v, dtype=dtype[0]),
+        rtol_=1e-02,
+        atol_=1e-02,
+        q=q,
+        k=k,
+        v=v,
         scale=scale,
-        mask=np.asarray(mask, dtype=dtype[0]),
+        mask=mask,
     )
 
 
@@ -248,7 +251,7 @@ def x_and_mha(draw, dtypes):
     scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
     x_mha = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=x_mha_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -256,7 +259,7 @@ def x_and_mha(draw, dtypes):
     )
     context = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=context_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -264,7 +267,7 @@ def x_and_mha(draw, dtypes):
     )
     mask = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=mask_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -277,14 +280,16 @@ def x_and_mha(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -292,27 +297,25 @@ def test_multi_head_attention(
     device,
 ):
     dtype, x_mha, scale, num_heads, context, mask = dtype_mha
-    as_variable = [as_variable] * 3
-    native_array = [native_array] * 3
-    container = [container] * 3
     to_q_fn = lambda x_, v: x_
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="multi_head_attention",
         ground_truth_backend="jax",
-        x=np.asarray(x_mha, dtype=dtype),
+        atol_=1e-02,
+        rtol_=1e-02,
+        x=x_mha,
         scale=scale,
         num_heads=num_heads,
-        context=np.asarray(context, dtype=dtype),
-        mask=np.asarray(mask, dtype=dtype),
+        context=context,
+        mask=mask,
         to_q_fn=to_q_fn,
         to_kv_fn=to_q_fn,
         to_out_fn=to_q_fn,
@@ -339,7 +342,11 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+def x_and_filters(
+    draw, dim: int = 2, transpose: bool = False, depthwise=False, general=False
+):
+    if not isinstance(dim, int):
+        dim = draw(dim)
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -348,10 +355,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
     )
+    dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
-    dilations = draw(st.integers(1, 2))
-    dtype = draw(helpers.get_dtypes("float"))
+    group_list = [i for i in range(1, 6)]
+    if not transpose:
+        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+    else:
+        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+    fc = draw(st.sampled_from(group_list)) if general else 1
+    dilations = draw(st.integers(1, 1))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -376,33 +389,41 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     else:
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-            x_dim.append(draw(st.integers(min_x, 100)))
+            x_dim.append(draw(st.integers(min_x, 20)))
         x_dim = tuple(x_dim)
     if not depthwise:
-        filter_shape = filter_shape + (input_channels, output_channels)
+        if not transpose:
+            filter_shape = filter_shape + (input_channels // fc, output_channels * fc)
+        else:
+            input_channels = input_channels * fc
+            filter_shape = filter_shape + (input_channels, output_channels // fc)
     else:
         filter_shape = filter_shape + (input_channels,)
+    channel_first = True
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = (batch_size,) + x_dim + (input_channels,)
+        channel_first = False
     else:
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     filters = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     if transpose:
+        if general:
+            data_format = "channel_first" if channel_first else "channel_last"
         return (
             dtype,
             vals,
@@ -412,7 +433,12 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             strides,
             padding,
             output_shape,
+            fc,
         )
+    if general:
+        data_format = "channel_first" if channel_first else "channel_last"
+        return dtype, vals, filters, dilations, data_format, strides, padding, fc
+
     return dtype, vals, filters, dilations, data_format, strides, padding
 
 
@@ -435,10 +461,6 @@ def test_conv1d(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
-    dtype = [dtype] * 2
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -449,9 +471,11 @@ def test_conv1d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d",
+        rtol_=1e-02,
+        atol_=1e-02,
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         data_format=data_format,
@@ -477,12 +501,8 @@ def test_conv1d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
-    dtype = [dtype] * 2
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -493,9 +513,12 @@ def test_conv1d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         output_shape=output_shape,
@@ -523,8 +546,6 @@ def test_conv2d(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
-    dtype = [dtype] * 2
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -535,9 +556,11 @@ def test_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         data_format=data_format,
@@ -566,12 +589,8 @@ def test_conv2d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
-    dtype = [dtype] * 2
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -582,10 +601,13 @@ def test_conv2d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
         device_=device,
+        # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         output_shape=output_shape,
@@ -617,10 +639,6 @@ def test_depthwise_conv2d(
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
-    dtype = [dtype] * 2
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -631,9 +649,12 @@ def test_depthwise_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="depthwise_conv2d",
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not support dilations > 1 and stride > 1
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         data_format=data_format,
@@ -660,8 +681,6 @@ def test_conv3d(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
-    dtype = [dtype] * 2
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -672,13 +691,113 @@ def test_conv3d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         data_format=data_format,
         dilations=dilations,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
+    x_dilations=st.integers(1, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="conv_general_dilated"),
+)
+def test_conv_general_dilated(
+    *,
+    dims,
+    x_f_d_df,
+    x_dilations,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv_general_dilated",
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
+        ground_truth_backend="jax",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        dims=dims,
+        data_format=data_format,
+        feature_group_count=fc,
+        x_dilations=x_dilations,
+        dilations=dilations,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(
+        dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="conv_general_transpose"),
+)
+def test_conv_general_transpose(
+    *,
+    dims,
+    x_f_d_df,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv_general_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
+        ground_truth_backend="jax",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        dims=dims,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        feature_group_count=fc,
     )
 
 
@@ -703,10 +822,8 @@ def test_conv3d_transpose(
     fw,
     device,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
-    dtype = [dtype] * 2
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -717,9 +834,11 @@ def test_conv3d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
-        x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        x=x,
+        filters=filters,
         strides=stride,
         padding=pad,
         output_shape=output_shape,
@@ -756,28 +875,36 @@ def x_and_lstm(draw, dtypes):
     recurrent_bias_shape = bias_shape
 
     x_lstm = draw(
-        helpers.array_values(dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=x_lstm_shape, min_value=0, max_value=1
+        )
     )
     init_h = draw(
-        helpers.array_values(dtype=dtype, shape=init_h_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=init_h_shape, min_value=0, max_value=1
+        )
     )
     init_c = draw(
-        helpers.array_values(dtype=dtype, shape=init_c_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=init_c_shape, min_value=0, max_value=1
+        )
     )
     kernel = draw(
-        helpers.array_values(dtype=dtype, shape=kernel_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=kernel_shape, min_value=0, max_value=1
+        )
     )
     recurrent_kernel = draw(
         helpers.array_values(
-            dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1
+            dtype=dtype[0], shape=recurrent_kernel_shape, min_value=0, max_value=1
         )
     )
     lstm_bias = draw(
-        helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
     )
     recurrent_bias = draw(
         helpers.array_values(
-            dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1
+            dtype=dtype[0], shape=recurrent_bias_shape, min_value=0, max_value=1
         )
     )
     return (
@@ -796,13 +923,15 @@ def x_and_lstm(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm_update(
     *,
     dtype_lstm,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -819,25 +948,23 @@ def test_lstm_update(
         bias,
         recurrent_bias,
     ) = dtype_lstm
-    as_variable = [as_variable] * 7
-    native_array = [native_array] * 7
-    container = [container] * 7
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=5,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="lstm_update",
-        x=np.asarray(x_lstm, dtype=dtype),
-        init_h=np.asarray(init_h, dtype=dtype),
-        init_c=np.asarray(init_c, dtype=dtype),
-        kernel=np.asarray(kernel, dtype=dtype),
-        recurrent_kernel=np.asarray(recurrent_kernel, dtype=dtype),
-        bias=np.asarray(bias, dtype=dtype),
-        recurrent_bias=np.asarray(recurrent_bias, dtype=dtype),
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x_lstm,
+        init_h=init_h,
+        init_c=init_c,
+        kernel=kernel,
+        recurrent_kernel=recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias,
     )

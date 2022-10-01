@@ -34,6 +34,9 @@ but you can also dive in at any stage! We're excited for you to get involved!  ğ
 |
 | (e) :ref:`Open Tasks`
 | See where you can help us out! ğŸ™‹
+|
+| (f) :ref:`Applied Libraries`
+| Getting started with our applied libraries! ğŸ“š
 
 .. toctree::
    :hidden:
@@ -45,6 +48,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  ğ
    contributing/building_the_docs.rst
    deep_dive.rst
    contributing/4_open_tasks.rst
+   contributing/5_applied_libraries.rst
 
 **Video**
 

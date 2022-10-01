@@ -58,7 +58,7 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grad_idxs = ivy.nested_indices_where(grads_, lambda x: ivy.is_ivy_array(x))
+        grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
         xs = ivy.to_ivy(xs)
         if isinstance(xs, ivy.Array):

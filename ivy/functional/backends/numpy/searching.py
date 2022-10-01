@@ -1,7 +1,13 @@
-from typing import Optional, Tuple
+from numbers import Number
+from typing import Optional, Tuple, Union
+
+import numpy as np
 
 import ivy
-import numpy as np
+
+
+# Array API Standard #
+# ------------------ #
 
 
 def argmax(
@@ -13,8 +19,7 @@ def argmax(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmax.support_native_out = True
@@ -29,8 +34,7 @@ def argmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmin.support_native_out = True
@@ -39,8 +43,26 @@ argmin.support_native_out = True
 def nonzero(
     x: np.ndarray,
     /,
-) -> Tuple[np.ndarray]:
-    return np.nonzero(x)
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[np.ndarray, Tuple[np.ndarray]]:
+    res = np.nonzero(x)
+
+    if size is not None:
+        if isinstance(fill_value, float):
+            res = np.asarray(res, dtype=np.float64)
+
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = np.pad(res, ((0, 0), (0, diff)), constant_values=fill_value)
+        elif diff < 0:
+            res = np.array(res)[:, :size]
+
+    if as_tuple:
+        return tuple(res)
+    return np.stack(res, axis=1)
 
 
 def where(
@@ -52,4 +74,12 @@ def where(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.where(condition, x1, x2)
+    return np.where(condition, x1, x2).astype(x1.dtype)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.argwhere(x)

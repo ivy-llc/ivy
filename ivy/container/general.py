@@ -67,6 +67,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_native_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -172,6 +173,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_ivy_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -277,6 +279,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -327,15 +330,112 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_is_ivy_container(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.is_ivy_container.
+        This method simply wraps the function, and so the docstring for
+        ivy.ivy.is_ivy_container also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input to check
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "is_ivy_container",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def is_ivy_container(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_ivy_container.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_ivy_container also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return self.static_is_ivy_container(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -372,7 +472,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -388,7 +488,7 @@ class ContainerWithGeneral(ContainerBase):
             "clip_vector_norm",
             x,
             max_norm,
-            p,
+            p=p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -399,12 +499,13 @@ class ContainerWithGeneral(ContainerBase):
     def clip_vector_norm(
         self: ivy.Container,
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -441,11 +542,11 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
-        >>> y = x.clip_vector_norm(2.0, 1.0)
+        >>> y = x.clip_vector_norm(2.0, p=1.0)
         >>> print(y)
         {
             a: ivy.array([0., 0.667, 1.33]),
@@ -456,11 +557,11 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_clip_vector_norm(
             self,
             max_norm,
-            p,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            p=p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -468,11 +569,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_inplace_update(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -525,11 +627,12 @@ class ContainerWithGeneral(ContainerBase):
     def inplace_update(
         self: ivy.Container,
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -577,6 +680,8 @@ class ContainerWithGeneral(ContainerBase):
     def static_inplace_decrement(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -596,11 +701,11 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -654,6 +759,8 @@ class ContainerWithGeneral(ContainerBase):
     def inplace_decrement(
         self: ivy.Container,
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -688,7 +795,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
                                b=ivy.array([1.5, -0.3, 0]),\
                                c=ivy.array([-4.7, -5.4, 7.5]))
@@ -711,9 +818,239 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_inplace_increment(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.inplace_increment. This method
+        simply wraps the function, and so the docstring for ivy.inplace_increment
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input array to be incremented by the defined value.
+        val
+            The value of increment.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            The array following an in-place increment.
+
+        Examples
+        --------
+        Increment by a value
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
+                              b=ivy.array([0., -25., 50.]))
+        >>> y = ivy.inplace_increment(x, 1.5)
+        >>> print(y)
+        {
+            a: ivy.array([2., -3.5, 31.5]),
+            b: ivy.array([1.5, -23.5, 51.5])
+        }
+
+        Increment by a Container
+        >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> z = ivy.inplace_increment(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 30., 60.]),
+            b: ivy.array([0., 50., 100.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
+        >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
+        >>> z = ivy.inplace_increment(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5., 12.5, 17.]),
+            b: ivy.array([0., 100., 7.5])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "inplace_increment",
+            x,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def inplace_increment(
+        self: ivy.Container,
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inplace_increment.
+        This method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to apply an in-place increment.
+        val
+            The value of increment.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container with the array following the in-place increment.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                               b=ivy.array([1.5, -0.3, 0]),\
+                               c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.inplace_increment(2)
+        >>> print(y)
+        {
+            a: ivy.array([-4.7, 4.4, -6.5]),
+            b: ivy.array([3.5, 1.7, 2.]),
+            c: ivy.array([-2.7, -3.4, 9.5])
+        }
+
+        """
+        return self.static_inplace_increment(
+            self,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_assert_supports_inplace(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.assert_supports_inplace. This
+        method simply wraps the function, and so the docstring for
+        ivy.assert_supports_inplace also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to check for inplace support for.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            True if support, raises exception otherwise`
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "assert_supports_inplace",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def assert_supports_inplace(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.assert_supports_inplace. This
+        method simply wraps the function, and so the docstring for
+        ivy.assert_supports_inplace also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to check for inplace support for.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of whether or not inplace operations are supported for x and
+            its leaves.
+        """
+        return self.static_assert_supports_inplace(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_all_equal(
         x1: Iterable[Any],
         x2: Iterable[Any],
+        /,
+        *,
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -753,7 +1090,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
@@ -764,7 +1101,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([True, False, False, False])
         }
 
-        With multiple :code:`ivy.Container` input:
+        With multiple :class:`ivy.Container` input:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
                                 b=ivy.native_array([1, 0, 0, 1]))
@@ -792,6 +1129,8 @@ class ContainerWithGeneral(ContainerBase):
     def all_equal(
         self: ivy.Container,
         x2: Iterable[Any],
+        /,
+        *,
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -831,7 +1170,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
@@ -851,7 +1190,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
 
-        With multiple :code:`ivy.Container` instances:
+        With multiple :class:`ivy.Container` instances:
 
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
                                 b=ivy.array([1, 2, 3]))
@@ -879,122 +1218,46 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_all_equal(
             self,
             x2,
-            equality_matrix,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    @staticmethod
-    def static_unstack(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.unstack. This method
-        simply wraps the function, and so the docstring for ivy.unstack
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input array or container to unstack.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            List of arrays, unpacked along specified dimensions, or containers
-            with arrays unpacked at leaves
-
-        Examples
-        --------
-        With one :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> y = ivy.Container.static_unstack(x, axis=0)
-        >>> print(y)
-        [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                         [11, 12]])
-        }, {
-            a: ivy.array([[5, 6],
-                         [7, 8]]),
-             b: ivy.array([[13, 14],
-                          [15, 16]])
-        }]
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
-        >>> print(y)
-        [{
-            a: ivy.array([[[1, 2]],
-                         [[5, 6]]]),
-            b: ivy.array([[[9, 10]],
-                         [[13, 14]]])
-        }, {
-            a: ivy.array([[[3, 4]],
-                         [[7, 8]]]),
-            b: ivy.array([[[11, 12]],
-                         [[15, 16]]])
-        }]
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "unstack",
-            x,
-            axis,
-            keepdims,
+            equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
 
-    def unstack(
-        self: ivy.Container,
-        axis: int,
-        keepdims: bool = False,
+    @staticmethod
+    def static_fourier_encode(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        num_bands: int = 4,
+        linear: bool = False,
+        flatten: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.unstack. This method
-        simply wraps the function, and so the docstring for ivy.unstack
+        ivy.Container static method variant of ivy.fourier_encode. This method
+        simply wraps the function, and so the docstring for ivy.fourier_encode
         also applies to this method with minimal changes.
 
         Parameters
         ----------
-        self
-            Input container to unstack at leaves.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        x
+            Input container to apply fourier_encode.
+        max_freq
+            The maximum frequency of the encoding.
+        num_bands
+            The number of frequency bands for the encoding. Default is 4.
+        linear
+            Whether to space the frequency bands linearly as opposed to geometrically.
+            Default is False.
+        flatten
+            Whether to flatten the position dimension into the batch dimension.
+            Default is False.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1009,67 +1272,55 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            Containers with arrays unpacked at leaves
-
-        Examples
-        --------
-        With one :code:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> x.unstack(axis=0)
-        [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                          [11, 12]])
-        }, {
-            a: ivy.array([[5, 6],
-                          [7, 8]]),
-            b: ivy.array([[13, 14],
-                          [15, 16]])
-        }]
+            New container with the final dimension expanded of arrays at its leaves,
+            and the encodings stored in this channel.
         """
-        return self.static_unstack(
-            self,
-            axis,
-            keepdims,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+        return ContainerBase.multi_map_in_static_method(
+            "fourier_encode",
+            x,
+            max_freq,
+            num_bands=num_bands,
+            linear=linear,
+            concat=True,
+            flatten=flatten,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
-    @staticmethod
-    def static_cumsum(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        reverse: Optional[bool] = False,
+    def fourier_encode(
+        self: ivy.Container,
+        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        num_bands: int = 4,
+        linear: bool = False,
+        flatten: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
+        ivy.Container instance method variant of ivy.fourier_encode. This method
+        simply wraps the function, and so the docstring for ivy.fourier_encode
         also applies to this method with minimal changes.
 
         Parameters
         ----------
-        x
-            Input array or container to apply cumsum.
-        axis
-            Axis along which the cumulative sum is computed. Default is 0.
-        exclusive
-            Whether to perform cumsum exclusively. Default is ``False``.
-        reverse
-            Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+        self
+            Input container to apply fourier_encode at leaves.
+        max_freq
+            The maximum frequency of the encoding.
+        num_bands
+            The number of frequency bands for the encoding. Default is 4.
+        linear
+            Whether to space the frequency bands linearly as opposed to geometrically.
+            Default is False.
+        flatten
+            Whether to flatten the position dimension into the batch dimension.
+            Default is False.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1088,431 +1339,51 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            Container whose leaves hold the result of applying cumsum
-            at each original leaf arrays along the specified axis.
-
-        Examples
-        --------
-        With :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
-        >>> y = ivy.Container.static_cumsum(x, axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([[1, 2, 3],
-                          [3, 6, 8]]),
-            b: ivy.array([[4, 5, 6],
-                          [6, 8, 7]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                              b=ivy.array([[3, 5, 7]]))
-        >>> y = ivy.Container.static_cumsum(x, axis=0,  \
-                              exclusive=False, reverse=True, dtype='float32')
-        >>> print(y)
-        {
-            a: ivy.array([[1., 3., 5.]]),
-            b: ivy.array([[3., 5., 7.]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
-        >>> ivy.cumsum(x,axis=1,exclusive=True, reverse=False, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[0, 1, 4]]),
-            b: ivy.array([[0, 3, 8],
-                          [0, 5, 11]]),
-            c: ivy.array([[0, 2, 6],
-                          [0, 3, 9],
-                          [0, 0, 2]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
-        >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
-        >>> ivy.Container.static_cumsum(x, axis=1, exclusive=True, reverse=True, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[7, 4, 0],
-                          [15, 8, 0],
-                          [21, 11, 0]]),
-            b: ivy.array([[9, 5, 0],
-                          [11, 6, 0],
-                          [13, 7, 0]])
-        }
-        >>> x = ivy.Container(a=ivy.array([[1], \
-                                           [1]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [2, 0, 1]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
-        >>> ivy.Container.static_cumsum(x, axis=0, out=x)
-        >>> print(x)
-        {
-            a: ivy.array([[1],
-                          [2]]),
-            b: ivy.array([[6, 8, 7],
-                          [8, 8, 8]]),
-            c: ivy.array([[1, 2],
-                          [4, 6],
-                          [10, 10]])
-        }
+            New container with the final dimension expanded of arrays at its leaves,
+            and the encodings stored in this channel.
         """
-        return ContainerBase.multi_map_in_static_method(
-            "cumsum",
-            x,
-            axis,
-            exclusive,
-            reverse,
+        return self.static_fourier_encode(
+            self,
+            max_freq,
+            num_bands=num_bands,
+            linear=linear,
+            flatten=flatten,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            dtype=dtype,
-            out=out
-        )
-
-    def cumsum(
-        self: ivy.Container,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        reverse: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input container to apply cumsum at leaves.
-        axis
-            Axis along which the cumulative sum is computed. Default is 0.
-        exclusive
-            Whether to perform cumsum exclusively. Default is ``False``.
-        reverse
-            Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional output container. Default is None.
-
-        Returns
-        -------
-        ret
-            Container whose leaves hold the result of applying cumsum
-            at each original leaf arrays along the specified axis.
-
-        Examples
-        --------
-        With :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
-                                          [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], \
-                                          [2, 3, 1 ]]))
-        >>> y = x.cumsum(axis=0, dtype='float64')
-        >>> print(y)
-        {
-            a: ivy.array([[1., 2., 3.],
-                          [3., 6., 8.]]),
-            b: ivy.array([[4., 5., 6.],
-                          [6., 8., 7.]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], \
-                                           [5, 7, 8], \
-                                           [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], \
-                                           [4, 5, 6], \
-                                            [5, 6, 7]]))
-        >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
-        >>> x.cumsum(axis=1, exclusive=False, reverse=True, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[8, 7, 4],
-                          [20, 15, 8],
-                          [30, 21, 11]]),
-            b: ivy.array([[12, 9, 5],
-                          [15, 11, 6],
-                          [18, 13, 7]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
-        >>> x.cumsum(axis=1,exclusive=True, reverse=False, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[0, 1, 4]]),
-            b: ivy.array([[0, 3, 8],
-                          [0, 5, 11]]),
-            c: ivy.array([[0, 2, 6],
-                          [0, 3, 9],
-                          [0, 0, 2]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[0, 3, 2], \
-                                           [5, 10, 2], \
-                                           [1, 10, 1]]), \
-                              b=ivy.array([[2, 4, 5], \
-                                           [4, 5, 5], \
-                                           [0, 1, 3]]))
-        >>> y = x.cumsum(axis=1,exclusive=True, reverse=True, dtype='int64')
-        >>> print(y)
-        {
-            a: ivy.array([[5, 2, 0],
-                          [12, 2, 0],
-                          [11, 1, 0]]),
-            b: ivy.array([[9, 5, 0],
-                          [10, 5, 0],
-                          [4, 3, 0]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
-        >>> x.cumsum(axis=0, out=x)
-        >>> print(x)
-        {
-            a: ivy.array([[0],
-                         [5]]),
-            b: ivy.array([[6, 8, 7],
-                         [10, 10, 10]]),
-            c: ivy.array([[1, 2],
-                         [4, 6],
-                         [10, 10]])
-        }
-        """
-        return self.static_cumsum(
-            self,
-            axis,
-            exclusive,
-            reverse,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            dtype=dtype,
-            out=out
-        )
-
-    @staticmethod
-    def static_cumprod(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input array or container to cumprod.
-        axis
-            Axis to cumprod along. Default is 0.
-        exclusive
-            Whether to exclude the first element of the input array. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            Optional output container. Default is None.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cumprod at leaves along specified axis.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container.static_cumprod(x, axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 2, 6]),
-            b: ivy.array([4, 20, 120])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> ivy.Container.static_cumprod(x, axis=1, exclusive=True, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[1, 2],
-                          [1, 5],
-                          [1, 11]]),
-            b: ivy.array([[1, 3],
-                          [1, 4],
-                          [1, 5]])
-        }
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "cumprod",
-            x,
-            axis,
-            exclusive,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def cumprod(
-        self: ivy.Container,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input container to cumprod at leaves.
-        axis
-            Axis along which the cumulative product is computed. Default is 0.
-        exclusive
-            Whether to exclude the first element of the input array. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            Optional output container. Default is None.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cumprod at leaves along specified axis.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = x.cumprod(axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 2, 6]),
-            b: ivy.array([4, 20, 120])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.cumprod(axis=1, exclusive=True, out=y)
-        {
-            a: ivy.array([[1, 2],
-                          [1, 5],
-                          [1, 11]]),
-            b: ivy.array([[1, 3],
-                          [1, 4],
-                          [1, 5]])
-        }
-        """
-        return self.static_cumprod(
-            self,
-            axis,
-            exclusive,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
         )
 
     @staticmethod
     def static_gather(
-        params: ivy.Container,
-        indices: ivy.Container,
-        axis: int = -1,
+        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Perform einops rearrange operation on each sub array in the container.
+        """
+        ivy.Container static method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        pattern
-            Rearrangement pattern.
+        self
+            The container from which to gather values.
+        indices
+            The container or array which indicates the indices that will be
+            gathered along the specified axis.
+        axis
+            The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1523,21 +1394,49 @@ class ContainerWithGeneral(ContainerBase):
             is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
+        out
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
 
         Returns
         -------
-            ivy.Container with each array having einops.rearrange applied.
+        ret
+            New container with the values gathered at the specified indices
+            along the specified axis.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                            b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]), \
+                            b = ivy.array([1, 2]))
+        >>> print(ivy.Container.static_gather(x, y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([5., 6.])
+        }
+
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                            b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.array([0, 1])
+        >>> print(ivy.Container.static_gather(x, y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([4., 5.])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
             "gather",
             params,
             indices,
-            axis,
+            axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1548,27 +1447,32 @@ class ContainerWithGeneral(ContainerBase):
     def gather(
         self: ivy.Container,
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Union[int, ivy.Container] = -1,
+        /,
+        *,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather. This method simply wraps
-        the function, and so the docstring for ivy.gather also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
-            the container from which to gather values.
+            The container from which to gather values.
         indices
-            index array or container
+            The container or array which indicates the indices that will be
+            gathered along the specified axis.
         axis
-            optional int, the axis from which to gather from. Default is -1.
+            The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1578,30 +1482,48 @@ class ContainerWithGeneral(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples). Default is
+            False.
         out
-            optional output container, for writing the result to.
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
-            New container with the values gathered at the specified indices along
-            the specified axis.
+            New container with the values gathered at the specified indices
+            along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                          b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]), \
+                            b = ivy.array([1, 2]))
+        >>> print(x.gather(y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([5., 6.])
+        }
+        
         """
         return self.static_gather(
             self,
             indices,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            batch_dims=batch_dims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_has_nans(
-        x: Iterable[Any],
+        x: ivy.Container,
+        /,
+        *,
         include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1638,7 +1560,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
@@ -1650,7 +1572,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "has_nans",
             x,
-            include_infs,
+            include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1659,6 +1581,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def has_nans(
         self: ivy.Container,
+        /,
+        *,
         include_infs=True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1705,21 +1629,26 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return self.static_has_nans(
-            self, include_infs, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_scatter_nd(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
-        tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1736,9 +1665,6 @@ class ContainerWithGeneral(ContainerBase):
         shape
             The shape of the result. Default is None, in which case tensor argument
             must be provided.
-        tensor
-            The tensor in which to scatter the results, default is None,
-            in which case the shape arg is used to scatter into a zeros array.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
@@ -1752,9 +1678,6 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1767,46 +1690,41 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an empty array
-        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
-        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                                     b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-        >> shape = ivy.Container(a=ivy.array([10]),
+        >>> shape = ivy.Container(a=ivy.array([10]),\
                                 b = ivy.array([10]))
-        z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
-        >> print(z)
+        >>> z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
+        >>> print(z)
         {
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
         }
 
-        scatter into an array
-        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        scatter into a container
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                   b=ivy.array([[2],[3],[4]]))
-        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                         b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-
-        z = ivy.Container.static_scatter_nd(indices, updates,
-                                            tensor=arr, reduction='replace')
-        >> print(z)
+        >>> ivy.Container.static_scatter_nd(indices, updates,\
+                                            reduction='replace', out = z)
+        >>> print(z)
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
-
 
         """
         return ContainerBase.multi_map_in_static_method(
             "scatter_nd",
             indices,
             updates,
-            shape,
-            tensor,
-            reduction,
+            shape=shape,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1817,14 +1735,14 @@ class ContainerWithGeneral(ContainerBase):
     def scatter_nd(
         self: ivy.Container,
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1842,9 +1760,6 @@ class ContainerWithGeneral(ContainerBase):
         shape
             The shape of the result. Default is None, in which case tensor argument
             must be provided.
-        tensor
-            The tensor in which to scatter the results, default is None,
-            in which case the shape arg is used to scatter into a zeros array.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
@@ -1858,9 +1773,6 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1872,58 +1784,179 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        scatter into an array
-        >> indices = ivy.Container(a=ivy.array([[3],[1],[2]]),
-                                    b=ivy.array([[4],[1],[3]]))
-        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
-                                    b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
-                                b=ivy.array([11, 22, 33, 44, 55]))
-        >> z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
-        >> print(z)
+        scatter into an empty container
+        >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
+                        b=ivy.array([[5],[1],[2]]))
+        >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),\
+                        b=ivy.array([20, 30, 40]))
+        >>> shape = ivy.Container(a=ivy.array([10]),\
+                        b = ivy.array([10]))
+        >>> z = indices.scatter_nd(updates, shape=shape)
+        >>> print(z)
         {
-            a: ivy.array([1, 60, 70, 50, 5]),
-            b: ivy.array([11, 30, 33, 40, 20])
+            a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+            b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
         }
 
-        scatter into an empty array
-        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        scatter into a container.
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
-        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                                     b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-        >> shape = ivy.Container(a=ivy.array([10]),
-                                b = ivy.array([10]))
-        z = indices.scatter_nd(updates, shape=shape)
-        >> print(z)
+        >>> indices.scatter_nd(updates,reduction='replace', out = z)
+        >>> print(z)
         {
-            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
-            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
+            a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
+            b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
         """
         return self.static_scatter_nd(
             self,
             updates,
-            shape,
-            tensor,
+            shape=shape,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_scatter_flat(
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        size: Optional[int] = None,
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.scatter_flat. This method simply
+        wraps the function, and so the docstring for ivy.scatter_flat also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        indices
+            Index array or container.
+        updates
+            values to update input tensor with
+        size
+            The size of the result.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
+            or 'replace'
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ref
+            New container of given shape, with the values updated at the indices.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "scatter_flat",
+            indices,
+            updates,
+            size,
             reduction,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def scatter_flat(
+        self: ivy.Container,
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        size: Optional[int] = None,
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.scatter_flat.
+        This method simply wraps the function, and so the docstring
+        for ivy.scatter_flat also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Index array or container.
+        updates
+            values to update input tensor with
+        size
+            The size of the result.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
+            or 'replace'
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values updated at the indices.
+        """
+        return self.static_scatter_flat(
+            self,
+            updates,
+            size=size,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_gather_nd(
-        params: ivy.Container,
-        indices: ivy.Container,
+        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """Gather slices from all container params into a arrays with shape specified by
@@ -1947,6 +1980,18 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Container object with all sub-array dimensions gathered.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),\
+                              b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),\
+                                b=ivy.array([0]))
+        >>> print(ivy.Container.static_gather_nd(x, y))
+        {
+            a: ivy.array(30.),
+            b: ivy.array([0., 100., 200.])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1963,11 +2008,12 @@ class ContainerWithGeneral(ContainerBase):
     def gather_nd(
         self: ivy.Container,
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2006,69 +2052,28 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([2]),\
-                              b=ivy.array([1]))
+        >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],\
+                                            [[40.,50.],[60.,70.]]]),\
+                              b=ivy.array([[[0., 100.], [200.,300.]],\
+                                            [[400.,500.],[600.,700.]]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),\
+                                b=ivy.array([0]))
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
-            a: ivy.array(3),
-            b: ivy.array(3)
+            a: ivy.array([40., 50.]),
+            b: ivy.array([[0., 100.], 
+                        [200., 300.]])
         }
         """
         return self.static_gather_nd(
-            self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
-        )
-
-    @staticmethod
-    def static_einops_rearrange(
-        x: ivy.Container,
-        pattern: str,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
-    ) -> ivy.Container:
-        """Perform einops rearrange operation on each sub array in the container.
-
-        Parameters
-        ----------
-        pattern
-            Rearrangement pattern.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
-
-        Returns
-        -------
-            ivy.Container with each array having einops.rearrange applied.
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "einops_rearrange",
-            x,
-            pattern,
+            self,
+            indices,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths,
         )
 
     @staticmethod
@@ -2076,13 +2081,14 @@ class ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         pattern: str,
         reduction: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
-        axes_lengths: Dict[str, int],
+        **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
         """Perform einops reduce operation on each sub array in the container.
 
@@ -2105,7 +2111,6 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         axes_lengths
             Any additional specifications for dimensions.
-        **axes_lengths
 
         Returns
         -------
@@ -2113,22 +2118,17 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  
-                                           [0.735, -6.7, 13.27]],
-                                          [[-24.037, 8.5, 26.7],  
-                                           [0.451, 12.4, 1.7]],
-                                          [[-5.6, -18.19, -20.35],  
-                                           [2.58, -1.006, -9.973]]]),
-                            b=ivy.array([[[-4.47, 0.93, -3.34],  
-                                          [3.66, 24.29, 3.64]], 
-                                         [[4.96, 1.52, -10.67],  
-                                          [4.36, 13.96, 0.3]]]))
-        >> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
-        >> print(reduced)
+        >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],\
+                                      [3.66, 24.29, 3.64]]),\
+                        b=ivy.array([[4.96, 1.52, -10.67],\
+                                     [4.36, 13.96, 0.3]]))
+        >>> reduced = ivy.Container.static_einops_reduce(x, 'a b -> a', 'mean')
+        >>> print(reduced)
         {
-            a: ivy.array([[[-2.87, -0.0277, 0.658]]]),
-            b: ivy.array([[[2.13, 10.2, -2.52]]])
+            a: ivy.array([-2.29, 10.5]),
+            b: ivy.array([-1.4, 6.21])
         }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "einops_reduce",
@@ -2147,11 +2147,12 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         pattern: str,
         reduction: Union[str, Callable],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2169,21 +2170,21 @@ class ContainerWithGeneral(ContainerBase):
         reduction
             One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
             callable.
-        axes_lengths
-            Any additional specifications for dimensions.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
 
         Returns
         -------
@@ -2192,18 +2193,18 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[[5, 4, 3],
-                                           [11, 2, 9]], 
-                                          [[3, 5, 7], 
-                                           [9, 7, 1]]]),
-                            b=ivy.array([[[9,7,6],
-                                          [5,2,1]],
-                                        [[4,1,2],
-                                         [2,3,6]],
-                                        [[1, 9, 6],
+        >>> x = ivy.Container(a=ivy.array([[[5, 4, 3],\
+                                           [11, 2, 9]],\
+                                          [[3, 5, 7],\
+                                           [9, 7, 1]]]),\
+                            b=ivy.array([[[9,7,6],\
+                                          [5,2,1]],\
+                                        [[4,1,2],\
+                                         [2,3,6]],\
+                                        [[1, 9, 6],\
                                          [0, 2, 1]]]))
-        >> reduced = x.einops_reduce('a b c -> a b', 'sum')
-        >> print(reduced)
+        >>> reduced = x.einops_reduce('a b c -> a b', 'sum')
+        >>> print(reduced)
         {
             a: ivy.array([[12, 22],
                         [15, 17]]),
@@ -2211,15 +2212,16 @@ class ContainerWithGeneral(ContainerBase):
                         [7, 11],
                         [16, 3]])
         }
+
         """
         return self.static_einops_reduce(
             self,
             pattern,
             reduction,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
@@ -2228,11 +2230,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_einops_repeat(
         x: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2262,19 +2265,20 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),\
                             b=ivy.array([[1, 2], [4, 5]]))
-        >> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
-        >> print(repeated)
+        >>> repeated = ivy.Container.static_einops_repeat(\
+            x, 'h w -> (tile h) w', tile=2)
+        >>> print(repeated)
         {
-            a: ivy.array([[30, 40],  
-                        [50, 75],  
-                        [30, 40],  
+            a: ivy.array([[30, 40],
+                        [50, 75],
+                        [30, 40],
                         [50, 75]]),
-            b: ivy.array([[1, 2],    
-                        [4, 5],    
-                        [1, 2],    
-                        [4, 5]])   
+            b: ivy.array([[1, 2],
+                        [4, 5],
+                        [1, 2],
+                        [4, 5]])
         }
 
         """
@@ -2293,11 +2297,12 @@ class ContainerWithGeneral(ContainerBase):
     def einops_repeat(
         self: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2332,35 +2337,188 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             New container with einops.repeat having been applied.
-        
+
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),\
                              b=ivy.array([[1, 2], [4, 5]]))
-        >> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
-        >> print(repeated)
+        >>> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
+        >>> print(repeated)
         {
-            a: ivy.array([[30, 30, 40, 40],  
+            a: ivy.array([[30, 30, 40, 40],
                           [50, 50, 75, 75]]),
-            b: ivy.array([[1, 1, 2, 2],      
-                          [4, 4, 5, 5]])     
+            b: ivy.array([[1, 1, 2, 2],
+                          [4, 4, 5, 5]])
         }
 
         """
         return self.static_einops_repeat(
             self,
             pattern,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
 
     @staticmethod
+    def static_value_is_nan(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        include_infs: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.value_is_nan. This method simply
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        include_infs
+            Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is
+            None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the input value is a nan or not.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        With :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        With :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "value_is_nan",
+            x,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def value_is_nan(
+        self: ivy.Container,
+        /,
+        *,
+        include_infs: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.value_is_nan. This method simply
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        include_infs
+            Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is
+            None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the input value is a nan or not.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([425]), b=ivy.array([float('nan')]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = x.value_is_nan(include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
+        """
+        return self.static_value_is_nan(
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2394,15 +2552,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
                             b=ivy.array([1, -1, 0, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
+            a: array([1, 0, 1, 1]),
+            b: array([1, -1, 0, 0])
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
@@ -2411,7 +2569,20 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
+            b: array([1, 1, -1, 0])
+        }
+
+        Examples
+        --------
+        With one :class:`ivy.Container` static method:
+        
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                            b=ivy.array([-1, 0, 1, 1, 1, 0]))
+        >>> y = ivy.Container.static_has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: false
         }
 
         """
@@ -2426,6 +2597,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def to_numpy(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2459,7 +2632,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
                     b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
@@ -2468,10 +2641,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
         }
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -2481,20 +2654,163 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
+        }
+
+        Examples
+        --------
+        With :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                            b=ivy.array([-1, 0, 1, 1]))
+        >>> y = x.has_nans()
+        >>> print(y)
+        {
+            a: false,
+            b: false
         }
 
         """
         return self.static_to_numpy(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_to_scalar(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``x``.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
+        >>> y = ivy.Container.static_to_scalar(x)
+        >>> print(y)
+        {
+            a: -1,
+            b: 3
+        }
+
+        >>> print(ivy.is_int_dtype(y))
+        {
+            a: true,
+            b: true
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_scalar",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def to_scalar(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
+                            c=ivy.array([-1]))
+        >>> y = x.to_scalar()
+        >>> print(y)
+        {
+            a: 1,
+            b: 0,
+            c: -1
+        }
+
+
+        """
+        return self.static_to_scalar(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_to_list(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2524,6 +2840,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` inputs:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = ivy.Container.static_to_list(x)
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return ContainerBase.multi_map_in_static_method(
             "to_list",
@@ -2536,6 +2863,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def to_list(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2565,19 +2894,32 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = x.to_list()
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return self.static_to_list(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_stable_divide(
         numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
         min_denominator: Union[
             Number, ivy.Array, ivy.NativeArray, ivy.Container
         ] = None,
@@ -2669,7 +3011,7 @@ class ContainerWithGeneral(ContainerBase):
             "stable_divide",
             numerator,
             denominator,
-            min_denominator,
+            min_denominator=min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2679,6 +3021,8 @@ class ContainerWithGeneral(ContainerBase):
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         min_denominator: Union[
             Number, ivy.Array, ivy.NativeArray, ivy.Container
         ] = None,
@@ -2741,7 +3085,6 @@ class ContainerWithGeneral(ContainerBase):
                   [3.5, 4.]])
         }
 
-
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
         >>> y = ivy.Container(a=ivy.asarray([6., 9.]), b=ivy.asarray([12., 15.]))
         >>> z = x.stable_divide(y)
@@ -2755,25 +3098,190 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_stable_divide(
             self,
             denominator,
-            min_denominator,
+            min_denominator=min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
 
-    def einops_rearrange(
-        self: ivy.Container,
-        pattern: str,
+    @staticmethod
+    def static_stable_pow(
+        base: ivy.Container,
+        exponent: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        min_base: float = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_pow. This method
+        simply wraps the function, and so the docstring for ivy.stable_pow also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        base
+            Container of the base.
+        exponent
+            Container of the exponent.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is
+            False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the
+            numerically stable power.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stable_pow",
+            base,
+            exponent,
+            min_base=min_base,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def stable_pow(
+        self,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         *,
+        min_base: float = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stable_pow. This method
+        simply wraps the function, and so the docstring for ivy.stable_pow
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container of the base.
+        exponent
+            Container of the exponent.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is
+            False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the
+            numerically stable power.
+
+        """
+        return self.static_stable_pow(
+            self,
+            exponent,
+            min_base=min_base,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_einops_rearrange(
+        x: ivy.Container,
+        pattern: str,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.einops_rearrange. This method
+        simply wraps the function, and so the docstring for ivy.einops_rearrange
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        pattern
+            Rearrangement pattern.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        axes_lengths
+            Any additional specifications for dimensions.
+
+
+        Returns
+        -------
+            ivy.Container with each array having einops.rearrange applied.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "einops_rearrange",
+            x,
+            pattern,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            **axes_lengths,
+        )
+
+    def einops_rearrange(
+        self: ivy.Container,
+        pattern: str,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ):
-        """Perform einops rearrange operation on each sub array in the container.
+        """
+        ivy.Container instance method variant of ivy.einops_rearrange. This method
+        simply wraps the function, and so the docstring for ivy.einops_rearrange
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2802,23 +3310,25 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_einops_rearrange(
             self,
             pattern,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
 
+    @staticmethod
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
-        p: float = 2.0,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2855,7 +3365,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
@@ -2871,23 +3381,24 @@ class ContainerWithGeneral(ContainerBase):
             "clip_matrix_norm",
             x,
             max_norm,
-            p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            p=p,
             out=out,
         )
 
     def clip_matrix_norm(
         self: ivy.Container,
         max_norm: float,
-        p: float = 2.0,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2924,11 +3435,11 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
-        >>> y = x.clip_matrix_norm(2.0, 1.0)
+        >>> y = x.clip_matrix_norm(2.0, p=1.0)
         >>> print(y)
         {
             a: ivy.array([[0., 1., 2.]]),
@@ -2939,10 +3450,152 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_clip_matrix_norm(
             self,
             max_norm,
-            p,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            p=p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_supports_inplace_updates(
+        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            An ivy.Container.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+            Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+
+        Returns
+        -------
+        ret
+            An ivy.Container instance of bool values.
+            True if nodes of x support in-place operations. False otherwise.
+
+        Raises
+        ------
+        ValueError
+            If a node(s) of the container isn't a class instance of ivy.Array or
+            ivy.NativeArray, an exception will be raised.
+
+        Examples
+        --------
+        With `ivy.Container` input and backend set as 'numpy':
+        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+
+        With `ivy.Container` input and backend set as 'tensorflow':
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
+                              b=ivy.array([0., 5.5, -8]))
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
+        >>> print(ret)
+        {
+            a: true,
+            b: false
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "supports_inplace_updates",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def supports_inplace_updates(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.supports_inplace_updates.
+        This method simply wraps the static function, and so the docstring for
+        the static variant also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy.Container whose elements are data types supported by Ivy.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+            Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+
+        Returns
+        -------
+        ret
+            An ivy.Container instance of bool values.
+            True if nodes of the Container support in-place operations. False otherwise.
+
+        Examples
+        --------
+        With an `ivy.Container` instance and backend set as 'numpy':
+        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+
+        With an `ivy.Container` instance and backend set as 'tensorflow':
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
+                              b=ivy.array([0., 5.5, -8]))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+        """
+        return ContainerWithGeneral.static_supports_inplace_updates(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )

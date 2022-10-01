@@ -1,4 +1,6 @@
 # flake8: noqa
+from . import tensor
+from .tensor import Tensor
 from . import activations
 from .activations import *
 from . import layers

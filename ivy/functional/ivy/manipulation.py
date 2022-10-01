@@ -12,10 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
-
-
-# Helpers #
-# --------#
+from ivy.exceptions import handle_exceptions
 
 
 def _calculate_out_shape(axis, array_shape):
@@ -38,6 +35,7 @@ def _calculate_out_shape(axis, array_shape):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -69,13 +67,14 @@ def concat(
         an output array containing the concatenated values. If the input arrays have
         different data types, normal Type Promotion Rules apply.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html#signatures.manipulation_functions.concat>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -83,9 +82,8 @@ def concat(
     >>> x = ivy.array([[1, 2], [3, 4]])
     >>> y = ivy.array([[5, 6]])
     >>> ivy.concat((x, y))
-    ivy.array([[1, 2],
-               [3, 4],
-               [5, 6]])
+    ivy.array([[1, 2],[3, 4],[5, 6]])
+
     """
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
@@ -93,11 +91,12 @@ def concat(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis (dimension) of size one
@@ -125,18 +124,19 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given axis.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
-    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html#signatures.manipulation_functions.expand_dims>`_ # noqa
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 2]) #x.shape->(3,)
     >>> y = ivy.expand_dims(x) #y.shape->(1, 3)
@@ -180,7 +180,7 @@ def expand_dims(
                   [ 1.4],
                   [ 5.7]]]]])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -195,7 +195,7 @@ def expand_dims(
                       [5.]])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -215,11 +215,12 @@ def expand_dims(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
@@ -251,12 +252,13 @@ def flip(
 
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.flip(x)
     >>> print(y)
@@ -289,13 +291,15 @@ def flip(
                [[12, 11, 10],
                 [ 9,  8,  7]]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.flip(x)
     >>> print(y)
     ivy.array([2., 1., 0.])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
     >>> y = ivy.flip(x)
@@ -307,13 +311,15 @@ def flip(
 
     Instance Method Examples
     ------------------------
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
+
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.flip()
     >>> print(y)
     ivy.array([2., 1., 0.])
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.flip()
     >>> print(y)
@@ -329,6 +335,7 @@ def flip(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -357,7 +364,7 @@ def permute_dims(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.permute_dims(x, axes=(1, 0))
@@ -373,7 +380,7 @@ def permute_dims(
                [0., 0.],
                [0., 0.]])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0))
@@ -402,17 +409,16 @@ def permute_dims(
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))
     >>> print(y)
-    ivy.array([[3.],
-               [4.],
-               [5.]])
+    ivy.array([[3.],[4.],[5.]])
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
     return current_backend(x).permute_dims(x, axes, out=out)
@@ -421,6 +427,7 @@ def permute_dims(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -455,21 +462,21 @@ def reshape(
     ret
         an output array having the same data type and elements as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
     >>> y = ivy.reshape(x,(3,2))
     >>> print(y)
     ivy.array([[0., 1.],
@@ -477,7 +484,7 @@ def reshape(
                [4., 5.]])
 
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[0., 1., 2.],[3., 4., 5.]])
     >>> y = ivy.reshape(x,(2,3))
@@ -485,7 +492,7 @@ def reshape(
     ivy.array([[0., 1., 2.],
                [3., 4., 5.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
                           b=ivy.array([0, 1, 2, 3, 4, 5]))
@@ -498,42 +505,38 @@ def reshape(
                       [3, 4, 5]])
     }
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[0, 1, 2, 3]])
     >>> y = ivy.reshape(x, (2, 2))
     >>> print(y)
-    ivy.array([[0, 1],
-               [2, 3]])
+    ivy.array([[0, 1],[2, 3]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.reshape(x, (-1, 1))
     >>> print(y)
     {
-        a: ivy.array([[0.],
-                      [1.],
-                      [2.]]),
-        b: ivy.array([[3.],
-                      [4.],
-                      [5.]])
+        a: ivy.array([[0.],[1.],[2.]]),
+        b: ivy.array([[3.],[4.],[5.]])
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy=copy, out=out)
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     shift: Union[int, Sequence[int]],
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
@@ -566,18 +569,19 @@ def roll(
         an output array having the same data type as x and whose elements, relative
         to x, are shifted.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.roll.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.roll(x, 1)
@@ -603,7 +607,7 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -614,7 +618,7 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -650,10 +654,11 @@ def roll(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -675,22 +680,23 @@ def squeeze(
     ret
         an output array having the same data type and elements as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html#signatures.manipulation_functions.squeeze>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=0))
     ivy.array([[0, 1], [2, 3]])
 
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
@@ -698,7 +704,7 @@ def squeeze(
     ivy.array([[[1, 2, 3], [4, 5, 6]]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=None))
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
@@ -712,11 +718,11 @@ def squeeze(
     >>> print(ivy.squeeze(x, axis=(0, 2)))
     ivy.array([0, 1, 2])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.squeeze(x)
+    >>> y = ivy.squeeze(x, axis=None)
     >>> print(y)
     {
         a: ivy.array([0., 1., 2.]),
@@ -729,13 +735,15 @@ def squeeze(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def stack(
     arrays: Union[
-        Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
+        List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
@@ -770,13 +778,14 @@ def stack(
            This specification leaves type promotion between data type families (i.e.,
            intxx and floatxx) unspecified.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack>`_ # noqa: E501
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -790,6 +799,7 @@ def stack(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -823,13 +833,14 @@ def clip(
         An array with the elements of x, but where values < x_min are replaced with
         x_min, and those > x_max with x_max.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> y = ivy.clip(x, 1., 5.)
@@ -849,7 +860,7 @@ def clip(
     >>> print(y)
     ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
@@ -858,7 +869,7 @@ def clip(
     >>> print(y)
     ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
@@ -867,7 +878,7 @@ def clip(
     >>> print(y)
     ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -878,7 +889,7 @@ def clip(
         b: ivy.array([3., 4., 5.])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -891,7 +902,7 @@ def clip(
         b: ivy.array([-1., -1., -1.])
     }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.array([3., 0., 1])
@@ -912,6 +923,7 @@ def clip(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -941,8 +953,9 @@ def constant_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -952,6 +965,7 @@ def constant_pad(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -981,20 +995,21 @@ def repeat(
     ret
         The repeated output array.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
     >>> y= ivy.repeat(x, 2)
     >>> print(y)
     ivy.array([3, 3, 4, 4, 5, 5])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.repeat(x, [1, 2], axis=0)
@@ -1003,7 +1018,7 @@ def repeat(
                [4, 5, 6],
                [4, 5, 6]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([0., 1., 2.]))
@@ -1019,11 +1034,12 @@ def repeat(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
 ) -> List[ivy.Array]:
@@ -1048,8 +1064,9 @@ def split(
     ret
         A list of sub-arrays.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
@@ -1061,23 +1078,23 @@ def split(
     [ivy.array([1]),ivy.array([2]),ivy.array([3])]
 
     >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
-    >>> y = ivy.split(x, 2, 1, False)
+    >>> y = ivy.split(x, num_or_size_splits=2, axis=1, with_remainder=True)
     >>> print(y)
     [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]
 
     >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = ivy.split(x, [1, 2], 0, True)
+    >>> y = x.split(num_or_size_splits=[1, 3], axis=0, with_remainder=False)
     >>> print(y)
     ivy.array([[4], [6, 5, 3]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([7, 8, 9])
     >>> y = ivy.split(x)
     >>> print(y)
     [ivy.array([7]),ivy.array([8]),ivy.array([9])]
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
@@ -1095,14 +1112,15 @@ def split(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
     axis1: int,
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Interchange two axes of an array.
 
     Parameters
@@ -1122,13 +1140,14 @@ def swapaxes(
     ret
         x with its axes permuted.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
@@ -1161,7 +1180,7 @@ def swapaxes(
                [[4, 6],
                 [5, 7]]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
@@ -1170,7 +1189,7 @@ def swapaxes(
                [1],
                [2]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.swapaxes(x, 0, 1)
@@ -1186,7 +1205,7 @@ def swapaxes(
 
     Instance Method Examples
     ------------------------
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[0., 1., 2.]])
     >>> y = x.swapaxes(0, 1)
@@ -1195,7 +1214,7 @@ def swapaxes(
                [1.],
                [2.]])
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = x.swapaxes(0, 1)
@@ -1209,6 +1228,11 @@ def swapaxes(
                       [5.]])
     }
 
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
@@ -1216,6 +1240,7 @@ def swapaxes(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1239,12 +1264,12 @@ def tile(
     -------
     retwaitin
         The tiled output array.
-    
+
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
-    
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1,2,3,4])
     >>> y = ivy.tile(x,(3))
     >>> print(y)
@@ -1259,10 +1284,9 @@ def tile(
                [1,2,3,1,2,3,1,2,3],
                [4,5,6,4,5,6,4,5,6]])
 
-    With :code:`ivy.NativeArray` input:
-    
-    >>> x = ivy.native_array([[[0], \
-                               [1]]])
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[[0], [1]]])
     >>> y = ivy.tile(x,(2,2,3))
     >>> print(y)
     ivy.array([[[0,0,0],
@@ -1274,19 +1298,19 @@ def tile(
                 [0,0,0],
                 [1,1,1]]])
 
-    With :code:`ivy.Container` input:
-    
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))
     >>> y = ivy.tile(x, (1,2))
     >>> print(y)
     {
         a: ivy.array([[0,1,2,0,1,2]]),
-        b: ivy.array([[3,3],
-                      [4,4]])
+        b: ivy.array([[3,3],[4,4]])
     }
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -1294,15 +1318,97 @@ def tile(
 
 
 @to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def unstack(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
+) -> List[ivy.Array]:
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+
+    Parameters
+    ----------
+    x
+        Input array to unstack.
+    axis
+        Axis for which to unpack the array.
+    keepdims
+        Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+    Returns
+    -------
+    ret
+        List of arrays, unpacked along specified dimensions.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [ivy.array([[1, 2],
+                [3, 4]]), ivy.array([[5, 6],
+                [7, 8]])]
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [ivy.array([[[1, 2]],
+                [[5, 6]]]), ivy.array([[[3, 4]],
+                [[7, 8]]])]
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=0)
+    [{
+        a: ivy.array([[1, 2],
+                      [3, 4]]),
+        b: ivy.array([[9, 10],
+                      [11, 12]])
+    }, {
+        a: ivy.array([[5, 6],
+                      [7, 8]]),
+        b: ivy.array([[13, 14],
+                      [15, 16]])
+    }]
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=1, keepdims=True)
+    [{
+        a: ivy.array([[[1, 2]],
+                      [[5, 6]]]),
+        b: ivy.array([[[9, 10]],
+                      [[13, 14]]])
+    }, {
+        a: ivy.array([[[3, 4]],
+                      [[7, 8]]]),
+        b: ivy.array([[[11, 12]],
+                      [[15, 16]]])
+    }]
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
+
+
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     pad_width: Iterable[Tuple[int]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Pads an array with zeros.
 
     Parameters
@@ -1321,8 +1427,9 @@ def zero_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """

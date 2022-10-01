@@ -25,9 +25,6 @@ def exp(
     return ret
 
 
-exp.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def expm1(
     x,
@@ -46,9 +43,6 @@ def expm1(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-expm1.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
@@ -71,7 +65,24 @@ def exp2(
     return ret
 
 
-exp2.unsupported_dtypes = {"torch": ("float16",)}
+@from_zero_dim_arrays_to_float
+def log(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.log(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
 
 @from_zero_dim_arrays_to_float
@@ -94,9 +105,6 @@ def log10(
     return ret
 
 
-log10.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def log2(
     x,
@@ -115,9 +123,6 @@ def log2(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-log2.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
@@ -140,9 +145,6 @@ def log1p(
     return ret
 
 
-log1p.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def logaddexp(
     x1,
@@ -163,6 +165,3 @@ def logaddexp(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-logaddexp.unsupported_dtypes = {"torch": ("float16",)}

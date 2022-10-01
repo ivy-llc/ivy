@@ -5,9 +5,10 @@ import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_value1_value2_axis_for_tensordot,
+)
 
 
 @st.composite
@@ -17,7 +18,7 @@ def _get_dtype_and_matrix(draw):
     shape = (*arbitrary_dims, random_size, random_size)
     return draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_tf.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
             min_value=-10,
             max_value=10,
@@ -25,13 +26,12 @@ def _get_dtype_and_matrix(draw):
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.det"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_det(
     dtype_and_input, as_variable, num_positional_args, native_array, fw
@@ -43,20 +43,41 @@ def test_tensorflow_det(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.det",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.eigh"
+    ),
+)
+def test_tensorflow_eigh(
+    dtype_and_input, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.eigh",
+        input=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.eigvalsh"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_eigvalsh(
     dtype_and_input, as_variable, num_positional_args, native_array, fw
@@ -68,43 +89,40 @@ def test_tensorflow_eigvalsh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
-        input=np.asarray(x, dtype=input_dtype),
+        tensor=x[0],
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes[1:],
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         min_value=-1e05,
         max_value=1e05,
     ),
-    as_variables=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
-    data=st.data(),
 )
 def test_matrix_rank(
-    *, data, dtype_x, as_variables, num_positional_args, native_array, tolr, fw
+    *, dtype_x, as_variable, num_positional_args, native_array, tolr, fw
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variables,
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
         atol=1.0,
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
+        validate_args=False,
         tol=tolr,
     )
 
@@ -113,10 +131,10 @@ def test_matrix_rank(
 def _solve_get_dtype_and_data(draw):
     batch = draw(st.integers(min_value=1, max_value=5))
     random_size = draw(st.integers(min_value=2, max_value=4))
-    # shape = (batch, random_size, random_size)
-
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_tf.valid_float_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
+        )
     )
     shape = (random_size, random_size)
     tmp = []
@@ -131,20 +149,17 @@ def _solve_get_dtype_and_data(draw):
                 ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
             )
         )
-
-    data1 = (input_dtype, tmp)
-
     shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    data2 = draw(
+    input_dtype2, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_tf.valid_float_dtypes,
+            available_dtypes=draw(helpers.get_dtypes("float")),
             shape=shape,
             min_value=-10,
             max_value=10,
         )
     )
 
-    return data1, data2
+    return [input_dtype] + input_dtype2, tmp, x
 
 
 # solve
@@ -162,32 +177,27 @@ def test_tensorflow_solve(
     native_array,
     fw,
 ):
-    data1, data2 = dtype_and_x
-    input_dtype1, x = data1
-    input_dtype2, y = data2
-
+    input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype1, input_dtype2],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.solve",
-        x=np.asarray(x, dtype=input_dtype1),
-        y=np.asarray(y, dtype=input_dtype2),
+        x=xs[0],
+        y=xs[1],
     )
 
 
 # slogdet
+@handle_cmd_line_args
 @given(
     dtype_and_x=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.slogdet"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_slogdet(
     *,
@@ -204,38 +214,185 @@ def test_tensorflow_slogdet(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
-        x=np.asarray(x, dtype=input_dtype),
+        input=x[0],
+    )
+
+
+# cholesky_solve
+@st.composite
+def _get_cholesky_matrix(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    gen = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    spd = np.matmul(gen, np.transpose(gen))
+    spd_chol = np.linalg.cholesky(spd)
+    return input_dtype, spd_chol
+
+
+@st.composite
+def _get_second_matrix(draw):
+    # batch_shape, shared, random_size
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x=_get_cholesky_matrix(),
+    y=_get_second_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cholesky_solve"
+    ),
+)
+def test_tensorflow_cholesky_solve(
+    *,
+    x,
+    y,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype1 + input_dtype2,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.cholesky_solve",
+        rtol=1e-2,
+        atol=1e-2,
+        chol=x1[0],
+        rhs=x2[0],
     )
 
 
 # pinv
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.pinv"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_pinv(
     dtype_and_input, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_input
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.pinv",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         rcond=1e-15,
-        validate_args=False,
         name=None,
+    )
+
+
+# tensordot
+@handle_cmd_line_args
+@given(
+    dtype_x_y_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.tensordot"
+    ),
+)
+def test_tensorflow_tensordot(
+    *,
+    dtype_x_y_axes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    (
+        dtype,
+        x,
+        y,
+        axes,
+    ) = dtype_x_y_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="tensordot",
+        a=x,
+        b=y,
+        axes=axes,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    n_rows=helpers.ints(min_value=0, max_value=10),
+    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    batch_shape=st.lists(
+        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.eye"
+    ),
+)
+def test_tensorflow_eye(
+    n_rows,
+    n_cols,
+    batch_shape,
+    dtype,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.eye",
+        num_rows=n_rows,
+        num_columns=n_cols,
+        batch_shape=batch_shape,
+        dtype=dtype,
     )

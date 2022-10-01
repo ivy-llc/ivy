@@ -119,10 +119,6 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert (abs(grads).max() > 0).all_true()
