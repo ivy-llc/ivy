@@ -491,6 +491,7 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
 def test_dirichlet(
     dtype_and_x,
     size,
+    dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -510,6 +511,7 @@ def test_dirichlet(
         instance_method=instance_method,
         fw=fw,
         fn_name="dirichlet",
-        alpha=np.asarray(x, dtype=input_dtype),
+        alpha=np.asarray(x[0], dtype=input_dtype[0]),
         size=size,
+        dtype=dtype
     )
