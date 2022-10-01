@@ -681,7 +681,7 @@ def gradient_test(
     container_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
-    ground_truth_backend: str = "torch",
+    ground_truth_backend: str = "tensorflow",
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -744,7 +744,11 @@ def gradient_test(
     )
     ivy.unset_backend()
 
-    assert len(ret_np_flat) == len(ret_np_from_gt_flat)
+    assert len(ret_np_flat) == len(
+        ret_np_from_gt_flat
+    ), "result length mismatch: {} != {}".format(
+        len(ret_np_flat), len(ret_np_from_gt_flat)
+    )
 
     if len(ret_np_flat) < 2:
         return
