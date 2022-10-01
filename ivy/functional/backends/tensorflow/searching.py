@@ -17,6 +17,7 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype=None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmax(axis=axis, keepdims=keepdims)

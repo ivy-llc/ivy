@@ -27,6 +27,7 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype=None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -44,6 +45,8 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
         against the array.
+    output_dtype
+        The data type of the returned array. If None, the data type of the input array
     out
         If provided, the result will be inserted into this array. It should be of the
         appropriate shape and dtype.
