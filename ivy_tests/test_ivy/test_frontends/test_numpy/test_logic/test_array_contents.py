@@ -26,9 +26,8 @@ def test_numpy_isneginf(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="isneginf",
         x=x[0],
@@ -54,9 +53,8 @@ def test_numpy_isposinf(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="isposinf",
         x=x[0],
@@ -66,14 +64,12 @@ def test_numpy_isposinf(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
     equal_nan=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.allclose"
-    )
+    ),
 )
 def test_numpy_allclose(
     dtype_and_x,
@@ -90,13 +86,12 @@ def test_numpy_allclose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="allclose",
-        a=np.asarray(x[0], dtype=dtype[0]),
-        b=np.asarray(x[1], dtype=dtype[1]),
         rtol=1e-05,
         atol=1e-08,
+        a=np.asarray(x[0], dtype=dtype[0]),
+        b=np.asarray(x[1], dtype=dtype[1]),
         equal_nan=equal_nan,
     )
 
@@ -104,14 +99,12 @@ def test_numpy_allclose(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
     equal_nan=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isclose"
-    )
+    ),
 )
 def test_numpy_isclose(
     dtype_and_x,
@@ -128,12 +121,11 @@ def test_numpy_isclose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="isclose",
-        a=np.asarray(x[0], dtype=dtype[0]),
-        b=np.asarray(x[1], dtype=dtype[1]),
         rtol=1e-05,
         atol=1e-08,
+        a=np.asarray(x[0], dtype=dtype[0]),
+        b=np.asarray(x[1], dtype=dtype[1]),
         equal_nan=equal_nan,
     )

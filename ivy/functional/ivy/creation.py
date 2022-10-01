@@ -1,14 +1,15 @@
 # global
+from __future__ import annotations
 import functools
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
-
 import numpy as np
 
 # local
 import ivy
 from ivy import to_ivy, to_native
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
@@ -17,7 +18,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -123,7 +123,7 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> _T_co:
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
         ...
 
     def __len__(self, /) -> int:
@@ -464,8 +464,7 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                           b=ivy.array([4.123,5.23,6.23]))
+    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -487,8 +486,7 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1,2,3]), \
-                           b=ivy.array([4,5,6]))
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
     >>> fill_value = 10
     >>> y = x.full_like(fill_value)
     >>> print(y)
@@ -608,69 +606,69 @@ def zeros_like(
     Functional Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-        >>> y2 = ivy.zeros_like(x2)
-        >>> print(y2)
-        ivy.array([[0., 0., 0.],
-               [0., 0., 0.]])
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.zeros_like(x2)
+    >>> print(y2)
+    ivy.array([[0., 0., 0.],
+            [0., 0., 0.]])
 
-        >>> x3 = ivy.array([3., 2., 1.])
-        >>> y3 = ivy.ones(3)
-        >>> ivy.zeros_like(x3, out=y3)
-        ivy.array([0., 0., 0.])
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.ones(3)
+    >>> ivy.zeros_like(x3, out=y3)
+    ivy.array([0., 0., 0.])
 
-    With 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
-        >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([[0, 0, 0],
-               [0, 0, 0]])
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([[0, 0, 0],[0, 0, 0]])
 
 
-        >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-        >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-        >>> print(y2)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        # Array ``y2`` is now stored on the CPU.
+    # Array ``y2`` is now stored on the CPU.
 
-    With 'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
-        >>> y = ivy.zeros_like(x)
-        >>> print(y)
-        {
-            a: ivy.array([0, 0, 0]),
-            b: ivy.array([0, 0, 0])
-        }
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 0, 0]),
+        b: ivy.array([0, 0, 0])
+    }
 
     Instance Method Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x = ivy.array([2, 3, 8, 2, 1])
-        >>> y = x.zeros_like()
-        >>> print(y)
-        ivy.array([0, 0, 0, 0, 0])
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.zeros_like()
+    >>> print(y)
+    ivy.array([0, 0, 0, 0, 0])
 
-    With 'ivy.Container' input:
+    With :class:'ivy.Container' input:
 
-        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
-        >>> y = x.zeros_like()
-        >>> print(y)
-        {
-            a: ivy.array([0., 0.]),
-            b: ivy.array([0., 0.])
-        }
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.zeros_like()
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.]),
+        b: ivy.array([0., 0.])
+    }
+
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -996,7 +994,9 @@ def linspace(
 @handle_nestable
 @handle_exceptions
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1005,7 +1005,8 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
-
+    sparse
+        if True, a sparse grid is returned in order to conserve memory. Default: False.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1075,6 +1076,17 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+        >>> print(xv)
+        ivy.array([[1, 2, 3]])
+
+        >>> print(yv)
+        ivy.array([[4],
+                [5],
+                [6]])
+
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2])
@@ -1089,7 +1101,7 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 @outputs_to_ivy_arrays
@@ -1144,7 +1156,7 @@ def full(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Shape` input:
+    With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
     >>> fill_value = 8.6
@@ -1153,7 +1165,7 @@ def full(
     ivy.array([[8.6, 8.6],
                [8.6, 8.6]])
 
-    With :code:`ivy.NativeShape` input:
+    With :class:`ivy.NativeShape` input:
 
     >>> shape = ivy.NativeShape((2, 2, 2))
     >>> fill_value = True
@@ -1304,8 +1316,7 @@ def copy_array(
         a: ivy.array([-1, 0, 1])
     }
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
     >>> y = ivy.copy_array(x)
     >>> print(y)
     {
@@ -1315,8 +1326,7 @@ def copy_array(
 
     With one :class:`ivy.Container` static method:
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
     >>> y = ivy.Container.static_copy_array(x)
     >>> print(y)
     {
@@ -1338,8 +1348,7 @@ def copy_array(
 
     With :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1]))
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),b=ivy.array([-1, 0, 1, 1]))
     >>> y = x.copy_array()
     >>> print(y)
     {
@@ -1394,10 +1403,14 @@ def one_hot(
     depth: int,
     /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a one-hot array.
+    """Returns a one-hot array. The locations represented by indices in the parameter
+    indices take value on_value, while all other locations take value off_value.
 
     Parameters
     ----------
@@ -1405,6 +1418,14 @@ def one_hot(
         Indices for where the ones should be scattered *[batch_shape, dim]*
     depth
         Scalar defining the depth of the one-hot dimension.
+    on_value
+        Scalar defining the value to fill in output when indices[j] == i. Default: 1.
+    off_value
+        Scalar defining the value to fill in output when indices[j] != i. Default: 0.
+    axis
+        Axis to scatter on. The default is -1, a new inner-most axis is created.
+    dtype
+        The data type of the output tensor.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
@@ -1419,7 +1440,15 @@ def one_hot(
         overrides.
 
     """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
+    return current_backend(indices).one_hot(
+        indices,
+        depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        device=device,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -1458,6 +1487,10 @@ def logspace(
         The base of the log space. Default is 10.0
     axis
         Axis along which the operation is performed.
+    dtype
+        The data type of the output tensor. If None, the dtype of on_value is used or if
+        that is None, the dtype of off_value is used, or if that is None, defaults to
+        float32.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out

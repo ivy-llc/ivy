@@ -162,7 +162,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if transpose_a is True:
         x1 = torch.t(x1)
@@ -279,7 +279,7 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x, out=out)
