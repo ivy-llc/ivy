@@ -59,13 +59,11 @@ def pytest_configure(config):
         )
 
     if profile_settings:
-        print("hello")
         settings.register_profile(
             "custom-profile", **profile_settings, deadline=deadline
         )
         settings.load_profile("custom-profile")
     else:
-        print("hi")
         settings.register_profile("default", deadline=deadline)
         settings.load_profile("default")
 
