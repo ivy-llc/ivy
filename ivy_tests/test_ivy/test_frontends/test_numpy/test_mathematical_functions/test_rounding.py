@@ -79,9 +79,8 @@ def test_numpy_fix(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="fix",
-        a=x[0],
         test_values=False,
+        a=x[0],
     )

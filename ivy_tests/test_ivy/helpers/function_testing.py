@@ -386,7 +386,6 @@ def test_frontend_function(
     with_inplace: bool = False,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
-    fw: str,
     device="cpu",
     frontend: str,
     fn_tree: str,
@@ -418,8 +417,6 @@ def test_frontend_function(
     native_array_flags
         dictates whether the corresponding input argument should be treated
         as a native array.
-    fw
-        current backend (framework).
     frontend
         current frontend (framework).
     fn_tree
@@ -683,7 +680,7 @@ def gradient_test(
     container_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
-    ground_truth_backend: str = "torch",
+    ground_truth_backend: str = "tensorflow",
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -717,7 +714,6 @@ def gradient_test(
     _, ret_np_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
-    grads_np_flat = ret_np_flat[1]
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
@@ -745,9 +741,19 @@ def gradient_test(
     _, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
-    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
 
+    assert len(ret_np_flat) == len(
+        ret_np_from_gt_flat
+    ), "result length mismatch: {} != {}".format(
+        len(ret_np_flat), len(ret_np_from_gt_flat)
+    )
+
+    if len(ret_np_flat) < 2:
+        return
+
+    grads_np_flat = ret_np_flat[1]
+    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     condition_np_flat = np.isfinite(grads_np_flat)
     grads_np_flat = np.where(
         condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
@@ -780,7 +786,6 @@ def test_method(
     native_array_flags_method: Union[bool, List[bool]],
     container_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
-    fw: str,
     class_name: str,
     method_name: str = "__call__",
     init_with_v: bool = False,
@@ -826,8 +831,6 @@ def test_method(
         be treated as an ivy Container.
     all_as_kwargs_np_method:
         input arguments to the method as keyword arguments.
-    fw
-        current backend (framework).
     class_name
         name of the class to test.
     method_name
@@ -1053,15 +1056,12 @@ def test_frontend_method(
     num_positional_args_method: int,
     native_array_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
-    fw: str,
     frontend: str,
     class_name: str,
     method_name: str = "__init__",
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
-    ground_truth_backend: str = "tensorflow",
-    device_: str = "cpu",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -1094,8 +1094,6 @@ def test_frontend_method(
         be treated as a native array.
     all_as_kwargs_np_method:
         input arguments to the method as keyword arguments.
-    fw
-        current backend (framework).
     frontend
         current frontend (framework).
     class_name
@@ -1109,10 +1107,6 @@ def test_frontend_method(
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
-    ground_truth_backend
-        Ground Truth Backend to compare the result-values.
-    device_
-        The device on which to create arrays.
 
     Returns
     -------
@@ -1340,7 +1334,6 @@ def test_frontend_array_instance_method(
     with_out: bool,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
-    fw: str,
     frontend: str,
     frontend_class: object,
     fn_tree: str,
@@ -1367,8 +1360,6 @@ def test_frontend_array_instance_method(
     native_array_flags
         dictates whether the corresponding input argument should be treated
         as a native array.
-    fw
-        current backend (framework).
     frontend
         current frontend (framework).
     frontend_class

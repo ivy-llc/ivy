@@ -53,12 +53,11 @@ def test_jax_lax_svd(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend=frontend,
         fn_tree="lax.linalg.svd",
+        test_values=False,
         x=x,
         full_matrices=full_matrices,
-        test_values=False,
         compute_uv=compute_uv,
     )
 
@@ -123,7 +122,6 @@ def test_jax_lax_cholesky(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.linalg.cholesky",
         rtol=1e-02,
