@@ -680,7 +680,7 @@ def gradient_test(
     container_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
-    ground_truth_backend: str = "torch",
+    ground_truth_backend: str = "tensorflow",
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -714,7 +714,6 @@ def gradient_test(
     _, ret_np_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
-    grads_np_flat = ret_np_flat[1]
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
@@ -742,9 +741,19 @@ def gradient_test(
     _, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
-    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
 
+    assert len(ret_np_flat) == len(
+        ret_np_from_gt_flat
+    ), "result length mismatch: {} != {}".format(
+        len(ret_np_flat), len(ret_np_from_gt_flat)
+    )
+
+    if len(ret_np_flat) < 2:
+        return
+
+    grads_np_flat = ret_np_flat[1]
+    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     condition_np_flat = np.isfinite(grads_np_flat)
     grads_np_flat = np.where(
         condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
