@@ -98,3 +98,6 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
 
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+def uint16(x):
+	return ivy.uint16(x)
