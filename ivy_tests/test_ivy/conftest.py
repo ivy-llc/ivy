@@ -50,8 +50,7 @@ def pytest_configure(config):
     deadline = config.getoption("--deadline")
     deadline = deadline if deadline else 10000
     profile_settings = {}
-    for n, v in os.environ.items():
-        print(n, v)
+    os.getenv("REDIS_URL")
     if num_examples is not None:
         profile_settings["max_examples"] = int(num_examples)
     if r is not None:
