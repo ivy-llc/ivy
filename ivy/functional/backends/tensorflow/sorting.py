@@ -58,5 +58,5 @@ def searchsorted(
     if ivy.as_native_dtype(ret_dtype) not in [tf.int32, tf.int64]:
         raise ValueError("only int32 and int64 are supported for ret_dtype.")
     if sorter is not None:
-        x = x[sorter]
+        x = tf.gather(x, sorter)
     return tf.searchsorted(x, v, side=side, out_type=ret_dtype)

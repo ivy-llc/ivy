@@ -49,4 +49,6 @@ def searchsorted(
 ) -> JaxArray:
     if ivy.as_native_dtype(ret_dtype) not in [jnp.int32, jnp.int64]:
         raise ValueError("only int32 and int64 are supported for ret_dtype.")
-    return jnp.searchsorted(x, v, sorter=sorter, side=side).astype(ret_dtype)
+    if sorter is not None:
+        x = jnp.take(x, sorter)
+    return jnp.searchsorted(x, v, side=side).astype(ret_dtype)
