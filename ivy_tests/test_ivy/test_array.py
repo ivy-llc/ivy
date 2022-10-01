@@ -416,3 +416,293 @@ def test_array__mul__(
             ret_from_gt=ret_gt,
             ground_truth_backend="numpy",
         )
+
+
+# __rmul__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__rmul__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rmul__(other)
+    np_ret = x[0] * x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __imul__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__imul__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__imul__(other)
+    np_ret = x[0] * x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __mod__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__mod__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data % other
+    np_ret = x[0] % x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rmod__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__rmod__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rmod__(other)
+    np_ret = x[1] % x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __imod__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__imod__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__imod__(other)
+    np_ret = x[0] % x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __divmod__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__divmod__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__divmod__(other)
+    np_ret = x[0].__divmod__(x[1])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rdivmod__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__rdivmod__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rdivmod__(other)
+    np_ret = x[0].__rdivmod__(x[1])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __truediv__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__truediv__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data / other
+    np_ret = x[0] / x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rtruediv__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__rtruediv__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rtruediv__(other)
+    np_ret = x[1] / x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __itruediv__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array__itruediv__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__itruediv__(other)
+    np_ret = x[0] / x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
