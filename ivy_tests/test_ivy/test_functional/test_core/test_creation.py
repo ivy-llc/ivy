@@ -70,6 +70,7 @@ def test_native_array(
     ),
     num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
+    endpoint=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linspace"),
 )
 def test_linspace(
@@ -77,6 +78,7 @@ def test_linspace(
     dtype_and_start_stop,
     num,
     axis,
+    endpoint,
     device,
     num_positional_args,
     fw,
@@ -98,6 +100,7 @@ def test_linspace(
         stop=start_stop[1],
         num=num,
         axis=axis,
+        endpoint=endpoint,
         device=device,
         dtype=dtype[0],
     )

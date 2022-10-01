@@ -262,7 +262,15 @@ def linspace(
         start = tf.constant(start, dtype=dtype)
         stop = tf.constant(stop, dtype=dtype)
         if not endpoint:
-            ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
+            ans = tf.linspace(start, stop, num + 1, axis=axis)
+            begin = []
+            size = []
+            for i in range(0, len(ans.shape)):
+                begin.append(0)
+            for shape in list(ans.shape):
+                size.append(shape)
+            size[axis] -= 1
+            ans = tf.slice(ans, begin=begin, size=size)
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
         ans = tf.cast(ans, dtype)
