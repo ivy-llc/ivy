@@ -213,7 +213,8 @@ ivy.tan()
     )
     def test_torch_leaky_relu(
         dtype_and_x,
-        with_inplace,
+        with_out,
+        with_inplace, # does handle_cmd_line_args deals with this like with_out?
         num_positional_args,
         as_variable,
         native_array,
@@ -224,7 +225,7 @@ ivy.tan()
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=False,
+            with_out=with_out,
             with_inplace=with_inplace,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
@@ -238,7 +239,7 @@ ivy.tan()
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for PyTorch.
 * We set :code:`fn_tree` to :code:`nn.functional.leaky_relu` which is the path to the function in the PyTorch namespace.
 * We get :code:`with_inplace` with hypothesis to test the function that supports direct inplace update in its arguments: when :code:`with_inplace` is :code:`True` the function updates the :code:`input` argument with return value and the return value has the same reference as the input.
-* When :code:`with_inplace` is :code:`True` for the special In-place versions of PyTorch functions that always do inplace update, the :code:`input` argument is also updated with return value and the returned value has the same reference as the input.
+* We should set :code:`with_inplace` is :code:`True` for the special In-place versions of PyTorch functions that always do inplace update, as the :code:`input` argument is also updated with return value and the returned value has the same reference as the input.
 
 ivy.full()
 ^^^^^^^^^^
