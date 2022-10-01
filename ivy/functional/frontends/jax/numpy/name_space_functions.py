@@ -100,4 +100,4 @@ def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
 def uint16(x):
-	return ivy.uint16(x)
+	return ivy.astype(x, ivy.uint16)
