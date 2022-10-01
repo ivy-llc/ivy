@@ -52,7 +52,9 @@ jobs:
          id: tests
          run: |
            cd ivy
-           ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           echo "REDIS_URL=${{secrets.REDIS_CONNECTION_URL}}" >> $GITHUB_ENV
+           echo "REDIS_PASSWD=${{secrets.REDIS_PASSWORD}}" >> $GITHUB_ENV
+           ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
