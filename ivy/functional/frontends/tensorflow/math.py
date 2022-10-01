@@ -296,4 +296,8 @@ def zero_fraction(value, name="zero_fraction"):
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
 
+def argmin(input, axis, output_type, name=None):
+    return ivy.argmin(input, axis=axis)
+
+    
 # TODO: Ibeta for Future Release

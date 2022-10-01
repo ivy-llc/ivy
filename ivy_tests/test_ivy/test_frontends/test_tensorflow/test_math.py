@@ -1068,3 +1068,35 @@ def test_tensorflow_zero_fraction(
         fn_tree="math.zero_fraction",
         value=x[0],
     )
+
+
+# argmin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=statistical_dtype_values(function="argmin"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.argmin"
+    ),
+)
+def test_tensorflow_argmin(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="math.argmin",
+        input=x[0],
+        axis=axis,
+        output_type="int64",
+    )
