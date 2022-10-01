@@ -64,7 +64,6 @@ def test_numpy_multinomial(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     helpers.test_frontend_function(
@@ -74,7 +73,6 @@ def test_numpy_multinomial(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         test_values=False,
-        fw=fw,
         frontend="numpy",
         fn_tree="random.multinomial",
         n=population_size,
