@@ -54,23 +54,25 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 @handle_cmd_line_args
 @given(
-    data=_pop_size_num_samples_replace_n_probs(),
+    everything=_pop_size_num_samples_replace_n_probs(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.multinomial"
     )
 )
 def test_numpy_multinomial(
-    data,
+    everything,
+    as_variable,
     num_positional_args,
+    native_array,
     fw,
 ):
-    prob_dtype, batch_size, population_size, num_samples, replace, probs = data
+    prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     helpers.test_frontend_function(
         input_dtypes=prob_dtype,
-        as_variable_flags=[False],
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         test_values=False,
         fw=fw,
         frontend="numpy",
