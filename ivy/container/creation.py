@@ -63,12 +63,12 @@ class ContainerWithCreation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "asarray",
             x,
-            copy,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            copy=copy,
             dtype=dtype,
             device=device,
         )
@@ -176,10 +176,11 @@ class ContainerWithCreation(ContainerBase):
 
         Examples
         --------
-        With ivy.Container input
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
         >>> fill_value = 10
-        >>> y = ivy.Container.full_like(fill_value)
+        >>> y = ivy.Container.static_full_like(fill_value)
         {
             a: ivy.array([10, 10, 10]),
             b: ivy.array([10, 10, 10])
@@ -188,7 +189,7 @@ class ContainerWithCreation(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
                                b=ivy.array([4.123,5.23,6.23]))
         >>> fill_value = 15.0
-        >>> y = ivy.Container.full_like(fill_value)
+        >>> y = ivy.Container.static_full_like(fill_value)
         >>> print(y)
         {
             a: ivy.array([15., 15., 15.]),
@@ -260,7 +261,8 @@ class ContainerWithCreation(ContainerBase):
 
         Examples
         --------
-        With ivy.Container input
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
         >>> fill_value = 10
         >>> y = x.full_like(fill_value)

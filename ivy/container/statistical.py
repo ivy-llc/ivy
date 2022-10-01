@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Sequence
+from typing import Optional, Union, List, Dict, Sequence
 
 # local
 import ivy
@@ -13,7 +13,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -38,7 +38,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -117,7 +117,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.mean()
@@ -144,8 +144,9 @@ class ContainerWithStatistical(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))
-        >>> ivy.mean(x, out=x)
-        >>> print(x)
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
+        >>> ivy.mean(x, out=y)
+        >>> print(y)
         {
             a: ivy.array(0.),
             b: ivy.array(1.)
@@ -187,7 +188,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -307,7 +308,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -380,7 +381,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -402,11 +403,12 @@ class ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    def sum(
-        self: ivy.Container,
+    @staticmethod
+    def static_sum(
+        x: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -415,16 +417,41 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sum(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
-            ),
+        return ContainerBase.multi_map_in_static_method(
+            "sum",
+            x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def sum(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Union[int, Sequence[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -432,7 +459,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -462,11 +489,10 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -513,7 +539,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
                               b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
@@ -604,11 +630,10 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumsum(
         self: ivy.Container,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -655,7 +680,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
                                           [2, 4, 5]]), \
@@ -760,10 +785,9 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -806,7 +830,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = ivy.Container.static_cumprod(x, axis=0)
@@ -845,10 +869,9 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumprod(
         self: ivy.Container,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -891,7 +914,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cumprod(axis=0)

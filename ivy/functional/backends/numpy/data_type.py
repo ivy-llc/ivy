@@ -112,10 +112,12 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
 def broadcast_to(
     x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> np.ndarray:
+    if x.ndim > len(shape):
+        return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
     if isinstance(from_, np.ndarray):
         from_ = str(from_.dtype)
     from_ = str(from_)
@@ -166,7 +168,7 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
 

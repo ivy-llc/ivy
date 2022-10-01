@@ -49,6 +49,26 @@ def prod(
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+def nansum(
+    a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
+):  # ToDo handle initial
+    fill_values = ivy.zeros_like(a)
+    a = ivy.where(ivy.isnan(a), fill_values, a)
+    if where is not None:
+        a = ivy.where(where, a, fill_values)
+    return ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+def nanprod(
+    a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
+):  # ToDo handle initial
+    fill_values = ivy.ones_like(a)
+    a = ivy.where(ivy.isnan(a), fill_values, a)
+    if where is not None:
+        a = ivy.where(where, a, fill_values)
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
 def cumsum(a, /, axis=None, dtype=None, out=None):
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
 

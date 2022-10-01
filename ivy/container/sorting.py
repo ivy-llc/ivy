@@ -25,9 +25,9 @@ class ContainerWithSorting(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort. This method 
-        simply wraps the function, and so the docstring for 
-        ivy.argsort also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.argsort. This method simply wraps the
+        function, and so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
         
         Parameters
         ----------
@@ -71,7 +71,7 @@ class ContainerWithSorting(ContainerBase):
         
         Examples
         --------
-        With: code:`ivy.Container` inputs:
+        With :class:`ivy.Container` input:
         
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
                               b=ivy.array([3, 2]))
@@ -91,7 +91,7 @@ class ContainerWithSorting(ContainerBase):
             b: ivy.array([[0, 1]],[0, 1]])
         }
         
-        With: code:`ivy.Container` inputs:
+        With :class:`ivy.Container` input:
         
         >>> x = ivy.Container(a=ivy.array([2, 5, 1]),\
                               b=ivy.array([1, 5], [.2,.1]))
@@ -99,8 +99,7 @@ class ContainerWithSorting(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([2, 0, 1]),
-            b: ivy.array([[1, 0],\
-                            [0,1]])
+            b: ivy.array([[1, 0],[0,1]])
         }
         
         >>> x = ivy.Container(a=ivy.native_array([2, 5, 1]),\
@@ -109,8 +108,7 @@ class ContainerWithSorting(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([2, 0, 1]),
-            b: ivy.array([[1, 0],\
-                            [0,1]])
+            b: ivy.array([[1, 0],[0,1]])
         }
         
         """
@@ -227,12 +225,12 @@ class ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
+        function, and so the docstring for ivy.sort also applies to this method
         with minimal changes.
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
                               b=ivy.array([[8, 1], [5, 0.8]]))
@@ -285,8 +283,6 @@ class ContainerWithSorting(ContainerBase):
 
         Examples
         --------
-        With：code:`ivy.Container` inputs:
-
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
                               b=ivy.array([8, 1]))
         >>> y = x.sort()
@@ -296,15 +292,14 @@ class ContainerWithSorting(ContainerBase):
             b: ivy.array([1, 8])
         }
 
-        >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]), \
+        >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
                               b=ivy.array([[8, 1], [5, 0.8]]))
         >>> y = x.sort()
         >>> print(y)
-        { a: ivy.array([0.2, 5., 9.]), \
-          b: ivy.array([[1., 8.],[0.8, 5.]])
+        {
+            a: ivy.array([0.2, 5., 9.]),
+            b: ivy.array([[1., 8.], [0.8, 5.]])
         }
-
-        With：code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                               b=ivy.array([[9, 0.7], [0.4, 0]]))
@@ -312,8 +307,7 @@ class ContainerWithSorting(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([0.5, 6., 8.]),
-            b: ivy.array([[0.7, 9.],\
-                            [0., 0.4]])
+            b: ivy.array([[0.7, 9.],[0., 0.4]])
         }
 
         >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]),\
@@ -322,8 +316,7 @@ class ContainerWithSorting(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([0.5, 6., 8.]),
-            b: ivy.array([[0.7, 9.],
-                  [0., 0.4]])
+            b: ivy.array([[0.7, 9.],[0., 0.4]])
         }
 
         """
@@ -353,6 +346,12 @@ class ContainerWithSorting(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.searchsorted.
+        This method simply wraps the function, and so the docstring for ivy.searchsorted
+        also applies to this method with minimal changes.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "searchsorted",
             x1,
@@ -379,6 +378,12 @@ class ContainerWithSorting(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.searchsorted.
+        This method simply wraps the function, and so the docstring for ivy.searchsorted
+        also applies to this method with minimal changes.
+
+        """
         return self.static_searchsorted(
             self,
             v,
