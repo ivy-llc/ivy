@@ -651,7 +651,7 @@ def test_repeat(
         instance_method=instance_method,
         fw=fw,
         fn_name="repeat",
-        x=value,
+        x=value[0],
         repeats=repeat,
         axis=axis,
     )
