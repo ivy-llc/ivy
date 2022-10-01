@@ -1099,5 +1099,4 @@ def test_tensorflow_argmin(
         input=x[0],
         axis=axis,
         output_type="int64",
-    )
-    
+    )   
