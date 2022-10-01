@@ -2,6 +2,8 @@
 import numpy as np
 from typing import Optional
 
+# local
+import ivy
 
 def argsort(
     x: np.ndarray,
@@ -43,4 +45,6 @@ def searchsorted(
     ret_dtype=np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if ivy.as_native_dtype(ret_dtype) not in [np.int32, np.int64]:
+        raise ValueError("only int32 and int64 are supported for ret_dtype.")
     return np.searchsorted(x, v, side=side, sorter=sorter).astype(ret_dtype)

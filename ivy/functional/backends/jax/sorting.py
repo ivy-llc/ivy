@@ -3,8 +3,8 @@ import jax.numpy as jnp
 from typing import Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
-
 
 def argsort(
     x: JaxArray,
@@ -47,4 +47,6 @@ def searchsorted(
     ret_dtype=jnp.int64,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if ivy.as_native_dtype(ret_dtype) not in [jnp.int32, jnp.int64]:
+        raise ValueError("only int32 and int64 are supported for ret_dtype.")
     return jnp.searchsorted(x, v, sorter=sorter, side=side).astype(ret_dtype)

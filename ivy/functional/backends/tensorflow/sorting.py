@@ -2,6 +2,8 @@
 import tensorflow as tf
 from typing import Union, Optional
 
+# local
+import ivy
 
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
@@ -53,6 +55,8 @@ def searchsorted(
     ret_dtype=tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.as_native_dtype(ret_dtype) not in [tf.int32, tf.int64]:
+        raise ValueError("only int32 and int64 are supported for ret_dtype.")
     if sorter is not None:
         x = x[sorter]
     return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
