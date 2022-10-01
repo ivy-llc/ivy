@@ -100,8 +100,7 @@ def all(
     ivy.array(False)
 
     >>> x=ivy.array(False)
-    >>> y=ivy.all(ivy.array([[[0],[1]],[[1],[1]]]), \
-    axis=(0,1,2), out=x, keepdims=False)
+    >>> y=ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
 
@@ -248,8 +247,7 @@ def any(
     ivy.array(True)
 
     >>> x=ivy.array(False)
-    >>> y=ivy.any(ivy.array([[[0],[1]],[[1],[1]]]), \
-    axis=(0,1,2), out=x, keepdims=False)
+    >>> y=ivy.any(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
     >>> print(y)
     ivy.array(True)
 

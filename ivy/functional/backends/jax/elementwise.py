@@ -31,7 +31,7 @@ def add(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        x2 = alpha * x2
+        x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
 
 
@@ -63,7 +63,7 @@ def bitwise_and(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -80,7 +80,7 @@ def bitwise_left_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.left_shift(x1, x2)
 
@@ -92,7 +92,7 @@ def bitwise_or(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_or(x1, x2)
 
 
@@ -103,7 +103,7 @@ def bitwise_right_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
@@ -115,7 +115,7 @@ def bitwise_xor(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -383,7 +383,7 @@ def subtract(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        x2 = alpha * x2
+        x2 = multiply(x2, alpha)
     return jnp.subtract(x1, x2)
 
 
