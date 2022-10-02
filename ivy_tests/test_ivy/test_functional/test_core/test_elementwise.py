@@ -664,6 +664,7 @@ def test_cos(
         instance_method=instance_method,
         fw=fw,
         fn_name="cos",
+        test_gradients=True,
         x=x[0],
     )
 
