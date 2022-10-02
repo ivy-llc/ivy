@@ -276,30 +276,30 @@ def test_jax_nn_one_hot(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
-        min_value=-2,
         min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softmax"
     ),
 )
 def test_jax_nn_softmax(
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, axis = dtype_x_axis
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
