@@ -59,6 +59,7 @@ native_complex128 = np.dtype("complex128")
 native_bool = np.dtype("bool")
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     int8,
     int16,
@@ -71,8 +72,6 @@ valid_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
     bool,
 )
 valid_numeric_dtypes = (
@@ -94,10 +93,7 @@ valid_uint_dtypes = (uint8, uint16, uint32, uint64)
 valid_complex_dtypes = (complex64, complex128)
 
 # invalid data types
-invalid_dtypes = (
-    bfloat16,
-    ivy.complex256,
-)
+invalid_dtypes = (bfloat16,)
 invalid_numeric_dtypes = (bfloat16,)
 invalid_int_dtypes = ()
 invalid_float_dtypes = (bfloat16,)

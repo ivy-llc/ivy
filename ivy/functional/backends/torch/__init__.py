@@ -39,6 +39,7 @@ native_complex128 = torch.complex128
 native_bool = torch.bool
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -49,8 +50,6 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
-    ivy.complex64,
-    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -74,7 +73,6 @@ invalid_dtypes = (
     ivy.uint16,
     ivy.uint32,
     ivy.uint64,
-    ivy.complex256,
 )
 invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)

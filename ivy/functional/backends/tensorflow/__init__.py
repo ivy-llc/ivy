@@ -45,6 +45,7 @@ native_complex128 = tf.complex128
 native_bool = tf.bool
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -58,8 +59,6 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
-    ivy.complex64,
-    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -91,7 +90,7 @@ valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
-invalid_dtypes = (ivy.complex256,)
+invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
