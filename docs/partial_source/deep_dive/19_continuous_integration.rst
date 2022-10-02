@@ -9,7 +9,7 @@ We follow the practice of Continuous Integration (CI), in order to build and tes
 We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
 
 GitHub Actions
-=========
+--------------
 
 GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. Workflows can be configured to be triggered on the following events:
 
@@ -31,13 +31,13 @@ The following sections describe the relevant Workflows used in the Ivy Repositor
     * :code:`review_requested`
 
 Array API Tests
-=========
+---------------
 The `test-array-api.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml>`_ workflow runs the Array API Tests. Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab.
 
 The Workflow runs the Array API Tests for each backend and submodule pair. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/14_array_api_tests.html>`_.
 
 Ivy Core Tests
-=========
+--------------
 
 The `test-ivy-core.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core.yml>`_ Workflow runs the Ivy Core Tests.
 
@@ -55,7 +55,7 @@ In case you want to run all the Ivy Core Tests, a manually-triggered workflow is
 More details about Ivy Tests are available `here <https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html>`_.
 
 Ivy NN Tests
-=========
+------------
 
 The `test-ivy-core.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn.yml>`_ workflow runs the Ivy NN Tests.
 
@@ -72,7 +72,7 @@ Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy NN T
 
 
 Ivy Stateful Tests
-=========
+------------------
 The `test-ivy-stateful.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful.yml>`_ workflow runs the Ivy Stateful Tests.
 
 In this case too, Individual Tests are triggered only on changes to specific files. For a given backend :code:`b` and submodule :code:`s`, the test is run only if the commit changes the following files (and otherwise, it is skipped):
@@ -88,7 +88,7 @@ In this case too, Individual Tests are triggered only on changes to specific fil
 Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy Stateful Tests, there is a manually-triggered workflow available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful-manual.yml>`_.
 
 Ivy Frontend Tests
-=========
+------------------
 The following workflows run the Frontend tests for the corresponding backend:
 
 #. **Jax**: `test-frontend-jax.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-jax.yml>`_
@@ -100,11 +100,11 @@ Each of these workflows can also be Manually dispatched from the `Actions <https
 
 
 CI Pipeline ➡️
-=========
+-------------
 The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.
 
 Push
---------
+^^^^
 Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:
 
 
@@ -132,7 +132,7 @@ Click on the corresponding section, as given below, in order to see the logs of 
 You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.
 
 Pull Request
------------
+^^^^^^^^^^^^
 In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:
 
 
@@ -142,7 +142,7 @@ In case of a pull request, the test suite is available on the Pull Request Page 
 Clicking on the "Details" link redirects to the Action Log. The rest of the procedure remains the same as given in the Push section above.
 
 Scheduled Tests (Cron Jobs)
-========
+---------------------------
 
 In order to make sure that no tests are ignored for a long time, as well as, decouple the commit frequency with the testing frequency, we use Scheduled Tests (Cron Jobs) to run an Ivy Core, Ivy NN, and Ivy Stateful Test every hour. The following workflows run cron jobs:
 
@@ -155,7 +155,7 @@ In order to make sure that no tests are ignored for a long time, as well as, dec
 The cron jobs are used to update the latest results in the Dashboard, as explained in the following section.
 
 Dashboard
-=========
+---------
 In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test. These are the links to the Dashboard for the given workflows:
 
 #. `Array API Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
