@@ -756,8 +756,8 @@ def gradient_test(
 
     assert len(ret_np_flat) == len(
         ret_np_from_gt_flat
-    ), "result length mismatch: {} != {}".format(
-        len(ret_np_flat), len(ret_np_from_gt_flat)
+    ), "result length mismatch: {} ({}) != {} ({})".format(
+        ret_np_flat, len(ret_np_flat), ret_np_from_gt_flat, len(ret_np_from_gt_flat)
     )
 
     if len(ret_np_flat) < 2:
