@@ -918,6 +918,7 @@ def test_floor_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor_divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         atol_=1,
