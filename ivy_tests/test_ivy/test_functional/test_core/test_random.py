@@ -89,12 +89,14 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
     dtype_and_mean,
     dtype_and_std,
     dtype,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -121,6 +123,7 @@ def test_random_normal(
         std=std[0],
         shape=None,
         dtype=dtype[0],
+        seed=seed,
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)

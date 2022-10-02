@@ -171,10 +171,7 @@ def log_sigmoid(x):
 
 
 def log_softmax(x, axis=-1):
-    x_max = ivy.max(x)
-    shifted = ivy.subtract(x, x_max)
-    shifted_logsumexp = ivy.log(ivy.sum(ivy.exp(shifted), axis=axis, keepdims=True))
-    return shifted - shifted_logsumexp
+    return ivy.log_softmax(x, axis=axis)
 
 
 def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
@@ -274,10 +271,8 @@ def soft_sign(x):
     return ret.astype(dtype)
 
 
-def softmax(x, /, *, axis=-1):
-    dtype = _type_conversion(x).dtype
-    ret = ivy.softmax(x, axis=axis)
-    return ret.astype(dtype)
+def softmax(x, axis=-1):
+    return ivy.softmax(x, axis=axis)
 
 
 def softplus(x):
@@ -288,3 +283,11 @@ def softplus(x):
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
+
+
+def hard_silu(x):
+    return x * hard_sigmoid(x)
+
+
+def hard_sigmoid(x):
+    return relu6(x + 3) / 6
