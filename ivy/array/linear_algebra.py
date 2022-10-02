@@ -189,9 +189,38 @@ class ArrayWithLinearAlgebra(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(
-            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
-        )
+        """
+        ivy.Array instance method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array.
+        ord
+            Order of the norm. Default is "fro".
+        keepdims
+            If this is set to True, the axes which are normed over are left in
+            the result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
+        >>> y = ivy.matrix_norm(x, ord=1)
+        >>> print(y)
+        ivy.array(6.3)
+        """
+        return ivy.matrix_norm(self._data, ord=ord, keepdims=keepdims, out=out)
 
     def matrix_rank(
         self: ivy.Array,
