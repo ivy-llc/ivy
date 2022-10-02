@@ -223,7 +223,10 @@ def gelu(
 @handle_nestable
 @handle_exceptions
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
