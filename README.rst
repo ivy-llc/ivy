@@ -1,4 +1,4 @@
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/repos/ivy/logo.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true
    :width: 100%
 
 .. raw:: html
@@ -101,10 +101,6 @@ Expect breaking changes and sharp edges until we release version 1.2.0 in the ne
 If you would like to contribute,
 please check out our `contributor guide`_,
 and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
-
-If you'd like to ask us questions, feel free to join in on any of our weekly "Ask us Anything!" online sessions!
-To see when the next one will be, check out the Events tab at the top left our
-`discord server <https://discord.gg/G4aR9Q7DTN>`_ 🙂
 
 Quick Start
 -----------
@@ -229,7 +225,7 @@ Design
 |
 | The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 

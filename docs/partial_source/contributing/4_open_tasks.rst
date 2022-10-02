@@ -10,7 +10,7 @@ Open Tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
-.. _`functional/frontends/numpy/__init__.py`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
+.. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -81,13 +81,13 @@ Some common important tasks are:
 #. remove all :code:`lambda` and direct bindings for the backend functions
    (in :code:`ivy.functional.backends`), with each function instead defined using
    :code:`def`.
-#. implement the following if they don't exist but should do: :code:`ivy.Array` instance
-   method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
-   :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
-   :code:`ivy.Container` special method, :code:`ivy.Container` reverse special method.
+#. implement the following if they don't exist but should do: :class:`ivy.Array` instance
+   method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method,
+   :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method,
+   :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct
-   category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
-   :code:`ivy.ContainerWithManipulation` etc.
+   category-specific parent class, such as :class:`ivy.ArrayWithElementwise`,
+   :class:`ivy.ContainerWithManipulation` etc.
 #. correct all of the :ref:`Function Arguments` and the type hints for every
    function **and** its *relevant methods*, including those you did not implement
    yourself.
@@ -106,7 +106,7 @@ for the formatting task as follows:
 :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
 is the name of the category that the function belongs to. An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your 
@@ -116,14 +116,14 @@ few moments to take effect, so please be patient. 🙂
 2. After adding the checklist to your PR, you should then modify this checklist with 
 the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the
@@ -131,7 +131,7 @@ using the checkboxes next to them.
 on your point of struggle with this item. The PR assignee will then see this comment
 and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -161,11 +161,11 @@ The general workflow for this task is:
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
 
-If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing,
+If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing,
 which would make your frontend function much simpler to implement,
 then you you should first do the following:
 
-#. create a new issue with the title :code:`ivy.<func_name>`, add the labels
+#. create a new issue with the title :func:`ivy.<func_name>`, add the labels
    :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`
    to it, and then simply leave this issue open. At some point, a member of our team
    will assess whether it should be added, and if so, they will add it to another
@@ -182,14 +182,14 @@ After this, you then have two options for how to proceed:
    compositionally, or if this is not feasible, then you can simply choose another
    frontend function to work on. You could also choose to work on another open task
    entirely at this point if you wanted to. For example, you might decide to wait for a
-   member of our team to review your suggested addition :code:`ivy.<func_name>`, and
+   member of our team to review your suggested addition :func:`ivy.<func_name>`, and
    potentially add this to an Ivy Extension ToDo list issue (see the open task below).
    In either case, you should add the label "Pending other Issue" to the frontend
    sub-task issue, and leave it open. This issue will then still show up as open in the
    original frontend ToDo list, helpfully preventing others from working on this
    problematic frontend function, which depends on the unimplemented
-   :code:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
-   contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>`
+   :func:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
+   contents: :code:`pending <issue_link>`, which links to the :func:`ivy.<func_name>`
    issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend
@@ -262,7 +262,7 @@ from the files at this hierarchy:
 This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
 :code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
 require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
-These functions are listed out under the :code:`functional/frontends/numpy/__init__.py`_ imports. There are some
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py` `imports`_. There are some
 functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
 one of these functions, uncomment it from the list.
 
@@ -293,18 +293,18 @@ for this task.
 
 A general workflow for these tasks would be:
 
-#. Implement the functions in each of the backend files :code:`ivy/functional/backends/backend_name/extenstion.py`,
+#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extension.py`,
    sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
    helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api>`_
    on how this can be done.
-#. Implement the functions in :code:`ivy/functional/ivy/extenstion.py` simply defering to 
+#. Implement the functions in :mod:`ivy/functional/ivy/extension.py` simply deferring to
    their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api>`_ 
    to get a clearer picture of how this must be done.
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:
 
-#. Make sure all the positional arguments are postional-only and optional arguments are keywork-only.
+#. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function 
    in the hypothesis library.
 

@@ -13,7 +13,7 @@ class Sequential(Module):
         self,
         *sub_modules: Module,
         device: Union[ivy.Device, ivy.NativeDevice] = None,
-        v: Union[ivy.Variable, ivy.NativeVariable] = None,
+        v: Union[ivy.Array, ivy.NativeVariable] = None,
         dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
     ):
         """
@@ -44,7 +44,7 @@ class Sequential(Module):
                             '"submodules/v{}", where {} is an idx'
                         )
         self._submodules = list(sub_modules)
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _forward(self, inputs):
         """

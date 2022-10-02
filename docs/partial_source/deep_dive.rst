@@ -33,7 +33,7 @@ We're excited for you to get involved!  🦾
 | Different types of arrays, and how they're handled 🔢
 |
 | (f) :ref:`Containers`
-| What the :code:`ivy.Container` does  🗂️
+| What the :class:`ivy.Container` does  🗂️
 |
 | (g) :ref:`Data Types`
 | How functions infer the correct data type  💾
@@ -45,8 +45,8 @@ We're excited for you to get involved!  🦾
 | How the :code:`out` argument is used to specify the output target  🎯
 |
 | (j) :ref:`Function Wrapping`
-| How functions are dynamically wrapped at runtime  🎁 
-|  
+| How functions are dynamically wrapped at runtime  🎁
+|
 | (k) :ref:`Formatting`
 | How the code is automatically formatted 📋
 |
@@ -70,7 +70,12 @@ We're excited for you to get involved!  🦾
 |
 | (r) :ref:`Ivy Frontend Tests`
 | How to add new tests for each frontend function ➡️❓
-
+|
+| (s) :ref:`Exception Handling`
+| How to handle exceptions and assertions in a function ⚠️
+|
+| (t) :ref:`Continuous Integration (CI)`
+| Ivy Tests running on the Repository 🧪
 .. toctree::
    :hidden:
    :maxdepth: -1
@@ -80,12 +85,12 @@ We're excited for you to get involved!  🦾
    deep_dive/1_function_types.rst
    deep_dive/2_superset_behaviour.rst
    deep_dive/3_backend_setting.rst
-   deep_dive/5_arrays.rst
-   deep_dive/6_containers.rst
-   deep_dive/7_data_types.rst
-   deep_dive/8_devices.rst
-   deep_dive/9_inplace_updates.rst
-   deep_dive/4_function_wrapping.rst
+   deep_dive/4_arrays.rst
+   deep_dive/5_containers.rst
+   deep_dive/6_data_types.rst
+   deep_dive/7_devices.rst
+   deep_dive/8_inplace_updates.rst
+   deep_dive/9_function_wrapping.rst
    deep_dive/10_formatting.rst
    deep_dive/11_function_arguments.rst
    deep_dive/12_docstrings.rst
@@ -94,3 +99,5 @@ We're excited for you to get involved!  🦾
    deep_dive/15_ivy_tests.rst
    deep_dive/16_ivy_frontends.rst
    deep_dive/17_ivy_frontends_tests.rst
+   deep_dive/18_exception_handling.rst
+   deep_dive/19_continuous_integration.rst

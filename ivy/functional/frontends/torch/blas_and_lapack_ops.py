@@ -53,6 +53,10 @@ def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
+def det(input):
+    return ivy.det(input)
+
+
 def ger(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
@@ -61,16 +65,8 @@ def inverse(input, *, out=None):
     return ivy.inv(input, out=out)
 
 
-def det(input):
-    return ivy.det(input)
-
-
 def logdet(input):
     return ivy.det(input).log()
-
-
-def slogdet(input):
-    return ivy.slogdet(input)
 
 
 def matmul(input, other, *, out=None):
@@ -114,6 +110,10 @@ def qr(input, some=True, *, out=None):
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+def slogdet(input):
+    return ivy.slogdet(input)
 
 
 def svd(input, some=True, compute_uv=True, *, out=None):
