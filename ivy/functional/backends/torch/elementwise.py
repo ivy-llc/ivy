@@ -15,10 +15,16 @@ def _cast_for_unary_op(x):
 def _cast_for_binary_op(
     x1: Union[float, torch.Tensor], x2: Union[float, torch.Tensor]
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    """Torch's type promotion behaves as Ivy's does, except in the case where
-    one input is a 0D tensor and one is a non 0D tensor. An easy fix for this edge
-    case is to just add an extra dimension to the 0D tensor, which fixes the type
-    promotion and the result's shape will still be correct.
+    """In the case of two tensor inputs, Torch's type promotion behaves as we want,
+    except in the case where one input is a 0D tensor and one is a non 0D tensor. An
+    easy fix for this edge case is to just add an extra dimension to the 0D tensor,
+    which fixes the type promotion and the result's shape will still be correct.
+
+    Torch also handles the case of one tensor and one scalar input as we want, except
+    for the case where the scalar is an integer bigger than what can be represented by
+    int64. In this case torch will try to pack it into an int64 tensor,
+    causing an overflow error. To fix this, we cast the scalar to a tensor of the same
+    data type as the tensor input manually.
 
     Torch does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
     that Ivy's default dtypes are used, rather than Torch's.
@@ -28,7 +34,11 @@ def _cast_for_binary_op(
             x1 = x1[None]
         elif x2.ndim == 0 and x1.ndim != 0:
             x2 = x2[None]
-    elif not isinstance(x1, torch.Tensor) and not isinstance(x2, torch.Tensor):
+    elif isinstance(x1, torch.Tensor) and isinstance(x2, int):
+        x2 = torch.tensor(x2, dtype=x1.dtype) if x2 > 9223372036854775807 else x2
+    elif isinstance(x2, torch.Tensor) and isinstance(x1, int):
+        x1 = torch.tensor(x1, dtype=x2.dtype) if x1 > 9223372036854775807 else x1
+    else:
         x1 = ivy.to_native(ivy.array(x1))
         x2 = ivy.to_native(ivy.array(x2))
     return x1, x2
