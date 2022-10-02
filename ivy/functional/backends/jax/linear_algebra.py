@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def cholesky(
-    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -255,7 +255,9 @@ qr.unsupported_dtypes = (
 )
 
 
-def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
+def slogdet(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)

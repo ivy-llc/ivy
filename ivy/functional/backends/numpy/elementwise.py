@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional, Tuple
-
 import numpy as np
 
 # local
