@@ -829,7 +829,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ord
             Order of the norm. Default is "fro".
         axis
-            specifies the axes that hold 2-D matrices. Default: "fro"
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
@@ -918,7 +918,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ord
             Order of the norm. Default is "fro".
         axis
-            specifies the axes that hold 2-D matrices. Default: "fro"
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
