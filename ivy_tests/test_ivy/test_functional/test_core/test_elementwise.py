@@ -1213,6 +1213,7 @@ def test_log(
         instance_method=instance_method,
         fw=fw,
         fn_name="log",
+        test_gradients=True,
         x=x[0],
     )
 
