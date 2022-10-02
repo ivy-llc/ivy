@@ -1252,6 +1252,7 @@ def test_log1p(
         instance_method=instance_method,
         fw=fw,
         fn_name="log1p",
+        test_gradients=True,
         x=x[0],
     )
 
