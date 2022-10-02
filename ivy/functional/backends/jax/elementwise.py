@@ -157,6 +157,7 @@ def equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.equal(x1, x2)
 
 
@@ -306,6 +307,7 @@ def not_equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
