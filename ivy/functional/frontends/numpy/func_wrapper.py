@@ -38,8 +38,8 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         # TODO: dynamic arg number
         ivy.assertions.check_elem_in_list(
             casting,
-            ["no", "equiv", "safe", "same_kind", "safe"],
-            message="casting must be one of [no, equiv, safe, same_kind, safe]",
+            ["no", "equiv", "safe", "same_kind", "unsafe"],
+            message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
         )
         if casting == "no" or casting == "equiv":
             ivy.assertions.check_equal(
