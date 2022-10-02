@@ -155,6 +155,6 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
             fw=fw,
             frontend="jax",
             fn_tree="jax.numpy.linalg.matrix_power",
-            m=x[0],
+            a=x[0],
             n=n,
         )
