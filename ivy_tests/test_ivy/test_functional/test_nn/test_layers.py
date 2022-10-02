@@ -968,3 +968,51 @@ def test_lstm_update(
         bias=bias,
         recurrent_bias=recurrent_bias,
     )
+
+    
+# avg_pool1d
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="avg_pool1d"),
+)
+def test_avg_pool1d(
+    *,
+    dtype_and_x,
+    ksize,
+    stride,
+    pad,
+    data_format,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="avg_pool1d",
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        ksize=ksize,
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+    )
