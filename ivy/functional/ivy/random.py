@@ -206,6 +206,7 @@ def random_normal(
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -227,6 +228,8 @@ def random_normal(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
@@ -297,7 +300,7 @@ def random_normal(
     ivy.array([12.4, 11. ])
     """
     return ivy.current_backend().random_normal(
-        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
+        mean=mean, std=std, shape=shape, dtype=dtype, seed=seed, device=device, out=out
     )
 
 

@@ -112,7 +112,7 @@ def bitwise_and(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return np.bitwise_and(x1, x2, out=out)
 
 
@@ -137,7 +137,7 @@ def bitwise_left_shift(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return np.left_shift(x1, x2, out=out)
 
@@ -153,7 +153,7 @@ def bitwise_or(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return np.bitwise_or(x1, x2, out=out)
 
 
@@ -168,7 +168,7 @@ def bitwise_right_shift(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return np.right_shift(x1, x2, out=out)
 
@@ -184,7 +184,7 @@ def bitwise_xor(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return np.bitwise_xor(x1, x2, out=out)
 
 

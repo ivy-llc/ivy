@@ -45,6 +45,7 @@ def random_normal(
     std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
+    seed: Optional[int] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -53,7 +54,9 @@ def random_normal(
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
-        return tf.random.normal(shape, mean, std, dtype=dtype)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)

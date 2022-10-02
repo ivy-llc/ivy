@@ -18,6 +18,7 @@ def array_dtypes(
     num_arrays=st.shared(nh.ints(min_value=1, max_value=4), key="num_arrays"),
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
+    array_api_dtypes=False,
 ):
     """Draws a list of data types.
 
@@ -32,6 +33,9 @@ def array_dtypes(
         universe of available data types.
     shared_dtype
         if True, all data types in the list are same.
+    array_api_dtypes
+        if True, use data types that can be promoted with the array_api_promotion
+        table.
 
     Returns
     -------
@@ -46,7 +50,10 @@ def array_dtypes(
         dtypes = [dtypes[0] for _ in range(num_arrays)]
     else:
         unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))
-        pairs = ivy.promotion_table.keys()
+        if array_api_dtypes:
+            pairs = ivy.array_api_promotion_table.keys()
+        else:
+            pairs = ivy.promotion_table.keys()
         available_dtypes = [
             pair for pair in pairs if not any([d in pair for d in unwanted_types])
         ]

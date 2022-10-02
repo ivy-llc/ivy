@@ -138,6 +138,7 @@ def closest_valid_dtype(type):
 
 
 backend = "jax"
+backend_version = jax.__version__
 
 # local sub-modules
 from . import activations

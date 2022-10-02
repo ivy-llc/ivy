@@ -22,7 +22,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -404,7 +404,8 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:

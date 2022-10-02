@@ -10,6 +10,7 @@ from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.tensor_shape import TensorShape
 import torch
 import warnings
+from ivy._version import __version__ as __version__
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -550,8 +551,8 @@ add_ivy_container_instance_methods(
     static=True,
 )
 
-
 backend = "none"
+backend_version = "none"
 
 native_inplace_support = None
 

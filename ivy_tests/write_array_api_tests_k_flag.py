@@ -6,6 +6,7 @@ func_folder = os.path.join(this_dir, "array_api_methods_to_test")
 # api function filepaths
 func_fnames = os.listdir(func_folder)
 func_fnames.sort()
+
 func_fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
 
 # all filepaths
@@ -29,8 +30,6 @@ for fpath in fpaths:
     # extract contents
     with open(fpath, "r") as file:
         contents = file.read()
-        # method_name #failing for torch for the following reason
-
         # update tests to run and skip
         contents = [line.replace("__", "") for line in contents.split("\n")]
         for framework in framework_tests_to_run:
@@ -55,8 +54,6 @@ for fpath in fpaths:
             framework_tests_to_skip[framework] += tests_to_skip
 
 for framework in framework_tests_to_skip:
-    # temporary fix for wrongly added test, due to addition of positive method
-    framework_tests_to_skip[framework] += ["test_positive_definite_matrices"]
     # prune tests to skip
     framework_tests_to_skip[framework] = [
         tts

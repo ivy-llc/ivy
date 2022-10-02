@@ -109,7 +109,7 @@ def closest_valid_dtype(type):
 
 
 backend = "numpy"
-
+backend_version = np.__version__
 
 # local sub-modules
 from . import activations

@@ -44,7 +44,6 @@ def test_numpy_matrix_argmax(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="argmax",
@@ -89,7 +88,6 @@ def test_numpy_matrix_any(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="any",

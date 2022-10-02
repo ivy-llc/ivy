@@ -21,7 +21,7 @@ from . import version
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def cholesky(
-    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -203,6 +203,7 @@ def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def slogdet(
     x: np.ndarray,
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -212,6 +213,7 @@ def slogdet(
     logabsdet = (
         np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
     )
+
     return results(sign, logabsdet)
 
 

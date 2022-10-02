@@ -107,6 +107,8 @@ def closest_valid_dtype(type):
 
 
 backend = "tensorflow"
+backend_version = tf.__version__
+
 
 # local sub-modules
 from . import activations
