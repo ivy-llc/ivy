@@ -1244,12 +1244,12 @@ def test_log1p(
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[True],
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
-        instance_method=False,
+        container_flags=container,
+        instance_method=instance_method,
         fw=fw,
         fn_name="log1p",
         test_gradients=True,
