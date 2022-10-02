@@ -1,6 +1,5 @@
 # global
 import sys
-import numpy as np
 import cupy as cp
 # local
 import ivy
