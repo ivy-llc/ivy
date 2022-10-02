@@ -837,6 +837,9 @@ def test_expm1(
         instance_method=instance_method,
         fw=fw,
         fn_name="expm1",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
