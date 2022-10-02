@@ -650,7 +650,7 @@ def test_tensorflow_dropout(
     ),
     name=st.sampled_from(["sigmoid_cross_entropy_with_logits"]),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sigmoid_cross_entropy_with_logits",
+        fn_name="ivy.functional.frontends.tensorflow.nn.sigmoid_cross_entropy_with_logits",  # noqa
     ),
 )
 def test_tensorflow_sigmoid_cross_entropy_with_logits(
