@@ -128,3 +128,33 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
         fn_tree="numpy.linalg.inv",
         a=np.asarray(x[0], dtype=dtype[0]),
     )
+
+    @handle_cmd_line_args
+    @given(
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0,
+            max_value=20,
+            shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        ),
+        n=helpers.ints(min_value=1, max_value=5),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_power"
+        ),
+    )
+    def test_jax_numpy_matrix_power(
+        dtype_and_x, n, as_variable, native_array, num_positional_args, fw
+    ):
+        dtype, x = dtype_and_x
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            fw=fw,
+            frontend="jax",
+            fn_tree="jax.numpy.linalg.matrix_power",
+            m=x[0],
+            n=n,
+        )
