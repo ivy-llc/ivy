@@ -720,3 +720,13 @@ def trunc_divide(
     else:
         ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
+
+def dropout(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.dropout(x, prob)
+    

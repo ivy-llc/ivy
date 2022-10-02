@@ -3,6 +3,7 @@ from typing import Union, Optional
 
 import jax
 import jax.numpy as jnp
+import haiku as hk
 
 # local
 import ivy
@@ -440,3 +441,12 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
+
+def dropout(
+    x: JaxArray,
+    prob: float,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return hk.Dropout(hk.next_rng_key(), prob, x)

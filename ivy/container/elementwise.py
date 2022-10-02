@@ -7795,3 +7795,55 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_dropout(
+        x: ivy.Container,
+        prob: float,
+        /,
+        *,
+        scale: bool = True,
+        dtype: ivy.Dtype = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "dropout",
+            x,
+            prob,
+            scale=scale,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dropout(
+        self: ivy.Container,
+        prob: float,
+        /,
+        *,
+        scale: bool = True,
+        dtype: ivy.Dtype = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_dropout(
+            self,
+            prob,
+            scale=scale,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

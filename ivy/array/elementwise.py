@@ -2124,3 +2124,40 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([ 1., -3.,  4.])
         """
         return ivy.trunc_divide(self._data, x2, out=out)
+    
+    def dropout(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        scale: bool = True,
+        dtype: ivy.Dtype = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+
+        """
+        ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
+        function, and so the docstring for ivy.dropout2d also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to compute exponential for.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the Gauss error of ``self``.
+        """
+
+        return ivy.dropout(
+            self._data,
+            prob,
+            scale=scale,
+            dtype=dtype,
+            out=out,
+        )
