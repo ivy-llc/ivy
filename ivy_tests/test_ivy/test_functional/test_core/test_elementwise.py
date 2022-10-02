@@ -735,6 +735,7 @@ def test_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
