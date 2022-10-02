@@ -1,12 +1,36 @@
 # global
-from typing import Union, Optional
-
+from typing import Union, Optional, Tuple
 import jax
 import jax.numpy as jnp
 
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
+
+
+def _cast_for_binary_op(
+    x1: Union[float, JaxArray], x2: Union[float, JaxArray]
+) -> Tuple[Union[float, JaxArray], Union[float, JaxArray]]:
+    """In the case of two array inputs, JAX's type promotion behaves as we want,
+    so we don't need to do anything.
+
+    JAX also handles the case of one tensor and one scalar input as we want, except
+    for the case where the scalar is an integer bigger than what can be represented by
+    int64. In this case JAX will try to pack it into an int64 tensor,
+    causing an overflow error. To fix this, we cast the scalar to an array of the same
+    data type as the array input manually.
+
+    JAX does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
+    that Ivy's default dtypes are used, rather than JAX's.
+    """
+    if isinstance(x1, JaxArray) and isinstance(x2, int):
+        x2 = jnp.array(x2, dtype=x1.dtype) if x2 > 9223372036854775807 else x2
+    elif isinstance(x2, JaxArray) and isinstance(x1, int):
+        x1 = jnp.array(x1, dtype=x2.dtype) if x1 > 9223372036854775807 else x1
+    else:
+        x1 = ivy.to_native(ivy.array(x1))
+        x2 = ivy.to_native(ivy.array(x2))
+    return x1, x2
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -29,7 +53,7 @@ def add(
     alpha: Optional[Union[int, float]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
@@ -48,7 +72,7 @@ def atan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
@@ -141,7 +165,7 @@ def divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     ret = jax.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
         ret = jnp.asarray(ret, dtype=x1.dtype)
@@ -183,7 +207,7 @@ def floor_divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jax.numpy.floor_divide(x1, x2)
 
 
@@ -290,7 +314,7 @@ def multiply(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.multiply(x1, x2)
 
 
@@ -324,7 +348,7 @@ def pow(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.power(x1, x2)
 
 
@@ -381,7 +405,7 @@ def subtract(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return jnp.subtract(x1, x2)
