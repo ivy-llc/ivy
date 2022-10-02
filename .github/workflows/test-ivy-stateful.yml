@@ -12,7 +12,7 @@ jobs:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
          submodules: [activations, converters, layers, modules, norms, optimizers,
-                      sequential]
+                      sequential, initializers]
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
