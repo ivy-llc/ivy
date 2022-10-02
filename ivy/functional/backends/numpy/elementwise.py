@@ -37,9 +37,11 @@ def _cast_for_binary_op(
         elif x2.ndim == 0 and x1.ndim != 0:
             x2 = x2[None]
     elif isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        x2 = np.array(x2, dtype=x1.dtype)
+        if x1.ndim == 0:
+            x2 = np.array(x2, dtype=x1.dtype)
     elif isinstance(x2, np.ndarray) and not isinstance(x1, np.ndarray):
-        x1 = np.array(x1, dtype=x2.dtype)
+        if x2.ndim == 0:
+            x1 = np.array(x1, dtype=x2.dtype)
     else:
         x1 = ivy.to_native(ivy.array(x1))
         x2 = ivy.to_native(ivy.array(x2))
