@@ -674,5 +674,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
-
-

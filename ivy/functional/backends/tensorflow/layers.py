@@ -360,8 +360,6 @@ def conv_general_dilated(
     return res
 
 
-
-
 @with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, version)
 def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
@@ -436,4 +434,3 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-

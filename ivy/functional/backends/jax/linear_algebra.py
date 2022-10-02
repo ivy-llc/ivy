@@ -220,8 +220,6 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-
-
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, version)
 def slogdet(
     x: JaxArray, /, *, out: Optional[JaxArray] = None
