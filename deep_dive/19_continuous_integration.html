@@ -67,20 +67,22 @@
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Continuous Integration (CI) 🔁</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#array-api-tests">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ivy-core-tests">Ivy Core Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ivy-nn-tests">Ivy NN Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ivy-stateful-tests">Ivy Stateful Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ivy-frontend-tests">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ci-pipeline">CI Pipeline ➡️</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#push">Push</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pull-request">Pull Request</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Continuous Integration (CI) 🔁</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#array-api-tests">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-core-tests">Ivy Core Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-nn-tests">Ivy NN Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-stateful-tests">Ivy Stateful Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-frontend-tests">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci-pipeline">CI Pipeline ➡️</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#push">Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pull-request">Pull Request</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#scheduled-tests-cron-jobs">Scheduled Tests (Cron Jobs)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dashboard">Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-tests-cron-jobs">Scheduled Tests (Cron Jobs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard">Dashboard</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -175,9 +177,8 @@
 <li><p>The developer can easily debug the code when finding the source of an error. 🔍</p></li>
 </ol>
 <p>We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.</p>
-</section>
 <section id="github-actions">
-<h1>GitHub Actions<a class="headerlink" href="#github-actions" title="Permalink to this heading"></a></h1>
+<h2>GitHub Actions<a class="headerlink" href="#github-actions" title="Permalink to this heading"></a></h2>
 <p>GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. Workflows can be configured to be triggered on the following events:</p>
 <ul class="simple">
 <li><p><strong>Push</strong>: The Workflow triggers on a push to the repository with the possibility of getting started only on changes to specific files.</p></li>
@@ -202,12 +203,12 @@
 </ol>
 </section>
 <section id="array-api-tests">
-<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h1>
+<h2>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml">test-array-api.yml</a> workflow runs the Array API Tests. Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab.</p>
 <p>The Workflow runs the Array API Tests for each backend and submodule pair. More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_array_api_tests.html">here</a>.</p>
 </section>
 <section id="ivy-core-tests">
-<h1>Ivy Core Tests<a class="headerlink" href="#ivy-core-tests" title="Permalink to this heading"></a></h1>
+<h2>Ivy Core Tests<a class="headerlink" href="#ivy-core-tests" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core.yml">test-ivy-core.yml</a> Workflow runs the Ivy Core Tests.</p>
 <p>Individual Tests in the Workflow are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the corresponding test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
 <ol class="arabic simple">
@@ -222,7 +223,7 @@
 <p>More details about Ivy Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html">here</a>.</p>
 </section>
 <section id="ivy-nn-tests">
-<h1>Ivy NN Tests<a class="headerlink" href="#ivy-nn-tests" title="Permalink to this heading"></a></h1>
+<h2>Ivy NN Tests<a class="headerlink" href="#ivy-nn-tests" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn.yml">test-ivy-core.yml</a> workflow runs the Ivy NN Tests.</p>
 <p>Similar to the Ivy Core Tests Workflow, Individual Tests are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
 <ol class="arabic simple">
@@ -236,7 +237,7 @@
 <p>Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy NN Tests, a manually-triggered workflow is available <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn-manual.yml">here</a>.</p>
 </section>
 <section id="ivy-stateful-tests">
-<h1>Ivy Stateful Tests<a class="headerlink" href="#ivy-stateful-tests" title="Permalink to this heading"></a></h1>
+<h2>Ivy Stateful Tests<a class="headerlink" href="#ivy-stateful-tests" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful.yml">test-ivy-stateful.yml</a> workflow runs the Ivy Stateful Tests.</p>
 <p>In this case too, Individual Tests are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
 <ol class="arabic simple">
@@ -251,7 +252,7 @@
 <p>Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy Stateful Tests, there is a manually-triggered workflow available <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful-manual.yml">here</a>.</p>
 </section>
 <section id="ivy-frontend-tests">
-<h1>Ivy Frontend Tests<a class="headerlink" href="#ivy-frontend-tests" title="Permalink to this heading"></a></h1>
+<h2>Ivy Frontend Tests<a class="headerlink" href="#ivy-frontend-tests" title="Permalink to this heading"></a></h2>
 <p>The following workflows run the Frontend tests for the corresponding backend:</p>
 <ol class="arabic simple">
 <li><p><strong>Jax</strong>: <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-jax.yml">test-frontend-jax.yml</a></p></li>
@@ -262,10 +263,10 @@
 <p>Each of these workflows can also be Manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab. More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">here</a>.</p>
 </section>
 <section id="ci-pipeline">
-<h1>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading"></a></h1>
+<h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading"></a></h2>
 <p>The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.</p>
 <section id="push">
-<h2>Push<a class="headerlink" href="#push" title="Permalink to this heading"></a></h2>
+<h3>Push<a class="headerlink" href="#push" title="Permalink to this heading"></a></h3>
 <p>Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:</p>
 <img alt="Push" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push.png?raw=true" />
 <p>Clicking on the yellow dot (🟡) (which changes to a tick (✔) or cross (❌), when the tests have been completed) yields a view of the test-suite results as shown below:</p>
@@ -283,14 +284,14 @@
 <p>You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.</p>
 </section>
 <section id="pull-request">
-<h2>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h2>
+<h3>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h3>
 <p>In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:</p>
 <img alt="PR Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/pull-request1.png?raw=true" />
 <p>Clicking on the “Details” link redirects to the Action Log. The rest of the procedure remains the same as given in the Push section above.</p>
 </section>
 </section>
 <section id="scheduled-tests-cron-jobs">
-<h1>Scheduled Tests (Cron Jobs)<a class="headerlink" href="#scheduled-tests-cron-jobs" title="Permalink to this heading"></a></h1>
+<h2>Scheduled Tests (Cron Jobs)<a class="headerlink" href="#scheduled-tests-cron-jobs" title="Permalink to this heading"></a></h2>
 <p>In order to make sure that no tests are ignored for a long time, as well as, decouple the commit frequency with the testing frequency, we use Scheduled Tests (Cron Jobs) to run an Ivy Core, Ivy NN, and Ivy Stateful Test every hour. The following workflows run cron jobs:</p>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-cron.yml">test-ivy-core-cron.yml</a></p></li>
@@ -300,7 +301,7 @@
 <p>The cron jobs are used to update the latest results in the Dashboard, as explained in the following section.</p>
 </section>
 <section id="dashboard">
-<h1>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h1>
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h2>
 <p>In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test. These are the links to the Dashboard for the given workflows:</p>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md">Array API Tests</a></p></li>
@@ -309,6 +310,7 @@
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md">Ivy Stateful Tests</a></p></li>
 </ol>
 <p>The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
+</section>
 </section>
 
 
