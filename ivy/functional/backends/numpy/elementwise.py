@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 import numpy as np
 
@@ -15,6 +15,36 @@ except (ImportError, ModuleNotFoundError):
 
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
+
+
+def _cast_for_binary_op(
+    x1: Union[float, np.ndarray], x2: Union[float, np.ndarray]
+) -> Tuple[np.ndarray, np.ndarray]:
+    """In the case of two array inputs, NumPy's type promotion behaves as we want,
+    except in the case where one input is a 0D array and one is a non 0D array. An
+    easy fix for this edge case is to just add an extra dimension to the 0D array,
+    which fixes the type promotion and the result's shape will still be correct.
+
+    NumPy doesn't behave as we want with one array and one scalar input, so we manually
+    cast the scalar to the array's data type, to produce the behaviour required by the
+    array API standard.
+
+    NumPy does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
+    that Ivy's default dtypes are used, rather than NumPy's.
+    """
+    if isinstance(x1, np.ndarray) and isinstance(x2, np.ndarray):
+        if x1.ndim == 0 and x2.ndim != 0:
+            x1 = x1[None]
+        elif x2.ndim == 0 and x1.ndim != 0:
+            x2 = x2[None]
+    elif isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        x2 = np.array(x2, dtype=x1.dtype)
+    elif isinstance(x2, np.ndarray) and not isinstance(x1, np.ndarray):
+        x1 = np.array(x1, dtype=x2.dtype)
+    else:
+        x1 = ivy.to_native(ivy.array(x1))
+        x2 = ivy.to_native(ivy.array(x2))
+    return x1, x2
 
 
 @_handle_0_dim_output
@@ -52,7 +82,7 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return np.add(x1, x2)
@@ -229,7 +259,7 @@ def divide(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.divide(x1, x2)
     if ivy.is_float_dtype(x1):
         ret = np.asarray(ret, dtype=x1.dtype)
@@ -466,7 +496,7 @@ def multiply(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.multiply(x1, x2, out=out)
 
 
@@ -515,7 +545,7 @@ def pow(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.power(x1, x2, out=out)
 
 
@@ -607,7 +637,7 @@ def subtract(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return np.subtract(x1, x2)
