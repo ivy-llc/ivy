@@ -59,4 +59,7 @@ def searchsorted(
         raise ValueError("only int32 and int64 are supported for ret_dtype.")
     if sorter is not None:
         x = tf.gather(x, sorter)
+    if x.ndim == 1 and v.ndim != 1:
+        fn = lambda inner_v: tf.searchsorted(x, inner_v, side=side, out_type=ret_dtype)
+        return tf.map_fn(fn=fn, elems=v, dtype=ret_dtype)
     return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
