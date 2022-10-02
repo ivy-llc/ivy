@@ -1,7 +1,28 @@
+# global
+import functools
+
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.array.array import _native_wrapper
+
+
+def _frontend_wrapper(f):
+    @functools.wraps(f)
+    def decor(self, *args, **kwargs):
+        args = list(args)
+        if isinstance(self, jax_frontend.DeviceArray):
+            i = 0
+            for arg in args:
+                if isinstance(arg, jax_frontend.DeviceArray):
+                    args[i] = arg.data
+                i += 1
+            for u, v in kwargs.items():
+                if isinstance(v, jax_frontend.DeviceArray):
+                    kwargs[u] = v.data
+            return f(self, *args, **kwargs)
+        return getattr(self, f.__name__)(*args, **kwargs)
+
+    return decor
 
 
 class DeviceArray:
@@ -18,26 +39,29 @@ class DeviceArray:
     def add(self, other):
         return jax_frontend.add(self.data, other)
 
-    @_native_wrapper
+    def radd(self, other):
+        return jax_frontend.add(self.data)
+
+    @_frontend_wrapper
     def __add__(self, other):
         return jax_frontend.add(self.data, other)
 
-    @_native_wrapper
+    @_frontend_wrapper
     def __radd__(self, other):
         return jax_frontend.add(other, self.data)
 
-    @_native_wrapper
+    @_frontend_wrapper
     def __sub__(self, other):
         return jax_frontend.sub(self.data, other)
 
-    @_native_wrapper
+    @_frontend_wrapper
     def __rsub__(self, other):
         return jax_frontend.sub(other, self.data)
 
-    @_native_wrapper
+    @_frontend_wrapper
     def __mul__(self, other):
         return jax_frontend.mul(self.data, other)
 
-    @_native_wrapper
+    @_frontend_wrapper
     def __rmul__(self, other):
         return jax_frontend.mul(other, self.data)
