@@ -61,10 +61,6 @@ class Array:
     pass
 
 
-class Variable:
-    pass
-
-
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -182,6 +178,7 @@ bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
+double = float64
 bool = Dtype("bool")
 
 # native data types
@@ -197,6 +194,7 @@ native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
+native_double = native_float64
 native_bool = Dtype("bool")
 
 # all
@@ -337,6 +335,14 @@ array_api_promotion_table = {
 }
 locks = {"backend_setter": threading.Lock()}
 extra_promotion_table = {
+    (uint64, int8): float64,
+    (int8, uint64): float64,
+    (uint64, int16): float64,
+    (int16, uint64): float64,
+    (uint64, int32): float64,
+    (int32, uint64): float64,
+    (uint64, int64): float64,
+    (int64, uint64): float64,
     (int8, float16): float16,
     (float16, int8): float16,
     (int8, float32): float32,
@@ -413,7 +419,7 @@ extra_promotion_table = {
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
-from .array import Array, Variable, add_ivy_array_instance_methods
+from .array import Array, add_ivy_array_instance_methods
 from .array.conversions import *
 from .array import conversions as arr_conversions
 from .container import conversions as cont_conversions

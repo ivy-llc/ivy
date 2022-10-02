@@ -337,6 +337,7 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         With :code:`ivy.Container` static method:
+
         >>> x = ivy.Container(a=ivy.array([1]),\
             b=ivy.array([2]))
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
@@ -393,7 +394,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code: 'ivy.Container' instance method:
+        With :code:`ivy.Container` instance method:
+        
         >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
             b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))

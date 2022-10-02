@@ -310,9 +310,7 @@ class SparseArray:
         if self._coo_indices is not None:
             # COO sparse array
             for i in range(self._values.shape[0]):
-                coordinate = ivy.gather(
-                    self._coo_indices, ivy.array([[i]] * self._coo_indices.shape[0])
-                )
+                coordinate = ivy.gather(self._coo_indices, ivy.array([[i]]))
                 coordinate = ivy.reshape(coordinate, (self._coo_indices.shape[0],))
                 all_coordinates.append(coordinate.to_list())
         else:

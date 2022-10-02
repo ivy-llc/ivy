@@ -13,7 +13,7 @@ class ArrayWithDataTypes(abc.ABC):
         /,
         *,
         copy: bool = True,
-        out: ivy.Array = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
@@ -32,7 +32,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             array to cast.
         dtype
             desired data type.
@@ -85,6 +85,7 @@ class ArrayWithDataTypes(abc.ABC):
         -------
         ret
             A list containing broadcasted arrays of type `ivy.Array`
+
         Examples
         --------
         With :code:`ivy.Array` inputs:
@@ -131,7 +132,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` instance method:
+        With :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.broadcast_to((3,3))
@@ -170,7 +171,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(x.can_cast(ivy.float64))
         True
         """
-        return ivy.can_cast(from_=self._data, to=to)
+        return ivy.can_cast(self._data, to)
 
     def dtype(self: ivy.Array, as_native: bool = False) -> ivy.Dtype:
         return ivy.dtype(self._data, as_native)
@@ -184,7 +185,7 @@ class ArrayWithDataTypes(abc.ABC):
     def is_bool_dtype(self: ivy.Array) -> bool:
         return ivy.is_bool_dtype(self._data)
 
-    def is_float_dtype(self: ivy.Array, *, out: ivy.Array = None) -> bool:
+    def is_float_dtype(self: ivy.Array) -> bool:
         """
         `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply
         checks to see if the array is of type `float`.
@@ -201,29 +202,9 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.is_float_dtype(ivy.float32)
-        >>> print(x)
-        True
-
-        >>> x = ivy.is_float_dtype(ivy.int64)
-        >>> print(ivy.is_float_dtype(x))
+        >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
+        >>> x.is_float_dtype()
         False
-
-        >>> x = ivy.is_float_dtype(ivy.int32)
-        >>> print(ivy.is_float_dtype(x))
-        False
-
-        >>> x = ivy.is_float_dtype(ivy.bool)
-        >>> print(ivy.is_float_dtype(x))
-        False
-
-        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
-        >>> print(ivy.is_float_dtype(arr))
-        True
-
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
-        >>> print(x.a.dtype, x.b.dtype)
-        float32 int32
         """
         return ivy.is_float_dtype(self._data)
 

@@ -1,4 +1,3 @@
-import numpy as np
 from hypothesis import given
 
 
@@ -16,11 +15,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ceil"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_ceil(
     dtype_and_x,
@@ -33,15 +30,7 @@ def test_numpy_ceil(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    if type(input_dtype) != list:
-        input_dtype = [input_dtype]
-    if type(as_variable) != list:
-        as_variable = [as_variable]
-    if type(native_array) != list:
-        native_array = [native_array]
-
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -56,12 +45,12 @@ def test_numpy_ceil(
         fw=fw,
         frontend="numpy",
         fn_tree="ceil",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
         order="k",
-        dtype=dtype,
+        dtype=dtype[0],
         subok=True,
         test_values=False,
     )
@@ -93,6 +82,6 @@ def test_numpy_fix(
         fw=fw,
         frontend="numpy",
         fn_tree="fix",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         test_values=False,
     )

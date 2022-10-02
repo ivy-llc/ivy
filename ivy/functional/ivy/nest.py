@@ -153,10 +153,10 @@ def set_nest_at_index(
     >>> z = ivy.array([3., 4.])
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    {\
-    a: ivy.array([1., 2.]),\
-    b: ivy.array([3., 4.])\
-    }\
+    {
+        a: ivy.array([1., 2.]),
+        b: ivy.array([3., 4.])
+    }
     """
     if len(index) == 1:
         nest[index[0]] = value
@@ -260,7 +260,7 @@ def set_nest_at_indices(
 
     With :code:`Tuple` inputs:
 
-    >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
+    >>> nest = [['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b']]
     >>> indices = ((0, 1),(1, 2))
     >>> values = ('ivy', 'x')
     >>> ivy.set_nest_at_indices(nest, indices, values)

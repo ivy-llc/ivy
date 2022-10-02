@@ -9,7 +9,7 @@ cat $1/requirements.txt | xargs -n 1 pip install;
 pip install -r ../requirements/requirements.txt || exit 1
 pip install torch==1.11.0
 pip install torch-scatter==2.0.9
-pip install -r ../optional.txt || exit 1
+pip install -r ../requirements/optional.txt || exit 1
 
 # syncing ivy folder with the doc-builder folder
 rsync -rav $1/docs/ . || exit 1
