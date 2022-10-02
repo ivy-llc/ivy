@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional
-
 import numpy as np
 
 # local
@@ -11,10 +10,6 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
-
-
-# when inputs are 0 dimensional, numpy's functions return scalars
-# so we use this wrapper to ensure outputs are always numpy arrays
 
 
 @_handle_0_dim_output
