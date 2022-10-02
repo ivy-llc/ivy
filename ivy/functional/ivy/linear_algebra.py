@@ -1038,7 +1038,7 @@ def matrix_norm(
     >>> print(x)
     ivy.array([10.5 ,  2.05])
 
-    With :class:'ivy.Array' input:
+    With :class:'ivy.Container' input:
     >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
                                        [42.69, 9.23]]), \
                           b=ivy.array([[1.1, 2.2, 3.3], \
