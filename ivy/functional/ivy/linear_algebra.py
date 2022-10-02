@@ -968,6 +968,52 @@ def matrix_norm(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :class:'ivy.Array' inputs:
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> y = ivy.matrix_norm(x)
+    >>> print(y)
+    ivy.array(5.47722558)
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], \
+                    [[5, 6], [7, 8]]])
+    >>> y = ivy.zeros(2)
+    >>> ivy.matrix_norm(x, ord=1, out=y)
+    >>> print(y)
+    ivy.array([ 6., 14.])
+
+    >>> x = ivy.array([[1, 2, 3], \
+                       [4, 5, 6], \
+                       [7, 8, 9]])
+    >>> ivy.matrix_norm(x, ord=float('inf'), keepdims=True, out=x)
+    >>> print(x)
+    ivy.array([[24.]])
+
+    >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
+    >>> y = ivy.matrix_norm(x, ord='nuc')
+    >>> print(y)
+    ivy.array(11.043801)
+
+    >>> x = ivy.array([[[1.1, 2.2], [3.3, 4.4]], \
+    ...                [[1, 0], [1, 1]]])   
+    >>> ivy.matrix_norm(x, ord='fro', keepdims=True, out=x)
+    ivy.array([[[6.02]],
+
+        [[1.73]]])
+
+    With :class:'ivy.Array' input:
+    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
+                                       [42.69, 9.23]]), \
+                          b=ivy.array([[1.1, 2.2, 3.3], \
+                                       [4.4, 5.5, 6.6]]))   
+    >>> y = ivy.matrix_norm(x, ord=float('-inf'))
+    >>> print(y)
+    {
+        a: ivy.array(9.776),
+        b: ivy.array(6.6000004)
+    }
+
     """
     return current_backend(x).matrix_norm(
         x, ord=ord, axis=axis, keepdims=keepdims, out=out

@@ -850,6 +850,17 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1.0, 2.0]]), \
+                              b=ivy.array([[1, 2], [3, 4]]))
+        >>> y = ivy.Container.static_matrix_norm(x, ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -911,6 +922,17 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1.0, 2.0]]), \
+                              b=ivy.array([[1, 2], [3, 4]]))
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
 
         """
         return self.static_matrix_norm(
