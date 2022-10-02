@@ -697,6 +697,7 @@ def test_cosh(
         instance_method=instance_method,
         fw=fw,
         fn_name="cosh",
+        test_gradients=True,
         x=x[0],
     )
 
