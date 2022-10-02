@@ -285,3 +285,11 @@ def softplus(x):
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
+
+
+def hard_silu(x):
+    return x * hard_sigmoid(x)
+
+
+def hard_sigmoid(x):
+    return relu6(x + 3) / 6

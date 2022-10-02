@@ -286,7 +286,7 @@ class Array(
         return ivy.pow(self._data, power)
 
     def __rpow__(self, power):
-        return self._data.__rpow__(power)
+        return ivy.pow(power, self._data)
 
     def __ipow__(self, power):
         return ivy.pow(self._data, power)
