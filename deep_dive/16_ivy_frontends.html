@@ -180,7 +180,7 @@
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>On top of the Ivy functional API and backend functional APIs, Ivy has another set of
 framework-specific frontend functional APIs, which play an important role in code
-transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
+transpilations, as explained <a href="#id5"><span class="problematic" id="id6">`here`_</span></a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
 </section>
 <section id="the-basics">
@@ -188,7 +188,7 @@ transpilations, as explained <a class="reference external" href="https://lets-un
 <p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
 frontend functions.</p>
 <p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a href="#id4"><span class="problematic" id="id5">`open_task`_</span></a>.</p>
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks">open task</a>.</p>
 <p><strong>Jax</strong></p>
 <p>JAX has two distinct groups of functions, those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and
 those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace. The former set of functions map very closely
@@ -265,7 +265,7 @@ sub-category of <code class="code docutils literal notranslate"><span class="pre
 <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
 <p>The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
-according to the <a href="#id6"><span class="problematic" id="id7">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
+according to the <a href="#id7"><span class="problematic" id="id8">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
 the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
 The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other
 examples.</p>
@@ -286,6 +286,7 @@ instances, and so we omit this argument. Again, it has no bearing on input-outpu
 behaviour and so this is not a problem when transpiling between frameworks.</p>
 <p>See the section “Unused Arguments” below for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py</span>
+<span class="nd">from_zero_dim_arrays_to_float</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
@@ -293,7 +294,7 @@ behaviour and so this is not a problem when transpiling between frameworks.</p>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">where</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
-    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">,</span>
     <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
@@ -340,19 +341,15 @@ and simply wrap <code class="xref py py-func docutils literal notranslate"><span
 Again, we do not support the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument for the reasons outlined above.</p>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For PyTorch, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in
 the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> framework.</p>
 <p>In this case, the native <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> has both positional and keyword arguments,
 and we therefore use the same for our PyTorch frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
-We wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as usual, but the arguments work slightly different in this
-example. Looking at the PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> documentation,
-we can see that <code class="code docutils literal notranslate"><span class="pre">alpha</span></code> acts as a scale for the <code class="code docutils literal notranslate"><span class="pre">other</span></code> argument.
-Thus, we can mimic the original behaviour by simply passing <code class="code docutils literal notranslate"><span class="pre">other</span> <span class="pre">*</span> <span class="pre">alpha</span></code>
-into <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>.</p>
+We wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as usual.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
@@ -416,16 +413,16 @@ function that is available</p></li>
 argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if <code class="code docutils literal notranslate"><span class="pre">True</span></code>. However,
 the backend <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not support this argument or behaviour.</p>
 <p><strong>Ivy</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/general.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/statistical.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To enable this behaviour, we need to incorporate other Ivy functions which are
@@ -513,6 +510,10 @@ needed if the limitations go beyond those of the framework itself. For example, 
 not necessary to uniquely flag every single NumPy function as supporting only CPU,
 as this is a limitation of the entire framework, and this limitation is already
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21">globally flagged</a>.</p>
+<p>It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
+may not support the data type due to backend limitation. For example, the frontend function <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111">jax.lax.cumprod</a> do support all data types,
+but PyTorch does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> for the function <code class="code docutils literal notranslate"><span class="pre">cumprod</span></code>, even though the framework generally supports handling <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> data type. In that case, we should flag that the backend
+function does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> as this is done <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234">here</a>.</p>
 </section>
 <section id="classes-and-instance-methods">
 <h2>Classes and Instance Methods<a class="headerlink" href="#classes-and-instance-methods" title="Permalink to this heading"></a></h2>
@@ -526,17 +527,17 @@ the framework-specific array classes (<code class="xref py py-class docutils lit
 <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
 <p>For an example of how these are implemented, we first show the instance method for
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.reshape()</span></code>, which is implemented in the frontend
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8">ndarray class</a>:</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8">ndarray class</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/ndarray/ndarray.py</span>
-<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.reshape()</span></code> function,
 which itself is implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py</span>
-<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">newshape</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We need to create these frontend array classes and all of their instance methods such
@@ -560,11 +561,11 @@ use <code class="code docutils literal notranslate"><span class="pre">numpy._NoV
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> use <code class="code docutils literal notranslate"><span class="pre">None</span></code>, as can be seen in the
 <a class="reference external" href="https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299">source code</a>.</p>
 <p>We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named <cite>&lt;backend&gt;_classes_to_ivy_classes</cite> in
-<cite>ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</cite>.
+framework, there is a dictionary named <code class="code docutils literal notranslate"><span class="pre">&lt;backend&gt;_classes_to_ivy_classes</span></code> in
+<code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</span></code>.
 This holds pairs of framework-specific classes and the corresponding Ivy or
 native Python classes to map to.
-For example, in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</cite>, we have:</p>
+For example, in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</span></code>, we have:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numpy_classes_to_ivy_classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 </pre></div>
 </div>
@@ -596,8 +597,50 @@ in the arguments, makes use of <code class="code docutils literal notranslate"><
 to find the corresponding value to the key wrapped inside the <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code>
 instance, and then passes the key and value as inputs to the corresponding functions
 correctly.</p>
-<p>As an example, we show how <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code> is used in the frontend test for the
+<p>As an example, we show how <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is used in the frontend test for the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">sum()</span></code> function in the NumPy frontend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">handle_cmd_line_args</span>
+<span class="nd">given</span><span class="p">(</span>
+    <span class="n">dtype_x_axis</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_values_axis</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">keep_dims</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">Novalue</span><span class="p">),</span>
+    <span class="n">initial</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(),</span> <span class="n">Novalue</span><span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.sum&quot;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_numpy_sum</span><span class="p">(</span>
+    <span class="n">dtype_x_axis</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">,</span>
+    <span class="n">keep_dims</span><span class="p">,</span>
+    <span class="n">initial</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">dtype_x_axis</span>
+    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">keepdims</span><span class="o">=</span><span class="n">keep_dims</span><span class="p">,</span>
+        <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
+        <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 <p>The function has three optional arguments which have the default value of
 <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code>, being: <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">keep_dims</span></code> and <code class="code docutils literal notranslate"><span class="pre">initial</span></code>.
 We therefore define a <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code> object <code class="code docutils literal notranslate"><span class="pre">Novalue</span></code>, and pass this as input
