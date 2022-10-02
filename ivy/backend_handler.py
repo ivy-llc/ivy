@@ -1,5 +1,4 @@
 # global
-import collections
 import ivy
 import logging
 import importlib
@@ -8,8 +7,7 @@ from ivy import verbosity
 from typing import Optional
 
 # local
-# from ivy.func_wrapper import _wrap_function
-from ivy.func_wrapper import _wrap_methods
+from ivy.func_wrapper import _wrap_function
 
 
 backend_stack = []
@@ -190,6 +188,7 @@ def current_backend(*args, **kwargs):
     Examples
     --------
     If no global backend is set, then the backend is inferred from the arguments:
+
     >>> import numpy as np
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
@@ -197,6 +196,7 @@ def current_backend(*args, **kwargs):
 
     The global backend set in set_backend has priority over any arguments
     passed to current_backend:
+
     >>> import numpy as np
     >>> ivy.set_backend("jax")
     >>> x = np.array([2.0])
@@ -268,15 +268,8 @@ def set_backend(backend: str):
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        # ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
-        specific_v = backend.__dict__[k]
-        ivy.__dict__[k] = specific_v
-        if isinstance(specific_v, collections.Hashable):
-            try:
-                ivy_original_fn_dict[specific_v] = v
-            except TypeError:
-                pass
-    _wrap_methods()
+        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
@@ -384,9 +377,6 @@ def unset_backend():
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
-            # if backend_stack and k in ivy.__dict__:
-            #     v = _wrap_function(k, v, ivy.__dict__[k])
-            # ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend
