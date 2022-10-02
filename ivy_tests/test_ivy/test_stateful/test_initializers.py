@@ -86,7 +86,6 @@ def test_zeros(
         ground_truth_backend="numpy",
     )
 
-    assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
     assert ivy.all(ivy.equal(ret_ivy, ivy.array(0.0)))
 
