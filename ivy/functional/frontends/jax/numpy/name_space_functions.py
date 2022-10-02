@@ -86,6 +86,14 @@ def concatenate(arrays, axis=0, dtype=None):
     return ret
 
 
+def dot(a, b, *, precision=None):
+    return ivy.matmul(a, b)
+
+
+def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
+    return ivy.einsum(equation=optimize, *operands, out=out)
+
+
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:
@@ -98,3 +106,13 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
 
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+
+def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
+    a = ivy.array(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype)

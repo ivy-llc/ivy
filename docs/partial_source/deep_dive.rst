@@ -73,7 +73,9 @@ We're excited for you to get involved!  🦾
 |
 | (s) :ref:`Exception Handling`
 | How to handle exceptions and assertions in a function ⚠️
-
+|
+| (t) :ref:`Continuous Integration (CI)`
+| Ivy Tests running on the Repository 🧪
 .. toctree::
    :hidden:
    :maxdepth: -1
@@ -98,3 +100,4 @@ We're excited for you to get involved!  🦾
    deep_dive/16_ivy_frontends.rst
    deep_dive/17_ivy_frontends_tests.rst
    deep_dive/18_exception_handling.rst
+   deep_dive/19_continuous_integration.rst

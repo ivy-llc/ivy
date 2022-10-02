@@ -76,7 +76,6 @@ def test_numpy_concatenate(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="concatenate",
         arrays=xs,
