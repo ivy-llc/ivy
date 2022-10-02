@@ -63,5 +63,11 @@ class ArrayWithNorms(abc.ABC):
 
         """
         return ivy.layer_norm(
-            self, normalized_idxs, epsilon, scale, offset, new_std, out=out
+            self,
+            normalized_idxs,
+            epsilon=epsilon,
+            scale=scale,
+            offset=offset,
+            new_std=new_std,
+            out=out,
         )

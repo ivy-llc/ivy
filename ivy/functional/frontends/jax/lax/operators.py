@@ -135,8 +135,16 @@ def eq(x, y):
     return ivy.equal(x, y)
 
 
+def erf(x):
+    return ivy.erf(x)
+
+
 def exp(x):
     return ivy.exp(x)
+
+
+def expand_dims(array, dimensions):
+    return ivy.expand_dims(array, axis=dimensions)
 
 
 def expm1(x):
@@ -205,6 +213,10 @@ def reciprocal(x):
     return ivy.reciprocal(x)
 
 
+def rem(x, y):
+    return ivy.remainder(ivy.abs(x), ivy.abs(y)) * ivy.sign(x)
+
+
 def reshape(operand, new_sizes, dimensions=None):
     if dimensions:
         operand = ivy.permute_dims(operand, dimensions)
@@ -221,6 +233,10 @@ def round(x):
 
 def rsqrt(x):
     return ivy.reciprocal(ivy.sqrt(x))
+
+
+def shift_left(x, y):
+    return ivy.bitwise_left_shift(x, y)
 
 
 def sign(x):
@@ -241,6 +257,14 @@ def sort(operand, dimension=-1, is_stable=True, num_keys=1):
 
 def sqrt(x):
     return ivy.sqrt(x)
+
+
+def square(x):
+    return ivy.square(x)
+
+
+def sub(x, y):
+    return ivy.subtract(x, y)
 
 
 def tan(x):

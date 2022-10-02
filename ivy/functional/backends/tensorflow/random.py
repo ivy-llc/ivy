@@ -41,6 +41,7 @@ def random_normal(
     std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
+    seed: Optional[int] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -49,7 +50,9 @@ def random_normal(
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
-        return tf.random.normal(shape, mean, std, dtype=dtype)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
 def multinomial(
@@ -63,8 +66,9 @@ def multinomial(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not replace:
-        raise Exception("TensorFlow does not support multinomial without replacement")
+    ivy.assertions.check_true(
+        replace, message="TensorFlow does not support multinomial without replacement"
+    )
     with tf.device(device):
         if probs is None:
             probs = (

@@ -1,13 +1,15 @@
-# For Review
 # global
+from __future__ import annotations
+import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
-
+from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
 import numpy as np
 
 # local
 import ivy
+from ivy import to_ivy, to_native
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
@@ -22,17 +24,110 @@ from ivy.func_wrapper import (
 # --------#
 
 
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-        and isinstance(fill_value, int)
-    ) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
-        fill_value, dtype
-    )
+def asarray_handle_nestable(fn: Callable) -> Callable:
+    fn_name = fn.__name__
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls `fn` with the *nestable* property of the function correctly handled.
+        This means mapping the function to the container leaves if any containers are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the nestable property handled correctly.
+        """
+        # This decorator should only be applied to ivy.asarray, so we know where
+        # the container must be if there is one.
+        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if isinstance(args[0], ivy.Container):
+            return cont_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    new_fn.handle_nestable = True
+    return new_fn
+
+
+def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        """
+        Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+        and return arrays are all converted to `ivy.Array` instances. This wrapper is
+        specifically for the backend implementations of asarray.
+        """
+        if isinstance(args[0], list):
+            return to_ivy(fn(*args, dtype=dtype, **kwargs))
+
+        # args is a tuple and therefore is immutable.
+        new_args = (to_native(args[0]),) + args[1:]
+        return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
+
+    return new_fn
+
+
+def asarray_infer_device(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, device=None, **kwargs):
+        """
+        Determines the correct `device`, and then calls the function with the `device`
+        passed explicitly. This wrapper is specifically for the backend implementations
+        of asarray.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        device
+            The device for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `device` passed explicitly.
+        """
+        if isinstance(args[0], list):
+            return fn(*args, device=ivy.default_device(as_native=True), **kwargs)
+
+        # find the first array argument, if required
+        arr = None if ivy.exists(device) else args[0]
+        # infer the correct device
+        device = ivy.default_device(device, item=arr, as_native=True)
+        # call the function with device provided explicitly
+        return fn(*args, device=device, **kwargs)
+
+    new_fn.infer_device = True
+    return new_fn
+
+
+# Type hints #
+# -----------#
+
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
+_T_co = TypeVar("_T_co", covariant=True)
+
+
+class NestedSequence(Protocol[_T_co]):
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
+        ...
+
+    def __len__(self, /) -> int:
+        ...
 
 
 # Array API Standard #
@@ -43,6 +138,7 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def arange(
     start: Number,
     /,
@@ -51,8 +147,8 @@ def arange(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns evenly spaced values within a given interval, with the spacing being
     specified.
 
@@ -93,37 +189,46 @@ def arange(
         output array must be ceil((stop-start)/step) if stop - start and step have the
         same sign, and length 0 otherwise.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
     )
 
 
-@to_native_arrays_and_back
 @handle_out_argument
-@infer_device
-@handle_nestable
+@handle_exceptions
 def asarray(
-    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    obj: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+    ],
     /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
     Parameters
     ----------
-    x
+    obj
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
     copy
@@ -142,17 +247,19 @@ def asarray(
     ret
         An array interpretation of x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
-    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+    return current_backend().asarray(
+        obj, copy=copy, dtype=dtype, device=device, out=out
+    )
 
 
 @outputs_to_ivy_arrays
@@ -160,6 +267,7 @@ def asarray(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -187,13 +295,14 @@ def zeros(
     ret
         an array containing zeros.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -214,6 +323,7 @@ def zeros(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -241,13 +351,14 @@ def ones(
     ret
         an array containing ones.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -268,6 +379,7 @@ def ones(
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -302,18 +414,19 @@ def full_like(
         an array having the same shape as ``x`` and where every element is equal to
         ``fill_value``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
-    With int datatype:
+    With :code:`int` datatype:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -335,7 +448,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With ivy.NativeArray input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3.0, 8.0])
     >>> fill_value = 0.000123
@@ -349,10 +462,9 @@ def full_like(
     ivy.array([[0.000123, 0.000123, 0.000123],
            [0.000123, 0.000123, 0.000123]])
 
-    With ivy.Container input:
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                           b=ivy.array([4.123,5.23,6.23]))
+    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -364,7 +476,7 @@ def full_like(
     Instance Method Examples:
     ------------------------
 
-    With ivy.Array input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -372,10 +484,9 @@ def full_like(
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
 
-    With ivy.Container input:
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1,2,3]), \
-                           b=ivy.array([4,5,6]))
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
     >>> fill_value = 10
     >>> y = x.full_like(fill_value)
     >>> print(y)
@@ -394,6 +505,7 @@ def full_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -424,13 +536,14 @@ def ones_like(
     ret
         an array having the same shape as x and filled with ones.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -449,6 +562,7 @@ def ones_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -479,81 +593,82 @@ def zeros_like(
     ret
         an array having the same shape as ``x`` and filled with ``zeros``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-        >>> y2 = ivy.zeros_like(x2)
-        >>> print(y2)
-        ivy.array([[0., 0., 0.],
-               [0., 0., 0.]])
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.zeros_like(x2)
+    >>> print(y2)
+    ivy.array([[0., 0., 0.],
+            [0., 0., 0.]])
 
-        >>> x3 = ivy.array([3., 2., 1.])
-        >>> y3 = ivy.ones(3)
-        >>> ivy.zeros_like(x3, out=y3)
-        ivy.array([0., 0., 0.])
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.ones(3)
+    >>> ivy.zeros_like(x3, out=y3)
+    ivy.array([0., 0., 0.])
 
-    With 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
-        >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-        >>> y1 = ivy.zeros_like(x1)
-        >>> print(y1)
-        ivy.array([[0, 0, 0],
-               [0, 0, 0]])
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.zeros_like(x1)
+    >>> print(y1)
+    ivy.array([[0, 0, 0],[0, 0, 0]])
 
 
-        >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-        >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-        >>> print(y2)
-        ivy.array([0, 0, 0, 0, 0, 0])
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([0, 0, 0, 0, 0, 0])
 
-        # Array ``y2`` is now stored on the CPU.
+    # Array ``y2`` is now stored on the CPU.
 
-    With 'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
-        >>> y = ivy.zeros_like(x)
-        >>> print(y)
-        {
-            a: ivy.array([0, 0, 0]),
-            b: ivy.array([0, 0, 0])
-        }
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 0, 0]),
+        b: ivy.array([0, 0, 0])
+    }
 
     Instance Method Examples
     -------------------
 
-    With 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
-        >>> x = ivy.array([2, 3, 8, 2, 1])
-        >>> y = x.zeros_like()
-        >>> print(y)
-        ivy.array([0, 0, 0, 0, 0])
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.zeros_like()
+    >>> print(y)
+    ivy.array([0, 0, 0, 0, 0])
 
-    With 'ivy.Container' input:
+    With :class:'ivy.Container' input:
 
-        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
-        >>> y = x.zeros_like()
-        >>> print(y)
-        {
-            a: ivy.array([0., 0.]),
-            b: ivy.array([0., 0.])
-        }
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.zeros_like()
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.]),
+        b: ivy.array([0., 0.])
+    }
+
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -561,6 +676,7 @@ def zeros_like(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -590,22 +706,24 @@ def tril(
         the same shape and data type as x. All elements above the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tril(x, k, out=out)
+    return current_backend(x).tril(x, k=k, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -635,17 +753,18 @@ def triu(
         the same shape and data type as x. All elements below the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).triu(x, k, out=out)
+    return current_backend(x).triu(x, k=k, out=out)
 
 
 @outputs_to_ivy_arrays
@@ -653,6 +772,7 @@ def triu(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -680,13 +800,14 @@ def empty(
     ret
         an uninitialized array having a specified shape
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -698,6 +819,7 @@ def empty(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -727,13 +849,14 @@ def empty_like(
     ret
         an array having the same shape as x and containing uninitialized data.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -745,12 +868,13 @@ def empty_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -782,13 +906,14 @@ def eye(
     ret
         device on which to place the created array. Default: None.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -802,6 +927,7 @@ def eye(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -813,7 +939,7 @@ def linspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
 
@@ -841,13 +967,14 @@ def linspace(
     ret
         Tensor of evenly-spaced values.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.linspace.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -865,8 +992,11 @@ def linspace(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -875,7 +1005,8 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
-
+    sparse
+        if True, a sparse grid is returned in order to conserve memory. Default: False.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -906,65 +1037,78 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
-        This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
-        in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-        instances in place of any of the arguments.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    in the standard.
 
-        Functional Examples
-        -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
-        With :code:`ivy.Array` input:
+    Functional Examples
+    -------------------
 
-        >>> x = ivy.array([1, 2])
-        >>> y = ivy.array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
+
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
+
+    >>> x = ivy.array([1, 2, 5])
+    >>> y = ivy.array([4, 1])
+    >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+    >>> print(xv)
+    ivy.array([[1, 1],
+            [2, 2],
+            [5, 5]])
+
+    >>> print(yv)
+    ivy.array([[4, 1],
+            [4, 1],
+            [4, 1]])
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
         >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
+        ivy.array([[1, 2, 3]])
 
         >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+        ivy.array([[4],
+                [5],
+                [6]])
 
-        >>> x = ivy.array([1, 2, 5])
-        >>> y = ivy.array([4, 1])
-        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
-        >>> print(xv)
-        ivy.array([[1, 1],
-               [2, 2],
-               [5, 5]])
+    With :class:`ivy.NativeArray` input:
 
-        >>> print(yv)
-        ivy.array([[4, 1],
-               [4, 1],
-               [4, 1]])
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
 
-        With :code:`ivy.NativeArray` input:
-
-        >>> x = ivy.native_array([1, 2])
-        >>> y = ivy.native_array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
-        >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
-
-        >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -999,19 +1143,20 @@ def full(
     ret
         an array where every element is equal to `fill_value`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
 
-    With :code:`ivy.Shape` input:
+    With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
     >>> fill_value = 8.6
@@ -1020,7 +1165,7 @@ def full(
     ivy.array([[8.6, 8.6],
                [8.6, 8.6]])
 
-    With :code:`ivy.NativeShape` input:
+    With :class:`ivy.NativeShape` input:
 
     >>> shape = ivy.NativeShape((2, 2, 2))
     >>> fill_value = True
@@ -1033,7 +1178,7 @@ def full(
                [[True,  True],
                 [True,  True]]])
 
-    With :code:`ivy.NativeDevice` input:
+    With :class:`ivy.NativeDevice` input:
 
     >>> shape = ivy.NativeShape((1, 2))
     >>> fill_value = 0.68
@@ -1043,7 +1188,7 @@ def full(
     >>> print(x)
     ivy.array([[0.68, 0.68]])
 
-    With :code:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
     >>> fill_value = ivy.Container(a=0.99, b=False)
@@ -1068,6 +1213,7 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1093,13 +1239,14 @@ def from_dlpack(
            The returned array may be either a copy or a view. See
            :ref:`data-interchange` for details.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.from_dlpack.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -1113,6 +1260,107 @@ def from_dlpack(
 array = asarray
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def copy_array(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Copy an array.
+
+    Parameters
+    ----------
+    x
+        array, input array containing elements to copy.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a copy of the input array ``x``.
+
+    Examples
+    --------
+    With one :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.array([1, 0, 1, -1])
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
+    >>> print(y)
+    ivy.array([1, 0, 1, -1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>> print(x)
+    ivy.array([1, 0, 1, 1])
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :class:`ivy.Container` static method:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :class:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    With :class:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1])
+    }
+
+    """
+    return current_backend(x).copy_array(x, out=out)
+
+
+@handle_exceptions
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1147,9 +1395,68 @@ def native_array(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@infer_device
+@handle_nestable
+@handle_exceptions
+def one_hot(
+    indices: Union[ivy.Array, ivy.NativeArray],
+    depth: int,
+    /,
+    *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a one-hot array. The locations represented by indices in the parameter
+    indices take value on_value, while all other locations take value off_value.
+
+    Parameters
+    ----------
+    indices
+        Indices for where the ones should be scattered *[batch_shape, dim]*
+    depth
+        Scalar defining the depth of the one-hot dimension.
+    on_value
+        Scalar defining the value to fill in output when indices[j] == i. Default: 1.
+    off_value
+        Scalar defining the value to fill in output when indices[j] != i. Default: 0.
+    axis
+        Axis to scatter on. The default is -1, a new inner-most axis is created.
+    dtype
+        The data type of the output tensor.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
+
+    """
+    return current_backend(indices).one_hot(
+        indices,
+        depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        device=device,
+        out=out,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
@@ -1161,7 +1468,7 @@ def logspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 
@@ -1180,6 +1487,10 @@ def logspace(
         The base of the log space. Default is 10.0
     axis
         Axis along which the operation is performed.
+    dtype
+        The data type of the output tensor. If None, the dtype of on_value is used or if
+        that is None, the dtype of off_value is used, or if that is None, defaults to
+        float32.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
@@ -1192,7 +1503,7 @@ def logspace(
         Tensor of evenly-spaced values.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """

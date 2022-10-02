@@ -1,4 +1,3 @@
-import numpy as np
 from hypothesis import given
 
 # local
@@ -17,12 +16,11 @@ def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_arr
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        with_out=False,
         as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.stop_gradient",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
