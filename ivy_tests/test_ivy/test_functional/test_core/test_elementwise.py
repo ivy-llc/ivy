@@ -631,6 +631,7 @@ def test_ceil(
         instance_method=instance_method,
         fw=fw,
         fn_name="ceil",
+        test_gradients=True,
         x=x[0],
     )
 
