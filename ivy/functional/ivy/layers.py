@@ -1424,3 +1424,74 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+        
+# average pooling #
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def avg_pool1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    ksize: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Performs the average pooling on the input.
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,w,d_in]*.
+    ksize
+        The size of the window for each dimension of the input tensor.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        The max pooled output tensor.
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
+    >>> ksize = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
+    >>> result = ivy.avg_pool1d(x, ksize, (1,), 'SAME', data_format='NWC')
+    >>> print(result)
+    ivy.array([[[0.], [3.], [0.]]])
+    With :class:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])
+    >>> ksize = ivy.native_array([[[0., 1.], [1., 0.]]])
+    >>> result = ivy.avg_pool1d(x, filters, (2,),'VALID')
+    >>> print(result)
+    ivy.array([[[3., 1.], \
+                [7., 5.]]])
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+    >>> x = ivy.Container(a= ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3],\
+                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \
+                          b= ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]]))
+    >>> ksize = ivy.array([[[1., 0., 1.], [0., 1., 0.], [1., 1., 0.]]])
+    >>> result  = ivy.avg_pool1d(x, filters, 3, 'VALID')
+    >>> print(result)
+    {
+            a: ivy.array([[[6., 7.9, 1.2], \
+                         [15.6, 11.7, 6.1]]]), \
+            b: ivy.array([[[15.4, 14.3, 8.8]]])
+    }
+    """
+    return current_backend(x).avg_pool1d(
+        x, ksize, strides, padding, data_format, out=out
+    )
