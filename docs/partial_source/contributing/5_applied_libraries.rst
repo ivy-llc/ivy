@@ -135,7 +135,13 @@ local directory:
 
 1. For **PyCharm**, configurations are saved in the :code:`.idea` folder (part of the ivy repo).
 
-2. For **VSCode**, configurations can be found in the :code:`.vscode` folder (not part of the ivy repo).
+2. For **VSCode**, configurations can be found in the :code:`.devcontainer` folder (not part of the ivy repo).
+
+**NOTE:** To use development container in VSCode, the extension "Remote - Containers"
+needs to be installed.
+
+**NOTE:** When using GitHub Codespaces, the :code:`mounts` config in
+:code:`.devcontainer/devcontainer.json` is not supported.
 
 **Round Up**
 

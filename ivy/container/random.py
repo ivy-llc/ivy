@@ -67,7 +67,7 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
@@ -82,7 +82,7 @@ class ContainerWithRandom(ContainerBase):
                           [17.4, 48.]])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([-1.0,-9.0,-3.4])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -299,6 +299,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.random_normal. This method
@@ -333,6 +334,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -344,7 +347,7 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
@@ -359,7 +362,7 @@ class ContainerWithRandom(ContainerBase):
                           [-9.35, -13.9]])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([-1.0,-9.0,-3.4])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -376,6 +379,7 @@ class ContainerWithRandom(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -395,6 +399,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.random_normal. This method
@@ -560,6 +565,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
@@ -759,7 +765,7 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
                               b=ivy.array([[0,2],[10,6]]))
@@ -773,7 +779,7 @@ class ContainerWithRandom(ContainerBase):
                           [16, 19]])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([-1,-9,3])
         >>> y = ivy.Container(a=ivy.array([4,7,9]),b=ivy.array([14,17,34]))
@@ -982,6 +988,7 @@ class ContainerWithRandom(ContainerBase):
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -996,6 +1003,8 @@ class ContainerWithRandom(ContainerBase):
         ----------
         x
             Input array or container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1018,6 +1027,7 @@ class ContainerWithRandom(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
             x,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1029,6 +1039,7 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1043,6 +1054,8 @@ class ContainerWithRandom(ContainerBase):
         ----------
         self
             Input container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1064,6 +1077,7 @@ class ContainerWithRandom(ContainerBase):
         """
         return self.static_shuffle(
             self,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
