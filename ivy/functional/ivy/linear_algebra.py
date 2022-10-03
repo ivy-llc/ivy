@@ -1389,38 +1389,6 @@ def slogdet(
         b: (list[2], <class ivy.array.array.Array> shape=[])
     }
 
-    With :code:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
-                                       [3.0, 4.0]]), \
-                          b=ivy.array([[1.0, 2.0],   \
-                                       [2.0, 1.0]]))
-
-    >>> y = ivy.Container.static_slogdet(x)
-    >>> print(y)
-    {
-        a: (list[2], <class ivy.array.array.Array> shape=[]),
-        b: (list[2], <class ivy.array.array.Array> shape=[])
-    }
-
-    With :code:`ivy.Array` instance methods:
-
-    >>> x = ivy.array([[1.0, 2.0], \
-                       [3.0, 4.0]])
-    >>> y = x.slogdet()
-    >>> print(y)
-    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
-
-    With :code:`ivy.Container` instance methods:
-
-    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], \
-                                       [3.0, 4.0]]))
-    >>> y = x.slogdet()
-    >>> print(y)
-    {
-        a: (list[2], <class ivy.array.array.Array> shape=[])
-    }
-
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
