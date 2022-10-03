@@ -164,7 +164,6 @@ def cumprod(
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -173,22 +172,21 @@ def cumprod(
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-
     if not (exclusive or reverse):
         return np.cumprod(x, axis, dtype=dtype, out=out)
-    elif exclusive and not reverse:
+    elif exclusive and reverse:
+        x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+        x = np.swapaxes(x, axis, -1)
+        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.swapaxes(x, axis, -1)
+        return np.flip(x, axis=axis)
+    elif exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
         x = np.cumprod(x, -1, dtype=dtype)
         return np.swapaxes(x, axis, -1)
-    elif reverse and not exclusive:
+    elif reverse:
         x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
-        return np.flip(x, axis=axis)
-    else:
-        x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
-        x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-        x = np.swapaxes(x, axis, -1)
         return np.flip(x, axis=axis)
 
 

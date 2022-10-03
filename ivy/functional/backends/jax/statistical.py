@@ -155,20 +155,21 @@ def cumprod(
             dtype = _infer_dtype(x.dtype)
     if not (exclusive or reverse):
         return jnp.cumprod(x, axis, dtype=dtype)
-    elif exclusive and not reverse:
-        x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-        x = jnp.cumprod(x, -1, dtype=dtype)
-        return jnp.swapaxes(x, axis, -1)
-    elif reverse and not exclusive:
-        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-        return jnp.flip(x, axis=axis)
-    else:
+    elif exclusive and reverse:
         x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
         x = jnp.swapaxes(x, axis, -1)
         return jnp.flip(x, axis=(axis,))
+
+    elif exclusive:
+        x = jnp.swapaxes(x, axis, -1)
+        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.cumprod(x, -1, dtype=dtype)
+        return jnp.swapaxes(x, axis, -1)
+    else:
+        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+        return jnp.flip(x, axis=axis)
 
 
 def cumsum(

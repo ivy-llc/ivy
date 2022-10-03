@@ -221,6 +221,12 @@ def cumprod(
 
     if not (exclusive or reverse):
         return torch.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive and reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        x = torch.transpose(x, axis, -1)
+        x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        return torch.flip(x, dims=(axis,))
     elif exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
@@ -228,12 +234,6 @@ def cumprod(
         return torch.transpose(x, axis, -1)
     elif reverse:
         x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-        return torch.flip(x, dims=(axis,))
-    else:
-        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-        x = torch.transpose(x, axis, -1)
-        x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-        x = torch.transpose(x, axis, -1)
         return torch.flip(x, dims=(axis,))
 
 
