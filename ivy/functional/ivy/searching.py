@@ -1,15 +1,16 @@
 # global
+from numbers import Number
 from typing import Union, Optional, Tuple
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -55,10 +56,20 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -70,30 +81,23 @@ def argmax(
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], \
-                     [-2., 3., 2.]])
+    >>> x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis= 1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
     >>> y = ivy.argmax(x, axis= 1, keepdims= True)
     >>> print(y)
-    ivy.array([[0], \
-              [2]])
+    ivy.array([[0], [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6], \
-                     [2., -3., 6]])
+    >>> x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
     >>> z= ivy.zeros((1,3), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
     >>> print(z)
-    ivy.array([[0], \
-               [2], \
-               [2]])
+    ivy.array([[0],[2],[2]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -103,7 +107,7 @@ def argmax(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.argmax()
@@ -153,10 +157,20 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -184,7 +198,7 @@ def argmin(
                [1]])
 
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -192,7 +206,7 @@ def argmin(
     ivy.array(2)
 
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
@@ -203,14 +217,14 @@ def argmin(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = x.argmin()
     >>> print(y)
     ivy.array(2)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
@@ -223,7 +237,14 @@ def argmin(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -231,6 +252,19 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
+    as_tuple
+        if True, the output is returned as a tuple of indices, one for each
+        dimension of the input, containing the indices of the true elements in that
+        dimension. If False, the coordinates are returned in a (N, ndim) array,
+        where N is the number of true elements. Default = True.
+    size
+        if specified, the function will return an array of shape (size, ndim).
+        If the number of non-zero elements is fewer than size, the remaining elements
+        will be filled with fill_value. Default = None.
+    fill_value
+        when size is specified and there are fewer than size number of elements,
+        the remaining elements in the output array will be filled with fill_value.
+        Default = 0.
 
     Returns
     -------
@@ -241,10 +275,20 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
         row-major, C-style order. The returned array must have the default array index
         data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
     >>> y = ivy.nonzero(x)
@@ -256,7 +300,17 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
 
-    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.array([[0, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x, as_tuple=False)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([0, 1])
+    >>> y = ivy.nonzero(x, size=2, fill_value=4)
+    >>> print(y)
+    (ivy.array([1, 4]),)
+
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
@@ -268,7 +322,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
     >>> y = ivy.nonzero(x)
@@ -287,14 +341,14 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
     >>> y = x.nonzero()
@@ -310,7 +364,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x)
+    return current_backend(x).nonzero(
+        x, as_tuple=as_tuple, size=size, fill_value=fill_value
+    )
 
 
 @to_native_arrays_and_back
@@ -345,10 +401,20 @@ def where(
         An array with elements from x1 where condition is True, and elements from x2
         elsewhere.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
 
-    With `ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
@@ -357,7 +423,7 @@ def where(
     >>> print(res)
     ivy.array([[1,6],[3,4]])
 
-    With `ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> condition = ivy.array([[True, False], [False, True]])
     >>> x1 = ivy.native_array([[1, 2], [3, 4]])
@@ -366,7 +432,7 @@ def where(
     >>> print(res)
     array([[1, 6], [7, 4]])
 
-    With a mix of `ivy.Array` and `ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
     >>> x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
@@ -374,7 +440,7 @@ def where(
     >>> print(res)
     ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
 
-    With `ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
@@ -385,7 +451,7 @@ def where(
         b: ivy.array([3, 8, 6])
     }
 
-    With a mix of `ivy.Array` and `ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))
@@ -399,7 +465,7 @@ def where(
     Instance Method Examples
     -------------------
 
-    With `ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
@@ -408,7 +474,7 @@ def where(
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
 
-    With `ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))

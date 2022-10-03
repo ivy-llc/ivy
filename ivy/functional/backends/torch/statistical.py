@@ -94,10 +94,10 @@ def prod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if axis is None:
-        axis = 0
     if axis == ():
         return x.type(dtype)
+    if axis is None:
+        return torch.prod(input=x, dtype=dtype)
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
             x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)

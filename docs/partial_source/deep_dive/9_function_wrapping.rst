@@ -39,17 +39,17 @@ might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :re
 
 Following are some of the wrapping functions currently used:
 
-#.  `inputs_to_native_arrays`_ : This wrapping function converts all :code:`ivy.Array` instances in the arguments
-    to their :code:`ivy.NativeArray` counterparts, based on the :ref:`Backend Setting` before calling the function.
-#.  `inputs_to_ivy_arrays`_ : This wrapping function converts all :code:`ivy.NativeArray` instances in the arguments
-    to their :code:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
-#.  `outputs_to_ivy_arrays`_ : This wrapping function converts all :code:`ivy.NativeArray` instances in the outputs
-    to their :code:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
-#.  `to_native_arrays_and_back`_ : This wrapping function converts all :code:`ivy.Array` instances in the arguments
-    to their :code:`ivy.NativeArray` counterparts, calls the function with those arguments and then converts the 
-    :code:`ivy.NativeArray` instances in the output back to :code:`ivy.Array`. This wrapping function is heavily used because
-    it enables achieving the objective of ensuring that every ivy function could accept an :code:`ivy.Array` and return
-    an :code:`ivy.Array`, making it independent of the :ref:`Backend Setting`.
+#.  `inputs_to_native_arrays`_ : This wrapping function converts all :class:`ivy.Array` instances in the arguments
+    to their :class:`ivy.NativeArray` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `inputs_to_ivy_arrays`_ : This wrapping function converts all :class:`ivy.NativeArray` instances in the arguments
+    to their :class:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `outputs_to_ivy_arrays`_ : This wrapping function converts all :class:`ivy.NativeArray` instances in the outputs
+    to their :class:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `to_native_arrays_and_back`_ : This wrapping function converts all :class:`ivy.Array` instances in the arguments
+    to their :class:`ivy.NativeArray` counterparts, calls the function with those arguments and then converts the
+    :class:`ivy.NativeArray` instances in the output back to :class:`ivy.Array`. This wrapping function is heavily used because
+    it enables achieving the objective of ensuring that every ivy function could accept an :class:`ivy.Array` and return
+    an :class:`ivy.Array`, making it independent of the :ref:`Backend Setting`.
 #.  `infer_dtype`_ : This wrapping function infers the `dtype` argument to be passed to a function based on the 
     array arguments passed to it. If :code:`dtype` is explicitly passed to the function, then it is used directly. This
     wrapping function could be found in functions from the `creation submodule`_ such as `zeros`_ where we then
@@ -63,11 +63,11 @@ Following are some of the wrapping functions currently used:
     argument for a function, we prefer to use it as it's a more efficient implementation of the :code:`out` argument for 
     that particular backend framework. But in cases when it isn't supported, we support it anyway with 
     :ref:`Inplace Updates`.
-#.  `handle_nestable`_ : This wrapping function enables the use of :code:`ivy.Container` arguments in functions and
-    directly calling them through the :code:`ivy` namespace, just like calling a function with :code:`ivy.Array` arguments 
-    instead. Whenever there's a :code:`ivy.Container` argument, this wrapping function defers to the corresponding
+#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and
+    directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments
+    instead. Whenever there's a :class:`ivy.Container` argument, this wrapping function defers to the corresponding
     :ref:`Containers` static method to facilitate the same. As a result, the function can be called by passing
-    an :code:`ivy.Container` to any or all of its arguments.
+    an :class:`ivy.Container` to any or all of its arguments.
 #.  `integer_array_to_float`_: This wrapping function enables conversion of integer array inputs in the positional and keyword
     arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
     for which one or more backend frameworks only non-integer numeric dtypes.

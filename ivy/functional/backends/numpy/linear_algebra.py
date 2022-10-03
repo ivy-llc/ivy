@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -101,9 +101,8 @@ def inv(
             ret = np.linalg.inv(x)
             return ret
         else:
-            cofactor = np.linalg.inv(x).T * np.linalg.det(x)
-            inverse = np.multiply(np.divide(1, np.linalg.det(x)), cofactor.T)
-            ret = inverse
+            x = np.transpose(x)
+            ret = np.linalg.inv(x)
             return ret
 
 
@@ -114,8 +113,18 @@ inv.unsupported_dtypes = (
 
 
 def matmul(
-    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if transpose_a is True:
+        x1 = np.transpose(x1)
+    if transpose_b is True:
+        x2 = np.transpose(x2)
     ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
         ret = np.array(ret)
@@ -206,6 +215,7 @@ qr.unsupported_dtypes = ("float16",)
 
 def slogdet(
     x: np.ndarray,
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -215,6 +225,7 @@ def slogdet(
     logabsdet = (
         np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
     )
+
     return results(sign, logabsdet)
 
 
