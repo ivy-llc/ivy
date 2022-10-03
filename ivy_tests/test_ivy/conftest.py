@@ -12,7 +12,7 @@ from ivy_tests.test_ivy import helpers
 
 
 r = None
-if "REDIS_URL" in os.environ:
+if os.environ["REDIS_URL"] and os.environ["REDIS_PASSWD"]:
     r = redis.Redis.from_url(
         os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
     )
