@@ -1644,6 +1644,7 @@ def test_positive(
         instance_method=instance_method,
         fw=fw,
         fn_name="positive",
+        test_gradients=True,
         x=x[0],
     )
 
