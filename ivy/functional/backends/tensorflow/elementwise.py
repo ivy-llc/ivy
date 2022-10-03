@@ -47,7 +47,7 @@ def add(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        x2 = alpha * x2
+        x2 = multiply(x2, alpha)
     return tf.add(x1, x2)
 
 
@@ -105,7 +105,7 @@ def bitwise_and(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_and(x1, x2)
     else:
@@ -131,7 +131,7 @@ def bitwise_left_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
@@ -143,7 +143,7 @@ def bitwise_or(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_or(x1, x2)
     else:
@@ -157,7 +157,7 @@ def bitwise_right_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
@@ -169,7 +169,7 @@ def bitwise_xor(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_xor(x1, x2)
     else:
@@ -607,7 +607,7 @@ def subtract(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        x2 = x2 * alpha
+        x2 = multiply(x2, alpha)
     return tf.subtract(x1, x2)
 
 

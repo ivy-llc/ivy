@@ -38,6 +38,13 @@ def execute_with_gradients(func, xs, retain_grads=False):
     y = ivy.to_native(y)
     grads = tape.gradient(y, ivy.to_native(xs))
     grads = ivy.to_ivy(grads)
+    if isinstance(grads, ivy.Container):
+        arrays = {
+            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
+        }
+        grads = ivy.Container(**arrays)
+    else:
+        grads = ivy.zeros_like(xs) if grads is None else grads
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)

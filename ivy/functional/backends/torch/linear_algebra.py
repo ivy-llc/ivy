@@ -140,9 +140,8 @@ def inv(
             ret = torch.inverse(x, out=out)
             return ret
         else:
-            cofactor = torch.linalg.inv(x).T * torch.linalg.det(x)
-            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), cofactor.T)
-            ret = inverse
+            x = torch.t(x)
+            ret = torch.inverse(x, out=out)
             if ivy.exists(out):
                 return ivy.inplace_update(out, ret)
             return ret
@@ -157,8 +156,18 @@ inv.support_native_out = True
 
 
 def matmul(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if transpose_a is True:
+        x1 = torch.t(x1)
+    if transpose_b is True:
+        x2 = torch.t(x2)
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
@@ -270,7 +279,7 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x, out=out)

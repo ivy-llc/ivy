@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -31,10 +30,9 @@ def test_numpy_correlate(
     native_array,
     fw,
 ):
-    (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
-    input_dtype = [input_dtype_x, input_dtype_y]
+    input_dtypes, xs = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -42,7 +40,7 @@ def test_numpy_correlate(
         fw=fw,
         frontend="numpy",
         fn_tree="correlate",
-        a=np.asarray(x, dtype=input_dtype[0]),
-        v=np.asarray(y, dtype=input_dtype[1]),
+        a=xs[0],
+        v=xs[1],
         mode=mode,
     )

@@ -1,50 +1,12 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
-
-@st.composite
-def statistical_dtype_values(draw, *, function):
-    max_op = "linear"
-    if function in ["mean", "prod", "std", "sum", "var"]:
-        max_op = "log"
-    dtype, values, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
-            large_abs_safety_factor=4,
-            small_abs_safety_factor=2,
-            safety_factor_scale=max_op,
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=2,
-            valid_axis=True,
-            allow_neg_axes=False,
-            min_axes_size=1,
-        )
-    )
-    if function in ["std", "var"]:
-        shape = np.asarray(values, dtype=dtype).shape
-        size = np.asarray(values, dtype=dtype).size
-        max_correction = np.min(shape)
-        if size == 1:
-            correction = 0
-        elif isinstance(axis, int):
-            correction = draw(
-                helpers.ints(min_value=0, max_value=shape[axis] - 1)
-                | helpers.floats(min_value=0, max_value=shape[axis] - 1)
-            )
-            return dtype, values, axis, correction
-        else:
-            correction = draw(
-                helpers.ints(min_value=0, max_value=max_correction - 1)
-                | helpers.floats(min_value=0, max_value=max_correction - 1)
-            )
-        return dtype, values, axis, correction
-    return dtype, values, axis
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 
 
 @handle_cmd_line_args
@@ -55,7 +17,6 @@ def statistical_dtype_values(draw, *, function):
         shared_dtype=True,
         allow_inf=False,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.dist"
     ),
@@ -72,16 +33,15 @@ def test_torch_dist(
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="dist",
-        input=np.asarray(input[0], dtype=input_dtype[0]),
-        other=np.asarray(input[1], dtype=input_dtype[1]),
+        input=input[0],
+        other=input[1],
         p=p,
     )
 
@@ -115,10 +75,9 @@ def test_torch_argmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="argmax",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
     )
@@ -153,10 +112,9 @@ def test_torch_argmin(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="argmin",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
     )
@@ -191,10 +149,9 @@ def test_torch_amax(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="amax",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
         out=None,
@@ -230,10 +187,9 @@ def test_torch_amin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="amin",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
         out=None,
@@ -270,10 +226,9 @@ def test_torch_all(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="all",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
         out=None,
@@ -310,10 +265,9 @@ def test_torch_any(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="any",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
         out=None,
@@ -344,10 +298,9 @@ def test_torch_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="mean",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         keepdim=keepdims,
         out=None,
@@ -378,10 +331,9 @@ def test_torch_std(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="std",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         unbiased=bool(correction),
         keepdim=keepdims,
@@ -423,10 +375,9 @@ def test_torch_prod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="prod",
-        input=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         dim=axis,
         dtype=dtype,
         keepdim=keepdims,
@@ -458,10 +409,9 @@ def test_torch_var(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="var",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         unbiased=bool(correction),
         keepdim=keepdims,

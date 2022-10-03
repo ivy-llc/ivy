@@ -1,5 +1,6 @@
 # global
 import ivy
+import numpy as np
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
@@ -88,6 +89,20 @@ class matrix:
     def dtype(self, dtype):
         self._data = ivy.astype(self._data, dtype)
         self._dtype = self._data.dtype
+
+    # Built-ins #
+    # --------- #
+
+    def __repr__(self):
+        sig_fig = ivy.array_significant_figures()
+        dec_vals = ivy.array_decimal_values()
+        rep = (
+            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
+            if self.size > 0
+            else ivy.to_numpy(self._data)
+        )
+        with np.printoptions(precision=dec_vals):
+            return "ivy.matrix(" + str(self._data.to_list()) + ")"
 
     # Instance Methods #
     # ---------------- #

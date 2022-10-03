@@ -90,3 +90,25 @@ def softplus(
 
 
 softplus.support_native_out = True
+
+
+@_handle_0_dim_output
+def log_softmax(
+    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x_max = np.max(x, axis=axis, keepdims=True)
+    if x_max.ndim > 0:
+        x_max[~np.isfinite(x_max)] = 0
+    elif not np.isfinite(x_max):
+        x_max = 0
+    exp_tmp = np.exp(x - x_max)
+
+    with np.errstate(divide="ignore"):
+        s = np.sum(exp_tmp, axis=axis, keepdims=True)
+        ret = np.log(s)
+
+    ret = x - x_max - ret
+    return ret
+
+
+log_softmax.support_native_out = True

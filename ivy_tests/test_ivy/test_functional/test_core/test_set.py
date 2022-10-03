@@ -44,7 +44,7 @@ def test_unique_values(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_values",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -83,7 +83,7 @@ def test_unique_all(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_all",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -122,7 +122,7 @@ def test_unique_counts(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_counts",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -161,5 +161,5 @@ def test_unique_inverse(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_inverse",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
