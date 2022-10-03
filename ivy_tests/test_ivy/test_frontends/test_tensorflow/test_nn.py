@@ -238,7 +238,6 @@ def test_tensorflow_atrous_conv2d(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.atrous_conv2d",
         value=x,
@@ -284,7 +283,6 @@ def test_tensorflow_atrous_conv2d_transpose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.atrous_conv2d_transpose",
         value=x,
@@ -319,7 +317,6 @@ def test_tensorflow_conv1d(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv1d",
         input=x,
@@ -366,7 +363,6 @@ def test_tensorflow_conv1d_transpose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv1d_transpose",
         input=x,
@@ -404,7 +400,6 @@ def test_tensorflow_gelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.gelu",
         features=x[0],
@@ -431,10 +426,9 @@ def test_tensorflow_conv2d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv2d",
         input=x,
@@ -475,10 +469,9 @@ def test_tensorflow_conv2d_transpose(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv2d_transpose",
         input=x,
@@ -512,10 +505,9 @@ def test_tensorflow_conv3d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv3d",
         input=x,
@@ -558,10 +550,9 @@ def test_tensorflow_conv3d_transpose(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv3d_transpose",
         input=x,
@@ -604,10 +595,9 @@ def test_tensorflow_batch_normalization(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nn.batch_normalization",
         x=x[0],
@@ -616,4 +606,41 @@ def test_tensorflow_batch_normalization(
         offset=offset[0],
         scale=scale[0],
         variance_epsilon=1e-7,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        shape=(3, 5),
+    ),
+    prob=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.dropout"
+    ),
+)
+def test_tensorflow_dropout(
+    dtype_and_x,
+    prob,
+    scale,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype] * 2,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.dropout",
+        x=x[0],
+        prob=prob,
+        scale=scale,
     )

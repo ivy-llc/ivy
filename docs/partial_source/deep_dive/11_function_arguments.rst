@@ -29,7 +29,7 @@ Examples
 --------
 
 For the purposes of explanation, we will use four functions as examples:
-:func:`ivy.tan`, :code:`ivy.roll`, :code:`ivy.add` and :code:`ivy.zeros`.
+:func:`ivy.tan`, :func:`ivy.roll`, :func:`ivy.add` and :func:`ivy.zeros`.
 
 We present both the Ivy API signature and also a backend-specific signature for each function:
 
@@ -180,7 +180,7 @@ numbers (float or :code:`int`) passed into any of the array inputs,
 even in the absence of any arrays.
 For example, :code:`ivy.add(1, 2)`, :code:`ivy.add(1.5, 2)` and
 :code:`ivy.add(1.5, ivy.array([2]))` should all run without error.
-Therefore, the type hints for :code:`ivy.add` include float as one of the types
+Therefore, the type hints for :func:`ivy.add` include float as one of the types
 in the :code:`Union` for the array inputs,
 and also as one of the types in the :code:`Union` for the output.
 `PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_
@@ -197,8 +197,8 @@ we accept arbitrary integer sequences :code:`Sequence[int]` for such arguments
 (which includes :code:`list`, :code:`tuple` etc.).
 This does not break the standard, as the standard is only intended to define a subset of required behaviour.
 The standard can be freely extended, as we are doing here.
-Good examples of this are the :code:`axis` argument of :code:`ivy.roll`
-and the :code:`shape` argument of :code:`ivy.zeros`, as shown above.
+Good examples of this are the :code:`axis` argument of :func:`ivy.roll`
+and the :code:`shape` argument of :func:`ivy.zeros`, as shown above.
 
 Nestable Functions
 ------------------

@@ -84,7 +84,7 @@ to handle functions in the :code:`try/except` block.
         return new_fn
 
 The decorator is then added to each function for wrapping.
-Let's look at an example of :code:`ivy.all`.
+Let's look at an example of :func:`ivy.all`.
 
 .. code-block:: python
 

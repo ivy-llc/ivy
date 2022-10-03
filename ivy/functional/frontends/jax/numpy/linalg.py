@@ -19,3 +19,8 @@ def eigh(a, UPLO="L", symmetrize_input=True):
         a = symmetrize(a)
 
     return ivy.eigh(a, UPLO=UPLO)
+
+
+# eigvalsh
+def eigvalsh(a, UPLO="L"):
+    return ivy.eigvalsh(a, UPLO=UPLO)

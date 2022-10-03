@@ -34,11 +34,11 @@ Device Module
 
 The `device.py`_ module provides a variety of functions for working with devices.
 A few examples include
-:code:`ivy.get_all_ivy_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
-:code:`ivy.dev` which gets the device for input array,
-and :code:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
+:func:`ivy.get_all_ivy_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
+:func:`ivy.dev` which gets the device for input array,
+and :func:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
 
-Many functions in the :code:`device.py` module are *convenience* functions,
+Many functions in the :mod:`device.py` module are *convenience* functions,
 which means that they do not directly modify arrays,
 as explained in the :ref:`Function Types` section.
 
@@ -59,10 +59,10 @@ Like with :code:`dtype`, all :code:`device` arguments are also keyword-only.
 All creation functions include the :code:`device` argument,
 for specifying the device on which to place the created array.
 Some other functions outside of the :code:`creation.py` submodule also support the :code:`device` argument,
-such as :code:`ivy.random_uniform` which is located in :code:`random.py`,
+such as :func:`ivy.random_uniform` which is located in :mod:`random.py`,
 but this is simply because of dual categorization.
-:code:`ivy.random_uniform` is also essentially a creation function,
-despite not being located in :code:`creation.py`.
+:func:`ivy.random_uniform` is also essentially a creation function,
+despite not being located in :mod:`creation.py`.
 
 The :code:`device` argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
@@ -79,11 +79,11 @@ Overall, `ivy.default_device`_ infers the device as follows:
 
 #. if the :code:`device` argument is provided, use this directly
 #. otherwise, if an array is present in the arguments (very rare if the :code:`device` argument is present), \
-   set :code:`arr` to this array. This will then be used to infer the device by calling :code:`ivy.dev` on the array
+   set :code:`arr` to this array. This will then be used to infer the device by calling :func:`ivy.dev` on the array
 #. otherwise, if no arrays are present in the arguments (by far the most common case if the :code:`device` argument is present), \
    then use the global default device, \
    which currently can either be :code:`cpu`, :code:`gpu:idx` or :code:`tpu:idx`. \
-   The default device is settable via :code:`ivy.set_default_device`.
+   The default device is settable via :func:`ivy.set_default_device`.
 
 For the majority of functions which defer to `infer_device`_ for handling the device,
 these steps will have been followed and the :code:`device` argument will be populated with the correct value
@@ -94,7 +94,7 @@ the argument is listed as required in the backend-specific implementations at
 
 This is exactly the same as with the :code:`dtype` argument, as explained in the :ref:`Data Types` section.
 
-Let's take a look at the function :code:`ivy.zeros` as an example.
+Let's take a look at the function :func:`ivy.zeros` as an example.
 
 The implementation in :mod:`ivy/functional/ivy/creation.py` has the following signature:
 
@@ -164,7 +164,7 @@ has been determined.
 However, the :code:`device` argument for functions without the :code:`@infer_device` decorator
 is **not** handled by `infer_device`_,
 and so these defaults must be handled by the backend-specific implementations themselves,
-by calling :code:`ivy.default_device` internally.
+by calling :func:`ivy.default_device` internally.
 
 **Round Up**
 

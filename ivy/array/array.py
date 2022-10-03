@@ -188,6 +188,11 @@ class Array(
     # Built-ins #
     # ----------#
 
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs={}):
+        args, kwargs = args_to_native(*args, **kwargs)
+        return func(*args, **kwargs)
+
     @_native_wrapper
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
@@ -299,7 +304,7 @@ class Array(
 
     @_native_wrapper
     def __rpow__(self, power):
-        return self._data.__rpow__(power)
+        return ivy.pow(power, self._data)
 
     @_native_wrapper
     def __ipow__(self, power):
@@ -437,7 +442,7 @@ class Array(
 
     @_native_wrapper
     def __isub__(self, other):
-        return ivy.add(self._data, other)
+        return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __mul__(self, other):

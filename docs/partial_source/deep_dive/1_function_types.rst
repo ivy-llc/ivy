@@ -83,7 +83,7 @@ The backend-specific implementation of :func:`ivy.tan`  for PyTorch in
         return torch.tan(x, out=out)
 
 The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch
-implementation has :code:`torch.Tensor` is explained in the :ref:`Arrays` section.
+implementation has :class:`torch.Tensor` is explained in the :ref:`Arrays` section.
 Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :class:`ivy.Array`
 whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the :ref:`Arrays` section.
 
@@ -97,7 +97,7 @@ which themselves can be either compositional, primary or mixed (explained below)
 Therefore, compositional functions are only implemented in :mod:`ivy/functional/ivy/category_name.py`, and there are no
 implementations in any of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`
 
-For example, the implementation of :code:`ivy.cross_entropy` in :mod:`ivy/functional/ivy/losses.py`
+For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functional/ivy/losses.py`
 (with docstrings removed) is given below:
 
 .. code-block:: python
@@ -126,7 +126,7 @@ a compositional implementation is also provided in :mod:`ivy/functional/ivy/cate
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are referred to as *mixed*.
 
-When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
+When using ivy without a backend set explicitly (for example :func:`ivy.set_backend` has not been called),
 then the function called is always the one implemented in :mod:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
 will call the backend-specific implementation in :mod:`ivy/functional/backends/backend_name/category_name.py`
@@ -135,7 +135,7 @@ directly. However, as just explained, *mixed* functions implement a compositiona
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using :code:`ivy.set_backend()` for example),
+Typically the backend should always be set explicitly though (using :func:`ivy.set_backend` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Standalone Functions

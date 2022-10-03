@@ -239,3 +239,11 @@ def hardtanh_(input, min_val=-1.0, max_val=1.0):
     ret = ivy.where(ivy.greater(input, max_val), max_val, less)
     ivy.inplace_update(input, ret)
     return input
+
+
+def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
+    abs_square = ivy.pow(ivy.abs(input), p)
+    sum_ = ivy.sum(abs_square, axis=dim, keepdims=True)
+    pnorm_res = ivy.pow(sum_, 1.0 / p)
+    max_ = ivy.maximum(pnorm_res, eps)
+    return ivy.divide(input, max_, out=out)
