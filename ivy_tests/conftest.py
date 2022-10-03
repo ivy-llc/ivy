@@ -5,7 +5,7 @@ from hypothesis.extra.redis import RedisExampleDatabase
 from pytest import mark
 from pathlib import Path
 
-if "REDIS_URL" in os.environ:
+if os.environ["REDIS_URL"] and os.environ["REDIS_PASSWD"]:
     r = redis.Redis.from_url(
         os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
     )
