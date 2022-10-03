@@ -157,3 +157,48 @@ def test_sinc(
         fn_name="sinc",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+# collapse_repeated
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="collapse_repeated"),
+)
+def test_collapse_repeated(
+    dtype_x,
+    labels,
+    seq_length,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    labels=labels,
+    seq_length=seq_length,
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="collapse_repeated",
+        x=x[0],
+        labels=labels,
+        seq_length=seq_length
+    )
+    
