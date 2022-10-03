@@ -1444,6 +1444,7 @@ def avg_pool1d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Performs the average pooling on the input.
+    
     Parameters
     ----------
     x
@@ -1460,10 +1461,12 @@ def avg_pool1d(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+        
     Returns
     -------
     ret
         The max pooled output tensor.
+        
     Examples
     --------
     With :class:`ivy.Array` input:
