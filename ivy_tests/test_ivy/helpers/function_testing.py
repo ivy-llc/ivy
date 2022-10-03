@@ -568,12 +568,17 @@ def test_frontend_function(
         # check if passed reference is correctly updated
         kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
-        flatten_ret = flatten(ret=ret)
-        flatten_out = flatten(ret=out)
-        for ret_array, out_array in zip(flatten_ret, flatten_out):
+        if is_ret_tuple:
+            flatten_ret = flatten(ret=ret)
+            flatten_out = flatten(ret=out)
+            for ret_array, out_array in zip(flatten_ret, flatten_out):
+                if ivy.native_inplace_support:
+                    assert ret_array.data is out_array.data
+                assert ret_array is out_array
+        else:
             if ivy.native_inplace_support:
-                assert ret_array.data is out_array.data
-            assert ret_array is out_array
+                assert ret.data is out.data
+            assert ret is out
     elif with_inplace:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
