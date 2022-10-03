@@ -19,9 +19,8 @@ def test_numpy_random(input_dtypes, num_positional_args, size, fw, native_array)
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        test_values=False,
-        fw=fw,
         frontend="numpy",
         fn_tree="random.random",
+        test_values=False,
         size=size,
     )

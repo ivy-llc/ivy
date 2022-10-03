@@ -178,7 +178,6 @@ def test_numpy_arcsinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="arcsinh",
         x=x[0],
