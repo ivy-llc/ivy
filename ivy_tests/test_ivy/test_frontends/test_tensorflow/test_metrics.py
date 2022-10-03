@@ -139,7 +139,6 @@ def test_tensorflow_binary_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_accuracy",
         y_true=x[0],
@@ -185,7 +184,6 @@ def test_sparse_categorical_crossentropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_categorical_crossentropy",
         y_true=y_true,
@@ -219,7 +217,6 @@ def test_tensorflow_mean_absolute_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_error",
         y_true=x[0],
@@ -268,7 +265,6 @@ def test_binary_crossentropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_crossentropy",
         y_true=y_true,
@@ -303,7 +299,6 @@ def test_sparse_top_k_categorical_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_top_k_categorical_accuracy",
         y_true=y_true,
@@ -338,7 +333,6 @@ def test_categorical_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.categorical_accuracy",
         y_true=y[0],
@@ -369,7 +363,6 @@ def test_tensorflow_kl_divergence(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.kl_divergence",
         y_true=x[0],
@@ -400,7 +393,6 @@ def test_tensorflow_poisson(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.poisson",
         y_true=x[0],
@@ -433,7 +425,6 @@ def test_tensorflow_mean_squared_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_error",
         y_true=x[0],
@@ -466,7 +457,6 @@ def test_tensorflow_mean_absolute_percentage_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_percentage_error",
         y_true=x[0],
@@ -497,7 +487,6 @@ def test_tensorflow_hinge(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.hinge",
         y_pred=y_pred,
@@ -528,7 +517,6 @@ def test_tensorflow_squared_hinge(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.squared_hinge",
         y_pred=y_pred,
@@ -563,9 +551,51 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_logarithmic_error",
         y_true=x[0],
         y_pred=x[1],
+    )
+
+
+# Cosine Similarity
+@handle_cmd_line_args
+@given(
+    d_type=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), shared_dtype=True, num_arrays=2
+    ),
+    y_true=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=1, max_value=5
+    ),
+    y_pred=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
+    ),
+)
+def test_tensorflow_cosine_similarity(
+    d_type,
+    y_true,
+    y_pred,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    with_out,  # noqa: E501
+):
+    dtype = d_type
+    y_true = y_true
+    y_pred = y_pred
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.cosine_similarity",
+        y_true=y_true,
+        y_pred=y_pred,
     )
