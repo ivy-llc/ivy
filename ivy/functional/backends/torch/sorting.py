@@ -56,21 +56,28 @@ def searchsorted(
     ret_dtype=torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(ret_dtype)
-    if dtype is torch.int64:
-        ret_int32 = False
-    elif dtype is torch.int32:
-        ret_int32 = True
-    else:
-        raise ValueError("only int32 and int64 are supported for ret_dtype.")
-    return torch.searchsorted(
-        x,
-        v,
-        sorter=sorter,
-        side=side,
-        out_int32=ret_int32,
-        out=out,
+    assert ivy.is_int_dtype(ret_dtype), ValueError(
+        "only Integer data types are supported for ret_dtype."
     )
+    if ret_dtype is torch.int64:
+        return torch.searchsorted(
+            x,
+            v,
+            sorter=sorter,
+            side=side,
+            out_int32=False,
+            out=out,
+        )
+    elif ret_dtype is torch.int32:
+        return torch.searchsorted(
+            x,
+            v,
+            sorter=sorter,
+            side=side,
+            out_int32=True,
+            out=out,
+        )
+    return torch.searchsorted(x, v, sorter=sorter, side=side, out=out).to(ret_dtype)
 
 
 searchsorted.support_native_out = True
