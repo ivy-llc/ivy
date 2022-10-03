@@ -318,6 +318,7 @@ def multinomial(
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """
@@ -341,6 +342,8 @@ def multinomial(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -404,6 +407,7 @@ def multinomial(
         probs=probs,
         replace=replace,
         device=device,
+        seed=seed,
         out=out,
     )
 

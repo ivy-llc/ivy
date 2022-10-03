@@ -64,6 +64,7 @@ def multinomial(
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
     device: str,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.assertions.check_true(
@@ -80,7 +81,9 @@ def multinomial(
                 )
                 / population_size
             )
-        return tf.random.categorical(tf.math.log(probs), num_samples)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
 
 
 multinomial.unsupported_dtypes = ("bfloat16",)
