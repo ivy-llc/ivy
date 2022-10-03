@@ -70,7 +70,7 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
-        # and an isinstance call is cheap
+        # and the checks to see if we can avoid it are cheap
         nested = (
                 (isinstance(args[0], (list, tuple))
                  and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple))))
