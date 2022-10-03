@@ -1141,6 +1141,27 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([1.39, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 1.61, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                           [+0, -1.0, -5, float('-inf')]])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([[nan, 0., 1.61, inf],
+                   [-inf, nan, nan, nan]])
         """
         return ivy.log(self._data, out=out)
 

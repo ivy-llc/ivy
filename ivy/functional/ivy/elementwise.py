@@ -3335,6 +3335,41 @@ def log(
         The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([1.39, 0., -inf, nan])
+
+    >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                       [+0, -1.0, -5, float('-inf')]])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([[nan, 0., 1.61, inf],
+               [-inf, nan, nan, nan]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([5.78, float('-inf')])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([1.75, nan])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                          b=ivy.array([-0., -3.9, float('+inf')]),\
+                          c=ivy.array([7.9, 1.1, 1.]))
+    >>> y = ivy.log(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([2.07, 0.0953, 0.])
+    }
     """
     return ivy.current_backend(x).log(x, out=out)
 
