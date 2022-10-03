@@ -1283,19 +1283,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.array([[[1.0, 2.0],  \
-                            [3.0, 4.0]], \
-                           [[1.0, 2.0],  \
-                            [2.0, 1.0]], \
-                           [[1.0, 3.0],  \
-                            [3.0, 1.0]]])
-        >>> x = ivy.Container(a=a)
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                           [3.0, 4.0]]), \
+                              b=ivy.array([[1.0, 2.0],   \
+                                           [2.0, 1.0]]))
         >>> y = ivy.Container.static_slogdet(x)
         >>> print(y)
         {
-            a: (list[2], <class ivy.array.array.Array> shape=[3])
+            a: (list[2], <class ivy.array.array.Array> shape=[]),
+            b: (list[2], <class ivy.array.array.Array> shape=[])
         }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "slogdet",

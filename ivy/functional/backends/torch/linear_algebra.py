@@ -279,7 +279,8 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor
+    x: torch.Tensor,
+    /,
 ) -> NamedTuple:
     results = NamedTuple(
         "slogdet",

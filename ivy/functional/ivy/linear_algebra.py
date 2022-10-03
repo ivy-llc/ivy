@@ -1378,32 +1378,29 @@ def slogdet(
 
     With :code:`ivy.Container` input:
 
-    >>> a = ivy.array([[[1.0, 2.0],  \
-                        [3.0, 4.0]], \
-                       [[1.0, 2.0],  \
-                        [2.0, 1.0]], \
-                       [[1.0, 3.0],  \
-                        [3.0, 1.0]]])
-    >>> x = ivy.Container(a=a)
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                       [3.0, 4.0]]), \
+                          b=ivy.array([[1.0, 2.0],   \
+                                       [2.0, 1.0]]))
     >>> y = ivy.slogdet(x)
     >>> print(y)
     {
-        a: (list[2], <class ivy.array.array.Array> shape=[3])
+        a: (list[2], <class ivy.array.array.Array> shape=[]),
+        b: (list[2], <class ivy.array.array.Array> shape=[])
     }
 
     With :code:`ivy.Container` static method:
 
-    >>> a = ivy.array([[[1.0, 2.0],  \
-                        [3.0, 4.0]], \
-                       [[1.0, 2.0],  \
-                        [2.0, 1.0]], \
-                       [[1.0, 3.0],  \
-                        [3.0, 1.0]]])
-    >>> x = ivy.Container(a=a)
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                       [3.0, 4.0]]), \
+                          b=ivy.array([[1.0, 2.0],   \
+                                       [2.0, 1.0]]))
+
     >>> y = ivy.Container.static_slogdet(x)
     >>> print(y)
     {
-        a: (list[2], <class ivy.array.array.Array> shape=[3])
+        a: (list[2], <class ivy.array.array.Array> shape=[]),
+        b: (list[2], <class ivy.array.array.Array> shape=[])
     }
 
     With :code:`ivy.Array` instance methods:
