@@ -1573,6 +1573,7 @@ def test_negative(
         instance_method=instance_method,
         fw=fw,
         fn_name="negative",
+        test_gradients=True,
         x=x[0],
     )
 
