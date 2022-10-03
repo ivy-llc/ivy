@@ -79,7 +79,7 @@ def linear(
                        [5.165, 3.159, 7.101]])
     >>> w = ivy.array([[1.545, 2.547, 3.124], \
                        [5.852, 8.753, 6.963]])   
-    >>> b = ivy.array([-1, 1])
+    >>> b = ivy.array([-1., 1.])
     >>> ivy.linear(x, w, bias=b, out=x)
     >>> print(x)
     ivy.array([[ 35. , 101. ],
@@ -88,25 +88,33 @@ def linear(
         
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [4, 5, 6]]), \
+    >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
+                                       [4., 5., 6.]]), \
                           b=ivy.array([1.1, 2.2, 3.3]))
-    >>> w = ivy.Container(a=ivy.array([[1, 2, 3], [-1, 1, 2]]), \
-                          b=ivy.array([[0, -1, 1], [0, 1, 1]]))
-    >>> b = ivy.Container(a=ivy.array([1, -1]), b=ivy.array([1, 1]))
+    >>> w = ivy.Container(a=ivy.array([[1., 2., 3.], \
+                                       [-1., 1., 2.]]), \
+                          b=ivy.array([[0., -1., 1.], \
+                                       [0., 1., 1.]]))
+    >>> b = ivy.Container(a=ivy.array([1., -1.]), b=ivy.array([1., 1.]))
     >>> y = ivy.linear(x, w, bias=b)
     >>> print(y)
     {
-        a: ivy.array([[15, 6],
-                      [33, 12]]),
+        a: ivy.array([[15., 6.],
+                      [33., 12.]]),
         b: ivy.array([2.1, 6.5])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11., 22., 33.]]), \
-                          b=ivy.array([[1.245, 0.278, 4.105], [7., 13., 17.]]))
-    >>> w = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
-    >>> b = ivy.Container(a=ivy.array([1., 0., -1.]), b=ivy.array([1., 1., 0.]))
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                       [11., 22., 33.]]), \
+                          b=ivy.array([[1.245, 0.278, 4.105], \
+                                       [7., 13., 17.]]))
+    >>> w = ivy.array([[1., 2., 3.], \
+                       [4., 5., 6.], \
+                       [7., 8., 9.]])
+    >>> b = ivy.Container(a=ivy.array([1., 0., -1.]), \
+                          b=ivy.array([1., 1., 0.]))
     >>> ivy.linear(x, w, bias=b, out=x)
     >>> print(x)
     {
