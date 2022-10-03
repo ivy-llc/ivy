@@ -1,4 +1,5 @@
 # global
+from copy import deepcopy
 from hypothesis import assume, given, strategies as st
 import math
 import numpy as np
@@ -1193,6 +1194,518 @@ def test_array__ge__(
     other = Array(x[1])
     ret = data >= other
     np_ret = x[1] >= x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __and__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__and__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data & other
+    np_ret = x[0] & x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rand__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__rand__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rand__(other)
+    np_ret = x[1] & x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __iand__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__iand__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__iand__(other)
+    np_ret = x[1] & x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __or__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__or__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data | other
+    np_ret = x[0] | x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __ror__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__ror__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__ror__(other)
+    np_ret = x[1] | x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __ior__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__ior__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__ior__(other)
+    np_ret = x[0] | x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __invert__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        shared_dtype=True,
+    ),
+)
+def test_array__invert__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    ret = ~data
+    np_ret = ~x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __xor__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__xor__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data ^ other
+    np_ret = x[0] ^ x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rxor__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__rxor__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rxor__(other)
+    np_ret = x[1] ^ x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __ixor__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_array__ixor__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__ixor__(other)
+    np_ret = x[0] ^ x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __lshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__lshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data << other
+    np_ret = x[0] << x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rlshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__rlshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rlshift__(other)
+    np_ret = x[1] << x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __ilshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__ilshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__ilshift__(other)
+    np_ret = x[0] << x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__rshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data >> other
+    np_ret = x[0] >> x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __rrshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__rrshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__rrshift__(other)
+    np_ret = x[1] >> x[0]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __irshift__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_value=0,
+        shared_dtype=True,
+    ),
+)
+def test_array__irshift__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    other = Array(x[1])
+    ret = data.__irshift__(other)
+    np_ret = x[0] >> x[1]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __deepcopy__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+    ),
+)
+def test_array__deepcopy__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    ret = data.__deepcopy__()
+    py_ret = deepcopy(x[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=py_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __len__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_dim_size=2,
+        min_num_dims=1,
+    ),
+)
+def test_array__len__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    ret = len(data)
+    py_ret = len(x[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=py_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
+
+
+# __iter__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_dim_size=2,
+        min_num_dims=1,
+    ),
+)
+def test_array__iter__(
+    dtype_and_x,
+):
+    _, x = dtype_and_x
+    data = Array(x[0])
+    ret = data.__iter__()
+    np_ret = iter(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
