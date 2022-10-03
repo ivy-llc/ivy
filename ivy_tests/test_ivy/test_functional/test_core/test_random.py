@@ -289,10 +289,12 @@ def test_seed(seed_val):
         min_num_dims=1,
         min_dim_size=2,
     ),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
 )
 def test_shuffle(
     dtype_and_x,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -314,6 +316,7 @@ def test_shuffle(
         fw=fw,
         fn_name="shuffle",
         x=x[0],
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
