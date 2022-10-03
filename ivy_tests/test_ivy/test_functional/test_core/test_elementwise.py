@@ -1537,6 +1537,7 @@ def test_multiply(
         instance_method=instance_method,
         fw=fw,
         fn_name="multiply",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -1572,6 +1573,7 @@ def test_negative(
         instance_method=instance_method,
         fw=fw,
         fn_name="negative",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1642,6 +1644,7 @@ def test_positive(
         instance_method=instance_method,
         fw=fw,
         fn_name="positive",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1741,6 +1744,7 @@ def test_pow(
         fn_name="pow",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
