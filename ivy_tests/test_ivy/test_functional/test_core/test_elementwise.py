@@ -2151,6 +2151,7 @@ def test_trunc(
         instance_method=instance_method,
         fw=fw,
         fn_name="trunc",
+        test_gradients=True,
         x=x[0],
     )
 
