@@ -222,7 +222,7 @@ def test_tensorflow_logdet(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.logdet",
-        input=x,
+        matrix=x,
     )
 
 
