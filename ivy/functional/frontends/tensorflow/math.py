@@ -300,8 +300,10 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 def accumulate_n(inputs, shape=None, tensor_dtype=None, name="accumulate_n"):
-    tensor_dtype = tensor_dtype if tensor_dtype is not None else ivy.dtype(inputs[0])
-    shape = shape if shape is not None else ivy.shape(inputs[0])
+    if tensor_dtype is None:
+        tensor_dtype = ivy.dtype(inputs[0])
+    if shape is None:
+        shape = ivy.shape(inputs[0])
     # shape and dtype check
     for i in range(len(inputs)):
         ivy.assertions.check_equal(
@@ -312,5 +314,5 @@ def accumulate_n(inputs, shape=None, tensor_dtype=None, name="accumulate_n"):
             tensor_dtype,
             message="All inputs must have the same dtype.",
         )
-    inputs = ivy.asarray(inputs, dtype=tensor_dtype)
+    inputs = ivy.array(inputs, dtype=tensor_dtype)
     return ivy.sum(inputs, axis=0)
