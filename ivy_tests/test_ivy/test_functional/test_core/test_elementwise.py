@@ -2079,6 +2079,9 @@ def test_tan(
         instance_method=instance_method,
         fw=fw,
         fn_name="tan",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
     )
 
