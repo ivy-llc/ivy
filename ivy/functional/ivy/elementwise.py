@@ -6144,3 +6144,24 @@ def trunc_divide(
 
     """
     return ivy.trunc(ivy.divide(x1, x2, out=out))
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def dropout(
+    self: ivy.Array,
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: ivy.Dtype = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.dropout(
+        self._data,
+        prob,
+        scale=scale,
+        dtype=dtype,
+        out=out,
+    )

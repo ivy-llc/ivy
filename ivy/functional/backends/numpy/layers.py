@@ -645,3 +645,6 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+def dropout(x: np.ndarray, prob: float, out: np.ndarray) -> np.ndarray:
+    pass
