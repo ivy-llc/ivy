@@ -191,8 +191,9 @@ outer.support_native_out = True
 
 def pinv(
     x: np.ndarray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
