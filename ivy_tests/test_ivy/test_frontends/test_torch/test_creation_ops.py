@@ -70,13 +70,12 @@ def test_torch_full(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="full",
         size=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -106,12 +105,11 @@ def test_torch_ones_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="ones_like",
         input=input[0],
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -146,12 +144,11 @@ def test_torch_ones(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="ones",
         size=shape,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -186,12 +183,11 @@ def test_torch_zeros(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="zeros",
         size=shape,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -225,12 +221,11 @@ def test_torch_empty(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="empty",
         test_values=False,
         size=shape,
         dtype=dtypes,
-        device=device,
         requires_grad=requires_grad,
     )

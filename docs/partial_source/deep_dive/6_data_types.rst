@@ -45,51 +45,51 @@ The data types supported by Ivy are as follows:
 * bool
 
 These are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
-The :code:`ivy.Dtype` class derives from :code:`str`,
+The :class:`ivy.Dtype` class derives from :class:`str`,
 and has simple logic in the constructor to verify that the string formatting is correct.
-All data types can be queried as attributes of the :code:`ivy` namespace, such as :code:`ivy.float32` etc.
+All data types can be queried as attributes of the :mod:`ivy` namespace, such as ``ivy.float32`` etc.
 
 In addition, *native* data types are `also specified`_ at import time.
 Likewise, these are all *initially* set as `ivy.Dtype`_ instances.
 
-There is also an :code:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
+There is also an :class:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
 
-The following `tuples`_ are also defined: :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes`,
-:code:`all_float_dtypes`. These each contain all possible data types which fall into the corresponding category.
+The following `tuples`_ are also defined: ``all_dtypes``, ``all_numeric_dtypes``, ``all_int_dtypes``,
+``all_float_dtypes``. These each contain all possible data types which fall into the corresponding category.
 Each of these tuples is also replicated in a new set of four `valid tuples`_
 and a set of four `invalid tuples`_.
-When no backend is set, all data types are assumed to be valid, and so the :code:`invalid` tuples are all empty,
-and the :code:`valid` tuples are set as equal to the original four *"all"* tuples.
+When no backend is set, all data types are assumed to be valid, and so the invalid tuples are all empty,
+and the valid tuples are set as equal to the original four *"all"* tuples.
 
 However, when a backend is set, then some of these are updated.
-Firstly, the :code:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
+Firstly, the :class:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
 Secondly, each of the native data types are replaced with the `true native data types`_.
 Thirdly, the `valid data types`_ are updated.
 Finally, the `invalid data types`_ are updated.
 
 This leaves each of the data types unmodified,
-for example :code:`ivy.float32` will still reference the  `original definition`_ in :code:`ivy/ivy/__init__.py`,
-whereas :code:`ivy.native_float32` will now reference the `new definition`_ in
-:code:`/ivy/functional/backends/backend/__init__.py`.
+for example ``ivy.float32`` will still reference the  `original definition`_ in :mod:`ivy/ivy/__init__.py`,
+whereas ``ivy.native_float32`` will now reference the `new definition`_ in
+:mod:`/ivy/functional/backends/backend/__init__.py`.
 
-The tuples :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes` and :code:`all_float_dtypes`
+The tuples ``all_dtypes``, ``all_numeric_dtypes``, ``all_int_dtypes`` and ``all_float_dtypes``
 are also left unmodified.
-Importantly, we must ensure that unsupported data types are removed from the :code:`ivy` namespace.
-For example, torch supports :code:`uint8`, but does not support :code:`uint16`, :code:`uint32` or :code:`uint64`.
+Importantly, we must ensure that unsupported data types are removed from the :mod:`ivy` namespace.
+For example, torch supports ``uint8``, but does not support ``uint16``, ``uint32`` or ``uint64``.
 Therefore, after setting a torch backend via :code:`ivy.set_backend('torch')`,
-we should no longer be able to access :code:`ivy.uint16`.
-This is `handled`_ in :code:`ivy.set_backend`.
+we should no longer be able to access ``ivy.uint16``.
+This is `handled`_ in :func:`ivy.set_backend`.
 
 Data Type Module
 ----------------
 
 The `data_type.py`_ module provides a variety of functions for working with data types.
 A few examples include
-:code:`ivy.astype` which copies an array to a specified data type,
-:code:`ivy.broadcast_to` which broadcasts an array to a specified shape,
-and :code:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
+:func:`ivy.astype` which copies an array to a specified data type,
+:func:`ivy.broadcast_to` which broadcasts an array to a specified shape,
+and :func:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
-Many functions in the :code:`data_type.py` module are *convenience* functions,
+Many functions in the :mod:`data_type.py` module are *convenience* functions,
 which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
 
 For example, the following are all convenience functions:
@@ -99,7 +99,7 @@ For example, the following are all convenience functions:
 and `ivy.default_dtype`_, which returns the correct data type to use.
 
 `ivy.default_dtype`_ is arguably the most important function.
-Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
+Any function in the functional API that receives a ``dtype`` argument will make use of this function,
 as explained below.
 
 
@@ -120,7 +120,7 @@ which is the union of the Array API Standard
 and an extra
 `promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292>`_.
 
-In order to ensure adherance to this promotion table, many backend functions make use of
+In order to ensure adherence to this promotion table, many backend functions make use of
 the functions
 `ivy.promote_types <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804>`_,
 `ivy.type_promote_arrays <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940>`_,
@@ -132,7 +132,7 @@ and promote the data types of the numeric or array values inputs and
 return new type promoted values, respectively.
 
 For an example of how some of these functions are used,
-the implementations for :code:`ivy.add` in each backend framework are as follows:
+the implementations for :func:`ivy.add` in each backend framework are as follows:
 
 # JAX
 
@@ -192,22 +192,22 @@ the implementations for :code:`ivy.add` in each backend framework are as follows
         return torch.add(x1, x2, out=out)
 
 It's important to always make use of the Ivy promotion functions as opposed to
-backend-specific promotion functions such as :code:`jax.numpy.promote_types`,
-:code:`numpy.promote_types`, :code:`tf.experimental.numpy.promote_types` and
-:code:`torch.promote_types`, as these will generally have promotion rules which will
+backend-specific promotion functions such as :func:`jax.numpy.promote_types`,
+:func:`numpy.promote_types`, :func:`tf.experimental.numpy.promote_types` and
+:func:`torch.promote_types`, as these will generally have promotion rules which will
 subtly differ from one another and from Ivy's unified promotion rules.
 
 Arguments in other Functions
 ----------------------------
 
-All :code:`dtype` arguments are keyword-only.
-All creation functions include the :code:`dtype` argument, for specifying the data type of the created array.
-Some other non-creation functions also support the :code:`dtype` argument,
-such as :code:`ivy.prod` and :code:`ivy.sum`, but most functions do not include it.
+All ``dtype`` arguments are keyword-only.
+All creation functions include the ``dtype`` argument, for specifying the data type of the created array.
+Some other non-creation functions also support the ``dtype`` argument,
+such as :func:`ivy.prod` and :func:`ivy.sum`, but most functions do not include it.
 The non-creation functions which do support it are generally functions that involve a compounding reduction across the
-array, which could result in overflows, and so an explicit :code:`dtype` argument is useful to handling such cases.
+array, which could result in overflows, and so an explicit ``dtype`` argument is useful to handling such cases.
 
-The :code:`dtype` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator
+The ``dtype`` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator
 :code:`@infer_dtype`.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
 As discussed in the :ref:`Function Wrapping` section,
@@ -215,33 +215,33 @@ this is applied to all applicable functions dynamically during `backend setting`
 
 Overall, `ivy.default_dtype`_ infers the data type as follows:
 
-#. if the :code:`dtype` argument is provided, use this directly
-#. otherwise, if an array is present in the arguments, set :code:`arr` to this array. \
-   This will then be used to infer the data type by calling :code:`ivy.dtype` on the array
-#. otherwise, if a *relevant* scalar is present in the arguments, set :code:`arr` to this scalar \
-   and derive the data type from this by calling either :code:`ivy.default_int_dtype` or \
-   :code:`ivy.default_float_dtype` depending on whether the scalar is an :code:`int` or :code:`float`. \
-   This will either return the globally set default :code:`int` or globally set default :code:`float` \
-   (settable via :code:`ivy.set_default_int_dtype` and :code:`ivy.set_default_float_dtype` respectively). \
-   An example of a *relevant* scalar is :code:`start` in the function :code:`ivy.arange`, \
+#. if the ``dtype`` argument is provided, use this directly
+#. otherwise, if an array is present in the arguments, set ``arr`` to this array. \
+   This will then be used to infer the data type by calling :func:`ivy.dtype` on the array
+#. otherwise, if a *relevant* scalar is present in the arguments, set ``arr`` to this scalar \
+   and derive the data type from this by calling either :func:`ivy.default_int_dtype` or \
+   :func:`ivy.default_float_dtype` depending on whether the scalar is an int or float. \
+   This will either return the globally set default int data type or globally set default float data type \
+   (settable via :func:`ivy.set_default_int_dtype` and :func:`ivy.set_default_float_dtype` respectively). \
+   An example of a *relevant* scalar is ``start`` in the function :func:`ivy.arange`, \
    which is used to set the starting value of the returned array. \
-   Examples of *irrelevant* scalars which should **not** be used for determining the data type are :code:`axis`, \
-   :code:`axes`, :code:`dims` etc. which must be integers, and control other configurations of the function \
+   Examples of *irrelevant* scalars which should **not** be used for determining the data type are ``axis``, \
+   ``axes``, ``dims`` etc. which must be integers, and control other configurations of the function \
    being called, with no bearing at all on the data types used by that function.
 #. otherwise, if no arrays or relevant scalars are present in the arguments, \
-   then use the global default data type, which can either be an :code:`int` or :code:`float` data type. \
-   This is settable via :code:`ivy.set_default_dtype`.
+   then use the global default data type, which can either be an int or float data type. \
+   This is settable via :func:`ivy.set_default_dtype`.
 
 For the majority of functions which defer to `infer_dtype`_ for handling the data type,
-these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
-before the backend-specific implementation is even entered into. Therefore, whereas the :code:`dtype` argument is
-listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
+these steps will have been followed and the ``dtype`` argument will be populated with the correct value
+before the backend-specific implementation is even entered into. Therefore, whereas the ``dtype`` argument is
+listed as optional in the ivy API at :mod:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py`.
+:mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-Let's take a look at the function :code:`ivy.zeros` as an example.
+Let's take a look at the function :func:`ivy.zeros` as an example.
 
-The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
+The implementation in :mod:`ivy/functional/ivy/creation.py` has the following signature:
 
 .. code-block:: python
 
@@ -256,8 +256,8 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
-Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
-all list :code:`dtype` as required.
+Whereas the backend-specific implementations in :mod:`ivy/functional/backends/backend_name/statistical.py`
+all list ``dtype`` as required.
 
 Jax:
 
@@ -303,10 +303,10 @@ PyTorch:
         device: torch.device,
     ) -> torch.Tensor:
 
-This makes it clear that these backend-specific functions are only entered into once the correct :code:`dtype`
+This makes it clear that these backend-specific functions are only entered into once the correct ``dtype``
 has been determined.
 
-However, the :code:`dtype` argument for functions which don't have the :code:`@infer_dtype` decorator
+However, the ``dtype`` argument for functions which don't have the :code:`@infer_dtype` decorator
 are **not** handled by `infer_dtype`_,
 and so these defaults must be handled by the backend-specific implementations themselves.
 
@@ -314,8 +314,8 @@ One reason for not adding :code:`@infer_dtype` to a function is because it inclu
 for inferring the data type from. `infer_dtype`_ is not able to correctly handle such cases,
 and so the dtype handling is delegated to the backend-specific implementations.
 
-For example :code:`ivy.full` doesn't have the :code:`@infer_dtype` decorator even though it has a :code:`dtype` argument
-because of the *relevant* :code:`fill_value` which cannot be correctly handled by `infer_dtype`_.
+For example :func:`ivy.full` doesn't have the :code:`@infer_dtype` decorator even though it has a ``dtype`` argument
+because of the *relevant* ``fill_value`` which cannot be correctly handled by `infer_dtype`_.
 
 The PyTorch-specific implementation is as follows:
 
@@ -336,23 +336,23 @@ The PyTorch-specific implementation is as follows:
         )
 
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
-where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
+where the ``dtype`` argument is optional and :func:`ivy.default_dtype` is called inside the
 backend-specific implementation.
 
 Supported and Unsupported Data Types
 ------------------------------------
 
-Some backend functions (implemented in :code`ivy/functional/backends/<some_backend>`)
-have attributes named :code:`supported_dtypes` or :code:`unsupported_dtypes`,
+Some backend functions (implemented in :mod:`ivy/functional/backends/<some_backend>`)
+have attributes named :attr:`supported_dtypes` or :attr:`unsupported_dtypes`,
 which flag the data types which this particular function does and does not support
 respectively for the associated backend.
 Only one of these attributes can be specified for any given function.
-In the case of :code:`supported_dtypes` it is assumed that all unmentioned data types
-are unsupported, and in the case of :code:`unsupported_dtypes` it is assumed that all
+In the case of :attr:`supported_dtypes` it is assumed that all unmentioned data types
+are unsupported, and in the case of :attr:`unsupported_dtypes` it is assumed that all
 unmentioned data types are supported.
 
-These attributes should always be in :code:`tuple` form, with each entry in the tuple
-being of type :code:`str`, like so:
+These attributes should always be in tuple form, with each entry in the tuple
+being a string, like so:
 
 .. code-block:: python
 
@@ -370,17 +370,17 @@ respectively, which traverse the abstract syntax tree of the compositional funct
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
 
-It should be noted that the :code:`unsupported_dtypes` is different from
-:code:`ivy.invalid_dtypes` which consists of all the :code:`dtypes` that every function
-of that particular backend does not support, and so if a certain :code:`dtype` is
-already present in the :code:`ivy.invalid_dtypes` then we should not add it into the
-:code:`unsupported_dtypes` attribute.
+It should be noted that the :attr:`unsupported_dtypes` is different from
+``ivy.invalid_dtypes`` which consists of all the data types that every function
+of that particular backend does not support, and so if a certain ``dtype`` is
+already present in the ``ivy.invalid_dtypes`` then we should not add it into the
+:attr:`unsupported_dtypes` attribute.
 
 Sometimes, it might be possible to support a natively unsupported data type by either
 casting to a supported data type and then casting back, or explicitly handling these
 data types without deferring to a backend function at all.
 
-An example of the former is :code:`ivy.logical_not` with a :code:`tensorflow` backend:
+An example of the former is :func:`ivy.logical_not` with a tensorflow backend:
 
 .. code-block:: python
 
@@ -392,7 +392,7 @@ An example of the former is :code:`ivy.logical_not` with a :code:`tensorflow` ba
     ) -> Union[tf.Tensor, tf.Variable]:
         return tf.logical_not(tf.cast(x, tf.bool))
 
-An example of the latter is :code:`ivy.abs` with a :code:`tensorflow` backend:
+An example of the latter is :func:`ivy.abs` with a tensorflow backend:
 
 .. code-block:: python
 
@@ -411,22 +411,22 @@ In some cases, the lack of support for a particular data type by the backend fun
 might be more difficult to handle correctly. For example, in many cases casting to
 another data type will result in a loss of precision, input range, or both.
 In such cases, the best solution is to simply add the data type to the
-:code:`unsupported_dtypes` attribute,
+:attr:`unsupported_dtypes` attribute,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.
 
 Some cases where a data type is not supported are very subtle. For example,
-:code:`uint8` is not supported for :code:`ivy.prod` with a :code:`torch` backend,
-despite :code:`torch.prod` handling :code:`torch.uint8` types in the input totally fine.
+``uint8`` is not supported for :func:`ivy.prod` with a torch backend,
+despite :func:`torch.prod` handling ``torch.uint8`` types in the input totally fine.
 
-The reason for this is that the `Array API Standard`_ mandates that the :code:`prod`
-function upcast the unsigned integer return to have the same number of bits as the
+The reason for this is that the `Array API Standard`_ mandates that :func:`prod` upcasts
+the unsigned integer return to have the same number of bits as the
 default integer data type. By default, the default integer data type in Ivy is
-:code:`int32`, and so we should return an array of type :code:`uint32` despite the input
-arrays being of type :code:`uint8`. However, :code:`torch` does not support `uint32`,
-and so we cannot fully adhere to the requirements of the standard for :code:`uint8`
-inputs. Rather than breaking this rule and returning arrays of type :code:`uint8` only
-with a :code:`torch` backend, we instead opt to remove official support entirely for
+``int32``, and so we should return an array of type ``uint32`` despite the input
+arrays being of type ``uint8``. However, torch does not support ``uint32``,
+and so we cannot fully adhere to the requirements of the standard for ``uint8``
+inputs. Rather than breaking this rule and returning arrays of type ``uint8`` only
+with a torch backend, we instead opt to remove official support entirely for
 this combination of data type, function and backend framework.
 This will avoid all of the potential confusion that could arise if we were to have
 inconsistent and unexpected outputs when using officially supported data types in Ivy.
@@ -437,16 +437,16 @@ Backend Data Type Bugs
 
 In some cases, the lack of support might just be a bug which will likely be resolved in
 a future release of the framework. In these cases, as well as adding to the
-:code:`unsupported_dtypes` attribute, we should also add a :code:`#ToDo` comment
+:attr:`unsupported_dtypes` attribute, we should also add a :code:`#ToDo` comment
 in the implementation, explaining that the support of the data type will be added as
 soon as the bug is fixed, with a link to an associated open issue in the framework
 repos included in the comment.
 
-For example, the following code throws an error when :code:`dtype` is
-:code:`torch.int32` but not when it is :code:`torch.int64`.
-This is tested with :code:`torch` version :code:`1.12.1`,
+For example, the following code throws an error when ``dtype`` is
+``torch.int32`` but not when it is ``torch.int64``.
+This is tested with torch version ``1.12.1``,
 which is the latest stable release at the time of writing. This is a
-`know bug <https://github.com/pytorch/pytorch/issues/84530>`_.:
+`known bug <https://github.com/pytorch/pytorch/issues/84530>`_:
 
 .. code-block:: python
 
@@ -454,10 +454,10 @@ which is the latest stable release at the time of writing. This is a
     x = torch.randint(1, 10, ([1, 2, 3]), dtype=dtype)
     torch.tensordot(x, x, dims=([0], [0]))
 
-Despite :code:`torch.int32` working correctly with :code:`torch.tensordot` in the vast
+Despite ``torch.int32`` working correctly with :func:`torch.tensordot` in the vast
 majority of cases, our solution is to still add :code:`"int32"` into the
-:code:`unsupported_dtypes` attribute, which will prevent the unit tests from failing in the CI.
-We also add the following comment above the :code:`unsupported_dtypes` attribute:
+:attr:`unsupported_dtypes` attribute, which will prevent the unit tests from failing in the CI.
+We also add the following comment above the :attr:`unsupported_dtypes` attribute:
 
 .. code-block:: python
 
@@ -465,8 +465,8 @@ We also add the following comment above the :code:`unsupported_dtypes` attribute
     #  is fixed.
     tensordot.unsupported_dtypes = ("int32",)
 
-Similarly, the following code throws an error for :code:`torch` version :code:`1.11.0`
-but not :code:`1.12.1`.
+Similarly, the following code throws an error for torch version ``1.11.0``
+but not ``1.12.1``.
 
 .. code-block:: python
 
@@ -490,10 +490,10 @@ Superset Data Type Support
 
 As explained in the superset section of the Deep Dive, we generally go for the superset
 of behaviour for all Ivy functions, and data type support is no exception.
-Some backends like :code:`tensorflow` do not support integer array inputs for certain
-functions. For example :code:`tensorflow.cos` only supports non-integer values.
-However, backends like :code:`torch` and :code:`jax` support integer arrays as inputs.
-To ensure that integer types are supported in Ivy when a :code:`tensorflow` backend is set,
+Some backends like tensorflow do not support integer array inputs for certain
+functions. For example :func:`tensorflow.cos` only supports non-integer values.
+However, backends like torch and JAX support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a tensorflow backend is set,
 we simply promote any integer array passed to the function to the default float dtype.
 As with all superset design decisions, this behavior makes it much easier to support all
 frameworks in our frontends, without the need for lots of extra logic for handling

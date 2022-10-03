@@ -140,9 +140,8 @@ def inv(
             ret = torch.inverse(x, out=out)
             return ret
         else:
-            cofactor = torch.t(torch.linalg.inv(x)) * torch.linalg.det(x)
-            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), torch.t(cofactor))
-            ret = inverse
+            x = torch.t(x)
+            ret = torch.inverse(x, out=out)
             if ivy.exists(out):
                 return ivy.inplace_update(out, ret)
             return ret
@@ -241,8 +240,9 @@ outer.support_native_out = True
 
 def pinv(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if rtol is None:
@@ -280,7 +280,7 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x, out=out)
