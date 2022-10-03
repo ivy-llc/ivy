@@ -856,8 +856,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1.0, 2.0]]), \
-                              b=ivy.array([[1, 2], [3, 4]]))
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
+                              b=ivy.array([[1., 2.], [3., 4.]]))
         >>> y = ivy.Container.static_matrix_norm(x, ord=1)
         >>> print(y)
         {
@@ -944,7 +944,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1.0, 2.0]]), \
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
                               b=ivy.array([[1., 2.], [3., 4.]]))
         >>> y = x.matrix_norm(ord=1)
         >>> print(y)

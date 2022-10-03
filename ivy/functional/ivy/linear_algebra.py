@@ -1028,9 +1028,9 @@ def matrix_norm(
     ivy.array([ 4., 12., 20.])
 
     >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
-    >>> y = ivy.matrix_norm(x, ord='nuc')
+    >>> y = ivy.matrix_norm(x, ord='nuc', keepdims=True)
     >>> print(y)
-    ivy.array(11.043801)
+    ivy.array([[11.]])
 
     >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \
                         [[1., 0., 1.1], [1., 1., 0.]]])   
