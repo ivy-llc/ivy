@@ -94,6 +94,10 @@ def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=Fals
     return ivy.einsum(equation=optimize, *operands, out=out)
 
 
+def floor_divide(x1, x2):
+    return ivy.floor_divide(x1, x2)
+
+
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:

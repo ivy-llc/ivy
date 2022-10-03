@@ -65,3 +65,51 @@ class DeviceArray:
     @_frontend_wrapper
     def __rmul__(self, other):
         return jax_frontend.mul(other, self.data)
+
+    @_frontend_wrapper
+    def __div__(self, other):
+        return jax_frontend.div(self.data, other)
+
+    @_frontend_wrapper
+    def __rdiv__(self, other):
+        return jax_frontend.div(other, self.data)
+
+    @_frontend_wrapper
+    def __mod__(self, other):
+        return jax_frontend.rem(self.data, other)
+
+    @_frontend_wrapper
+    def __rmod__(self, other):
+        return jax_frontend.rem(other, self.data)
+
+    @_frontend_wrapper
+    def __divmod__(self, other):
+        return divmod(self.data, other)
+
+    @_frontend_wrapper
+    def __rdivmod__(self, other):
+        return divmod(self.data, other)
+
+    @_frontend_wrapper
+    def __truediv__(self, other):
+        return jax_frontend.div(self.data, other)
+
+    @_frontend_wrapper
+    def __rtruediv__(self, other):
+        return jax_frontend.div(other, self.data)
+
+    @_frontend_wrapper
+    def __floordiv__(self, other):
+        return jax_frontend.floor_divide(self.data, other)
+
+    @_frontend_wrapper
+    def __rfloordiv__(self, other):
+        return jax_frontend.floor_divide(other, self.data)
+
+    @_frontend_wrapper
+    def __matmul__(self, other):
+        return jax_frontend.dot(self.data, other)
+
+    @_frontend_wrapper
+    def __rmatmul__(self, other):
+        return jax_frontend.dot(other, self.data)

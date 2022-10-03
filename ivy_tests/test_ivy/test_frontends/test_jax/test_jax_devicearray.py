@@ -266,3 +266,369 @@ def test_jax_special_rmul(
             ret_from_gt=ret_gt,
             ground_truth_backend="jax",
         )
+
+
+# __div__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_div(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) / DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) / jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rdiv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rdiv(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rdiv__(other)
+    ret_gt = jnp.array(x[1], dtype=input_dtype[1]) / jnp.array(
+        x[0], dtype=input_dtype[0]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __truediv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_truediv(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__truediv__(other)
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) / jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rtruediv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rtruediv(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rtruediv__(other)
+    ret_gt = jnp.array(x[1], dtype=input_dtype[1]) / jnp.array(
+        x[0], dtype=input_dtype[0]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __mod__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_mod(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__mod__(other)
+    ret_gt = jnp.remainder(
+        jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rmod__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rmod(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rmod__(other)
+    ret_gt = jnp.remainder(
+        jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __divmod__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_divmod(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__divmod__(other)
+    ret_gt = divmod(
+        jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rdivmod__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rdivmod(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rdivmod__(other)
+    ret_gt = divmod(
+        jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __floordiv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_floordiv(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__floordiv__(other)
+    ret_gt = jnp.floor_divide(
+        jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rfloordiv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rfloordiv(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rfloordiv__(other)
+    ret_gt = jnp.floor_divide(
+        jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __matmul__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_matmul(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__matmul__(other)
+    ret_gt = jnp.matmul(
+        jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rmatmul__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_jax_special_rmatmul(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    data = DeviceArray(x[0])
+    other = DeviceArray(x[1])
+    ret = data.__rmatmul__(other)
+    ret_gt = jnp.matmul(
+        jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
