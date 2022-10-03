@@ -371,6 +371,7 @@ def test_function(
             container_flags=container_flags,
             rtol_=rtol_,
             atol_=atol_,
+            ground_truth_backend=ground_truth_backend,
         )
 
     # assuming value test will be handled manually in the test function
