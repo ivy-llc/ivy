@@ -371,6 +371,7 @@ def test_function(
             container_flags=container_flags,
             rtol_=rtol_,
             atol_=atol_,
+            ground_truth_backend=ground_truth_backend,
         )
 
     # assuming value test will be handled manually in the test function
@@ -416,11 +417,10 @@ def test_frontend_function(
         as an ivy Variable.
     with_out
         if True, the function is also tested for inplace update to an array
-        passed to the optional out argument, should not be True together
-        with with_inplace.
+        passed to the optional out argument.
     with_inplace
-        if True, the function is also tested with direct inplace update back to
-        the inputted array, should not be True together with with_out.
+        if True, the function is only tested with direct inplace update back to
+        the inputted array and ignore the value of with_out.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -601,6 +601,16 @@ def test_frontend_function(
                 assert ret.data is first_array.data
             assert first_array is ret
             args, kwargs = copy_args, copy_kwargs
+    elif with_out:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        # pass return value to out argument
+        # check if passed reference is correctly updated
+        kwargs["out"] = out
+        ret = frontend_fn(*args, **kwargs)
+        if ivy.native_inplace_support:
+            assert ret.data is out.data
+        assert ret is out
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -774,8 +784,8 @@ def gradient_test(
 
     assert len(ret_np_flat) == len(
         ret_np_from_gt_flat
-    ), "result length mismatch: {} != {}".format(
-        len(ret_np_flat), len(ret_np_from_gt_flat)
+    ), "result length mismatch: {} ({}) != {} ({})".format(
+        ret_np_flat, len(ret_np_flat), ret_np_from_gt_flat, len(ret_np_from_gt_flat)
     )
 
     if len(ret_np_flat) < 2:

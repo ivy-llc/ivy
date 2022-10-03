@@ -23,7 +23,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (a) :ref:`Setting Up`
 | Building the right environment 🏛️
 |
-| (b) :ref:`The Basics`
+| (b) `The Basics <https://lets-unify.ai/ivy/contributing/1_the_basics.html`_
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
 | (c) :ref:`Building the Docs`

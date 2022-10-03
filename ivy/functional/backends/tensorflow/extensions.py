@@ -21,7 +21,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     if _is_data_not_indices_values_and_shape(
         data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
