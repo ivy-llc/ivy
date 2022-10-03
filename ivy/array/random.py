@@ -339,7 +339,13 @@ class ArrayWithRandom(abc.ABC):
             out=out,
         )
 
-    def shuffle(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def shuffle(
+        self: ivy.Array,
+        /,
+        *,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.shuffle. This method simply
         wraps the function, and so the docstring for ivy.shuffle also applies to
         this method with minimal changes.
@@ -348,6 +354,8 @@ class ArrayWithRandom(abc.ABC):
         ----------
         self
             Input array. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -357,4 +365,4 @@ class ArrayWithRandom(abc.ABC):
         ret
             An array object, shuffled along the first dimension.
         """
-        return ivy.shuffle(self, out=out)
+        return ivy.shuffle(self, seed=seed, out=out)
