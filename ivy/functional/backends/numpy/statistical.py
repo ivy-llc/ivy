@@ -226,3 +226,19 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if periodic == False:
+        return np.kaiser(M=window_length, beta=beta) 
+    else: 
+        return np.kaiser(M=window_length + 1, beta=beta)[:-1]
+
+
+kaiser_window.support_native_out = False

@@ -197,3 +197,16 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    if periodic == False:
+        return jnp.kaiser(M=window_length, beta=beta) 
+    else: 
+        return jnp.kaiser(M=window_length + 1, beta=beta)[:-1]
