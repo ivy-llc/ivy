@@ -1236,7 +1236,7 @@ def fourier_encode(
     x = ivy.expand_dims(x, axis=-1)
     orig_x = x
     if linear:
-        scales = ivy.linspace(1.0, max_freq / 2, num_bands, dtype=None, device=dev(x))
+        scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
     else:
         if ivy.backend == "torch" and isinstance(max_freq, float):
             scales = ivy.logspace(
@@ -1882,7 +1882,7 @@ def einops_rearrange(
     """
     x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
-    ret = ivy.array(ret, device=dev(ret))
+    ret = ivy.array(ret)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -2012,7 +2012,7 @@ def einops_repeat(
     """
     x = ivy.to_native(x)
     ret = einops.repeat(x, pattern, **axes_lengths)
-    ret = ivy.array(ret, device=dev(ret))
+    ret = ivy.array(ret)
 
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
