@@ -645,3 +645,20 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def dropout1d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training:bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+  if training:
+    noise_shape = list(x.shape)
+    noise_shape[-1] = 1
+    mask = np.random.binomial(1,1-prob, noise_shape)
+    return np.where(mask, x/(1-prob), 0)
+  else:
+    return x

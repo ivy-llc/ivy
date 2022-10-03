@@ -645,3 +645,14 @@ def conv_general_transpose(
 
 
 conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def dropout1d(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    training:bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+  return torch.nn.functional.dropout1d(x, p=prob, training=training)

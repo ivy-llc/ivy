@@ -138,6 +138,40 @@ def dropout(
     return x
 
 
+@handle_exceptions
+def dropout1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training:bool = True,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from a Bernoulli distribution and the
+    remaining channels are scaled by (1/1-prob). In this case, dropout1d performs a channel-wise dropout but assumes a
+    channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 2D or 3D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+
+    training
+        controls whether dropout1d is performed during training or ignored during testing.
+    out
+        optional output array, for writing the result to. Must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are scaled by (1/1-prob).
+
+    """
+    return current_backend(x).dropout1d(x,prob, training=training, out=out)
+
+
 # Attention #
 
 

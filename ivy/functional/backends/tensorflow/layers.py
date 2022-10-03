@@ -449,3 +449,19 @@ def conv_general_transpose(
 
 
 conv_general_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def dropout1d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training:bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable] :
+  if training:
+    noise_shape = x.shape.as_list()
+    noise_shape[-2] = 1
+    return tf.nn.dropout (x, prob, noise_shape= noise_shape)
+  else:
+    return x
