@@ -28,9 +28,13 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[jnp.dtype] = jnp.int64,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmin(x, axis=axis, keepdims=keepdims)
+    ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
+    if output_dtype is not None:
+        return jnp.array(ret, dtype=output_dtype)
+    return ret
 
 
 def nonzero(

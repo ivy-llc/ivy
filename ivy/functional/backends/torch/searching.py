@@ -31,9 +31,13 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[torch.dtype] = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
+    ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
+    if output_dtype is not None:
+        return ret.type(output_dtype)
+    return ret
 
 
 argmin.support_native_out = True
