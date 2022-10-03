@@ -316,3 +316,49 @@ def test_shuffle(
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))
+
+
+# dirichlet
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=0.1,
+        max_value=1e4,
+        shape=st.tuples(
+            st.integers(min_value=2),
+            st.integers(min_value=1)),
+    ),
+    size=st.one_of(st.tuples(), helpers.ints(min_value=0)),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
+)
+def test_dirichlet(
+    dtype_and_x,
+    size,
+    dtype,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="dirichlet",
+        alpha=np.asarray(x[0], dtype=input_dtype[0]),
+        size=size,
+        dtype=dtype
+    )

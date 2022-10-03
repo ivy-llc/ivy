@@ -104,3 +104,19 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.random.permutation(x)
+
+
+def dirichlet(
+    alpha: np.ndarray,
+    size: Optional[Union[int, Sequence[int]]] = None,
+    *,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    size = tuple(size) if isinstance(size, list) else size
+    return np.asarray(
+        np.random.dirichlet(alpha, size=size), dtype=dtype
+    )
+
+
+dirichlet.support_native_out = False

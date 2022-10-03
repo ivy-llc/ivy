@@ -132,3 +132,13 @@ def shuffle(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return jax.random.shuffle(rng_input, x)
+
+
+def dirichlet(
+    alpha: JaxArray,
+    size: Optional[Union[int, Sequence[int]]] = None,
+    *, 
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return dirichlet(alpha, shape=size, key=PRNGKey(), dtype=dtype)
