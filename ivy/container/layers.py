@@ -25,7 +25,7 @@ class ContainerWithLayers(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
+        wraps the function, and so the docstring for ivy.linear also applies
         to this method with minimal changes.
 
         Parameters
@@ -59,17 +59,37 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11, 22, 33]]), \
-        b=ivy.array([[1.245, 0.278, 4.105], [7, 13, 17]]))
-        >>> w = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        >>> b = ivy.array([1, 0, -1])
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [11., 22., 33.]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
+        >>> b = ivy.array([1., 0., -1.])
         >>> y = ivy.Container.static_linear(x, w, bias=b)
         >>> print(y)
         {
-        a: ivy.array([[16.4, 35.2, 54.], \
-        [155., 352., 549.]]), \
-        b: ivy.array([[15.1, 31., 46.9], \
-        [85., 195., 305.]])
+            a: ivy.array([[16.4, 35.2, 54.],
+                          [155., 352., 549.]]),
+            b: ivy.array([[15.1, 31., 46.9],
+                          [85., 195., 305.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [.0, .1, .2]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [.7, .8, .9]]))
+        >>> w = ivy.Container(a=ivy.array([[1., 2., 3.]]), \
+                              b=ivy.array([[.1, .2, .3]]))
+        >>> b = ivy.Container(a=ivy.array([1.]), b=ivy.array([-1.]))
+        >>> y = ivy.Container.static_linear(x, w, bias=b)
+        >>> print(y)
+        {
+            a: ivy.array([[16.4], 
+                          [1.8]]),
+            b: ivy.array([[0.412], 
+                          [-0.5]])
         }
 
         """
@@ -99,7 +119,7 @@ class ContainerWithLayers(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
+        wraps the function, and so the docstring for ivy.linear also applies
         to this method with minimal changes.
 
         Parameters
@@ -133,17 +153,21 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11, 22, 33]]), \
-        b=ivy.array([[1.245, 0.278, 4.105], [7, 13, 17]]))
-        >>> w = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [11., 22., 33.]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
         >>> b = ivy.array([1, 0, -1])
         >>> y = x.linear(w, bias=b)
         >>> print(y)
         {
-        a: ivy.array([[16.4, 35.2, 54.], \
-        [155., 352., 549.]]), \
-        b: ivy.array([[15.1, 31., 46.9], \
-        [85., 195., 305.]])
+            a: ivy.array([[16.4, 35.2, 54.], \
+                          [155., 352., 549.]]), \
+            b: ivy.array([[15.1, 31., 46.9], \
+                          [85., 195., 305.]])
         }
         
         """

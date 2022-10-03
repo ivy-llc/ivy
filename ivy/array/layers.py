@@ -19,7 +19,7 @@ class ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
+        wraps the function, and so the docstring for ivy.linear also applies
         to this method with minimal changes.
 
         Parameters
@@ -44,15 +44,17 @@ class ArrayWithLayers(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[1.1, 2.2, 3.3], \
-        [4.4, 5.5, 6.6], \
-        [7.7, 8.8, 9.9]])
-        >>> w = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        >>> b = ivy.array([1, 0, -1])
+                           [4.4, 5.5, 6.6], \
+                           [7.7, 8.8, 9.9]])
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
+        >>> b = ivy.array([1., 0., -1.])
         >>> y = x.linear(w, bias=b)
         >>> print(y)
-        ivy.array([[ 16.4,  35.2,  54. ], \
-        [ 36.2,  84.7, 133. ], \
-        [ 56. , 134. , 212. ]])
+        ivy.array([[ 16.4,  35.2,  54. ],
+                   [ 36.2,  84.7, 133. ],
+                   [ 56. , 134. , 212. ]])
 
         """
         return ivy.linear(
