@@ -1744,6 +1744,7 @@ def test_pow(
         fn_name="pow",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
