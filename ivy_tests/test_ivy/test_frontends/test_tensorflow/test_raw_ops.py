@@ -1408,7 +1408,6 @@ def test_tensroflow_MatMul(
 def test_tensorflow_Cumprod(
     dtype_x_axis,
     as_variable,
-    with_out,
     num_positional_args,
     fw,
     native_array,
@@ -1419,7 +1418,7 @@ def test_tensorflow_Cumprod(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -1429,6 +1428,4 @@ def test_tensorflow_Cumprod(
         axis=axis,
         exclusive=exclusive,
         reverse=reverse,
-        rtol=1e-02,
-        atol=1e-02,
     )
