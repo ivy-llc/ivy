@@ -1,5 +1,5 @@
 import ivy
-
+from collections import namedtuple
 
 def dist(input, other, p=2):
     return ivy.vector_norm(ivy.subtract(input, other), ord=p)
@@ -51,3 +51,17 @@ def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 def var(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.var(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
+
+def min(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        ret = ivy.min(input, axis=dim, keepdims=keepdim, out=out)
+    else:
+        min_vals = ivy.min(input, axis=dim, keepdims=keepdim, out=out)
+        argmin_vals = ivy.argmin(input, axis=dim, keepdims=keepdim, out=out)
+        if out:
+            assert len(out) == 2
+            ivy.inplace_update(out[0], min_vals)
+            ivy.inplace_update(out[1], argmin_vals)
+        min_tuple = namedtuple("min", ["values", "indices"])
+        ret = min_tuple(min_vals, argmin_vals)
+    return ret
