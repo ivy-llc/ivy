@@ -20,6 +20,65 @@ def dtype_x_bounded_axis(draw, **kwargs):
     return dtype, x, axis
 
 
+@st.composite
+def _array_and_axes_permute_helper(
+    draw,
+    *,
+    min_num_dims,
+    max_num_dims,
+    min_dim_size,
+    max_dim_size,
+):
+    """Returns array, its dtype and either the random permutation of its axes or None.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_num_dims
+        minimum number of array dimensions
+    max_num_dims
+        maximum number of array dimensions
+    min_dim_size
+        minimum size of the dimension
+    max_dim_size
+        maximum size of the dimension
+
+    Returns
+    -------
+    A strategy that draws an array, its dtype and axes (or None).
+    """
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
+    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    axes = draw(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=shape,
+                allow_neg=False,
+                allow_none=False,
+                sorted=False,
+                unique=True,
+                min_size=len(shape),
+                max_size=len(shape),
+                force_tuple=True,
+                force_int=False,
+            ),
+        ).filter(lambda x: x != tuple(range(len(shape))))
+    )
+    return (array, dtype, axes)
+
+
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]

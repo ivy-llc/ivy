@@ -169,7 +169,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([-1., 1., 4., 0.8])
         >>> y = x.asin()
@@ -575,7 +575,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([1., 0., 2.,])
         >>> y = x.cos()
@@ -658,7 +658,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([2., 2., 2.])
@@ -666,7 +666,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 3.5, 4.5])
 
-        With mixed :code:`ivy.Array` and `ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and `ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.native_array([2., 2., 2.])
@@ -708,7 +708,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([1., 7., 9.])
@@ -716,7 +716,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([False, True, True])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([2.5, 7.3, 9.375])
         >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
@@ -724,7 +724,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([True, False,  True])
 
-        With mixed :code:`ivy.Array` and `float` inputs:
+        With mixed :class:`ivy.Array` and `float` inputs:
 
         >>> x1 = ivy.array([2.5, 7.3, 9.375])
         >>> x2 = 7.3
@@ -732,7 +732,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([False, True, False])
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([3., 1., 0.9])
         >>> x2 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
@@ -851,7 +851,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([13., 7., 8.])
         >>> x2 = ivy.array([3., 2., 7.])
@@ -859,7 +859,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([4., 3., 1.])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([13., 7., 8.])
         >>> x2 = ivy.native_array([3., 2., 7.])
@@ -1226,7 +1226,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log10()
@@ -1388,12 +1388,12 @@ class ArrayWithElementwise(abc.ABC):
         in the standard.
 
         Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
         instances in place of any of the arguments.
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([False, 3, 0])
         >>> y = ivy.array([2, True, False])
@@ -1621,7 +1621,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 5., 15.])
         >>> x2 = ivy.array([3., 2., 4.])
@@ -1629,7 +1629,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([2., 1., 3.])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([11., 4., 18.])
         >>> x2 = ivy.native_array([2., 5., 8.])
@@ -1661,7 +1661,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])
         >>> y = x.round()
@@ -2041,7 +2041,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x=ivy.array([90,180,270,360])
         >>> y=x.deg2rad()
@@ -2072,7 +2072,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x=ivy.array([1,5,8,10])
         >>> y=x.rad2deg()
@@ -2115,7 +2115,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([2., -2., 2.])

@@ -158,7 +158,8 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -175,9 +176,11 @@ class ArrayWithGeneral(abc.ABC):
             the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
-            An array for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -193,7 +196,9 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(self._data, indices, axis=axis, out=out)
+        return ivy.gather(
+            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
+        )
 
     def scatter_nd(
         self: ivy.Array,
@@ -467,7 +472,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.to_list()
@@ -525,7 +530,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_decrement(1)
@@ -569,7 +574,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
@@ -623,7 +628,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
@@ -714,7 +719,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([-1])
         >>> y = x.to_scalar()
@@ -801,7 +806,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With one :code:`ivy.Array` instance method:
+        With one :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([92])
         >>> y = x.value_is_nan()
@@ -965,7 +970,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_increment(1)
@@ -1012,7 +1017,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.clip_matrix_norm(2.0)

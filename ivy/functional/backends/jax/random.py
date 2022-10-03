@@ -47,12 +47,15 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
+    seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
     return (
         to_device(
             jax.random.normal(rng_input, shape, dtype=dtype),
