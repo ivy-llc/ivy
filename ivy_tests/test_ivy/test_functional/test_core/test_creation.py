@@ -14,7 +14,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        dtype=ivy.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
