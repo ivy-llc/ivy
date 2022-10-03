@@ -131,7 +131,15 @@ def seed(*, seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def shuffle(
+    x: JaxArray,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
     return jax.random.shuffle(rng_input, x)

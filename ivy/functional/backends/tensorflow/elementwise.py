@@ -397,8 +397,12 @@ def logaddexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # removed the use of tf.experimental.numpy.logaddexp as it failed gradient tests
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.logaddexp(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
 
 
 logaddexp.unsupported_dtypes = ("float16", "bfloat16")
