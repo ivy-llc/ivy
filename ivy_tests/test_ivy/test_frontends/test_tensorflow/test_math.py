@@ -1079,7 +1079,7 @@ def test_tensorflow_zero_fraction(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.truediv"
+        fn_name="ivy.functional.frontends.tensorflow.math.truediv"
     ),
 )
 def test_tensorflow_truediv(
@@ -1094,9 +1094,7 @@ def test_tensorflow_truediv(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="truediv",
+        fn_tree="math.truediv",
         x=x[0],
         y=x[1],
     )
-    
-    
