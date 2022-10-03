@@ -312,7 +312,7 @@ def multinomial(
     /,
     *,
     batch_size: int = 1,
-    probs: Union[ivy.Array, ivy.NativeArray] = None,
+    probs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     replace: bool = True,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
