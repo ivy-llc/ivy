@@ -7,24 +7,18 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
 # native_array
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
-    ),
+    dtype_and_x_and_cast_dtype=astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
 def test_native_array(
     *,
-    dtype_and_x,
+    dtype_and_x_and_cast_dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -32,9 +26,9 @@ def test_native_array(
     fw,
     device,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
