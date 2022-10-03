@@ -1,3 +1,4 @@
+# local
 import ivy
 
 
@@ -24,3 +25,7 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 # eigvalsh
 def eigvalsh(a, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
+
+
+def qr(a, mode="reduced"):
+    return ivy.qr(a, mode=mode)
