@@ -144,7 +144,6 @@ ivy.tan()
             frontend="numpy",
             fn_tree="tan",
             x=x[0],
-            out=None,
             where=where,
             dtype=dtype[0],
         )
@@ -193,40 +192,48 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py
+    # leaky_relu
     @handle_cmd_line_args
     @given(
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
         ),
         num_positional_args=helpers.num_positional_args(
-            fn_name="functional.frontends.torch.tan"
+            fn_name="ivy.functional.frontends.torch.leaky_relu"
         ),
+        alpha=st.floats(min_value=0, max_value=1),
+        with_inplace=st.booleans(),
     )
-    def test_torch_tan(
+    def test_torch_leaky_relu(
         dtype_and_x,
-        as_variable,
         with_out,
+        with_inplace, # does handle_cmd_line_args deals with this like with_out?
         num_positional_args,
+        as_variable,
         native_array,
         fw,
+        alpha,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
             with_out=with_out,
+            with_inplace=with_inplace,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
             frontend="torch",
-            fn_tree="tan",
+            fn_tree="nn.functional.leaky_relu",
             input=x[0],
-            out=None,
+            negative_slope=alpha,
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for PyTorch.
-* We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
+* We set :code:`fn_tree` to :code:`nn.functional.leaky_relu` which is the path to the function in the PyTorch namespace.
+* We get :code:`with_inplace` with hypothesis to test the function that supports direct inplace update in its arguments: when :code:`with_inplace` is :code:`True` the function updates the :code:`input` argument with return value and the return value has the same reference as the input.
+* We should set :code:`with_inplace` is :code:`True` for the special In-place versions of PyTorch functions that always do inplace update, as the :code:`input` argument is also updated with return value and the returned value has the same reference as the input.
 
 ivy.full()
 ^^^^^^^^^^
@@ -270,6 +277,8 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        native_array,
+        as_variable,
         num_positional_args,
         as_variable,
         native_array,
@@ -328,15 +337,17 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        as_variable,
+        native_array,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="numpy",
             fn_tree="full",
@@ -381,15 +392,17 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        as_variable,
+        native_array,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="tensorflow",
             fn_tree="fill",
@@ -449,15 +462,17 @@ This function requires us to create extra functions for generating :code:`shape`
         dtypes,
         requires_grad,
         device,
+        as_variable,
         num_positional_args,
+        native_array,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="torch",
             fn_tree="full",
