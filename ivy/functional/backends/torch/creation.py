@@ -96,7 +96,7 @@ def asarray(
         dtype = obj.dtype
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         if dtype is None:
-            dtype = default_dtype(item=obj, as_native=True)
+            dtype = ivy.default_dtype(item=obj, as_native=True)
 
         # if `obj` is a list of specifically tensors
         if isinstance(obj[0], torch.Tensor):
