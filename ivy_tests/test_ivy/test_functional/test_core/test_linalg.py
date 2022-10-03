@@ -1236,7 +1236,7 @@ def test_matrix_rank(
     dtype, x = dtype_x
     x_temp = x[0]
     for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
-        assume(round(np.linalg.det(x_i), 1) != 0.0)
+        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
