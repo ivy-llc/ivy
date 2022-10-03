@@ -1,6 +1,7 @@
 import ivy
 from collections import namedtuple
 
+
 def dist(input, other, p=2):
     return ivy.vector_norm(ivy.subtract(input, other), ord=p)
 
@@ -51,6 +52,7 @@ def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 def var(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.var(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
+
 
 def min(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
