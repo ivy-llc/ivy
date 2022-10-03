@@ -1,6 +1,14 @@
 import ivy
 
 
+def _binary_matches(y_true, y_pred, threshold=0.5):
+    threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
+    y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
+    return ivy.astype(
+        ivy.equal(y_true, y_pred), ivy.default_float_dtype(as_native=True)
+    )
+
+
 def _cond_convert_labels(y_true):
     are_zeros = ivy.equal(y_true, 0.0)
     are_ones = ivy.equal(y_true, 1.0)
@@ -15,14 +23,14 @@ def _sparse_categorical_matches(y_true, y_pred):
     reshape = False
     y_true = ivy.array(y_true)
     y_pred = ivy.array(y_pred)
-    y_true_org_shape = y_true.shape
+    y_true_org_shape = ivy.shape(y_true)
     y_true_rank = y_true.ndim
     y_pred_rank = y_pred.ndim
     # y_true shape to (num_samples,)
     if (
         (y_true_rank is not None)
         and (y_pred_rank is not None)
-        and (len(y_true.shape) == len(y_pred.shape))
+        and (len(ivy.shape(y_true)) == len(ivy.shape(y_pred)))
     ):
         y_true = ivy.squeeze(y_true, axis=-1)
         reshape = True
@@ -45,8 +53,8 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
         ivy.assertions.check_equal(
             predictions.ndim, 2, message="predictions must be 2-dimensional"
         )
-        targets_batch = targets.shape[0]
-        pred_batch = predictions.shape[0]
+        targets_batch = ivy.shape(targets)[0]
+        pred_batch = ivy.shape(predictions)[0]
         ivy.assertions.check_equal(
             targets_batch,
             pred_batch,
@@ -71,13 +79,13 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
         top_k = _top_k(predictions, topk)
 
-        labels = predictions.shape[1]
+        labels = ivy.shape(predictions)[1]
         # float comparison?
         return ivy.array(
             [
                 (
                     0 <= res < labels
-                    and ivy.min(top_k[ind] - predictions[ind, res]) < 1e-6
+                    and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9
                 )
                 for ind, res in enumerate(targets)
             ]
@@ -86,7 +94,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     reshape = False
     y_true = ivy.array(y_true)
     y_pred = ivy.array(y_pred)
-    y_true_org_shape = y_true.shape
+    y_true_org_shape = ivy.shape(y_true)
     y_true_rank = y_true.ndim
     y_pred_rank = y_pred.ndim
 
@@ -110,7 +118,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
 
 def binary_accuracy(y_true, y_pred, threshold=0.5):
-    return ivy.mean(binary_matches(y_true, y_pred, threshold), axis=-1)
+    return ivy.mean(_binary_matches(y_true, y_pred, threshold), axis=-1)
 
 
 def binary_crossentropy(
@@ -121,65 +129,64 @@ def binary_crossentropy(
     return ivy.mean(ivy.binary_cross_entropy(y_true, y_pred, label_smoothing))
 
 
-def binary_matches(y_true, y_pred, threshold=0.5):
-    y_pred = ivy.array(y_pred)
-    threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
-    y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
-    return ivy.astype(
-        ivy.equal(y_true, y_pred), ivy.default_float_dtype(as_native=True)
-    )
-
-
 def categorical_accuracy(y_true, y_pred):
     return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
 
 
 def hinge(y_true, y_pred):
-    y_pred = ivy.array(y_pred)
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.maximum(1.0 - y_true * y_pred, 0.0), axis=-1)
 
 
 def kl_divergence(y_true, y_pred):
-    y_true = ivy.array(y_true)
-    y_pred = ivy.array(y_pred)
-    y_true = ivy.astype(y_true, y_pred.dtype)
     # clip to range but avoid div-0
     y_true = ivy.clip(y_true, 1e-7, 1)
     y_pred = ivy.clip(y_pred, 1e-7, 1)
+    return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1).astype(y_true.dtype)
 
-    return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
+
+kld = kl_divergence
+
+
+kullback_leibler_divergence = kl_divergence
 
 
 def mean_absolute_error(y_true, y_pred):
-    return ivy.mean(ivy.abs(y_true - y_pred))
+    return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
+
+
+mae = mean_absolute_error
 
 
 def mean_absolute_percentage_error(y_true, y_pred):
-    y_pred = ivy.array(y_pred)
-    y_true = ivy.array(y_true)
     y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
 
     diff = ivy.abs((y_true - y_pred) / ivy.maximum(ivy.abs(y_true), 1e-7))
     return 100.0 * ivy.mean(diff, axis=-1)
 
 
+mape = mean_absolute_percentage_error
+
+
 def mean_squared_error(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
 
 
+mse = mean_squared_error
+
+
 def mean_squared_logarithmic_error(y_true, y_pred):
-    y_pred = ivy.asarray(y_pred)
     y_true = ivy.astype(y_true, y_pred.dtype)
     first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
     second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
     return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)
 
 
+msle = mean_squared_logarithmic_error
+
+
 def poisson(y_true, y_pred):
-    y_pred = ivy.array(y_pred)
-    y_true = ivy.array(y_true)
     y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
     return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
 
@@ -195,7 +202,22 @@ def sparse_top_k_categorical_accuracy(y_true, y_pred, k=5):
 
 
 def squared_hinge(y_true, y_pred):
-    y_pred = ivy.array(y_pred)
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
+
+
+def cosine_similarity(y_true, y_pred):
+
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.asarray(y_true)
+
+    if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
+        numerator = ivy.sum(y_true * y_pred, axis=1)
+        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+    else:
+        numerator = ivy.vecdot(y_true, y_pred)
+        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+
+    cosine = numerator / denominator
+    return cosine

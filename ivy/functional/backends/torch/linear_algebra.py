@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 # local
@@ -41,13 +41,25 @@ def cross(
     x2: torch.Tensor,
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if axis is None:
         axis = -1
     x1,x2=ivy.promote_types_of_inputs(x1,x2)
-    return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
+
+    if axis:
+        return torch.linalg.cross(input=x1, other=x2, dim=axis)
+    x1 = torch.transpose(x1, axisa, 1)
+    x2 = torch.transpose(x2, axisb, 1)
+    return torch.transpose(
+        torch.linalg.cross(input=x1, other=x2, out=out), dim0=axisc, dim1=1
+    )
+
 
 
 cross.unsupported_dtypes = ("float16",)
@@ -75,8 +87,10 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.linalg.eigh(x, out=out)
+def eigh(
+    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
 
 eigh.unsupported_dtypes = (
@@ -87,8 +101,10 @@ eigh.unsupported_dtypes = (
 eigh.support_native_out = True
 
 
-def eigvalsh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.linalg.eigvalsh(x, out=out)
+def eigvalsh(
+    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
 
 eigvalsh.unsupported_dtypes = (
@@ -110,14 +126,27 @@ inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
 inner.support_native_out = True
 
 
-def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+def inv(
+    x: torch.Tensor,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if torch.linalg.det == 0:
         ret = x
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
     else:
-        ret = torch.inverse(x, out=out)
-    return ret
+        if adjoint is False:
+            ret = torch.inverse(x, out=out)
+            return ret
+        else:
+            x = torch.t(x)
+            ret = torch.inverse(x, out=out)
+            if ivy.exists(out):
+                return ivy.inplace_update(out, ret)
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -129,10 +158,23 @@ inv.support_native_out = True
 
 
 def matmul(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
+    if transpose_a is True:
+        x1 = torch.t(x1)
+    if transpose_b is True:
+        x2 = torch.t(x2)
     x1,x2=ivy.promote_types_of_inputs(x1,x2)
     return torch.matmul(x1, x2, out=out)
+
+
 
 
 matmul.support_native_out = True
@@ -173,7 +215,7 @@ def matrix_rank(
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
     ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
-    return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
+    return ret.to(dtype=x.dtype)
 
 
 matrix_rank.unsupported_dtypes = (
@@ -233,11 +275,14 @@ def qr(
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x, out=out)
@@ -360,7 +405,7 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

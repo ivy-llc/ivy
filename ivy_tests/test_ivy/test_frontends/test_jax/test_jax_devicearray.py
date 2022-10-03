@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -49,11 +48,10 @@ def test_jax_instance_reshape(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         frontend_class=DeviceArray,
         fn_tree="DeviceArray.reshape",
-        self=np.asarray(x, dtype=dtype),
+        self=x[0],
         new_sizes=shape,
         dimensions=dimensions,
     )
@@ -85,10 +83,9 @@ def test_jax_instance_add(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         frontend_class=DeviceArray,
         fn_tree="DeviceArray.add",
-        self=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        self=x[0],
+        other=x[1],
     )

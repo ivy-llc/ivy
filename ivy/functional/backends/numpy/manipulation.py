@@ -131,13 +131,13 @@ stack.support_native_out = True
 
 
 def split(
-    x,
+    x: np.ndarray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[np.ndarray]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -204,7 +204,9 @@ def swapaxes(
     return np.swapaxes(x, axis0, axis1)
 
 
-def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
+def unstack(
+    x: np.ndarray, /, *, axis: int = 0, keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
