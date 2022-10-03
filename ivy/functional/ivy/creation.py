@@ -71,8 +71,14 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
         # and an isinstance call is cheap
-        nested = isinstance(args[0], list)
+        nested = (
+                (isinstance(args[0], (list, tuple))
+                 and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple))))
+                or (isinstance(args[0], np.ndarray) and args[0].ndim == 1)
+        )
         new_args = (to_native(args[0], nested=nested),) + args[1:]
+        if dtype is not None:
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
     return new_fn
