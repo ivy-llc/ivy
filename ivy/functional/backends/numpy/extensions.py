@@ -22,7 +22,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     ivy.assertions.check_exists(
         data,

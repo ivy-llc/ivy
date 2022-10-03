@@ -352,7 +352,7 @@ class ArrayWithRandom(abc.ABC):
         /,
         *,
         seed: Optional[int] = None,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.shuffle. This method simply
         wraps the function, and so the docstring for ivy.shuffle also applies to
