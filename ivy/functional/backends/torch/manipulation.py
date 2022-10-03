@@ -230,14 +230,14 @@ def tile(
 def pad(
     x: torch.Tensor,
     /,
-    pad_width: Union[torch.Tensor, int],
+    pad_width: Tuple[int],
     *,
     mode: Optional[Literal["constant", "reflect", "edge", "wrap"]] = "constant",
-    stat_length: Optional[torch.Tensor, int] = None,
+    stat_length: Optional[Union[torch.Tensor, int]] = None,
     constant_values: Optional[Number] = 0,
     end_values: Optional[Number] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[Union[torch.Tensor, torch.Variable]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.shape == ():
         x = x.unsqueeze(0)
@@ -248,11 +248,21 @@ def pad(
     for pad_width_sec in pad_width:
         for item in pad_width_sec:
             pad_width_flat.append(item)
-    if mode == "edge":
-        mode = "replicate"
-    elif mode == "wrap":
-        mode = "circular"
-    return torch.nn.functional.pad(x, pad_width_flat, mode=mode, value=constant_values)
+    if mode == "constant":
+        return torch.nn.functional.pad(
+            x,
+            pad_width_flat,
+            mode=mode,
+            value=constant_values,
+        )
+    else:
+        x = x.unsqueeze(dim=0)
+        if mode == "edge":
+            mode = "replicate"
+        elif mode == "wrap":
+            mode = "circular"
+            x = x.unsqueeze(dim=0)
+        return torch.nn.functional.pad(x, pad_width_flat, mode=mode).squeeze()
 
 
 def constant_pad(

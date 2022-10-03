@@ -927,27 +927,29 @@ def clip(
 def pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    pad_width: Union[Sequence[int], int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     *,
     mode: Optional[
-        Literal[
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-            "empty",
-        ],
-        Callable,
+        Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
+        ]
     ] = "constant",
-    stat_length: Optional[Sequence[int], int] = None,
-    constant_values: Optional[Sequence[Number], Number] = 0,
-    end_values: Optional[Sequence[Number], Number] = 0,
+    stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -986,11 +988,11 @@ def pad(
                to pad the beginning.
              - "empty": Pads with undefined values.
              - <function>: Pads with a user-defined padding function.
-                 The padding function should modify an array in-place.
+                 The padding function should modify a rank 1 array in-place.
                  It has the following signature:
                  padding_func(vector, iaxis_pad_width, iaxis, kwargs), where:
                      - vector is
-                       An array already padded with zeros. Padded values are
+                       A rank 1 array already padded with zeros. Padded values are
                        vector[:iaxis_pad_width[0]] and vector[-iaxis_pad_width[1]:].
                      - iaxis_pad_width is
                        A 2-tuple of ints, where iaxis_pad_width[0] represents the
@@ -1041,10 +1043,92 @@ def pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
 
-    Both the description and the type hints above assumes an array input for simplicity
+    Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="constant")
+    >>> print(y)
+    ivy.array([[0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 1, 2, 3, 0, 0],
+               [0, 0, 4, 5, 6, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0]])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="reflect")
+    >>> print(y)
+    ivy.array([[6, 5, 4, 5, 6, 5, 4],
+               [3, 2, 1, 2, 3, 2, 1],
+               [6, 5, 4, 5, 6, 5, 4],
+               [3, 2, 1, 2, 3, 2, 1]])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="symmetric")
+    >>> print(y)
+    ivy.array([[2, 1, 1, 2, 3, 3, 2],
+               [2, 1, 1, 2, 3, 3, 2],
+               [5, 4, 4, 5, 6, 6, 5],
+               [5, 4, 4, 5, 6, 6, 5]])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="edge")
+    >>> print(y)
+    ivy.array([[1, 1, 1, 2, 3, 3, 3],
+               [1, 1, 1, 2, 3, 3, 3],
+               [4, 4, 4, 5, 6, 6, 6],
+               [4, 4, 4, 5, 6, 6, 6]])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="wrap")
+    >>> print(y)
+    ivy.array([[5, 6, 4, 5, 6, 4, 5],
+               [2, 3, 1, 2, 3, 1, 2],
+               [5, 6, 4, 5, 6, 4, 5],
+               [2, 3, 1, 2, 3, 1, 2]])
+
+    >>> def pad_with(vector, pad_width, iaxis, kwargs):
+    >>>     pad_value = kwargs.get('padder', 10)
+    >>>     vector[:pad_width[0]] = pad_value
+    >>>     vector[-pad_width[1]:] = pad_value
+    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.pad(x, 1, mode=pad_with)
+    >>> print(y)
+    ivy.array([[10, 10, 10, 10, 10],
+               [10,  1,  2,  3, 10],
+               [10,  4,  5,  6, 10],
+               [10, 10, 10, 10, 10]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> y = ivy.pad(x, padding, mode="constant", constant_values=7)
+    >>> print(y)
+    ivy.array([[7, 7, 7, 7, 7, 7, 7],
+               [7, 7, 1, 2, 3, 7, 7],
+               [7, 7, 4, 5, 6, 7, 7],
+               [7, 7, 7, 7, 7, 7, 7]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([0., 1., 2.]))
+    >>> padding = ivy.array([(1, 1)])
+    >>> y = ivy.pad(x, padding, mode="constant")
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 2., 0.]),
+        b: ivy.array([0., 0., 1., 2., 0.])
+    }
     """
     return current_backend(x).pad(
         x,
