@@ -196,7 +196,6 @@ def test_jax_numpy_qr(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -205,10 +204,8 @@ def test_jax_numpy_qr(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.linalg.qr",
-        rtol=1e-02,
         a=np.asarray(x[0], dtype[0]),
         mode=mode,
     )
