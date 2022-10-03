@@ -112,10 +112,12 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
 def broadcast_to(
     x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> np.ndarray:
+    if x.ndim > len(shape):
+        return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
     if isinstance(from_, np.ndarray):
         from_ = str(from_.dtype)
     from_ = str(from_)

@@ -81,14 +81,12 @@ def test_torch_cat(
     fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cat",
         tensors=xs,
@@ -114,14 +112,12 @@ def test_torch_concat(
     fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="concat",
         tensors=xs,
@@ -159,10 +155,9 @@ def test_torch_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nonzero",
-        input=np.asarray(input, dtype=dtype),
+        input=input[0],
         as_tuple=as_tuple,
     )
 
@@ -192,10 +187,9 @@ def test_torch_permute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="permute",
-        input=np.asarray(x, dtype=dtype),
+        input=x[0],
         dims=tuple(idxes),
     )
 
@@ -234,10 +228,9 @@ def test_torch_swapdims(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="swapdims",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         dim0=dim0,
         dim1=dim1,
     )
@@ -284,10 +277,9 @@ def test_torch_reshape(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="reshape",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         shape=shape,
     )
 
@@ -317,17 +309,15 @@ def test_torch_stack(
     fw,
 ):
     input_dtype, value = dtype_value_shape
-    tensors = [np.asarray(x, dtype=dtype) for x, dtype in zip(value, input_dtype)]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="stack",
-        tensors=tensors,
+        tensors=value,
         dim=dim,
     )
 
@@ -366,10 +356,9 @@ def test_torch_transpose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="transpose",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         dim0=dim0,
         dim1=dim1,
     )
@@ -406,10 +395,9 @@ def test_torch_squeeze(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="squeeze",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         dim=dim,
     )
 
@@ -448,10 +436,9 @@ def test_torch_swapaxes(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="swapaxes",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         axis0=axis0,
         axis1=axis1,
     )
@@ -489,10 +476,9 @@ def test_torch_chunk(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="chunk",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         chunks=chunks,
         dim=dim,
     )

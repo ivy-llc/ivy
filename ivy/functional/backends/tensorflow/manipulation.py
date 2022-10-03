@@ -184,10 +184,10 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -198,7 +198,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -207,6 +207,7 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+
     return tf.split(x, num_or_size_splits, axis)
 
 
@@ -309,7 +310,7 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
