@@ -2114,6 +2114,9 @@ def test_tanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="tanh",
+        test_gradients=True,
+        rtol_=1e-1,
+        atol_=1e-2,
         x=x[0],
     )
 
