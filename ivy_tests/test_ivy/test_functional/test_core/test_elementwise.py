@@ -1334,7 +1334,11 @@ def test_log10(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        abs_smallest_val=0.137,
+        min_value=-80,
+        max_value=80,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
 )
@@ -1360,7 +1364,9 @@ def test_logaddexp(
         instance_method=instance_method,
         fw=fw,
         fn_name="logaddexp",
-        rtol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
