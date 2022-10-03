@@ -13,11 +13,11 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any,inplace=False) -> Any:
+def _to_native(x: Any, inplace=False) -> Any:
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
-        return x.map(lambda x_, _: _to_native(x_,inplace=inplace),inplace=inplace)
+        return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
     return x
 
 
