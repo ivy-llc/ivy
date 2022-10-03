@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -215,6 +215,7 @@ qr.unsupported_dtypes = ("float16",)
 
 def slogdet(
     x: np.ndarray,
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -224,6 +225,7 @@ def slogdet(
     logabsdet = (
         np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
     )
+
     return results(sign, logabsdet)
 
 

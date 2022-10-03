@@ -36,7 +36,7 @@ The Basics
 frontend functions.
 
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
 
 **Jax**
 
@@ -154,6 +154,7 @@ See the section "Unused Arguments" below for more details.
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
+    @from_zero_dim_arrays_to_float
     def tan(
         x,
         /,
@@ -161,7 +162,7 @@ See the section "Unused Arguments" below for more details.
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
@@ -217,19 +218,15 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
-    def add(input, other, *, alpha=1, out=None):
-        return ivy.add(input, other * alpha, out=out)
+    def add(input, other, *, alpha=None, out=None):
+        return ivy.add(input, other, alpha=alpha, out=out)
 
 For PyTorch, :func:`add` is categorised under :code:`pointwise_ops` as is the case in
 the `torch`_ framework.
 
 In this case, the native `torch.add`_ has both positional and keyword arguments,
 and we therefore use the same for our PyTorch frontend :func:`add`.
-We wrap :func:`ivy.add` as usual, but the arguments work slightly different in this
-example. Looking at the PyTorch `torch.add`_ documentation,
-we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
-into :func:`ivy.add`.
+We wrap :func:`ivy.add` as usual.
 
 .. code-block:: python
 
@@ -308,16 +305,16 @@ the backend :func:`ivy.cumprod` does not support this argument or behaviour.
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/general.py
+    # in ivy/functional/ivy/statistical.py
     def cumprod(
         x: Union[ivy.Array, ivy.NativeArray],
-        /,
         axis: int = 0,
-        *,
         exclusive: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return current_backend(x).cumprod(x, axis, exclusive, out=out)
+        return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
 compositionally able to mimic the required behaviour.
@@ -420,6 +417,11 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
+It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
+may not support the data type due to backend limitation. For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ do support all data types,
+but PyTorch does not support :code:`bfloat16` for the function :code:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
+function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
+
 Classes and Instance Methods
 ----------------------------
 
@@ -435,13 +437,13 @@ the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`,
 
 For an example of how these are implemented, we first show the instance method for
 :meth:`np.ndarray.reshape`, which is implemented in the frontend
-`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+`ndarray class <https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def reshape(self, shape, order="C"):
+        return np_frontend.reshape(self.data, shape)
 
 Under the hood, this simply calls the frontend :func:`np_frontend.reshape` function,
 which itself is implemented as follows:
@@ -449,8 +451,8 @@ which itself is implemented as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
-    def reshape(x, /, shape, *, copy=None):
-        return ivy.reshape(x, shape, copy=copy)
+    def reshape(x, /, newshape, order="C"):
+        return ivy.reshape(x, shape=newshape)
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
@@ -477,11 +479,11 @@ use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtyp
 `source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
 
 We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
-`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
+framework, there is a dictionary named :code:`<backend>_classes_to_ivy_classes` in
+:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
 This holds pairs of framework-specific classes and the corresponding Ivy or
 native Python classes to map to.
-For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
+For example, in :code:`ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
 
@@ -520,17 +522,16 @@ instance, and then passes the key and value as inputs to the corresponding funct
 correctly.
 
 
-As an example, we show how :class:`NativeClass` is used in the frontend test for the
-:func:`sum` function in the NumPy frontend:
+As an example, we show how :code:`NativeClass` is used in the frontend test for the
+:func:`sum` function in the NumPy frontend: 
 
 .. code-block:: python
-    # sum
-    Novalue = NativeClass(numpy._NoValue)
+
     @handle_cmd_line_args
     @given(
-        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+        dtype_x_axis=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("float")),
         dtype=helpers.get_dtypes("float", full=False, none=True),
-        keep_dims= st.one_of (st.booleans(), Novalue),
+        keep_dims=st.one_of(st.booleans(), Novalue),
         initial=st.one_of(st.floats(), Novalue),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.numpy.sum"
@@ -547,9 +548,9 @@ As an example, we show how :class:`NativeClass` is used in the frontend test for
         with_out,
         fw,
     ):
-        (input_dtype, x, axis), where = dtype_x_axis
-        if where is None:
-            where = Novalue
+        input_dtype, x, axis = dtype_x_axis
+        if initial is None:
+            where = True
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
@@ -559,9 +560,9 @@ As an example, we show how :class:`NativeClass` is used in the frontend test for
             fw=fw,
             frontend="numpy",
             fn_tree="sum",
-            x=np.asarray(x, dtype=input_dtype[0]),
+            x=x[0],
             axis=axis,
-            dtype=dtype,
+            dtype=dtype[0],
             keepdims=keep_dims,
             initial=initial,
             where=where,

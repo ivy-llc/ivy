@@ -26,7 +26,7 @@ def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
