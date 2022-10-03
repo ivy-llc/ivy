@@ -1330,6 +1330,21 @@ def qr(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+
+    >>> A = ivy.array([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+    >>> Q, R = ivy.qr(A, mode="reduced")
+    >>> print(Q)
+    ivy.array([[-0.8571,  0.3943,  0.3314],
+        [-0.4286, -0.9029, -0.0343],
+        [ 0.2857, -0.1714,  0.9429]])
+    >>> print(R)
+    ivy.array([[ -14.0000,  -21.0000,   14.0000],
+        [   0.0000, -175.0000,   70.0000],
+        [   0.0000,    0.0000,  -35.0000]])
+    
+
     """
     return current_backend(x).qr(x, mode=mode)
 
