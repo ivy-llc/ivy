@@ -1929,6 +1929,7 @@ def test_sinh(
         instance_method=instance_method,
         fw=fw,
         fn_name="sinh",
+        test_gradients=True,
         x=x[0],
     )
 
