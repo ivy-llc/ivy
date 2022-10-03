@@ -2736,6 +2736,14 @@ class ContainerWithGeneral(ContainerBase):
             b: true
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.native_array([3]))
+        >>> y = ivy.to_scalar(x)
+        >>> print(y)
+        {
+            a: -1,
+            b: 3
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "to_scalar",
@@ -2795,6 +2803,16 @@ class ContainerWithGeneral(ContainerBase):
             b: 0,
             c: -1
         }
+
+        >>> x = ivy.Container(a=ivy.native_array([1]), b=ivy.native_array([0]),\
+                            c=ivy.native_array([-1]))
+        >>> y = ivy.to_scalar(x)
+        >>> print(y)
+        {
+            a: 1,
+            b: 0,
+            c: -1
+        }        
 
         """
         return self.static_to_scalar(

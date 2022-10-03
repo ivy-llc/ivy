@@ -743,8 +743,7 @@ def to_numpy(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def to_scalar(
-    x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
     Parameters
@@ -844,6 +843,23 @@ def to_scalar(
         a: 1,
         b: 0,
         c: -1
+    }
+
+    With a mix of :class:`ivy.Container` 
+    and:class:`ivy.Array` input and :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.native_array([3]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        a: -1,
+        b: 3
+    }
+
+    >>> print(ivy.is_int_dtype(y))
+    {
+        a: true,
+        b: true
     }
 
     """
