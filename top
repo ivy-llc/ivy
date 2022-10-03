@@ -1,0 +1,61 @@
+[1mdiff --git a/ivy/functional/frontends/jax/numpy/name_space_functions.py b/ivy/functional/frontends/jax/numpy/name_space_functions.py[m
+[1mindex 6f902d10..8fe7862d 100644[m
+[1m--- a/ivy/functional/frontends/jax/numpy/name_space_functions.py[m
+[1m+++ b/ivy/functional/frontends/jax/numpy/name_space_functions.py[m
+[36m@@ -18,6 +18,10 @@[m [mdef all(a, axis=None, out=None, keepdims=False, *, where=False):[m
+     return ivy.all(a, axis=axis, keepdims=keepdims, out=out)[m
+ [m
+ [m
+[32m+[m[32mdef argmax(a, axis=None, out=None, keepdims=None):[m
+[32m+[m[32m    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)[m
+[32m+[m
+[32m+[m
+ def _compute_allclose_with_tol(input, other, rtol, atol):[m
+     return ivy.all([m
+         ivy.less_equal([m
+[1mdiff --git a/ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_namespace_functions.py b/ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_namespace_functions.py[m
+[1mindex f377ec6c..202903e2 100644[m
+[1m--- a/ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_namespace_functions.py[m
+[1m+++ b/ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_namespace_functions.py[m
+[36m@@ -68,6 +68,41 @@[m [mdef test_jax_numpy_absolute([m
+     )[m
+ [m
+ [m
+[32m+[m[32m# argmax[m
+[32m+[m[32m@handle_cmd_line_args[m
+[32m+[m[32m@given([m
+[32m+[m[32m    dtype_and_x=helpers.dtype_values_axis([m
+[32m+[m[32m        available_dtypes=helpers.get_dtypes("numeric"),[m
+[32m+[m[32m        force_int_axis=True,[m
+[32m+[m[32m        min_num_dims=1,[m
+[32m+[m[32m        min_axis=-1,[m
+[32m+[m[32m        max_axis=0,[m
+[32m+[m[32m    ),[m
+[32m+[m[32m    num_positional_args=helpers.num_positional_args([m
+[32m+[m[32m        fn_name="ivy.functional.frontends.jax.numpy.argmax"[m
+[32m+[m[32m    ),[m
+[32m+[m[32m)[m
+[32m+[m[32mdef test_jax_numpy_argmax([m
+[32m+[m[32m    dtype_and_x,[m
+[32m+[m[32m    as_variable,[m
+[32m+[m[32m    num_positional_args,[m
+[32m+[m[32m    native_array,[m
+[32m+[m[32m    fw,[m
+[32m+[m[32m):[m
+[32m+[m[32m    input_dtype, x, axis = dtype_and_x[m
+[32m+[m[32m    helpers.test_frontend_function([m
+[32m+[m[32m        input_dtypes=input_dtype,[m
+[32m+[m[32m        as_variable_flags=as_variable,[m
+[32m+[m[32m        with_out=False,[m
+[32m+[m[32m        num_positional_args=num_positional_args,[m
+[32m+[m[32m        native_array_flags=native_array,[m
+[32m+[m[32m        frontend="jax",[m
+[32m+[m[32m        fn_tree="numpy.argmax",[m
+[32m+[m[32m        a=x[0],[m
+[32m+[m[32m        axis=axis,[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m
+ # add[m
+ @handle_cmd_line_args[m
+ @given([m
