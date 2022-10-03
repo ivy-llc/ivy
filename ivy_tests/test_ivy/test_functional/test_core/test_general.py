@@ -355,26 +355,33 @@ def test_shape(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True)
     ),
-    as_tensor=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    as_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="get_num_dims"),
 )
-def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
-    dtype, object_in = x0_n_x1_n_res
-    assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
-    ret = ivy.get_num_dims(
-        tensor_fn(object_in, dtype=dtype[0], device=device), as_array=as_tensor
-    )
-    # type test
-    if as_tensor:
-        assert ivy.is_ivy_array(ret)
-    else:
-        assert isinstance(ret, int)
-        ret = ivy.array(ret)
-    # cardinality test
-    assert list(ret.shape) == []
-    # value test
-    assert np.array_equal(
-        ivy.to_numpy(ret), np.asarray(len(np.asarray(object_in).shape), np.int32)
+def test_get_num_dims(
+    x0_n_x1_n_res,
+    as_array,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="get_num_dims",
+        x=x[0],
+        as_array=as_array,
     )
 
 
