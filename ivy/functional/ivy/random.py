@@ -1,7 +1,7 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.backend_handler import backend_stack
+from ivy.backend_handler import backend_stack, current_backend
 from ivy.exceptions import handle_exceptions
 
 
