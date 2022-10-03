@@ -1,9 +1,7 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
-@handle_numpy_casting
 def add(
     x1,
     x2,
