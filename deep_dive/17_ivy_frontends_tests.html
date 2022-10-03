@@ -283,7 +283,6 @@ implement them for testing.</p>
         <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
         <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span>
         <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
     <span class="p">)</span>
@@ -329,42 +328,50 @@ implement them for testing.</p>
 <li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">tan</span></code> which is the path to the function in the TensorFlow namespace.</p></li>
 </ul>
 <p><strong>PyTorch</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py</span>
+<span class="c1"># leaky_relu</span>
 <span class="nd">handle_cmd_line_args</span>
 <span class="nd">given</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
         <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
     <span class="p">),</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;functional.frontends.torch.tan&quot;</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.leaky_relu&quot;</span>
     <span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">with_inplace</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_torch_tan</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">test_torch_leaky_relu</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">with_inplace</span><span class="p">,</span> <span class="c1"># does handle_cmd_line_args deals with this like with_out?</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">native_array</span><span class="p">,</span>
     <span class="n">fw</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">with_inplace</span><span class="o">=</span><span class="n">with_inplace</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
         <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
         <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;nn.functional.leaky_relu&quot;</span><span class="p">,</span>
         <span class="nb">input</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">negative_slope</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid float data types specifically for PyTorch.</p></li>
-<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">tan</span></code> which is the path to the function in the PyTorch namespace.</p></li>
+<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">nn.functional.leaky_relu</span></code> which is the path to the function in the PyTorch namespace.</p></li>
+<li><p>We get <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> with hypothesis to test the function that supports direct inplace update in its arguments: when <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> is <code class="code docutils literal notranslate"><span class="pre">True</span></code> the function updates the <code class="code docutils literal notranslate"><span class="pre">input</span></code> argument with return value and the return value has the same reference as the input.</p></li>
+<li><p>We should set <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> is <code class="code docutils literal notranslate"><span class="pre">True</span></code> for the special In-place versions of PyTorch functions that always do inplace update, as the <code class="code docutils literal notranslate"><span class="pre">input</span></code> argument is also updated with return value and the returned value has the same reference as the input.</p></li>
 </ul>
 </section>
 <section id="ivy-full">
@@ -403,6 +410,8 @@ This function requires us to create extra functions for generating <code class="
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">native_array</span><span class="p">,</span>
@@ -459,15 +468,17 @@ This function requires us to create extra functions for generating <code class="
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
     <span class="n">fw</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
         <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
         <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
         <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
@@ -511,15 +522,17 @@ This function requires us to create extra functions for generating <code class="
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
     <span class="n">fw</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
         <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
         <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
         <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span>
@@ -577,15 +590,17 @@ This function requires us to create extra functions for generating <code class="
     <span class="n">dtypes</span><span class="p">,</span>
     <span class="n">requires_grad</span><span class="p">,</span>
     <span class="n">device</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">fw</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
         <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
         <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
         <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
