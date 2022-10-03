@@ -631,6 +631,7 @@ def test_ceil(
         instance_method=instance_method,
         fw=fw,
         fn_name="ceil",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -663,6 +664,7 @@ def test_cos(
         instance_method=instance_method,
         fw=fw,
         fn_name="cos",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -695,6 +697,7 @@ def test_cosh(
         instance_method=instance_method,
         fw=fw,
         fn_name="cosh",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -732,6 +735,7 @@ def test_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -800,6 +804,7 @@ def test_exp(
         instance_method=instance_method,
         fw=fw,
         fn_name="exp",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -832,6 +837,9 @@ def test_expm1(
         instance_method=instance_method,
         fw=fw,
         fn_name="expm1",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -867,6 +875,7 @@ def test_floor(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -909,6 +918,7 @@ def test_floor_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor_divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         atol_=1,
@@ -1203,6 +1213,7 @@ def test_log(
         instance_method=instance_method,
         fw=fw,
         fn_name="log",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1241,6 +1252,7 @@ def test_log1p(
         instance_method=instance_method,
         fw=fw,
         fn_name="log1p",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1275,6 +1287,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        test_gradients=True,
         rtol_=1e-2,
         x=x[0],
     )
@@ -1310,7 +1323,9 @@ def test_log10(
         instance_method=instance_method,
         fw=fw,
         fn_name="log10",
+        test_gradients=True,
         rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 

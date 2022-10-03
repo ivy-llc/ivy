@@ -2,7 +2,7 @@ Ivy Tests
 =========
 
 .. _`test suite`: https://github.com/data-apis/array-api-tests
-.. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
+.. _`Hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
 .. _`test_ivy`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
 .. _`commit`: https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f
@@ -48,6 +48,12 @@ Ivy Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
+.. _`test helpers`:  https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers
+.. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
+.. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
+.. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
+.. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`,
 there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -60,6 +66,34 @@ These tests serve two purposes:
 
 As done in the `test suite`_, we also make use of `hypothesis`_ for performing property based testing.
 
+Testing Pipeline
+----------------
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/15_ivy_tests/testing_pipeline.png?raw=true
+   :align: center
+   :width: 100%
+*An abstract look at Ivy testing cycle.*
+
+1. **Test Data Generation**: At this stage, we generate our test data for the testing function, using `Hypothesis`_
+and `test helpers`_ strategies. This is the most **important** step, we should ensure that our data generation is complete
+and covers all of the possible inputs. We generate the input data inside the :code:`@given` decorator that wraps every
+test.
+
+2. **Pre-execution Test Processing**: After the data is generated, more input processing is needed before testing the function,
+This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require a different input processing form `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.
+One of the required pre-processing step for any test function is converting the array input to valid framework specific
+array, later in the testing process we call the backend framework function, for example TensorFlow's :code:`abs` function
+requires the input to be a :code:`tf.Tensor`, not an `ivy.Array`.
+
+3. **Test Execution**: After the input data is generated and processed, we assert that the result of the functions is correct,
+this includes, asserting the result has the correct values, shape and data type. And that this is consistent across all
+of our backends.
+
+.. note:: Some functions are not tested for values when this is not possible, for example, we can not assert that random functions produce the same values, in this case, we should assert that the data has some properties, asserting that the values have specified bounds is a good start.
+
+4. **Test Results**: If a test fails, `Hypothesis`_ and `test helpers`_ will print an exhaustive log. Including the generated
+test case, the results of the function, etc.
+
 Hypothesis
 ----------
 
@@ -70,21 +104,21 @@ Before the changes in this commit, there were 300+ separate tests being run in t
 just for this :func:`ivy.abs` function.
 If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.
 
-A more elegant and efficient solution is to use the `hypothesis`_ module,
+A more elegant and efficient solution is to use the `Hypothesis`_ module,
 which intelligently samples from all of the possible combinations within user-specified ranges,
 rather than grid searching all of them every single time.
-The intelligent sampling is possible because hypothesis enables the results of previous test runs to be cached,
+The intelligent sampling is possible because Hypothesis enables the results of previous test runs to be cached,
 and then the new samples on subsequent runs are selected intelligently,
 avoiding samples which previously passed the tests, and sampling for unexplored combinations.
 Combinations which are known to have failed on previous runs are also repeatedly tested for.
 With the `uploading`_ and `downloading`_ of the :code:`.hypothesis` cache as an `artifact`_,
 these useful properties are also true in Ivy's GitHub Action `continuous integration`_ (CI) tests.
 
-Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of hypothesis `search strategies`_.
-This reference `commit`_ outlines the difference between using pytest parametrizations and hypothesis,
+Rather than making use of :code:`pytest.mark.parametrize`, the Ivy tests make use of Hypothesis `search strategies`_.
+This reference `commit`_ outlines the difference between using pytest parametrizations and Hypothesis,
 for :func:`ivy.abs`.
 Among other changes, all :code:`pytest.skip()` calls were replaced with return statements,
-as pytest skipping does not play nicely with hypothesis testing.
+as pytest skipping does not play nicely with Hypothesis testing.
 
 Data Generation
 ---------------
@@ -98,180 +132,186 @@ the various function types in ivy, see `here`_.
 
 The way data is generated is described by the :code:`hypothesis.strategies` module which contains a variety of `methods`_
 that have been used widely in each of Ivy's functional and stateful submodule tests. An initialized strategy is an object
-that is used by Hypothesis to generate data for the test. For example, let's write a strategy that generates supported
-integer data types in Ivy -:
+that is used by Hypothesis to generate data for the test. For example, let's write a strategy that generates a random
+data type -:
+
+Let’s define a template function for printing examples generated by the Hypothesis integrated test functions.
 
 .. code-block:: python
 
-    valid_int_dtypes =  (int8,int16,int32,int64,uint8, uint16, uint32, uint64)
-    custom_strategy = st.lists( st.sampled_from(valid_int_dtypes), min_size = 0, max_size = 4)
-
-We are simply generating lists of arbitrary lengths within the range [0,4], wherein the elements correspond to the
-valid_int_dtypes **tuple**. Let’s define a template function for printing examples generated by the hypothesis integrated
-test functions.
-
-**Note** - : This function will be referenced later in the section.
+    >>> def print_hypothesis_examples(st: st.SearchStrategy, n = 2):
+    >>>     for i in range:(n)
+    >>>         print(custom_strategy.example())
 
 .. code-block:: python
 
-    def print_hypothesis_examples(st: st.SearchStrategy, n = 2):
-	    [print(f'Example run {i} -: {st.example()}') for i in range(0,n)]
+    >>> dtypes = ("int32", "uint32", "float32", "bool")
+    >>> custom_strategy = st.sampled_from(dtypes)
+    >>> print_hypothesis_examples(custom_strategy.example())
 
-Check the results of our strategy-:
+    float32
+    bool
+    uint32
 
-.. code-block:: python
-
-    print_hypothesis_examples( custom_strategy , 2)
-
-    ['int8']
-    ['int32', 'int16', 'int16', 'int32']
-
-**Note** - : The output will be randomised in each run. This is quite a simplistic example and doesn’t cover the
+**Note** - : The output will be randomised in each run. This is quite a simplistic example and does not cover the
 intricacies behind the helper functions in the *test_ivy* directory.
 
-In the example above, **st.lists** and **st.sampled_from** are what we call strategies. To briefly describe -:
+We are simply sampling a random data type from the set :code:`dtypes`, for an example this can be used to generate data
+for the parameter :code:`dtype` for :code:`ivy.ones`. to call an example from the strategy, we use the method :code:`example()`
+to generate a random example from the strategy, this is only for experimenting purpose, we should not use it during the
+actual test.
 
-1. `sampled_from`_ accepts a collection of objects. This strategy will return a value that is sampled from this
-collection.
+In the example above, :code:`st.sampled_from` is what we call a strategy. To briefly describe -:
 
-2. `lists`_ accepts another strategy which describes the elements of the list being generated. This is best used when
-a sequence of varying lengths is required to be generated, with elements that are described by other strategies. The
-following parameters can be specified by the user-:
+* `sampled_from`_ accepts a collection of objects. This strategy will return a value that is sampled from this collection.
 
-* Bounds on the length of the list.
-* If we want the elements to be unique.
-* A mechanism for defining “uniqueness”.
+* `lists`_ accepts another strategy which describes the elements of the list being generated. This is best used when a sequence of varying lengths is required to be generated, with elements that are described by other strategies.
 
 Important Strategies
 ^^^^^^^^^^^^^^^^^^^^
 It might be helpful to look at a few more strategies, since they are widely used across the  helper functions to
 generate custom data -:
 
-3. `booleans`_ - generates boolean values True or False
+1. `booleans`_ - generates boolean values True or False.
 
-4. `integers`_ - generates integers values within a given range
+2. `integers`_ - generates integers values within a given range.
 
-5. `floats`_ -  It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
-You can also specify:
+3. `floats`_ - It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
 
-* Math.inf and math.nan, respectively, should be included in the data description.
-* Bounds(either inclusive or exclusive) on the floats being generated.
-* The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always
-  64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is
-  mostly useful for Numpy arrays).
+4. `none`_ - returns a strategy which only generates None.
 
-6. `none`_ - returns a strategy which only generates None.
-
-7. `tuples`_ - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
+5. `tuples`_ - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
 from the respective strategies that were specified as inputs.
 
-8. `one_of`_ - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
-Hypothesis has the *pipe* operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
+6. `one_of`_ - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
+Hypothesis has the *pipe* operator overloaded as a shorthand for :code:`one_of`. This has been widely used all over in Ivy Tests.
 For example, this `line`_ here, can also be written as -:
 
 .. code-block:: python
 
     st.one_of(st.none(), helpers.ints(min_value=-ndim, max_value=ndim -1))
 
-9. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
-the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
-the same key *num_arrays*, hence similar values will be drawn for both arguments.
+7. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
+the same key will share the same value. For example, `here`_ , the parameters, *input_dtype* and *as_variable* share
+the same key *num_arrays*, hence the same values will be drawn for both arguments.
 
-10. `sets`_ - This is used for generating a *unique collection* of elements. Like **st.lists** it accepts another strategy
-which describes the elements of the set being generated.
+8. `sets`_ - This is used for generating a *unique collection* of elements. has the same behaviour as :code:`st.lists`, but
+returns sets instead.
 
-11. `map`_ - The map method, permits us to perform a mapping on the data being produced by a strategy.
+9. `map`_ - The map method, permits us to perform a mapping on the data being produced by a strategy.
 
-12. `filter`_ - Data is filtered using this method. It takes a callable that accepts as input the data generated by the
-strategy, and returns:
+10. `filter`_ - Data is filtered using this method. It takes a callable that returns either True or False, we generally
+should use filter to avoid corner cases, rather than filtering most of the search space, for example, if we want to
+generate numbers that are not close to 0, doing the following is not very efficient:
 
-* True if the data should pass through the filter
-* False if the data should be rejected by the filter
+.. code-block:: python
 
-13. `flatmap`_ - This enables us to define a strategy based on a value drawn from a previous strategy.
+    st.floats().filter(lambda x: isclose(abs(x), 0))
 
-14. `data`_ - This is one of the **most** important strategies used in the project. It will often be the case that it is
-required to draw strategies in a context-dependent manner within the test. Suppose, we want to generate an array of
-values in some ivy test, but we want make sure that those values are only of the valid float types supported by Ivy.
-The st.data() strategy can be used *interactively*, and values can be drawn at test-time, using **data.draw()** method.
+instead, we should avoid generating numbers that are close to 0. The use of `filter`_ with a condition that is hard
+to satisfy, will cause the Hypothesis to fail.
 
-The **given** operator usually contains the data parameter, which is an instance of the **st.DataObject** class; this
-instance is what gets drawn from the st.data() strategy. For example, at `this`_ line the keyword arguments for the
-function *test_argsort*, have been generated only after the generation of the array.
+11. `flatmap`_ - This enables us to define a strategy based on a value drawn from a previous strategy.
 
-15. `composite`_ - The second **most** widely used strategy in *Ivy tests*. This provides a decorator, which permits us to
-form our own strategies for describing data by composing Hypothesis’ built-in strategies. For `example`_.
+12. `composite`_ - The second **most** widely used strategy in *Ivy tests*. This provides a decorator, which permits us
+to form our own strategies for describing data by composing Hypothesis built-in strategies. suppose you need to generate
+a 1-D array or a scaler value, which also generate an index of an element if an array is generated, otherwise None.
+
+.. code-block:: python
+
+    @st.composite
+    def array_or_scaler(draw):
+        values = draw(st.integers() | st.lists(st.integers()))
+        if isinstance(values, list)
+            len_of_array = len(values)
+            index = draw(st.integers(min_value=0, max=len_of_array))
+        else
+            index = st.None()
+    return values, index
+
+we can then later use this strategy in the :code:`@given`: decorator in any of our tests.
+
+13. `data`_ - The use of data is similar to `composite`_. the main difference is that `data`_ allows you to interactively
+draw data in the run body of the test, instead of defining the strategy in the :code:`@given` decorator. Usually you
+won't need to use `data`_, as the test helpers functions takes care of that (discussed later). In Ivy, we don't use the
+`data`_ strategy, all of the helpers are implemented as a **composite** strategy, this provides reusability of the
+strategy across our test suite. refer to the Hypothesis docs for more info on the difference between `data`_ and `composite`_.
 
 
 Integration of Strategies into Ivy Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Once a strategy is initialised the **given** decorator is added to the test function for drawing values from the strategy
+Once a strategy is initialised the :code:`@given` decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:
 
 .. code-block:: python
 
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.ints(min_value=0, max_value=2),
-    alpha=helpers.floats(),
+        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+        num_positional_args=helpers.num_positional_args(fn_name="abs"),
     )
-    def test_leaky_relu(
-    dtype_and_x,
-    alpha,
-    as_variable,
-    num_positional_args,
-    container,
-    instance_method,
-    native_array,
-    fw,
+    def test_abs(
+        *,
+        dtype_and_x,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
     ):
-        dtype, x = dtype_and_x
-        if not ivy.all(ivy.isfinite(ivy.array(x))) or not\
-        ivy.isfinite(ivy.array([alpha])):
-            return
-        if fw == "torch" and dtype == "float16":
-            return
+        input_dtype, x = dtype_and_x
         helpers.test_function(
-   			dtype,
-   			as_variable,
-   			False,
-   			native_array,
-   			fw,
-   			num_positional_args,
-   			container,
-   			instance_method,
-   			"leaky_relu",
-   			x=np.asarray(x, dtype=dtype),
-   			alpha=alpha,)
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            fw=fw,
+            fn_name="abs",
+            x=x[0],
+        )
 
-In the test above, all parameters being exhaustively drawn inside the decorator :code:`@handle_cmd_line_args` and :code:`@given` from hypothesis either
-**directly** (*native_array, num_positional, instance_methods, alpha*) or **indirectly** (*dtype_and_x, as_variable, container*)
-with the *helper* functions.
+In the test above, all parameters being exhaustively drawn inside the decorator :code:`@handle_cmd_line_args` and :code:`@given`.
+Boolean flags that are shared between all tests and that is not specific to any are generated by :code:`@handle_cmd_line_args` decorator, e.g.
+(native_array, container, instance_method). Input arguments to the function are generated in the :code:`given` decorator.
+
+Lets take a deeper look at :code:`ivy.abs`, according to the function signature, it accepts two arguments, :code:`x` which can
+be a Python numeric or an ivy.Array of numeric data type, and an :code:`out` optional output array. using a lot of help
+from `test helpers`_, we can simply generate a random input that covers all the possible combinations using :code:`dtype_and_values`
+composite strategy, specifying the the list of data types to sample from by also using another composite strategy :code:`get_dtypes`
+which samples a valid data types according to the backend that is tested. for :code:`out` keyword argument, the :code:`@handle_cmd_line_args`
+decorator generates a boolean for whether we should provide an :code:`out` argument or not, thankfully, the `test_function`
+helper function does a lot under the hood to properly create an array for the :code:`out` argument. If the function
+does not support the :code:`out`, we should explicitly specify that we should not generate boolean flags for :code:`out`
+by setting :code:`with_out=False`, the :code:`@handle_cmd_line_args` in this case will not generate a value for :code:`with_out`.
 
 **Note** - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence
 between our strategies with the function-signature’s parameters.
 
 As  discussed above, the helper functions use the composite decorator, which helps in defining a series of custom strategies.
-It can be seen that *dtype_and_x* uses the **dtype_and_values** strategy to generate valid float data types and corresponding
-array elements, whose shapes can be specified manually or are assumed by default. The generated data is returned as a tuple.
+It can be seen that :code:`dtype_and_x` uses the code:`dtype_and_values` strategy to generate numeric data types and corresponding
+array elements, whose shapes can be specified manually or are randomized by default. The generated data is returned as a tuple.
 Let's look at the data produced by this strategy -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(dtype_and_values, 2)
+    >>> print_hypothesis_examples(dtype_and_values(), 2)
 
-    ('float64', [9433925.0, -1.401298464324817e-45])
-    ('float64', [[574352379.0, -0.99999], [2.2250738585072014e-308, -6.103515625e-05]])
+    (['int8'], [array(69, dtype=int8)])
+    (['int8'], [array([-23, -81], dtype=int8)])
 
-These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on the newly
-created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.
+These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on
+the newly created arrays with specified data types.
 
 Why do we need helper functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It is usually the case that any ivy function should run seamlessly on ‘all the possible varieties, as well as  the edge
+It is usually the case that any ivy function should run seamlessly on ‘all the possible varieties, as well as the edge
 cases’ encountered by the following parameters -:
 
 * All possible data types - **composite**
@@ -290,34 +330,93 @@ Whereas, in the case of specific parameters like -:
 * array_values
 * data_types
 * valid_axes
-* lists or tuples or sequence of varied input types( the test_leaky_relu function above)
-* generating subsets at test time
-* generating arbitrary shapes of arrays at test time
-* getting axes at test time
+* lists or tuples or sequence of varied input types
+* generating subsets
+* generating arbitrary shapes of arrays
+* getting axes at
 
-We need a hand-crafted data generation policy(composite). For this purpose ad-hoc functions have been defined in the
-:code:`helpers.py` file. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their working
-is as follows-:
+We need a hand-crafted data generation policy (composite). For this purpose ad-hoc functions have been defined in the
+`test helpers`_. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their
+working is as follows-:
 
-1. **array_dtypes** - As the name suggests, this will generate arbitrary sequences of valid float data types. The sequence
+1. `get_dtypes`_ - draws a list of valid data types for the test at run time, valid data types are not only data types
+that are supported by the backend framework. For frontend functions, these are the intersection of the frontend framework
+and the backend framework supported data types. We should be **always** using this helper function whenever we need to
+sample a data type.
+
+.. code-block:: python
+
+    >>> print_hypothesis_examples(helpers.get_dtypes(kind="integer"), 1)
+
+    ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64']
+
+    >>> print_hypothesis_examples(helpers.get_dtypes(kind="numeric", full=False), 3)
+
+    ['uint64']
+    ['float16']
+    ['int8']
+
+2. `dtype_and_values`_ - This function generates a tuple of NumPy arrays and their data types. number of arrays to generate
+is specified using :code:`num_arrays` parameter, generates 1 array by default.
+
+.. code-block:: python
+
+    >>> print_hypothesis_examples(helpers.dtype_and_values(), 3)
+
+    (['bool'], [array([ True,  True,  True, False])])
+    (['float64'], [array(-2.44758124e-308)])
+    (['int16'], [array([[-11228,  456], [-11228,   -268]], dtype=int16)])
+
+This function contains a list of keyword arguments. To name a few, available_dtypes, max_value, allow_inf, min_num_dims etc.
+It can be used wherever an array of values is expected. That would again be a list a functions which expects at least
+one :class:`ivy.Array`.
+
+3. `dtype_values_axis`_ - Similar to `dtype_and_values`_, generates an associated valid axis for the array.
+
+.. code-block:: python
+
+    >>> print_hypothesis_examples(helpers.dtype_values_axis(), 3)
+
+    (['int16'], [array([ -9622,  28136,   6375, -12720,  21354 -4], dtype=int16)], 0)
+    (['float16'], [array([-1.900e+00,  5.955e+04, -1.900e+00, -5.955e+04], dtype=float16)], 1)
+    (['int8'], [array([[14], [10]], dtype=int8)], 1)
+
+4. `array_values`_ - It works in a similar way as the `dtype_and_values`_ function, with the only difference being,
+here an extensive set of parameters and sub-strategies are used to generate array values. For example-:
+
+.. code-block:: python
+
+    >>> strategy = helpers.array_values(
+                    dtype="int32",
+                    shape=(3,),
+                    min_value=0,
+                    exclude_min=True,
+                    large_abs_safety_factor=2,
+                    safety_factor_scale="linear")
+    >>> print_hypothesis_examples(strategy, 2)
+
+    array([57384, 25687,   248], dtype=int32)
+    array([1, 1, 1], dtype=int32)
+
+5. `array_dtypes` - As the name suggests, this will generate arbitrary sequences of valid float data types. The sequence
 parameters like *min_size*, and *max_size*, are specified at test time based on the function. This is what the function
 returns -:
 
 .. code-block:: python
 
-    #a sequence of floats with arbitrary lengths ranging from [1,5]
-    print_hypothesis_examples(array_dtypes(helpers.ints(min_value=1, max_value=5)))
+    # A sequence of floats with arbitrary lengths ranging from [1,5]
+    >>> print_hypothesis_examples(array_dtypes(helpers.ints(min_value=1, max_value=5)))
 
     ['float16', 'float32', 'float16', 'float16', 'float32']
     ['float64', 'float64', 'float32', 'float32', 'float16']
 
 This function should be used whenever we are testing an ivy function that accepts at least one array as an input.
 
-2. **array_bools** - This function generates a sequence of boolean values. For example-:
+6. `array_bools`_ - This function generates a sequence of boolean values. For example-:
 
 .. code-block:: python
 
-    print_hypothesis_examples(array_bools(na = helpers.ints(min_value=1, max_value=5)))
+    >>> print_hypothesis_examples(array_bools(na = helpers.ints(min_value=1, max_value=5)))
 
     [False, True, True, False, True]
     [False]
@@ -327,7 +426,7 @@ generated by a sequence. For example, in `test_concat`_, we are generating a lis
 for each input we have three boolean values associated with it that define additional parameters(container, as_variable
 , native_array). Meaning if the input is to be treated as a container, at the same time, is it a variable or a native array.
 
-3. **lists** - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
+7. `lists`_ - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
 in `test_device`_ file, it is used to generate a list of array_shapes, in `test_manipulation`_, it is used to generate a list
 of common_shapes, and more in `test_layers`_. The function takes in 3 arguments, first is the strategy by which the elements
 are to be generated, in majority of the cases this is **helpers.ints**, with range specified, and the other arguments are
@@ -335,51 +434,35 @@ sequence arguments as specified in **array_dtypes**. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(lists(helpers.ints(min_value=1, max_value=6), min_size = 0,max_size = 5))
+    >>> print_hypothesis_examples(lists(helpers.ints(min_value=1, max_value=6), min_size = 0,max_size = 5))
 
     [2, 5, 6]
     [1]
 
 The generated values are then passed to the array creation functions inside the test function as tuples.
 
-4. **valid_axes** - This function generates valid axes for a given array dimension. For example -:
+9. `valid_axes`_ - This function generates valid axes for a given array dimension. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(valid_axes(helpers.ints(min_value=2, max_value=3), size_bounds = [1,3]))
+    >>> print_hypothesis_examples(valid_axes(helpers.ints(min_value=2, max_value=3), size_bounds = [1,3]))
 
     (-3, 1, -1)
     (1, -2)
 
 It should be used in functions which expect axes as a required or an optional argument.
 
-5. **integers** - This is similar to the *helpers.ints* strategy, with the only difference being that here the range can
+10. `integers`_ - This is similar to the :code:`helpers.ints` strategy, with the only difference being that here the range can
 either be specified manually, or a shared key can be provided. The way shared keys work has been discussed in the
 *Important Strategies* sections above.
 
-6. **dtype_and_values** - This function generates a tuple wherein the first element is a valid float data type, and the
-second element is a list/nested list containing floating point numbers of that precision. For example-:
 
-.. code-block:: python
-
-    #ivy valid float types are those which are supported by numpy
-    import ivy.functional.backends.numpy as ivy_np
-    print_hypothesis_examples(dtype_and_values(ivy_np.valid_float_dtypes), 3)
-
-    ('float64', 0.0)
-    ('float16', 0.0)
-    ('float64', [283405296074752.0, 564049465049088.0, 1.0417876997507982e+16])
-
-This function contains a list of `keyword`_ arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
-It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one :class:`ivy.Array`.
-
-7. **reshape_shapes** - This function returns a valid shape after a reshape operation is applied given as input of any
+11. `reshape_shapes`_ - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:
 
 .. code-block:: python
 
-   print_hypothesis_examples(reshape_shapes([3,3]), 3)
+   >>> print_hypothesis_examples(reshape_shapes([3,3]), 3)
 
    (9, 1)
    (9,)
@@ -388,47 +471,30 @@ arbitrary shape. For example-:
 It should be used in places where broadcast operations are run, either as a part of a larger computation or in a
 stand-alone fashion.
 
-8. **subsets** - As the function name suggests, it generates subsets of any sequence, and returns that subset as a tuple.
+12. `subsets`_ - As the function name suggests, it generates subsets of any sequence, and returns that subset as a tuple.
 For example-:
 
 .. code-block:: python
 
-    some_sequence = ['tensorflow', 1, 3.06, 'torch', 'ivy', 0]
-    print_hypothesis_examples(subsets(some_sequence), 4)
+    >>> some_sequence = ['tensorflow', 1, 3.06, 'torch', 'ivy', 0]
+    >>> print_hypothesis_examples(subsets(some_sequence), 4)
 
     ('tensorflow', 'ivy', 0)
     ('tensorflow', 1, 3.06, 'torch', 'ivy')
     ('tensorflow', 1, 'torch', 0)
     (1, 3.06)
 
-9. **array_values** - It works in a similar way as the **dtype_and_values** function, with the only difference being,
-here an extensive set of parameters and sub-strategies are used to generate array values. For example-:
-
-.. code-block:: python
-
-    input_dtype = st.sampled_from(ivy_np.valid_float_dtypes)
-    print_hypothesis_examples(
-                              array_values(
-                              input_dtype.example(), shape=(3,),
- 	                          min_value=0,   allow_subnormal = True,
-                              exclude_min=True
-                                          )
-                              )
-
-    [5.960464477539063e-08, 5.960464477539063e-08, 0.5]
-    [5.960464477539063e-08, 5.960464477539063e-08, 1.0]
-
 It ensures full coverage of the values that an array can have, given certain parameters like *allow_nan, allow_subnormal, allow_inf*.
 Such parameters usually test the function for edge cases. This function should be used in places where the result doesn’t
 depend on the kind of value an array contains.
 
-10. **get_shape** - This is used to generate any arbitrary shape. If *allow_none* is set to :code:`True`, then an implicit
+13. `get_shape`_ - This is used to generate any arbitrary shape. If *allow_none* is set to :code:`True`, then an implicit
 *st.one_of* strategy is used, wherein the function will either generate :code:`None` as shape or it will generate a shape
 based on the keyword `arguments`_ of the function. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(
+    >>> print_hypothesis_examples(
                               get_shape(
                               allow_none = True, min_num_dims = 2,
                               max_num_dims = 7, min_dim_size = 2
@@ -438,49 +504,15 @@ based on the keyword `arguments`_ of the function. For example -:
     (4, 3, 3, 4, 9, 9, 8)
     (9, 9, 3, 5, 6)
 
-11. **none_or_list_of_floats** - This function is the same as array_values function, with the only difference being that here
-data types other than float are not supported. User needs to pass in a *valid float type*, and the *size*. Here :code:`None`
-type is :code:`True` by default. For example-:
-
-.. code-block:: python
-
-    print_hypothesis_examples(
-                              none_or_list_of_floats(
-                              input_dtype.example(), size = 5,
-                              min_value=10.0, max_value= 200.0),3
-                              )
-    [None, 199.99999999999997, 200.0, None, 199.99999999999997]
-    [199.99999999999997, None, None, 10.000000000000002, 125.43759670925832]
-    [None, 10.0, 199.0, 10.0, 200.0]
-
-This function might come in handy when some float values are required for generating other data, or are part of a larger
-computation. For example, **get_mean_std** strategy requires a series of values to generate the mean and standard deviation
-for arbitrary input values.
-
-12. **get_mean_std** - Strategies like this one are specific to a particular range of functions only. It comes in handy while
-testing probabilistic functions like *random_normal*, and other distributions or statistical functions like *mean-squared-error*.
-For example-:
-
-.. code-block:: python
-
-    input_dtype = st.sampled_from(ivy_np.valid_float_dtypes)
-    print_hypothesis_examples(get_mean_std(input_dtype.example()))
-
-    (0.0, None)
-    (9.811428143185347e+89, None)
-
-**Note** - This strategy uses **none_or_list_floats** internally, and so the standard deviation and mean may or may not
-be None.
-
-13. **get_bounds** -  It’s often the case that we need to define a lower and an upper limit for generating certain values,
+14. `get_bounds`_ -  It’s often the case that we need to define a lower and an upper limit for generating certain values,
 like floats, sequences, arrays_values etc. This strategy can be put to use when we want our function to pass on values
 in any range  possible, or we’re unsure about the limits. We can also use the function to generate a list of possible
 bounds wherein the function fails. For example-:
 
 .. code-block:: python
 
-    input_dtype = st.sampled_from(ivy_np.valid_int_dtypes)
-    print_hypothesis_examples(get_bounds(input_dtype.example()))
+    >>> input_dtype = helpers.get_dtypes("integer").example()
+    >>> print_hypothesis_examples(get_bounds(input_dtype.example()))
 
     (73, 36418)
     (213, 21716926)
@@ -488,35 +520,35 @@ bounds wherein the function fails. For example-:
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats**
 is called when the data type is *float*.
 
-14. **get_probs** -  This is similar to the **get_mean_std** strategy, and is used to generate a tuple containing two values.
+15. `get_probs`_ -  This is similar to the **get_mean_std** strategy, and is used to generate a tuple containing two values.
 The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
 For example-:
 
 .. code-block:: python
 
-   input_dtype = st.sampled_from(ivy_np.valid_float_dtypes)
-   print_hypothesis_examples(get_probs(input_dtype.example()))
+   >>> input_dtype = helpers.get_dtypes("float").example()
+   >>> print_hypothesis_examples(get_probs(input_dtype.example()))
 
    ([[6.103515625e-05, 1.099609375], [1.0, 6.103515625e-05], [1.0, 1.0], [0.5, 6.103515625e-05]], 2)
 
 Such strategies can be used to test statistical and probabilistic functions in Ivy.
 
-15. **get_axis** - Similar to the **valid_axes** strategy, it generates an axis given any arbitrary shape as input.
+16. `get_axis`_ - Similar to the **valid_axes** strategy, it generates an axis given any arbitrary shape as input.
 For example-:
 
 .. code-block:: python
 
-    print_hypothesis_examples(get_axis(shape = (3,3,2)))
+    >>> print_hypothesis_examples(get_axis(shape = (3,3,2)))
 
     (-1,)
     (-2, -1)
 
-16. **num_positional_args** - A helper function which generates the number of positional arguments, provided a function name
+17. `num_positional_args`_ - A helper function which generates the number of positional arguments, provided a function name
 from any ivy submodule. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(num_positional_args("matmul"), 3)
+    >>> print_hypothesis_examples(num_positional_args("matmul"), 3)
 
     2
     0
@@ -531,25 +563,13 @@ How to write Hypothesis Tests effectively
 
 It would be helpful to keep in mind the following points while writing test -:
 
-a. Don't use :code:`data.draw` in the function body.
-b. Don't use array generation (i.e. np.random_uniform) in the function body.
-c. Don't skip anything in the function body.
-d. The function should only call helpers.test_function, and then possibly perform a custom value test if
-   :code:`test_values=False` in the arguments.
-e. We should add as many possibilities as we can while generating data, covering all the function arguments
-f. If you find yourself using repeating some logic which is specific to a particular submodule, then create a private
-   helper function and add this to the submodule.
-g. If the logic is general enough, this can instead be added to the :code:`helpers.py` file, enabling it to be used for tests
-   in other submodules
-h. Sometimes, the use of
-   `assume <https://hypothesis.readthedocs.io/en/latest/details.html?highlight=assume#hypothesis.assume>`_
-   is justified in the unit test body, particularly for cases where writing the
-   generation code would be unduly laborious. It's very straightforward to avoid
-   :code:`nan`, :code:`inf` and values close to the :code:`dtype` bounds, but also
-   avoiding zeros would require extra implementational effort in the data generation
-   helpers. Using :code:`assume` is an
-   `acceptable solution <https://github.com/unifyai/ivy/blob/2ddaff94ad9e20a1a0511d272a0501fa3b904edc/ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py#L695>`_
-   in such cases, and other similar scenarios you may encounter.
+- Don't use :code:`data.draw` in the function body.
+- Don't use any unreproducible data generation (i.e. np.random_uniform) in the function body.
+- Don't skip anything or use return statement in the function body.
+- The function should only call helpers.test_function, and then possibly perform a custom value test if :code:`test_values=False` in the arguments.
+- We should add as many possibilities as we can while generating data, covering all the function arguments.
+- If you find yourself using repeating some logic which is specific to a particular submodule, then create a private helper function and add this to the submodule.
+- If the logic is general enough, this can instead be added to the :code:`helpers`, enabling it to be used for tests in other submodules
 
 
 Bonus: Hypothesis' Extended Features
@@ -653,16 +673,14 @@ Like the output above, Hypothesis will print all the examples for which the test
 
 3. Some performance related settings which might be helpful to know are-:
 
-a. **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down
-                      will have an impact on the speed as well as the rigorousness of the tests.
+a. **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down will have an impact on the speed as well as the rigorousness of the tests.
 
-b. **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird
-                  performance issues.
+b. **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird performance issues.
 
 Self-Consistent and Explicit Testing
 ------------------------------------
 
-The hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
+The Hypothesis data generation strategies ensure that we test for arbitrary variations in the function inputs,
 but this makes it difficult to manually verify ground truth results for each input variation.
 Therefore, we instead opt to test for self-consistency against the same Ivy function with a NumPy backend.
 This is handled by :func:`test_array_function`, which is a helper function most unit tests defer to.
@@ -692,8 +710,7 @@ The helper `test_array_function`_ tests that the function:
 
 #. can handle the :code:`out` argument correctly
 #. can be called as an instance method of the ivy.Array class
-#. can accept ivy.Container instances in place of any arguments for *nestable* functions,
-   applying the function to the leaves of the container, and returning the resultant container
+#. can accept ivy.Container instances in place of any arguments for *nestable* functions, applying the function to the leaves of the container, and returning the resultant container
 #. can be called as an instance method on the ivy.Container
 #. is self-consistent with the function return values when using a NumPy backend
 
@@ -710,7 +727,7 @@ and so we should not make us of :func:`test_array_function` in the test implemen
 Re-Running Failed Ivy Tests
 ---------------------------
 
-When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+When a Hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
 For example, in the :code:`test_result_type` Test, we find the following output on running the test:
 
 .. code-block::
