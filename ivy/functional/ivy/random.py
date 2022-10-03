@@ -516,7 +516,7 @@ def shuffle(
     /,
     *,
     seed: Optional[int] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
