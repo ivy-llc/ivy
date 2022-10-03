@@ -1863,6 +1863,7 @@ def test_sign(
         instance_method=instance_method,
         fw=fw,
         fn_name="sign",
+        test_gradients=True,
         x=x[0],
     )
 
