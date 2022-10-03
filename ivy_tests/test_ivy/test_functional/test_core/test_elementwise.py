@@ -1999,6 +1999,9 @@ def test_sqrt(
         instance_method=instance_method,
         fw=fw,
         fn_name="sqrt",
+        test_gradients=True,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
