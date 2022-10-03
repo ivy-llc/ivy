@@ -50,13 +50,9 @@ jobs:
 
        - name: Run Stateful Tests
          id: tests
-         env:
-           REDIS_URL: ${{ secrets.REDIS_CONNECTION_URL }}
-           REDIS_PASSWD: ${{ secrets.REDIS_PASSWORD }}
          run: |
            cd ivy
-           python -c 'import os;print(os.environ)'
-           ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+           ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples

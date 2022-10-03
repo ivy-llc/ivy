@@ -77,8 +77,8 @@ lines = _replace_logos_html(text).split("\n")
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = "\n".join(lines)
 
-with open('ivy/_version.py') as f:
-  exec(f.read(), __version__)
+with open("ivy/_version.py") as f:
+    exec(f.read(), __version__)
 
 setup(
     name="ivy-core",
