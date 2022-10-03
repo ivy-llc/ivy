@@ -3484,36 +3484,3 @@ def vmap(
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality
     return current_backend().vmap(func, in_axes, out_axes)
-
-
-@handle_nestable
-@handle_exceptions
-def collapse_repeated(
-    labels: Union[ivy.Array, ivy.NativeArray],
-    seq_length: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Merge repeated labels into single labels.
-    Parameters
-    ----------
-    labels
-        Tensor of shape [batch, max value in seq_length]
-    seq_length
-        Tensor of shape [batch], sequence length of each batch element.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-    Returns
-    -------
-    ret
-        A tuple (collapsed_labels, new_seq_length).
-    """
-    labels = ivy.to_native(labels)
-    ret = collapse_repeated(labels, seq_length)
-    ret = ivy.array(ret)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
