@@ -988,6 +988,7 @@ class ContainerWithRandom(ContainerBase):
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1002,6 +1003,8 @@ class ContainerWithRandom(ContainerBase):
         ----------
         x
             Input array or container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1024,6 +1027,7 @@ class ContainerWithRandom(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
             x,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1035,6 +1039,7 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1049,6 +1054,8 @@ class ContainerWithRandom(ContainerBase):
         ----------
         self
             Input container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1070,6 +1077,7 @@ class ContainerWithRandom(ContainerBase):
         """
         return self.static_shuffle(
             self,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
