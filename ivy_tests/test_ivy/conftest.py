@@ -10,11 +10,9 @@ from hypothesis.extra.redis import RedisExampleDatabase
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
-for name, value in os.environ.items():
-    print("{0}: {1}".format(name, value))
-    
+
 r = None
-if "REDIS_URL" in os.environ:
+if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
     r = redis.Redis.from_url(
         os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
     )
@@ -52,6 +50,7 @@ def pytest_configure(config):
     deadline = config.getoption("--deadline")
     deadline = deadline if deadline else 10000
     profile_settings = {}
+    os.getenv("REDIS_URL")
     if num_examples is not None:
         profile_settings["max_examples"] = int(num_examples)
     if r is not None:

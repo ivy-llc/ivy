@@ -68,7 +68,6 @@ def test_numpy_arange(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="arange",
         start=start,
@@ -103,7 +102,6 @@ def test_numpy_linspace(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linspace",
         start=start,
@@ -143,7 +141,6 @@ def test_numpy_logspace(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logspace",
         rtol=1e-01,
@@ -193,14 +190,13 @@ def test_numpy_meshgrid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        test_values=False,
-        fw=fw,
         frontend="numpy",
         fn_tree="meshgrid",
-        **kw,
+        test_values=False,
         copy=copy,
         sparse=sparse,
         indexing=indexing,
+        **kw
     )
     for u, v in zip(ret, ret_gt):
         helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)

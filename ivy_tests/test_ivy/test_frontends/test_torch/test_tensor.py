@@ -48,7 +48,6 @@ def test_torch_instance_add(
             "other": x[1],
             "alpha": alpha,
         },
-        fw=fw,
         frontend="torch",
         class_name="Tensor",
         method_name="add",
@@ -105,7 +104,6 @@ def test_torch_instance_reshape(
         all_as_kwargs_np_method={
             "shape": shape,
         },
-        fw=fw,
         frontend="torch",
         class_name="Tensor",
         method_name="reshape",
