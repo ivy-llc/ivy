@@ -448,6 +448,10 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     _assert_dtypes_are_valid(input_dtypes)
+    assert (
+        not with_out or not with_inplace
+    ), "only one of with_out or with_inplace can be set as True"
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -546,21 +550,30 @@ def test_frontend_function(
     copy_kwargs = copy.deepcopy(kwargs)
     copy_args = copy.deepcopy(args)
     ret = frontend_fn(*args, **kwargs)
-    ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-    out = ret
-    assert (
-        not with_out or not with_inplace
-    ), "only one of with_out or with_inplace can be set as True"
     if with_out:
-        assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
+        if not inspect.isclass(ret):
+            is_ret_tuple = issubclass(ret.__class__, tuple)
+        else:
+            is_ret_tuple = issubclass(ret, tuple)
+        if is_ret_tuple:
+            ret = ivy.nested_map(
+                ret,
+                lambda _x: ivy.array(_x) if not ivy.is_array(_x) else _x,
+                include_derived=True,
+            )
+        elif not ivy.is_array(ret):
+            ret = ivy.array(ret)
+        out = ret
         # pass return value to out argument
         # check if passed reference is correctly updated
         kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
-        if ivy.native_inplace_support:
-            assert ret.data is out.data
-        assert ret is out
+        flatten_ret = flatten(ret=ret)
+        flatten_out = flatten(ret=out)
+        for ret_array, out_array in zip(flatten_ret, flatten_out):
+            if ivy.native_inplace_support:
+                assert ret_array.data is out_array.data
+            assert ret_array is out_array
     elif with_inplace:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
