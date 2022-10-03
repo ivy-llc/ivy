@@ -206,6 +206,7 @@ class ArrayWithRandom(abc.ABC):
         batch_size: int = 1,
         replace: bool = True,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.multinomial. This method simply
@@ -228,6 +229,8 @@ class ArrayWithRandom(abc.ABC):
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -244,6 +247,7 @@ class ArrayWithRandom(abc.ABC):
             probs=self._data,
             replace=replace,
             device=device,
+            seed=seed,
             out=out,
         )
 
