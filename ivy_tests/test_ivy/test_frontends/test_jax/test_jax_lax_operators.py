@@ -2025,6 +2025,7 @@ def test_jax_lax_shift_left(
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -2053,6 +2054,8 @@ def test_jax_lax_shift_right_logical(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+    )
+
 
 # expand_dims
 @handle_cmd_line_args
@@ -2085,13 +2088,7 @@ def test_jax_lax_expand_dims(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-        fn_tree="lax.shift_right_logical",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
         fn_tree="lax.expand_dims",
         array=x[0],
         dimensions=(axis,),
     )
-
