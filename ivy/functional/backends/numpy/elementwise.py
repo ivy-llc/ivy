@@ -32,7 +32,15 @@ def _cast_for_binary_op(
     that Ivy's default dtypes are used, rather than NumPy's.
     """
     if isinstance(x1, np.ndarray) and isinstance(x2, np.ndarray):
-        if x1.ndim == 0 and x2.ndim != 0:
+        if (
+            np.issubdtype(x1.dtype, np.integer) and np.issubdtype(x2.dtype, np.floating)
+        ) or (
+            np.issubdtype(x1.dtype, np.floating) and np.issubdtype(x2.dtype, np.integer)
+        ):
+            promoted_type = ivy.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        elif x1.ndim == 0 and x2.ndim != 0:
             x1 = x1[None]
         elif x2.ndim == 0 and x1.ndim != 0:
             x2 = x2[None]
@@ -685,8 +693,10 @@ trunc.support_native_out = True
 def erf(x, /, *, out: Optional[np.ndarray] = None):
     ivy.assertions.check_exists(
         _erf,
-        message="scipy must be installed in order to call ivy.erf with a \
-        numpy backend.",
+        message=(
+            "scipy must be installed in order to call ivy.erf with a         numpy"
+            " backend."
+        ),
     )
     ret = _erf(x, out=out)
     if hasattr(x, "dtype"):
