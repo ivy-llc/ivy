@@ -10,7 +10,7 @@ Here we explain the components of Ivy which are fundamental to it’s usage eith
 Backend Functional APIs ✅
 -----------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.stack` as an example.
+The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :func:`ivy.stack` as an example.
 
 There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
@@ -86,7 +86,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
-:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function :code:`prod`  is shown below:
+:mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function :func:`prod`  is shown below:
 
 .. code-block:: python
 
@@ -181,7 +181,7 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 -----------------
 
-All code for setting and unsetting backend resides in the submodule at :code:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`. The contents of this function are as follows:
 
 .. code-block:: python
 
@@ -206,7 +206,7 @@ All code for setting and unsetting backend resides in the submodule at :code:`iv
 
 If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned. Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
-The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
+The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :attr:`ivy.__dict__` directly:
 
 .. code-block:: python
 
@@ -236,7 +236,7 @@ The functions in this returned module are populated by iterating through the glo
            verbosity.cprint(
                'Backend stack: {}'.format(backend_stack))
 
-The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
+The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :func:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 
@@ -405,7 +405,7 @@ For all existing ML frameworks, the functional API is the backbone which underpi
    :align: center
    :width: 75%
 
-The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :code:`ivy.compile()`, which wraps backend-specific compilation code, for example:
+The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
 .. code-block:: python
 

@@ -82,7 +82,7 @@ def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
         return ivy.equal(x, y)
 
     try:
-        ivy.equal(x, y)
+        return ivy.equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(False)
 
@@ -105,6 +105,14 @@ def Floor(*, x, name="Floor"):
 
 def FloorDiv(*, x, y, name="FloorDiv"):
     return ivy.floor_divide(x, y)
+
+
+def Greater(*, x, y, name="Greater"):
+    return ivy.greater(x, y)
+
+
+def GreaterEqual(*, x, y, name="GreaterEqual"):
+    return ivy.greater_equal(x, y)
 
 
 def Less(*, x, y, name="Less"):
@@ -148,9 +156,9 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
 
     try:
-        ivy.not_equal(x, y)
+        return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
-        return ivy.array(False)
+        return ivy.array(True)
 
 
 def Relu(features, name="Relu"):

@@ -32,7 +32,6 @@ def test_numpy_tril(dtype_and_x, k, num_positional_args, fw, native_array):
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="tril",
         m=x[0],
