@@ -104,8 +104,16 @@ def seed(*, seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def shuffle(
+    x: torch.Tensor,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     batch_size = x.shape[0]
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 

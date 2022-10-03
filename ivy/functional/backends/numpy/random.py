@@ -105,5 +105,13 @@ def seed(*, seed_value: int = 0) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def shuffle(
+    x: np.ndarray,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if seed is not None:
+        np.random.seed(seed)
     return np.random.permutation(x)
