@@ -505,7 +505,11 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_nestable
 @handle_exceptions
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
@@ -513,6 +517,8 @@ def shuffle(
     ----------
     x
         Input array. Should have a numeric data type.
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -530,4 +536,4 @@ def shuffle(
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return ivy.current_backend(x).shuffle(x, out=out)
+    return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
