@@ -2042,6 +2042,7 @@ def test_subtract(
         instance_method=instance_method,
         fw=fw,
         fn_name="subtract",
+        test_gradients=True,
         rtol_=1e-2,
         atol_=1e-2,
         x1=x[0],
