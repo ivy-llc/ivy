@@ -21,6 +21,9 @@ class Tensor:
         # return tf_frontend.add(self.data, y.data, name=name)
         return y.__radd__(self.data)
 
+    def __div__(self, x, name="div"):
+        return tf_frontend.divide(x, self.data, name=name)
+
     def __eq__(self, other):
         return tf_frontend.Equal(x=self.data, y=other, incompatible_shape_error=False)
 
@@ -38,6 +41,9 @@ class Tensor:
 
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
+
+    def __mul__(self, x, name="mul"):
+        return tf_frontend.multiply(x, self.data, name=name)
 
     def __ne__(self, other):
         return tf_frontend.NotEqual(
