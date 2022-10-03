@@ -226,3 +226,17 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[np.dtype] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    window_length = window_length + 1 if periodic == True else window_length
+    return np.array(np.hanning(window_length), dtype=dtype)
+
+
+hann_window.support_native_out = False

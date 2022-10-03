@@ -285,3 +285,24 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[torch.dtype] = None,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.hann_window(
+        window_length, 
+        periodic=periodic, 
+        dtype=dtype, 
+        layout=torch.strided,
+        device=None,
+        requires_grad=None
+        )
+
+
+hann_window.support_native_out = False
+hann_window.unsupported_dtypes = ("int32", "int64")

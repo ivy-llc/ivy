@@ -181,3 +181,15 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.einsum(equation, *operands)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[tf.DType] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.hann_window(
+        window_length, periodic=periodic, dtype=dtype, name=None
+        )

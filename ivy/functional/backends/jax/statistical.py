@@ -1,4 +1,5 @@
 # global
+from curses import window
 import jax.numpy as jnp
 from typing import Union, Optional, Sequence
 
@@ -197,3 +198,14 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[jnp.dtype] = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    window_length = window_length + 1 if periodic == True else window_length
+    return jnp.numpy.array(jnp.numpy.hanning(window_length), dtype=dtype)
