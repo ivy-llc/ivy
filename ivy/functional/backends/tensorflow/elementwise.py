@@ -7,15 +7,6 @@ import tensorflow as tf
 import ivy
 
 
-def _clamp_bits(x1, x2):
-    x2 = tf.clip_by_value(
-        x2,
-        tf.constant(0, dtype=x2.dtype),
-        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
-    )
-    return x1, x2
-
-
 def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -51,10 +42,13 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.add(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
+    return tf.add(x1, x2)
 
 
 def asin(
@@ -111,7 +105,7 @@ def bitwise_and(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_and(x1, x2)
     else:
@@ -137,8 +131,8 @@ def bitwise_left_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -149,7 +143,7 @@ def bitwise_or(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_or(x1, x2)
     else:
@@ -163,8 +157,8 @@ def bitwise_right_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -175,7 +169,7 @@ def bitwise_xor(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_xor(x1, x2)
     else:
@@ -403,8 +397,13 @@ def logaddexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # ToDo: implement using tf.experimental.numpy.logaddexp if this becomes stable and
+    # supports gradients in future
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.logaddexp(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
 
 
 logaddexp.unsupported_dtypes = ("float16", "bfloat16")
@@ -608,9 +607,12 @@ def subtract(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
     return tf.subtract(x1, x2)
 
 
