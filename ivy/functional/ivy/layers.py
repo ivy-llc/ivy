@@ -27,7 +27,7 @@ def linear(
     weight: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.

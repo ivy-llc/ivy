@@ -16,11 +16,11 @@ class ContainerWithLayers(ContainerBase):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias: Union[ivy.Array, ivy.NativeArray] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: Optional[bool] = True,
-        prune_unapplied: Optional[bool] = False,
-        map_sequences: Optional[bool] = False,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

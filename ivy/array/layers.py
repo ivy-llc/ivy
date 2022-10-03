@@ -14,7 +14,7 @@ class ArrayWithLayers(abc.ABC):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias: Union[ivy.Array, ivy.NativeArray] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
