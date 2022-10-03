@@ -33,7 +33,7 @@ native_bfloat16 = torch.bfloat16
 native_float16 = torch.float16
 native_float32 = torch.float32
 native_float64 = torch.float64
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = torch.bool
 
 # valid data types
@@ -88,6 +88,7 @@ def closest_valid_dtype(type):
 
 
 backend = "torch"
+backend_version = torch.__version__
 
 
 # local sub-modules

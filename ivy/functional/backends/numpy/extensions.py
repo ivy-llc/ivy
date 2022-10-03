@@ -1,10 +1,13 @@
+from typing import Optional
 import logging
 import ivy
+import numpy as np
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
     _verify_csr_components,
     _is_coo_not_csr,
 )
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def is_native_sparse_array(x):
@@ -50,3 +53,8 @@ def native_sparse_array_to_indices_values_and_shape(x):
         indices, values and shape."
     )
     return None, None, None
+
+
+@_handle_0_dim_output
+def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sinc(x).astype(x.dtype)

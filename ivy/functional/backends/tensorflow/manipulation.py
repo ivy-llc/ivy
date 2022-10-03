@@ -26,7 +26,7 @@ def concat(
         xs = list(xs)
     highest_dtype = xs[0].dtype
     for i in xs:
-        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
 
     for i in range(len(xs)):
         if is_axis_none:
@@ -184,10 +184,10 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -198,7 +198,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -207,6 +207,7 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+
     return tf.split(x, num_or_size_splits, axis)
 
 
@@ -291,8 +292,10 @@ def clip(
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
-        promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
         x = tf.cast(x, promoted_type)
         x_min = tf.cast(x_min, promoted_type)
         x_max = tf.cast(x_max, promoted_type)
@@ -307,7 +310,7 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
