@@ -10,7 +10,7 @@ With our central goal being to unify all ML frameworks, you would be entirely fo
 
 Won’t adding a new “unified” framework just make the problem even worse…
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/how_standards_proliferate.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
    :align: center
    :width: 70%
 
@@ -38,13 +38,13 @@ The Array API Standard
 
 The `Consortium for Python Data API Standards <https://data-apis.org>`_ are on a mission to create this shared standard. At Ivy, we support their efforts 100% and we are in the process of adopting their standard ourselves.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/consortium.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/consortium.png?raw=true
    :align: center
    :width: 25%
 
 The consortium is lead by `Quansight <https://www.quansight.com>`_, an open-source-first company made up of leading open-source developers from the following organizations: `PyTorch <https://pytorch.org>`_, `NumPy <https://numpy.org>`_, `Pandas <https://pandas.pydata.org>`_, `SciPy <https://scipy.org>`_, `conda <https://docs.conda.io/en/latest/>`_, `dask <https://dask.org>`_, `Apache <https://www.apache.org>`_, `MXNet <https://mxnet.apache.org/versions/1.9.0/>`_, `ONNX <https://onnx.ai>`_, `scikit-learn <https://scikit-learn.org/stable/>`_, `Jupyter <https://jupyter.org>`_, `AWS <https://aws.amazon.com/free/?trk=ps_a134p000003yhYiAAI&trkCampaign=acq_paid_search_brand&sc_channel=ps&sc_campaign=acquisition_DACH&sc_publisher=google&sc_category=core-main&sc_country=DACH&sc_geo=EMEA&sc_outcome=Acquisition&sc_detail=aws&sc_content=Brand_Core_aws_e&sc_matchtype=e&sc_segment=456911458944&sc_medium=ACQ-P|PS-GO|Brand|Desktop|SU|Core-Main|Core|DACH|EN|Text&s_kwcid=AL!4422!3!456911458944!e!!g!!aws&ef_id=Cj0KCQiA6NOPBhCPARIsAHAy2zCeKSJAfsJ5BSqbOt0QsZpGXRE4h2MW06eJ_VchjwcOPQTVTPZsFvIaAgCiEALw_wcB:G:s&s_kwcid=AL!4422!3!456911458944!e!!g!!aws&all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all>`_, `CuPy <https://cupy.dev>`_, `RAPIDS <https://developer.nvidia.com/rapids>`_, `.NET <https://dotnet.microsoft.com/en-us/>`_, `SymPy <https://www.sympy.org/en/index.html>`_, `Ray <https://www.ray.io>`_, `modin <https://modin.readthedocs.io/en/stable/>`_ and `Spyder <https://www.spyder-ide.org>`_. Other collaborators include members of: `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_, `Google <https://about.google>`_, `OctoML <https://octoml.ai>`_ and `einops <https://einops.rocks>`_. Further, the consortium is sponsored by `LG Electronics <https://mail.google.com/chat/u/0/#chat/dm/lZAjU4AAAAE>`_, `Microsoft <https://www.microsoft.com/en-us>`_, `Quansight <https://www.quansight.com>`_, `D E Shaw and Co <https://www.deshaw.com>`_, `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_ and `Intel <https://www.intel.com/content/www/us/en/homepage.html>`_.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/array_api_backers.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/array_api_backers.png?raw=true
    :align: center
    :width: 100%
 

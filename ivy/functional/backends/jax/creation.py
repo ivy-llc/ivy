@@ -1,6 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List, Sequence
-
+from typing import Union, Optional, List, Sequence
 import jax.dlpack
 import jax.numpy as jnp
 import jaxlib.xla_extension
@@ -11,6 +10,13 @@ from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy import default_dtype
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
+)
 
 
 # Array API Standard #
@@ -38,8 +44,11 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
-    object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
+    obj: Union[JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol],
     /,
     *,
     copy: Optional[bool] = None,
@@ -47,27 +56,21 @@ def asarray(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(object_in, ivy.NativeArray) and not dtype:
-        dtype = object_in.dtype
-    elif (
-        isinstance(object_in, (list, tuple, dict))
-        and len(object_in) != 0
-        and dtype is None
-    ):
-        dtype = default_dtype(item=object_in, as_native=True)
+    if isinstance(obj, ivy.NativeArray) and not dtype:
+        dtype = obj.dtype
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
+        dtype = default_dtype(item=obj, as_native=True)
         if copy is True:
-            return _to_device(
-                jnp.array(object_in, dtype=dtype, copy=True), device=device
-            )
+            return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
-            return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+            return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype=dtype, item=object_in)
+        dtype = default_dtype(dtype=dtype, item=obj)
 
     if copy is True:
-        return _to_device(jnp.array(object_in, dtype=dtype, copy=True), device=device)
+        return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
     else:
-        return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+        return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
 
 
 def empty(

@@ -1,6 +1,6 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import numpy as np
@@ -24,7 +24,7 @@ relu.support_native_out = True
 def leaky_relu(
     x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
+    return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
 def gelu(
@@ -59,10 +59,56 @@ softmax.support_native_out = True
 
 
 @_handle_0_dim_output
-def softplus(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.add(
-        np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0, dtype=x.dtype), out=out
-    )
+def softplus(
+    x: np.ndarray,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (
+            np.add(
+                np.log1p(np.exp(-np.abs(x_beta))),
+                np.maximum(x_beta, 0, dtype=x.dtype),
+                out=out,
+            )
+        ) / beta
+    else:
+        x_beta = x
+        res = np.add(
+            np.log1p(np.exp(-np.abs(x_beta))),
+            np.maximum(x_beta, 0, dtype=x.dtype),
+            out=out,
+        )
+    if threshold is not None:
+        return np.where(x_beta > threshold, x, res)
+    return res
 
 
 softplus.support_native_out = True
+
+
+@_handle_0_dim_output
+def log_softmax(
+    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x_max = np.max(x, axis=axis, keepdims=True)
+    if x_max.ndim > 0:
+        x_max[~np.isfinite(x_max)] = 0
+    elif not np.isfinite(x_max):
+        x_max = 0
+    exp_tmp = np.exp(x - x_max)
+
+    with np.errstate(divide="ignore"):
+        s = np.sum(exp_tmp, axis=axis, keepdims=True)
+        ret = np.log(s)
+
+    ret = x - x_max - ret
+    return ret
+
+
+log_softmax.support_native_out = True

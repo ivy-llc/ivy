@@ -9,14 +9,15 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # GELU
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     approximate=st.booleans(),
     num_positional_args_init=helpers.num_positional_args(fn_name="GELU.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="GELU._forward"),
@@ -41,7 +42,7 @@ def test_gelu(
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"x": np.asarray(x, dtype=input_dtype)},
+        all_as_kwargs_np_method={"x": x[0]},
         fw=fw,
         class_name="GELU",
     )

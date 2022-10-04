@@ -16,6 +16,13 @@ NativeShape = torch.Size
 
 NativeSparseArray = torch.Tensor
 
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
@@ -26,7 +33,7 @@ native_bfloat16 = torch.bfloat16
 native_float16 = torch.float16
 native_float32 = torch.float32
 native_float64 = torch.float64
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = torch.bool
 
 # valid data types

@@ -1,6 +1,6 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
@@ -24,11 +24,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.all"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_all(
     dtype_x_axis,
@@ -41,9 +39,8 @@ def test_numpy_all(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where[0] if isinstance(where, list) else where,
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -57,7 +54,7 @@ def test_numpy_all(
         fw=fw,
         frontend="numpy",
         fn_tree="all",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
         out=None,
         keepdims=keepdims,
@@ -70,7 +67,7 @@ def test_numpy_all(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
@@ -82,11 +79,9 @@ def test_numpy_all(
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.any"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_any(
     dtype_x_axis,
@@ -99,9 +94,8 @@ def test_numpy_any(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where[0] if isinstance(where, list) else where,
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -115,10 +109,31 @@ def test_numpy_any(
         fw=fw,
         frontend="numpy",
         fn_tree="any",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
         out=None,
         keepdims=keepdims,
         where=where,
         test_values=False,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    element=st.booleans() | st.floats() | st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.isscalar"
+    )
+)
+def test_numpy_isscalar(element, as_variable, native_array, num_positional_args, fw):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.all_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="isscalar",
+        element=element
     )

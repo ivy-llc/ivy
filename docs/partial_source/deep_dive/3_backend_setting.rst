@@ -12,10 +12,10 @@ Backend Setting
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the \
-arguments. For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as :code:`numpy`\
+arguments. For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as numpy\
 , and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` \
 function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then \
-this is always used, and the `implicit_backend`_ is overwritten with the framework inferred. :code:`numpy` will always be \
+this is always used, and the `implicit_backend`_ is overwritten with the framework inferred. numpy will always be \
 the default backend unless it is explicitly set or is inferred.\
 
 When calling `this function`_ for setting the backend, the following steps are performed:
@@ -71,7 +71,7 @@ versions of functions that are not forward compatible. For example, :code:`torch
 has many new arguments :code:`dtype=None, layout=None, device=None, requires_grad=False, memory_format=torch.preserve_format`
 compared to the same function at version :code:`0.3.1`. None of these new arguments will cause any forward compatibility issues:
 they weren't used in old code, and they can now just be used in new code if desired. However, the removal of the :code:`out` argument
-does break forward compatibility. Old :code:`torch` code will raise an :code:`Argument Not Found` error if being run with new :code:`torch`
+does break forward compatibility. Old torch code will raise an :code:`Argument Not Found` error if being run with new torch
 versions. However, such forward-breaking changes are in the vast minority.
 
 We currently use a naming convention for such functions and name them as :code:`fn_name_v_1p12_and_above` which means that this particular

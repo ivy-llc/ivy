@@ -5,12 +5,14 @@ from typing import Callable, Any, Union, Sequence, Iterable, Optional
 
 # local
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
 # ------#
 
 # noinspection PyShadowingBuiltins
+@handle_exceptions
 def compile(
     func: Callable,
     /,

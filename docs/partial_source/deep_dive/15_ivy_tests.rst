@@ -213,7 +213,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
 
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.ints(min_value=0, max_value=2),
     alpha=helpers.floats(),
     )
@@ -265,7 +265,7 @@ Let's look at the data produced by this strategy -:
     ('float64', [9433925.0, -1.401298464324817e-45])
     ('float64', [[574352379.0, -0.99999], [2.2250738585072014e-308, -6.103515625e-05]])
 
-These values are then unpacked, converted to :code:`ivy.array` class, with corresponding dtypes. The test then runs on the newly
+These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on the newly
 created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.
 
 Why do we need helper functions
@@ -372,7 +372,7 @@ second element is a list/nested list containing floating point numbers of that p
 
 This function contains a list of `keyword`_ arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one :code:`ivy.array`.
+which expects at least one :class:`ivy.Array`.
 
 7. **reshape_shapes** - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:
@@ -620,19 +620,19 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png
    :width: 600
 
 
@@ -645,7 +645,7 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.

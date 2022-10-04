@@ -8,13 +8,13 @@ Docstrings
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 
-All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+:mod:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
 on account that these are effectively just different instantiations of the functions at
-:code:`ivy/functional/ivy/category_name.py`.
+:mod:`ivy/functional/ivy/category_name.py`.
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
+In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
@@ -61,7 +61,7 @@ docstring like so:
 
 The `Array API Standard`_ defines a subset of behaviour that each function must adhere to.
 Ivy extends many of these functions with additional behaviour and arguments.
-In the case of :code:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
+In the case of :func:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
 like so:
 
 .. code-block:: diff
@@ -93,7 +93,7 @@ Finally, **if** the function is *nestable*, then we add a simple explanation for
 .. code-block:: diff
 
     +Both the description and the type hints above assumes an array input for simplicity,
-    +but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    +but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     +instances in place of any of the arguments.
 
 Following these changes, the new docstring is as follows:
@@ -135,7 +135,7 @@ Following these changes, the new docstring is as follows:
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
 If the function that you are writing a docstring for is **not** in the `Array API Standard`_,
@@ -145,7 +145,7 @@ and also for each of its arguments.
 
 **Classes**
 
-The instance methods in :code:`ivy.Array` and :code:`ivy.Container` which directly wrap
+The instance methods in :class:`ivy.Array` and :class:`ivy.Container` which directly wrap
 a function in the functional API do not require thorough docstrings, on account that
 these instance methods require no explanation beyond that provided in the docstring
 for the wrapped function.
@@ -166,7 +166,7 @@ Therefore, these docstrings should all simply contain the following text:
     -------
     <return value with its description>
 
-The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
+The exception to this is :class:`ivy.Container` :code:`special` method docstrings,
 which should instead use the following text, as these do not *directly* wrap a function
 in Ivy's functional API, but rather wrap the pure operator functions themselves,
 which can be called on any types that support the corresponding special methods:
@@ -223,7 +223,7 @@ the function signatures of :code:`ivy.linear` and :code:`ivy.Linear._forward` ar
 quite distinct, with the former including all trainable variables explicitly,
 and the latter having these implicit as internal instance attributes of the class.
 
-Therefore, with the exception of the :code:`ivy.Array` and :code:`ivy.Container`
+Therefore, with the exception of the :class:`ivy.Array` and :class:`ivy.Container`
 methods which directly wrap functions in the functional API,
 we should always add full and thorough docstrings to all methods of all other classes in Ivy,
 including cases where these also directly wrap functions in the functional API.
