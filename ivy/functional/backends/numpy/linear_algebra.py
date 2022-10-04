@@ -252,11 +252,16 @@ solve.unsupported_dtypes = ("float16",)
 
 
 def svd(
-    x: np.ndarray, full_matrices: bool = True
+    x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        U, D, VT = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16",)
