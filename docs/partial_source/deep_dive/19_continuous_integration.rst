@@ -1,4 +1,4 @@
-Continuous Integration (CI) 🔁
+Continuous Integration 🔁
 =====================
 
 We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository. This makes sure that:
