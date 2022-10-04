@@ -2261,6 +2261,7 @@ def test_maximum(
         instance_method=instance_method,
         fw=fw,
         fn_name="maximum",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
