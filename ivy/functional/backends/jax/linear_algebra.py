@@ -222,9 +222,10 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, version)
 def slogdet(
-    x: JaxArray, /, *, out: Optional[JaxArray] = None
-) -> Tuple[JaxArray, JaxArray]:
-    results = namedtuple("slogdet", "sign logabsdet")
+    x: JaxArray,
+    /,
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", JaxArray), ("logabsdet", JaxArray)])
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)
 

@@ -12,7 +12,7 @@ from ivy_tests.test_ivy import helpers
 
 
 r = None
-if "REDIS_URL" in os.environ:
+if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
     r = redis.Redis.from_url(
         os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
     )
@@ -48,7 +48,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = deadline if deadline else 10000
+    deadline = deadline if deadline else 80000
     profile_settings = {}
     os.getenv("REDIS_URL")
     if num_examples is not None:
