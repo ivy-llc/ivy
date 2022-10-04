@@ -397,7 +397,8 @@ def test_cumsum(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
     exclusive=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    reverse=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_cumprod(
     dtype_x_axis,
@@ -409,6 +410,7 @@ def test_cumprod(
     instance_method,
     fw,
     exclusive,
+    reverse,
     dtype,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -425,7 +427,8 @@ def test_cumprod(
         x=x[0],
         axis=axis,
         exclusive=exclusive,
-        dtype=dtype[0],
+        reverse=reverse,
+        dtype=dtype,
     )
 
 
