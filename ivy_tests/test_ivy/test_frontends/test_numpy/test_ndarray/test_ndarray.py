@@ -199,3 +199,57 @@ def test_numpy_ndarray_any(
         class_name="ndarray",
         method_name="any",
     )
+
+
+# argmin
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=True
+    ),
+    keepdims=st.booleans(),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.argmin"
+    ),
+    native_array=helpers.array_bools(),
+)
+def test_numpy_ndarray_argmin(
+    dtype_x_axis,
+    keepdims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=num_positional_args,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "out": None,
+            "keepdims": keepdims,
+           
+        },
+        fw=fw,
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="argmin",
+    )
