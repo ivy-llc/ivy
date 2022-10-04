@@ -58,9 +58,6 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                         ),
                     )
             elif casting == "safe":
-                # TODO: test if this is required or handled in backend
-                # promoted_type = ivy.promote_types(ivy.dtype(args[0]),
-                # ivy.dtype(args[1]))
                 if ivy.exists(dtype):
                     ivy.assertions.check_all_or_any_fn(
                         *args[:num_args],
