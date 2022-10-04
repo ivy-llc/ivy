@@ -286,5 +286,5 @@ def signbit(
             ret = True
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.all()
+    return ivy.astype(ivy.array(ret), "boolean")
 
