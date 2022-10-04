@@ -679,6 +679,7 @@ def minimum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    # np.minimum hasn't been removed because of the gradient tests
     return np.where(x1 <= x2, x1, x2)
 
 
