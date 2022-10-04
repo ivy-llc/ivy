@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float"),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isfinite"
@@ -20,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_numpy_isfinite(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -29,6 +27,10 @@ def test_numpy_isfinite(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -47,7 +49,10 @@ def test_numpy_isfinite(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -56,7 +61,6 @@ def test_numpy_isfinite(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float"),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isinf"
@@ -64,7 +68,6 @@ def test_numpy_isfinite(
 )
 def test_numpy_isinf(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -73,6 +76,10 @@ def test_numpy_isinf(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -91,8 +98,8 @@ def test_numpy_isinf(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
     )
@@ -103,7 +110,6 @@ def test_numpy_isinf(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float"),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isnan"
@@ -111,7 +117,6 @@ def test_numpy_isinf(
 )
 def test_numpy_isnan(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -120,6 +125,10 @@ def test_numpy_isnan(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -138,8 +147,8 @@ def test_numpy_isnan(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
     )
