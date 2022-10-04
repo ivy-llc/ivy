@@ -1554,3 +1554,47 @@ class ContainerWithManipulation(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    def flatten(
+        self: ivy.Container,
+        start_dim: int,
+        end_dim: int,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """ivy.Container instance method variant of ivy.flatten. This method simply wraps the
+        function, and so the docstring for ivy.flatten also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to flatten at leaves. 
+        start_dim
+            first dim to flatten. If not set, defaults to 0.
+        end_dim
+            last dim to flatten. If not set, defaults to -1.
+
+        Returns
+        -------
+        ret
+            Container with arrays flattened at leaves. 
+
+        Examples
+        --------
+
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> ivy.flatten(x)
+        [{
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+            b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
+        }]
+        """
+        return self.static_flatten(
+            self, 
+            start_dim=start_dim, 
+            end_dim=end_dim, 
+            out=out)
