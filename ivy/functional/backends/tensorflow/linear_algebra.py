@@ -432,7 +432,7 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[tf.Tensor,tf.Variable],
     /,
 ) -> NamedTuple:
     results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])

@@ -708,7 +708,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             floating-point data type determined by :ref:`type-promotion` and 
             must have shape ``(..., N, M)`` (i.e., must have the same shape as 
             ``x``, except the innermost two dimensions must be transposed).
-    
+
         Examples
         --------
         x = ivy.Container(a= ivy.array([[1., 2.],\
@@ -719,7 +719,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[-2., 1.],\
                [1.5, -0.5]])
         }
-    
+
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())
@@ -768,8 +768,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             floating-point data type determined by :ref:`type-promotion` and 
             must have shape ``(..., N, M)`` (i.e., must have the same shape as 
             ``x``, except the innermost two dimensions must be transposed).
-    
-    
+
+
         Examples
         --------
         x = ivy.Container(a= ivy.array([[1., 2.],\
@@ -780,7 +780,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[-2., 1.],\
                [1.5, -0.5]])
         }
-    
+
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())
@@ -790,7 +790,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[0.0426, 0.0964],\
                [0.0605, 0.1368]])
         }
-    
+
         """
         return self.static_pinv(
             self,
@@ -1248,7 +1248,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static instance method variant of ivy.slogdet. This method simply
+        ivy.Container static method variant of ivy.slogdet. This method simply
         wraps the function, and so the docstring for ivy.slogdet also applies to this
         method with minimal changes.
 

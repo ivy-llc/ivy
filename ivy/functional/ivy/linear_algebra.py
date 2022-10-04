@@ -716,7 +716,7 @@ def inv(
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Using inplace
-    
+
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
@@ -1184,7 +1184,7 @@ def outer(
                 [4.]])
 
     A 3-D Example
-    
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -1340,7 +1340,7 @@ def qr(
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-) -> ivy.Array:
+) -> NamedTuple:
     """Computes the sign and natural logarithm of the determinant of an array.
 
     Parameters
