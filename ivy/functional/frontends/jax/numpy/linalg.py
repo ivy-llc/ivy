@@ -22,5 +22,5 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 
 # slogdet
-def slogdet(a, method=None):
-    return ivy.slogdet(a, method=None)
+def slogdet(a, *, method=None):
+    return ivy.slogdet(a)

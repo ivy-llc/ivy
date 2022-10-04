@@ -146,12 +146,14 @@ def square_shape(draw, dims=st.integers(min_value=2, max_value=20)):
         shape=square_shape(),
         num_arrays=1,
     ),
+    method=st.none(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.slogdet"
     ),
 )
 def test_jax_slogdet(
     dtype_and_x,
+    method,
     as_variable,
     num_positional_args,
     native_array,
@@ -168,4 +170,5 @@ def test_jax_slogdet(
         frontend="jax",
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
+        method=None
     )
