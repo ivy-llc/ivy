@@ -129,10 +129,10 @@ def _get_second_matrix_and_dtype(draw, available_dtypes=None):
 
 
 @st.composite
-def _get_set_item(draw, available_dtypes=None):
+def _getitem_setitem(draw, available_dtypes=None):
     if available_dtypes is None:
         available_dtypes = helpers.get_dtypes("numeric")
-    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    arr_size = draw(helpers.ints(min_value=2, max_value=10))
     x = draw(
         helpers.dtype_and_values(available_dtypes=available_dtypes, shape=(arr_size,))
     )
@@ -142,7 +142,7 @@ def _get_set_item(draw, available_dtypes=None):
 
 # __getitem__
 @handle_cmd_line_args
-@given(query_dtype_and_x=_get_set_item())
+@given(query_dtype_and_x=_getitem_setitem())
 def test_array__getitem__(
     query_dtype_and_x,
 ):
@@ -162,6 +162,28 @@ def test_array__getitem__(
 
 
 # __setitem__
+@handle_cmd_line_args
+@given(
+    query_dtype_and_x=_getitem_setitem(),
+    val=st.floats(min_value=-6, max_value=6),
+)
+def test_array__setitem__(
+    query_dtype_and_x,
+    val,
+):
+    query, x_dtype = query_dtype_and_x
+    _, x = x_dtype
+    data = Array(x[0])
+    ret = data.__setitem__(query, val)
+    np_ret = x[0].__setitem__(query, val)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="numpy",
+        )
 
 
 # __pos__
