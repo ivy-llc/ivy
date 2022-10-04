@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, assume, strategies as st, example
 
 # local
 import ivy
@@ -852,13 +852,28 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=40,
-        small_abs_safety_factor=40,
-        safety_factor_scale="log",
         min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
     ),
-    offset=helpers.ints(min_value=-10, max_value=10),
+    offset=helpers.ints(min_value=-3, max_value=3),
+    axis1=st.integers(0),
+    axis2=st.integers(1),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
+)
+@example(
+    dtype_x=(['float16'], [array([[-1.]], dtype=float16)]),
+    offset=0,
+    axis1=1,
+    axis2=1,
+    num_positional_args=1,
+    as_variable=[False],
+    with_out=False,
+    native_array=[False],
+    container=[False],
+    instance_method=False,
+    fw='numpy',
 )
 def test_trace(
     *,
@@ -871,6 +886,8 @@ def test_trace(
     instance_method,
     fw,
     offset,
+    axis1,
+    axis2,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -885,8 +902,10 @@ def test_trace(
         fn_name="trace",
         rtol_=1e-2,
         atol_=1e-2,
-        x=x[0],
+        x=x,
         offset=offset,
+        axis1=axis1,
+        axis2=axis2,
     )
 
 
@@ -1155,22 +1174,21 @@ def test_svd(
 # matrix_norm
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
+    dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        min_value=-10,
-        max_value=10,
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     kd=st.booleans(),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
 )
 def test_matrix_norm(
     *,
-    dtype_x,
+    dtype_value_shape,
     as_variable,
     with_out,
     num_positional_args,
@@ -1179,9 +1197,10 @@ def test_matrix_norm(
     instance_method,
     fw,
     kd,
+    axis,
     ord,
 ):
-    dtype, x = dtype_x
+    dtype, x = dtype_value_shape
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1192,9 +1211,10 @@ def test_matrix_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_norm",
-        x=x[0],
-        ord=ord,
+        x=x,
+        axis=axis,
         keepdims=kd,
+        ord=ord,
     )
 
 

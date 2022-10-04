@@ -248,10 +248,15 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axes = (-2, -1)
+    axes = axis
+    # if len(x) > 1:
+    #     axes = (-2, -1)
+    # else:
+    #     axes = axis
     if ord == -float("inf"):
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes
@@ -542,12 +547,15 @@ def tensordot(
 
 def trace(
     x: Union[tf.Tensor, tf.Variable],
-    offset: int = 0,
+    /,
     *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.trace(
-        x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
+        x, offset=offset, axis1=axis1, axis2=axis2
     )
     return ret
 

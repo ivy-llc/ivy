@@ -899,6 +899,7 @@ def matmul(
     )
 
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -908,6 +909,7 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -932,18 +934,8 @@ def matrix_norm(
     ret
         Matrix norm of the array at specified axes.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     """
-    return current_backend(x).matrix_norm(x, ord=ord, keepdims=keepdims, out=out)
+    return current_backend(x).matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -1757,6 +1749,8 @@ def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    axis1: int = 0,
+    axis2: int = 1,
     offset: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1792,17 +1786,6 @@ def trace(
            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
 
          The returned array must have the same data type as ``x``.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
 
     Examples
     --------
@@ -1851,7 +1834,7 @@ def trace(
     {
         a: ivy.array(14),
         b: ivy.array(19)
-    }   
+    }
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
@@ -1868,7 +1851,8 @@ def trace(
         b: ivy.array(8)
     }
     """
-    return current_backend(x).trace(x, offset=offset, out=out)
+    return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
 
 
 @to_native_arrays_and_back
