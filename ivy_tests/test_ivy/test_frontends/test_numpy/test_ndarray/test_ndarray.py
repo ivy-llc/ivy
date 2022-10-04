@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 
 
 # argmax
-handle_cmd_line_args
+@handle_cmd_line_args
 given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
