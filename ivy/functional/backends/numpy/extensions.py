@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import logging
 import ivy
 import numpy as np
@@ -58,3 +58,19 @@ def native_sparse_array_to_indices_values_and_shape(x):
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
+
+
+@_handle_0_dim_output
+def avg_pool1d(
+    x:np.ndarray,
+    /,
+    ksize:Union[int, float],
+    strides:Union[int, float],
+    padding:int,
+    data_format:str,
+    *,
+    dtype: np.dtype,
+    device: str,
+    out: Optional[np.ndarray] = None
+) ->np.ndarray:
+    return np.avg_pool1d(x, ksize, strides, padding, data_format).astype(x.dtype)
