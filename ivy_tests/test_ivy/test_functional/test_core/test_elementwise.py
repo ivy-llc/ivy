@@ -2399,6 +2399,7 @@ def test_rad2deg(
         instance_method=instance_method,
         fw=fw,
         fn_name="rad2deg",
+        test_gradients=True,
         x=x[0],
     )
 
