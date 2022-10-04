@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -70,3 +70,19 @@ def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 sinc.support_native_out = True
 sinc.unsupported_dtypes = ("float16",)
+
+
+def avg_pool1d(
+    x:torch.Tensor,
+    /,
+    ksize:Union[int, float],
+    strides:Union[int, float],
+    padding:int,
+    data_format:str,
+    *,
+    dtype: torch.dtype,
+    device: torch.Tensor,
+    out: Optional[torch.Tensor] = None
+) ->torch.Tensor:
+    return torch.avg_pool1d(x, ksize, strides, padding, data_format, dtype=dtype)
+    
