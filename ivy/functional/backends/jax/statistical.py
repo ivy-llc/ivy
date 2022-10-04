@@ -219,8 +219,8 @@ def kaiser_bessel_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
-    dtype: Optional[jnp.dtype] = None,
     *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if periodic == True:

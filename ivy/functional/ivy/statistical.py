@@ -1327,8 +1327,8 @@ def kaiser_bessel(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
-    dtype: Optional[ivy.dtype] = None,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Computes the Kaiser bessel derived window with window length window_length and shape beta
@@ -1362,4 +1362,4 @@ def kaiser_bessel(
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
     return current_backend().kaiser_window(
-        window_length, periodic, beta, dtype, out=out)
+        window_length, periodic, beta, dtype=dtype, out=out)

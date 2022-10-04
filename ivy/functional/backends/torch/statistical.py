@@ -308,8 +308,8 @@ def kaiser_bessel_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
-    dtype: Optional[torch.dtype] = None,
     *,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return _KBDW(window_length, periodic, beta, dtype)

@@ -248,8 +248,8 @@ def kaiser_bessel_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
-    dtype: Optional[np.dtype] = None,
     *,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if periodic == True:

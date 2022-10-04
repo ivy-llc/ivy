@@ -187,8 +187,8 @@ def kaiser_bessel_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
-    dtype: Optional[tf.DType] = None,
     *,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if periodic == True:
