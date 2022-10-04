@@ -39,9 +39,6 @@ class DeviceArray:
     def add(self, other):
         return jax_frontend.add(self.data, other)
 
-    def radd(self, other):
-        return jax_frontend.add(self.data)
-
     @_frontend_wrapper
     def __add__(self, other):
         return jax_frontend.add(self.data, other)
