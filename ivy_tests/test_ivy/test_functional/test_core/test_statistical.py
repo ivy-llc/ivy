@@ -471,10 +471,10 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
         assert ret.data is out.data
 
 
-# kaiser_bessel
+# kaiser_bessel_window
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtypes_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
         max_num_dims=1,
@@ -482,9 +482,9 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
     periodic=st.booleans(),
     beta=st.floats(),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(fn_name="kaiser_bessel"),
+    num_positional_args=helpers.num_positional_args(fn_name="kaiser_bessel_window"),
 )
-def test_kaiser_bessel(
+def test_kaiser_bessel_window(
     dtype_and_x,
     periodic,
     beta,
@@ -507,7 +507,7 @@ def test_kaiser_bessel(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="kaiser_bessel",
+        fn_name="kaiser_bessel_window",
         window_length=x[0],
         periodic=periodic,
         beta=beta,
