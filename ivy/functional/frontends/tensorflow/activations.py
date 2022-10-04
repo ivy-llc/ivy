@@ -12,3 +12,6 @@ def hard_sigmoid(x):
 
 def linear(x):
     return x
+
+def sigmoid(x):
+    return ivy.sigmoid(x)
