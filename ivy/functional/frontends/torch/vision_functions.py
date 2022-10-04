@@ -2,14 +2,13 @@ import ivy
 
 
 def pixel_shuffle(input, upscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="pixel_shuffle expects 4D input, but got input with sizes "
-        + str(input_shape),
+                + str(input_shape),
     )
     b = input_shape[0]
     c = input_shape[1]
@@ -20,14 +19,14 @@ def pixel_shuffle(input, upscale_factor):
         c % upscale_factor_squared,
         0,
         message="pixel_shuffle expects input channel to be divisible by square "
-        + "of upscale_factor, but got input with sizes "
-        + str(input_shape)
-        + ", upscale_factor="
-        + str(upscale_factor)
-        + ", and self.size(1)="
-        + str(c)
-        + " is not divisible by "
-        + str(upscale_factor_squared),
+                + "of upscale_factor, but got input with sizes "
+                + str(input_shape)
+                + ", upscale_factor="
+                + str(upscale_factor)
+                + ", and self.size(1)="
+                + str(c)
+                + " is not divisible by "
+                + str(upscale_factor_squared),
     )
     oc = int(c / upscale_factor_squared)
     oh = h * upscale_factor
@@ -40,7 +39,6 @@ def pixel_shuffle(input, upscale_factor):
 
 
 def pixel_unshuffle(input, downscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.assertions.check_equal(
@@ -80,3 +78,69 @@ def pixel_unshuffle(input, downscale_factor):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 3, 5, 2, 4)), (b, oc, oh, ow)
     )
+
+
+def pad(input, padding):
+    """
+    This functions replicates zero padding for 4D, 3D and 2D images.
+    Parameters
+    ----------
+    input: input image.
+    padding: number of padding layers required.
+
+    Returns: padded image.
+    -------
+
+    """
+    #  derive image shape
+    input_shape = ivy.shape(input)
+
+    #  4D input
+    if len(input_shape) == 4:
+        #  derive individual dimensions
+        b = input_shape[0]
+        c = input_shape[1]
+        h = input_shape[2]
+        w = input_shape[3]
+
+        # create a placeholder version of padded image
+        padded = ivy.zeros((b, c, h + (2 * padding), w + (2 * padding)))
+
+        #  iterate over total number of images in the batch
+        for i in range(b):
+            padded[i, :, padding:-padding, padding:-padding] = input[i]
+
+        return padded
+
+    #  3D input
+    elif len(input_shape) == 3:
+        #  derive individual dimensions
+        c = input_shape[0]
+        h = input_shape[1]
+        w = input_shape[2]
+
+        # create a placeholder version of padded image
+        padded = ivy.zeros((c, h + (2 * padding), w + (2 * padding)))
+
+        #  iterate over total number of images in the batch
+        for i in range(c):
+            padded[i, padding:-padding, padding:-padding] = input[i]
+
+        return padded
+
+    #  2D input
+    elif len(input_shape) == 2:
+        #  derive individual dimensions
+        h = input_shape[0]
+        w = input_shape[1]
+
+        # create a placeholder version of padded image
+        padded = ivy.zeros((h + (2 * padding), w + (2 * padding)))
+
+        #  iterate over total number of images in the batch
+        padded[padding:-padding, padding:-padding] = input
+
+        return padded
+
+    else:
+        print(f'Pad expects one of either 4D, 3D or 2D input but got input of size {input_shape}')
