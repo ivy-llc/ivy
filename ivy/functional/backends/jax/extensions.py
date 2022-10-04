@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, Union
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -56,3 +56,17 @@ def native_sparse_array_to_indices_values_and_shape(x):
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+def avg_pool1d(
+    x:JaxArray,
+    /,
+    ksize:Union[int, float],
+    strides:Union[int, float],
+    padding:int,
+    data_format:str,
+    *,
+    dtype: jnp.dtype,
+    out: Optional[JaxArray] = None
+) ->JaxArray:
+    return jnp.avg_pool1d(x, ksize, strides, padding, data_format, dtype=dtype)
