@@ -306,11 +306,17 @@ solve.unsupported_dtypes = (
 
 
 def svd(
-    x: JaxArray, /, *, full_matrices: bool = True
+    x: JaxArray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = (
