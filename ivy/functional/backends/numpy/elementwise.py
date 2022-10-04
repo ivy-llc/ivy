@@ -18,15 +18,19 @@ except (ImportError, ModuleNotFoundError):
 
 def _cast_for_binary_op(
     x1: Union[float, np.ndarray], x2: Union[float, np.ndarray]
-) -> Tuple[np.ndarray, np.ndarray]:
-    """In the case of two array inputs, NumPy's type promotion behaves as we want,
-    except in the case where one input is a 0D array and one is a non 0D array. An
-    easy fix for this edge case is to just add an extra dimension to the 0D array,
-    which fixes the type promotion and the result's shape will still be correct.
+) -> Tuple[Union[float, np.ndarray], Union[float, np.ndarray]]:
+    """In the case of two array inputs, NumPy doesn't always behave as we want when
+    mixing float and integer types (e.g. int32 + float32 -> float64, whereas we want
+    float32). To fix this, we cast the integer array to the float array's dtype.
 
-    NumPy doesn't behave as we want with one array and one scalar input, so we manually
-    cast the scalar to the array's data type, to produce the behaviour required by the
-    array API standard.
+    With two input arrays, NumPy behaves as the array API standard dictates, except in
+    the case where one input is a 0D array and one is a non 0D array. An easy fix for
+    this edge case is to just add an extra dimension to the 0D array, which fixes the
+    type promotion and the result's shape will still be correct.
+
+    NumPy doesn't behave as we want with one array and one scalar input, when the array
+    is 0 dimensional. So we manually cast the scalar to the array's data type in this
+    case, to produce the behaviour required by the array API standard.
 
     NumPy does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
     that Ivy's default dtypes are used, rather than NumPy's.
@@ -34,12 +38,12 @@ def _cast_for_binary_op(
     if isinstance(x1, np.ndarray) and isinstance(x2, np.ndarray):
         if (
             np.issubdtype(x1.dtype, np.integer) and np.issubdtype(x2.dtype, np.floating)
-        ) or (
+        ):
+            x1 = x1.astype(x2.dtype)
+        elif (
             np.issubdtype(x1.dtype, np.floating) and np.issubdtype(x2.dtype, np.integer)
         ):
-            promoted_type = ivy.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
+            x2 = x2.astype(x1.dtype)
         elif x1.ndim == 0 and x2.ndim != 0:
             x1 = x1[None]
         elif x2.ndim == 0 and x1.ndim != 0:
@@ -268,7 +272,7 @@ def divide(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = np.divide(x1, x2)
     if ivy.is_float_dtype(x1):
         ret = np.asarray(ret, dtype=x1.dtype)
