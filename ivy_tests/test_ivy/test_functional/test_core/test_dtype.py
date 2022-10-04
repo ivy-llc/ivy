@@ -58,7 +58,7 @@ def dtypes_shared(draw, num_dtypes):
 
 
 @st.composite
-def _astype_helper(draw):
+def astype_helper(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -78,7 +78,7 @@ def _astype_helper(draw):
 # astype
 @handle_cmd_line_args
 @given(
-    dtype_and_x_and_cast_dtype=_astype_helper(),
+    dtype_and_x_and_cast_dtype=astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
 def test_astype(
