@@ -1,5 +1,5 @@
 name: test-frontend-tensorflow-push
-on: pull_request
+on: push
 jobs:
   run-nightly-tests:
     strategy:
