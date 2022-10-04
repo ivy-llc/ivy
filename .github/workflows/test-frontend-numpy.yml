@@ -1,5 +1,6 @@
 name: test-frontend-numpy
 on:
+  push:
   pull_request:
     types: [labeled, opened, synchronize, reopened, review_requested]
 jobs:
