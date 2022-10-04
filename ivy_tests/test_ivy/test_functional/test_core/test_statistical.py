@@ -474,10 +474,9 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
 # kaiser_window
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtypes_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=1,
-        max_num_dims=1,
+        shape=(1, 1)
     ),
     periodic=st.booleans(),
     beta=st.floats(),

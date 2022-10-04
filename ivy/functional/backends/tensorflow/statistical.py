@@ -195,4 +195,4 @@ def kaiser_window(
             window_length, beta, dtype=tf.dtypes.float32,name=None) 
     else: 
         return tf.signal.kaiser_window(
-            window_length + 1, beta, dtype=tf.dtypes.float32,name=None)[:-1] 
+            window_length + 1, beta, dtype=tf.dtypes.float32, name=None)[:-1] 
