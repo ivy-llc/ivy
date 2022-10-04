@@ -414,7 +414,8 @@ def maximum(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.maximum(x1, x2)
+    # jnp.maximum hasn't been used because it fails the gradient tests
+    return jnp.where(x1 >= x2, x1, x2)
 
 
 def minimum(
@@ -425,7 +426,7 @@ def minimum(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    # jnp.minimum hasn't been removed because of the gradient tests
+    # jnp.minimum hasn't been used because it fails the gradient tests
     return jnp.where(x1 <= x2, x1, x2)
 
 
