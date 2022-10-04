@@ -44,6 +44,7 @@ class ndarray:
             keepdims,
             where=where
         )
+    
     def argmin(
         self,
         axis=None,
