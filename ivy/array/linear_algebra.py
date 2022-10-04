@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: bool = False,
+        upper: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -298,6 +298,43 @@ class ArrayWithLinearAlgebra(abc.ABC):
         mode: str = "reduced",
     ) -> NamedTuple:
         return ivy.qr(self._data, mode=mode)
+
+    def slogdet(
+        self: ivy.Array,
+    ) -> NamedTuple:
+        """
+        ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
+        function, and so the docstring for ivy.slogdet also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
+
+        Returns
+        -------
+        ret
+            This function returns NamedTuple with two values -
+                sign:
+                An array containing a number representing the sign of the determinant
+                for each square matrix.
+
+                logabsdet:
+                An array containing natural log of the absolute determinant of each
+                square matrix.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.0, 2.0], \
+                           [3.0, 4.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+
+        """
+        return ivy.slogdet(self._data)
 
     def solve(
         self: ivy.Array,

@@ -85,7 +85,6 @@ def test_torch_flip(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="flip",
         input=value[0],
@@ -133,7 +132,6 @@ def test_torch_roll(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="roll",
         input=value[0],
@@ -167,7 +165,6 @@ def test_torch_fliplr(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="fliplr",
         input=value[0],
@@ -207,7 +204,6 @@ def test_torch_cumsum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cumsum",
         input=x[0],
@@ -264,7 +260,6 @@ def test_torch_diagonal(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="diagonal",
         input=input,
@@ -307,7 +302,6 @@ def test_torch_cartesian_prod(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cartesian_prod",
         **args,
@@ -341,7 +335,6 @@ def test_torch_triu(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="triu",
         input=values[0],
@@ -382,7 +375,6 @@ def test_torch_cumprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cumprod",
         input=x[0],
@@ -418,7 +410,6 @@ def test_torch_trace(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="trace",
         input=value[0],
@@ -448,11 +439,10 @@ def test_torch_tril_indices(
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32],
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="tril_indices",
         row=row,
@@ -483,11 +473,10 @@ def test_torch_triu_indices(
 ):
     helpers.test_frontend_function(
         input_dtypes=["int32"],
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="triu_indices",
         row=row,
@@ -523,7 +512,6 @@ def test_torch_tril(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="tril",
         input=values[0],
@@ -619,11 +607,10 @@ def test_torch_flatten(
     dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="flatten",
         input=input[0],
@@ -672,20 +659,17 @@ def test_torch_renorm(
     dtype, values = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="renorm",
+        atol=1e-02,
         input=values[0],
         p=p,
         dim=dim,
         maxnorm=maxnorm,
-        atol=1e-02,  # It appears that ivy.vector_norm induces a slight error
-        # Also at time of writing, the test for ivy.vector_norm has an atol
-        # of 1e-02
     )
 
 
@@ -717,15 +701,14 @@ def test_torch_logcumsumexp(
     dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logcumsumexp",
-        atol=1e-2,
         rtol=1e-2,
+        atol=1e-2,
         input=input[0],
         dim=dim,
     )
@@ -755,11 +738,10 @@ def test_torch_repeat_interleave(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="repeat_interleave",
         input=values,

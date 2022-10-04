@@ -492,12 +492,11 @@ def test_clip(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     dtypes, (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtypes[0],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -651,7 +650,7 @@ def test_repeat(
         instance_method=instance_method,
         fw=fw,
         fn_name="repeat",
-        x=value,
+        x=value[0],
         repeats=repeat,
         axis=axis,
     )
@@ -717,7 +716,6 @@ def test_split(
     num_or_size_splits,
     axis,
     with_remainder,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -731,7 +729,7 @@ def test_split(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,

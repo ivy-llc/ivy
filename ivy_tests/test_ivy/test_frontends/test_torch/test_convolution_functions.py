@@ -23,11 +23,10 @@ import ivy
 def test_torch_conv2d_1(input, weight, bias, stride, dilation, padding, fw):
     helpers.test_frontend_function(
         input_dtypes=["float32"],
-        num_positional_args=7,
         as_variable_flags=[False],
         with_out=False,
+        num_positional_args=7,
         native_array_flags=[False],
-        fw=fw,
         frontend="torch",
         fn_tree="conv2d",
         input=input,
@@ -56,11 +55,10 @@ def test_torch_conv2d_1(input, weight, bias, stride, dilation, padding, fw):
 def test_torch_conv2d_2(input, weight, bias, stride, dilation, padding, fw):
     helpers.test_frontend_function(
         input_dtypes=["float32"],
-        num_positional_args=7,
         as_variable_flags=[False],
         with_out=False,
+        num_positional_args=7,
         native_array_flags=[False],
-        fw=fw,
         frontend="torch",
         fn_tree="conv2d",
         input=input,

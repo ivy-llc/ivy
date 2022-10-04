@@ -16,7 +16,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -113,10 +113,10 @@ def eigvalsh(
         raise ValueError("UPLO argument must be 'L' or 'U'")
 
     if UPLO == "L":
-        return tf.linalg.eigh(x)
+        return tf.linalg.eigh(x)[0]
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))[0]
         return ret
 
 
@@ -392,8 +392,9 @@ def outer(
 
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
@@ -432,11 +433,10 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
 

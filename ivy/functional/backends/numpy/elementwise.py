@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional
-
 import numpy as np
 
 # local
@@ -11,10 +10,6 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
-
-
-# when inputs are 0 dimensional, numpy's functions return scalars
-# so we use this wrapper to ensure outputs are always numpy arrays
 
 
 @_handle_0_dim_output
@@ -669,10 +664,8 @@ erf.support_native_out = True
 @_handle_0_dim_output
 def maximum(x1, x2, /, *, out: Optional[np.ndarray] = None):
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.maximum(x1, x2, out=out)
-
-
-maximum.support_native_out = True
+    # np.maximum hasn't been used because it fails the gradient tests
+    return np.where(x1 >= x2, x1, x2)
 
 
 @_handle_0_dim_output
@@ -684,10 +677,8 @@ def minimum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.minimum(x1, x2, out=out)
-
-
-minimum.support_native_out = True
+    # np.minimum hasn't been used because it fails the gradient tests
+    return np.where(x1 <= x2, x1, x2)
 
 
 @_handle_0_dim_output

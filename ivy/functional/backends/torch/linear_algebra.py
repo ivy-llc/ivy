@@ -240,8 +240,9 @@ outer.support_native_out = True
 
 def pinv(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if rtol is None:
@@ -279,10 +280,13 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = torch.linalg.slogdet(x, out=out)
+    x: torch.Tensor,
+    /,
+) -> NamedTuple:
+    results = NamedTuple(
+        "slogdet", [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
+    )
+    sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
 
 

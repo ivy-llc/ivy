@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -191,8 +191,9 @@ outer.support_native_out = True
 
 def pinv(
     x: np.ndarray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
@@ -215,15 +216,15 @@ qr.unsupported_dtypes = ("float16",)
 
 def slogdet(
     x: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
-    results = namedtuple("slogdet", "sign logabsdet")
+    /,
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
     logabsdet = (
         np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
     )
+
     return results(sign, logabsdet)
 
 
