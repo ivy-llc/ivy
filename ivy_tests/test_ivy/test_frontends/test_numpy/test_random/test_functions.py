@@ -63,7 +63,7 @@ def test_numpy_multinomial(
     everything,
     as_variable,
     num_positional_args,
-    native_array,
+    native_array
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     helpers.test_frontend_function(
