@@ -205,3 +205,7 @@ def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
+
+
+def Mean(*, input, axis, keep_dims=False, name="Mean"):
+    return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)

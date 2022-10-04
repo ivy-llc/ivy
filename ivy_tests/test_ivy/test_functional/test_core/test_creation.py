@@ -7,25 +7,18 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import _astype_helper
 
 
 # native_array
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        dtype=ivy.valid_numeric_dtypes,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
-    ),
+    dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
 def test_native_array(
     *,
-    dtype_and_x,
+    dtype_and_x_and_cast_dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -33,9 +26,9 @@ def test_native_array(
     fw,
     device,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -204,16 +197,19 @@ def test_arange(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=10),
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
+    as_list=st.booleans(),
 )
 def test_asarray(
     *,
     dtype_and_x,
+    as_list,
     device,
     as_variable,
     num_positional_args,
@@ -221,6 +217,15 @@ def test_asarray(
     fw,
 ):
     dtype, x = dtype_and_x
+
+    if as_list:
+        if isinstance(x, list):
+            x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
+        else:
+            x = list(x)
+    else:
+        if len(x) == 1:
+            x = x[0]
 
     helpers.test_function(
         input_dtypes=dtype,
