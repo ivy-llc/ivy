@@ -6,9 +6,9 @@ from packaging import version
 
 
 def unique_all(x: np.ndarray, /) -> NamedTuple:
-    UniqueAll = namedtuple(
-        typename="unique_all",
-        field_names=["values", "indices", "inverse_indices", "counts"],
+    Results = namedtuple(
+        "Results",
+        ["values", "indices", "inverse_indices", "counts"],
     )
 
     values, indices, inverse_indices, counts = np.unique(
@@ -30,7 +30,7 @@ def unique_all(x: np.ndarray, /) -> NamedTuple:
     else:
         pass
 
-    return UniqueAll(
+    return Results(
         values.astype(x.dtype),
         indices,
         np.reshape(inverse_indices, x.shape),
@@ -49,21 +49,21 @@ def unique_counts(
         c[nan_idx] = 1
         v = np.append(v, np.full(nan_count - 1, np.nan)).astype(x.dtype)
         c = np.append(c, np.full(nan_count - 1, 1)).astype("int32")
-    uc = namedtuple("uc", ["values", "counts"])
-    return uc(v, c)
+    Results = namedtuple("Results", ["values", "counts"])
+    return Results(v, c)
 
 
 def unique_inverse(
     x: np.ndarray,
     /,
 ) -> NamedTuple:
-    out = namedtuple("unique_inverse", ["values", "inverse_indices"])
+    Results = namedtuple("Results", ["values", "inverse_indices"])
     values, inverse_indices = np.unique(x, return_inverse=True)
     nan_count = np.count_nonzero(np.isnan(x))
     if nan_count > 1:
         values = np.append(values, np.full(nan_count - 1, np.nan)).astype(x.dtype)
     inverse_indices = inverse_indices.reshape(x.shape)
-    return out(values, inverse_indices)
+    return Results(values, inverse_indices)
 
 
 def unique_values(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
