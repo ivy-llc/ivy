@@ -36,11 +36,14 @@ def random_normal(
     std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
+    seed: Optional[int] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
+    if seed is not None:
+        torch.manual_seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
         return torch.normal(mean, std, shape, out=out).to(device)
     return torch.normal(mean, std, out=out).to(device)
@@ -58,6 +61,7 @@ def multinomial(
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
     device: torch.device,
+    seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if probs is None:
@@ -70,6 +74,8 @@ def multinomial(
             )
             / population_size
         )
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
 
@@ -84,6 +90,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: torch.device,
     dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not dtype:
@@ -92,6 +99,8 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
@@ -101,8 +110,16 @@ def seed(*, seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def shuffle(
+    x: torch.Tensor,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     batch_size = x.shape[0]
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 

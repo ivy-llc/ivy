@@ -62,7 +62,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -73,7 +73,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array(1.83258148)
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([0, 0, 1])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -224,7 +224,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -235,7 +235,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([1.61, 0.223, 1.61])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))
@@ -383,7 +383,7 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -394,7 +394,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([0.223, 0.223, 1.61])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))

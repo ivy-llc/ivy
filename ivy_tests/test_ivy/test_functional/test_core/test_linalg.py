@@ -539,7 +539,7 @@ def test_inner(
         small_abs_safety_factor=2,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
@@ -554,7 +554,6 @@ def test_inv(
     fw,
 ):
     input_dtype, x = dtype_x
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -644,6 +643,7 @@ def test_outer(
 
 
 # slogdet
+# TODO: add with_out testing when testing with tuples is supported
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
@@ -652,9 +652,6 @@ def test_outer(
         large_abs_safety_factor=72,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
-        != 0.0
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
@@ -662,7 +659,6 @@ def test_slogdet(
     *,
     dtype_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,
@@ -673,7 +669,7 @@ def test_slogdet(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -1098,6 +1094,7 @@ def test_qr(
         max_value=10.0,
     ),
     fm=st.booleans(),
+    uv=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="svd",
     ),
@@ -1111,6 +1108,7 @@ def test_svd(
     container,
     instance_method,
     fw,
+    uv,
     fm,
 ):
     dtype, x = dtype_x
@@ -1126,6 +1124,7 @@ def test_svd(
         fw=fw,
         fn_name="svd",
         x=x[0],
+        compute_uv=uv,
         full_matrices=fm,
         test_values=False,
         return_flat_np_arrays=True,
@@ -1135,25 +1134,35 @@ def test_svd(
 
     # value test based on recreating the original matrix and testing the consistency
     ret_flat_np, ret_from_gt_flat_np = results
-    U, S, Vh = ret_flat_np
-    m = U.shape[-1]
-    n = Vh.shape[-1]
-    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-    U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
-    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    with ivy.functional.backends.numpy.use:
-        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
-        S_mat_gt = (
-            S_gt
-            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
-        )
-    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
-    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+    if uv:
+        U, S, Vh = ret_flat_np
+        m = U.shape[-1]
+        n = Vh.shape[-1]
+        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+        S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    # value test
-    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
-    helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+        with ivy.functional.backends.numpy.use:
+            S_mat = (
+                S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+            )
+            S_mat_gt = (
+                S_gt
+                * ivy.eye(
+                    U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
+                ).data
+            )
+        reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+        reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+        # value test
+        helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+        helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+    else:
+        S = ret_flat_np
+        S_gt = ret_from_gt_flat_np
+        helpers.assert_all_close(S[0], S_gt[0], atol=1e-04)
 
 
 # matrix_norm
@@ -1240,7 +1249,7 @@ def test_matrix_rank(
     dtype, x = dtype_x
     x_temp = x[0]
     for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
-        assume(round(np.linalg.det(x_i), 1) != 0.0)
+        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1264,9 +1273,6 @@ def test_matrix_rank(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1])) != 0
     ),
     upper=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cholesky"),

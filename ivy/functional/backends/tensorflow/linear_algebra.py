@@ -16,7 +16,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool = False,
+    upper: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -113,10 +113,10 @@ def eigvalsh(
         raise ValueError("UPLO argument must be 'L' or 'U'")
 
     if UPLO == "L":
-        return tf.linalg.eigh(x)
+        return tf.linalg.eigh(x)[0]
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))[0]
         return ret
 
 
@@ -161,11 +161,8 @@ def inv(
             ret = tf.linalg.inv(x)
             return ret
         else:
-            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
-            inverse = tf.math.multiply(
-                tf.math.divide(1, tf.linalg.det(x)), tf.transpose(cofactor)
-            )
-            ret = inverse
+            x = tf.linalg.adjoint(x)
+            ret = tf.linalg.inv(x)
             return ret
 
 
@@ -395,8 +392,9 @@ def outer(
 
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
@@ -435,11 +433,10 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
 
@@ -493,16 +490,28 @@ solve.unsupported_dtypes = (
 
 def svd(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     full_matrices: bool = True,
+    compute_uv: bool = True,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    batch_shape = tf.shape(x)[:-2]
-    num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
-    VT = tf.transpose(V, transpose_dims)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        batch_shape = tf.shape(x)[:-2]
+        num_batch_dims = len(batch_shape)
+        transpose_dims = list(range(num_batch_dims)) + [
+            num_batch_dims + 1,
+            num_batch_dims,
+        ]
+        D, U, V = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        VT = tf.transpose(V, transpose_dims)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = (
@@ -645,4 +654,3 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "float16",
     "float64",
 )
-# vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")
