@@ -797,5 +797,5 @@ def test_torch_ravel(
         fw=fw,
         frontend="torch",
         fn_tree="ravel",
-        input=np.asarray(x, dtype=input_dtype),
+        input=np.asarray(x[0], dtype=input_dtype[0]),
     )
