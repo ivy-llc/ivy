@@ -1,12 +1,10 @@
 name: test-frontend-tensorflow
 on:
-  push:
   pull_request:
     types: [labeled, opened, synchronize, reopened, review_requested]
-  workflow_dispatch:
 jobs:
   run-nightly-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'TensorFlow Frontend')}}
+    if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'TensorFlow Frontend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -49,7 +47,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm --env REDIS_URL=${{ secrets.REDIS_CONNECTION_URL }} --env REDIS_PASSWD=${{ secrets.REDIS_PASSWORD }} -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend all ivy_tests/test_ivy/test_frontends/test_tensorflow
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend all ivy_tests/test_ivy/test_frontends/test_tensorflow
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
