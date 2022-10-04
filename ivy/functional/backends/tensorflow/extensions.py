@@ -71,3 +71,20 @@ def sinc(
 ) -> Union[tf.Tensor, tf.Variable]:
     tf.experimental.numpy.experimental_enable_numpy_behavior()
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
+
+
+def avg_pool1d(
+    x:Union[tf.Tensor, tf.Variable],
+    /,
+    ksize:Union[tf.Tensor, tf.Variable],
+    strides:Union[int, float],
+    padding:int,
+    data_format:str,
+    *,
+    dtype: tf.DType,
+    device: str,
+    out: Union[tf.Tensor, tf.Variable] = None
+) ->Union[tf.Tensor, tf.Variable]:
+    tf.experimental.numpy.experimental_enable_numpy_behavior(x, ksize, strides, padding, data_format, dtype=dtype)
+    return tf.cast(tf.experimental.numpy.avgpool1d(x), x.dtype)
+    
