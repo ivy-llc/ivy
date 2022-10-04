@@ -23,9 +23,9 @@ def _cast_for_binary_op(
     JAX does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
     that Ivy's default dtypes are used, rather than JAX's.
     """
-    if isinstance(x1, JaxArray) and isinstance(x2, int):
+    if ivy.is_native_array(x1) and isinstance(x2, int):
         x2 = jnp.array(x2, dtype=x1.dtype) if x2 > 9223372036854775807 else x2
-    elif isinstance(x2, JaxArray) and isinstance(x1, int):
+    elif ivy.is_native_array(x2) and isinstance(x1, int):
         x1 = jnp.array(x1, dtype=x2.dtype) if x1 > 9223372036854775807 else x1
     else:
         x1 = ivy.to_native(ivy.array(x1))
