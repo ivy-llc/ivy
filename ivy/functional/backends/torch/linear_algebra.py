@@ -240,8 +240,9 @@ outer.support_native_out = True
 
 def pinv(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if rtol is None:

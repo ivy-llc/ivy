@@ -113,10 +113,10 @@ def eigvalsh(
         raise ValueError("UPLO argument must be 'L' or 'U'")
 
     if UPLO == "L":
-        return tf.linalg.eigh(x)
+        return tf.linalg.eigh(x)[0]
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))[0]
         return ret
 
 
@@ -392,8 +392,9 @@ def outer(
 
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
