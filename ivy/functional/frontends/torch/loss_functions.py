@@ -115,12 +115,12 @@ def triplet_margin_loss(
     reduce=None,
     reduction="mean",
 ):
-    delta_plus = ivy.vector_norm(anchor - positive, ord=p, axis=-1)
-    delta_minus = ivy.vector_norm(anchor - negative, ord=p, axis=-1)
+    delta_plus = ivy.vector_norm(anchor - positive + eps, ord=p, axis=-1)
+    delta_minus = ivy.vector_norm(anchor - negative + eps, ord=p, axis=-1)
     if swap:
         delta_minus = ivy.minimum(
-            ivy.vector_norm(anchor - negative, ord=p, axis=-1),
-            ivy.vector_norm(positive - negative, ord=p, axis=-1),
+            delta_minus,
+            ivy.vector_norm(positive - negative + eps, ord=p, axis=-1),
         )
     ret = ivy.maximum(delta_plus - delta_minus + margin, 0)
     ret = _apply_reduction(reduction, size_average, reduce, ret)
