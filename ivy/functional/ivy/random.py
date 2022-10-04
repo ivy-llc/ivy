@@ -1,10 +1,11 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_dtype,
     infer_device,

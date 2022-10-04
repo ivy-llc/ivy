@@ -1,6 +1,7 @@
 """Collection of tests for unified reduction functions."""
 
 # global
+import numpy as np
 from hypothesis import given, assume, strategies as st
 
 # local
@@ -335,16 +336,15 @@ def test_shuffle(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
+        shape=st.tuples(st.integers(1), st.integers(min_value=1)),
         min_value=0.1,
-        max_value=1e4,
-        shape=st.tuples(
-            st.integers(min_value=2),
-            st.integers(min_value=1)),
+        max_value=100,
     ),
-    size=st.one_of(st.tuples(), helpers.ints(min_value=0)),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    size=st.one_of(
+        st.tuples(st.integers(min_value=0),
+                  st.integers(min_value=0)), 
+        helpers.ints(min_value=0)),
+    dtype=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
 def test_dirichlet(
