@@ -72,26 +72,22 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                             casting
                         ),
                     )
-            elif casting == "safe":
-                if ivy.exists(dtype):
-                    _assert_args_and_fn(
-                        args[:num_args],
-                        dtype,
-                        fn=lambda x: ivy.can_cast(x, ivy.as_ivy_dtype(dtype)),
-                    )
-                    args = _process_args_and_dtype(args, dtype, num_args)
-            elif casting == "same_kind":
-                if ivy.exists(dtype):
-                    _assert_args_and_fn(
-                        args[:num_args],
-                        dtype,
-                        fn=lambda x: _is_same_kind_or_safe(
-                            ivy.dtype(x), ivy.as_ivy_dtype(dtype)
-                        ),
-                    )
-                    args = _process_args_and_dtype(args, dtype, num_args)
             else:
+                assert_fn = None
+                if casting == "safe" and ivy.exists(dtype):
+                    assert_fn = lambda x: ivy.can_cast(x, ivy.as_ivy_dtype(dtype))
+                elif casting == "same_kind" and ivy.exists(dtype):
+                    assert_fn = lambda x: _is_same_kind_or_safe(
+                        ivy.dtype(x), ivy.as_ivy_dtype(dtype)
+                    )
+                if ivy.exists(assert_fn):
+                    _assert_args_and_fn(
+                        args[:num_args],
+                        dtype,
+                        fn=assert_fn,
+                    )
                 args = _process_args_and_dtype(args, dtype, num_args)
+
             return fn(*args, **kwargs)
 
         new_fn.handle_numpy_casting = True
