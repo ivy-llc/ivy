@@ -433,12 +433,10 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor,tf.Variable],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
 
