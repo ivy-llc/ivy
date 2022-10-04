@@ -5,6 +5,7 @@ import torch
 import torch.nn.functional as tnf
 
 import ivy
+from ivy.func_wrapper import infer_dtype
 
 
 # Array API Standard #
@@ -25,18 +26,19 @@ def argmax(
 argmax.support_native_out = True
 
 
+@infer_dtype
 def argmin(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[torch.dtype] = torch.int64,
+    dtype: Optional[torch.dtype] = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
-    if output_dtype is not None:
-        return ret.type(output_dtype)
+    if dtype is not None:
+        return ret.type(dtype)
     return ret
 
 

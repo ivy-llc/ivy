@@ -30,12 +30,12 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: DType = tf.dtypes.int64,
+    dtype: DType = tf.dtypes.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    if output_dtype is not None:
-        return tf.convert_to_tensor(ret, dtype=output_dtype)
+    if dtype is not None:
+        return tf.convert_to_tensor(ret, dtype=dtype)
     return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 

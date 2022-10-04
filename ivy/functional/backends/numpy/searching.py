@@ -31,12 +31,12 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[np.dtype] = np.int64,
+    dtype: Optional[np.dtype] = np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    if output_dtype is not None:
-        return np.array(ret, dtype=output_dtype)
+    if dtype is not None:
+        return np.array(ret, dtype=dtype)
     return np.array(ret)
 
 

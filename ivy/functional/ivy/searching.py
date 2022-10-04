@@ -128,7 +128,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -147,7 +147,7 @@ def argmin(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
-    output_dtype
+    dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
     out
         if axis is None, a zero-dimensional array containing the index of the first
@@ -238,7 +238,7 @@ def argmin(
         x,
         axis,
         keepdims,
-        output_dtype=output_dtype,
+        dtype=dtype,
         out=out
     )
 

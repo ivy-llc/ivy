@@ -53,7 +53,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -73,7 +73,7 @@ class ArrayWithSearching(abc.ABC):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        output_dtype
+        dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             if axis is None, a zero-dimensional array containing the index of the first
@@ -88,7 +88,13 @@ class ArrayWithSearching(abc.ABC):
             axis.
 
         """
-        return ivy.argmin(self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out)
+        return ivy.argmin(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out
+        )
 
     def nonzero(
         self: ivy.Array,
