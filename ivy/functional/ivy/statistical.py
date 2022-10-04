@@ -1361,5 +1361,5 @@ def kaiser_bessel_window(
     >>> ivy.kaiser_window(5, False, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
-    return current_backend().kaiser_window(
+    return current_backend().kaiser_bessel_window(
         window_length, periodic, beta, dtype=dtype, out=out)
