@@ -34,6 +34,7 @@ queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
+exception_trace_mode_stack = list()
 
 
 def get_referrers_recursive(
@@ -320,17 +321,79 @@ def get_nestable_mode() -> bool:
 
     Examples
     --------
-    >>> ivy.get_nestable_mode()
+    >>> ivy.get_exception_trace_mode()
     True
 
     >>> ivy.set_nestable_mode(False)
-    >>> ivy.get_nestable_mode()
+    >>> ivy.get_exception_trace_mode()
     False
     """
     global nestable_mode_stack
     if not nestable_mode_stack:
         return True
     return nestable_mode_stack[-1]
+
+
+@handle_exceptions
+def set_exception_trace_mode(mode: bool) -> None:
+    """Set the mode of whether to show the full exception stack trace
+
+    Parameter
+    ---------
+    mode
+        boolean whether to perform ivy.Array conversions
+
+    Examples
+    --------
+    >>> ivy.set_exception_trace_mode(False)
+    >>> ivy.get_exception_trace_mode()
+    False
+
+    >>> ivy.set_exception_trace_mode(True)
+    >>> ivy.get_exception_trace_mode()
+    True
+    """
+    global exception_trace_mode_stack
+    ivy.assertions.check_isinstance(mode, bool)
+    exception_trace_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_exception_trace_mode() -> None:
+    """Reset the mode of whether to show the full exception stack trace
+
+    Examples
+    --------
+    >>> ivy.set_exception_trace_mode(False)
+    >>> ivy.get_exception_trace_mode()
+    False
+
+    >>> ivy.unset_exception_trace_mode()
+    >>> ivy.get_exception_trace_mode()
+    True
+    """
+    global exception_trace_mode_stack
+    if exception_trace_mode_stack:
+        exception_trace_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_exception_trace_mode() -> bool:
+    """Get the current state of exception_trace_mode
+
+    Examples
+    --------
+    >>> ivy.get_exception_trace_mode()
+    True
+
+    >>> ivy.set_exception_trace_mode(False)
+    >>> ivy.get_exception_trace_mode()
+    False
+    """
+    global exception_trace_mode_stack
+    if not exception_trace_mode_stack:
+        return True
+    return exception_trace_mode_stack[-1]
 
 
 @inputs_to_native_arrays
@@ -2882,7 +2945,7 @@ def gather(
     batch_dims
         optional int, lets you gather different items from each element of a batch.
     out
-        optional array, for writing the result to. It must have a shape 
+        optional array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns
