@@ -4,7 +4,7 @@ from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -97,7 +97,7 @@ def test_numpy_matmul(
 ):
     dtype1, x1 = x
     dtype2, x2 = y
-    dtype, dtypes, casting = np_helpers.handle_dtype_and_casting(
+    dtype, dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
         dtypes=dtype1 + dtype2,
         get_dtypes_kind="numeric",
     )
