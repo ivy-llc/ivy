@@ -1323,7 +1323,7 @@ def einsum(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-def kaiser_bessel(
+def kaiser_bessel_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
