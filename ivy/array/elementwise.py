@@ -1496,6 +1496,71 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.multiply(self._data, x2, out=out)
 
+    def maximum(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        use_where: bool = False,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        ivy.Array instance method variant of ivy.maximum.
+        This method simply wraps the function, and so the docstring
+        for ivy.maximum also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array containing elements to maximum threshold.
+        x2
+            Tensor containing maximum values, must be broadcastable to x1.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of x1, but clipped to not be lower than the x2
+            values.
+        """
+        return ivy.maximum(self, x2, use_where=use_where, out=out)
+
+    def minimum(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        use_where: bool = False,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        Parameters
+        ----------
+        self
+            Input array containing elements to minimum threshold.
+        x2
+            Tensor containing minimum values, must be broadcastable to x1.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of x1, but clipped to not exceed the x2 values.
+        """
+        return ivy.minimum(self, x2, use_where=use_where, out=out)
+
     def negative(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.negative.
