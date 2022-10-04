@@ -41,7 +41,7 @@ def cross(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1,x2=promote_types_of_inputs(x1,x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
@@ -337,7 +337,7 @@ def tensordot(
     axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1,x2=promote_types_of_inputs(x1,x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes)
 
 
@@ -353,7 +353,7 @@ trace.unsupported_dtypes = ("float16",)
 def vecdot(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    x1,x2=promote_types_of_inputs(x1,x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes=(axis, axis))
 
 

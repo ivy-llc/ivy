@@ -277,7 +277,7 @@ def tensordot(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
 
 
@@ -294,7 +294,7 @@ trace.support_native_out = True
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
 
 

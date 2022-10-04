@@ -115,7 +115,7 @@ def shuffle(
     /,
     *,
     seed: Optional[int] = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     batch_size = x.shape[0]
     if seed is not None:

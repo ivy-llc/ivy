@@ -50,7 +50,7 @@ def cross(
 
     if axis is None:
         axis = -1
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if axis:
         return torch.linalg.cross(input=x1, other=x2, dim=axis)
@@ -59,7 +59,6 @@ def cross(
     return torch.transpose(
         torch.linalg.cross(input=x1, other=x2, out=out), dim0=axisc, dim1=1
     )
-
 
 
 cross.unsupported_dtypes = ("float16",)
@@ -171,10 +170,8 @@ def matmul(
         x1 = torch.t(x1)
     if transpose_b is True:
         x2 = torch.t(x2)
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.matmul(x1, x2, out=out)
-
-
 
 
 matmul.support_native_out = True

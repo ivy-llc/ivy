@@ -194,7 +194,7 @@ def greater(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.greater(x1, x2)
 
 

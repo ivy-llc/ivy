@@ -51,7 +51,6 @@ def cross(
     )
 
 
-
 def det(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -185,7 +184,7 @@ def matmul(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
-    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
 
     if transpose_a is True:
