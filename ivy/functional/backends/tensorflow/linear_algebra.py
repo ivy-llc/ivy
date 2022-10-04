@@ -490,16 +490,28 @@ solve.unsupported_dtypes = (
 
 def svd(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     full_matrices: bool = True,
+    compute_uv: bool = True,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    batch_shape = tf.shape(x)[:-2]
-    num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
-    VT = tf.transpose(V, transpose_dims)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        batch_shape = tf.shape(x)[:-2]
+        num_batch_dims = len(batch_shape)
+        transpose_dims = list(range(num_batch_dims)) + [
+            num_batch_dims + 1,
+            num_batch_dims,
+        ]
+        D, U, V = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        VT = tf.transpose(V, transpose_dims)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = (
