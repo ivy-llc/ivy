@@ -392,9 +392,11 @@ def trace(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
-    ret = torch.sum(ret, dim=-1)
-    return ret.type(x.dtype)
+    ret = torch.sum(ret)
+    return ret
 
+
+trace.unsupported_dtypes = ("bfloat16",)
 
 def vecdot(
     x1: torch.Tensor,

@@ -354,7 +354,11 @@ def trace(
     return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = ("float16",)
+trace.unsupported_dtypes = (
+    "float16",
+    "bfloat16"
+)
+#trace.unsupported_dtypes = ("float16",)
 
 
 def vecdot(
