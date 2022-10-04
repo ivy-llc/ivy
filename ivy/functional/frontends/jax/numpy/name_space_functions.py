@@ -116,3 +116,8 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
+
+
+def amin(a, axis=None, out=None, keepdims=None, initial=None, where=None):
+    return ivy.min(a, axis=axis, out=out, keepdims=keepdims)
+    
