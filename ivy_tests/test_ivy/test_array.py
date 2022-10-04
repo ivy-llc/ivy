@@ -128,6 +128,7 @@ def _get_second_matrix_and_dtype(draw, available_dtypes=None):
     )
 
 
+# getitem and setitem helper
 @st.composite
 def _getitem_setitem(draw, available_dtypes=None):
     if available_dtypes is None:
@@ -197,8 +198,8 @@ def test_array__pos__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    x_ = Array(x[0])
-    ret = +x_
+    data = Array(x[0])
+    ret = +data
     np_ret = +x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
@@ -221,8 +222,8 @@ def test_array__neg__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    x_ = Array(x[0])
-    ret = -x_
+    data = Array(x[0])
+    ret = -data
     np_ret = -x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
@@ -697,8 +698,8 @@ def test_array__divmod__(
     _, x = dtype_and_x
     data = Array(x[0])
     other = Array(x[1])
-    ret = data.__divmod__(other)
-    np_ret = x[0].__divmod__(x[1])
+    ret = divmod(data, other)
+    np_ret = divmod(x[0], x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -727,7 +728,7 @@ def test_array__rdivmod__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__rdivmod__(other)
-    np_ret = x[0].__rdivmod__(x[1])
+    np_ret = divmod(x[1], x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -1077,7 +1078,7 @@ def test_array__int__(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         max_num_dims=0,
         min_value=0,
         max_value=1,
