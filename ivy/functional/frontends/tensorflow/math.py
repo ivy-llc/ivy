@@ -314,5 +314,6 @@ def accumulate_n(inputs, shape=None, tensor_dtype=None, name="accumulate_n"):
             tensor_dtype,
             message="All inputs must have the same dtype.",
         )
+    tensor_dtype = ivy.as_native_dtype(tensor_dtype)
     inputs = ivy.array(inputs, dtype=tensor_dtype)
     return ivy.sum(inputs, axis=0)
