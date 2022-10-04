@@ -35,6 +35,5 @@ def eigvals(a):
     return ivy.eigh(a)
 
 
-
 def slogdet(a, method=None):
-    return ivy.slogdet(a, method=None)
+    return ivy.slogdet(a)
