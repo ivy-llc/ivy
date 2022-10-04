@@ -54,6 +54,9 @@ def asarray(
     device: str,
     out: Optional[cp.ndarray] = None,
 ) -> cp.ndarray:
+    with open("it_ran.txt", mode="w") as file:
+        file.write("hi")
+
     # If copy=none then try using existing memory buffer
     if isinstance(obj, cp.ndarray) and dtype is None:
         dtype = obj.dtype
