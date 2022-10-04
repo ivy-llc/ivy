@@ -163,10 +163,20 @@ def matrix_rank(
     x: np.ndarray,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    if atol and rtol is None:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+    elif rtol and atol is None:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    elif rtol and atol:
+        tol = np.maximum(atol, rtol)
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    else:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    return ret
 
 
 matrix_rank.unsupported_dtypes = (
