@@ -64,14 +64,16 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                 if ivy.exists(dtype):
                     ivy.assertions.check_all_or_any_fn(
                         *args[:num_args],
-                        fn=lambda x: ivy.can_cast(x, dtype),
+                        fn=lambda x: ivy.can_cast(x, ivy.as_ivy_dtype(dtype)),
                         type="all",
                         message="type of input is incompatible with dtype: {}".format(
                             dtype
                         ),
                     )
                     args = [
-                        ivy.astype(args[i], dtype) if i < num_args else args[i]
+                        ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
+                        if i < num_args
+                        else args[i]
                         for i in range(len(args))
                     ]
             elif casting == "same_kind":
@@ -87,12 +89,16 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                         ),
                     )
                     args = [
-                        ivy.astype(args[i], dtype) if i < num_args else args[i]
+                        ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
+                        if i < num_args
+                        else args[i]
                         for i in range(len(args))
                     ]
             else:
                 args = [
-                    ivy.astype(args[i], dtype) if i < num_args else args[i]
+                    ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
+                    if i < num_args
+                    else args[i]
                     for i in range(len(args))
                 ]
             return fn(*args, **kwargs)
