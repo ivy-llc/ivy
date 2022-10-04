@@ -686,6 +686,14 @@ def maximum(
     return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
 
 
+maximum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
