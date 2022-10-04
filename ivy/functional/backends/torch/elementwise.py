@@ -661,10 +661,7 @@ def minimum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.min(x1, x2, out=out)
-
-
-minimum.support_native_out = True
+    return torch.where(x1 <= x2, x1, x2)
 
 
 def maximum(
