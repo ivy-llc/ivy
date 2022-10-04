@@ -16,29 +16,24 @@ class ndarray:
 
     def tolist(self, newshape, copy=None):
         return np_frontend.tolist(self.data, newshape, copy=copy)
-        
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+
+    def reshape(self, shape, order="C"):
+        return np_frontend.reshape(self.data, shape)
+
+    def transpose(self, /, axes=None):
+        return np_frontend.transpose(self.data, axes=axes)
 
     def add(
         self,
-        other,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting="same_kind",
-        order="k",
-        dtype=None,
-        subok=True,
+        value,
     ):
         return np_frontend.add(
             self.data,
-            other,
-            out=out,
-            where=where,
-            casting=casting,
-            order=order,
-            dtype=dtype,
-            subok=subok,
+            value,
         )
+
+    def all(self, axis=None, out=None, keepdims=False, *, where=True):
+        return np_frontend.all(self.data, axis, out, keepdims, where=where)
+
+    def any(self, axis=None, out=None, keepdims=False, *, where=True):
+        return np_frontend.any(self.data, axis, out, keepdims, where=where)

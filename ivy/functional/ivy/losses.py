@@ -6,6 +6,19 @@ from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable
 from ivy.exceptions import handle_exceptions
 
+# Helpers #
+# ------- #
+
+
+def _reduce_loss(red, loss, axis, out):
+    if red == "sum":
+        return ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
+    elif red == "mean":
+        return ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
+    else:
+        return ivy.negative(loss, out=out)
+
+
 # Extra #
 # ------#
 
@@ -19,6 +32,7 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
+    reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes cross-entropy between predicted and true discrete distributions.
@@ -56,9 +70,10 @@ def cross_entropy(
     ivy.array(0.35667497)
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+    return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
 @handle_nestable
@@ -69,6 +84,7 @@ def binary_cross_entropy(
     /,
     *,
     epsilon: float = 1e-7,
+    reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
@@ -95,7 +111,7 @@ def binary_cross_entropy(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 0, 0])
     >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
@@ -109,7 +125,7 @@ def binary_cross_entropy(
     >>> print(z)
     ivy.array([[0.916,1.61,1.2,0.357]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, 1, 0, 1])
     >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
@@ -117,7 +133,7 @@ def binary_cross_entropy(
     >>> print(z)
     ivy.array([0.223,0.357,0.223,0.511])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([0, 0, 1, 1])
     >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
@@ -125,7 +141,7 @@ def binary_cross_entropy(
     >>> print(z)
     ivy.array([0.105,0.223,0.223,0.511])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
     >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
@@ -133,7 +149,7 @@ def binary_cross_entropy(
     >>> print(z)
     {a:ivy.array([0.511,0.223,0.357]),b:ivy.array([1.61,0.223,1.61])}
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([1 , 1, 0])
     >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
@@ -146,7 +162,7 @@ def binary_cross_entropy(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 0, 0, 0])
     >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
@@ -155,10 +171,13 @@ def binary_cross_entropy(
     ivy.array([0.223, 0.223, 0.223, 0.223])
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return ivy.negative(
+    return _reduce_loss(
+        reduction,
         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
-        out=out,
+        None,
+        out,
     )
 
 
@@ -171,6 +190,7 @@ def sparse_cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
+    reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
@@ -199,7 +219,7 @@ def sparse_cross_entropy(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
@@ -216,14 +236,14 @@ def sparse_cross_entropy(
      >>> print(ivy.cross_entropy(x, y))
      ivy.array(11.512926)
 
-     With :code:`ivy.NativeArray` input:
+     With :class:`ivy.NativeArray` input:
 
      >>> x = ivy.native_array([4])
      >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
      >>> print(ivy.sparse_cross_entropy(x, y))
      ivy.array([0.693])
 
-     With :code:`ivy.Container` input:
+     With :class:`ivy.Container` input:
 
      >>> x = ivy.Container(a=ivy.array([4]))
      >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
@@ -232,14 +252,14 @@ def sparse_cross_entropy(
          a: ivy.array([0.693])
      }
 
-     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
      >>> x = ivy.array([0])
      >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
      >>> print(ivy.sparse_cross_entropy(x,y))
      ivy.array([2.3])
 
-     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
      >>> x = ivy.array([0])
      >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
@@ -251,14 +271,14 @@ def sparse_cross_entropy(
      Instance Method Examples
      ------------------------
 
-     With :code:`ivy.Array` input:
+     With :class:`ivy.Array` input:
 
      >>> x = ivy.array([2])
      >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
      >>> print(x.sparse_cross_entropy(y))
      ivy.array([0.357])
 
-     With :code:`ivy.Container` input:
+     With :class:`ivy.Container` input:
 
      >>> x = ivy.Container(a=ivy.array([2]))
      >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
@@ -268,5 +288,8 @@ def sparse_cross_entropy(
      }
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])
-    return ivy.cross_entropy(true, pred, axis=axis, epsilon=epsilon, out=out)
+    return ivy.cross_entropy(
+        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+    )

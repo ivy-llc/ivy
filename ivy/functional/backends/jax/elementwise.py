@@ -9,13 +9,6 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def _cast_for_bitwise_op(x1, x2):
-    if not isinstance(x1, int):
-        if isinstance(x2, int):
-            x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return x1, x2
-
-
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
@@ -33,9 +26,12 @@ def add(
     x2: Union[float, JaxArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
 
 
@@ -67,7 +63,7 @@ def bitwise_and(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -84,12 +80,9 @@ def bitwise_left_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
-    ret = jnp.left_shift(x1, x2)
-    return jnp.where(
-        x2 >= x1.dtype.itemsize * 8, jnp.zeros(ret.shape, dtype=ret.dtype), ret
-    )
+    return jnp.left_shift(x1, x2)
 
 
 def bitwise_or(
@@ -99,7 +92,7 @@ def bitwise_or(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_or(x1, x2)
 
 
@@ -110,7 +103,7 @@ def bitwise_right_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
@@ -122,7 +115,7 @@ def bitwise_xor(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -385,9 +378,12 @@ def subtract(
     x2: Union[float, JaxArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
     return jnp.subtract(x1, x2)
 
 
@@ -418,7 +414,8 @@ def maximum(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.maximum(x1, x2)
+    # jnp.maximum hasn't been used because it fails the gradient tests
+    return jnp.where(x1 >= x2, x1, x2)
 
 
 def minimum(
@@ -429,7 +426,8 @@ def minimum(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.minimum(x1, x2)
+    # jnp.minimum hasn't been used because it fails the gradient tests
+    return jnp.where(x1 <= x2, x1, x2)
 
 
 def reciprocal(
