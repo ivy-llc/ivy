@@ -453,3 +453,24 @@ def sinc(
 
     """
     return ivy.current_backend(x).sinc(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def avg_pool1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    ksize:Union[int, float],
+    strides:Union[int, float],
+    padding:int,
+    data_format:str,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    return ivy.current_backend(x).avg_pool1d(x, ksize, strides, padding, data_format, dtype=dtype, device=device, out=out)
+    
