@@ -2272,8 +2272,8 @@ def test_maximum(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
         safety_factor_scale="log",
         num_arrays=1,
     ),
@@ -2301,6 +2301,9 @@ def test_reciprocal(
         instance_method=instance_method,
         fw=fw,
         fn_name="reciprocal",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
     )
 
