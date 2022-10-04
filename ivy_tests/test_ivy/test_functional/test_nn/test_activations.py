@@ -55,7 +55,7 @@ def test_relu(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=st.floats(min_value=-1e06, max_value=1e06),
+    alpha=st.floats(min_value=-1e-4, max_value=1e-4),
 )
 def test_leaky_relu(
     *,

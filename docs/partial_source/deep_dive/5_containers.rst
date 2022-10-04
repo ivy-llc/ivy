@@ -14,7 +14,6 @@ Containers
 .. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
 .. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
 .. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
-.. _`ivy.Container.add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92
 .. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259
 .. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158
 .. _`static method is added`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199
@@ -141,8 +140,8 @@ instance method. For example, we do not implement an instance method for
 `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Under the hood, every *instance* method calls the corresponding *static* method.
-For example, `ivy.Container.add`_ calls :meth:`ivy.Container.static_add`,
-`ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`,
+For example, `ivy.Container.add <https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92>`_
+calls :meth:`ivy.Container.static_add`, `ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`,
 and `ivy.Container.roll`_ calls :meth:`ivy.Container.static_roll`.
 
 As is the case for :class:`ivy.Array`,

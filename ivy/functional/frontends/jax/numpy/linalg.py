@@ -1,3 +1,4 @@
+# local
 import ivy
 
 
@@ -21,6 +22,19 @@ def eigh(a, UPLO="L", symmetrize_input=True):
     return ivy.eigh(a, UPLO=UPLO)
 
 
-# slogdet
+# eigvalsh
+def eigvalsh(a, UPLO="L"):
+    return ivy.eigvalsh(a, UPLO=UPLO)
+
+
+def qr(a, mode="reduced"):
+    return ivy.qr(a, mode=mode)
+    
+    
+def eigvals(a):
+    return ivy.eigh(a)
+
+
+
 def slogdet(a, method=None):
     return ivy.slogdet(a, method=None)
