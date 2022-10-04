@@ -601,16 +601,6 @@ def test_frontend_function(
                 assert ret.data is first_array.data
             assert first_array is ret
             args, kwargs = copy_args, copy_kwargs
-    elif with_out:
-        assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        # pass return value to out argument
-        # check if passed reference is correctly updated
-        kwargs["out"] = out
-        ret = frontend_fn(*args, **kwargs)
-        if ivy.native_inplace_support:
-            assert ret.data is out.data
-        assert ret is out
 
     # create NumPy args
     args_np = ivy.nested_map(
