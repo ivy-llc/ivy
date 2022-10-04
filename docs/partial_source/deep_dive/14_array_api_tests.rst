@@ -41,9 +41,9 @@ You can use the following command as an example.
 
 .. code-block:: none
 
-        /bin/bash -e ./test_array_api.sh  '<insert_chosen_backend>'
+        /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
 
-You can change the argument with any of our other supported frameworks like 'tensorflow' or 'numpy'.
+You can change the argument with any of our supported frameworks - 'tensorflow', 'numpy', 'torch' or 'jax'.
 
 Using IDE
 ****

@@ -320,7 +320,7 @@ def multinomial(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
     where each row contains num_samples indices sampled from the multinomial probability
@@ -516,7 +516,7 @@ def shuffle(
     /,
     *,
     seed: Optional[int] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 

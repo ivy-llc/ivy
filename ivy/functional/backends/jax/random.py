@@ -138,11 +138,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 def shuffle(
-    x: JaxArray,
-    /,
-    *,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None
+    x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
