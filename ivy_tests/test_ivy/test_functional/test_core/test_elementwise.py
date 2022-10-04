@@ -2225,6 +2225,7 @@ def test_minimum(
         instance_method=instance_method,
         fw=fw,
         fn_name="minimum",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
