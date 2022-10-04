@@ -33,7 +33,7 @@ We're excited for you to get involved!  🦾
 | Different types of arrays, and how they're handled 🔢
 |
 | (f) :ref:`Containers`
-| What the :code:`ivy.Container` does  🗂️
+| What the :class:`ivy.Container` does  🗂️
 |
 | (g) :ref:`Data Types`
 | How functions infer the correct data type  💾
@@ -73,7 +73,9 @@ We're excited for you to get involved!  🦾
 |
 | (s) :ref:`Exception Handling`
 | How to handle exceptions and assertions in a function ⚠️
-
+|
+| (t) :ref:`Continuous Integration 🔁`
+| Ivy Tests running on the Repository 🔁
 .. toctree::
    :hidden:
    :maxdepth: -1
@@ -98,3 +100,4 @@ We're excited for you to get involved!  🦾
    deep_dive/16_ivy_frontends.rst
    deep_dive/17_ivy_frontends_tests.rst
    deep_dive/18_exception_handling.rst
+   deep_dive/19_continuous_integration.rst

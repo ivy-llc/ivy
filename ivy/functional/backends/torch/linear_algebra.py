@@ -140,9 +140,8 @@ def inv(
             ret = torch.inverse(x, out=out)
             return ret
         else:
-            cofactor = torch.t(torch.linalg.inv(x)) * torch.linalg.det(x)
-            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), torch.t(cofactor))
-            ret = inverse
+            x = torch.t(x)
+            ret = torch.inverse(x, out=out)
             if ivy.exists(out):
                 return ivy.inplace_update(out, ret)
             return ret
@@ -241,8 +240,9 @@ outer.support_native_out = True
 
 def pinv(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if rtol is None:
@@ -280,10 +280,13 @@ qr.unsupported_dtypes = (
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = torch.linalg.slogdet(x, out=out)
+    x: torch.Tensor,
+    /,
+) -> NamedTuple:
+    results = NamedTuple(
+        "slogdet", [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
+    )
+    sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
 
 
@@ -330,12 +333,20 @@ solve.unsupported_dtypes = (
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True
+    x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        svd = torch.linalg.svd(x, full_matrices=full_matrices)
+        # torch.linalg.svd returns a tuple with U, S, and Vh
+        D = svd[1]
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16", "bfloat16")

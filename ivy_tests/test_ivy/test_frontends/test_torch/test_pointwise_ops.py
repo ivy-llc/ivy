@@ -38,7 +38,6 @@ def test_torch_add(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="add",
         rtol=1e-03,
@@ -74,7 +73,6 @@ def test_torch_tan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="tan",
         input=x[0],
@@ -107,7 +105,6 @@ def test_torch_atan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="atan",
         input=x[0],
@@ -140,7 +137,6 @@ def test_torch_tanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="tanh",
         input=x[0],
@@ -172,7 +168,6 @@ def test_torch_abs(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="abs",
         input=x[0],
@@ -205,7 +200,6 @@ def test_torch_cos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cos",
         input=x[0],
@@ -238,7 +232,6 @@ def test_torch_sin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="sin",
         input=x[0],
@@ -271,7 +264,6 @@ def test_torch_acos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="acos",
         input=x[0],
@@ -304,7 +296,6 @@ def test_torch_sinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="sinh",
         input=x[0],
@@ -337,7 +328,6 @@ def test_torch_acosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="acosh",
         input=x[0],
@@ -370,7 +360,6 @@ def test_torch_arccos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="arccos",
         input=x[0],
@@ -410,14 +399,13 @@ def test_torch_subtract(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="subtract",
+        rtol=1e-04,
         input=x[0],
         other=x[1],
         alpha=alpha,
         out=None,
-        rtol=1e-04,
     )
 
 
@@ -446,7 +434,6 @@ def test_torch_exp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="exp",
         input=x[0],
@@ -479,7 +466,6 @@ def test_torch_asin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="asin",
         input=x[0],
@@ -512,7 +498,6 @@ def test_torch_arccosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="arccosh",
         input=x[0],
@@ -545,7 +530,6 @@ def test_torch_arcsin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="arcsin",
         input=x[0],
@@ -578,7 +562,6 @@ def test_torch_asinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="asinh",
         input=x[0],
@@ -611,7 +594,6 @@ def test_torch_cosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cosh",
         input=x[0],
@@ -644,7 +626,6 @@ def test_torch_atanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="atanh",
         input=x[0],
@@ -677,7 +658,6 @@ def test_torch_arctanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="arctanh",
         input=x[0],
@@ -710,7 +690,6 @@ def test_torch_log2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="log2",
         input=input[0],
@@ -743,7 +722,6 @@ def test_torch_square(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="square",
         input=input[0],
@@ -778,7 +756,6 @@ def test_torch_atan2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="atan2",
         input=x[0],
@@ -812,7 +789,6 @@ def test_torch_negative(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="negative",
         input=x[0],
@@ -846,7 +822,6 @@ def test_torch_bitwise_and(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_and",
         rtol=1e-04,
@@ -881,7 +856,6 @@ def test_torch_bitwise_not(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_not",
         input=x[0],
@@ -915,7 +889,6 @@ def test_torch_bitwise_xor(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_xor",
         input=x[0],
@@ -950,7 +923,6 @@ def test_torch_bitwise_or(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_or",
         input=x[0],
@@ -981,14 +953,15 @@ def test_torch_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_left_shift",
         input=x[0],
@@ -1019,15 +992,15 @@ def test_torch_bitwise_right_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
-
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bitwise_right_shift",
         input=x[0],
@@ -1061,7 +1034,6 @@ def test_torch_log10(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="log10",
         input=x[0],
@@ -1094,7 +1066,6 @@ def test_torch_trunc(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="trunc",
         input=x[0],
@@ -1125,7 +1096,6 @@ def test_torch_sqrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="sqrt",
         input=input[0],
@@ -1158,7 +1128,6 @@ def test_torch_sign(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="sign",
         input=x[0],
@@ -1191,7 +1160,6 @@ def test_torch_absolute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="absolute",
         input=input[0],
@@ -1224,7 +1192,6 @@ def test_torch_logical_not(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logical_not",
         input=x[0],
@@ -1257,7 +1224,6 @@ def test_torch_logical_and(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logical_and",
         input=x[0],
@@ -1291,7 +1257,6 @@ def test_torch_logical_or(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logical_or",
         input=x[0],
@@ -1325,7 +1290,6 @@ def test_torch_logical_xor(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logical_xor",
         input=x[0],
@@ -1359,7 +1323,6 @@ def test_torch_ceil(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="ceil",
         input=x[0],
@@ -1367,40 +1330,74 @@ def test_torch_ceil(
     )
 
 
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        max = draw(st.booleans())
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+            )
+        )
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+            )
+        )
+    return x_dtype, x, min, max
+
+
 # clamp
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=("float32", "float64"),
-        num_arrays=3,
-        shared_dtype=True,
-        shape=(5,),
-    ),
+    input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clamp"
+        fn_name="ivy.functional.frontends.torch.clamp"
     ),
 )
 def test_torch_clamp(
-    dtype_and_x,
+    input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="clamp",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        min=np.asarray(x[1], dtype=input_dtype[1]),
-        max=np.asarray(x[2], dtype=input_dtype[2]),
+        input=x[0],
+        min=min,
+        max=max,
         out=None,
     )
 
@@ -1408,36 +1405,30 @@ def test_torch_clamp(
 # clip
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=("float32", "float64"),
-        num_arrays=3,
-        shared_dtype=True,
-        shape=(5,),
-    ),
+    input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clip"
+        fn_name="ivy.functional.frontends.torch.clip"
     ),
 )
 def test_torch_clip(
-    dtype_and_x,
+    input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="clip",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        min=np.asarray(x[1], dtype=input_dtype[1]),
-        max=np.asarray(x[2], dtype=input_dtype[2]),
+        input=x[0],
+        min=min,
+        max=max,
         out=None,
     )

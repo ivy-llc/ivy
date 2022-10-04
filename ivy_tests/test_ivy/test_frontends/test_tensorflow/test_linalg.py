@@ -43,7 +43,6 @@ def test_tensorflow_det(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.det",
         input=x[0],
@@ -67,7 +66,6 @@ def test_tensorflow_eigh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigh",
         input=x[0],
@@ -91,7 +89,6 @@ def test_tensorflow_eigvalsh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
         tensor=x[0],
@@ -121,11 +118,10 @@ def test_matrix_rank(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
-        a=x[0],
         atol=1.0,
+        a=x[0],
         validate_args=False,
         tol=tolr,
     )
@@ -188,11 +184,39 @@ def test_tensorflow_solve(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.solve",
         x=xs[0],
         y=xs[1],
+    )
+
+
+# logdet
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.logdet"
+    ),
+)
+def test_tensorflow_logdet(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.logdet",
+        matrix=x,
     )
 
 
@@ -219,7 +243,6 @@ def test_tensorflow_slogdet(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
         input=x[0],
@@ -294,7 +317,6 @@ def test_tensorflow_cholesky_solve(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.cholesky_solve",
         rtol=1e-2,
@@ -322,7 +344,6 @@ def test_tensorflow_pinv(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.pinv",
         a=x[0],
@@ -361,7 +382,6 @@ def test_tensorflow_tensordot(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
         a=x,
@@ -398,7 +418,6 @@ def test_tensorflow_eye(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eye",
         num_rows=n_rows,

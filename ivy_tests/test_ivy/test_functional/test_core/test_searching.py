@@ -129,11 +129,17 @@ def test_argmin(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    as_tuple=st.booleans(),
+    size=st.integers(min_value=1, max_value=5),
+    fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
 )
 def test_nonzero(
     *,
     dtype_and_x,
+    as_tuple,
+    size,
+    fill_value,
     as_variable,
     num_positional_args,
     native_array,
@@ -153,6 +159,9 @@ def test_nonzero(
         fw=fw,
         fn_name="nonzero",
         x=x[0],
+        as_tuple=as_tuple,
+        size=size,
+        fill_value=fill_value,
     )
 
 

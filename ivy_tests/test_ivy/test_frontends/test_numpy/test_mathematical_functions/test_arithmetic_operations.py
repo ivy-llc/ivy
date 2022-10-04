@@ -123,12 +123,11 @@ def test_numpy_vdot(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="vdot",
+        test_values=False,
         a=xs[0],
         b=xs[1],
-        test_values=False,
     )
 
 
