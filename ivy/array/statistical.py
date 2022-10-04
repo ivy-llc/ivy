@@ -28,7 +28,7 @@ class ArrayWithStatistical(abc.ABC):
         ivy.array(3.)
 
         >>> x = ivy.array([-1, 0, 1])
-        >>> y = ivy.min(x)
+        >>> y = x.min()
         >>> print(y)
         ivy.array(-1)
 
