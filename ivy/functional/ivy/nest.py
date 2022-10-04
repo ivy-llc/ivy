@@ -115,6 +115,7 @@ def set_nest_at_index(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = (1, 1)
     >>> z = 5.
@@ -130,6 +131,7 @@ def set_nest_at_index(
     ivy.array([1., 5., 3., 4.])
 
     With :code:`Dict` input:
+
     >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
     >>> y = (1, 1)
     >>> z = 2
@@ -138,6 +140,7 @@ def set_nest_at_index(
     {1: [1, 2], 2: (4, 5)}
 
     With :code:`List` inputs:
+
     >>> x = [['a', 'b', 'c'], \
              ['d', 'e', 'f'], \
              ['g', ['h', 'i']]]
@@ -147,7 +150,8 @@ def set_nest_at_index(
     >>> print(x)
     [['a','b','c'],['d','e','f'],['g',['H','i']]]
 
-     With :class:`ivy.Container` input:
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
     >>> y = ('b',)
     >>> z = ivy.array([3., 4.])
