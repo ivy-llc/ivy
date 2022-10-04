@@ -204,9 +204,14 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if periodic == False:
-        return jnp.kaiser(M=window_length, beta=beta) 
+        return jnp.array(
+            jnp.kaiser(M=window_length, beta=beta),
+            dtype=dtype) 
     else: 
-        return jnp.kaiser(M=window_length + 1, beta=beta)[:-1]
+        return jnp.array(
+            jnp.kaiser(M=window_length + 1, beta=beta)[:-1],
+            dtype=dtype)

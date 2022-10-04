@@ -188,6 +188,7 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if periodic == False:
@@ -195,4 +196,4 @@ def kaiser_window(
             window_length, beta, dtype=tf.dtypes.float32,name=None) 
     else: 
         return tf.signal.kaiser_window(
-            window_length + 1, beta, dtype=tf.dtypes.float32, name=None)[:-1] 
+            window_length + 1, beta, dtype=dtype, name=None)[:-1] 

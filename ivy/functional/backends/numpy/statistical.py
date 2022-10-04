@@ -233,12 +233,17 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if periodic == False:
-        return np.kaiser(M=window_length, beta=beta) 
+        return np.array(
+            np.kaiser(M=window_length, beta=beta),
+            dtype=dtype) 
     else: 
-        return np.kaiser(M=window_length + 1, beta=beta)[:-1]
+        return np.array(
+            np.kaiser(M=window_length + 1, beta=beta)[:-1],
+            dtype=dtype)
 
 
 kaiser_window.support_native_out = False

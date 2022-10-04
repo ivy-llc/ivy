@@ -480,12 +480,14 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
     ),
     periodic=st.booleans(),
     beta=st.floats(),
+    dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="kaiser_window"),
 )
 def test_kaiser_window(
     dtype_and_x,
     periodic,
     beta,
+    dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -507,5 +509,6 @@ def test_kaiser_window(
         fn_name="kaiser_window",
         window_length=x[0],
         periodic=periodic,
-        beta=beta
+        beta=beta,
+        dtype=dtype
     )
