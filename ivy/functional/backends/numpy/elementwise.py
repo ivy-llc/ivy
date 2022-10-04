@@ -662,10 +662,24 @@ erf.support_native_out = True
 
 
 @_handle_0_dim_output
-def maximum(x1, x2, /, *, out: Optional[np.ndarray] = None):
+def maximum(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    /,
+    *,
+    use_where: bool = False,
+    out: Optional[np.ndarray] = None,
+):
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    # np.maximum hasn't been used because it fails the gradient tests
-    return np.where(x1 >= x2, x1, x2)
+    if use_where:
+        ret = np.where(x1 >= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return np.maximum(x1, x2, out=out)
+
+
+maximum.support_native_out = True
 
 
 @_handle_0_dim_output
@@ -674,11 +688,19 @@ def minimum(
     x2: Union[float, np.ndarray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    # np.minimum hasn't been used because it fails the gradient tests
-    return np.where(x1 <= x2, x1, x2)
+    if use_where:
+        ret = np.where(x1 <= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return np.minimum(x1, x2, out=out)
+
+
+minimum.support_native_out = True
 
 
 @_handle_0_dim_output
