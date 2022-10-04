@@ -74,8 +74,8 @@ We're excited for you to get involved!  🦾
 | (s) :ref:`Exception Handling`
 | How to handle exceptions and assertions in a function ⚠️
 |
-| (t) :ref:`Continuous Integration (CI)`
-| Ivy Tests running on the Repository 🧪
+| (t) :ref:`Continuous Integration 🔁`
+| Ivy Tests running on the Repository 🔁
 .. toctree::
    :hidden:
    :maxdepth: -1
