@@ -690,10 +690,8 @@ def minimum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.min(x1, x2, out=out)
-
-
-minimum.support_native_out = True
+    # torch.min hasn't been used because it fails the gradient tests
+    return torch.where(x1 <= x2, x1, x2)
 
 
 def maximum(
@@ -704,10 +702,8 @@ def maximum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.max(x1, x2, out=out)
-
-
-maximum.support_native_out = True
+    # torch.max hasn't been used because it fails the gradient tests
+    return torch.where(x1 >= x2, x1, x2)
 
 
 def reciprocal(
