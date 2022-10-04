@@ -333,13 +333,13 @@ Again, the reasons for these features are explained in the following sections.</
     <span class="p">),</span> <span class="s2">&quot;the fill_value and data type are not compatible&quot;</span>
 </pre></div>
 </div>
-<p>In the <code class="code docutils literal notranslate"><span class="pre">full_like</span></code> function in <code class="code docutils literal notranslate"><span class="pre">creation.py</span></code>, the types of
+<p>In the <code class="xref py py-func docutils literal notranslate"><span class="pre">full_like()</span></code> function in <code class="xref py py-mod docutils literal notranslate"><span class="pre">creation.py</span></code>, the types of
 <code class="code docutils literal notranslate"><span class="pre">fill_value</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> has to be verified to avoid errors. This
 check has to be applied to all backends, which means the related code is common
 and identical. In this case, we can extract the code to be a helper function on
-its own, placed in its related submodule (<code class="code docutils literal notranslate"><span class="pre">creation.py</span></code> here). In this
+its own, placed in its related submodule (<code class="xref py py-mod docutils literal notranslate"><span class="pre">creation.py</span></code> here). In this
 example, the helper function is named as
-<code class="code docutils literal notranslate"><span class="pre">_assert_fill_value_and_dtype_are_compatible</span></code>.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_assert_fill_value_and_dtype_are_compatible()</span></code>.</p>
 <p>Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.</p>
 <p><strong>Jax</strong></p>

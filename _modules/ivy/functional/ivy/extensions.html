@@ -135,7 +135,7 @@
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">integer_arrays_to_float</span><span class="p">,</span>
-    <span class="n">inputs_to_native_arrays</span>
+    <span class="n">inputs_to_native_arrays</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -284,7 +284,7 @@
         <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">_is_data_not_indices_values_and_shape</span><span class="p">(</span>
             <span class="n">data</span><span class="p">,</span> <span class="n">coo_indices</span><span class="p">,</span> <span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span>
@@ -491,7 +491,7 @@
     <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">native_sparse_array</span><span class="p">(</span>
         <span class="n">data</span><span class="p">,</span>

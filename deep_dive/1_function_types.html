@@ -260,7 +260,7 @@ Most commonly, these functions are <em>convenience</em> functions (see below).</
 <p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
 All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
 or (c) reference other standalone functions.</p>
-<p>A few other examples outside of the <code class="code docutils literal notranslate"><span class="pre">nest.py</span></code> module are:
+<p>A few other examples outside of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nest.py</span></code> module are:
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622">ivy.default</a> which simply returns <code class="code docutils literal notranslate"><span class="pre">x</span></code> if it exists else the default value,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L747">ivy.cache_fn</a> which wraps a function such that when <code class="code docutils literal notranslate"><span class="pre">cache=True</span></code> is passed,
 then a previously cached output is returned,

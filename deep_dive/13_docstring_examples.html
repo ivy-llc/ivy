@@ -165,19 +165,19 @@
 the final step is to add helpful examples to the docstrings.</p>
 <p>There are eight types of examples, which each need to be added:</p>
 <p><strong>Functional</strong> examples show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>.</p>
+<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function
+in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
 <p><strong>Container static method</strong> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>.</p>
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the
+docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
 <p><strong>Array instance method</strong> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
 <p><strong>Container instance method</strong> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
 <p><strong>Array operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
 with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
 docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
@@ -207,8 +207,8 @@ instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p><strong>Functional Examples</strong></p>
 <p>To recap, <em>functional</em> examples show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>.</p>
+<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function
+in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
 <p>Firstly, we should include <em>functional</em> examples with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
 <ol class="arabic simple">
@@ -251,27 +251,27 @@ For example, the following container is okay to use for example purposes:</p>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
 <p>To recap, <em>container static method</em> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>.</p>
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the
+docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
 <p>The static methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are used under the hood when
 supporting the <em>nestable</em> property for all Ivy functions in the API,
 as showcased by the examples for points 6 and 7. We should demonstrate these same
 examples in the static method docstrings also.</p>
 <ol class="arabic simple" start="8">
 <li><p>the example from point 6 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code> docstring. With
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>
+static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring. With
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>
 in the example.</p></li>
 <li><p>the example from point 7 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code> docstring. With
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_</span></code>
+static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring. With
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>
 in the example.</p></li>
 </ol>
 <p><strong>Array Instance Method Example</strong></p>
 <p>To recap, <em>array instance method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
 <p>These examples are of course only relevant if an instance method for
 the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="10">
@@ -281,7 +281,7 @@ the function exists. If so, this example should simply:</p>
 <p>To recap, <em>container instance method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
 and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.</span></code>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
 <p>These examples are of course only relevant if an instance method
 for the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="11">
