@@ -7,13 +7,13 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import _astype_helper
 
 
 # native_array
 @handle_cmd_line_args
 @given(
-    dtype_and_x_and_cast_dtype=astype_helper(),
+    dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
 def test_native_array(
