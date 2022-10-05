@@ -301,7 +301,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def slogdet(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
         function, and so the docstring for ivy.slogdet also applies to this method with

@@ -435,7 +435,7 @@ qr.unsupported_dtypes = (
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
@@ -494,7 +494,7 @@ def svd(
     *,
     full_matrices: bool = True,
     compute_uv: bool = True,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
+) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable], ...]]:
 
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
