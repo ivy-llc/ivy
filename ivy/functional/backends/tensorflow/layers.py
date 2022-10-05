@@ -449,3 +449,21 @@ def conv_general_transpose(
 
 
 conv_general_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def max_pool2d(
+    x: Union[tf.Tensor, tf.Variable],
+    kernel: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.max_pool2d(x, kernel, strides, padding)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res

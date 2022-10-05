@@ -645,3 +645,38 @@ def conv_general_transpose(
 
 
 conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")
+
+
+# noinspection PyUnresolvedReferences
+def max_pool2d(
+    x: torch.Tensor,
+    kernel: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0])
+
+    if data_format == "NHWC":
+        x = x.permute(0, 3, 1, 2)
+    x_shape = list(x.shape[2:])
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    x = torch.nn.functional.pad(
+        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
+    )
+    if padding != "VALID" and padding != "SAME":
+        raise ivy.exceptions.IvyException(
+            "Invalid padding arg {}\n"
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+    res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res

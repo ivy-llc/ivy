@@ -1437,7 +1437,6 @@ def max_pool2d(
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
         out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
 

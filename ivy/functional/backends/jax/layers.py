@@ -26,6 +26,35 @@ def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     return pad_a, pad_b
 
 
+def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
+    strides = strides or (1,) * len(window_shape)
+    assert len(window_shape) == len(strides), (
+        f"len({window_shape}) must equal len({strides})")
+    strides = (1,) + strides + (1,)
+    dims = (1,) + window_shape + (1,)
+
+    is_single_input = False
+    if inputs.ndim == len(dims) - 1:
+        # add singleton batch dimension because lax.reduce_window always
+        # needs a batch dimension.
+        inputs = inputs[None]
+        is_single_input = True
+
+    assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
+    if not isinstance(padding, str):
+        padding = tuple(map(tuple, padding))
+    assert len(padding) == len(window_shape), (
+        f"padding {padding} must specify pads for same number of dims as "
+        f"window_shape {window_shape}")
+    assert all([len(x) == 2 for x in padding]), (
+        f"each entry in padding {padding} must be length 2")
+    padding = ((0, 0),) + padding + ((0, 0),)
+    y = lax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
+    if is_single_input:
+        y = jnp.squeeze(y, axis=0)
+    return y
+
+
 def conv1d(
     x: JaxArray,
     filters: JaxArray,
@@ -392,3 +421,8 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def max_pool2d(x, kernel, strides=None, padding="VALID"):
+    y = _pool(x, -jnp.inf, lax.max, kernel, strides, padding)
+    return y
