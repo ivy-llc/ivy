@@ -35,7 +35,7 @@ def add(
     return jnp.add(x1, x2)
 
 
-def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
+def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
