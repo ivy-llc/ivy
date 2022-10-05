@@ -501,6 +501,7 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         With `ivy.Array` input and backend set as "tensorflow":
+
         >>> x = ivy.array([1., 4.2, 2.2])
         >>> ret = x.supports_inplace()
         >>> print(ret)

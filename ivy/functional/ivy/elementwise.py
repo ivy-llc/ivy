@@ -5784,6 +5784,7 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
+    use_where: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
@@ -5794,6 +5795,9 @@ def maximum(
         Input array containing elements to maximum threshold.
     x2
         Tensor containing maximum values, must be broadcastable to x1.
+    use_where
+        Whether to use :func:`where` to calculate the maximum. If ``False``, the maximum
+        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5803,7 +5807,6 @@ def maximum(
     ret
         An array with the elements of x1, but clipped to not be lower than the x2
         values.
-
 
     Examples
     --------
@@ -5856,7 +5859,7 @@ def maximum(
         b: ivy.array([5, 9, 7])
     }
     """
-    return ivy.current_backend(x1).maximum(x1, x2, out=out)
+    return ivy.current_backend(x1).maximum(x1, x2, use_where=use_where, out=out)
 
 
 @to_native_arrays_and_back
@@ -5868,6 +5871,7 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
@@ -5878,6 +5882,9 @@ def minimum(
         Input array containing elements to minimum threshold.
     x2
         Tensor containing minimum values, must be broadcastable to x1.
+    use_where
+        Whether to use :func:`where` to calculate the minimum. If ``False``, the minimum
+        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5941,7 +5948,7 @@ def minimum(
         b: ivy.array([2, 8, 5])
     }
     """
-    return ivy.current_backend(x1).minimum(x1, x2, out=out)
+    return ivy.current_backend(x1).minimum(x1, x2, use_where=use_where, out=out)
 
 
 @to_native_arrays_and_back

@@ -205,11 +205,11 @@ def matrix_rank(
     x: torch.Tensor,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
 
 
@@ -331,12 +331,20 @@ solve.unsupported_dtypes = (
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True
+    x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        svd = torch.linalg.svd(x, full_matrices=full_matrices)
+        # torch.linalg.svd returns a tuple with U, S, and Vh
+        D = svd[1]
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16", "bfloat16")

@@ -966,6 +966,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -984,6 +985,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input array or container having shape ``(..., M, N)`` and whose innermost
             two dimensions form ``MxN`` matrices. Should have a floating-point data
             type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values
             approximately less than or equal to ``rtol * largest_singular_value`` are
@@ -1037,6 +1042,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            atol=atol,
             rtol=rtol,
             out=out,
         )
@@ -1048,6 +1054,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1061,6 +1068,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self
             input container having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero. If
@@ -1111,6 +1122,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            atol=atol,
             rtol=rtol,
             out=out,
         )
@@ -1416,12 +1428,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
         return ContainerBase.multi_map_in_static_method(
             "svd",
             x,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1437,6 +1451,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
@@ -1446,6 +1461,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             out=out,
         )
