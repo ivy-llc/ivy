@@ -133,7 +133,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -143,7 +143,7 @@
 <span class="c1"># --------#</span>
 
 
-<span class="k">def</span> <span class="nf">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
@@ -166,7 +166,7 @@
 <div class="viewcode-block" id="to_ivy"><a class="viewcode-back" href="../../../data_classes/array/conversions/to_ivy.html#ivy.array.conversions.to_ivy">[docs]</a><span class="k">def</span> <span class="nf">to_ivy</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
     <span class="n">nested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">include_derived</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_derived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the input array converted to an ivy.Array instances if it is an array</span>
 <span class="sd">    type, otherwise the input is returned unchanged. If nested is set, the check is</span>
@@ -188,7 +188,6 @@
 <span class="sd">    -------</span>
 <span class="sd">     ret</span>
 <span class="sd">        the input in it&#39;s native framework form in the case of ivy.Array or instances.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_to_ivy</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
@@ -229,12 +228,12 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
     <span class="n">nested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">cont_inplace</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cont_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the input item in it&#39;s native backend framework form if it is an</span>
-<span class="sd">    ivy.Array or instance. otherwise the input is returned unchanged. If nested is set,</span>
-<span class="sd">    the check is applied to all nested leafs of tuples, lists and dicts contained within</span>
-<span class="sd">    x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the input item in its native backend framework form if it is an</span>
+<span class="sd">    ivy.Array instance, otherwise the input is returned unchanged. If nested is set,</span>
+<span class="sd">    the check is applied to all nested leaves of tuples, lists and dicts contained</span>
+<span class="sd">    within ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -248,24 +247,24 @@
 <span class="sd">        Whether to also recursive for classes derived from tuple, list and dict.</span>
 <span class="sd">        Default is False.</span>
 <span class="sd">    cont_inplace</span>
-<span class="sd">        Whether to update containers in place.</span>
-<span class="sd">        Default is False</span>
+<span class="sd">        Whether to update containers in place. Default is False</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">     ret</span>
-<span class="sd">        the input in it&#39;s native framework form in the case of ivy.Array or instances.</span>
-
+<span class="sd">        the input in its native framework form in the case of ivy.Array instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="args_to_native"><a class="viewcode-back" href="../../../data_classes/array/conversions/args_to_native.html#ivy.array.conversions.args_to_native">[docs]</a><span class="k">def</span> <span class="nf">args_to_native</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">cont_inplace</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cont_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns args and keyword args in their native backend framework form for all</span>
@@ -291,8 +290,12 @@
 <span class="sd">        native form.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">native_args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span><span class="p">)</span>
-    <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span><span class="p">)</span>
+    <span class="n">native_args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+        <span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span>
+    <span class="p">)</span>
+    <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+        <span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span> <span class="n">include_derived</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>
 </pre></div>
 

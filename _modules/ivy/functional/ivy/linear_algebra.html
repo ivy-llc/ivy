@@ -1593,6 +1593,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">compute_uv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of</span>
@@ -1613,6 +1614,13 @@
 <span class="sd">        the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``</span>
 <span class="sd">        and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.</span>
 <span class="sd">        Default: ``True``.</span>
+<span class="sd">    compute_uv</span>
+<span class="sd">        If ``True`` then left and right singular vectors will be computed and returned</span>
+<span class="sd">        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,</span>
+<span class="sd">        which can be significantly faster.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        with backend set as torch, svd with still compute left and right singular vectors irrespective</span>
+<span class="sd">        of the value of compute_uv, however Ivy will still only return the singular values.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1672,8 +1680,12 @@
 <span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &lt; -1e-3).sum())</span>
 <span class="sd">    ivy.array(0)</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
+<span class="sd">    &gt;&gt;&gt; S = ivy.svd(x, compute_uv = False)</span>
+<span class="sd">    print(S)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="n">compute_uv</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svdvals/svdvals_functional.html#ivy.functional.ivy.linear_algebra.svdvals">[docs]</a><span class="nd">to_native_arrays_and_back</span>

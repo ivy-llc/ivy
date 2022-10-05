@@ -2632,6 +2632,73 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="maximum"><a class="viewcode-back" href="../../../functional/ivy/elementwise/maximum/maximum_array.html#ivy.array.array_methods.maximum">[docs]</a><span class="k">def</span> <span class="nf">maximum</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.maximum.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring</span>
+<span class="sd">    for ivy.maximum also applies to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Input array containing elements to maximum threshold.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Tensor containing maximum values, must be broadcastable to x1.</span>
+<span class="sd">    use_where</span>
+<span class="sd">        Whether to use :func:`where` to calculate the maximum. If ``False``, the</span>
+<span class="sd">        maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is</span>
+<span class="sd">        ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array with the elements of x1, but clipped to not be lower than the x2</span>
+<span class="sd">        values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="minimum"><a class="viewcode-back" href="../../../functional/ivy/elementwise/minimum/minimum_array.html#ivy.array.array_methods.minimum">[docs]</a><span class="k">def</span> <span class="nf">minimum</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Input array containing elements to minimum threshold.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Tensor containing minimum values, must be broadcastable to x1.</span>
+<span class="sd">    use_where</span>
+<span class="sd">        Whether to use :func:`where` to calculate the minimum. If ``False``, the</span>
+<span class="sd">        minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is</span>
+<span class="sd">        ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array with the elements of x1, but clipped to not exceed the x2 values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="negative"><a class="viewcode-back" href="../../../functional/ivy/elementwise/negative/negative_array.html#ivy.array.array_methods.negative">[docs]</a><span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.negative.</span>
@@ -5579,9 +5646,10 @@
 <div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/svd/svd_array.html#ivy.array.array_methods.svd">[docs]</a><span class="k">def</span> <span class="nf">svd</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">compute_uv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="n">compute_uv</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/svdvals/svdvals_array.html#ivy.array.array_methods.svdvals">[docs]</a><span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
@@ -7448,7 +7516,6 @@
     <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>

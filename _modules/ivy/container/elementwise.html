@@ -7294,6 +7294,7 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -7317,6 +7318,10 @@
 <span class="sd">            Default is False.</span>
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the minimum. If ``False``, the</span>
+<span class="sd">            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -7334,6 +7339,7 @@
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -7346,6 +7352,7 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -7370,6 +7377,10 @@
 <span class="sd">            Default is False.</span>
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the minimum. If ``False``, the</span>
+<span class="sd">            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -7386,6 +7397,7 @@
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -7399,6 +7411,7 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -7412,6 +7425,20 @@
 <span class="sd">            Input array containing elements to maximum threshold.</span>
 <span class="sd">        x2</span>
 <span class="sd">            Tensor containing maximum values, must be broadcastable to x1.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the maximum. If ``False``, the</span>
+<span class="sd">            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to.</span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
@@ -7432,6 +7459,7 @@
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -7444,6 +7472,7 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -7457,6 +7486,20 @@
 <span class="sd">            Input array containing elements to maximum threshold.</span>
 <span class="sd">        x2</span>
 <span class="sd">            Tensor containing maximum values, must be broadcastable to x1.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the maximum. If ``False``, the</span>
+<span class="sd">            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to.</span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
@@ -7466,8 +7509,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            An array with the elements of x1, but clipped to not be lower than the x2</span>
 <span class="sd">            values.</span>
-
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_maximum</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -7476,6 +7517,7 @@
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
