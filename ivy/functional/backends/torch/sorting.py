@@ -59,6 +59,7 @@ def searchsorted(
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
     )
+    ret_dtype = ivy.as_native_dtype(ret_dtype)
     if ret_dtype is torch.int64:
         return torch.searchsorted(
             x,
