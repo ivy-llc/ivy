@@ -1,10 +1,9 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -406,6 +405,7 @@ def test_cumprod(
     )
 
 
+# TODO: add more general tests and fix get instance method testing passing
 # einsum
 @handle_cmd_line_args
 @given(
@@ -417,32 +417,36 @@ def test_cumprod(
         ]
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    with_out=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
-    # smoke test
+def test_einsum(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
     eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype=dtype[0], device=device) for op in operands]
-    if with_out:
-        out = ivy.zeros(true_shape, dtype=dtype[0])
-        ret = ivy.einsum(eq, *operands, out=out)
-    else:
-        ret = ivy.einsum(eq, *operands)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_shape
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.einsum(eq, *operands)),
-        ivy.functional.backends.numpy.einsum(
-            eq, *[ivy.to_numpy(op) for op in operands]
-        ),
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    # len(operands) + 1 because of the equation
+    num_positional_args = len(operands) + 1
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="einsum",
+        equation=eq,
+        **kw,
     )
-    # out test
-    if with_out:
-        assert ret is out
-        # these backends do not support native inplace updates
-        assume(not (fw in ["tensorflow", "jax"]))
-        assert ret.data is out.data
