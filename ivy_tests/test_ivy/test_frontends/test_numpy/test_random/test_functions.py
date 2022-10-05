@@ -33,12 +33,12 @@ def test_numpy_random(input_dtypes, num_positional_args, size, fw, native_array)
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(helpers.get_dtypes("float", full=False))
     batch_size = draw(helpers.ints(min_value=1, max_value=5))
-    population_size = draw(helpers.ints(min_value=1, max_value=20))
+    pop_size = draw(helpers.ints(min_value=1, max_value=20))
     replace = draw(st.booleans())
     if replace:
         num_samples = draw(helpers.ints(min_value=1, max_value=20))
     else:
-        num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
+        num_samples = draw(helpers.ints(min_value=1, max_value=pop_size))
     probs = draw(
         helpers.array_values(
             dtype=prob_dtype[0],
@@ -49,7 +49,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
             safety_factor_scale="linear",
         )
     )
-    return prob_dtype, batch_size, population_size, num_samples, replace, probs
+    return prob_dtype, batch_size, pop_size, num_samples, replace, probs
 
 
 @handle_cmd_line_args
