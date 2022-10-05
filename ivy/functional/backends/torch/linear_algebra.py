@@ -207,11 +207,11 @@ def matrix_rank(
     x: torch.Tensor,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
 
 
