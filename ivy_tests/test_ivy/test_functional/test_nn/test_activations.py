@@ -167,6 +167,7 @@ def test_sigmoid(
         fn_name="sigmoid",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
