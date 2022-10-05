@@ -708,7 +708,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             floating-point data type determined by :ref:`type-promotion` and 
             must have shape ``(..., N, M)`` (i.e., must have the same shape as 
             ``x``, except the innermost two dimensions must be transposed).
-    
+
         Examples
         --------
         x = ivy.Container(a= ivy.array([[1., 2.],\
@@ -719,7 +719,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[-2., 1.],\
                [1.5, -0.5]])
         }
-    
+
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())
@@ -768,8 +768,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             floating-point data type determined by :ref:`type-promotion` and 
             must have shape ``(..., N, M)`` (i.e., must have the same shape as 
             ``x``, except the innermost two dimensions must be transposed).
-    
-    
+
+
         Examples
         --------
         x = ivy.Container(a= ivy.array([[1., 2.],\
@@ -780,7 +780,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[-2., 1.],\
                [1.5, -0.5]])
         }
-    
+
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())
@@ -790,7 +790,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([[0.0426, 0.0964],\
                [0.0605, 0.1368]])
         }
-    
+
         """
         return self.static_pinv(
             self,
@@ -966,6 +966,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -984,6 +985,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input array or container having shape ``(..., M, N)`` and whose innermost
             two dimensions form ``MxN`` matrices. Should have a floating-point data
             type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values
             approximately less than or equal to ``rtol * largest_singular_value`` are
@@ -1037,6 +1042,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            atol=atol,
             rtol=rtol,
             out=out,
         )
@@ -1048,6 +1054,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1061,6 +1068,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self
             input container having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero. If
@@ -1111,6 +1122,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            atol=atol,
             rtol=rtol,
             out=out,
         )
@@ -1240,13 +1252,60 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_slogdet(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.slogdet. This method simply
+        wraps the function, and so the docstring for ivy.slogdet also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container having shape (..., M, M) and whose innermost two
+            dimensions form square matrices. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            This function returns a container containing NamedTuples.
+            Each NamedTuple of output will have -
+                sign:
+                An array containing a number representing the sign of the determinant
+                for each square matrix.
+
+                logabsdet:
+                An array containing natural log of the absolute determinant of each
+                square matrix.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                           [3.0, 4.0]]), \
+                              b=ivy.array([[1.0, 2.0],   \
+                                           [2.0, 1.0]]))
+        >>> y = ivy.Container.static_slogdet(x)
+        >>> print(y)
+        {
+            a: (list[2], <class ivy.array.array.Array> shape=[]),
+            b: (list[2], <class ivy.array.array.Array> shape=[])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "slogdet",
             x,
@@ -1254,7 +1313,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def slogdet(
@@ -1263,16 +1321,61 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.slogdet. This method simply wraps
+        the function, and so the docstring for ivy.slogdet also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            This function returns container containing NamedTuples.
+            Each NamedTuple of output will have -
+                sign:
+                An array of a number representing the sign of the determinant of each
+                square.
+
+                logabsdet:
+                An array of the natural log of the absolute value of the determinant of
+                each square.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                           [3.0, 4.0]]), \
+                              b=ivy.array([[1.0, 2.0],   \
+                                           [2.0, 1.0]]))
+        >>> y = x.slogdet()
+        >>> print(y)
+        {
+            a: (list[2], <class ivy.array.array.Array> shape=[]),
+            b: (list[2], <class ivy.array.array.Array> shape=[])
+        }
+
+        """
         return self.static_slogdet(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -1325,12 +1428,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
         return ContainerBase.multi_map_in_static_method(
             "svd",
             x,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1346,6 +1451,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
@@ -1355,6 +1461,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            compute_uv=compute_uv,
             full_matrices=full_matrices,
             out=out,
         )

@@ -716,7 +716,7 @@ def inv(
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Using inplace
-    
+
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
@@ -994,6 +994,7 @@ def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1005,6 +1006,9 @@ def matrix_rank(
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices. Should have a floating-point data type.
+
+    atol
+        absolute tolerance. When None it’s considered to be zero.
 
     rtol
         relative tolerance for small singular values. Singular values approximately less
@@ -1081,7 +1085,7 @@ def matrix_rank(
 
 
     """
-    return current_backend(x).matrix_rank(x, rtol=rtol, out=out)
+    return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
 
 
 @to_native_arrays_and_back
@@ -1184,7 +1188,7 @@ def outer(
                 [4.]])
 
     A 3-D Example
-    
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -1335,31 +1339,59 @@ def qr(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> NamedTuple:
     """Computes the sign and natural logarithm of the determinant of an array.
 
     Parameters
     ----------
     x
-        This is a 2D array, and it has to be square
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        input array having shape (..., M, M) and whose innermost two dimensions form
+        square matrices. Should have a floating-point data type.
 
     Returns
     -------
     ret
-        This function returns two values -
+        This function returns NamedTuple with two values -
             sign:
-            A number representing the sign of the determinant.
+            An array containing a number representing the sign of the determinant
+            for each square matrix.
 
-            logdet:
-            The natural log of the absolute value of the determinant.
+            logabsdet:
+            An array containing natural log of the absolute determinant of each
+            square matrix.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[1.0, 2.0], \
+                       [3.0, 4.0]])
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                       [3.0, 4.0]]), \
+                          b=ivy.array([[1.0, 2.0],   \
+                                       [2.0, 1.0]]))
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    {
+        a: (list[2], <class ivy.array.array.Array> shape=[]),
+        b: (list[2], <class ivy.array.array.Array> shape=[])
+    }
 
 
     This function conforms to the `Array API Standard
@@ -1372,7 +1404,7 @@ def slogdet(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).slogdet(x, out=out)
+    return current_backend(x).slogdet(x)
 
 
 @to_native_arrays_and_back
@@ -1435,6 +1467,7 @@ def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
@@ -1455,6 +1488,13 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
+    compute_uv
+        If ``True`` then left and right singular vectors will be computed and returned
+        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,
+        which can be significantly faster.
+    .. note::
+        with backend set as torch, svd with still compute left and right singular vectors irrespective
+        of the value of compute_uv, however Ivy will still only return the singular values.
 
     Returns
     -------
@@ -1514,8 +1554,12 @@ def svd(
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
 
+    >>> x = ivy.random_normal(shape = (9, 6))
+    >>> S = ivy.svd(x, compute_uv = False)
+    print(S)
+
     """
-    return current_backend(x).svd(x, full_matrices=full_matrices)
+    return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
 
 
 @to_native_arrays_and_back

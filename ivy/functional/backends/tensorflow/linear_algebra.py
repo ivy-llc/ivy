@@ -324,6 +324,7 @@ def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -343,8 +344,13 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if rtol:
+    if atol and rtol is None:
+        ret = tf.experimental.numpy.sum(singular_values > atol, axis=axis)
+    elif rtol and atol is None:
         ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)
+    elif rtol and atol:
+        tol = tf.maximum(atol, max_values * rtol)
+        ret = tf.experimental.numpy.sum(singular_values > tol, axis=axis)
     else:
         ret = tf.experimental.numpy.sum(singular_values != 0, axis=axis)
     if len(ret_shape):
@@ -392,8 +398,9 @@ def outer(
 
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
@@ -434,10 +441,8 @@ qr.unsupported_dtypes = (
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
 
@@ -491,16 +496,28 @@ solve.unsupported_dtypes = (
 
 def svd(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     full_matrices: bool = True,
+    compute_uv: bool = True,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    batch_shape = tf.shape(x)[:-2]
-    num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
-    VT = tf.transpose(V, transpose_dims)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        batch_shape = tf.shape(x)[:-2]
+        num_batch_dims = len(batch_shape)
+        transpose_dims = list(range(num_batch_dims)) + [
+            num_batch_dims + 1,
+            num_batch_dims,
+        ]
+        D, U, V = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        VT = tf.transpose(V, transpose_dims)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = tf.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = (

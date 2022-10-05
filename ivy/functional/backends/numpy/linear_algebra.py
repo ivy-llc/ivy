@@ -163,10 +163,20 @@ def matrix_rank(
     x: np.ndarray,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    if atol and rtol is None:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+    elif rtol and atol is None:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    elif rtol and atol:
+        tol = np.maximum(atol, rtol)
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    else:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    return ret
 
 
 matrix_rank.unsupported_dtypes = (
@@ -191,8 +201,9 @@ outer.support_native_out = True
 
 def pinv(
     x: np.ndarray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
@@ -216,10 +227,8 @@ qr.unsupported_dtypes = ("float16",)
 def slogdet(
     x: np.ndarray,
     /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
     logabsdet = (
@@ -253,11 +262,16 @@ solve.unsupported_dtypes = ("float16",)
 
 
 def svd(
-    x: np.ndarray, full_matrices: bool = True
+    x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        U, D, VT = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16",)

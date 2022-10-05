@@ -192,6 +192,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -205,6 +206,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self
             input array having shape ``(..., M, N)`` and whose innermost two dimensions
             form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -251,7 +256,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
+        return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
@@ -299,6 +304,43 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> NamedTuple:
         return ivy.qr(self._data, mode=mode)
 
+    def slogdet(
+        self: ivy.Array,
+    ) -> NamedTuple:
+        """
+        ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
+        function, and so the docstring for ivy.slogdet also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
+
+        Returns
+        -------
+        ret
+            This function returns NamedTuple with two values -
+                sign:
+                An array containing a number representing the sign of the determinant
+                for each square matrix.
+
+                logabsdet:
+                An array containing natural log of the absolute determinant of each
+                square matrix.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.0, 2.0], \
+                           [3.0, 4.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+
+        """
+        return ivy.slogdet(self._data)
+
     def solve(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -310,9 +352,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices=full_matrices)
+        return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
