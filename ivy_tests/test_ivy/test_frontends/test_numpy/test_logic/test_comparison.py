@@ -30,7 +30,6 @@ def test_numpy_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -45,7 +44,6 @@ def test_numpy_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="equal",
         x1=x[0],
@@ -71,7 +69,6 @@ def test_numpy_array_equal(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -108,7 +105,6 @@ def test_numpy_greater(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -123,7 +119,6 @@ def test_numpy_greater(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="greater",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -157,7 +152,6 @@ def test_numpy_greater_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -172,7 +166,6 @@ def test_numpy_greater_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="greater_equal",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -206,7 +199,6 @@ def test_numpy_less(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -221,7 +213,6 @@ def test_numpy_less(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="less",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -255,7 +246,6 @@ def test_numpy_less_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -270,7 +260,6 @@ def test_numpy_less_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="less_equal",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -304,7 +293,6 @@ def test_numpy_not_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -319,7 +307,6 @@ def test_numpy_not_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="not_equal",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -344,7 +331,7 @@ def test_numpy_not_equal(
     ),
 )
 def test_numpy_array_equiv(
-    dtype_and_x, factor, as_variable, native_array, num_positional_args, fw
+    dtype_and_x, factor, as_variable, native_array, num_positional_args
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
