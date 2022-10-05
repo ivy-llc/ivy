@@ -1410,12 +1410,6 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
         Boolean as to whether the array contains nans.
 
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-        signatures.elementwise_functions.tan.html>`_
-    in the standard.
-
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -2670,11 +2664,6 @@ def inplace_decrement(
     ret
         The array following the in-place decrement.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-        signatures.elementwise_functions.tan.html>`_
-    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -2684,9 +2673,7 @@ def inplace_decrement(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([[5.3, 7., 0.],\
-                        [6.8, 8, 3.9],\
-                        [0., 10., 6.3]])
+    >>> x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])
     >>> y = ivy.inplace_decrement(x, 1.25)
     >>> print(y)
     ivy.array([[ 4.05,  5.75, -1.25],
@@ -2758,9 +2745,7 @@ def inplace_increment(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([[5.3, 7., 0.],\
-                        [6.8, 8, 3.9],\
-                        [0., 10., 6.3]])
+    >>> x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])
     >>> y = ivy.inplace_increment(x, 3.)
     >>> print(y)
     ivy.array([[ 8.3, 10.,  3.],
@@ -2954,6 +2939,7 @@ def gather(
         New array with the values gathered at the specified indices along the
         specified axis.
 
+
     Both the description and the type hints above assumes an array input for
     simplicity, but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
@@ -2967,12 +2953,9 @@ def gather(
     >>> print(ivy.gather(x, y))
     ivy.array([1., 2.])
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                        [3., 4., 5.]])
-    >>> y = ivy.array([[0, 1], \
-                        [1, 2]])
-    >>> z = ivy.array([[0., 0.], \
-                        [0., 0.]])
+    >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+    >>> y = ivy.array([[0, 1],[1, 2]])
+    >>> z = ivy.array([[0., 0.],[0., 0.]])
     >>> ivy.gather(x, y, out=z)
     >>> print(z)
     ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
@@ -3077,8 +3060,7 @@ def gather_nd(
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([4., 5., 6.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([4., 5., 6.]))
     >>> y = ivy.array([1])
     >>> print(ivy.gather_nd(x, y))
     {
