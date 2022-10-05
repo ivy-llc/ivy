@@ -973,11 +973,13 @@ framework supports in-place operations with argument’s data type.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:
-&gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])
-&gt;&gt;&gt; ret = x.supports_inplace()
-&gt;&gt;&gt; print(ret)
-False</p>
+<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">supports_inplace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

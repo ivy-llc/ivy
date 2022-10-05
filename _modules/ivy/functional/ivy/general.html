@@ -1540,12 +1540,6 @@
 <span class="sd">        Boolean as to whether the array contains nans.</span>
 
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/</span>
-<span class="sd">        signatures.elementwise_functions.tan.html&gt;`_</span>
-<span class="sd">    in the standard.</span>
-
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
@@ -2800,11 +2794,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        The array following the in-place decrement.</span>
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/</span>
-<span class="sd">        signatures.elementwise_functions.tan.html&gt;`_</span>
-<span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -2814,9 +2803,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.3, 7., 0.],\</span>
-<span class="sd">                        [6.8, 8, 3.9],\</span>
-<span class="sd">                        [0., 10., 6.3]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.inplace_decrement(x, 1.25)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 4.05,  5.75, -1.25],</span>
@@ -2888,9 +2875,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.3, 7., 0.],\</span>
-<span class="sd">                        [6.8, 8, 3.9],\</span>
-<span class="sd">                        [0., 10., 6.3]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.inplace_increment(x, 3.)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 8.3, 10.,  3.],</span>
@@ -3084,6 +3069,7 @@
 <span class="sd">        New array with the values gathered at the specified indices along the</span>
 <span class="sd">        specified axis.</span>
 
+
 <span class="sd">    Both the description and the type hints above assumes an array input for</span>
 <span class="sd">    simplicity, but this function is *nestable*, and therefore also accepts</span>
 <span class="sd">    :class:`ivy.Container` instances in place of any of the arguments.</span>
@@ -3097,12 +3083,9 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.gather(x, y))</span>
 <span class="sd">    ivy.array([1., 2.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], \</span>
-<span class="sd">                        [3., 4., 5.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([[0, 1], \</span>
-<span class="sd">                        [1, 2]])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.array([[0., 0.], \</span>
-<span class="sd">                        [0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.],[3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[0, 1],[1, 2]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array([[0., 0.],[0., 0.]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.gather(x, y, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])</span>
@@ -3207,8 +3190,7 @@
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
-<span class="sd">                          b=ivy.array([4., 5., 6.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([4., 5., 6.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.gather_nd(x, y))</span>
 <span class="sd">    {</span>
