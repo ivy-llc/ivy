@@ -803,6 +803,12 @@ def to_numpy(
     return current_backend(x).to_numpy(x, copy=copy)
 
 
+@handle_nestable
+@handle_exceptions
+def isscalar(x: Any, /) -> bool:
+    return np.isscalar(x)
+
+
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
