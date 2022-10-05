@@ -1,5 +1,5 @@
-Docstring Examples
-==================
+Docstring Examples 💯
+=====================
 
 .. _`docstring examples discussion`: https://github.com/unifyai/ivy/discussions/1322
 .. _`repo`: https://github.com/unifyai/ivy

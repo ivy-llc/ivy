@@ -1,5 +1,5 @@
-Navigating the Code
-===================
+Navigating the Code 🔍
+======================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
