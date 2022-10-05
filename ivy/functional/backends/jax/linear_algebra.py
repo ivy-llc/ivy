@@ -159,7 +159,6 @@ def matrix_norm(
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
-
 matrix_norm.unsupported_dtypes = (
     "float16",
     "bfloat16",
@@ -353,7 +352,6 @@ trace.unsupported_dtypes = (
     "float16",
     "bfloat16"
 )
-#trace.unsupported_dtypes = ("float16",)
 
 
 def vecdot(

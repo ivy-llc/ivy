@@ -151,7 +151,6 @@ inv.unsupported_dtypes = (
     "bfloat16",
     "float16",
 )
-
 inv.support_native_out = True
 
 
@@ -190,8 +189,6 @@ def matrix_norm(
 
 
 matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
-
-
 matrix_norm.support_native_out = True
 
 
@@ -395,6 +392,7 @@ def trace(
 
 
 trace.unsupported_dtypes = ("bfloat16",)
+
 
 def vecdot(
     x1: torch.Tensor,
