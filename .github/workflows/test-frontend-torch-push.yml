@@ -1,12 +1,15 @@
-name: test-frontend-tensorflow-push
+name: test-frontend-torch-push
 on: push
 jobs:
   run-nightly-tests:
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow ]
-        submodules: [activations, layers, math, metrics, nest, nn, quantization, random, raw_ops,
-                    regularizers, sets, signal, sparse, tensor]
+        submodules: [blas_and_lapack_ops, comparison_ops, convolution_functions, creation_ops,
+                    distance_functions, dropout_functions, indexing_slicing_joining_mutating_ops,
+                    linear_functions, locally_disabling_gradient_computation, loss_functions, miscellaneous_ops,
+                    non_linear_activation_functions, pointwise_ops, pooling_functions, random_sampling, reduction_ops,
+                    sparse_functions, spectral_ops, tensor, tensor_functions, utilities, vision_functions]
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -24,18 +27,17 @@ jobs:
             cd ivy
             $diff = git diff --name-only HEAD^ HEAD
             $SourceDiff = $diff | Where-Object { `
-            $_ -match 'ivy_tests/test_ivy/test_frontends/test_tensorflow/test_${{ matrix.submodules }}.py' `
+              $_ -match 'ivy_tests/test_ivy/test_frontends/test_torch/test_${{ matrix.submodules }}.py' `
             }
             $HasDiff = $SourceDiff.Length -gt 0
             Write-Host "::set-output name=changed::$HasDiff"
-            
-            
+
       - name: Run Frontend Tests
         if: steps.check_file_changed.outputs.changed == 'True'
         id: tests
         run: |
           cd ivy
-          ./run_tests_CLI/test_tensorflow_frontend.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+          ./run_tests_CLI/test_torch_frontend.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
       - name: Install Mongo Python Client
@@ -55,5 +57,5 @@ jobs:
         continue-on-error: true
 
       - name: Check on failures
-        if:  steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
+        if: steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
         run: exit 1
