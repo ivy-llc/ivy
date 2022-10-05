@@ -1775,9 +1775,9 @@ def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    offset: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
