@@ -144,8 +144,8 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if axis is None:
-        axis = (-2, -1)
+    if not isinstance(axis, tuple):
+        axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 

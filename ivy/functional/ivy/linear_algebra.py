@@ -934,6 +934,16 @@ def matrix_norm(
     ret
         Matrix norm of the array at specified axes.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
 
