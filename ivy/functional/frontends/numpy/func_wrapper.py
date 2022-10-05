@@ -79,12 +79,13 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                         dtype,
                         fn=assert_fn,
                     )
-                args = [
-                    ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
-                    if i < num_args
-                    else args[i]
-                    for i in range(len(args))
-                ]
+                if ivy.exists(dtype):
+                    args = [
+                        ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
+                        if i < num_args
+                        else args[i]
+                        for i in range(len(args))
+                    ]
 
             return fn(*args, **kwargs)
 
