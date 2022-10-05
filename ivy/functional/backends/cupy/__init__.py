@@ -108,6 +108,7 @@ def closest_valid_dtype(type):
 backend = "cupy"
 backend_version = cp.__version__
 
+# noinspection PyPackageRequirements
 # local sub-modules
 from . import activations
 from .activations import *
