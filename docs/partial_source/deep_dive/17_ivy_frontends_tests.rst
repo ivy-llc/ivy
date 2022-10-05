@@ -1,5 +1,5 @@
-Ivy Frontend Tests
-====================
+Ivy Frontend Tests 🧪
+=====================
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
