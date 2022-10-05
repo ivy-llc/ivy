@@ -27,7 +27,7 @@ class Tensor:
         if isinstance(self.data, int):
             return self.data != 0
 
-        temp = ivy.squeeze(ivy.array(self.data), axis=None)
+        temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
         shape = ivy.shape(temp)
         if shape:
             raise ivy.exceptions.IvyError(
