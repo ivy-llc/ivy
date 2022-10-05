@@ -35,7 +35,6 @@ def test_numpy_ndarray_reshape(
     dtypes_x_shape,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, shape = dtypes_x_shape
     helpers.test_frontend_method(
@@ -71,7 +70,6 @@ def test_numpy_ndarray_add(
     dtype_and_x,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -113,7 +111,6 @@ def test_numpy_ndarray_transpose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_method(
@@ -164,7 +161,6 @@ def test_numpy_ndarray_any(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -224,7 +220,6 @@ def test_numpy_ndarray_all(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -251,7 +246,6 @@ def test_numpy_ndarray_all(
             "keepdims": keepdims,
             "where": where,
         },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
         method_name="all",

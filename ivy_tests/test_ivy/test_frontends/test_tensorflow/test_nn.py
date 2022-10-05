@@ -229,7 +229,7 @@ def _x_and_filters(
     ),
 )
 def test_tensorflow_atrous_conv2d(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
+    x_f_d_df, as_variable, num_positional_args, native_array
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
@@ -265,7 +265,7 @@ def test_tensorflow_atrous_conv2d(
     ),
 )
 def test_tensorflow_atrous_conv2d_transpose(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
+    x_f_d_df, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -307,9 +307,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         fn_name="ivy.functional.frontends.tensorflow.conv1d"
     ),
 )
-def test_tensorflow_conv1d(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_conv1d(x_f_d_df, as_variable, num_positional_args, native_array):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -345,7 +343,7 @@ def test_tensorflow_conv1d(
     ),
 )
 def test_tensorflow_conv1d_transpose(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
+    x_f_d_df, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -390,7 +388,6 @@ def test_tensorflow_gelu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     approximate,
 ):
     input_dtype, x = dtype_and_x
@@ -419,9 +416,7 @@ def test_tensorflow_gelu(
         fn_name="ivy.functional.frontends.tensorflow.conv2d"
     ),
 )
-def test_tensorflow_conv2d(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_conv2d(x_f_d_df, as_variable, num_positional_args, native_array):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -454,7 +449,7 @@ def test_tensorflow_conv2d(
     ),
 )
 def test_tensorflow_conv2d_transpose(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
+    x_f_d_df, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -496,9 +491,7 @@ def test_tensorflow_conv2d_transpose(
         fn_name="ivy.functional.frontends.tensorflow.conv3d"
     ),
 )
-def test_tensorflow_conv3d(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_conv3d(x_f_d_df, as_variable, num_positional_args, native_array):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     x = x[0]
     filters = filters[0]
@@ -535,7 +528,7 @@ def test_tensorflow_conv3d(
     ),
 )
 def test_tensorflow_conv3d_transpose(
-    x_f_d_df, as_variable, num_positional_args, native_array, fw
+    x_f_d_df, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -589,7 +582,6 @@ def test_tensorflow_batch_normalization(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -629,7 +621,6 @@ def test_tensorflow_dropout(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
