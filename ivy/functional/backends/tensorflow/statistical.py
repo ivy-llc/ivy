@@ -1,7 +1,6 @@
 # global
 _round = round
 import tensorflow as tf
-from tensorflow_probability import distributions as tfd
 from typing import Union, Optional, Sequence
 
 # local

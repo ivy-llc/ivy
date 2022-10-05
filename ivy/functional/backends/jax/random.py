@@ -4,6 +4,7 @@
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
+from jax.random import dirichlet, PRNGKey
 from typing import Optional, Union, Sequence
 
 # local

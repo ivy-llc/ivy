@@ -1,5 +1,4 @@
 # global
-from jax.random import dirichlet, PRNGKey
 import jax.numpy as jnp
 from typing import Union, Optional, Sequence
 
