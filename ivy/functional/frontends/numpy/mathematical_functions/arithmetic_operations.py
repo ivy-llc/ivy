@@ -65,6 +65,9 @@ def divide(
     return ret
 
 
+true_divide = divide
+
+
 def multiply(
     x1,
     x2,

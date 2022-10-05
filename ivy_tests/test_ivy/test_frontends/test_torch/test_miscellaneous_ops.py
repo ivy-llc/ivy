@@ -76,7 +76,6 @@ def test_torch_flip(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -116,7 +115,6 @@ def test_torch_roll(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -156,7 +154,6 @@ def test_torch_fliplr(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -195,7 +192,6 @@ def test_torch_cumsum(
     native_array,
     with_out,
     dtype,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -243,7 +239,6 @@ def test_torch_diagonal(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offset
@@ -285,7 +280,6 @@ def test_torch_cartesian_prod(
     as_variable,
     native_array,
     with_out,
-    fw,
 ):
     dtypes, tensors = dtype_and_tensors
     if isinstance(dtypes, list):  # If more than one value was generated
@@ -322,7 +316,6 @@ def test_torch_cartesian_prod(
 def test_torch_triu(
     dtype_and_values,
     diagonal,
-    fw,
     num_positional_args,
     as_variable,
     with_out,
@@ -366,7 +359,6 @@ def test_torch_cumprod(
     native_array,
     with_out,
     dtype,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -401,7 +393,6 @@ def test_torch_trace(
     num_positional_args,
     with_out,
     native_array,
-    fw,
 ):
     dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -435,7 +426,6 @@ def test_torch_tril_indices(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32],
@@ -469,7 +459,6 @@ def test_torch_triu_indices(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=["int32"],
@@ -499,7 +488,6 @@ def test_torch_triu_indices(
 def test_torch_tril(
     dtype_and_values,
     diagonal,
-    fw,
     num_positional_args,
     as_variable,
     with_out,
@@ -602,7 +590,6 @@ def test_torch_flatten(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
     helpers.test_frontend_function(
@@ -654,7 +641,6 @@ def test_torch_renorm(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, values = dtype_and_values
     helpers.test_frontend_function(
@@ -696,7 +682,6 @@ def test_torch_logcumsumexp(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -732,7 +717,6 @@ def test_torch_repeat_interleave(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, values, repeats, axis, output_size = dtype_values_repeats_axis_output_size
 
@@ -748,4 +732,36 @@ def test_torch_repeat_interleave(
         repeats=repeats,
         dim=axis,
         output_size=output_size,
+    )
+
+
+# ravel
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.ravel"
+    ),
+)
+def test_torch_ravel(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="ravel",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
     )

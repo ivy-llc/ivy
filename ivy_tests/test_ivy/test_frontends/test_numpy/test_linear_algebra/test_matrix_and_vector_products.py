@@ -31,7 +31,6 @@ def test_numpy_outer(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -66,7 +65,6 @@ def test_numpy_inner(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(

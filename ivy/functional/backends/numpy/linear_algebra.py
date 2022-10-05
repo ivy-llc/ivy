@@ -140,10 +140,13 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    if not isinstance(axis, tuple):
+        axis = tuple(axis)
+    return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 matrix_norm.unsupported_dtypes = (
@@ -163,10 +166,21 @@ def matrix_rank(
     x: np.ndarray,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    if type(atol) and type(rtol) == tuple:
+        if atol.all() and rtol.all() is None:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+        elif atol.all() and rtol.all():
+            tol = np.maximum(atol, rtol)
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+        else:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    else:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    return ret
 
 
 matrix_rank.unsupported_dtypes = (
@@ -191,8 +205,9 @@ outer.support_native_out = True
 
 def pinv(
     x: np.ndarray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
@@ -216,10 +231,8 @@ qr.unsupported_dtypes = ("float16",)
 def slogdet(
     x: np.ndarray,
     /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
     logabsdet = (
@@ -253,11 +266,16 @@ solve.unsupported_dtypes = ("float16",)
 
 
 def svd(
-    x: np.ndarray, full_matrices: bool = True
+    x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        U, D, VT = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16",)
@@ -282,9 +300,15 @@ def tensordot(
 
 @_handle_0_dim_output
 def trace(
-    x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
+    return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
 trace.support_native_out = True
