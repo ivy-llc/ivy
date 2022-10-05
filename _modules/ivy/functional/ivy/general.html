@@ -164,6 +164,7 @@
 <span class="n">array_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">shape_array_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">nestable_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">exception_trace_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="get_referrers_recursive"><a class="viewcode-back" href="../../../../functional/ivy/general/get_referrers_recursive.html#ivy.functional.ivy.general.get_referrers_recursive">[docs]</a><span class="k">def</span> <span class="nf">get_referrers_recursive</span><span class="p">(</span>
@@ -450,17 +451,79 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
 <span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">nestable_mode_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nestable_mode_stack</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">nestable_mode_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="set_exception_trace_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/set_exception_trace_mode.html#ivy.functional.ivy.general.set_exception_trace_mode">[docs]</a><span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">set_exception_trace_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set the mode of whether to show the full exception stack trace</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    mode</span>
+<span class="sd">        boolean whether to perform ivy.Array conversions</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_exception_trace_mode(False)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_exception_trace_mode(True)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">exception_trace_mode_stack</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="n">exception_trace_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="unset_exception_trace_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/unset_exception_trace_mode.html#ivy.functional.ivy.general.unset_exception_trace_mode">[docs]</a><span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">unset_exception_trace_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reset the mode of whether to show the full exception stack trace</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_exception_trace_mode(False)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.unset_exception_trace_mode()</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">exception_trace_mode_stack</span>
+    <span class="k">if</span> <span class="n">exception_trace_mode_stack</span><span class="p">:</span>
+        <span class="n">exception_trace_mode_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_exception_trace_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/get_exception_trace_mode.html#ivy.functional.ivy.general.get_exception_trace_mode">[docs]</a><span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">get_exception_trace_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the current state of exception_trace_mode</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_exception_trace_mode(False)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_exception_trace_mode()</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">exception_trace_mode_stack</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exception_trace_mode_stack</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">exception_trace_mode_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="array_equal"><a class="viewcode-back" href="../../../../functional/ivy/general/array_equal/array_equal_functional.html#ivy.functional.ivy.general.array_equal">[docs]</a><span class="nd">inputs_to_native_arrays</span>
@@ -3012,7 +3075,7 @@
 <span class="sd">    batch_dims</span>
 <span class="sd">        optional int, lets you gather different items from each element of a batch.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional array, for writing the result to. It must have a shape </span>
+<span class="sd">        optional array, for writing the result to. It must have a shape</span>
 <span class="sd">        that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
