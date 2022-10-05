@@ -142,21 +142,34 @@ def cumprod(
     x: JaxArray,
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
-    if exclusive:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if not (exclusive or reverse):
+        return jnp.cumprod(x, axis, dtype=dtype)
+    elif exclusive and reverse:
+        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
         x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = jnp.cumprod(x, -1)
-        return jnp.swapaxes(res, axis, -1)
-    return jnp.cumprod(x, axis)
+        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.swapaxes(x, axis, -1)
+        return jnp.flip(x, axis=(axis,))
+
+    elif exclusive:
+        x = jnp.swapaxes(x, axis, -1)
+        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.cumprod(x, -1, dtype=dtype)
+        return jnp.swapaxes(x, axis, -1)
+    else:
+        x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+        return jnp.flip(x, axis=axis)
 
 
 def cumsum(
@@ -197,21 +210,3 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
-
-
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
-    if periodic == False:
-        return jnp.array(
-            jnp.kaiser(M=window_length, beta=beta),
-            dtype=dtype) 
-    else: 
-        return jnp.array(
-            jnp.kaiser(M=window_length + 1, beta=beta)[:-1],
-            dtype=dtype)

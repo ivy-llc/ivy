@@ -285,21 +285,3 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)
-
-
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.kaiser_window(
-        window_length, 
-        periodic, 
-        beta, 
-        dtype=dtype, 
-        layout=torch.strided, 
-        device=None, 
-        requires_grad=False)
