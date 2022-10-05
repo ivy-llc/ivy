@@ -1,5 +1,5 @@
-Navigating the Code
-===================
+Navigating the Code 🔍
+======================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
@@ -199,13 +199,13 @@ To have a better idea on this, let's look at an example!
             or (isinstance(fill_value, bool))
         ), "the fill_value and data type are not compatible"
 
-In the :code:`full_like` function in :code:`creation.py`, the types of
+In the :func:`full_like` function in :mod:`creation.py`, the types of
 :code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
 check has to be applied to all backends, which means the related code is common
 and identical. In this case, we can extract the code to be a helper function on
-its own, placed in its related submodule (:code:`creation.py` here). In this
+its own, placed in its related submodule (:mod:`creation.py` here). In this
 example, the helper function is named as
-:code:`_assert_fill_value_and_dtype_are_compatible`.
+:func:`_assert_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.

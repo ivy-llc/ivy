@@ -5,7 +5,7 @@ from hypothesis.extra.redis import RedisExampleDatabase
 from pytest import mark
 from pathlib import Path
 
-if "REDIS_URL" in os.environ:
+if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
     r = redis.Redis.from_url(
         os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
     )
@@ -21,7 +21,6 @@ else:
         "ci", suppress_health_check=(HealthCheck(3), HealthCheck(2))
     )
     settings.load_profile("ci")
-
 
 skip_ids = []
 skips_path = Path(__file__).parent / "skips.txt"

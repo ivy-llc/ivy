@@ -27,7 +27,6 @@ def test_torch_pixel_shuffle(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     input = x[0]
@@ -38,7 +37,6 @@ def test_torch_pixel_shuffle(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.pixel_shuffle",
         input=input,
@@ -67,7 +65,6 @@ def test_torch_pixel_unshuffle(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     input = x[0]
@@ -78,7 +75,6 @@ def test_torch_pixel_unshuffle(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.pixel_unshuffle",
         input=input,

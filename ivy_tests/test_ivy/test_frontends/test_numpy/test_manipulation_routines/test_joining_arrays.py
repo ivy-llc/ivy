@@ -66,7 +66,6 @@ def test_numpy_concatenate(
     dtype_n_with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
@@ -76,7 +75,6 @@ def test_numpy_concatenate(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="concatenate",
         arrays=xs,

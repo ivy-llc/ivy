@@ -1022,6 +1022,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -1036,6 +1037,9 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    reverse
+        Whether to perform the cumprod from last to first element in the selected
+        axis. Default is False (from first to last element)
     dtype
         data type of the returned array. If None,
         if the default data type corresponding to the data type “kind” (integer or
@@ -1152,7 +1156,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
@@ -1317,48 +1321,3 @@ def einsum(
 
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def hann_window(
-    window_length: int,
-    periodic: Optional[bool] = True,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Generate a Hann window. The Hanning window 
-    is a taper formed by using a weighted cosine.
-    
-    Parameters
-    ----------
-    window_length
-        the size of the returned window.
-    periodic
-        If True, returns a window to be used as periodic function. 
-        If False, return a symmetric window.
-    dtype
-        The data type to produce. Must be a floating point type.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        The array containing the window.
-
-    Functional Examples
-    -------------------
-
-    >>> ivy.hann_window(4, True)
-    ivy.array([0. , 0.5, 1. , 0.5])
-
-    >>> ivy.hann_window(7, False)
-    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
-
-    """
-    return current_backend().hann_window(
-        window_length, periodic, dtype=dtype, out=out)
