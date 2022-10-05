@@ -4,6 +4,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from math import sin, pi
 
 
 # Array API Standard #
@@ -236,3 +237,18 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def vorbis_window(
+    window_length: np.ndarray,
+    *,
+    dtype:Optional[np.dtype] = np.float32,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.array([
+        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
+        for i in range(1, window_length*2)[0::2]
+    ], dtype=dtype)
+
+
+vorbis_window.support_native_out = False
