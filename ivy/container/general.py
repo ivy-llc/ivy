@@ -474,8 +474,7 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
         >>> print(y)
         {
@@ -717,8 +716,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Decrement by a value
-        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
-                              b=ivy.array([0., -25., 50.]))
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
         {
@@ -858,8 +856,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Increment by a value
-        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
-                              b=ivy.array([0., -25., 50.]))
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
         {
@@ -1690,6 +1687,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an empty array
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -1704,6 +1702,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         scatter into a container
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                   b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -1785,6 +1784,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an empty container
+
         >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
                         b=ivy.array([[5],[1],[2]]))
         >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),\
@@ -1799,6 +1799,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         scatter into a container.
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -2405,6 +2406,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2414,6 +2416,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2423,6 +2426,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
         >>> print(y)
@@ -3506,6 +3510,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With `ivy.Container` input and backend set as 'numpy':
+
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
@@ -3515,6 +3520,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With `ivy.Container` input and backend set as 'tensorflow':
+
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
