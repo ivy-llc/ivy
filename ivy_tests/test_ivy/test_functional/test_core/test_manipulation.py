@@ -492,12 +492,11 @@ def test_clip(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     dtypes, (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtypes[0],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
