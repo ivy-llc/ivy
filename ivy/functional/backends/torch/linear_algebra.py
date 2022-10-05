@@ -186,8 +186,8 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is None:
-        axis = (-2, -1)
+    # if not isinstance(axis, tuple):
+    #     axis = tuple(axis)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
