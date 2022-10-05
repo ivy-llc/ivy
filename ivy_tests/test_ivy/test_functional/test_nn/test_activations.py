@@ -200,13 +200,13 @@ def test_softmax(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=[True],
+        as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
         fw=fw,
         num_positional_args=num_positional_args,
-        container_flags=[False],
-        instance_method=False,
+        container_flags=container,
+        instance_method=instance_method,
         fn_name="softmax",
         rtol_=1e-02,
         atol_=1e-02,
