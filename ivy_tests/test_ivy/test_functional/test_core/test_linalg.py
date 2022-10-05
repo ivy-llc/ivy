@@ -1230,6 +1230,8 @@ def _matrix_rank_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_x=_matrix_rank_helper(),
+    atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    | st.just(None),
     rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
@@ -1244,6 +1246,7 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
+    atol,
     rtol,
 ):
     dtype, x = dtype_x
@@ -1261,6 +1264,7 @@ def test_matrix_rank(
         fw=fw,
         fn_name="matrix_rank",
         x=x[0],
+        atol=atol,
         rtol_=rtol,
     )
 

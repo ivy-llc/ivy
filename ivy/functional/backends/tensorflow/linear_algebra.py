@@ -324,6 +324,7 @@ def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -343,8 +344,13 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if rtol:
+    if atol and rtol is None:
+        ret = tf.experimental.numpy.sum(singular_values > atol, axis=axis)
+    elif rtol and atol is None:
         ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)
+    elif rtol and atol:
+        tol = tf.maximum(atol, max_values * rtol)
+        ret = tf.experimental.numpy.sum(singular_values > tol, axis=axis)
     else:
         ret = tf.experimental.numpy.sum(singular_values != 0, axis=axis)
     if len(ret_shape):
