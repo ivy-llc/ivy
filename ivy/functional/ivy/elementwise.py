@@ -6186,3 +6186,60 @@ def trunc_divide(
 
     """
     return ivy.trunc(ivy.divide(x1, x2, out=out))
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def lcm(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the element-wise least common multiple (LCM) of x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        first input array.
+    x2
+        second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array that includes the element-wise least common multiples of x1 and x2
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1=ivy.array([2, 3, 4])
+    >>> x2=ivy.array([5, 8, 15])
+    >>> ivy.lcm(x1, x2)
+    ivy.array([10, 21, 60])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x1=ivy.array([6, 54, 62, 10])
+    >>> x2=ivy.array([32, 40, 25, 13])
+    >>> ivy.lcm(x1, x2)
+    ivy.array([96, 1080, 1550, 130])
+
+    With :class:`ivy.Container` input:
+    
+    >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
+                        b=ivy.array([6, 54, 62, 10]))
+    >>> x1=ivy.Container(a=ivy.array([5, 8, 15]),\
+                        b=ivy.array([32, 40, 25, 13]))
+    >>> ivy.lcm(x1, x2)
+    {
+        a: ivy.array([10, 21, 60]),
+        b: ivy.array([96, 1080, 1550, 130])
+    }
+    """
+    return ivy.current_backend().lcm(x1, x2, out=out)

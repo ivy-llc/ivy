@@ -5,6 +5,7 @@ import tensorflow as tf
 
 # local
 import ivy
+from math import prod
 
 
 def abs(
@@ -759,3 +760,21 @@ def rad2deg(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rad2deg(x)
+
+
+def lcm(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.abs(tf.experimental.numpy.lcm(x1, x2))
+
+
+lcm.supported_dtypes = ( 
+    "int8",
+    "int16", 
+    "int32", 
+    "int64"
+)

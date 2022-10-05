@@ -732,3 +732,22 @@ def trunc_divide(
     else:
         ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
+
+
+def lcm(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.abs(torch.lcm(x1, x2, out=out))
+
+
+lcm.support_native_out = True
+lcm.supported_dtypes = ( 
+    "int8",
+    "int16", 
+    "int32", 
+    "int64"
+)
