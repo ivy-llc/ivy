@@ -69,12 +69,9 @@ def Cosh(*, x, name="cosh"):
 
 
 def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
-    if reverse:
-        return ivy.astype(
-            ivy.flip(ivy.cumprod(ivy.flip(x), axis=axis, exclusive=exclusive)), x.dtype
-        )
-    else:
-        return ivy.astype(ivy.cumprod(x, axis=axis, exclusive=exclusive), x.dtype)
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
