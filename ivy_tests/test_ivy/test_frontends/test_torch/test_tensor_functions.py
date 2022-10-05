@@ -18,7 +18,6 @@ def test_torch_is_tensor(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -27,7 +26,6 @@ def test_torch_is_tensor(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="is_tensor",
         obj=x[0],
@@ -49,7 +47,6 @@ def test_torch_numel(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -58,7 +55,6 @@ def test_torch_numel(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="numel",
         input=ivy.asarray(x),
@@ -80,7 +76,6 @@ def test_torch_is_floating_point(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -89,7 +84,6 @@ def test_torch_is_floating_point(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="is_floating_point",
         input=ivy.asarray(x),
@@ -113,7 +107,6 @@ def test_torch_is_nonzero(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -122,7 +115,6 @@ def test_torch_is_nonzero(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="is_nonzero",
         input=ivy.asarray(x),

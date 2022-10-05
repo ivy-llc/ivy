@@ -78,7 +78,6 @@ def test_torch_cat(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -87,7 +86,6 @@ def test_torch_cat(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cat",
         tensors=xs,
@@ -110,7 +108,6 @@ def test_torch_concat(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -119,7 +116,6 @@ def test_torch_concat(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="concat",
         tensors=xs,
@@ -148,7 +144,6 @@ def test_torch_nonzero(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
@@ -157,7 +152,6 @@ def test_torch_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nonzero",
         input=input[0],
@@ -181,7 +175,6 @@ def test_torch_permute(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_function(
@@ -190,7 +183,6 @@ def test_torch_permute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="permute",
         input=x[0],
@@ -223,7 +215,6 @@ def test_torch_swapdims(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -232,7 +223,6 @@ def test_torch_swapdims(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="swapdims",
         input=value[0],
@@ -273,7 +263,6 @@ def test_torch_reshape(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
@@ -282,7 +271,6 @@ def test_torch_reshape(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="reshape",
         input=x[0],
@@ -312,7 +300,6 @@ def test_torch_stack(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -321,7 +308,6 @@ def test_torch_stack(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="stack",
         tensors=value,
@@ -354,7 +340,6 @@ def test_torch_transpose(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -363,7 +348,6 @@ def test_torch_transpose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="transpose",
         input=value[0],
@@ -394,7 +378,6 @@ def test_torch_squeeze(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -403,7 +386,6 @@ def test_torch_squeeze(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="squeeze",
         input=value[0],
@@ -436,7 +418,6 @@ def test_torch_swapaxes(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -445,7 +426,6 @@ def test_torch_swapaxes(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="swapaxes",
         input=value[0],
@@ -477,7 +457,6 @@ def test_torch_chunk(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -486,7 +465,6 @@ def test_torch_chunk(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="chunk",
         input=value[0],
