@@ -41,6 +41,7 @@ def test_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="relu",
+        test_gradients=True,
         x=x[0],
     )
 
