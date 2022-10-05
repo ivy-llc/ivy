@@ -8,6 +8,7 @@ import jaxlib.xla_extension
 
 # local
 import ivy
+import re
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
@@ -175,11 +176,23 @@ def linspace(
         raise ivy.exceptions.IvyException(
             f"Number of samples, {num}, must be non-negative."
         )
+    # if bool(re.search('float64', str(ivy.finfo(stop)))):
+    #     dtype = jnp.float64
+    # dtype32_lim = jnp.abs(jnp.finfo(start)).tiny
+    dtype32_lim = 3.4028234663852886e38
 
-    if dtype is None:
-        dtype = ivy.promote_types(start.dtype, stop.dtype)
-    dtype = jnp.dtype(dtype)
-    computation_dtype = dtype
+    if bool(re.search("float32", str(ivy.finfo(start)))) and jnp.isclose(
+        dtype32_lim, start
+    ):
+        dtype_mod = jnp.float64
+    # else:
+    #     dtype = ivy.default_float_dtype()
+
+    # dtype = ivy.promote_types(start.dtype, stop.dtype)
+    print("promoted dtype: {}".format(dtype))
+    dtype_mod = jnp.dtype(dtype)
+    computation_dtype = dtype_mod
+    print("computation_dtype: {}".format(computation_dtype))
     start = jnp.asarray(start, dtype=computation_dtype)
     stop = jnp.asarray(stop, dtype=computation_dtype)
 
@@ -220,6 +233,9 @@ def linspace(
         out.dtype, jnp.integer
     ):
         out = jax.lax.floor(out)
+
+    if dtype is None:
+        dtype = jnp.dtype(ivy.default_float_dtype())
 
     ans = jax.lax.convert_element_type(out, dtype)
 
