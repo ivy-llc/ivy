@@ -49,7 +49,7 @@ from ivy import (
 from ivy.exceptions import handle_exceptions
 import ivy
 from numbers import Number
-from typing import Union, Tuple, List, Iterable
+from typing import Union, Tuple, Iterable
 
 
 standard_promotion_table = {
