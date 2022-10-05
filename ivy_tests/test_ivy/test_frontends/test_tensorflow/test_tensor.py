@@ -612,3 +612,96 @@ def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
         class_name="Tensor",
         method_name="__truediv__",
     )
+
+
+# __bool__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_dim_size=1,
+    ),
+)
+def test_tensorflow_instance_bool(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        all_as_kwargs_np_method={},
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__bool__",
+    )
+
+
+# __nonzero__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_dim_size=1,
+    ),
+)
+def test_tensorflow_instance_nonzero(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        all_as_kwargs_np_method={},
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__nonzero__",
+    )
+
+
+# __neg__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ],
+    ),
+)
+def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        all_as_kwargs_np_method={},
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__neg__",
+    )
