@@ -1777,7 +1777,14 @@ def flatten(*, ret):
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
-    return ivy.multi_index_nest(ret, ret_idxs)
+    # no ivy array in the returned values, which means it returned scalar
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [ivy.asarray(x) for x in ret_flat]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    return ret_flat
 
 
 def flatten_and_to_np(*, ret):
