@@ -318,12 +318,14 @@ def test_matrix_power(
 @given(
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
+    adjoint=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
 def test_matmul(
     *,
     x,
     y,
+    adjoint,
     as_variable,
     with_out,
     num_positional_args,
@@ -348,6 +350,7 @@ def test_matmul(
         atol_=1e-1,
         x1=x_1,
         x2=y_1,
+        adjoint=adjoint
     )
 
 
@@ -540,11 +543,13 @@ def test_inner(
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    adjoint=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
     *,
     dtype_x,
+    adjoint,
     as_variable,
     with_out,
     num_positional_args,
@@ -567,6 +572,7 @@ def test_inv(
         atol_=1e-2,
         fn_name="inv",
         x=x[0],
+        adjoint=adjoint,
     )
 
 
