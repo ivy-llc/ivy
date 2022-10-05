@@ -154,14 +154,6 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # if len(x) == 0:
-    #     if keepdims:
-    #         ret = x.reshape(x.shape[:-2] + (1, 1))
-    #     else:
-    #         ret = x.reshape(x.shape[:-2])
-    # else:
-    #     ret = jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
-    # return ret
     if not isinstance(axis, tuple):
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
