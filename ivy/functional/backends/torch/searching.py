@@ -5,7 +5,6 @@ import torch
 import torch.nn.functional as tnf
 
 import ivy
-from ivy.func_wrapper import infer_dtype
 
 
 # Array API Standard #
@@ -26,7 +25,6 @@ def argmax(
 argmax.support_native_out = True
 
 
-@infer_dtype
 def argmin(
     x: torch.Tensor,
     /,
