@@ -118,16 +118,14 @@ def check_all_or_any_fn(
 
 
 def check_shape(x1, x2, message=""):
-    x1_shape = ivy.shape(x1)
-    x2_shape = ivy.shape(x2)
     message = (
         message
         if message != ""
         else "{} and {} must have the same shape ({} vs {})".format(
-            x1, x2, x1_shape, x2_shape
+            x1, x2, ivy.shape(x1), ivy.shape(x2)
         )
     )
-    if x1_shape != x2_shape:
+    if ivy.shape(x1) != ivy.shape(x2):
         raise ivy.exceptions.IvyException(message)
 
 
