@@ -61,17 +61,21 @@ def searchsorted(
     )
     is_supported_int_ret_dtype = ret_dtype in [tf.int32, tf.int64]
     if sorter is not None:
-        x = tf.gather(x, sorter)
+        if x.ndim == 1:
+            x = tf.gather(x, sorter)
+        else:
+            x = tf.gather(x, sorter, batch_dims=-1)
     if x.ndim == 1 and v.ndim != 1:
+        out_shape = v.shape
+        v = tf.reshape(v, (1, -1))  # Leading dims must be the same
         if is_supported_int_ret_dtype:
-            fn = lambda inner_v: tf.searchsorted(
-                x, inner_v, side=side, out_type=ret_dtype
+            return tf.reshape(
+                tf.searchsorted(x, v, side=side, out_type=ret_dtype), out_shape
             )
         else:
-            fn = lambda inner_v: tf.cast(
-                tf.searchsorted(x, inner_v, side=side), ret_dtype
+            return tf.cast(
+                tf.reshape(tf.searchsorted(x, v, side=side), out_shape), ret_dtype
             )
-        return tf.map_fn(fn=fn, elems=v, dtype=ret_dtype)
     if is_supported_int_ret_dtype:
         return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
     return tf.cast(tf.searchsorted(x, v, side=side), ret_dtype)
