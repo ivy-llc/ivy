@@ -1404,7 +1404,8 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
 
 @handle_exceptions
 def exists(x: Any) -> bool:
-    """Simple check as to whether the input is None or not.
+    """
+    Simple check as to whether the input is None or not.
 
     Parameters
     ----------
@@ -1450,12 +1451,14 @@ def exists(x: Any) -> bool:
     >>> print(y)
     True
 
-    >>> x = ivy.native_array([1, 2, 3, 1.2])
+    With a mix of :class:`ivy.array` and :code:`Any` input:
+
+    >>> x = ivy.array([])
     >>> y = ivy.exists(x)
     >>> print(y)
     True
 
-    >>> x = ivy.array([1, 2, 3, 1.2])
+    >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.exists(x)
     >>> print(y)
     True
@@ -1477,8 +1480,45 @@ def exists(x: Any) -> bool:
     >>> print(y)
     True
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.native_array([1, 0, 1.2]))
+    >>> x = ivy.Container(a=ivy.array([]), b=ivy.array([]))
     >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([]), b=ivy.array([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.NativeArray([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([]), b=ivy.NativeArray([]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([]), b=ivy.NativeArray([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.NativeArray([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    With :class:`ivy.Array` instance methods:
+
+    >>> x = ivy.array([])
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.exists()
     >>> print(y)
     True
 
