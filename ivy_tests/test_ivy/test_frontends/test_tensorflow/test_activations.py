@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
 )
 def test_tensorflow_hard_sigmoid(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -35,9 +35,7 @@ def test_tensorflow_hard_sigmoid(
         fn_name="ivy.functional.frontends.tensorflow.linear"
     ),
 )
-def test_tensorflow_linear(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_linear(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

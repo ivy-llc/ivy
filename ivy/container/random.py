@@ -583,6 +583,7 @@ class ContainerWithRandom(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.multinomial. This method
@@ -615,6 +616,8 @@ class ContainerWithRandom(ContainerBase):
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -636,6 +639,7 @@ class ContainerWithRandom(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             device=device,
+            seed=seed,
             out=out,
         )
 
@@ -652,6 +656,7 @@ class ContainerWithRandom(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.multinomial. This method
@@ -684,6 +689,8 @@ class ContainerWithRandom(ContainerBase):
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -704,6 +711,7 @@ class ContainerWithRandom(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             device=device,
+            seed=seed,
             out=out,
         )
 
@@ -720,6 +728,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.randint. This method
@@ -753,6 +762,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default integer data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -800,6 +811,7 @@ class ContainerWithRandom(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            seed=seed,
             out=out,
         )
 
@@ -815,6 +827,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.randint. This method
@@ -848,6 +861,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default integer data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -980,6 +995,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
