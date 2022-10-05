@@ -17,13 +17,6 @@ def _is_same_kind_or_safe(t1, t2):
     )
 
 
-def _process_args_and_dtype(args, dtype, num_args):
-    return [
-        ivy.astype(args[i], ivy.as_ivy_dtype(dtype)) if i < num_args else args[i]
-        for i in range(len(args))
-    ]
-
-
 def _assert_args_and_fn(args, dtype, fn):
     ivy.assertions.check_all_or_any_fn(
         *args,
@@ -86,7 +79,12 @@ def handle_numpy_casting(num_args: int = 1) -> Callable:
                         dtype,
                         fn=assert_fn,
                     )
-                args = _process_args_and_dtype(args, dtype, num_args)
+                args = [
+                    ivy.astype(args[i], ivy.as_ivy_dtype(dtype))
+                    if i < num_args
+                    else args[i]
+                    for i in range(len(args))
+                ]
 
             return fn(*args, **kwargs)
 
