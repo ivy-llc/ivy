@@ -151,3 +151,68 @@ def test_torch_binary_cross_entropy(
         reduce=reduce,
         reduction=reduction,
     )
+
+
+# triplet_margin_loss
+@handle_cmd_line_args
+@given(
+    dtype_and_anchor=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
+    ),
+    dtype_and_positive=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
+    ),
+    dtype_and_negative=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
+    ),
+    margin=helpers.ints_or_floats(min_value=1.0, max_value=5),
+    p=helpers.ints(min_value=1),
+    eps=helpers.floats(min_value=1e-06, max_value=5),
+    swap=st.booleans(),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["mean", "none", "sum", None]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triplet_margin_loss"
+    ),
+)
+def test_torch_triplet_margin_loss(
+    dtype_and_anchor,
+    dtype_and_positive,
+    dtype_and_negative,
+    margin,
+    p,
+    eps,
+    swap,
+    size_average,
+    reduce,
+    reduction,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    anchor_dtype, anchor = dtype_and_anchor
+    positive_dtype, positive = dtype_and_positive
+    negative_dtype, negative = dtype_and_negative
+    helpers.test_frontend_function(
+        input_dtypes=anchor_dtype + positive_dtype + negative_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.triplet_margin_loss",
+        anchor=anchor[0],
+        positive=positive[0],
+        negative=negative[0],
+        margin=margin,
+        p=p,
+        eps=eps,
+        swap=swap,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )
