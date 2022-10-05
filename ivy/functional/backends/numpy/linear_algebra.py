@@ -140,10 +140,13 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    if not isinstance(axis, tuple):
+        axis = tuple(axis)
+    return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 matrix_norm.unsupported_dtypes = (
@@ -296,9 +299,15 @@ def tensordot(
 
 @_handle_0_dim_output
 def trace(
-    x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
+    return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
 trace.support_native_out = True

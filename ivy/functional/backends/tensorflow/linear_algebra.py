@@ -248,21 +248,20 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axes = (-2, -1)
     if ord == -float("inf"):
-        ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes
-        )
+        reduce_min = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis)
+        ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes
+            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True), axis=axis
         )
     elif ord == -2:
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=(-2, -1), keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False), axis=axis, keepdims=keepdims
         )
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
@@ -270,7 +269,7 @@ def matrix_norm(
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     else:
-        ret = tf.linalg.norm(x, ord, axes, keepdims)
+        ret = tf.linalg.norm(x, ord, axis, keepdims)
 
     if keepdims:
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
@@ -560,12 +559,15 @@ def tensordot(
 
 def trace(
     x: Union[tf.Tensor, tf.Variable],
-    offset: int = 0,
+    /,
     *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.trace(
-        x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
+        x, offset=offset, axis1=axis1, axis2=axis2
     )
     return ret
 
