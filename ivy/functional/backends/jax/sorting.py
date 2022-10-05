@@ -59,7 +59,7 @@ def searchsorted(
             f"must match, got {x.shape} and {v.shape}"
         )
         original_shape = v.shape
-        out_array = []
+        out_array = []  # JAX arrays are immutable.
         x = x.reshape(-1, x.shape[-1])
         v = v.reshape(-1, v.shape[-1])
         for i in range(x.shape[0]):
