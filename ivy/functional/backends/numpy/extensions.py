@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from math import sin, pi
 
 
 def is_native_sparse_array(x):
@@ -22,7 +23,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     ivy.assertions.check_exists(
         data,
@@ -58,3 +59,32 @@ def native_sparse_array_to_indices_values_and_shape(x):
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
+
+
+def vorbis_window(
+    window_length: np.ndarray,
+    *,
+    dtype:Optional[np.dtype] = np.float32,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.array([
+        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
+        for i in range(1, window_length*2)[0::2]
+    ], dtype=dtype)
+
+
+vorbis_window.support_native_out = False
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[np.dtype] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    window_length = window_length + 1 if periodic == True else window_length
+    return np.array(np.hanning(window_length), dtype=dtype)
+
+
+hann_window.support_native_out = False

@@ -5,7 +5,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
-    inputs_to_native_arrays
+    inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -154,7 +154,7 @@ class SparseArray:
         csr_crow_indices=None,
         csr_col_indices=None,
         values=None,
-        dense_shape=None
+        dense_shape=None,
     ):
         if _is_data_not_indices_values_and_shape(
             data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -361,7 +361,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     return ivy.current_backend().native_sparse_array(
         data,
@@ -453,3 +453,86 @@ def sinc(
 
     """
     return ivy.current_backend(x).sinc(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vorbis_window(
+    window_length: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.array:
+    """Returns an array that contains a vorbis power complementary window of size window_length.
+
+    Parameters
+    ----------
+    window_length
+        the length of the vorbis window.
+    dtype
+        data type of the returned array. By default float32.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Input array with the vorbis window.
+
+    Examples
+    --------
+
+    >>> ivy.vorbis_window(3)
+    ivy.array([0.38268346, 1. , 0.38268352])
+
+    >>> ivy.vorbis_window(5)
+    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    """
+    return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Hann window. The Hanning window 
+    is a taper formed by using a weighted cosine.
+    
+    Parameters
+    ----------
+    window_length
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function. 
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+
+    >>> ivy.hann_window(4, True)
+    ivy.array([0. , 0.5, 1. , 0.5])
+
+    >>> ivy.hann_window(7, False)
+    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
+
+    """
+    return ivy.current_backend().hann_window(
+        window_length, periodic, dtype=dtype, out=out)
