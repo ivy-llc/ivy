@@ -22,9 +22,9 @@ def eigh(a, UPLO="L", symmetrize_input=True):
     return ivy.eigh(a, UPLO=UPLO)
 
 
-
 def matrix_power(m, n):
-    return ivy.matrix_power(m**n)
+    return ivy.matrix_power(m, n)
+
 
 # eigvalsh
 def eigvalsh(a, UPLO="L"):
@@ -37,4 +37,3 @@ def qr(a, mode="reduced"):
 
 def eigvals(a):
     return ivy.eigh(a)
-
