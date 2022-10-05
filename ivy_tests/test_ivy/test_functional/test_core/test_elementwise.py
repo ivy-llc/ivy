@@ -2195,17 +2195,41 @@ def test_erf(
     )
 
 
+@st.composite
+def min_max_helper(draw):
+    use_where = draw(st.booleans())
+    if use_where:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        )
+    else:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                min_value=-1e5,
+                max_value=1e5,
+                safety_factor_scale="log",
+            )
+        )
+    return dtype_and_x, use_where
+
+
 # minimum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
+    dtype_and_x_and_use_where=min_max_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
 )
 def test_minimum(
     *,
-    dtype_and_x,
+    dtype_and_x_and_use_where,
     as_variable,
     with_out,
     num_positional_args,
@@ -2214,7 +2238,7 @@ def test_minimum(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2225,22 +2249,24 @@ def test_minimum(
         instance_method=instance_method,
         fw=fw,
         fn_name="minimum",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
 # maximum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
+    dtype_and_x_and_use_where=min_max_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
 )
 def test_maximum(
     *,
-    dtype_and_x,
+    dtype_and_x_and_use_where,
     as_variable,
     with_out,
     num_positional_args,
@@ -2249,7 +2275,7 @@ def test_maximum(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2260,8 +2286,12 @@ def test_maximum(
         instance_method=instance_method,
         fw=fw,
         fn_name="maximum",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
@@ -2270,8 +2300,8 @@ def test_maximum(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
         safety_factor_scale="log",
         num_arrays=1,
     ),
@@ -2299,6 +2329,9 @@ def test_reciprocal(
         instance_method=instance_method,
         fw=fw,
         fn_name="reciprocal",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2332,6 +2365,7 @@ def test_deg2rad(
         instance_method=instance_method,
         fw=fw,
         fn_name="deg2rad",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2365,6 +2399,7 @@ def test_rad2deg(
         instance_method=instance_method,
         fw=fw,
         fn_name="rad2deg",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2373,7 +2408,11 @@ def test_rad2deg(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="trunc_divide"),
 )
@@ -2401,6 +2440,9 @@ def test_trunc_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="trunc_divide",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )

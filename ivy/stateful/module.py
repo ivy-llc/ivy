@@ -80,7 +80,12 @@ class Module(abc.ABC):
         valid_build_modes = ["on_init", "explicit", "on_call"]
         ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
-            device, ivy.default(lambda: devices[0], default_val=ivy.default_device(), catch_exceptions=True)
+            device,
+            ivy.default(
+                lambda: devices[0],
+                default_val=ivy.default_device(),
+                catch_exceptions=True,
+            ),
         )
         self._devs = ivy.default(devices, [self._dev])
         self._build_mode = build_mode

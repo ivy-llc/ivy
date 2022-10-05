@@ -21,6 +21,9 @@ class Tensor:
         # return tf_frontend.add(self.data, y.data, name=name)
         return y.__radd__(self.data)
 
+    def __and__(self, y, name="and"):
+        return y.__rand__(self.data)
+
     def __eq__(self, other):
         return tf_frontend.Equal(x=self.data, y=other, incompatible_shape_error=False)
 
@@ -44,14 +47,29 @@ class Tensor:
             x=self.data, y=other.data, incompatible_shape_error=False
         )
 
-    def __sub__(self, y, name="sub"):
-        return y.__rsub__(self.data)
+    def __or__(self, y, name="or"):
+        return y.__ror__(self.data)
 
     def __radd__(self, x, name="radd"):
         return tf_frontend.add(x, self.data, name=name)
 
+    def __rand__(self, x, name="rand"):
+        return tf_frontend.logical_and(x, self.data, name=name)
+
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.FloorDiv(x=x, y=self.data, name=name)
 
+    def __ror__(self, x, name="ror"):
+        return tf_frontend.LogicalOr(x=x, y=self.data, name=name)
+
     def __rsub__(self, x, name="rsub"):
         return tf_frontend.subtract(x, self.data, name=name)
+
+    def __rtruediv__(self, x, name="rtruediv"):
+        return tf_frontend.divide(x, self.data, name=name)
+
+    def __sub__(self, y, name="sub"):
+        return y.__rsub__(self.data)
+
+    def __truediv__(self, y, name="truediv"):
+        return y.__rtruediv__(self.data)
