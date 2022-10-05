@@ -120,7 +120,7 @@ def test_argmin(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
-        dtype =output_dtype,
+        dtype=output_dtype,
     )
 
 
