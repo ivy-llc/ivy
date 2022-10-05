@@ -34,7 +34,7 @@ def test_dtype_instances(device):
 
 
 # for data generation in multiple tests
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+dtype_shared = helpers.get_dtypes("valid", full=False, key="dtype")
 
 
 @st.composite
@@ -173,7 +173,7 @@ def test_broadcast_to(
 ):
     array, to_shape = array_and_shape
     helpers.test_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
