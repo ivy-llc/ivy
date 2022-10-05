@@ -60,24 +60,19 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         args_to_check = ivy.multi_index_nest(args, args_idxs)
         kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
         kwargs_to_check = ivy.multi_index_nest(kwargs, kwargs_idxs)
-        if casting == "no" or casting == "equiv":
-            # to check
+        if (args_to_check or kwargs_to_check) and (
+            casting == "no" or casting == "equiv"
+        ):
+            first_arg = args_to_check[0] if args_to_check else kwargs_to_check[0]
+            fn_func = (
+                ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
+            )
             _assert_args_and_fn(
                 args_to_check,
                 kwargs_to_check,
                 dtype,
-                fn=lambda x: ivy.dtype(x) == ivy.dtype(args[0]),
+                fn=lambda x: ivy.dtype(x) == fn_func,
             )
-            # if ivy.exists(dtype):
-            #     # if check_output_dtype:
-            #
-            #     ivy.assertions.check_equal(
-            #         ivy.as_ivy_dtype(dtype),
-            #         ivy.dtype(args[0]),
-            #         message="casting is {}, dtype must match input types".format(
-            #             casting
-            #         ),
-            #     )
         elif ivy.exists(dtype):
             assert_fn = None
             if casting == "safe":
@@ -103,4 +98,40 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     new_fn.handle_numpy_casting = True
+    return new_fn
+
+
+def handle_numpy_casting_special(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+        """
+        Check numpy casting type for special cases where output must be type bool.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, or raise IvyException if error is thrown.
+        """
+        ivy.assertions.check_elem_in_list(
+            casting,
+            ["no", "equiv", "safe", "same_kind", "unsafe"],
+            message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
+        )
+        if ivy.exists(dtype):
+            ivy.assertions.check_equal(
+                ivy.as_ivy_dtype(dtype),
+                "bool",
+                message="output is compatible with bool only",
+            )
+
+        return fn(*args, **kwargs)
+
+    new_fn.handle_numpy_casting_special = True
     return new_fn
