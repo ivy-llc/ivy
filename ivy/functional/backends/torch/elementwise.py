@@ -593,9 +593,7 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
-    floor_div = torch.floor(torch.div(x1, x2)).to(x1.dtype)
-    res = x1 - floor_div * x2
-    return res.to(x1.dtype)
+    return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 
 remainder.support_native_out = True
@@ -658,11 +656,19 @@ def minimum(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    use_where: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    # torch.min hasn't been used because it fails the gradient tests
-    return torch.where(x1 <= x2, x1, x2)
+    if use_where:
+        ret = torch.where(x1 <= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.minimum(x1, x2, out=out)
+
+
+minimum.support_native_out = True
 
 
 def maximum(
@@ -670,11 +676,19 @@ def maximum(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    use_where: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    # torch.max hasn't been used because it fails the gradient tests
-    return torch.where(x1 >= x2, x1, x2)
+    if use_where:
+        ret = torch.where(x1 >= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.maximum(x1, x2, out=out)
+
+
+maximum.support_native_out = True
 
 
 def reciprocal(

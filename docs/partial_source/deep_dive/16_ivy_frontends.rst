@@ -1,5 +1,5 @@
-Ivy Frontends
-=============
+Ivy Frontends ➡
+===============
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
