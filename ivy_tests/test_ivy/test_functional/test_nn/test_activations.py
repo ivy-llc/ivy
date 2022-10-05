@@ -83,6 +83,7 @@ def test_leaky_relu(
         fn_name="leaky_relu",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         alpha=alpha,
     )
