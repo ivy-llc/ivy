@@ -1,5 +1,5 @@
-Arrays
-======
+Arrays 🔢
+=========
 
 .. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149
 .. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209
