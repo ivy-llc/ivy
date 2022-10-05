@@ -14,6 +14,5 @@ def linear(x):
     return x
 
 def relu(x):
-    max_val = ivy.inf if x.max() < 0 else x.max()
-    x = ivy.clip(x, 0.0, max_val)
+    x = ivy.clip(x, 0.0, ivy.inf)
     return x
