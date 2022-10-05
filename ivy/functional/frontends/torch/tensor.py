@@ -11,7 +11,7 @@ class Tensor:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -19,3 +19,7 @@ class Tensor:
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
+
+    def new_ones(self, shape, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(shape, dtype=dtype, device=device,
+                                   requires_grad=requires_grad)
