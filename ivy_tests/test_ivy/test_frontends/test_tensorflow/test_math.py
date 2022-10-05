@@ -1083,7 +1083,7 @@ def test_tensorflow_zero_fraction(
     ),
 )
 def test_tensorflow_truediv(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1092,7 +1092,6 @@ def test_tensorflow_truediv(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="math.truediv",
         x=x[0],
