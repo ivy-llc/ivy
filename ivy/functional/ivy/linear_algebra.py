@@ -185,7 +185,12 @@ def cross(
 
     
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_.
+    <https://data-apis.org/array-api/latest/>`.
+    This docstring is an extension of the docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
