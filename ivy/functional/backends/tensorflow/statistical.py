@@ -85,9 +85,18 @@ def std(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.std(
-        x, axis=axis, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return tf.cast(
+            tf.math.multiply(
+                tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims),
+                size / (size - correction),
+            ),
+            x.dtype,
+        )
 
 
 def sum(
