@@ -448,7 +448,7 @@ def test_default_dtype(
 # dtype
 @handle_cmd_line_args
 @given(
-    array=helpers.nph.arrays(
+    array=helpers.array_values(
         dtype=dtype_shared,
         shape=helpers.lists(
             arg=helpers.ints(min_value=1, max_value=5),
@@ -472,7 +472,7 @@ def test_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,

@@ -635,6 +635,9 @@ def array_values(
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
+
     size = 1
     if isinstance(shape, int):
         size = shape
