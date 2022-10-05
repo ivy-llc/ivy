@@ -23,9 +23,9 @@ def layer_norm(
     normalized_idxs: List[int],
     /,
     *,
+    weight: Optional[ivy.Array] = None,
+    bias: Optional[ivy.Array] = None,
     epsilon: float = ivy._MIN_BASE,
-    scale: float = 1.0,
-    offset: float = 0.0,
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -37,12 +37,12 @@ def layer_norm(
         Input array
     normalized_idxs
         Indices to apply the normalization to.
+    weight
+        Learnable gamma variables for elementwise post-multiplication, default is None.
+    bias
+        Learnable beta variables for elementwise post-addition, default is None.
     epsilon
         small constant to add to the denominator, use global ivy._MIN_BASE by default.
-    scale
-        Learnable gamma variables for post-multiplication, default is None.
-    offset
-        Learnable beta variables for post-addition, default is None.
     new_std
         The standard deviation of the new normalized values. Default is 1.
     out
@@ -132,4 +132,12 @@ def layer_norm(
     x = ivy.divide(
         ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=epsilon)
     )
-    return ivy.add(ivy.multiply(ivy.multiply(x, new_std), scale), offset, out=out)
+
+    if weight is not None:
+        if bias is not None:
+            return ivy.multiply(
+                ivy.add(ivy.multiply(x, weight), bias), new_std, out=out
+            )
+        return ivy.multiply(ivy.multiply(x, weight), new_std, out=out)
+
+    return ivy.multiply(x, new_std, out=out)
