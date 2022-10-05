@@ -641,21 +641,22 @@ def test_tensorflow_dropout(
 @handle_cmd_line_args
 @given(
     dtype_labels_logits=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=0,
         max_value=1,
         min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=2,
         shared_dtype=True,
     ),
-    name=st.sampled_from(["sigmoid_cross_entropy_with_logits"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.nn.sigmoid_cross_entropy_with_logits",  # noqa
     ),
 )
 def test_tensorflow_sigmoid_cross_entropy_with_logits(
     dtype_labels_logits,
-    name,
     as_variable,
     num_positional_args,
     native_array,
@@ -674,5 +675,4 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
         fn_tree="nn.sigmoid_cross_entropy_with_logits",
         labels=labels,
         logits=logits,
-        name=name,
     )
