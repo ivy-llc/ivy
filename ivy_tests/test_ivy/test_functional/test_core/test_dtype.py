@@ -44,7 +44,7 @@ def dtypes_shared(draw, num_dtypes):
     return draw(
         st.shared(
             st.lists(
-                st.sampled_from(ivy_np.valid_dtypes),
+                st.sampled_from(draw(helpers.get_dtypes("valid"))),
                 min_size=num_dtypes,
                 max_size=num_dtypes,
             ),
@@ -117,7 +117,7 @@ def broadcastable_arrays(draw, dtypes):
     dtypes = draw(dtypes)
     arrays = []
     for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
-        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}").tolist()
+        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
         arrays.append(x)
     return arrays
 
