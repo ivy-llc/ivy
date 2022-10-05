@@ -204,8 +204,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -547,6 +547,7 @@ def conv_general_transpose(
     output_shape=None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -586,7 +587,7 @@ def conv_general_transpose(
         _out_shape(
             x.shape[i + 2],
             strides[i],
-            pad_specific[i],
+            padding_list[i],
             dilations[i],
             filters.shape[i + 2],
         )
@@ -602,6 +603,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[:, :, :-1]
@@ -614,6 +616,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :]
@@ -628,12 +631,13 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :, :]
         if not_valid_pad[1]:
             res = res[..., :, :-1, :]
-        if not_valid_pad[1]:
+        if not_valid_pad[2]:
             res = res[..., :, :, :-1]
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)

@@ -1,10 +1,14 @@
 import logging
+from typing import Optional
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
     _verify_csr_components,
     _is_coo_not_csr,
 )
+from ivy.functional.backends.jax import JaxArray
+import jax.numpy as jnp
+from math import pi, sin
 
 
 def is_native_sparse_array(x):
@@ -19,7 +23,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     ivy.assertions.check_exists(
         data,
@@ -49,3 +53,19 @@ def native_sparse_array_to_indices_values_and_shape(x):
         indices, values and shape."
     )
     return None, None, None
+
+
+def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.sinc(x)
+
+
+def vorbis_window(
+    window_length: JaxArray,
+    *,
+    dtype:Optional[jnp.dtype] = jnp.float32,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.array([
+        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
+        for i in range(1, window_length*2)[0::2]
+    ], dtype=dtype)

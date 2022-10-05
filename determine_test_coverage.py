@@ -1,12 +1,14 @@
 import os
 from pprint import pprint
+import pickle
 
 # Shared Map
 tests = {}
 
-# Run Coverage For A Particular Test
+
+# TODO: Add tests to this
 test_names = [
-    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs"
+    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs",
 ]
 directories = [
     "ivy",
@@ -30,6 +32,19 @@ directories = [
     "ivy_tests/test_ivy/test_frontends",
     "ivy_tests/test_ivy/test_frontends/test_jax",
     "ivy_tests/test_ivy/test_frontends/test_numpy",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_creation_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_fft",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_indexing_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_linear_algebra",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_logic",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ma",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_manipulation_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_matrix",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_random",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_sorting_searching_counting",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_statistics",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ufunc",
     "ivy_tests/test_ivy/test_frontends/test_tensorflow",
     "ivy_tests/test_ivy/test_frontends/test_torch",
     "ivy_tests/test_ivy/test_functional",
@@ -61,3 +76,6 @@ if __name__ == "__main__":
 
 
 pprint(tests)
+
+with open("tests.pkl", "wb") as f:
+    pickle.dump(tests, f)
