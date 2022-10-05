@@ -60,5 +60,7 @@ def searchsorted(
         out_array = np.empty_like(v)
         for i in range(x.shape[0]):
             out_array[i] = np.searchsorted(x[i], v[i], side=side)
-        return out_array.reshape(original_shape)
-    return np.searchsorted(x, v, side=side, sorter=sorter).astype(ret_dtype)
+        ret = out_array.reshape(original_shape)
+    else:
+        ret = np.searchsorted(x, v, side=side, sorter=sorter)
+    return ret.astype(ret_dtype)

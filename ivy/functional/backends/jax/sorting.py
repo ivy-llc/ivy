@@ -64,6 +64,7 @@ def searchsorted(
         v = v.reshape(-1, v.shape[-1])
         for i in range(x.shape[0]):
             out_array.append(jnp.searchsorted(x[i], v[i], side=side))
-        out_array = jnp.array(out_array)
-        return out_array.reshape(original_shape)
-    return jnp.searchsorted(x, v, side=side).astype(ret_dtype)
+        ret = jnp.array(out_array).reshape(original_shape)
+    else:
+        ret = jnp.searchsorted(x, v, side=side)
+    return ret.astype(ret_dtype)
