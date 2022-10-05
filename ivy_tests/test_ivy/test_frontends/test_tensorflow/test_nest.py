@@ -24,7 +24,6 @@ def test_tensorflow_flatten(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

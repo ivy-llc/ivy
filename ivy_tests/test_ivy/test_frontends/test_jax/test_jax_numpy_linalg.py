@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         fn_name="ivy.functional.frontends.jax.numpy.linalg.det"
     ),
 )
-def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -60,7 +60,6 @@ def test_jax_numpy_eigh(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
     UPLO,
     symmetrize_input,
 ):
@@ -113,7 +112,7 @@ def test_jax_numpy_eigh(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.inv"
     ),
 )
-def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -151,7 +150,6 @@ def test_jax_numpy_eigvalsh(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
     UPLO,
 ):
     dtype, x = dtype_and_x
@@ -164,7 +162,6 @@ def test_jax_numpy_eigvalsh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.linalg.eigvalsh",
         rtol=1e-2,
@@ -234,7 +231,6 @@ def test_jax_numpy_eigvals(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
