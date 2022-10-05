@@ -3176,6 +3176,23 @@ def get_num_dims(
     ret
         Shape of the array
 
+    Examples
+    --------
+    >>> a = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])
+    >>> b = ivy.get_num_dims(a)
+    >>> print(b)
+    2
+
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> b = ivy.get_num_dims(a, as_array=False)
+    >>> print(b)
+    3
+    
+    >>> b = ivy.get_num_dims(a, as_array=True)
+    >>> print(b)
+    ivy.array(3)
     """
     return current_backend(x).get_num_dims(x, as_array=as_array)
 
