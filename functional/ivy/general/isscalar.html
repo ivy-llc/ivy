@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>function_supported_devices_and_dtypes &mdash; Ivy 1.0 documentation</title>
+  <title>isscalar &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="function_unsupported_devices_and_dtypes" href="function_unsupported_devices_and_dtypes.html" />
-    <link rel="prev" title="arg_info" href="arg_info.html" /> 
+    <link rel="next" title="to_scalar" href="to_scalar.html" />
+    <link rel="prev" title="ivy.Container.to_numpy" href="to_numpy/to_numpy_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -80,7 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isscalar.html">isscalar</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">isscalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
@@ -134,7 +134,7 @@
 <li class="toctree-l2"><a class="reference internal" href="shape_array_mode.html">shape_array_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_num_dims.html">get_num_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg_info.html">arg_info</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">function_supported_devices_and_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_supported_devices_and_dtypes.html">function_supported_devices_and_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_unsupported_devices_and_dtypes.html">function_unsupported_devices_and_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vmap.html">vmap</a></li>
 </ul>
@@ -198,9 +198,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../general.html">General</a> &raquo;</li>
-      <li>function_supported_devices_and_dtypes</li>
+      <li>isscalar</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/general/function_supported_devices_and_dtypes.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/isscalar.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -208,27 +208,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="function-supported-devices-and-dtypes">
-<h1>function_supported_devices_and_dtypes<a class="headerlink" href="#function-supported-devices-and-dtypes" title="Permalink to this heading"></a></h1>
+  <section id="isscalar">
+<h1>isscalar<a class="headerlink" href="#isscalar" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.function_supported_devices_and_dtypes">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">function_supported_devices_and_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#function_supported_devices_and_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.function_supported_devices_and_dtypes" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Returns the supported combination of devices and dtypes</dt><dd><p>of the current backend’s function.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the supported device and dtype attribute</p></li>
-<li><p><strong>recurse</strong> – Whether to recurse into used ivy functions. Default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The unsupported devices of the function</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.general.isscalar">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">isscalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#isscalar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.isscalar" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -244,8 +231,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="arg_info.html" class="btn btn-neutral float-left" title="arg_info" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="function_unsupported_devices_and_dtypes.html" class="btn btn-neutral float-right" title="function_unsupported_devices_and_dtypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="to_numpy/to_numpy_container.html" class="btn btn-neutral float-left" title="ivy.Container.to_numpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="to_scalar.html" class="btn btn-neutral float-right" title="to_scalar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
