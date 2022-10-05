@@ -126,6 +126,7 @@ def test_gelu(
         fn_name="gelu",
         atol_=1e-2,
         rtol_=1e-2,
+        test_gradients=True,
         x=x[0],
         approximate=approximate,
     )
