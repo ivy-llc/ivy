@@ -253,7 +253,7 @@ def matrix_norm(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
-        reduce_min = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axes)
+        reduce_min = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis)
         ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
