@@ -7,7 +7,7 @@ from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def equal(
     x1,
     x2,
@@ -35,7 +35,7 @@ def array_equal(a1, a2, equal_nan=False):
     return ivy.array(ivy.array_equal(a1[~a1nan], a2[~a2nan]))
 
 
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def greater(
     x1,
     x2,
@@ -54,7 +54,7 @@ def greater(
     return ret
 
 
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def greater_equal(
     x1,
     x2,
@@ -73,7 +73,7 @@ def greater_equal(
     return ret
 
 
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def less(
     x1,
     x2,
@@ -92,7 +92,7 @@ def less(
     return ret
 
 
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def less_equal(
     x1,
     x2,
@@ -111,7 +111,7 @@ def less_equal(
     return ret
 
 
-@handle_numpy_casting(num_args=2)
+@handle_numpy_casting
 def not_equal(
     x1,
     x2,

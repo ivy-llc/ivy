@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
-@handle_numpy_casting(num_args=1)
+@handle_numpy_casting
 def isfinite(
     x,
     /,
@@ -21,7 +21,7 @@ def isfinite(
     return ret
 
 
-@handle_numpy_casting(num_args=1)
+@handle_numpy_casting
 def isinf(
     x,
     /,
@@ -39,7 +39,7 @@ def isinf(
     return ret
 
 
-@handle_numpy_casting(num_args=1)
+@handle_numpy_casting
 def isnan(
     x,
     /,
