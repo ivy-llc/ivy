@@ -43,13 +43,13 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
     if not isinstance(padding, str):
         padding = tuple(map(tuple, padding))
-    assert len(padding) == len(window_shape), (
+        assert len(padding) == len(window_shape), (
         f"padding {padding} must specify pads for same number of dims as "
         f"window_shape {window_shape}")
-    assert all([len(x) == 2 for x in padding]), (
+        assert all([len(x) == 2 for x in padding]), (
         f"each entry in padding {padding} must be length 2")
-    padding = ((0, 0),) + padding + ((0, 0),)
-    y = lax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
+        padding = ((0, 0),) + padding + ((0, 0),)
+    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
     return y
@@ -423,6 +423,14 @@ def conv_general_transpose(
     return res
 
 
-def max_pool2d(x, kernel, strides=None, padding="VALID"):
-    y = _pool(x, -jnp.inf, lax.max, kernel, strides, padding)
-    return y
+def max_pool2d(x, kernel, strides, padding, data_format="NHWC"):
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+
+    if data_format == "NCHW":
+        return np.transpose(res, (0, 3, 1, 2))
+
+    return res
+

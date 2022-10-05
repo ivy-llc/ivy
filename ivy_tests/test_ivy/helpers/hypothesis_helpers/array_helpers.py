@@ -876,3 +876,22 @@ def array_and_broadcastable_shape(draw, dtype):
         label="shape",
     )
     return x, to_shape
+
+
+@st.composite
+def arrays_for_pooling(draw, array_dim):
+    in_shape = draw(nph.array_shapes(min_dims=array_dim, max_dims=array_dim))
+    dtype = draw(dtype_helpers.get_dtypes("float", full=False))
+    x = draw(nph.arrays(shape=in_shape, dtype=dtype))
+    if array_dim == 5:
+        kernel = draw(st.tuples(st.integers(1, in_shape[1]),
+                                st.integers(1, in_shape[2]),
+                                st.integers(1, in_shape[3])))
+    if array_dim == 4:
+        kernel = draw(st.tuples(st.integers(1, in_shape[1]),
+                                st.integers(1, in_shape[2])))
+    if array_dim == 3:
+        kernel = draw(st.tuples(st.integers(1, in_shape[1])))
+    padding = draw(st.sampled_from(["VALID", "SAME"]))
+    strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    return dtype, x, kernel, strides, padding
