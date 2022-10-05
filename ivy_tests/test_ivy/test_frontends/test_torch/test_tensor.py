@@ -5,7 +5,8 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops import _dtypes, _requires_grad
+from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops \
+    import _dtypes, _requires_grad
 
 
 # add
@@ -58,7 +59,9 @@ def test_torch_instance_add(
 # new_ones
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
