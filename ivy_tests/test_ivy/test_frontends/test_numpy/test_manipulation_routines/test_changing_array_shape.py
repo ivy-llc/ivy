@@ -38,7 +38,6 @@ def test_numpy_reshape(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_function(
