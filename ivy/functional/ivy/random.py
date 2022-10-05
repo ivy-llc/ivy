@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.backend_handler import backend_stack
+from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -21,19 +22,30 @@ from ivy.backend_handler import backend_stack
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
-            raise Exception(
-                "`shape` argument can only be specified when `low` \
-                              and `high` arguments are numerics (not arrays)"
-            )
+        ivy.assertions.check_all_or_any_fn(
+            low,
+            high,
+            fn=lambda x: isinstance(x, (int, float)),
+            type="all",
+            message="low and high bounds must be numerics when shape is specified",
+        )
         return shape
-    valid_types = (ivy.Array, ivy.NativeArray)
+
+    valid_types = (
+        ivy.Array,
+        ivy.get_backend("torch").NativeArray,
+        ivy.get_backend("jax").NativeArray,
+        ivy.get_backend("numpy").NativeArray,
+        ivy.get_backend("tensorflow").NativeArray,
+    )
+
     if len(backend_stack) == 0:
         valid_types += (ivy.current_backend().NativeArray,)
+    else:
+        valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            if ivy.shape(low) != ivy.shape(high):
-                raise Exception("shape of bounds have to be the same")
+            ivy.assertions.check_equal(ivy.shape(low), ivy.shape(high))
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
@@ -41,19 +53,31 @@ def _check_bounds_and_get_shape(low, high, shape):
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
-    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        raise Exception("randint cannot take `float` dtype")
-    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
-        raise Exception("`low` and `high` cannot take `uint` dtype")
-    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
-        raise Exception("`low` and `high` cannot take `float` dtype")
-    if ivy.any(ivy.greater_equal(low, high)):
-        raise Exception("`low` must be smaller than `high`")
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_uint_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type uint",
+    )
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_float_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type float",
+    )
+    ivy.assertions.check_less(low, high)
 
 
 def _check_valid_scale(std):
-    if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
-        raise Exception("`std` must be non-negative")
+    ivy.assertions.check_greater(
+        std, 0, allow_equal=True, message="std must be non-negative"
+    )
 
 
 # Extra #
@@ -65,6 +89,7 @@ def _check_valid_scale(std):
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -174,12 +199,14 @@ def random_uniform(
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -201,6 +228,8 @@ def random_normal(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
@@ -271,7 +300,7 @@ def random_normal(
     ivy.array([12.4, 11. ])
     """
     return ivy.current_backend().random_normal(
-        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
+        mean=mean, std=std, shape=shape, dtype=dtype, seed=seed, device=device, out=out
     )
 
 
@@ -279,6 +308,7 @@ def random_normal(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -288,8 +318,9 @@ def multinomial(
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
     where each row contains num_samples indices sampled from the multinomial probability
@@ -311,6 +342,8 @@ def multinomial(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -335,7 +368,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 4, 7, 0]])
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
@@ -350,7 +383,7 @@ def multinomial(
     >>> print(y)
     ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
@@ -374,6 +407,7 @@ def multinomial(
         probs=probs,
         replace=replace,
         device=device,
+        seed=seed,
         out=out,
     )
 
@@ -382,6 +416,7 @@ def multinomial(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -390,6 +425,7 @@ def randint(
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
@@ -412,6 +448,8 @@ def randint(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default integer data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -446,11 +484,12 @@ def randint(
 
     """
     return ivy.current_backend().randint(
-        low, high, shape=shape, device=device, dtype=dtype, out=out
+        low, high, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
 @handle_nestable
+@handle_exceptions
 def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
@@ -471,8 +510,13 @@ def seed(*, seed_value: int = 0) -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
@@ -480,6 +524,8 @@ def shuffle(
     ----------
     x
         Input array. Should have a numeric data type.
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -497,4 +543,4 @@ def shuffle(
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return ivy.current_backend(x).shuffle(x, out=out)
+    return ivy.current_backend(x).shuffle(x, seed=seed, out=out)

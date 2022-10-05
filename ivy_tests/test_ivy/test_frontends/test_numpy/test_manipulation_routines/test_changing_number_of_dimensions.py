@@ -1,8 +1,5 @@
-import ivy.functional.backends.numpy as ivy_np
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import numpy as np
 from hypothesis import given
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -24,7 +21,7 @@ def _squeeze_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -36,20 +33,17 @@ def test_numpy_squeeze(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
         fn_tree="squeeze",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
     )
 
@@ -57,7 +51,7 @@ def test_numpy_squeeze(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -74,19 +68,16 @@ def test_numpy_expand_dims(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
         fn_tree="expand_dims",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
     )

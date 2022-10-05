@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -16,10 +15,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            small_value_safety_factor=4.0,
-            large_value_safety_factor=20.0,
+            large_abs_safety_factor=8,
+            small_abs_safety_factor=8,
+            safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -64,10 +64,12 @@ def test_unset_with_grads(grads):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(fn_name="variable"),
 )
 def test_variable(
     *,
     dtype_and_x,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -76,15 +78,15 @@ def test_variable(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="variable",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -92,10 +94,12 @@ def test_variable(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(fn_name="is_variable"),
 )
 def test_is_variable(
     *,
     dtype_and_x,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -104,15 +108,15 @@ def test_is_variable(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="is_variable",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -120,20 +124,23 @@ def test_is_variable(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(fn_name="variable_data"),
 )
-def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
+def test_variable_data(
+    *, dtype_and_x, num_positional_args, native_array, container, instance_method, fw
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
         with_out=False,
-        as_variable_flags=True,
-        num_positional_args=1,
+        as_variable_flags=[True],
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="variable_data",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -142,22 +149,31 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     preserve_type=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="stop_gradient"),
 )
 def test_stop_gradient(
-    dtype_and_x, preserve_type, with_out, native_array, container, instance_method, fw
+    *,
+    dtype_and_x,
+    preserve_type,
+    num_positional_args,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
         with_out=with_out,
-        as_variable_flags=True,
-        num_positional_args=1,
+        as_variable_flags=[True],
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="stop_gradient",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         preserve_type=preserve_type,
     )
 
@@ -173,34 +189,38 @@ def test_stop_gradient(
         max_value=100,
     ),
     retain_grads=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="execute_with_gradients"),
 )
 def test_execute_with_gradients(
     *,
     dtype_and_xs,
     retain_grads,
+    num_positional_args,
     native_array,
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
+        array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
-        ret = ivy.sum(final_array)
+        ret = ivy.mean(final_array)
         return ret
 
     dtype, xs = dtype_and_xs
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=False,
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
-        xs=np.asarray(xs, dtype=dtype),
+        rtol_=1e-1,
+        atol_=1e-1,
+        xs=xs[0],
         retain_grads=retain_grads,
     )
 
@@ -303,6 +323,7 @@ def test_grad(x, dtype, func, fw):
         min_size=3,
         max_size=3,
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="adam_step"),
 )
 def test_adam_step(
     *,
@@ -311,6 +332,7 @@ def test_adam_step(
     beta1_n_beta2_n_epsilon,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -326,15 +348,17 @@ def test_adam_step(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=4,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="adam_step",
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[0]),
-        mw=np.asarray(mw, input_dtypes[1]),
-        vw=np.asarray(vw, dtype=input_dtypes[2]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        dcdw=dcdw,
+        mw=mw,
+        vw=vw,
         step=step,
         beta1=beta1,
         beta2=beta2,
@@ -347,12 +371,14 @@ def test_adam_step(
 @given(
     dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="optimizer_update"),
 )
 def test_optimizer_update(
     dtype_n_ws_n_effgrad_n_lr,
     stop_gradients,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -363,15 +389,17 @@ def test_optimizer_update(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="optimizer_update",
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        effective_grad=np.asarray(effective_grad, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        effective_grad=effective_grad,
+        lr=lr,
         stop_gradients=stop_gradients,
     )
 
@@ -381,6 +409,7 @@ def test_optimizer_update(
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gradient_descent_update"),
 )
 def test_gradient_descent_update(
     *,
@@ -388,6 +417,7 @@ def test_gradient_descent_update(
     stop_gradients,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -398,15 +428,17 @@ def test_gradient_descent_update(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="gradient_descent_update",
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
         stop_gradients=stop_gradients,
     )
 
@@ -417,6 +449,7 @@ def test_gradient_descent_update(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
     stop_gradients=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="lars_update"),
 )
 def test_lars_update(
     *,
@@ -425,6 +458,7 @@ def test_lars_update(
     stop_gradients,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -435,15 +469,17 @@ def test_lars_update(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="lars_update",
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
         decay_lambda=decay_lambda,
         stop_gradients=stop_gradients,
     )
@@ -460,6 +496,7 @@ def test_lars_update(
         max_size=3,
     ),
     stopgrad=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="adam_update"),
 )
 def test_adam_update(
     *,
@@ -469,6 +506,7 @@ def test_adam_update(
     stopgrad,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -481,17 +519,19 @@ def test_adam_update(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=6,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="adam_update",
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
-        mw_tm1=np.asarray(mw_tm1, input_dtypes[2]),
-        vw_tm1=np.asarray(vw_tm1, dtype=input_dtypes[3]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
         step=step,
         beta1=beta1,
         beta2=beta2,
@@ -511,9 +551,11 @@ def test_adam_update(
         max_size=4,
     ),
     mtr=st.one_of(
-        helpers.ints(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
+        helpers.ints(min_value=1, max_value=10),
+        st.floats(min_value=0, max_value=10, exclude_min=True, width=16),
     ),
     stopgrad=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
 )
 def test_lamb_update(
     *,
@@ -524,6 +566,7 @@ def test_lamb_update(
     stopgrad,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -541,17 +584,19 @@ def test_lamb_update(
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
-        num_positional_args=6,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="lamb_update",
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
-        mw_tm1=np.asarray(mw_tm1, input_dtypes[2]),
-        vw_tm1=np.asarray(vw_tm1, dtype=input_dtypes[3]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
         step=step,
         beta1=beta1,
         beta2=beta2,

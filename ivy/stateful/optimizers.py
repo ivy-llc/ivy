@@ -1,3 +1,4 @@
+# For Review
 """Collection of Ivy optimizers."""
 
 # global
@@ -86,7 +87,7 @@ class Optimizer(abc.ABC):
             The updated variables, following update step.
 
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     # Given #
 
@@ -126,7 +127,7 @@ class Optimizer(abc.ABC):
         state
             Nested state to update.
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     # Given #
 
@@ -165,7 +166,7 @@ class Optimizer(abc.ABC):
 class SGD(Optimizer):
     def __init__(
         self,
-        lr: float = lambda: 1e-4,
+        lr: float = 1e-4,
         inplace: bool = True,
         stop_gradients: bool = True,
         compile_on_next_step: bool = False,
@@ -239,7 +240,7 @@ class SGD(Optimizer):
 class LARS(Optimizer):
     def __init__(
         self,
-        lr: float = lambda: 1e-4,
+        lr: float = 1e-4,
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,

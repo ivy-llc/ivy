@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, assume, settings
+from hypothesis import given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
 )
-@settings(max_examples=1, deadline=None)
 def test_unique_values(
     *,
     dtype_and_x,
@@ -45,7 +44,7 @@ def test_unique_values(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_values",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -84,7 +83,7 @@ def test_unique_all(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_all",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -123,7 +122,7 @@ def test_unique_counts(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_counts",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -162,5 +161,5 @@ def test_unique_inverse(
         instance_method=instance_method,
         fw=fw,
         fn_name="unique_inverse",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )

@@ -78,13 +78,12 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
+    if x.ndim > len(shape):
+        return torch.broadcast_to(x.reshape(-1), shape)
     return torch.broadcast_to(x, shape)
 
 
-broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
-def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
+def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
         from_ = from_.dtype
     from_str = str(from_)
@@ -165,12 +164,9 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
-
-
-as_native_dtype.unsupported_dtypes = ("uint16",)
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:

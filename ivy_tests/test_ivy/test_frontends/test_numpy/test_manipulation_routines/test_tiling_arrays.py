@@ -1,10 +1,8 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -12,11 +10,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     dtype_and_repeats=helpers.dtype_and_values(
-        available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
             lambda rep: (len(rep),)
         ),
@@ -33,21 +31,19 @@ def test_numpy_tile(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     repeats_dtype, repeats = dtype_and_repeats
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, repeats_dtype],
+        input_dtypes=input_dtype + repeats_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="tile",
-        A=np.array(x, dtype=input_dtype),
-        reps=np.array(repeats, dtype=repeats_dtype),
+        A=x[0],
+        reps=repeats[0],
     )
 
 
@@ -55,7 +51,7 @@ def test_numpy_tile(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         min_dim_size=2,
     ),
@@ -72,7 +68,6 @@ def test_numpy_repeat(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -81,10 +76,9 @@ def test_numpy_repeat(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="repeat",
-        a=np.array(x, dtype=input_dtype),
+        a=x[0],
         repeats=repeats,
         axis=axis,
     )

@@ -1,10 +1,8 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -31,7 +29,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -45,7 +45,7 @@ def _arrays_idx_n_dtypes(draw):
 
 @st.composite
 def _dtype_n_with_out(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes + (None,)))
+    dtype = draw(helpers.get_dtypes("float", none=True))
     if dtype is None:
         return dtype, draw(st.booleans())
     return dtype, False
@@ -55,12 +55,10 @@ def _dtype_n_with_out(draw):
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
     dtype_n_with_out=_dtype_n_with_out(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.concatenate"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
@@ -68,18 +66,15 @@ def test_numpy_concatenate(
     dtype_n_with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="concatenate",
         arrays=xs,

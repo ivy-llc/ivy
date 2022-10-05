@@ -19,7 +19,7 @@ def main():
 
     volunteer_pocs = interns_assigned_volunteers.keys()
     volunteers = interns_assigned_volunteers.values()
-    
+
     for volunteer, volunteer_poc in zip(volunteers, volunteer_pocs):
         if pr.author() in volunteer:
             pr.assign_intern(volunteer_poc)

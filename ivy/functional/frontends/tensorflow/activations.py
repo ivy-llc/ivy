@@ -10,4 +10,5 @@ def hard_sigmoid(x):
     return x
 
 
-hard_sigmoid.unsupported_dtypes = {"torch": "float16"}
+def linear(x):
+    return x
