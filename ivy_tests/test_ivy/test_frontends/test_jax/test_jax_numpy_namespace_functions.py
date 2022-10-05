@@ -75,8 +75,7 @@ def test_jax_numpy_absolute(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        valid_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.argmax"
