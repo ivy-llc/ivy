@@ -397,8 +397,13 @@ def logaddexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # ToDo: implement using tf.experimental.numpy.logaddexp if this becomes stable and
+    # supports gradients in future
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.logaddexp(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
 
 
 logaddexp.unsupported_dtypes = ("float16", "bfloat16")
@@ -669,10 +674,24 @@ def maximum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    use_where: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.maximum(x1, x2)
+    dtype = x1.dtype
+    if use_where:
+        return tf.math.maximum(x1, x2)
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
+
+
+maximum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def minimum(
@@ -680,10 +699,24 @@ def minimum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    use_where: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.minimum(x1, x2)
+    dtype = x1.dtype
+    if use_where:
+        return tf.math.minimum(x1, x2)
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
+
+
+minimum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def reciprocal(

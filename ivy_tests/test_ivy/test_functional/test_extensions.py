@@ -196,7 +196,7 @@ def test_vorbis_window(
     )
 
 
-    # kaiser_bessel
+# kaiser_bessel
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -238,5 +238,3 @@ def test_kaiser_bessel(
         beta=beta,
         dtype=dtype
     )
-
-

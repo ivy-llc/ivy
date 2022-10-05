@@ -1,5 +1,5 @@
-Function Arguments
-==================
+Function Arguments 📑
+=====================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures

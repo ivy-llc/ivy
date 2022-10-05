@@ -41,6 +41,7 @@ def random_normal(
     std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
+    seed: Optional[int] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -49,7 +50,9 @@ def random_normal(
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
-        return tf.random.normal(shape, mean, std, dtype=dtype)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
 def multinomial(
@@ -61,6 +64,7 @@ def multinomial(
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
     device: str,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.assertions.check_true(
@@ -77,7 +81,9 @@ def multinomial(
                 )
                 / population_size
             )
-        return tf.random.categorical(tf.math.log(probs), num_samples)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
 
 
 multinomial.unsupported_dtypes = ("bfloat16",)
@@ -91,6 +97,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not dtype:
@@ -101,7 +108,9 @@ def randint(
     low = tf.cast(low, "float32")
     high = tf.cast(high, "float32")
     with tf.device(device):
-        return tf.cast(tf.random.uniform(shape, low, high, "float32"), dtype)
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:
@@ -112,6 +121,9 @@ def shuffle(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.random.shuffle(x)
+    if seed is not None:
+        tf.random.set_seed(seed)
+    return tf.random.shuffle(x, seed=seed)

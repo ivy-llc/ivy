@@ -3972,6 +3972,21 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        Using :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                              b=ivy.array([-0., -3.9, float('+inf')]),\
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = ivy.Container.static_log(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([2.07, 0.0953, 0.])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "log",
@@ -4021,6 +4036,21 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the log for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
+                              b=ivy.array([-0., -3.9, float('+inf')]), \
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = x.log()
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([2.07, 0.0953, 0.])
+        }
 
         """
         return self.static_log(
@@ -7134,6 +7164,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7157,6 +7188,10 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7174,6 +7209,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7186,6 +7222,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7210,6 +7247,10 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7226,6 +7267,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7239,6 +7281,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7252,6 +7295,20 @@ class ContainerWithElementwise(ContainerBase):
             Input array containing elements to maximum threshold.
         x2
             Tensor containing maximum values, must be broadcastable to x1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7272,6 +7329,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7284,6 +7342,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7297,6 +7356,20 @@ class ContainerWithElementwise(ContainerBase):
             Input array containing elements to maximum threshold.
         x2
             Tensor containing maximum values, must be broadcastable to x1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7306,8 +7379,6 @@ class ContainerWithElementwise(ContainerBase):
         ret
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
-
-
         """
         return self.static_maximum(
             self,
@@ -7316,6 +7387,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
