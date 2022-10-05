@@ -100,7 +100,26 @@ def test_sort(
 
 
 @st.composite
-def _get_v_and_x(draw):
+def _searchsorted_case1(draw):
+    # 1-D for x, N-D for v
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            shape=(draw(st.integers(min_value=1, max_value=25)),),
+        )
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            min_num_dims=1,
+        )
+    )
+    return dtype_x + dtype_v, x + v
+
+
+@st.composite
+def _searchsorted_case2(draw):
+    # N-D for x, N-D for v
     arb_leading_dims = draw(
         helpers.get_shape(
             min_num_dims=1,
@@ -110,13 +129,13 @@ def _get_v_and_x(draw):
     nv = draw(st.integers(min_value=1, max_value=5))
     dtype_x, x = draw(
         helpers.dtype_and_values(
-            dtype=["int32"],
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
             shape=arb_leading_dims + (nx,),
         )
     )
     dtype_v, v = draw(
         helpers.dtype_and_values(
-            dtype=["int32"],
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
             shape=arb_leading_dims + (nv,),
         )
     )
@@ -125,10 +144,10 @@ def _get_v_and_x(draw):
 
 @handle_cmd_line_args
 @given(
-    dtypes_and_xs=_get_v_and_x(),
+    dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     num_positional_args=helpers.num_positional_args(fn_name="searchsorted"),
     side=st.sampled_from(["left", "right"]),
-    sorter=st.booleans(),
+    use_sorter=st.booleans(),
     ret_dtype=st.sampled_from(["int32", "int64"]),
 )
 def test_searchsorted(
@@ -142,10 +161,15 @@ def test_searchsorted(
     instance_method,
     fw,
     side,
-    sorter,
+    use_sorter,
     ret_dtype,
 ):
     dtypes, xs = dtypes_and_xs
+    if use_sorter:
+        sorter = np.argsort(xs[0])
+    else:
+        sorter = None
+        xs[0] = np.sort(xs[0])
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -159,6 +183,6 @@ def test_searchsorted(
         x=np.sort(xs[0]),
         v=xs[1],
         side=side,
-        sorter=None,
+        sorter=sorter,
         ret_dtype=ret_dtype,
     )
