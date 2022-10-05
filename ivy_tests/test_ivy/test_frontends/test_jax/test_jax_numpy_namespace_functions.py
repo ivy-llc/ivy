@@ -1,5 +1,6 @@
 # global
 from hypothesis import given, strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -22,7 +23,6 @@ def test_jax_numpy_abs(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -31,7 +31,6 @@ def test_jax_numpy_abs(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.abs",
         x=x[0],
@@ -53,7 +52,6 @@ def test_jax_numpy_absolute(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -62,7 +60,6 @@ def test_jax_numpy_absolute(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.absolute",
         x=x[0],
@@ -84,7 +81,6 @@ def test_jax_numpy_add(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -93,7 +89,6 @@ def test_jax_numpy_add(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.add",
         x1=x[0],
@@ -116,7 +111,6 @@ def test_jax_numpy_all(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -125,7 +119,6 @@ def test_jax_numpy_all(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.all",
         a=x[0],
@@ -151,7 +144,6 @@ def test_jax_numpy_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -160,13 +152,12 @@ def test_jax_numpy_allclose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.allclose",
-        a=input[0],
-        b=input[1],
         rtol=1e-05,
         atol=1e-08,
+        a=input[0],
+        b=input[1],
         equal_nan=equal_nan,
     )
 
@@ -205,16 +196,14 @@ def test_jax_numpy_broadcast_to(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_broadcast
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.broadcast_to",
         arr=x[0],
@@ -276,16 +265,14 @@ def test_jax_numpy_clip(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=with_out,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.clip",
         a=x[0],
@@ -329,16 +316,14 @@ def test_jax_numpy_reshape(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_shape
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
         with_out=False,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.reshape",
         a=x[0],
@@ -396,7 +381,6 @@ def test_jax_numpy_concat(
     dtype,
     num_positional_args,
     native_array,
-    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -405,7 +389,6 @@ def test_jax_numpy_concat(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.concatenate",
         arrays=xs,
@@ -441,7 +424,6 @@ def test_jax_numpy_mean(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
@@ -456,7 +438,6 @@ def test_jax_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.mean",
         a=x[0],
@@ -488,6 +469,116 @@ def test_jax_numpy_uint16(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+
+# var
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    ddof=st.floats(min_value=0, max_value=1),
+    keepdims=st.booleans(),
+    where=np_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.var"
+    ),
+)
+def test_jax_numpy_var(
+    dtype_x_axis,
+    dtype,
+    ddof,
+    keepdims,
+    where,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+):
+    x_dtype, x, axis = dtype_x_axis
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.var",
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+        out=None,
+        ddof=ddof,
+        keepdims=keepdims,
+        where=where,
+    )
+
+
+# dot
+@st.composite
+def _get_dtype_input_and_vectors(draw):
+    dim_size = draw(helpers.ints(min_value=0, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    if dim_size == 0:
+        vec1 = draw(
+            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
+        )
+        vec2 = draw(
+            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
+        )
+    elif dim_size == 1:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+    else:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    return dtype, vec1, vec2
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_y=_get_dtype_input_and_vectors(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.dot"
+    ),
+)
+def test_jax_numpy_dot(
+    dtype_x_y,
+    num_positional_args,
+    as_variable,
+    native_array,
+):
+    input_dtype, x, y = dtype_x_y
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -496,4 +587,47 @@ def test_jax_numpy_uint16(
         frontend="jax",
         fn_tree="numpy.uint16",
         x=x[0],
+        frontend="jax",
+        fn_tree="numpy.dot",
+        a=x,
+        b=y,
+        precision=None,
+    )
+
+
+# einsum
+@handle_cmd_line_args
+@given(
+    eq_n_op_n_shp=st.sampled_from(
+        [
+            ("ii", (np.arange(25).reshape(5, 5),), ()),
+            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_numpy_einsum(
+    eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
+):
+    eq, operands, true_shape = eq_n_op_n_shp
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    num_positional_args = len(operands)
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.einsum",
+        out=None,
+        optimize=eq,
+        precision=None,
+        _use_xeinsum=False,
+        **kw
     )

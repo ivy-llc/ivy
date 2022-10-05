@@ -41,7 +41,6 @@ def test_torch_sigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -50,10 +49,9 @@ def test_torch_sigmoid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        atol=1e-2,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.sigmoid",
+        atol=1e-2,
         input=x[0],
     )
 
@@ -79,7 +77,6 @@ def test_torch_softmax(
     dtypes,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
@@ -88,7 +85,6 @@ def test_torch_softmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.softmax",
         input=x[0],
@@ -112,7 +108,6 @@ def test_torch_gelu(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -121,11 +116,10 @@ def test_torch_gelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.gelu",
-        input=x[0],
         rtol=1e-02,
+        input=x[0],
     )
 
 
@@ -147,7 +141,6 @@ def test_torch_leaky_relu(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
     alpha,
 ):
     input_dtype, x = dtype_and_x
@@ -158,7 +151,6 @@ def test_torch_leaky_relu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.leaky_relu",
         input=x[0],
@@ -181,7 +173,6 @@ def test_torch_tanh(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -190,10 +181,9 @@ def test_torch_tanh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        atol=1e-2,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.tanh",
+        atol=1e-2,
         input=x[0],
     )
 
@@ -213,7 +203,6 @@ def test_torch_logsigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -222,7 +211,6 @@ def test_torch_logsigmoid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.logsigmoid",
         input=x[0],
@@ -250,7 +238,6 @@ def test_torch_softmin(
     dtypes,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
@@ -259,7 +246,6 @@ def test_torch_softmin(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.softmin",
         input=x[0],
@@ -289,7 +275,6 @@ def test_torch_threshold(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -300,7 +285,6 @@ def test_torch_threshold(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.threshold",
         input=input[0],
@@ -330,7 +314,6 @@ def test_torch_threshold_(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -341,7 +324,6 @@ def test_torch_threshold_(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.threshold_",
         input=input[0],
@@ -367,7 +349,6 @@ def test_torch_relu6(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -378,7 +359,6 @@ def test_torch_relu6(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.relu6",
         input=input[0],
@@ -404,7 +384,6 @@ def test_torch_elu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -415,7 +394,6 @@ def test_torch_elu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.elu",
         input=input[0],
@@ -442,7 +420,6 @@ def test_torch_elu_(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -453,12 +430,11 @@ def test_torch_elu_(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.elu_",
+        test_values=False,
         input=input[0],
         alpha=alpha,
-        test_values=False,
     )
 
 
@@ -481,7 +457,6 @@ def test_torch_celu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -492,7 +467,6 @@ def test_torch_celu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.celu",
         input=input[0],
@@ -517,7 +491,6 @@ def test_torch_selu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -528,7 +501,6 @@ def test_torch_selu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.selu",
         input=input[0],
@@ -548,7 +520,6 @@ def test_torch_prelu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, inputs = dtype_input_and_weight
     _filter_dtypes(dtype)
@@ -558,7 +529,6 @@ def test_torch_prelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.prelu",
         input=inputs[0],
@@ -587,7 +557,6 @@ def test_torch_rrelu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -598,7 +567,6 @@ def test_torch_rrelu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.rrelu",
         input=input[0],
@@ -628,7 +596,6 @@ def test_torch_rrelu_(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -639,13 +606,12 @@ def test_torch_rrelu_(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.rrelu_",
+        test_values=False,
         input=input[0],
         lower=lower,
         upper=upper,
-        test_values=False,
     )
 
 
@@ -666,7 +632,6 @@ def test_torch_hardshrink(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -676,7 +641,6 @@ def test_torch_hardshrink(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardshrink",
         input=input[0],
@@ -699,7 +663,6 @@ def test_torch_softsign(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -708,7 +671,6 @@ def test_torch_softsign(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.softsign",
         input=input[0],
@@ -732,7 +694,6 @@ def test_torch_softshrink(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -742,7 +703,6 @@ def test_torch_softshrink(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.softshrink",
         input=input[0],
@@ -767,7 +727,6 @@ def test_torch_silu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -777,9 +736,10 @@ def test_torch_silu(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.silu",
+        rtol=1e-2,
+        atol=1e-2,
         input=input[0],
     )
 
@@ -807,7 +767,6 @@ def test_torch_glu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input, dim = dtype_input_dim
     _filter_dtypes(input_dtype)
@@ -817,7 +776,6 @@ def test_torch_glu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.glu",
         input=input[0],
@@ -846,7 +804,6 @@ def test_torch_log_softmax(
     dtypes,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
@@ -855,7 +812,6 @@ def test_torch_log_softmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.log_softmax",
         input=x[0],
@@ -879,7 +835,6 @@ def test_torch_tanhshrink(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -888,7 +843,6 @@ def test_torch_tanhshrink(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.tanhshrink",
         input=input[0],
@@ -915,7 +869,6 @@ def test_torch_leaky_relu_(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -925,12 +878,11 @@ def test_torch_leaky_relu_(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.leaky_relu_",
+        test_values=False,
         input=x[0],
         negative_slope=alpha,
-        test_values=False,
     )
 
 
@@ -952,7 +904,6 @@ def test_torch_hardswish(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -963,7 +914,6 @@ def test_torch_hardswish(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardswish",
         input=input[0],
@@ -987,7 +937,6 @@ def test_torch_hardsigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -998,7 +947,6 @@ def test_torch_hardsigmoid(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardsigmoid",
         input=input[0],
@@ -1024,7 +972,6 @@ def test_torch_hardtanh(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
@@ -1036,7 +983,6 @@ def test_torch_hardtanh(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardtanh",
         input=x[0],
@@ -1064,7 +1010,6 @@ def test_torch_hardtanh_(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
@@ -1076,13 +1021,12 @@ def test_torch_hardtanh_(
         with_inplace=with_inplace,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardtanh_",
+        test_values=False,
         input=x[0],
         min_val=max_min[1],
         max_val=max_min[0],
-        test_values=False,
     )
 
 
@@ -1109,7 +1053,6 @@ def test_torch_normalize(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     dtype, x, axis = dtype_x_and_axis
     _filter_dtypes(dtype)
@@ -1119,7 +1062,6 @@ def test_torch_normalize(
         with_out=without,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.normalize",
         input=x[0],

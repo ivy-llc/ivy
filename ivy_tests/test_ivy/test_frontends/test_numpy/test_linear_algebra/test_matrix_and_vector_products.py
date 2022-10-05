@@ -31,7 +31,6 @@ def test_numpy_outer(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -40,7 +39,6 @@ def test_numpy_outer(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="outer",
         a=xs[0],
@@ -67,7 +65,6 @@ def test_numpy_inner(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -76,7 +73,6 @@ def test_numpy_inner(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="inner",
         a=xs[0],
@@ -104,7 +100,6 @@ def test_numpy_matmul(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="matmul",
         x1=x1,
@@ -136,7 +131,6 @@ def test_numpy_matrix_power(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linalg.matrix_power",
         a=x[0],
