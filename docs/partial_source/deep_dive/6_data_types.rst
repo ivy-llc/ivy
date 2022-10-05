@@ -197,6 +197,12 @@ backend-specific promotion functions such as :func:`jax.numpy.promote_types`,
 :func:`torch.promote_types`, as these will generally have promotion rules which will
 subtly differ from one another and from Ivy's unified promotion rules.
 
+On the other hand, each frontend framework has it's own set of rules for how
+data types should be promoted, and their own local implementation of
+:func:`ivy.promote_types` and :func:`ivy.promote_types_of_inputs`.
+We should always use these frontend-specific functions in any frontend implementation,
+to ensure we follow exactly the same promotion rules as the frontend framework uses.
+
 Arguments in other Functions
 ----------------------------
 
