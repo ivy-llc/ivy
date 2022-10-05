@@ -99,7 +99,7 @@ supports_gradients = False
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.as_ivy_dtype(type)
+    type_str = ivy.as_ivy_dtype(type) # noqa
     if type_str in invalid_dtypes:
         return {"bfloat16": float16}[type_str]
     return type
