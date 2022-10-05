@@ -210,6 +210,7 @@ def test_softmax(
         fn_name="softmax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x[0],
         axis=axis,
     )
