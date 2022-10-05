@@ -5,24 +5,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from math import sqrt
 
-
-def _KBDW(window_length, periodic, beta, dtype=None):
-    window_length = window_length // 2
-    w = torch.kaiser_window(
-        window_length + 1, periodic, beta, layout=torch.strided, device=None, requires_grad=False)
-    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
-    
-    def sum_i_n(n):
-        return sum([w[i] for i in range(0, n + 1)])
-    dn_low = [sqrt(sum_i_n(i)/sum_i_N) for i in range(0, window_length)]
-    
-    def sum_2N_1_n(n):
-        return sum([w[i] for i in range(0, 2 * window_length - n)])
-    dn_mid = [sqrt(sum_2N_1_n(i)/sum_i_N) for i in range(window_length, 2*window_length)]
-    
-    return torch.tensor(dn_low + dn_mid, dtype=dtype)
 
 # Array API Standard #
 # -------------------#
@@ -302,14 +285,3 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)
-
-
-def kaiser_bessel_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return _KBDW(window_length, periodic, beta, dtype)
