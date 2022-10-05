@@ -1316,4 +1316,54 @@ def einsum(
     }
 
     """
+<<<<<<< HEAD
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
+=======
+    return current_backend(operands[0]).einsum(equation, *operands, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kaiser_bessel_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Computes the Kaiser bessel derived window with window length window_length and shape beta
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+        If True, returns a periodic window suitable for use in spectral analysis.
+        If False, returns a symmetric window suitable for use in filter design.
+    beta
+        a float used as shape parameter for the window.
+    dtype
+        data type of the returned array
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.kaiser_bessel_window(5)
+    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
+
+    >>> ivy.kaiser_bessel_window(5, False)
+    ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
+
+    >>> ivy.kaiser_bessel_window(5, False, 5)
+    ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
+    """
+    return current_backend().kaiser_bessel_window(
+        window_length, periodic, beta, dtype=dtype, out=out)
+>>>>>>> dd1a4b914324b415a5b88f4e7291768317b47093
