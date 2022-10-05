@@ -170,13 +170,14 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if atol and rtol is None:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
-    elif rtol and atol is None:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    elif rtol and atol:
-        tol = np.maximum(atol, rtol)
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    if type(atol) and type(rtol) == tuple:
+        if atol.all() and rtol.all() is None:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+        elif atol.all() and rtol.all():
+            tol = np.maximum(atol, rtol)
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+        else:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
     else:
         ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
     return ret
@@ -305,7 +306,7 @@ def trace(
     offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
