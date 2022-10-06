@@ -344,35 +344,42 @@ The compiler takes in any Ivy function, backend function, or composition, and re
    :align: center
    :width: 75%
 
-As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+The best part about the graph compiler is that it will convert code from ANY framework, including Ivy itself, into a computation graph with each node written in the
+desired framework. The best way to understand this would be through the use of an example. Let's set our desired framework to torch, so all code is converted to torch
+code. Let us then write code in different frameworks, specifically in ivy, torch, tensorflow and a mix of ivy and torch to examine how the computation graph is 
+constructed in each case.
 
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
-|                                        |                                         |                                         |
-| def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
-|     y = ivy.mean(x)                    |     y = torch.mean(x)                   |     y = ivy.mean(x)                     |
-|     z = ivy.sum(x)                     |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
-|     f = ivy.var(y)                     |     f = torch.var(y)                    |     f = ivy.var(y)                      |
-|     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
-|     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
-|     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
-|     return ivy.concatenate(            |     return torch.cat(                   |     return ivy.concatenate(             |
-|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |
-|                                        |                                         |                                         |
-| # input                                | # input                                 | # input                                 |
-| x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
-|                                        |                                         |                                         |
-| # create graph                         | # create graph                          | # create graph                          |
-| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
-|     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
-|                                        |                                         |                                         |
-| # call graph                           | # call graph                            | # call graph                            |
-| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
++----------------------------------------+-----------------------------------------+-----------------------------------------+------------------------------------------+
+|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |.. code-block:: python                    |
+|                                        |                                         |                                         |                                          |
+| def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             | def pure_tf(x):                          |
+|     y = ivy.mean(x)                    |     y = torch.mean(x)                   |     y = ivy.mean(x)                     |     y = tf.math.reduce_mean(x)           |
+|     z = ivy.sum(x)                     |     z = torch.sum(x)                    |     z = torch.sum(x)                    |     z = tf.math.reduce_sum(x)            |
+|     f = ivy.var(y)                     |     f = torch.var(y)                    |     f = ivy.var(y)                      |     f = tf.Variable(y)                   |
+|     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |     k = tf.math.cos(z)                   |
+|     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |     m = tf.math.sin(f)                   |
+|     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |     o tf.math.tan(y)                     |
+|     return ivy.concatenate(            |     return torch.cat(                   |     return ivy.concatenate(             |     return tf.concat(                    |
+|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |         [k, m, o], -1)                   |
+|                                        |                                         |                                         |                                          |
+| # input                                | # input                                 | # input                                 | # input                                  |
+| x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           | x = tf.Tensor([[1., 2., 3.]])            |
+|                                        |                                         |                                         |                                          |
+| # create graph                         | # create graph                          | # create graph                          | # create graph                           |
+| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              | graph = ivy.compile_graph(               |
+|     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |     pure_tf, x)                          |
+|                                        |                                         |                                         |                                          |
+| # call graph                           | # call graph                            | # call graph                            | # call graph                             |
+| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          | ret = graph(x)                           |
++----------------------------------------+-----------------------------------------+-----------------------------------------+------------------------------------------+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true
    :align: center
    :width: 75%
+
+As observed by the computation graph, every code example is converted into torch specific code, since torch is the backend we set initially. Regardless of what
+framework the inital code was written in, the computation graph will always be consstructed in the user specified backend. One common misconception is that the
+computation graph is represented using the Ivy Functional API, however this is clearly not the case, as is observed in the computation graph.
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
@@ -405,7 +412,8 @@ For all existing ML frameworks, the functional API is the backbone which underpi
    :align: center
    :width: 75%
 
-The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
+
+The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional me-thods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
 .. code-block:: python
 
