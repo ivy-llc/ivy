@@ -733,8 +733,6 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
     res = ivy.default_float_dtype(
         input=input, float_dtype=float_dtype, as_native=as_native
     )
-    print(f"Res dtype = {type(res)}")
-    print(f"Res = {res}")
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, typing.get_args(ivy.NativeDtype))
