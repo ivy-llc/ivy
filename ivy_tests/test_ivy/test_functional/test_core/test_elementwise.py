@@ -2453,7 +2453,7 @@ def test_trunc_divide(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("real_and_complex")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="isreal"),
 )
