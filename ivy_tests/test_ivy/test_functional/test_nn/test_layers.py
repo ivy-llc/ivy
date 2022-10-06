@@ -969,7 +969,7 @@ def test_lstm_update(
         recurrent_bias=recurrent_bias,
     )
 
-
+import numpy as np
 # max_pool
 @handle_cmd_line_args
 @given(
@@ -998,11 +998,11 @@ def test_max_pool2d(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="maxpool_2d",
+        fn_name="max_pool2d",
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
-        x=x,
+        x=x[0],
         kernel=kernel,
         strides=stride,
         padding=pad
