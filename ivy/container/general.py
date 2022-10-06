@@ -2724,7 +2724,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :class:`ivy.Container` inputs:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
         >>> y = ivy.Container.static_to_scalar(x)
@@ -2733,13 +2733,6 @@ class ContainerWithGeneral(ContainerBase):
             a: -1,
             b: 3
         }
-
-        >>> print(ivy.is_int_dtype(y))
-        {
-            a: true,
-            b: true
-        }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "to_scalar",
@@ -2787,7 +2780,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :class:`ivy.Container` instances:
+        With one :class:`ivy.Container` instance:
 
 
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
@@ -2798,9 +2791,7 @@ class ContainerWithGeneral(ContainerBase):
             a: 1,
             b: 0,
             c: -1
-        }
-
-
+        }      
         """
         return self.static_to_scalar(
             self,

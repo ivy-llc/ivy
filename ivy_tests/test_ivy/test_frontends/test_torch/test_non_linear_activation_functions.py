@@ -738,6 +738,8 @@ def test_torch_silu(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="nn.functional.silu",
+        rtol=1e-2,
+        atol=1e-2,
         input=input[0],
     )
 
