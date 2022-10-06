@@ -306,24 +306,18 @@ def test_jax_special_abs(
         )
 
 
-# __pow__
 @st.composite
-def _get_pow_data(draw):
+def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     x_dtype, x = draw(
-        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"))
+        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(dtype))
     )
-    # pow = draw(helpers.array_values(
-    #     dtype="integer",
-    #     shape=(),
-    #     min_value=0,
-    #     max_value=10,
-    # ))
-    pow = draw(helpers.ints(min_value=0, max_value=10))
-    return x_dtype, x, pow
+    x_int = draw(helpers.ints(min_value=0, max_value=10))
+    return x_dtype, x, x_int
 
 
+# __pow__
 @handle_cmd_line_args
-@given(dtype_x_pow=_get_pow_data())
+@given(dtype_x_pow=_get_dtype_x_and_int())
 def test_jax_special_pow(
     dtype_x_pow,
     fw,
@@ -343,7 +337,7 @@ def test_jax_special_pow(
 
 # __rpow__
 @handle_cmd_line_args
-@given(dtype_x_pow=_get_pow_data())
+@given(dtype_x_pow=_get_dtype_x_and_int())
 def test_jax_special_rpow(
     dtype_x_pow,
     fw,
@@ -531,6 +525,86 @@ def test_jax_special_invert(
     input_dtype, x = dtype_x
     ret = ~DeviceArray(x[0])
     ret_gt = ~jnp.array(x[0], dtype=input_dtype[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __lshift__
+@handle_cmd_line_args
+@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+def test_jax_special_lshift(
+    dtype_x_shift,
+    fw,
+):
+    input_dtype, x, shift = dtype_x_shift
+    ret = DeviceArray(x[0]) << shift
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) << shift
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rlshift__
+@handle_cmd_line_args
+@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+def test_jax_special_rlshift(
+    dtype_x_shift,
+    fw,
+):
+    input_dtype, x, shift = dtype_x_shift
+    ret = DeviceArray(shift).__rlshift__(DeviceArray(x[0]))
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) << shift
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rshift__
+@handle_cmd_line_args
+@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+def test_jax_special_rshift(
+    dtype_x_shift,
+    fw,
+):
+    input_dtype, x, shift = dtype_x_shift
+    ret = DeviceArray(x[0]) >> shift
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >> shift
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rrshift__
+@handle_cmd_line_args
+@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+def test_jax_special_rrshift(
+    dtype_x_shift,
+    fw,
+):
+    input_dtype, x, shift = dtype_x_shift
+    ret = DeviceArray(shift).__rrshift__(DeviceArray(x[0]))
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >> shift
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):

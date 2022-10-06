@@ -100,17 +100,17 @@ class DeviceArray:
         return jax_frontend.bitwise_not(self.data)
 
     @to_ivy_arrays_and_back
-    def __lshift__(self):
-        return jax_frontend.abs(self.data)
+    def __lshift__(self, other):
+        return jax_frontend.shift_left(self.data, other)
 
     @to_ivy_arrays_and_back
-    def __rlshift__(self):
-        return jax_frontend.abs(self.data)
+    def __rlshift__(self, other):
+        return jax_frontend.shift_left(other, self.data)
 
     @to_ivy_arrays_and_back
-    def __rshift__(self):
-        return jax_frontend.abs(self.data)
+    def __rshift__(self, other):
+        return jax_frontend.shift_right_logical(self.data, other)
 
     @to_ivy_arrays_and_back
-    def __rrshift__(self):
-        return jax_frontend.abs(self.data)
+    def __rrshift__(self, other):
+        return jax_frontend.shift_right_logical(other, self.data)
