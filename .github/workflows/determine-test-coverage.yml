@@ -34,11 +34,3 @@ jobs:
            user-email: rashul.chutani@gmail.com
            commit-message: Testing
            target-branch: master
-
-#       - name: Run Functional-Core Tests
-#         id: tests
-#         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
-#         run: |
-#           cd ivy
-#           ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
-#         continue-on-error: true
