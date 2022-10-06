@@ -282,4 +282,3 @@ def test_jax_numpy_eigvals(
         test_values=False,
         a=x,
     )
-
