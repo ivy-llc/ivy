@@ -18,6 +18,7 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
+          fetch-depth: 2
 
       - name: Check Files Changed
         shell: pwsh
