@@ -1376,3 +1376,40 @@ def test_tensorflow_Mean(
         rtol=1e-02,
         atol=1e-02,
     )
+
+
+# NthElement
+@handle_cmd_line_args
+@given(
+    array_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric", full=True),
+        indices_dtypes=["int32"],
+        min_num_dims=1,
+        min_dim_size=1,
+        disable_random_axis=True,
+    ),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.NthElement"
+    ),
+)
+def test_tensorflow_NthElement(
+    array_indices_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    reverse,
+):
+    dtype, x, n = array_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.NthElement",
+        input=x,
+        n=n.flatten()[0],
+        reverse=reverse,
+    )
