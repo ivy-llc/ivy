@@ -26,7 +26,6 @@ def test_torch_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -63,7 +62,6 @@ def test_torch_equal(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -98,7 +96,6 @@ def test_torch_eq(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -138,7 +135,6 @@ def test_torch_argsort(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -174,7 +170,6 @@ def test_torch_greater_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -210,7 +205,6 @@ def test_torch_greater(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -246,7 +240,6 @@ def test_torch_isclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -282,7 +275,6 @@ def test_torch_isfinite(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -314,7 +306,6 @@ def test_torch_isinf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -346,7 +337,6 @@ def test_torch_isposinf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -378,7 +368,6 @@ def test_torch_isneginf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -413,7 +402,6 @@ def test_torch_sort(
     as_variable,
     with_out,
     native_array,
-    fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -449,7 +437,6 @@ def test_torch_isnan(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -482,7 +469,6 @@ def test_torch_less_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -517,7 +503,6 @@ def test_torch_less(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -552,7 +537,6 @@ def test_torch_not_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -586,7 +570,6 @@ def test_torch_isin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -595,11 +578,10 @@ def test_torch_isin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isin",
-        elements=np.asarray(inputs[0], dtype=input_dtype[0]),
-        test_elements=np.asarray(inputs[1], dtype=input_dtype[1]),
+        elements=inputs[0],
+        test_elements=inputs[1],
     )
 
 
@@ -620,7 +602,6 @@ def test_torch_minimum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -657,7 +638,6 @@ def test_torch_fmax(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -694,7 +674,6 @@ def test_torch_fmin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -729,7 +708,6 @@ def test_torch_msort(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -762,7 +740,6 @@ def test_torch_maximum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -771,7 +748,6 @@ def test_torch_maximum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="maximum",
         input=np.asarray(inputs[0], dtype=input_dtype[0]),
@@ -803,22 +779,19 @@ def test_torch_kthvalue(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input, dim = dtype_input_axis
-    input = np.asarray(input)
-    assume(k <= input.shape[dim])
-    assume(input_dtype != "float16")  # unsupported by torch.kthvalue
+    assume(k <= input[0].shape[dim])
+    assume("float16" not in input_dtype)  # unsupported by torch.kthvalue
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="kthvalue",
-        input=input,
+        input=input[0],
         k=k,
         dim=dim,
         keepdim=keepdim,

@@ -30,7 +30,6 @@ def test_numpy_minimum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, xs = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -45,7 +44,6 @@ def test_numpy_minimum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="minimum",
         x1=xs[0],
@@ -84,7 +82,6 @@ def test_numpy_amin(
     num_positional_args,
     native_array,
     initial,
-    fw,
 ):
 
     if initial is None and np.all(where) is not True:
@@ -103,7 +100,6 @@ def test_numpy_amin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="amin",
         test_values=False,
@@ -138,7 +134,6 @@ def test_numpy_nanmin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     where,
     initial,
     keepdims,
@@ -162,7 +157,6 @@ def test_numpy_nanmin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nanmin",
         a=x[0],

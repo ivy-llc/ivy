@@ -227,10 +227,8 @@ def test_softmax(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
-    beta=st.one_of([helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()]),
-    threshold=st.one_of(
-        [helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()]
-    ),
+    beta=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()),
+    threshold=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()),
 )
 def test_softplus(
     *,
@@ -256,6 +254,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        test_gradients=True,
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
@@ -302,6 +301,7 @@ def test_log_softmax(
         fn_name="log_softmax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x[0],
         axis=axis,
     )
