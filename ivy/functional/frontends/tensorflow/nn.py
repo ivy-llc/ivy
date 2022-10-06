@@ -140,4 +140,5 @@ silu.unsupported_dtypes = (
     "int32",
     "int64",
     "bool",
+    "bfloat16",
 )
