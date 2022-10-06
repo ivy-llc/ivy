@@ -635,3 +635,37 @@ def test_tensorflow_dropout(
         prob=prob,
         scale=scale,
     )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
+    ksize=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.max_pool2d"
+    ),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+)
+def test_tensorflow_max_pool2d(
+    x_f_d_df, as_variable, ksize, num_positional_args, native_array
+):
+    input_dtype, x, _, _, data_format, stride, pad = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.max_pool2d",
+        input=x,
+        ksize=ksize,
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+    )
