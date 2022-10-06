@@ -453,7 +453,7 @@ def test_jax_numpy_mean(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("integer"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.uint16"
@@ -464,7 +464,6 @@ def test_jax_numpy_uint16(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -473,11 +472,11 @@ def test_jax_numpy_uint16(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.uint16",
         x=x[0],
-)
+    )
+
 
 # var
 @handle_cmd_line_args
