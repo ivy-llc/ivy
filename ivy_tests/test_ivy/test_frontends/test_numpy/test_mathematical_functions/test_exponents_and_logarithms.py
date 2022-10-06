@@ -27,7 +27,6 @@ def test_numpy_exp(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     input_dtype = [input_dtype]
@@ -43,7 +42,6 @@ def test_numpy_exp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="exp",
         x=x[0],
@@ -73,7 +71,6 @@ def test_numpy_expm1(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -88,7 +85,6 @@ def test_numpy_expm1(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="expm1",
         x=x[0],
@@ -118,7 +114,6 @@ def test_numpy_exp2(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -133,7 +128,6 @@ def test_numpy_exp2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="exp2",
         x=x[0],
@@ -163,7 +157,6 @@ def test_numpy_log10(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -178,7 +171,6 @@ def test_numpy_log10(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="log10",
         x=x[0],
@@ -210,7 +202,6 @@ def test_numpy_log(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -225,7 +216,6 @@ def test_numpy_log(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="log",
         x=x[0],
@@ -257,7 +247,6 @@ def test_numpy_log2(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -272,7 +261,6 @@ def test_numpy_log2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="log2",
         x=x[0],
@@ -302,7 +290,6 @@ def test_numpy_log1p(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -317,7 +304,6 @@ def test_numpy_log1p(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="log1p",
         x=x[0],
@@ -347,7 +333,6 @@ def test_numpy_logaddexp(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, xs = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -362,7 +347,6 @@ def test_numpy_logaddexp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logaddexp",
         x1=xs[0],

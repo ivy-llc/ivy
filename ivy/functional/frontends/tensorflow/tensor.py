@@ -18,11 +18,27 @@ class Tensor:
         return tf_frontend.Shape(input=self.data)
 
     def __add__(self, y, name="add"):
-        # return tf_frontend.add(self.data, y.data, name=name)
         return y.__radd__(self.data)
 
+    def __div__(self, x, name="div"):
+        return tf_frontend.divide(x, self.data, name=name)
+        
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
+
+    def __bool__(self, name="bool"):
+        if isinstance(self.data, int):
+            return self.data != 0
+
+        temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
+        shape = ivy.shape(temp)
+        if shape:
+            raise ivy.exceptions.IvyError(
+                "The truth value of an array with more than one element is ambiguous. "
+                "Use a.any() or a.all()"
+            )
+
+        return temp != 0
 
     def __eq__(self, other):
         return tf_frontend.Equal(x=self.data, y=other, incompatible_shape_error=False)
@@ -42,10 +58,18 @@ class Tensor:
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
 
+    def __mul__(self, x, name="mul"):
+        return tf_frontend.multiply(x, self.data, name=name)
+
     def __ne__(self, other):
         return tf_frontend.NotEqual(
             x=self.data, y=other.data, incompatible_shape_error=False
         )
+
+    def __neg__(self, name="neg"):
+        return tf_frontend.Neg(x=self.data, name=name)
+
+    __nonzero__ = __bool__
 
     def __or__(self, y, name="or"):
         return y.__ror__(self.data)

@@ -49,6 +49,31 @@ def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 det.unsupported_dtypes = ("float16",)
 
 
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+    ret = np.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    # On the diagonal there will be
+    # 1 * padding_value + x_i - padding_value == x_i
+    ret += np.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: np.ndarray,
     /,
@@ -140,10 +165,13 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    if not isinstance(axis, tuple):
+        axis = tuple(axis)
+    return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 matrix_norm.unsupported_dtypes = (
@@ -163,10 +191,21 @@ def matrix_rank(
     x: np.ndarray,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    if type(atol) and type(rtol) == tuple:
+        if atol.all() and rtol.all() is None:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+        elif atol.all() and rtol.all():
+            tol = np.maximum(atol, rtol)
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+        else:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    else:
+        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
+    return ret
 
 
 matrix_rank.unsupported_dtypes = (
@@ -286,9 +325,15 @@ def tensordot(
 
 @_handle_0_dim_output
 def trace(
-    x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
+    return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
 trace.support_native_out = True
