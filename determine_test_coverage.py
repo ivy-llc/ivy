@@ -7,6 +7,7 @@ from tqdm import tqdm
 tests = {}
 
 # flake8: noqa os.system("pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names")
+# os.system("pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names")
 test_names = []
 # with open("test_names") as f:
 #     i = 0
