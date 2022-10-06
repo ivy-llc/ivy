@@ -10,7 +10,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4),
+                              key="num_dims"))
     num_arrays = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
@@ -78,6 +79,7 @@ def test_torch_cat(
     num_positional_args,
     native_array,
     with_out,
+    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -108,6 +110,7 @@ def test_torch_concat(
     num_positional_args,
     native_array,
     with_out,
+    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -144,6 +147,7 @@ def test_torch_nonzero(
     with_out,
     native_array,
     num_positional_args,
+    fw,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
@@ -175,6 +179,7 @@ def test_torch_permute(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_function(
@@ -215,6 +220,7 @@ def test_torch_swapdims(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -263,6 +269,7 @@ def test_torch_reshape(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
@@ -283,7 +290,8 @@ def test_torch_reshape(
 @given(
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4),
+                             key="num_arrays"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
@@ -300,6 +308,7 @@ def test_torch_stack(
     num_positional_args,
     native_array,
     with_out,
+    fw,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -340,6 +349,7 @@ def test_torch_transpose(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -378,6 +388,7 @@ def test_torch_squeeze(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -418,6 +429,7 @@ def test_torch_swapaxes(
     with_out,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -457,6 +469,7 @@ def test_torch_chunk(
     as_variable,
     num_positional_args,
     native_array,
+    fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -470,4 +483,39 @@ def test_torch_chunk(
         input=value[0],
         chunks=chunks,
         dim=dim,
+    )
+
+
+# tile
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False, force_tuple=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tile"
+    ),
+)
+def test_torch_tile(
+    dtype_value,
+    dim,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="tile",
+        input=value[0],
+        dims=dim,
     )
