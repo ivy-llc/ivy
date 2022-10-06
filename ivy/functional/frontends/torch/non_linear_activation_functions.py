@@ -72,7 +72,6 @@ def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
         return input
     return ret
 
-
 def sigmoid(input):
     return ivy.sigmoid(input)
 
