@@ -35,6 +35,8 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+             Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
