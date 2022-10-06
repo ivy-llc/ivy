@@ -128,7 +128,7 @@ def dropout(
     """
     x = ivy.where(
         ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
-        ivy.zeros_like(x),
+        ivy.zeros_like(x, dtype=dtype),
         x,
     )
     if scale:
