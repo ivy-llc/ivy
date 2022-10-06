@@ -1432,3 +1432,36 @@ def test_torch_clip(
         max=max,
         out=None,
     )
+
+
+# mul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.mul"
+    ),
+)
+def test_torch_mul(
+    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="mul",
+        rtol=1e-03,
+        input=x[0],
+        other=x[1],
+        out=None,
+    )
