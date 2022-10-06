@@ -4,7 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, num_positional_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
@@ -16,7 +16,6 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         num_arrays=2,
     ),
 )
-
 def test_numpy_ndarray_argmax(
     dtype_and_x,
     as_variable,
@@ -30,14 +29,14 @@ def test_numpy_ndarray_argmax(
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data":x[0],
+            "data": x[0],
         },
         input_dtypes_method=[input_dtype[1]],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
-            "value":x[1],
+            "value": x[1],
         },
         fw=fw,
         frontend="numpy",

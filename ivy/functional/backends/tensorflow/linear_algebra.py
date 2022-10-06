@@ -63,6 +63,7 @@ det.unsupported_dtypes = (
     "bfloat16",
 )
 
+
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -81,14 +82,13 @@ def diag(
 
     return tf.linalg.diag(
         x,
-        name='diag',
+        name="diag",
         k=offset,
         num_rows=num_rows,
         num_cols=num_rows,
         padding_value=padding_value,
         align=align,
     )
-
 
 
 def diagonal(
@@ -280,7 +280,9 @@ def matrix_norm(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
-        reduce_min = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis)
+        reduce_min = tf.reduce_min(
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis
+        )
         ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
@@ -593,9 +595,7 @@ def trace(
     axis2: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.trace(
-        x, offset=offset, axis1=axis1, axis2=axis2
-    )
+    ret = tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
 
 
