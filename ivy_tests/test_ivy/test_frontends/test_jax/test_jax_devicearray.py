@@ -387,6 +387,32 @@ def test_jax_special_and(
         )
 
 
+# __rand__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_rand(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[1]).__rand__(DeviceArray(x[0]))
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) & jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
 # __or__
 @handle_cmd_line_args
 @given(
@@ -413,6 +439,32 @@ def test_jax_special_or(
         )
 
 
+# __ror__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_ror(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[1]).__ror__(DeviceArray(x[0]))
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) | jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
 # __xor__
 @handle_cmd_line_args
 @given(
@@ -426,6 +478,32 @@ def test_jax_special_xor(
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) ^ DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) ^ jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rxor__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_rxor(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[1]).__rxor__(DeviceArray(x[0]))
     ret_gt = jnp.array(x[0], dtype=input_dtype[0]) ^ jnp.array(
         x[1], dtype=input_dtype[1]
     )
