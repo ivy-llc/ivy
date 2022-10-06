@@ -1,4 +1,4 @@
-name: intelligent-tests
+name: determine-test-coverage
 on:
   workflow_dispatch:
 permissions:
@@ -14,13 +14,26 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
 
-       - name: Determine Tests
+       - name: Determine Test Coverage
          run: |
-           git clone https://github.com/unifyai/Mapping.git
-           pip install pydriller
-           cp Mapping/tests.pkl ivy/
+           pip install pydriller tqdm
            cd ivy
-           python determine_tests.py
+           python determine_test_coverage.py
+           cd ..
+           mkdir tests
+           cp ivy/tests.pkl tests/
+        
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Testing
+           target-branch: master
 
 #       - name: Run Functional-Core Tests
 #         id: tests
