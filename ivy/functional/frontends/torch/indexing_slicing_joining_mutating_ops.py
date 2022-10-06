@@ -7,7 +7,8 @@ def cat(tensors, dim=0, *, out=None):
 
 
 def chunk(input, chunks, dim=0):
-    return ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
+    return ivy.split(input, num_or_size_splits=chunks,
+                     axis=dim, with_remainder=True)
 
 
 def concat(tensors, dim=0, *, out=None):
@@ -53,3 +54,12 @@ def swapdims(input, dim0, dim1):
 
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
+
+
+def tile(input, dims):
+    res = 0
+    if len(input.shape) > len([dims]):
+        res = input
+    else:
+        res = ivy.tile(input, reps=dims)
+    return res
