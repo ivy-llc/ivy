@@ -137,6 +137,15 @@ def test_broadcast_arrays(
     instance_method,
     fw,
 ):
+    if fw == "torch":
+        for input_dtype in input_dtypes:
+            if input_dtype == "bfloat16" or (
+                "uint" in input_dtype and "uint8" not in input_dtype
+            ):
+                # Torch has no inference strategy for bfloat16
+                # Torch has no support for uint above uint8
+                return
+
     kw = {}
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
@@ -172,6 +181,14 @@ def test_broadcast_to(
     instance_method,
     fw,
 ):
+    if fw == "torch":
+        if input_dtype == "bfloat16" or (
+            "uint" in input_dtype and "uint8" not in input_dtype
+        ):
+            # Torch has no inference strategy for bfloat16
+            # Torch has no support for uint above uint8
+            return
+
     array, to_shape = array_and_shape
     helpers.test_function(
         input_dtypes=[input_dtype],
