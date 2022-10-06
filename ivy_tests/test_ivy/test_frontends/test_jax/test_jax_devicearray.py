@@ -39,7 +39,6 @@ def test_jax_instance_reshape(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     x, dtype, shape, dimensions = x_reshape_permut
     helpers.test_frontend_array_instance_method(
@@ -74,7 +73,6 @@ def test_jax_instance_add(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_array_instance_method(

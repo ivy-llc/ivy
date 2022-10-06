@@ -160,10 +160,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -177,7 +179,7 @@ def test_multinomial(
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
     ret = helpers.test_function(
-        input_dtypes=[prob_dtype],
+        input_dtypes=prob_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -193,6 +195,7 @@ def test_multinomial(
         batch_size=batch_size,
         probs=probs[0] if probs is not None else probs,
         replace=replace,
+        seed=seed,
         device=device,
     )
     if not ivy.exists(ret):
@@ -232,10 +235,12 @@ def _gen_randint_data(draw):
 @handle_cmd_line_args
 @given(
     dtype_low_high=_gen_randint_data(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
     dtype_low_high,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -261,6 +266,7 @@ def test_randint(
         high=high,
         shape=None,
         dtype=dtype[0],
+        seed=seed,
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -289,10 +295,12 @@ def test_seed(seed_val):
         min_num_dims=1,
         min_dim_size=2,
     ),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
 )
 def test_shuffle(
     dtype_and_x,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -314,6 +322,7 @@ def test_shuffle(
         fw=fw,
         fn_name="shuffle",
         x=x[0],
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
