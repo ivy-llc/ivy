@@ -655,7 +655,6 @@ def max_pool2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -669,18 +668,6 @@ def max_pool2d(
     elif len(strides) == 1:
         strides = [strides[0]] * 2
 
-    if isinstance(dilations, int):
-        dilations = [dilations] * 2
-    elif len(dilations) == 1:
-        dilations = [dilations[0]] * 2
-
-    # adding dilations
-    if dilations[1] > 1:
-        filters = _add_dilations(filters, dilations[1], axis=1)
-    if dilations[0] > 1:
-        filters = _add_dilations(filters, dilations[0], axis=0)
-
-    #filter_shape = list(filters.shape[0:2])
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
