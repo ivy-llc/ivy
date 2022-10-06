@@ -253,10 +253,11 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
+        "sinc"
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = []
+    skip_arr_cont = ['cumprod']
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list

@@ -1732,17 +1732,17 @@ def match_kwargs(
 
     Examples
     --------
-    >>> o = ivy.zeros(3, dtype=int)
+    >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
     >>> print(x)
-    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+    [{'out': ivy.array([0., 0., 0.])}, {'bias': ivy.array([0, 1, 2])}]
 
-    >>> o = ivy.zeros(3, dtype=int)
+    >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
     >>> print(x)
-    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
+    [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
@@ -2471,7 +2471,7 @@ def supports_inplace_updates(
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
-    True
+    False
 
     With :class:`ivy.Container` input and backend set as `torch`:
 
@@ -2479,8 +2479,8 @@ def supports_inplace_updates(
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
     {
-        a: true,
-        b: true
+        a: false,
+        b: false
     }
     """
     if ivy.is_variable(x):
