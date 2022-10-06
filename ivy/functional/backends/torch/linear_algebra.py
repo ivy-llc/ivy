@@ -73,6 +73,30 @@ det.support_native_out = True
 det.unsupported_dtypes = ("float16", "bfloat16")
 
 
+def diag(
+    x: torch.Tensor,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = torch.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += torch.diag(x - padding_value, diagonal=offset)
+
+    return ret
+
+
 def diagonal(
     x: torch.Tensor,
     /,
@@ -392,7 +416,7 @@ def trace(
     offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
     ret = torch.sum(ret)
