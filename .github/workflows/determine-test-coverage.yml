@@ -7,27 +7,21 @@ jobs:
    run_tests:
      runs-on: ubuntu-latest
      steps:
-#       - name: Checkout Ivy 🛎
-#         uses: actions/checkout@v2
-#         with:
-#           path: ivy
-#           persist-credentials: false
-#           submodules: "recursive"
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
 
-#       - name: Determine Test Coverage
-#         run: |
-#           pip install pydriller tqdm
-#           cd ivy
-#           python determine_test_coverage.py
-#           cd ..
-#           mkdir tests
-#           cp ivy/tests.pkl tests/
-
-       - name: Temp
+       - name: Determine Test Coverage
          run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py
+           cd ..
            mkdir tests
-           cd tests
-           echo "Hello" > tests.pkl
+           cp ivy/tests.pkl tests/
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
