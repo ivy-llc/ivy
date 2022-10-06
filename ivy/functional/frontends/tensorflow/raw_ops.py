@@ -2,6 +2,7 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
+
 def AddN(*, inputs, name="AddN"):
     inputs = ivy.array(inputs)
     return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
@@ -136,7 +137,7 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 def Maximum(*, x, y, name="Maximum"):
-    return tf_frontend.maximum(x,y)
+    return tf_frontend.maximum(x, y)
 
 
 def Minimum(*, x, y, name="Minimum"):
