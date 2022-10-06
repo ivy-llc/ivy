@@ -232,13 +232,13 @@ def conv3d_transpose(
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     if output_shape is None:
         new_d = ivy.deconv_length(
-            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
+            x.shape[1], strides[1], filters.shape[0], padding, dilations[0]
         )
         new_h = ivy.deconv_length(
-            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
+            x.shape[2], strides[2], filters.shape[1], padding, dilations[1]
         )
         new_w = ivy.deconv_length(
-            x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
+            x.shape[3], strides[3], filters.shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-2]]
     elif len(output_shape) == 3:
