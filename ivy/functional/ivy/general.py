@@ -1417,6 +1417,9 @@ def exists(x: Any) -> bool:
     ret
         True if x is not None, else False.
 
+    This function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`Any` input:
