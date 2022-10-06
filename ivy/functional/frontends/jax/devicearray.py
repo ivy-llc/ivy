@@ -9,7 +9,11 @@ class DeviceArray:
         self.data = ivy.array(data)
 
     def __repr__(self):
-        return "ivy.functional.frontends.jax.DeviceArray(" + str(self.data) + ")"
+        return (
+            "ivy.functional.frontends.jax.DeviceArray("
+            + str(ivy.to_list(self.data))
+            + ")"
+        )
 
     # Instance Methods #
     # ---------------- #
