@@ -8,7 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
-from math import sin, pi
+import math
 
 
 def is_native_sparse_array(x):
@@ -28,8 +28,10 @@ def native_sparse_array(
     ivy.assertions.check_exists(
         data,
         inverse=True,
-        message="data cannot be specified, Numpy does not support sparse \
-        array natively",
+        message=(
+            "data cannot be specified, Numpy does not support sparse         array"
+            " natively"
+        ),
     )
     if _is_coo_not_csr(
         coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -50,8 +52,8 @@ def native_sparse_array(
 
 def native_sparse_array_to_indices_values_and_shape(x):
     logging.warning(
-        "Numpy does not support sparse array natively, None is returned for \
-        indices, values and shape."
+        "Numpy does not support sparse array natively, None is returned for        "
+        " indices, values and shape."
     )
     return None, None, None
 
@@ -69,7 +71,12 @@ def vorbis_window(
 ) -> np.ndarray:
     return np.array(
         [
-            round(sin((pi / 2) * (sin(pi * (i) / (window_length * 2)) ** 2)), 8)
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
             for i in range(1, window_length * 2)[0::2]
         ],
         dtype=dtype,
