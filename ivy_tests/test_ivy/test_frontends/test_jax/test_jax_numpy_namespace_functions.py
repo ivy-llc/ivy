@@ -634,5 +634,5 @@ def test_jax_numpy_subtract(
         frontend="jax",
         fn_tree="numpy.subtract",
         x1=x[0],
-        x2=x[0],
+        x2=x[1],
     )
