@@ -56,16 +56,14 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 
 def min(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
-        ret = ivy.min(input, axis=dim, keepdims=keepdim, out=out)
+        return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
+    elif out:
+        ivy.min(input, axis=dim, keepdims=keepdim, out=out[0])
+        ivy.argmin(input, axis=dim, keepdims=keepdim, out=out[1])
+        return out
     else:
-        if out:
-            ivy.min(input, axis=dim, keepdims=keepdim, out=out[0])
-            ivy.argmin(input, axis=dim, keepdims=keepdim, out=out[1])
-            ret = out
-        else:
-            min_tuple = namedtuple("min", ["values", "indices"])
-            ret = min_tuple(
-                ivy.min(input, axis=dim, keepdims=keepdim),
-                ivy.argmin(input, axis=dim, keepdims=keepdim),
-            )
-    return ret
+        min_tuple = namedtuple("min", ["values", "indices"])
+        return min_tuple(
+            ivy.min(input, axis=dim, keepdims=keepdim),
+            ivy.argmin(input, axis=dim, keepdims=keepdim),
+        )
