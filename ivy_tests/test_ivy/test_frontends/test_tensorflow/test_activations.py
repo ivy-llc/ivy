@@ -24,6 +24,8 @@ def test_tensorflow_hard_sigmoid(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="keras.activations.hard_sigmoid",
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
     )
 
