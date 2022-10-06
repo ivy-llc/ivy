@@ -19,7 +19,7 @@ def can_cast(from_, to):
         'float64': torch.float64,
         'bool': torch.bool,
     }
-    if isinstance(from_, str) and isinstance(to, str):
+    if isinstance(from_, str) is False and isinstance(to, str) is False:
         key_list = list(native_dtype_dict.keys())
         val_list = list(native_dtype_dict.values())
         d1 = key_list[val_list.index(from_)]
