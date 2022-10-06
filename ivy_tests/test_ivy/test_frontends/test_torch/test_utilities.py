@@ -1,21 +1,20 @@
 # global
-import numpy as np
 from hypothesis import given
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+
 # can_cast
 @handle_cmd_line_args
 @given(
     dtypes=helpers. get_dtypes("valid", full=True),
-    to_dtype=helpers.get_dtypes("valid", full=False),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.torch.can_cast"),
-)
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.can_cast"))
 def test_torch_can_cast(
     dtypes,
-    to_dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -30,5 +29,5 @@ def test_torch_can_cast(
         frontend="torch",
         fn_tree="can_cast",
         from_=dtypes[0],
-        to=to_dtype[0],
+        to=dtypes[1],
     )
