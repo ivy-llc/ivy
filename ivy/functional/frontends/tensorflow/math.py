@@ -6,8 +6,11 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(input, axis, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
 def asinh(x, name="asinh"):
@@ -294,6 +297,16 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+def truediv(x, y, name="truediv"):
+    x_dtype = ivy.dtype(x)
+    assert x_dtype == ivy.dtype(y)
+    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    return ivy.divide(x, y)
 
 
 # TODO: Ibeta for Future Release

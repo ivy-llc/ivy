@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, assume, strategies as st, example
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -1372,6 +1372,62 @@ def test_cross(
         x1=x1,
         x2=x2,
         axis=axis,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    dtype_offset=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=1,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype_padding_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
+    num_rows=helpers.ints(min_value=1),
+    num_cols=helpers.ints(min_value=1),
+    num_positional_args=helpers.num_positional_args(fn_name="diag"),
+)
+def test_diag(
+    *,
+    dtype_x,
+    dtype_offset,
+    dtype_padding_value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    align,
+    num_rows,
+    num_cols,
+):
+    x_dtype, x = dtype_x
+    offset_dtype, offset = dtype_offset
+    padding_value_dtype, padding_value = dtype_padding_value
+    helpers.test_function(
+        input_dtypes=[dtype_x, offset_dtype, dtype_padding_value],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="diagonal",
+        x=x,
+        offset=offset,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
     )
 
 
