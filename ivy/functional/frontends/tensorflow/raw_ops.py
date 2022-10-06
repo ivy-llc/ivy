@@ -106,6 +106,14 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
+def Identity(*, input, name="Identity"):
+    return ivy.copy_array(input)
+
+
+def IdentityN(*, input, name="IdentityN"):
+    return [ivy.copy_array(x) for x in input]
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
