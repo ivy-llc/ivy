@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, assume, strategies as st, example
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
