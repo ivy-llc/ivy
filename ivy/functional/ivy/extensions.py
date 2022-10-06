@@ -453,3 +453,41 @@ def sinc(
 
     """
     return ivy.current_backend(x).sinc(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vorbis_window(
+    window_length: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.array:
+    """Returns an array that contains a vorbis power complementary window of size window_length.
+
+    Parameters
+    ----------
+    window_length
+        the length of the vorbis window.
+    dtype
+        data type of the returned array. By default float32.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Input array with the vorbis window.
+
+    Examples
+    --------
+
+    >>> ivy.vorbis_window(3)
+    ivy.array([0.38268346, 1. , 0.38268352])
+
+    >>> ivy.vorbis_window(5)
+    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    """
+    return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
