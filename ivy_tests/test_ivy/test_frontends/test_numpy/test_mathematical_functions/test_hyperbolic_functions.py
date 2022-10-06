@@ -27,7 +27,6 @@ def test_numpy_sinh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -42,7 +41,6 @@ def test_numpy_sinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="sinh",
         x=x[0],
@@ -72,7 +70,6 @@ def test_numpy_cosh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -87,7 +84,6 @@ def test_numpy_cosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="cosh",
         x=x[0],
@@ -117,7 +113,6 @@ def test_numpy_tanh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -132,7 +127,6 @@ def test_numpy_tanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="tanh",
         x=x[0],
@@ -163,7 +157,6 @@ def test_numpy_arcsinh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -178,7 +171,6 @@ def test_numpy_arcsinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="arcsinh",
         x=x[0],
@@ -208,7 +200,6 @@ def test_numpy_arccosh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -223,7 +214,6 @@ def test_numpy_arccosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="arccosh",
         x=x[0],
@@ -253,7 +243,6 @@ def test_numpy_arctanh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -268,7 +257,6 @@ def test_numpy_arctanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="arctanh",
         x=x[0],

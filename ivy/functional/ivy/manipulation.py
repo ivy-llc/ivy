@@ -1039,9 +1039,9 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: Optional[int] = 0,
-    with_remainder: bool = False,
+    with_remainder: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 

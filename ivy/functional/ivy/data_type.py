@@ -244,8 +244,7 @@ def astype(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,2,1]), \
-                            b=ivy.array([1,0,0]))
+    >>> x = ivy.Container(a=ivy.array([0,2,1]),b=ivy.array([1,0,0]))
     >>> print(ivy.astype(x, ivy.bool))
     {
         a: ivy.array([False, True, True]),
@@ -260,8 +259,8 @@ def astype(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), \
-                            b=ivy.array([3.14, 2.718, 1.618]))
+    >>> x = ivy.Container(a=ivy.array([False,True,True]), /
+        b=ivy.array([3.14, 2.718, 1.618]))
     >>> print(x.astype(ivy.int32))
     {
         a: ivy.array([0, 1, 1]),
@@ -527,6 +526,7 @@ def finfo(
 
           smallest positive floating-point number with full precision.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
@@ -618,6 +618,7 @@ def iinfo(
         - **min**: *int*
 
           smallest representable number.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -943,10 +944,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     ret
         The closest valid data type as a native ivy.Dtype
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard.
 
     Examples
     --------
@@ -1338,7 +1335,7 @@ def dtype(
     Returns
     -------
     ret
-        Data type of the array
+        Data type of the array.
 
     Examples
     --------
@@ -1358,8 +1355,8 @@ def dtype(
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),
-    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))
+    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),\
+                          b=ivy.native_array([1, 0, 0, 0, 1]))
     >>> y = ivy.dtype(x.a)
     >>> print(y)
     float32
@@ -1579,8 +1576,7 @@ def is_int_dtype(
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype = ivy.int16)
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]],dtype = ivy.int16)
     >>> x.dtype
     torch.int16
 
@@ -1595,8 +1591,7 @@ def is_int_dtype(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-        b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
     >>> x.b.dtype
@@ -1654,8 +1649,7 @@ def check_float(x):
 @handle_exceptions
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
-    *,
-    out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
+    /,
 ) -> bool:
     """
     Determine whether the input data type is a float dtype.
@@ -1763,6 +1757,8 @@ def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
+    *,
+    array_api_promotion: bool = False,
 ) -> ivy.Dtype:
     """
     Promotes the datatypes type1 and type2, returning the data type they promote to
@@ -1773,6 +1769,8 @@ def promote_types(
         the first of the two types to promote
     type2
         the second of the two types to promote
+    array_api_promotion
+        whether to only use the array api promotion rules
 
     Returns
     -------
@@ -1780,7 +1778,14 @@ def promote_types(
         The type that both input types promote to
     """
     try:
-        ret = ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+        if array_api_promotion:
+            ret = ivy.array_api_promotion_table[
+                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
+            ]
+        else:
+            ret = ivy.promotion_table[
+                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
+            ]
     except KeyError:
         raise ivy.exceptions.IvyException("these dtypes are not type promotable")
     return ret
@@ -2081,6 +2086,8 @@ def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
     /,
+    *,
+    array_api_promotion: bool = False,
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
@@ -2095,7 +2102,9 @@ def promote_types_of_inputs(
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_types(x1.dtype, x2.dtype)
+        promoted = promote_types(
+            x1.dtype, x2.dtype, array_api_promotion=array_api_promotion
+        )
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
