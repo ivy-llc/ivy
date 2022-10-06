@@ -495,7 +495,6 @@ def vorbis_window(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_exceptions
 def kaiser_window(
     window_length: int,
