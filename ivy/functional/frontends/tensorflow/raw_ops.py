@@ -184,6 +184,10 @@ def Sub(*, x, y, name="Sub"):
     return ivy.subtract(x, y)
 
 
+def Sum(*, input, axis, keep_dims=False, name="Sum"):
+    return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
 def Tan(*, x, name="Tan"):
     return ivy.tan(x)
 
