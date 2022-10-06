@@ -59,7 +59,6 @@ def test_numpy_arange(
     step,
     dtype,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -92,7 +91,6 @@ def test_numpy_linspace(
     num,
     axis,
     num_positional_args,
-    fw,
     native_array,
 ):
     input_dtypes, start, stop = dtype_start_stop
@@ -131,7 +129,6 @@ def test_numpy_logspace(
     base,
     axis,
     num_positional_args,
-    fw,
     native_array,
 ):
     dtype, start, stop = dtype_start_stop
@@ -174,7 +171,6 @@ def test_numpy_meshgrid(
     copy,
     sparse,
     indexing,
-    fw,
     native_array,
 ):
     input_dtypes, arrays = dtype_and_arrays

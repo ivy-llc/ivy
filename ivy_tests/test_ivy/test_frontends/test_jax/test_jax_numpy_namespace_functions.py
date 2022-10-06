@@ -23,7 +23,6 @@ def test_jax_numpy_abs(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -53,7 +52,6 @@ def test_jax_numpy_absolute(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -83,7 +81,6 @@ def test_jax_numpy_add(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -114,7 +111,6 @@ def test_jax_numpy_all(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -148,7 +144,6 @@ def test_jax_numpy_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -201,7 +196,6 @@ def test_jax_numpy_broadcast_to(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_broadcast
     helpers.test_frontend_function(
@@ -271,7 +265,6 @@ def test_jax_numpy_clip(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -323,7 +316,6 @@ def test_jax_numpy_reshape(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_shape
     helpers.test_frontend_function(
@@ -389,7 +381,6 @@ def test_jax_numpy_concat(
     dtype,
     num_positional_args,
     native_array,
-    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -433,7 +424,6 @@ def test_jax_numpy_mean(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
@@ -448,7 +438,6 @@ def test_jax_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.mean",
         a=x[0],
@@ -490,7 +479,6 @@ def test_jax_numpy_var(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
@@ -505,7 +493,6 @@ def test_jax_numpy_var(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.var",
         a=x[0],
@@ -567,7 +554,6 @@ def test_jax_numpy_dot(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, y = dtype_x_y
     helpers.test_frontend_function(

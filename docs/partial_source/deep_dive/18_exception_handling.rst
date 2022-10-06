@@ -1,5 +1,5 @@
-Exception Handling
-==================
+Exception Handling ⚠
+====================
 
 As Ivy is unifying multiple backends, various issues are seen during exception
 handling:

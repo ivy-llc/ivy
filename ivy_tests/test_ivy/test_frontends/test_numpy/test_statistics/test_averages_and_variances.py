@@ -30,7 +30,6 @@ def test_numpy_mean(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -57,7 +56,6 @@ def test_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="mean",
         x=x[0],
