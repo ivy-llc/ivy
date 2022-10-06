@@ -930,12 +930,10 @@ def test_unstack(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1e2,
-        max_value=1e2,
-        shape=st.tuples(st.integers(min_value=1), st.integers(min_value=1)),
+        shape=helpers.get_shape(min_num_dims=5, max_num_dims=5),
     ),
-    start_dim=st.integers(0),
-    end_dim=st.integers(-1),
+    start_dim=st.integers(1, 3),
+    end_dim=st.integers(3, 4),
     num_positional_args=helpers.num_positional_args(fn_name="flatten"),
 )
 def test_flatten(
