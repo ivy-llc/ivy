@@ -140,6 +140,10 @@ def Maximum(*, x, y, name="Maximum"):
     return tf_frontend.maximum(x, y)
 
 
+def Min(*, input, axis, keep_dims=False, name="Min"):
+    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
