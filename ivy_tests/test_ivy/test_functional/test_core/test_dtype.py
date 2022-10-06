@@ -763,7 +763,7 @@ def test_default_int_dtype(*, input, int_dtype, as_native):
     res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
     assert (
         isinstance(res, ivy.Dtype)
-    or isinstance(res, typing.get_args(ivy.NativeDtype))
+        or isinstance(res, typing.get_args(ivy.NativeDtype))
         or isinstance(res, str)
     )
     assert (
