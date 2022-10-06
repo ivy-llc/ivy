@@ -23,7 +23,6 @@ def test_numpy_matrix_argmax(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -67,7 +66,6 @@ def test_numpy_matrix_any(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):

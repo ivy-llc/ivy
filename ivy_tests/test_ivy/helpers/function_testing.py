@@ -246,7 +246,7 @@ def test_function(
                     break
             instance_idx = args_idxs[i]
             instance = ivy.index_nest(args, instance_idx)
-            args = ivy.copy_nest(args, to_mutable=True)
+            args = ivy.copy_nest(args, to_mutable=False)
             ivy.prune_nest_at_index(args, instance_idx)
         else:
             i = 0
@@ -255,7 +255,7 @@ def test_function(
                     break
             instance_idx = kwargs_idxs[i]
             instance = ivy.index_nest(kwargs, instance_idx)
-            kwargs = ivy.copy_nest(kwargs, to_mutable=True)
+            kwargs = ivy.copy_nest(kwargs, to_mutable=False)
             ivy.prune_nest_at_index(kwargs, instance_idx)
         if test_unsupported:
             test_unsupported_function(
@@ -1702,7 +1702,7 @@ def create_args_kwargs(
             as_cont(x=x) if c else x
             for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
         ]
-    args = ivy.copy_nest(args_np, to_mutable=True)
+    args = ivy.copy_nest(args_np, to_mutable=False)
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
 
     # create kwargs
@@ -1724,7 +1724,7 @@ def create_args_kwargs(
             as_cont(x=x) if c else x
             for x, c in zip(kwarg_array_vals, container_flags[num_arg_vals:])
         ]
-    kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
     ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
     return args, kwargs, num_arg_vals, args_idxs, kwargs_idxs
 
@@ -1777,7 +1777,14 @@ def flatten(*, ret):
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
-    return ivy.multi_index_nest(ret, ret_idxs)
+    # no ivy array in the returned values, which means it returned scalar
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [ivy.asarray(x) for x in ret_flat]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    return ret_flat
 
 
 def flatten_and_to_np(*, ret):

@@ -1,5 +1,5 @@
-Docstring Examples
-==================
+Docstring Examples 💯
+=====================
 
 .. _`docstring examples discussion`: https://github.com/unifyai/ivy/discussions/1322
 .. _`repo`: https://github.com/unifyai/ivy
@@ -12,22 +12,22 @@ the final step is to add helpful examples to the docstrings.
 There are eight types of examples, which each need to be added:
 
 **Functional** examples show the function being called like so
-:code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
-in the Ivy API :func:`ivy.<func_name>`.
+:code:`ivy.func_name(...)`, and these should be added to docstring of the function
+in the Ivy API :func:`ivy.func_name`.
 
 **Container static method** examples show the method being called like so
-:code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
-docstring of the static container method :meth:`ivy.Container.static_<func_name>`.
+:code:`ivy.Container.static_func_name(...)`, and these should be added to the
+docstring of the static container method :meth:`ivy.Container.static_func_name`.
 
 **Array instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Array` instance,
 and these should be added to the docstring of the :class:`ivy.Array` instance method
-:meth:`ivy.Array.<func_name>`.
+:meth:`ivy.Array.func_name`.
 
 **Container instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Container` instance,
 and these should be added to the docstring of the :class:`ivy.Container` instance method
-:meth:`ivy.Container.<func_name>`.
+:meth:`ivy.Container.func_name`.
 
 **Array operator** examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :class:`ivy.Array` instance, and these should be added to the
@@ -66,8 +66,8 @@ These special methods in turn call the functions in the Ivy API mentioned above.
 **Functional Examples**
 
 To recap, *functional* examples show the function being called like so
-:code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
-in the Ivy API :func:`ivy.<func_name>`.
+:code:`ivy.func_name(...)`, and these should be added to docstring of the function
+in the Ivy API :func:`ivy.func_name`.
 
 Firstly, we should include *functional* examples with :class:`ivy.Array` instances in the input.
 
@@ -124,8 +124,8 @@ Whereas the following container is not okay to use for example purposes:
 **Container Static Method Examples**
 
 To recap, *container static method* examples show the method being called like so
-:code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
-docstring of the static container method :meth:`ivy.Container.static_<func_name>`.
+:code:`ivy.Container.static_func_name(...)`, and these should be added to the
+docstring of the static container method :meth:`ivy.Container.static_func_name`.
 
 The static methods of the :class:`ivy.Container` class are used under the hood when
 supporting the *nestable* property for all Ivy functions in the API,
@@ -133,13 +133,13 @@ as showcased by the examples for points 6 and 7. We should demonstrate these sam
 examples in the static method docstrings also.
 
 8. the example from point 6 should be replicated, but added to the :class:`ivy.Container`
-   static method :meth:`ivy.Container.static_<func_name>` docstring. With
-   :func:`ivy.<func_name>` replaced with :meth:`ivy.Container.static_<func_name>`
+   static method :meth:`ivy.Container.static_func_name` docstring. With
+   :func:`ivy.func_name` replaced with :meth:`ivy.Container.static_func_name`
    in the example.
 
 9. the example from point 7 should be replicated, but added to the :class:`ivy.Container`
-   static method :meth:`ivy.Container.static_<func_name>` docstring. With
-   :func:`ivy.<func_name>` replaced with :meth:`ivy.Container.static_<func_name>`
+   static method :meth:`ivy.Container.static_func_name` docstring. With
+   :func:`ivy.func_name` replaced with :meth:`ivy.Container.static_func_name`
    in the example.
 
 **Array Instance Method Example**
@@ -147,7 +147,7 @@ examples in the static method docstrings also.
 To recap, *array instance method* examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Array` instance,
 and these should be added to the docstring of the :class:`ivy.Array` instance method
-:meth:`ivy.Array.<func_name>`.
+:meth:`ivy.Array.func_name`.
 
 These examples are of course only relevant if an instance method for
 the function exists. If so, this example should simply:
@@ -159,7 +159,7 @@ the function exists. If so, this example should simply:
 To recap, *container instance method* examples show the method being called like so
 :code:`x.func_name(...)` on an :class:`ivy.Container` instance,
 and these should be added to the docstring of the :class:`ivy.Container` instance method
-:meth:`ivy.Container.<func_name>`.
+:meth:`ivy.Container.func_name`.
 
 These examples are of course only relevant if an instance method
 for the function exists. If so, this example should simply:

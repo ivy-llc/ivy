@@ -204,8 +204,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":

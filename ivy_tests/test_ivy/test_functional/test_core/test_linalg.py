@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, assume, strategies as st, example
 
 # local
 import ivy
@@ -540,11 +540,13 @@ def test_inner(
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    adjoint=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
     *,
     dtype_x,
+    adjoint,
     as_variable,
     with_out,
     num_positional_args,
@@ -567,6 +569,7 @@ def test_inv(
         atol_=1e-2,
         fn_name="inv",
         x=x[0],
+        adjoint=adjoint,
     )
 
 
@@ -852,12 +855,17 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=40,
-        small_abs_safety_factor=40,
-        safety_factor_scale="log",
         min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        large_abs_safety_factor=1.1,
+        small_abs_safety_factor=1.1,
+        safety_factor_scale="linear",
     ),
-    offset=helpers.ints(min_value=-10, max_value=10),
+    offset=st.integers(min_value=0, max_value=0),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
 )
 def test_trace(
@@ -871,6 +879,8 @@ def test_trace(
     instance_method,
     fw,
     offset,
+    axis1,
+    axis2,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -887,6 +897,8 @@ def test_trace(
         atol_=1e-2,
         x=x[0],
         offset=offset,
+        axis1=axis1,
+        axis2=axis2,
     )
 
 
@@ -1094,6 +1106,7 @@ def test_qr(
         max_value=10.0,
     ),
     fm=st.booleans(),
+    uv=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="svd",
     ),
@@ -1107,6 +1120,7 @@ def test_svd(
     container,
     instance_method,
     fw,
+    uv,
     fm,
 ):
     dtype, x = dtype_x
@@ -1122,6 +1136,7 @@ def test_svd(
         fw=fw,
         fn_name="svd",
         x=x[0],
+        compute_uv=uv,
         full_matrices=fm,
         test_values=False,
         return_flat_np_arrays=True,
@@ -1131,46 +1146,56 @@ def test_svd(
 
     # value test based on recreating the original matrix and testing the consistency
     ret_flat_np, ret_from_gt_flat_np = results
-    U, S, Vh = ret_flat_np
-    m = U.shape[-1]
-    n = Vh.shape[-1]
-    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-    U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
-    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    with ivy.functional.backends.numpy.use:
-        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
-        S_mat_gt = (
-            S_gt
-            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
-        )
-    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
-    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+    if uv:
+        U, S, Vh = ret_flat_np
+        m = U.shape[-1]
+        n = Vh.shape[-1]
+        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+        S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-    # value test
-    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
-    helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+        with ivy.functional.backends.numpy.use:
+            S_mat = (
+                S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+            )
+            S_mat_gt = (
+                S_gt
+                * ivy.eye(
+                    U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
+                ).data
+            )
+        reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+        reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+        # value test
+        helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+        helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+    else:
+        S = ret_flat_np
+        S_gt = ret_from_gt_flat_np
+        helpers.assert_all_close(S[0], S_gt[0], atol=1e-04)
 
 
 # matrix_norm
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
+    dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
         min_num_dims=2,
-        max_num_dims=5,
+        max_num_dims=2,
         min_dim_size=1,
-        max_dim_size=5,
-        min_value=-10,
-        max_value=10,
+        max_dim_size=10,
     ),
     kd=st.booleans(),
+    axis=st.just((-2, -1)),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
 )
 def test_matrix_norm(
     *,
-    dtype_x,
+    dtype_value_shape,
     as_variable,
     with_out,
     num_positional_args,
@@ -1179,9 +1204,10 @@ def test_matrix_norm(
     instance_method,
     fw,
     kd,
+    axis,
     ord,
 ):
-    dtype, x = dtype_x
+    dtype, x = dtype_value_shape
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1193,8 +1219,9 @@ def test_matrix_norm(
         fw=fw,
         fn_name="matrix_norm",
         x=x[0],
-        ord=ord,
+        axis=axis,
         keepdims=kd,
+        ord=ord,
     )
 
 
@@ -1217,6 +1244,8 @@ def _matrix_rank_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_x=_matrix_rank_helper(),
+    atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    | st.just(None),
     rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
@@ -1231,12 +1260,13 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
+    atol,
     rtol,
 ):
     dtype, x = dtype_x
     x_temp = x[0]
     for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
-        assume(round(np.linalg.det(x_i), 1) != 0.0)
+        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1248,6 +1278,7 @@ def test_matrix_rank(
         fw=fw,
         fn_name="matrix_rank",
         x=x[0],
+        atol=atol,
         rtol_=rtol,
     )
 
@@ -1341,6 +1372,62 @@ def test_cross(
         x1=x1,
         x2=x2,
         axis=axis,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    dtype_offset=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=1,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype_padding_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
+    num_rows=helpers.ints(min_value=1),
+    num_cols=helpers.ints(min_value=1),
+    num_positional_args=helpers.num_positional_args(fn_name="diag"),
+)
+def test_diag(
+    *,
+    dtype_x,
+    dtype_offset,
+    dtype_padding_value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    align,
+    num_rows,
+    num_cols,
+):
+    x_dtype, x = dtype_x
+    offset_dtype, offset = dtype_offset
+    padding_value_dtype, padding_value = dtype_padding_value
+    helpers.test_function(
+        input_dtypes=[dtype_x, offset_dtype, dtype_padding_value],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="diagonal",
+        x=x,
+        offset=offset,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
     )
 
 

@@ -29,3 +29,7 @@ def eigvalsh(a, UPLO="L"):
 
 def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
+
+
+def eigvals(a):
+    return ivy.eigh(a)
