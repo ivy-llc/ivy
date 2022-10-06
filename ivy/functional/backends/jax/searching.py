@@ -17,7 +17,7 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
