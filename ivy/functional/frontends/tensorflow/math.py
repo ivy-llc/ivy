@@ -112,6 +112,7 @@ def divide_no_nan(x, y, name="divide_no_nan"):
         x / y,
     )
 
+
 def maximum(a, b):
     # Cast inputs to ivy array
     a = ivy.array(a)
@@ -309,5 +310,3 @@ def truediv(x, y, name="truediv"):
 
 
 # TODO: Ibeta for Future Release
-
-
