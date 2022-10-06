@@ -68,7 +68,7 @@ native_float32 = jnp.dtype("float32")
 native_float64 = jnp.dtype("float64")
 native_complex64 = jnp.dtype("complex64")
 native_complex128 = jnp.dtype("complex128")
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = jnp.dtype("bool")
 
 # valid data types
@@ -141,6 +141,7 @@ def closest_valid_dtype(type):
 
 
 backend = "jax"
+backend_version = jax.__version__
 
 # local sub-modules
 from . import activations

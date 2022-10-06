@@ -1,5 +1,6 @@
 # global
 from hypothesis import given, strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -35,11 +36,10 @@ def test_numpy_all(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
+        where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -50,7 +50,6 @@ def test_numpy_all(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="all",
         a=x[0],
@@ -90,11 +89,10 @@ def test_numpy_any(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
+        where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -105,7 +103,6 @@ def test_numpy_any(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="any",
         a=x[0],
@@ -114,4 +111,24 @@ def test_numpy_any(
         keepdims=keepdims,
         where=where,
         test_values=False,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    element=st.booleans() | st.floats() | st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.isscalar"
+    ),
+)
+def test_numpy_isscalar(element, as_variable, native_array, num_positional_args):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.all_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="isscalar",
+        element=element,
     )

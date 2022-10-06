@@ -6,12 +6,27 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(input, axis, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
+
+
+def clip_by_value(t, clip_value_min, clip_value_max):
+    ivy.assertions.check_all_or_any_fn(
+        clip_value_min,
+        clip_value_max,
+        fn=ivy.exists,
+        type="all",
+        message="clip_value_min and clip_value_max must exist",
+    )
+    t = ivy.array(t)
+    return ivy.clip(t, clip_value_min, clip_value_max)
 
 
 def confusion_matrix(
@@ -157,7 +172,7 @@ def polyval(coeffs, x, name=None):
     ivy.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
-        return ivy.zeros_like(x)
+        return ivy.zeros_like(x, dtype=x.dtype)
     coeffs = [ivy.array(_) for _ in coeffs]
     p = coeffs[0]
     for c in coeffs[1:]:
@@ -282,6 +297,16 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+def truediv(x, y, name="truediv"):
+    x_dtype = ivy.dtype(x)
+    assert x_dtype == ivy.dtype(y)
+    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    return ivy.divide(x, y)
 
 
 # TODO: Ibeta for Future Release

@@ -189,19 +189,19 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         An ivy variable, supporting gradient computation.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1., 0.3, -4.5])
     >>> y = ivy.variable(x)
     >>> print(y)
     ivy.array([ 1. ,  0.3, -4.5])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.2, 4.]))
     >>> y = ivy.variable(x)
@@ -238,12 +238,12 @@ def is_variable(
         Boolean, true if x is a trainable variable, false otherwise.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.variable(ivy.array(2.3))
     >>> is_var = ivy.is_variable(x)
@@ -255,7 +255,7 @@ def is_variable(
     >>> print(is_var)
     False
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
     >>> is_var = ivy.is_variable(x, exclusive=True)
@@ -265,7 +265,7 @@ def is_variable(
         b: false
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
                           b=ivy.array([0., -0.4, 8]))
@@ -303,7 +303,7 @@ def variable_data(x):
         The internal data stored by the variable
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -340,12 +340,12 @@ def stop_gradient(
         The same array x, but with no gradient information.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.stop_gradient(x, preserve_type=True)
@@ -358,7 +358,7 @@ def stop_gradient(
     ivy.array([[0., 0., 0.],
                [0., 0., 0.]])
 
-    With one :code:`ivy.Container` inputs:
+    With one :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
@@ -369,7 +369,7 @@ def stop_gradient(
         b: ivy.array([3., 4., 5.])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
@@ -436,7 +436,7 @@ def value_and_grad(func):
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.variable(ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]]))
     >>> func = lambda x: ivy.mean(ivy.square(x))
@@ -470,7 +470,7 @@ def jac(func):
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])
     >>> func = lambda x: ivy.mean(ivy.square(x))
@@ -569,7 +569,7 @@ def adam_step(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> dcdw = ivy.array([1, 2, 3])
     >>> mw = ivy.ones(3)
@@ -607,7 +607,7 @@ def adam_step(
     >>> print(out)
         ivy.array([0.171, 0.171, 0.171])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                              b=ivy.array([3., 4., 5.]))
@@ -631,7 +631,7 @@ def adam_step(
         b: ivy.array([0.216, 0.384, 0.6])
     })
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                              b=ivy.array([3., 4., 5.]))
@@ -713,7 +713,7 @@ def optimizer_update(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
@@ -748,7 +748,7 @@ def optimizer_update(
     >>> print(out)
     ivy.array([0.999, 2.   , 3.   ])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
@@ -761,7 +761,7 @@ def optimizer_update(
         b: ivy.array([3., 4., 5.])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
@@ -833,7 +833,7 @@ def gradient_descent_update(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> w = ivy.array([[1., 2, 3],\
                        [4, 6, 1],\
@@ -856,7 +856,7 @@ def gradient_descent_update(
     >>> print(out)
     ivy.array([0.85, 1.94, 2.97])
 
-    With one :code:`ivy.Container` inputs:
+    With one :class:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                           b=ivy.array([3.48, 5.72, 1.98]))
@@ -869,7 +869,7 @@ def gradient_descent_update(
         b: ivy.array([3.33, 5.66, 1.95])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                           b=ivy.array([3.48, 5.72, 1.98]))
@@ -1069,7 +1069,7 @@ def lamb_update(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> w = ivy.array([1., 2, 3])
     >>> dcdw = ivy.array([0.5,0.2,0.1])
@@ -1106,7 +1106,7 @@ def lamb_update(
                [ 3.64 ,  5.64 ,  0.639],\
                [ 0.639, -0.361,  6.64 ]])
 
-    With one :code:`ivy.Container` inputs:
+    With one :class:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
     >>> dcdw = ivy.array([3., 4., 5.])
@@ -1121,7 +1121,7 @@ def lamb_update(
         b: ivy.array([4., 5., 6.])
     }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
                           b=ivy.array([3.,4.,2.]))

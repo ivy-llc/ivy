@@ -131,7 +131,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
         
         >>> x = ivy.Container(a=ivy.array([False,True,True]), \
                                 b=ivy.array([3.14, 2.718, 1.618]))
@@ -193,7 +193,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -207,7 +207,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.array([0.2, 3.])
@@ -266,7 +266,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -280,7 +280,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.zeros(2)
@@ -336,7 +336,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` static method:
+        With :class:`ivy.Container` static method:
+
         >>> x = ivy.Container(a=ivy.array([1]),\
             b=ivy.array([2]))
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
@@ -393,7 +394,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code: 'ivy.Container' instance method:
+        With :class:`ivy.Container` instance method:
+        
         >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
             b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))
@@ -561,6 +563,17 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+        >>> y = x.dtype()
+        >>> print(y)
+        {
+            a: int32,
+            b: int32
+        }
+        """
         return self.static_dtype(
             self,
             as_native,
@@ -685,6 +698,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_bool_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -701,6 +715,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_bool_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -717,6 +732,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_float_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -787,12 +803,11 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_float_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: ivy.Container = None,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_float_dtype`.
@@ -863,6 +878,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_int_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -879,6 +895,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_int_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

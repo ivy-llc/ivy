@@ -10,6 +10,7 @@ from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.tensor_shape import TensorShape
 import torch
 import warnings
+from ivy._version import __version__ as __version__
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -194,6 +195,7 @@ bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
+double = float64
 complex64 = ComplexDtype("complex64")
 complex128 = ComplexDtype("complex128")
 complex256 = ComplexDtype("complex256")
@@ -212,6 +214,7 @@ native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
+native_double = native_float64
 complex64 = ComplexDtype("complex64")
 complex128 = ComplexDtype("complex128")
 complex256 = ComplexDtype("complex256")
@@ -589,8 +592,8 @@ add_ivy_container_instance_methods(
     static=True,
 )
 
-
 backend = "none"
+backend_version = "none"
 
 native_inplace_support = None
 

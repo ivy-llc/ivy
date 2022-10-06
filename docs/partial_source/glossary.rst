@@ -62,16 +62,16 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Standalone functions are functions which do not reference any other primary, compositional or mixed functions whatsoever. These are mainly convenience functions.
      
     Nestable Functions
-        Nestable functions are functions which can accept :code:`ivy.Container` instances in place of any of the arguments. 
+        Nestable functions are functions which can accept :class:`ivy.Container` instances in place of any of the arguments.
      
     Convenience Functions
         Convenience functions can be used to organize and improve the code for other functions.
     
     Native Array
-        The :code:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class, such as :code:`np.ndarray`, :code:`tf.Tensor` or :code:`torch.Tensor`.
+        The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class, such as :class:`np.ndarray`, :class:`tf.Tensor` or :class:`torch.Tensor`.
     
     Ivy Array
-        The :code:`ivy.Array` is a simple wrapper class, which wraps around the :code:`ivy.NativeArray`.
+        The :class:`ivy.Array` is a simple wrapper class, which wraps around the :class:`ivy.NativeArray`.
     
     Submodule Helper Functions
         These are standalone/convenience functions that are specific to a submodule.

@@ -23,16 +23,15 @@ def test_numpy_matrix_argmax(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
-        as_variable_flags_init=[],
+        as_variable_flags_init=as_variable,
         num_positional_args_init=0,
-        native_array_flags_init=[],
+        native_array_flags_init=native_array,
         all_as_kwargs_np_init={
             "data": x[0],
             "dtype": input_dtype[0],
@@ -44,7 +43,6 @@ def test_numpy_matrix_argmax(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="argmax",
@@ -68,16 +66,15 @@ def test_numpy_matrix_any(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
-        as_variable_flags_init=[],
+        as_variable_flags_init=as_variable,
         num_positional_args_init=0,
-        native_array_flags_init=[],
+        native_array_flags_init=native_array,
         all_as_kwargs_np_init={
             "data": x[0],
             "dtype": input_dtype[0],
@@ -89,7 +86,6 @@ def test_numpy_matrix_any(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="any",

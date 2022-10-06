@@ -1,5 +1,5 @@
-Navigating the Code
-===================
+Navigating the Code 🔍
+======================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
@@ -52,9 +52,9 @@ We can always suggest a more suitable location when reviewing your pull request 
 Submodule Design
 ----------------
 
-Ivy is designed so that all methods are called directly from the :code:`ivy` namespace, such as :code:`ivy.matmul`,
-and not :code:`ivy.some_namespace.matmul`. Therefore, inside any of the folders :code:`ivy.functional.ivy`,
-:code:`ivy.functional.backends.some_backend`, :code:`ivy.functional.backends.another_backend` the functions can be moved
+Ivy is designed so that all methods are called directly from the :mod:`ivy` namespace, such as :func:`ivy.matmul`,
+and not :func:`ivy.some_namespace.matmul`. Therefore, inside any of the folders :mod:`ivy.functional.ivy`,
+:mod:`ivy.functional.backends.some_backend`, :mod:`ivy.functional.backends.another_backend` the functions can be moved
 to different files or folders without breaking anything at all. This makes it very simple to refactor and re-organize
 parts of the code structure in an ongoing manner.
 
@@ -77,7 +77,7 @@ is given below:
 Ivy API
 -------
 
-All function signatures for the Ivy API are defined in the :code:`ivy.functional.ivy` submodule. Functions written here
+All function signatures for the Ivy API are defined in the :mod:`ivy.functional.ivy` submodule. Functions written here
 look something like the following, (explained in much more detail in the following sections):
 
 
@@ -144,14 +144,14 @@ future releases without breaking forward compatibility. Similar arguments can be
 rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
 Backend API
 -----------
 
-Code in the backend submodules such as :code:`ivy.functional.backends.torch` should then look something like:
+Code in the backend submodules such as :mod:`ivy.functional.backends.torch` should then look something like:
 
 .. code-block:: python
 
@@ -169,8 +169,8 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
 but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
-All arrays also now have the same type hint :code:`torch.Tensor`,
-rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+All arrays also now have the same type hint :class:`torch.Tensor`,
+rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
 
@@ -199,13 +199,13 @@ To have a better idea on this, let's look at an example!
             or (isinstance(fill_value, bool))
         ), "the fill_value and data type are not compatible"
 
-In the :code:`full_like` function in :code:`creation.py`, the types of
+In the :func:`full_like` function in :mod:`creation.py`, the types of
 :code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
 check has to be applied to all backends, which means the related code is common
 and identical. In this case, we can extract the code to be a helper function on
-its own, placed in its related submodule (:code:`creation.py` here). In this
+its own, placed in its related submodule (:mod:`creation.py` here). In this
 example, the helper function is named as
-:code:`_assert_fill_value_and_dtype_are_compatible`.
+:func:`_assert_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.

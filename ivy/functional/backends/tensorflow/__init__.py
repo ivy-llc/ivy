@@ -41,7 +41,7 @@ native_float32 = tf.float32
 native_float64 = tf.float64
 native_complex64 = tf.complex64
 native_complex128 = tf.complex128
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = tf.bool
 
 # valid data types
@@ -109,7 +109,7 @@ def closest_valid_dtype(type):
 
 
 backend = "tensorflow"
-
+backend_version = tf.__version__
 
 # local sub-modules
 from . import activations

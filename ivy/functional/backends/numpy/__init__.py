@@ -38,7 +38,6 @@ float32 = ivy.FloatDtype("float32")
 float64 = ivy.FloatDtype("float64")
 complex64 = ivy.ComplexDtype("complex64")
 complex128 = ivy.ComplexDtype("complex128")
-# noinspection PyShadowingBuiltins
 bool = ivy.Dtype("bool")
 
 # native data types
@@ -55,7 +54,7 @@ native_float32 = np.dtype("float32")
 native_float64 = np.dtype("float64")
 native_complex64 = np.dtype("complex64")
 native_complex128 = np.dtype("complex128")
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = np.dtype("bool")
 
 # valid data types
@@ -115,7 +114,7 @@ def closest_valid_dtype(type):
 
 
 backend = "numpy"
-
+backend_version = np.__version__
 
 # local sub-modules
 from . import activations

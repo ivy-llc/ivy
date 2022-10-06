@@ -1,8 +1,9 @@
-from typing import Optional, Tuple
+from numbers import Number
+from typing import Optional, Tuple, Union
 
-import ivy
 import jax.numpy as jnp
 
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -27,16 +28,29 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: Optional[jnp.dtype] = jnp.int64,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmin(x, axis=axis, keepdims=keepdims)
+    ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
+    if dtype is not None:
+        return jnp.array(ret, dtype=dtype)
+    return ret
 
 
 def nonzero(
     x: JaxArray,
     /,
-) -> Tuple[JaxArray]:
-    return jnp.nonzero(x)
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[JaxArray, Tuple[JaxArray]]:
+    res = jnp.nonzero(x, size=size, fill_value=fill_value)
+
+    if as_tuple:
+        return tuple(res)
+
+    return jnp.stack(res, axis=1)
 
 
 def where(

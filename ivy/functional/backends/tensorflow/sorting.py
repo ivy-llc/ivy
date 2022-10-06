@@ -30,7 +30,8 @@ def sort(
     stable: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # TODO: introduce stable sort when it's supported in tensorflow
+    # TODO: handle stable sort when it's supported in tensorflow
+    # currently it supports only quicksort (unstable)
     direction = "DESCENDING" if descending else "ASCENDING"
     x = tf.convert_to_tensor(x)
     is_bool = x.dtype.is_bool
@@ -43,7 +44,7 @@ def sort(
 
 
 def searchsorted(
-    x1: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable],
     v: Union[tf.Tensor, tf.Variable],
     /,
     *,
@@ -52,4 +53,6 @@ def searchsorted(
     ret_dtype=tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.searchsorted(x1, v, side=side, out_type=ret_dtype)
+    if sorter is not None:
+        x = x[sorter]
+    return tf.searchsorted(x, v, side=side, out_type=ret_dtype)

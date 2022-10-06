@@ -2,8 +2,8 @@
 import ivy
 
 
-def add(input, other, *, alpha=1, out=None):
-    return ivy.add(input, other * alpha, out=out)
+def add(input, other, *, alpha=None, out=None):
+    return ivy.add(input, other, alpha=alpha, out=out)
 
 
 def tan(input, *, out=None):
@@ -156,3 +156,41 @@ def logical_or(input, other, *, out=None):
 
 def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
+
+
+def ceil(input, *, out=None):
+    return ivy.ceil(input, out=out)
+
+
+def clamp(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)
+
+
+def clip(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)

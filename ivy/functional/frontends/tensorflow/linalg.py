@@ -10,12 +10,23 @@ def det(input, name=None):
     return ivy.det(input)
 
 
+def eigh(tensor, name=None):
+    return ivy.eigh(tensor)
+
+
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
 def solve(x, y):
     return ivy.solve(x, y)
+
+
+def logdet(matrix, name=None):
+    return ivy.det(matrix).log()
+
+
+logdet.supported_dtypes = ("float16", "float32", "float64")
 
 
 def slogdet(input, name=None):
