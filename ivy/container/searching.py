@@ -104,6 +104,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -123,6 +124,8 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
+        dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -134,7 +137,12 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmin", x, axis=axis, keepdims=keepdims, out=out
+            "argmin",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out
         )
 
     def argmin(
@@ -143,6 +151,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -162,6 +171,8 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
+        dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -173,7 +184,13 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
+        return self.static_argmin(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out
+        )
 
     @staticmethod
     def static_nonzero(

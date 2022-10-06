@@ -41,6 +41,7 @@ def test_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="relu",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -55,7 +56,7 @@ def test_relu(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=st.floats(min_value=-1e06, max_value=1e06),
+    alpha=st.floats(min_value=-1e-4, max_value=1e-4),
 )
 def test_leaky_relu(
     *,
@@ -82,6 +83,7 @@ def test_leaky_relu(
         fn_name="leaky_relu",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         alpha=alpha,
     )
@@ -124,6 +126,7 @@ def test_gelu(
         fn_name="gelu",
         atol_=1e-2,
         rtol_=1e-2,
+        test_gradients=True,
         x=x[0],
         approximate=approximate,
     )
@@ -164,6 +167,7 @@ def test_sigmoid(
         fn_name="sigmoid",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -206,6 +210,7 @@ def test_softmax(
         fn_name="softmax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x[0],
         axis=axis,
     )
@@ -222,10 +227,8 @@ def test_softmax(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
-    beta=st.one_of([helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()]),
-    threshold=st.one_of(
-        [helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()]
-    ),
+    beta=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()),
+    threshold=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()),
 )
 def test_softplus(
     *,
@@ -251,6 +254,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        test_gradients=True,
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
@@ -297,6 +301,7 @@ def test_log_softmax(
         fn_name="log_softmax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x[0],
         axis=axis,
     )

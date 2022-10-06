@@ -206,6 +206,7 @@ def random_normal(
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -227,6 +228,8 @@ def random_normal(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
@@ -297,7 +300,7 @@ def random_normal(
     ivy.array([12.4, 11. ])
     """
     return ivy.current_backend().random_normal(
-        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
+        mean=mean, std=std, shape=shape, dtype=dtype, seed=seed, device=device, out=out
     )
 
 
@@ -315,8 +318,9 @@ def multinomial(
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
     where each row contains num_samples indices sampled from the multinomial probability
@@ -338,6 +342,8 @@ def multinomial(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -401,6 +407,7 @@ def multinomial(
         probs=probs,
         replace=replace,
         device=device,
+        seed=seed,
         out=out,
     )
 
@@ -418,6 +425,7 @@ def randint(
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
@@ -440,6 +448,8 @@ def randint(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default integer data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -474,7 +484,7 @@ def randint(
 
     """
     return ivy.current_backend().randint(
-        low, high, shape=shape, device=device, dtype=dtype, out=out
+        low, high, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
@@ -502,7 +512,11 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_nestable
 @handle_exceptions
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
@@ -510,6 +524,8 @@ def shuffle(
     ----------
     x
         Input array. Should have a numeric data type.
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -527,4 +543,4 @@ def shuffle(
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return ivy.current_backend(x).shuffle(x, out=out)
+    return ivy.current_backend(x).shuffle(x, seed=seed, out=out)

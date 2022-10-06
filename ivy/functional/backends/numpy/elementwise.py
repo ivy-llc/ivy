@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional
-
 import numpy as np
 
 # local
@@ -11,10 +10,6 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
-
-
-# when inputs are 0 dimensional, numpy's functions return scalars
-# so we use this wrapper to ensure outputs are always numpy arrays
 
 
 @_handle_0_dim_output
@@ -138,7 +133,7 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    ivy.assertions.check_all_bitshifts(x2 >= 0)  # shifts must be non-negative
     return np.left_shift(x1, x2, out=out)
 
 
@@ -169,7 +164,7 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    ivy.assertions.check_all_bitshifts(x2 >= 0)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -667,8 +662,20 @@ erf.support_native_out = True
 
 
 @_handle_0_dim_output
-def maximum(x1, x2, /, *, out: Optional[np.ndarray] = None):
+def maximum(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    /,
+    *,
+    use_where: bool = False,
+    out: Optional[np.ndarray] = None,
+):
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        ret = np.where(x1 >= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
     return np.maximum(x1, x2, out=out)
 
 
@@ -681,9 +688,15 @@ def minimum(
     x2: Union[float, np.ndarray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        ret = np.where(x1 <= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
     return np.minimum(x1, x2, out=out)
 
 
