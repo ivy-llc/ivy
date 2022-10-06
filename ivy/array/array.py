@@ -701,7 +701,16 @@ class Array(
 
     @_native_wrapper
     def __deepcopy__(self, memodict={}):
-        return to_ivy(self._data.__deepcopy__(memodict))
+        try:
+            return to_ivy(self._data.__deepcopy__(memodict))
+        except AttributeError:
+            # ToDo: try and find more elegant solution to jax inability to
+            #  deepcopy device arrays
+            if ivy.current_backend_str() == "jax":
+                np_array = copy.deepcopy(self._data)
+                jax_array = ivy.array(np_array)
+                return to_ivy(jax_array)
+            return to_ivy(copy.deepcopy(self._data))
 
     @_native_wrapper
     def __len__(self):
