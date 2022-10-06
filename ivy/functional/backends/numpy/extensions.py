@@ -64,12 +64,12 @@ def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def vorbis_window(
     window_length: np.ndarray,
     *,
-    dtype:Optional[np.dtype] = np.float32,
+    dtype: Optional[np.dtype] = np.float32,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.array([
-        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
-        for i in range(1, window_length*2)[0::2]
+        round(sin((pi / 2) * (sin(pi * (i) / (window_length * 2)) ** 2)), 8)
+        for i in range(1, window_length * 2)[0::2]
     ], dtype=dtype)
 
 
@@ -84,7 +84,7 @@ def kaiser_window(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if periodic == False:
+    if periodic is False:
         return np.array(
             np.kaiser(M=window_length, beta=beta),
             dtype=dtype) 

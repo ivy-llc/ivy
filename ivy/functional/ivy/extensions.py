@@ -465,7 +465,8 @@ def vorbis_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
-    """Returns an array that contains a vorbis power complementary window of size window_length.
+    """Returns an array that contains a vorbis power complementary window 
+    of size window_length.
 
     Parameters
     ----------

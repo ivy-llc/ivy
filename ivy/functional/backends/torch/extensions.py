@@ -76,12 +76,12 @@ sinc.unsupported_dtypes = ("float16",)
 def vorbis_window(
     window_length: torch.tensor,
     *,
-    dtype:Optional[torch.dtype] = torch.float32,
+    dtype: Optional[torch.dtype] = torch.float32,
     out: Optional[torch.tensor] = None
 ) -> torch.tensor:
     return torch.tensor([
-        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
-        for i in range(1, window_length*2)[0::2]
+        round(sin((pi / 2) * (sin(pi * (i) / (window_length * 2)) ** 2)), 8)
+        for i in range(1, window_length * 2)[0::2]
     ], dtype=dtype)
 
 

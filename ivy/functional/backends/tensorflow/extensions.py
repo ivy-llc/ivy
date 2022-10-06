@@ -76,13 +76,13 @@ def sinc(
 def vorbis_window(
     window_length: Union[tf.Tensor, tf.Variable],
     *,
-    dtype:Optional[tf.DType] = tf.dtypes.float32,
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.vorbis_window(
-    window_length,
-    dtype=dtype,
-    name=None
+        window_length,
+        dtype=dtype,
+        name=None
     )
 
 
@@ -94,9 +94,9 @@ def kaiser_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if periodic == False:
+    if periodic is False:
         return tf.signal.kaiser_window(
-            window_length, beta, dtype=tf.dtypes.float32,name=None) 
+            window_length, beta, dtype=tf.dtypes.float32, name=None) 
     else: 
         return tf.signal.kaiser_window(
             window_length + 1, beta, dtype=dtype, name=None)[:-1] 

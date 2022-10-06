@@ -62,12 +62,12 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 def vorbis_window(
     window_length: JaxArray,
     *,
-    dtype:Optional[jnp.dtype] = jnp.float32,
+    dtype: Optional[jnp.dtype] = jnp.float32,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.array([
-        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
-        for i in range(1, window_length*2)[0::2]
+        round(sin((pi / 2) * (sin(pi * (i) / (window_length * 2)) ** 2)), 8)
+        for i in range(1, window_length * 2)[0::2]
     ], dtype=dtype)
 
 
@@ -79,7 +79,7 @@ def kaiser_window(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if periodic == False:
+    if periodic is False:
         return jnp.array(
             jnp.kaiser(M=window_length, beta=beta),
             dtype=dtype) 
