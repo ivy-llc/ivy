@@ -16,7 +16,7 @@ class ContainerWithLayers(ContainerBase):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias: Union[ivy.Array, ivy.NativeArray] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
