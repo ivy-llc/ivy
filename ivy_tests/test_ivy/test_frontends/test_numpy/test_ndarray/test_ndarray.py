@@ -4,7 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, num_positional_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
@@ -16,7 +16,6 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         num_arrays=2,
     ),
 )
-
 def test_numpy_ndarray_argmax(
     dtype_and_x,
     as_variable,
@@ -30,14 +29,14 @@ def test_numpy_ndarray_argmax(
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data":x[0],
+            "data": x[0],
         },
         input_dtypes_method=[input_dtype[1]],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
-            "value":x[1],
+            "value": x[1],
         },
         fw=fw,
         frontend="numpy",
@@ -287,4 +286,40 @@ def test_numpy_ndarray_all(
         frontend="numpy",
         class_name="ndarray",
         method_name="all",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.argsort"
+    ),
+)
+def test_numpy_instance_argsort(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_instance_method(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        frontend_class=np.ndarray,
+        fn_tree="ndarray.argsort",
+        x=x[0],
+        axis=axis,
     )

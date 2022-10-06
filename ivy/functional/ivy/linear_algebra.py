@@ -337,6 +337,31 @@ def det(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def diag(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+):
+    return current_backend(x).diag(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -899,7 +924,6 @@ def matmul(
     )
 
 
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -945,7 +969,9 @@ def matrix_norm(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).matrix_norm(
+        x, ord=ord, axis=axis, keepdims=keepdims, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -1878,7 +1904,6 @@ def trace(
     }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
-
 
 
 @to_native_arrays_and_back
