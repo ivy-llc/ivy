@@ -344,7 +344,7 @@ def test_jax_special_rpow(
 ):
     x_dtype, x, pow = dtype_x_pow
     ret = DeviceArray(pow).__rpow__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=x_dtype[0]) ** pow
+    ret_gt = jnp.array(pow).__rpow__(jnp.array(x[0], dtype=x_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -394,8 +394,8 @@ def test_jax_special_rand(
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__rand__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) & jnp.array(
-        x[1], dtype=input_dtype[1]
+    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__rand__(
+        jnp.array(x[0], dtype=input_dtype[0])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
@@ -446,8 +446,8 @@ def test_jax_special_ror(
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__ror__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) | jnp.array(
-        x[1], dtype=input_dtype[1]
+    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__ror__(
+        jnp.array(x[0], dtype=input_dtype[0])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
@@ -498,8 +498,8 @@ def test_jax_special_rxor(
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__rxor__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) ^ jnp.array(
-        x[1], dtype=input_dtype[1]
+    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__rxor__(
+        jnp.array(x[0], dtype=input_dtype[0])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
@@ -564,7 +564,7 @@ def test_jax_special_rlshift(
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(shift).__rlshift__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) << shift
+    ret_gt = jnp.array(shift).__rlshift__(jnp.array(x[0], dtype=input_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -604,7 +604,7 @@ def test_jax_special_rrshift(
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(shift).__rrshift__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >> shift
+    ret_gt = jnp.array(shift).__rrshift__(jnp.array(x[0], dtype=input_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
