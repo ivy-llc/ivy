@@ -28,7 +28,6 @@ def test_torch_dist(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     p,
 ):
     input_dtype, input = dtype_and_input
@@ -66,7 +65,6 @@ def test_torch_argmax(
     num_positional_args,
     native_array,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -103,7 +101,6 @@ def test_torch_argmin(
     num_positional_args,
     native_array,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -140,7 +137,6 @@ def test_torch_amax(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -178,7 +174,6 @@ def test_torch_amin(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -217,7 +212,6 @@ def test_torch_all(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -256,7 +250,6 @@ def test_torch_any(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -288,7 +281,6 @@ def test_torch_mean(
     num_positional_args,
     native_array,
     with_out,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -321,7 +313,6 @@ def test_torch_std(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
@@ -366,7 +357,6 @@ def test_torch_prod(
     native_array,
     with_out,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -399,7 +389,6 @@ def test_torch_var(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis, correction = dtype_and_x

@@ -1,12 +1,13 @@
-name: test-frontend-tensorflow-push
+name: test-frontend-jax-push
 on: push
 jobs:
   run-nightly-tests:
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow ]
-        submodules: [activations, layers, math, metrics, nest, nn, quantization, random, raw_ops,
-                    regularizers, sets, signal, sparse, tensor]
+        submodules: [jax_devicearray, jax_lax_control_flow_operators, jax_lax_custom_gradient_operators,
+                    jax_lax_linalg, jax_lax_operators, jax_lax_parallel_operators, jax_nn_activations,
+                    jax_numpy_fft, jax_numpy_linalg, jax_numpy_namespace_functions]
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -24,18 +25,17 @@ jobs:
             cd ivy
             $diff = git diff --name-only HEAD^ HEAD
             $SourceDiff = $diff | Where-Object { `
-            $_ -match 'ivy_tests/test_ivy/test_frontends/test_tensorflow/test_${{ matrix.submodules }}.py' `
+              $_ -match 'ivy_tests/test_ivy/test_frontends/test_jax/test_${{ matrix.submodules }}.py' `
             }
             $HasDiff = $SourceDiff.Length -gt 0
             Write-Host "::set-output name=changed::$HasDiff"
-            
-            
+
       - name: Run Frontend Tests
         if: steps.check_file_changed.outputs.changed == 'True'
         id: tests
         run: |
           cd ivy
-          ./run_tests_CLI/test_tensorflow_frontend.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+          ./run_tests_CLI/test_jax_frontend.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
       - name: Install Mongo Python Client
@@ -55,5 +55,5 @@ jobs:
         continue-on-error: true
 
       - name: Check on failures
-        if:  steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
+        if:  steps.check_file_changed.outputs.changed == 'True' &&  steps.tests.outcome != 'success'
         run: exit 1

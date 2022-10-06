@@ -35,7 +35,7 @@ def test_dtype_instances(device):
 
 
 # for data generation in multiple tests
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+dtype_shared = helpers.get_dtypes("valid", full=False, key="dtype")
 
 
 @st.composite
@@ -45,7 +45,7 @@ def dtypes_shared(draw, num_dtypes):
     return draw(
         st.shared(
             st.lists(
-                st.sampled_from(ivy_np.valid_dtypes),
+                st.sampled_from(draw(helpers.get_dtypes("valid"))),
                 min_size=num_dtypes,
                 max_size=num_dtypes,
             ),
@@ -118,7 +118,7 @@ def broadcastable_arrays(draw, dtypes):
     dtypes = draw(dtypes)
     arrays = []
     for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
-        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}").tolist()
+        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
         arrays.append(x)
     return arrays
 
@@ -191,7 +191,7 @@ def test_broadcast_to(
 
     array, to_shape = array_and_shape
     helpers.test_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -466,7 +466,7 @@ def test_default_dtype(
 # dtype
 @handle_cmd_line_args
 @given(
-    array=helpers.nph.arrays(
+    array=helpers.array_values(
         dtype=dtype_shared,
         shape=helpers.lists(
             arg=helpers.ints(min_value=1, max_value=5),
@@ -498,7 +498,7 @@ def test_dtype(
             return
 
     helpers.test_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
