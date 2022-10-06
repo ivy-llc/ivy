@@ -158,16 +158,15 @@ def test_sinc(
         x=np.asarray(x, dtype=input_dtype),
     )
 
+
 # vorbis_window
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    num_positional_args=helpers.num_positional_args(fn_name="vorbis_window")
+    num_positional_args=helpers.num_positional_args(fn_name="vorbis_window"),
 )
 def test_vorbis_window(
     dtype_and_x,
