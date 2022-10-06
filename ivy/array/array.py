@@ -689,7 +689,7 @@ class Array(
         --------
         >>> a = 32
         >>> b = ivy.array([0, 1, 2])
-        >>> y = b.__rrshift__(a)
+        >>> y = a >> b
         >>> print(y)
         ivy.array([32, 16,  8])
         """
