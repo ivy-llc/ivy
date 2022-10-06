@@ -77,7 +77,7 @@ def vorbis_window(
     window_length: Union[tf.Tensor, tf.Variable],
     *,
     dtype: Optional[tf.DType] = tf.dtypes.float32,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.vorbis_window(
         window_length,
@@ -92,7 +92,7 @@ def kaiser_window(
     beta: float = 12.0,
     *,
     dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if periodic is False:
         return tf.signal.kaiser_window(

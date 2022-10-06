@@ -360,7 +360,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_dtypes = ("float16",)
+conv3d.unsupported_dtypes = ("float16", "bfloat16")
 
 
 # noinspection PyUnresolvedReferences
