@@ -73,7 +73,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#classes-and-instance-methods">Classes and Instance Methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#framework-specific-argument-types">Framework-Specific Argument Types</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
@@ -537,105 +536,6 @@ As explained in <a class="reference internal" href="../design/ivy_as_a_transpile
 computation graph in the source framework. In the case of instance methods, we then
 replace each of the original instance methods in the extracted computation graph with
 these new instance methods defined in the Ivy frontend class.</p>
-</section>
-<section id="framework-specific-argument-types">
-<h2>Framework-Specific Argument Types<a class="headerlink" href="#framework-specific-argument-types" title="Permalink to this heading"></a></h2>
-<p>Some of the frontend functions that we need to implement include framework-specific
-classes as the default values for some of the arguments,
-which do not have a counterpart in other frameworks.
-When re-implementing these functions in Ivy’s frontend, we would like to still include
-those arguments without directly using these special classes, which do not exist in Ivy.</p>
-<p>A good example is the special class <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code>, which is sometimes used
-instead of <code class="code docutils literal notranslate"><span class="pre">None</span></code> as the default value for arguments in numpy. For example,
-the <code class="code docutils literal notranslate"><span class="pre">keepdims</span></code>, <code class="code docutils literal notranslate"><span class="pre">initial</span></code> and <code class="code docutils literal notranslate"><span class="pre">where</span></code> arguments of <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.sum()</span></code>
-use <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> as the default value, while <code class="code docutils literal notranslate"><span class="pre">axis</span></code>, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and
-<code class="code docutils literal notranslate"><span class="pre">out</span></code> use <code class="code docutils literal notranslate"><span class="pre">None</span></code>, as can be seen in the
-<a class="reference external" href="https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299">source code</a>.</p>
-<p>We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named <code class="code docutils literal notranslate"><span class="pre">&lt;backend&gt;_classes_to_ivy_classes</span></code> in
-<code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</span></code>.
-This holds pairs of framework-specific classes and the corresponding Ivy or
-native Python classes to map to.
-For example, in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</span></code>, we have:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numpy_classes_to_ivy_classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>Where <code class="code docutils literal notranslate"><span class="pre">np._NoValue</span></code> is a reference to the <code class="code docutils literal notranslate"><span class="pre">_NoValueType</span></code> class defined in
-<code class="code docutils literal notranslate"><span class="pre">numpy/numpy/_globals.py</span></code>.</p>
-<p>Any time a new framework-specific data type is discovered, such as the
-<code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> example given, then this should be added as a key to the
-dictionary, and the most appropriate pure-python or Ivy class or instance should be
-added as the value.</p>
-<p>During frontend testing, the helper <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_function()</span></code> by default passes
-all the generated inputs into both Ivy’s frontend implementation and also the original
-function. For the framework-specific classes discussed, this is a problem.
-Handling the framework-specific class in the Ivy frontend would add a dependency to the
-frontend framework being mimicked. This breaks Ivy’s design philosophy,
-whereby only the specific backend framework being used should be a dependency.
-Our solution is to pass the value from the <code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code>
-dict to the Ivy frontend function and the key from the
-<code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code> dict to the original function during testing
-in <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_function()</span></code>.</p>
-<p>The way we do this is to wrap all framework-specific classes inside a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code> during frontend testing. The <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code> is defined in
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/__init__.py</span></code>, and this acts as a
-placeholder class to represent the framework-specific class and its counterpart.
-It has only one attribute, <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, which holds the reference to the
-special class being used by the targeted framework.
-Then, in order to pass the key and value to the original and frontend functions
-respectively, <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_function()</span></code> detects all <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> instances
-in the arguments, makes use of <code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code> internally
-to find the corresponding value to the key wrapped inside the <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code>
-instance, and then passes the key and value as inputs to the corresponding functions
-correctly.</p>
-<p>As an example, we show how <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is used in the frontend test for the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">sum()</span></code> function in the NumPy frontend:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">handle_cmd_line_args</span>
-<span class="nd">given</span><span class="p">(</span>
-    <span class="n">dtype_x_axis</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_values_axis</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <span class="n">keep_dims</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">Novalue</span><span class="p">),</span>
-    <span class="n">initial</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(),</span> <span class="n">Novalue</span><span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.sum&quot;</span>
-    <span class="p">),</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_numpy_sum</span><span class="p">(</span>
-    <span class="n">dtype_x_axis</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">,</span>
-    <span class="n">keep_dims</span><span class="p">,</span>
-    <span class="n">initial</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">with_out</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">dtype_x_axis</span>
-    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">where</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
-        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">keepdims</span><span class="o">=</span><span class="n">keep_dims</span><span class="p">,</span>
-        <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
-        <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-<p>The function has three optional arguments which have the default value of
-<code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code>, being: <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">keep_dims</span></code> and <code class="code docutils literal notranslate"><span class="pre">initial</span></code>.
-We therefore define a <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeClass</span></code> object <code class="code docutils literal notranslate"><span class="pre">Novalue</span></code>, and pass this as input
-to each of these arguments when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_function()</span></code>.</p>
 <p><strong>Round Up</strong></p>
 <p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
 are for, how they should be implemented, and the things to watch out for!
