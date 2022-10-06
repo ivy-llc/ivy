@@ -89,11 +89,7 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.argmin(
-            self._data,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def nonzero(
