@@ -736,6 +736,7 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, typing.get_args(ivy.NativeDtype))
+        or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
     assert (
@@ -764,6 +765,7 @@ def test_default_int_dtype(*, input, int_dtype, as_native):
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, typing.get_args(ivy.NativeDtype))
+        or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
     assert (
