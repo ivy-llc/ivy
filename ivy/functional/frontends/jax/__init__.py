@@ -19,3 +19,19 @@ from .numpy import fft
 from ivy.functional.frontends.jax.numpy.fft import *
 from .numpy import linalg
 from ivy.functional.frontends.jax.numpy.linalg import *
+
+# global
+from jax.numpy import dtype
+from jax.interpreters.xla import _DeviceArray
+from jaxlib.xla_extension import DeviceArray, Device, Buffer
+
+
+FrontendArray = (
+    _DeviceArray,
+    DeviceArray,
+    Buffer,
+)
+FrontendVariable = _DeviceArray
+FrontendDevice = Device
+FrontendDtype = dtype
+FrontendShape = tuple

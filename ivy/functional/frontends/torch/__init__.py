@@ -43,3 +43,13 @@ from . import utilities
 from .utilities import *
 from . import vision_functions
 from .vision_functions import *
+
+# global
+from torch import Tensor, device, dtype, Size
+
+
+FrontendArray = Tensor
+FrontendVariable = Tensor
+FrontendDevice = device
+FrontendDtype = dtype
+FrontendShape = Size

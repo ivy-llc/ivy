@@ -42,3 +42,13 @@ from .linalg.matrix_and_vector_products import (
 from .linalg.decompositions import cholesky, qr, svd
 
 # from .linalg.norms_and_other_numbers import trace
+
+# global
+from numpy import ndarray, dtype
+
+
+FrontendArray = ndarray
+FrontendVariable = ndarray
+FrontendDevice = str
+FrontendDtype = dtype
+FrontendShape = tuple

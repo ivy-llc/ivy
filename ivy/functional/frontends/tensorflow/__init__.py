@@ -29,3 +29,15 @@ from . import signal
 from .signal import *
 from . import sparse
 from .sparse import *
+
+# global
+from tensorflow.python.types.core import Tensor
+from tensorflow.python.framework.dtypes import DType
+from tensorflow.python.framework.tensor_shape import TensorShape
+
+
+FrontendArray = Tensor
+FrontendVariable = Tensor
+FrontendDevice = str
+FrontendDtype = DType
+FrontendShape = TensorShape

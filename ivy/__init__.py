@@ -54,6 +54,30 @@ NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
 NativeShape = Union[tuple, TensorShape, torch.Size]
 
 
+FrontendArray = Union[
+    jax.interpreters.xla._DeviceArray,
+    jaxlib.xla_extension.DeviceArray,
+    Buffer,
+    np.ndarray,
+    Tensor,
+    torch.Tensor,
+]
+
+
+FrontendVariable = Union[
+    jax.interpreters.xla._DeviceArray, np.ndarray, Tensor, torch.Tensor
+]
+
+
+FrontendDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
+
+
+FrontendDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
+
+
+FrontendShape = Union[tuple, TensorShape, torch.Size]
+
+
 class Container:
     pass
 
