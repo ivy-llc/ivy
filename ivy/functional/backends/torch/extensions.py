@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
 )
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
+from math import sin, pi
 
 
 def is_native_sparse_array(x):
@@ -70,3 +71,18 @@ def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 sinc.support_native_out = True
 sinc.unsupported_dtypes = ("float16",)
+
+
+def vorbis_window(
+    window_length: torch.tensor,
+    *,
+    dtype:Optional[torch.dtype] = torch.float32,
+    out: Optional[torch.tensor] = None
+) -> torch.tensor:
+    return torch.tensor([
+        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
+        for i in range(1, window_length*2)[0::2]
+    ], dtype=dtype)
+
+
+vorbis_window.support_native_out = False

@@ -1097,7 +1097,6 @@ def test_tensorflow_AddN(dtype_and_x, as_variable, num_positional_args, native_a
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "bfloat16",
             "float32",
             "float64",
             "int8",
