@@ -73,6 +73,7 @@ def diag(
 
     return ret
 
+
 def diagonal(
     x: np.ndarray,
     /,
