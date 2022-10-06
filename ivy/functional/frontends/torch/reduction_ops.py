@@ -57,7 +57,7 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 def min(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
-    elif out:
+    elif out is not None:
         ivy.min(input, axis=dim, keepdims=keepdim, out=out[0])
         ivy.argmin(input, axis=dim, keepdims=keepdim, out=out[1])
         return out
