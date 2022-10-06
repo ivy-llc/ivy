@@ -6,7 +6,7 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
-# os.system("pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names")
+# flake8: noqa os.system("pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names")
 test_names = []
 # with open("test_names") as f:
 #     i = 0
@@ -66,7 +66,9 @@ directories = [
 
 if __name__ == "__main__":
     for test_name in tqdm(test_names):
-        os.system(f"coverage run -m pytest {test_name} --disable-warnings > coverage_output")
+        os.system(
+            f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
+        )
         os.system("coverage annotate > coverage_output")
         for directory in directories:
             for file_name in os.listdir(directory):
@@ -90,6 +92,6 @@ commit_hash = ""
 for commit in Repository(".", order="reverse").traverse_commits():
     commit_hash = commit.hash
     break
-tests['commit'] = commit_hash
+tests["commit"] = commit_hash
 with open("tests.pkl", "wb") as f:
     pickle.dump(tests, f)
