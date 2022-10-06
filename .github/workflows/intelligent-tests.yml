@@ -1,6 +1,5 @@
-name: test-core-ivy
+name: intelligent-tests
 on:
-  push:
   workflow_dispatch:
 permissions:
   actions: read
@@ -18,6 +17,7 @@ jobs:
        - name: Determine Tests
          run: |
            git clone https://github.com/unifyai/Mapping.git
+           pip install pydriller
            cp Mapping/tests.pkl ivy/
            cd ivy
            python determine_tests.py
