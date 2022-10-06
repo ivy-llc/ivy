@@ -18,28 +18,38 @@ class ContainerWithLayers(ContainerBase):
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: Optional[bool] = True,
-        prune_unapplied: Optional[bool] = False,
-        map_sequences: Optional[bool] = False,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
+        wraps the function, and so the docstring for ivy.linear also applies
         to this method with minimal changes.
 
         Parameters
         ----------
         x
-            The input x compute linear transformation on.
+            The input x to compute linear transformation on.
             *[outer_batch_shape,inner_batch_shape,in_features]*
         weight
             The weight matrix. *[outer_batch_shape,out_features,in_features]*
         bias
             The bias vector, default is None. *[outer_batch_shape,out_features]*
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -49,7 +59,39 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [11., 22., 33.]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
+        >>> b = ivy.array([1., 0., -1.])
+        >>> y = ivy.Container.static_linear(x, w, bias=b)
+        >>> print(y)
+        {
+            a: ivy.array([[16.4, 35.2, 54.],
+                          [155., 352., 549.]]),
+            b: ivy.array([[15.1, 31., 46.9],
+                          [85., 195., 305.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [.0, .1, .2]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [.7, .8, .9]]))
+        >>> w = ivy.Container(a=ivy.array([[1., 2., 3.]]), \
+                              b=ivy.array([[.1, .2, .3]]))
+        >>> b = ivy.Container(a=ivy.array([1.]), b=ivy.array([-1.]))
+        >>> y = ivy.Container.static_linear(x, w, bias=b)
+        >>> print(y)
+        {
+            a: ivy.array([[16.4], 
+                          [1.8]]),
+            b: ivy.array([[0.412], 
+                          [-0.5]])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "linear",
@@ -68,7 +110,7 @@ class ContainerWithLayers(ContainerBase):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Union[ivy.Array, ivy.NativeArray] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -77,21 +119,31 @@ class ContainerWithLayers(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
+        wraps the function, and so the docstring for ivy.linear also applies
         to this method with minimal changes.
 
         Parameters
         ----------
-        x
-            The input x compute linear transformation on.
+        self
+            The input container to compute linear transformation on.
             *[outer_batch_shape,inner_batch_shape,in_features]*
         weight
             The weight matrix. *[outer_batch_shape,out_features,in_features]*
         bias
             The bias vector, default is None. *[outer_batch_shape,out_features]*
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -101,6 +153,22 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                           [11., 22., 33.]]), \
+                              b=ivy.array([[1.245, 0.278, 4.105], \
+                                           [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
+        >>> b = ivy.array([1, 0, -1])
+        >>> y = x.linear(w, bias=b)
+        >>> print(y)
+        {
+            a: ivy.array([[16.4, 35.2, 54.], \
+                          [155., 352., 549.]]), \
+            b: ivy.array([[15.1, 31., 46.9], \
+                          [85., 195., 305.]])
+        }
         
         """
         return self.static_linear(
