@@ -27,9 +27,16 @@ def _conv_transpose_padding(k, s, padding, dilation, diff=0):
 
 
 def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
-    strides = strides or (1,) * len(window_shape)
+
+    if isinstance(strides, int):
+        strides = (strides,) * len(window_shape)
+    elif len(strides) == 1:
+        strides = (strides[0],) * len(window_shape)
+
     assert len(window_shape) == len(strides), (
         f"len({window_shape}) must equal len({strides})")
+
+    window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,)
     dims = (1,) + window_shape + (1,)
 
