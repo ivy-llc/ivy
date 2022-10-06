@@ -17,14 +17,13 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype=None,
+    output_dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
     if output_dtype:
-        return ivy.astype(ret, output_dtype)
-    else:
-        return ret
+        ret = ret.astype(output_dtype)
+    return ret
 
 
 def argmin(

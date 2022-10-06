@@ -16,14 +16,13 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype=None,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims, out=out))
     if output_dtype:
-        return ret.astype(output_dtype)
-    else:
-        return ret
+        ret = ret.astype(output_dtype)
+    return ret
 
 
 argmax.support_native_out = True

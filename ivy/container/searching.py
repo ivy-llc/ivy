@@ -16,6 +16,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -46,7 +47,12 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmax", x, axis=axis, keepdims=keepdims, out=out
+            "argmax",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            out=out,
         )
 
     def argmax(
@@ -55,6 +61,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -73,6 +80,8 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+            Optional output dtype of the container.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
@@ -84,7 +93,9 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return self.static_argmax(self, axis=axis, keepdims=keepdims, out=out)
+        return self.static_argmax(
+            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        )
 
     @staticmethod
     def static_argmin(
