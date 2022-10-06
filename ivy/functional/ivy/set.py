@@ -81,19 +81,20 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
            The order of unique elements is not specified and may vary between
            implementations.
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures.elementwise_functions.tan.html>`_
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
 
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))
     >>> print(x)
@@ -135,7 +136,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],\
     [-1.2119, -0.3519, -0.6252,  0.4033],[ 0.7443,  0.2577, -0.3707, -0.0545],\
@@ -173,7 +174,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     Instance Method Examples
     ------------------------
 
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],\
     [-1.2119, -0.3519, -0.6252,  0.4033],\
@@ -209,7 +210,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],\
     [-0.071,  1.262, -0.456, -2.114],[-0.349,  0.615, -0.594, -1.335],\
@@ -306,17 +307,19 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
            The order of unique elements is not specified and may vary between
            implementations.
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures..set_functions.unique_inverse.html>`_
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_inverse.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([4,5,3,2,4,1,3])
     >>> y = ivy.unique_inverse(x)
@@ -324,7 +327,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     unique_inverse(values=ivy.array([1, 2, 3, 4, 5]),
     inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
     >>> y = ivy.ivy.unique_inverse(x)
@@ -332,7 +335,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     unique_inverse(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
     inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]), \
                           b=ivy.array([3,2,6,3,7,4,9]))
@@ -401,6 +404,16 @@ def unique_values(
            The order of unique elements is not specified and may vary between
            implementations.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_values.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return ivy.current_backend(x).unique_values(x, out=out)
 
@@ -457,18 +470,19 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
            The order of unique elements is not specified and may vary between
            implementations.
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures.set_functions.unique_counts.html>` in the standard.
-    The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_counts.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
-    With :code: 'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
     >>> y = unique_counts(x)
@@ -480,14 +494,14 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(y)
     Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])
 
-    With :code: 'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
     Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                           b=ivy.array([1,2,1,3,4,1,3]))

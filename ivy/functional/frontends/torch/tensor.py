@@ -17,5 +17,5 @@ class Tensor:
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
 
-    def add(self, other, *, alpha=1, out=None):
-        return torch_frontend.add(self.data, other * alpha, out=out)
+    def add(self, other, *, alpha=1):
+        return torch_frontend.add(self.data, other, alpha=alpha)

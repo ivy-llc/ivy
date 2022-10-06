@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -26,7 +26,6 @@ def test_torch_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -35,13 +34,12 @@ def test_torch_allclose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="allclose",
-        input=np.asarray(input[0], dtype=input_dtype[0]),
-        other=np.asarray(input[1], dtype=input_dtype[1]),
         rtol=1e-05,
         atol=1e-08,
+        input=input[0],
+        other=input[1],
         equal_nan=equal_nan,
     )
 
@@ -64,7 +62,6 @@ def test_torch_equal(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -73,11 +70,10 @@ def test_torch_equal(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="equal",
-        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
-        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        input=inputs[0],
+        other=inputs[1],
     )
 
 
@@ -100,7 +96,6 @@ def test_torch_eq(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -109,11 +104,10 @@ def test_torch_eq(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="eq",
-        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
-        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -141,7 +135,6 @@ def test_torch_argsort(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -150,10 +143,9 @@ def test_torch_argsort(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="argsort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         dim=axis,
         descending=descending,
     )
@@ -178,7 +170,6 @@ def test_torch_greater_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -187,11 +178,10 @@ def test_torch_greater_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="greater_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -215,7 +205,6 @@ def test_torch_greater(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -224,11 +213,10 @@ def test_torch_greater(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="greater",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -252,7 +240,6 @@ def test_torch_isclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -261,23 +248,23 @@ def test_torch_isclose(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isclose",
-        input=np.asarray(input[0], dtype=input_dtype[0]),
-        other=np.asarray(input[1], dtype=input_dtype[1]),
         rtol=1e-05,
         atol=1e-08,
+        input=input[0],
+        other=input[1],
         equal_nan=equal_nan,
     )
 
 
-# isifinite
+# isfinite
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isfinite"
@@ -288,7 +275,6 @@ def test_torch_isfinite(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -297,10 +283,9 @@ def test_torch_isfinite(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isfinite",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -309,7 +294,8 @@ def test_torch_isfinite(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isinf"
@@ -320,7 +306,6 @@ def test_torch_isinf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -329,10 +314,9 @@ def test_torch_isinf(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isinf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -341,7 +325,8 @@ def test_torch_isinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isposinf"
@@ -352,7 +337,6 @@ def test_torch_isposinf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -361,10 +345,9 @@ def test_torch_isposinf(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isposinf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -373,7 +356,8 @@ def test_torch_isposinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isneginf"
@@ -384,7 +368,6 @@ def test_torch_isneginf(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -393,10 +376,9 @@ def test_torch_isneginf(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isneginf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -412,9 +394,6 @@ def test_torch_isneginf(
     ),
     descending=st.booleans(),
     stable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.sort"
-    ),
 )
 def test_torch_sort(
     dtype_input_axis,
@@ -422,9 +401,7 @@ def test_torch_sort(
     stable,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -433,10 +410,9 @@ def test_torch_sort(
         with_out=with_out,
         num_positional_args=1,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="sort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         dim=axis,
         descending=descending,
         stable=stable,
@@ -449,7 +425,8 @@ def test_torch_sort(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isnan"
@@ -460,7 +437,6 @@ def test_torch_isnan(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -469,10 +445,9 @@ def test_torch_isnan(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="isnan",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -494,7 +469,6 @@ def test_torch_less_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -503,11 +477,10 @@ def test_torch_less_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="less_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -530,7 +503,6 @@ def test_torch_less(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -539,11 +511,10 @@ def test_torch_less(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="less",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -566,7 +537,6 @@ def test_torch_not_equal(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -575,16 +545,46 @@ def test_torch_not_equal(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="not_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
 
-# minimum
+@handle_cmd_line_args
+@given(
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.isin"
+    ),
+)
+def test_torch_isin(
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="isin",
+        elements=inputs[0],
+        test_elements=inputs[1],
+    )
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
@@ -602,7 +602,6 @@ def test_torch_minimum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -611,11 +610,10 @@ def test_torch_minimum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="minimum",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -626,8 +624,9 @@ def test_torch_minimum(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=True,
         shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.fmax"
@@ -639,7 +638,6 @@ def test_torch_fmax(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -648,11 +646,10 @@ def test_torch_fmax(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="fmax",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -663,8 +660,9 @@ def test_torch_fmax(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=True,
         shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.fmin"
@@ -676,7 +674,6 @@ def test_torch_fmin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -685,11 +682,10 @@ def test_torch_fmin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="fmin",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -712,7 +708,6 @@ def test_torch_msort(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -721,8 +716,84 @@ def test_torch_msort(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="msort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
+    )
+
+
+# maximum
+@handle_cmd_line_args
+@given(
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.maximum"
+    ),
+)
+def test_torch_maximum(
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="maximum",
+        input=np.asarray(inputs[0], dtype=input_dtype[0]),
+        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+# kthvalue
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    k=st.integers(min_value=1),
+    keepdim=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.kthvalue"
+    ),
+)
+def test_torch_kthvalue(
+    dtype_input_axis,
+    k,
+    keepdim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input, dim = dtype_input_axis
+    assume(k <= input[0].shape[dim])
+    assume("float16" not in input_dtype)  # unsupported by torch.kthvalue
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="kthvalue",
+        input=input[0],
+        k=k,
+        dim=dim,
+        keepdim=keepdim,
+        out=None,
     )

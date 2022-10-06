@@ -1,6 +1,5 @@
 # global
 import ivy
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -39,15 +38,14 @@ def test_numpy_empty(
     shape,
     dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="empty",
         test_values=False,
@@ -79,20 +77,18 @@ def test_numpy_empty_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="empty_like",
         test_values=False,
-        prototype=np.asarray(x, dtype=input_dtype),
+        prototype=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -117,15 +113,14 @@ def test_numpy_eye(
     k,
     dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="eye",
         N=rows,
@@ -148,15 +143,14 @@ def test_numpy_identity(
     n,
     dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="identity",
         n=n,
@@ -183,15 +177,14 @@ def test_numpy_ones(
     shape,
     dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="ones",
         shape=shape,
@@ -222,19 +215,17 @@ def test_numpy_ones_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="ones_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -261,15 +252,14 @@ def test_numpy_zeros(
     shape,
     dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="zeros",
         shape=shape,
@@ -300,19 +290,17 @@ def test_numpy_zeros_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="zeros_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -352,16 +340,15 @@ def test_numpy_full(
     dtype_and_fill_value,
     # dtypes,
     num_positional_args,
-    fw,
+    native_array,
 ):
     dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
-        as_variable_flags=False,
+        input_dtypes=dtype,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="full",
         shape=shape,
@@ -397,20 +384,18 @@ def test_numpy_full_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="full_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         fill_value=fill_value,
         dtype=dtype,
         order="K",

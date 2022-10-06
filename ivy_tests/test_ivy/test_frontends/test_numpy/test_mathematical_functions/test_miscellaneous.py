@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import assume, given, strategies as st
 
 # local
@@ -9,66 +8,99 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy import argsort, array
 
 
+# clip
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+            )
+        )
+        max = draw(st.booleans())
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
+            )
+        )
+    return x_dtype, x, min, max
+
+
 @handle_cmd_line_args
 @given(
-    x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=3, shared_dtype=True
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    input_and_ranges=_get_clip_inputs(),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.clip"
     ),
 )
 def test_numpy_clip(
-    x_min_n_max,
+    input_and_ranges,
     dtype,
     where,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
-    # ToDo should generate the data so we don't have to use assume here
-    # same that is done in JAX clamp
-    assume(np.all(np.less(np.asarray(min_val_list), np.asarray(max_val_list))))
-    input_dtype = [x_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    x_dtype, x, min, max = input_and_ranges
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=x_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="clip",
-        x=np.asarray(x_list, dtype=input_dtype[0]),
-        a_min=min_val_list,
-        a_max=max_val_list,
+        a=x[0],
+        a_min=min,
+        a_max=max,
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
+# cbrt
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cbrt"
@@ -82,11 +114,9 @@ def test_numpy_cbrt(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -98,10 +128,9 @@ def test_numpy_cbrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="cbrt",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -117,7 +146,7 @@ def test_numpy_cbrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sqrt"
@@ -131,11 +160,9 @@ def test_numpy_sqrt(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -147,10 +174,9 @@ def test_numpy_sqrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="sqrt",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -166,7 +192,7 @@ def test_numpy_sqrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.square"
@@ -180,11 +206,9 @@ def test_numpy_square(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -196,10 +220,9 @@ def test_numpy_square(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="square",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -227,7 +250,6 @@ def test_numpy_absolute(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -236,10 +258,9 @@ def test_numpy_absolute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="absolute",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -267,7 +288,6 @@ def test_numpy_fabs(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -276,10 +296,9 @@ def test_numpy_fabs(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="fabs",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -311,27 +330,24 @@ def test_numpy_heaviside(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    (x1_dtype, x2_dtype), (x1_list, x2_list) = x1_x2
-    input_dtype = [x1_dtype, x2_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, (x1_list, x2_list) = x1_x2
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="heaviside",
-        x1=np.asarray(x1_list, dtype=input_dtype[0]),
-        x2=np.asarray(x2_list, dtype=input_dtype[0]),
+        x1=x1_list,
+        x2=x2_list,
         out=None,
         where=where,
         casting="same_kind",
@@ -352,7 +368,7 @@ def test_numpy_heaviside(
     neginf=st.one_of(st.none(), st.floats()),
 )
 def test_numpy_nan_to_num(
-    dtype_and_x, as_variable, num_positional_args, native_array, posinf, neginf, fw
+    dtype_and_x, as_variable, num_positional_args, native_array, posinf, neginf
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -361,10 +377,9 @@ def test_numpy_nan_to_num(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nan_to_num",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         nan=0.0,
         posinf=posinf,
         neginf=neginf,
@@ -383,7 +398,6 @@ def test_numpy_real_if_close(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -392,10 +406,9 @@ def test_numpy_real_if_close(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="real_if_close",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
     )
 
 
@@ -437,9 +450,8 @@ def test_numpy_interp(
     left,
     right,
     period,
-    fw,
 ):
-    (xp_dtype, fp_dtype), (xp, fp) = xp_and_fp
+    input_dtypes, (xp, fp) = xp_and_fp
     xp_order = argsort(xp)
     xp = array(xp)[xp_order]
     fp = array(fp)[xp_order]
@@ -449,17 +461,16 @@ def test_numpy_interp(
         previous = i
     x_dtype, x = x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[x_dtype, xp_dtype, fp_dtype],
+        input_dtypes=input_dtypes + x_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="interp",
-        x=np.asarray(x, dtype=x_dtype),
-        xp=np.asarray(xp, dtype=xp_dtype),
-        fp=np.asarray(fp, dtype=fp_dtype),
+        x=x[0],
+        xp=xp,
+        fp=fp,
         left=left,
         right=right,
         period=period,

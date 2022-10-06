@@ -6,19 +6,44 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(input, axis, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+def clip_by_value(t, clip_value_min, clip_value_max):
+    ivy.assertions.check_all_or_any_fn(
+        clip_value_min,
+        clip_value_max,
+        fn=ivy.exists,
+        type="all",
+        message="clip_value_min and clip_value_max must exist",
+    )
+    t = ivy.array(t)
+    return ivy.clip(t, clip_value_min, clip_value_max)
+
+
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
-    labels = ivy.astype(ivy.squeeze(ivy.array(labels)), ivy.int64, copy=False)
-    predictions = ivy.astype(ivy.squeeze(ivy.array(predictions)), ivy.int64, copy=False)
+    labels = ivy.astype(
+        ivy.squeeze(ivy.array(labels), axis=None), ivy.int64, copy=False
+    )
+    predictions = ivy.astype(
+        ivy.squeeze(ivy.array(predictions), axis=None), ivy.int64, copy=False
+    )
+    # failsafe for (1,) array will be squeeze to 0-dim
+    labels = ivy.expand_dims(labels, axis=-1) if labels.ndim == 0 else labels
+    predictions = (
+        ivy.expand_dims(predictions, axis=-1) if predictions.ndim == 0 else predictions
+    )
+
     # Sanity check (potential optimization)
     ivy.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
@@ -31,10 +56,12 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-    ivy.assertions.check_less(labels, num_classes_int64, message="labels out of bound")
-    ivy.assertions.check_less(
-        predictions, num_classes_int64, message="predictions out of bound"
-    )
+        ivy.assertions.check_less(
+            labels, num_classes_int64, message="labels out of bound"
+        )
+        ivy.assertions.check_less(
+            predictions, num_classes_int64, message="predictions out of bound"
+        )
 
     if weights is not None:
         weights = ivy.array(weights)
@@ -86,12 +113,11 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
-def multiply_no_nan(x, y, name="multiply_no_nan"):
-    return ivy.where(
-        y == 0,
-        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
-        x * y,
-    )
+def maximum(a, b):
+    # Cast inputs to ivy array
+    a = ivy.array(a)
+    b = ivy.array(b)
+    return ivy.maximum(a, b)
 
 
 def erfcinv(x, name="erfcinv"):
@@ -130,6 +156,14 @@ def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
+def multiply_no_nan(x, y, name="multiply_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x * y,
+    )
+
+
 def negative(x, name=None):
     return ivy.negative(x)
 
@@ -138,7 +172,7 @@ def polyval(coeffs, x, name=None):
     ivy.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
-        return ivy.zeros_like(x)
+        return ivy.zeros_like(x, dtype=x.dtype)
     coeffs = [ivy.array(_) for _ in coeffs]
     p = coeffs[0]
     for c in coeffs[1:]:
@@ -189,6 +223,10 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
     return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
 
 
+def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
+
+
 def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
     return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
 
@@ -207,10 +245,6 @@ def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
-
-
-def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
-    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
@@ -263,6 +297,16 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+def truediv(x, y, name="truediv"):
+    x_dtype = ivy.dtype(x)
+    assert x_dtype == ivy.dtype(y)
+    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    return ivy.divide(x, y)
 
 
 # TODO: Ibeta for Future Release

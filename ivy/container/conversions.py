@@ -35,7 +35,7 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is False.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
             Default is False.
@@ -94,7 +94,7 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is False.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
             Default is False.
@@ -153,7 +153,7 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is False.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
             Default is False.
@@ -213,7 +213,7 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so,
             all dicts, lists and tuples will be traversed to their lowest leaves in
-            search of ivy.Array and ivy.Variable instances. Default is False.
+            search of ivy.Array instances. Default is False.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
             Default is False.

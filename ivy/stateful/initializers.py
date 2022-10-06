@@ -25,7 +25,7 @@ class Initializer(abc.ABC):
         fan_out: float = None,
         fan_in: float = None,
         dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
-    ) -> ivy.Variable:
+    ) -> ivy.Array:
         """
         Create internal variables for the layer
 
@@ -71,7 +71,7 @@ class Constant(Initializer):
         fan_out: float = None,
         fan_in: float = None,
         dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
-    ) -> ivy.Variable:
+    ) -> ivy.Array:
         return ivy.variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
         )
