@@ -20,6 +20,9 @@ class Tensor:
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
 
+    def __div__(self, x, name="div"):
+        return tf_frontend.divide(x, self.data, name=name)
+        
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
 
@@ -54,6 +57,9 @@ class Tensor:
 
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
+
+    def __mul__(self, x, name="mul"):
+        return tf_frontend.multiply(x, self.data, name=name)
 
     def __ne__(self, other):
         return tf_frontend.NotEqual(

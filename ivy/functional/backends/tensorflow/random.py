@@ -83,6 +83,8 @@ def multinomial(
             )
         if seed is not None:
             tf.random.set_seed(seed)
+        if len(probs.numpy().shape) == 1:
+            probs = tf.expand_dims(probs, axis=0)
         return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
 
 
