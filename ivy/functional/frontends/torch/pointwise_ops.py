@@ -194,3 +194,10 @@ def clip(input, min=None, max=None, *, out=None):
     if max is None:
         return ivy.maximum(input, min, out=out)
     return ivy.clip(input, min, max, out=out)
+
+
+def mul(input, other, *, out=None):
+    return ivy.multiply(input, other, out=out)
+
+
+multiply = mul
