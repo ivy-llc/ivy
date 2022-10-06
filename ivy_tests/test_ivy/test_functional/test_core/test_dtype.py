@@ -472,6 +472,14 @@ def test_dtype(
     container,
     fw,
 ):
+    if fw == "torch":
+        if input_dtype == "bfloat16" or (
+            "uint" in input_dtype and "uint8" not in input_dtype
+        ):
+            # Torch has no inference strategy for bfloat16
+            # Torch has no support for uint above uint8
+            return
+
     helpers.test_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
