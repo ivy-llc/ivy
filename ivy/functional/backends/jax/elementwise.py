@@ -35,7 +35,7 @@ def add(
     return jnp.add(x1, x2)
 
 
-def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
+def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
@@ -411,9 +411,16 @@ def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def maximum(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray],
+    /,
+    *,
+    use_where: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 >= x2, x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -422,9 +429,12 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 <= x2, x1, x2)
     return jnp.minimum(x1, x2)
 
 

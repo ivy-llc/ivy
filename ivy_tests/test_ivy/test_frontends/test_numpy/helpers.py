@@ -28,6 +28,7 @@ def _array_and_axes_permute_helper(
     max_num_dims,
     min_dim_size,
     max_dim_size,
+    allow_none=False,
 ):
     """Returns array, its dtype and either the random permutation of its axes or None.
 
@@ -51,7 +52,7 @@ def _array_and_axes_permute_helper(
     """
     shape = draw(
         helpers.get_shape(
-            allow_none=False,
+            allow_none=allow_none,
             min_num_dims=min_num_dims,
             max_num_dims=max_num_dims,
             min_dim_size=min_dim_size,
