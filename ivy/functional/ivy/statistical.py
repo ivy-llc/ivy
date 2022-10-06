@@ -1022,6 +1022,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -1036,6 +1037,9 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    reverse
+        Whether to perform the cumprod from last to first element in the selected
+        axis. Default is False (from first to last element)
     dtype
         data type of the returned array. If None,
         if the default data type corresponding to the data type “kind” (integer or
@@ -1152,7 +1156,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
