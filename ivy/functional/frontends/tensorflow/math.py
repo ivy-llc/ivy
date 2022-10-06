@@ -1,8 +1,10 @@
 # global
 import ivy
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 def add(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
 
 
@@ -102,10 +104,12 @@ def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
 
 
 def divide(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.divide(x, y)
 
 
 def divide_no_nan(x, y, name="divide_no_nan"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -113,7 +117,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
-def maximum(a, b):
+def maximum(a, b, name=None):
+    a, b = promote_types_of_tensorflow_inputs(a, b)
     # Cast inputs to ivy array
     a = ivy.array(a)
     b = ivy.array(b)
@@ -153,10 +158,12 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 def multiply(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.multiply(x, y)
 
 
 def multiply_no_nan(x, y, name="multiply_no_nan"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -252,10 +259,12 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 
 def scalar_mul(scalar, x, name="scalar_mul"):
+    scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
     return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
 
 
 def subtract(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.subtract(x, y)
 
 
@@ -300,6 +309,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 def truediv(x, y, name="truediv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     x_dtype = ivy.dtype(x)
     assert x_dtype == ivy.dtype(y)
     if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:

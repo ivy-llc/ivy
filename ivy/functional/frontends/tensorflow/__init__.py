@@ -1,35 +1,4 @@
 # flake8: noqa
-from . import tensor
-from .tensor import Tensor
-from . import activations
-from .activations import *
-from . import layers
-from .layers import *
-from . import linalg
-from .linalg import *
-from . import math
-from .math import *
-from . import metrics
-from .metrics import *
-from . import nest
-from .nest import *
-from . import nn
-from .nn import *
-from . import quantization
-from .quantization import *
-from . import random
-from .random import *
-from . import raw_ops
-from .raw_ops import *
-from . import regularizers
-from .regularizers import *
-from . import sets
-from .sets import *
-from . import signal
-from .signal import *
-from . import sparse
-from .sparse import *
-
 # local
 from ivy import (
     int8,
@@ -207,7 +176,7 @@ tensorflow_promotion_table = {**standard_promotion_table, **extra_promotion_tabl
 
 
 @handle_exceptions
-def promote_types(
+def promote_tensorflow_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
@@ -246,7 +215,7 @@ def promote_types(
 
 
 @handle_exceptions
-def promote_types_of_inputs(
+def promote_types_of_tensorflow_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
     /,
@@ -267,7 +236,7 @@ def promote_types_of_inputs(
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_types(
+        promoted = promote_tensorflow_types(
             x1.dtype, x2.dtype, standard_promotion=standard_promotion
         )
         x1 = ivy.asarray(x1, dtype=promoted)
@@ -279,3 +248,35 @@ def promote_types_of_inputs(
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
     return ivy.to_native(x1), ivy.to_native(x2)
+
+
+from . import tensor
+from .tensor import Tensor
+from . import activations
+from .activations import *
+from . import layers
+from .layers import *
+from . import linalg
+from .linalg import *
+from . import math
+from .math import *
+from . import metrics
+from .metrics import *
+from . import nest
+from .nest import *
+from . import nn
+from .nn import *
+from . import quantization
+from .quantization import *
+from . import random
+from .random import *
+from . import raw_ops
+from .raw_ops import *
+from . import regularizers
+from .regularizers import *
+from . import sets
+from .sets import *
+from . import signal
+from .signal import *
+from . import sparse
+from .sparse import *
