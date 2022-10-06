@@ -203,6 +203,13 @@ kld = kl_divergence
 
 kullback_leibler_divergence = kl_divergence
 
+def log_cosh(y_true, y_pred):
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+    diff = y_pred - y_true
+    logval = ivy.astype(ivy.log(2.0), diff.dtype, copy=False)
+    return ivy.mean(diff + ivy.softplus(-2.0 * diff) - logval, axis=-1)
+
+log_cosh.unsupported_dtypes = ("float16",)
 
 @to_ivy_arrays_and_back
 def log_cosh(y_true, y_pred):
