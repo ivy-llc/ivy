@@ -8,6 +8,10 @@ test_configs = {
     "test-core-ivy": ["ivy_core", 1],
     "test-nn-ivy": ["ivy_nn", 2],
     "test-stateful-ivy": ["ivy_stateful", 3],
+    "test-frontend-tensorflow-push": ["tf_frontend", 4],
+    "test-frontend-numpy-push": ["numpy_frontend", 5],
+    "test-frontend-jax-push": ["jax_frontend", 6],
+    "test-frontend-torch-push": ["torch_frontend", 7],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",

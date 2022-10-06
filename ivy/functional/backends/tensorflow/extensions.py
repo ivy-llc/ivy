@@ -21,7 +21,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     if _is_data_not_indices_values_and_shape(
         data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -71,3 +71,12 @@ def sinc(
 ) -> Union[tf.Tensor, tf.Variable]:
     tf.experimental.numpy.experimental_enable_numpy_behavior()
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
+
+
+def vorbis_window(
+    window_length: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)

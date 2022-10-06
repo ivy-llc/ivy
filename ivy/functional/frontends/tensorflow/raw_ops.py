@@ -103,6 +103,14 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
+def Identity(*, input, name="Identity"):
+    return ivy.copy_array(input)
+
+
+def IdentityN(*, input, name="IdentityN"):
+    return [ivy.copy_array(x) for x in input]
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -202,3 +210,7 @@ def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
+
+
+def Mean(*, input, axis, keep_dims=False, name="Mean"):
+    return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)

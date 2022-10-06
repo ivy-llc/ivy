@@ -7,25 +7,18 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
 # native_array
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        dtype=ivy.valid_numeric_dtypes,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
-    ),
+    dtype_and_x_and_cast_dtype=astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
 def test_native_array(
     *,
-    dtype_and_x,
+    dtype_and_x_and_cast_dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -33,9 +26,9 @@ def test_native_array(
     fw,
     device,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -56,16 +49,16 @@ def test_native_array(
     dtype_and_start_stop=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=None,
-        max_value=None,
+        min_value=-1e5,
+        max_value=1e5,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
         allow_inf=False,
         shared_dtype=True,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
@@ -93,7 +86,7 @@ def test_linspace(
         fw=fw,
         fn_name="linspace",
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         start=start_stop[0],
         stop=start_stop[1],
         num=num,
@@ -121,7 +114,7 @@ def test_linspace(
         safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
-    base=helpers.floats(min_value=0.1, max_value=10.0),
+    base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
@@ -204,16 +197,19 @@ def test_arange(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=10),
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
+    as_list=st.booleans(),
 )
 def test_asarray(
     *,
     dtype_and_x,
+    as_list,
     device,
     as_variable,
     num_positional_args,
@@ -221,6 +217,15 @@ def test_asarray(
     fw,
 ):
     dtype, x = dtype_and_x
+
+    if as_list:
+        if isinstance(x, list):
+            x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
+        else:
+            x = list(x)
+    else:
+        if len(x) == 1:
+            x = x[0]
 
     helpers.test_function(
         input_dtypes=dtype,
