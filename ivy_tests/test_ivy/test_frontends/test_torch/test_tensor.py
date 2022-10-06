@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -115,6 +115,9 @@ def test_torch_instance_reshape(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.Tensor.sin",
@@ -125,10 +128,8 @@ def test_torch_instance_sin(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype and "float16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -139,7 +140,7 @@ def test_torch_instance_sin(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
+        num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
