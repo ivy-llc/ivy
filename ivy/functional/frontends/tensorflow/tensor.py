@@ -22,7 +22,7 @@ class Tensor:
 
     def __div__(self, x, name="div"):
         return tf_frontend.divide(x, self.data, name=name)
-        
+
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
 
