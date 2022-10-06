@@ -220,6 +220,7 @@ def test_tensorflow_log_cosh(
         y_pred=x[1],
     )
 
+
 # mean_absolute_error
 @handle_cmd_line_args
 @given(
