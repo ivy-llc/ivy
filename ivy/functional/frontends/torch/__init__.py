@@ -158,7 +158,7 @@ torch_promotion_table = {
 
 
 @handle_exceptions
-def promote_types(
+def promote_types_torch(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
@@ -188,7 +188,7 @@ def promote_types(
 
 
 @handle_exceptions
-def promote_types_of_inputs(
+def promote_types_of_torch_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
     /,
@@ -206,7 +206,7 @@ def promote_types_of_inputs(
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_types(x1.dtype, x2.dtype)
+        promoted = promote_types_torch(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
