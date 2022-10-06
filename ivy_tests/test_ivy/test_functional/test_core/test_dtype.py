@@ -5,6 +5,7 @@
 import numpy as np
 import pytest
 from hypothesis import given, strategies as st
+import typing
 
 # local
 import ivy
@@ -732,9 +733,11 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
     res = ivy.default_float_dtype(
         input=input, float_dtype=float_dtype, as_native=as_native
     )
+    print(f"Res dtype = {type(res)}")
+    print(f"Res = {res}")
     assert (
         isinstance(res, ivy.Dtype)
-        or isinstance(res, ivy.NativeDtype)
+        or isinstance(res, typing.get_args(ivy.NativeDtype))
         or isinstance(res, str)
     )
     assert (
@@ -762,7 +765,7 @@ def test_default_int_dtype(*, input, int_dtype, as_native):
     res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
     assert (
         isinstance(res, ivy.Dtype)
-        or isinstance(res, ivy.NativeDtype)
+    or isinstance(res, typing.get_args(ivy.NativeDtype))
         or isinstance(res, str)
     )
     assert (
