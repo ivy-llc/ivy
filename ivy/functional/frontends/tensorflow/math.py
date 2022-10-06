@@ -6,8 +6,11 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(input, axis, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
 def asinh(x, name="asinh"):
@@ -108,7 +111,6 @@ def divide_no_nan(x, y, name="divide_no_nan"):
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
         x / y,
     )
-
 
 def maximum(a, b):
     # Cast inputs to ivy array
@@ -297,3 +299,5 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 # TODO: Ibeta for Future Release
+
+
