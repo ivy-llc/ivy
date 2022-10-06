@@ -304,3 +304,160 @@ def test_jax_special_abs(
             ret_from_gt=ret_gt,
             ground_truth_backend="jax",
         )
+
+
+# __pow__
+@st.composite
+def _get_pow_data(draw):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"))
+    )
+    # pow = draw(helpers.array_values(
+    #     dtype="integer",
+    #     shape=(),
+    #     min_value=0,
+    #     max_value=10,
+    # ))
+    pow = draw(helpers.ints(min_value=0, max_value=10))
+    return x_dtype, x, pow
+
+
+@handle_cmd_line_args
+@given(dtype_x_pow=_get_pow_data())
+def test_jax_special_pow(
+    dtype_x_pow,
+    fw,
+):
+    x_dtype, x, pow = dtype_x_pow
+    ret = DeviceArray(x[0]) ** pow
+    ret_gt = jnp.array(x[0], dtype=x_dtype[0]) ** pow
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __rpow__
+@handle_cmd_line_args
+@given(dtype_x_pow=_get_pow_data())
+def test_jax_special_rpow(
+    dtype_x_pow,
+    fw,
+):
+    x_dtype, x, pow = dtype_x_pow
+    ret = DeviceArray(pow).__rpow__(DeviceArray(x[0]))
+    ret_gt = jnp.array(x[0], dtype=x_dtype[0]) ** pow
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __and__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_and(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) & DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) & jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __or__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_or(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) | DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) | jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __xor__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+    )
+)
+def test_jax_special_xor(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) ^ DeviceArray(x[1])
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) ^ jnp.array(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
+
+
+# __invert__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer")
+    )
+)
+def test_jax_special_invert(
+    dtype_x,
+    fw,
+):
+    input_dtype, x = dtype_x
+    ret = ~DeviceArray(x[0])
+    ret_gt = ~jnp.array(x[0], dtype=input_dtype[0])
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )

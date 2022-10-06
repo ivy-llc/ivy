@@ -62,3 +62,55 @@ class DeviceArray:
     @to_ivy_arrays_and_back
     def __abs__(self):
         return jax_frontend.abs(self.data)
+
+    @to_ivy_arrays_and_back
+    def __pow__(self, other):
+        return jax_frontend.pow(self.data, other)
+
+    @to_ivy_arrays_and_back
+    def __rpow__(self, other):
+        return jax_frontend.pow(other, self.data)
+
+    @to_ivy_arrays_and_back
+    def __and__(self, other):
+        return jax_frontend.bitwise_and(self.data, other)
+
+    @to_ivy_arrays_and_back
+    def __rand__(self, other):
+        return jax_frontend.bitwise_and(other, self.data)
+
+    @to_ivy_arrays_and_back
+    def __or__(self, other):
+        return jax_frontend.bitwise_or(self.data, other)
+
+    @to_ivy_arrays_and_back
+    def __ror__(self, other):
+        return jax_frontend.bitwise_or(other, self.data)
+
+    @to_ivy_arrays_and_back
+    def __xor__(self, other):
+        return jax_frontend.bitwise_xor(self.data, other)
+
+    @to_ivy_arrays_and_back
+    def __rxor__(self, other):
+        return jax_frontend.bitwise_xor(other, self.data)
+
+    @to_ivy_arrays_and_back
+    def __invert__(self):
+        return jax_frontend.bitwise_not(self.data)
+
+    @to_ivy_arrays_and_back
+    def __lshift__(self):
+        return jax_frontend.abs(self.data)
+
+    @to_ivy_arrays_and_back
+    def __rlshift__(self):
+        return jax_frontend.abs(self.data)
+
+    @to_ivy_arrays_and_back
+    def __rshift__(self):
+        return jax_frontend.abs(self.data)
+
+    @to_ivy_arrays_and_back
+    def __rrshift__(self):
+        return jax_frontend.abs(self.data)
