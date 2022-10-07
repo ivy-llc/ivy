@@ -425,7 +425,7 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("bfloat16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
