@@ -26,3 +26,7 @@ class Tensor:
     def sin_(self):
         self.data = self.sin()
         return self.data
+
+
+# Tensor (alias)
+tensor = Tensor

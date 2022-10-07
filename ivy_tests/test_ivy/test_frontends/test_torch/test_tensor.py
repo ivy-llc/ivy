@@ -17,16 +17,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.Tensor.add",
-    ),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_add(
     dtype_and_x,
     alpha,
     as_variable,
-    num_positional_args,
     native_array,
 ):
     input_dtype, x = dtype_and_x
@@ -47,7 +43,7 @@ def test_torch_instance_add(
             "alpha": alpha,
         },
         frontend="torch",
-        class_name="Tensor",
+        class_name="tensor",
         method_name="add",
     )
 
@@ -74,14 +70,10 @@ def dtypes_x_reshape(draw):
 @handle_cmd_line_args
 @given(
     dtypes_x_reshape=dtypes_x_reshape(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.Tensor.reshape",
-    ),
 )
 def test_torch_instance_reshape(
     dtypes_x_reshape,
     as_variable,
-    num_positional_args,
     native_array,
 ):
     input_dtype, x, shape = dtypes_x_reshape
@@ -101,7 +93,7 @@ def test_torch_instance_reshape(
             "shape": shape,
         },
         frontend="torch",
-        class_name="Tensor",
+        class_name="tensor",
         method_name="reshape",
     )
 
@@ -134,7 +126,7 @@ def test_torch_instance_sin(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="Tensor",
+        class_name="tensor",
         method_name="sin",
     )
 
@@ -167,6 +159,6 @@ def test_torch_instance_sin_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="Tensor",
+        class_name="tensor",
         method_name="sin_",
     )
