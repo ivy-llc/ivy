@@ -7,7 +7,8 @@ from tqdm import tqdm
 tests = {}
 
 os.system(
-    "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"
+    "docker run --rm -it -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings "
+    "ivy_tests/test_ivy/ --my_test_dump true > test_names "
 )  # noqa
 test_names = []
 with open("test_names") as f:
