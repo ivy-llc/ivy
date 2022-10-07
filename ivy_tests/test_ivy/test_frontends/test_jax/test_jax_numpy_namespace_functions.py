@@ -508,16 +508,9 @@ def test_jax_numpy_var(
 # dot
 @st.composite
 def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=0, max_value=5))
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    if dim_size == 0:
-        vec1 = draw(
-            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
-        )
-        vec2 = draw(
-            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
-        )
-    elif dim_size == 1:
+    if dim_size == 1:
         vec1 = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
@@ -557,7 +550,7 @@ def test_jax_numpy_dot(
 ):
     input_dtype, x, y = dtype_x_y
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -593,7 +586,7 @@ def test_jax_numpy_einsum(
         i += 1
     num_positional_args = len(operands)
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,

@@ -1,6 +1,5 @@
 # local
 import ivy
-from ivy.functional.frontends.jax import promote_types_of_jax_inputs
 
 
 def abs(x):
@@ -12,6 +11,7 @@ def absolute(x):
 
 
 def add(x1, x2):
+    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
@@ -20,27 +20,18 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    abs_ = ivy.abs(ivy.subtract(input, other))
-    rtol, other = promote_types_of_jax_inputs(rtol, ivy.abs(other))
-    mul = ivy.multiply(rtol, other)
-    atol, mul = promote_types_of_jax_inputs(atol, mul)
-    add_ = ivy.add(atol, mul)
-    abs_, add_ = promote_types_of_jax_inputs(abs_, add_)
-    return ivy.less_equal(
-        abs_,
-        add_,
+    return ivy.all(
+        ivy.less_equal(
+            ivy.abs(ivy.subtract(input, other)),
+            ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
+        )
     )
 
 
 def _compute_isclose_with_tol(input, other, rtol, atol):
-    abs_ = ivy.abs(ivy.subtract(input, other))
-    rtol, other = promote_types_of_jax_inputs(rtol, ivy.abs(other))
-    mul = ivy.multiply(rtol, other)
-    add_ = ivy.add(atol, mul)
-    abs_, add_ = promote_types_of_jax_inputs(abs_, add_)
     return ivy.less_equal(
-        abs_,
-        add_,
+        ivy.abs(ivy.subtract(input, other)),
+        ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
     )
 
 
@@ -83,10 +74,10 @@ def clip(a, a_min=None, a_max=None, out=None):
     )
     a = ivy.array(a)
     if a_min is None:
-        a, a_min = promote_types_of_jax_inputs(a, a_max)
+        a, a_max = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_max)
         return ivy.minimum(a, a_max, out=out)
     if a_max is None:
-        a, a_max = promote_types_of_jax_inputs(a, a_max)
+        a, a_min = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_min)
         return ivy.maximum(a, a_min, out=out)
     return ivy.clip(a, a_min, a_max, out=out)
 
@@ -99,7 +90,7 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 def dot(a, b, *, precision=None):
-    a, b = promote_types_of_jax_inputs(a, b)
+    a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
