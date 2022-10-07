@@ -137,13 +137,14 @@ def dirichlet(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     dtype: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.Tensor(
+    size = size if not None else len(alpha)
+    dtype = dtype if not None else tf.dtypes.float64
+    return tf.constant(
         tfd.Dirichlet(
             concentration=alpha,
             validate_args=False,
             allow_nan_stats=True,
             force_probs_to_zero_outside_support=False,
             name='Dirichlet'
-            ),
-        value_index=0,
-        dtype=tf.float64)
+        ).sample(size),
+        dtype=dtype)

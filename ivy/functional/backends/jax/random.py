@@ -4,7 +4,6 @@
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
-from jax.random import dirichlet, PRNGKey
 from typing import Optional, Union, Sequence
 
 # local
@@ -155,4 +154,8 @@ def dirichlet(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return dirichlet(alpha, shape=size, key=PRNGKey(), dtype=dtype)
+    return jax.random.dirichlet(
+        alpha, 
+        shape=size,
+        key=jax.random.PRNGKey(),
+        dtype=dtype)

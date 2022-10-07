@@ -133,7 +133,8 @@ def dirichlet(
     out: Optional[torch.Tensor] = None,
     dtype: Optional[torch.dtype] = None,
 ) -> torch.Tensor:
+    size = size if not None else len(alpha)
     return torch.Tensor(
-        torch.distributions.dirichlet.Dirichlet(alpha).sample(),
+        torch.distributions.dirichlet.Dirichlet(alpha).sample(size),
         dtype=dtype
     )

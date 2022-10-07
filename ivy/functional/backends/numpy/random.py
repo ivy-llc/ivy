@@ -126,7 +126,8 @@ def dirichlet(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    size = tuple(size) if isinstance(size, list) else size
+    size = size if not None else len(alpha)
+    dtype = dtype if not None else np.float64
     return np.asarray(
         np.random.dirichlet(alpha, size=size), dtype=dtype
     )

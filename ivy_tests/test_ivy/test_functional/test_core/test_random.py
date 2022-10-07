@@ -1,7 +1,6 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-import numpy as np
 from hypothesis import given, assume, strategies as st
 
 # local
@@ -334,21 +333,18 @@ def test_shuffle(
 # dirichlet
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.tuples(st.integers(1), st.integers(min_value=1)),
-        min_value=0.1,
-        max_value=100,
+    alpha=st.lists(
+        st.integers(min_value=1 , max_value=3),
+        min_size=2,
+        max_size=4,
     ),
-    size=st.one_of(
-        st.tuples(st.integers(min_value=0),
-                  st.integers(min_value=0)), 
-        helpers.ints(min_value=0)),
-    dtype=helpers.get_dtypes("numeric"),
+    size=st.tuples(st.integers(min_value=1, max_value=3),
+                   st.integers(min_value=1, max_value=3)), 
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
 def test_dirichlet(
-    dtype_and_x,
+    alpha,
     size,
     dtype,
     with_out,
@@ -359,9 +355,8 @@ def test_dirichlet(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -370,7 +365,6 @@ def test_dirichlet(
         instance_method=instance_method,
         fw=fw,
         fn_name="dirichlet",
-        alpha=np.asarray(x[0], dtype=input_dtype[0]),
+        alpha=alpha,
         size=size,
-        dtype=dtype
     )
