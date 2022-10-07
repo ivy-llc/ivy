@@ -71,6 +71,8 @@ def test_tensorflow_sigmoid(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="keras.activations.sigmoid",
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
     )
 
