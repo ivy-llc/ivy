@@ -16,8 +16,10 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
-           pip install pydriller tqdm coverage
            cd ivy
+           pip install -r requirements/requirements.txt
+           pip install -r requirements/optional.txt
+           pip install pydriller tqdm coverage
            python determine_test_coverage.py
            cd ..
            mkdir tests

@@ -8,8 +8,7 @@ tests = {}
 
 
 os.system(
-    "docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings "
-    "ivy_tests/test_ivy/ --my_test_dump true > test_names"
+    "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"
 )  # noqa
 test_names = []
 with open("test_names") as f:
@@ -69,9 +68,9 @@ directories = [
 if __name__ == "__main__":
     for test_name in tqdm(test_names):
         os.system(
-            f"docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest coverage run -m pytest {test_name} --disable-warnings > coverage_output"
+            f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
-        os.system("docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest coverage annotate > coverage_output")
+        os.system("coverage annotate > coverage_output")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
