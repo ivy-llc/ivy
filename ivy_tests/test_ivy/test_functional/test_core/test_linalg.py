@@ -689,11 +689,17 @@ def test_slogdet(
 @st.composite
 def _get_first_matrix(draw):
     # batch_shape, random_size, shared
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
@@ -710,14 +716,20 @@ def _get_first_matrix(draw):
 @st.composite
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
+    print(f"THE SHARED SIZE CAME OUT AS {shared_size}")
     return [input_dtype], draw(
         helpers.array_values(
             dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
@@ -745,6 +757,12 @@ def test_solve(
 ):
     input_dtype1, x1 = x
     input_dtype2, x2 = y
+    assume("float16" not in input_dtype1)
+    assume("float16" not in input_dtype2)
+    print(f"THE INPUT X1 IS {x1[0]} drawn from {x1}")
+    print(f"THE INPUT X2 IS {x2[0]} drawn from {x2}")
+    print(f"INPUT_DTYPE1 IS {input_dtype1}")
+    print(f"INPUT_DTYPE2 IS {input_dtype2}")
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         as_variable_flags=as_variable,
@@ -757,8 +775,10 @@ def test_solve(
         fn_name="solve",
         rtol_=1e-1,
         atol_=1e-1,
-        x1=x1[0],
-        x2=x2[0],
+        # x1=x1[0],
+        x1=x1,
+        # x2=x2[0],
+        x2=x2,
     )
 
 
