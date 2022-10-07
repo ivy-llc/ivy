@@ -130,7 +130,7 @@ def dropout(x, prob, scale, dtype, name=None):
 
 
 def weighted_cross_entropy_with_logits(
-    labels=None, logits=None, pos_weight=1, name=None
+    labels=None, logits=None, pos_weight=1.0, name=None
 ):
     ivy.assertions.check_shape(labels, logits)
     ones = ivy.ones_like(labels)
