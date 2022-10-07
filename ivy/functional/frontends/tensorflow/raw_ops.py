@@ -120,6 +120,10 @@ def IdentityN(*, input, name="IdentityN"):
     return [ivy.copy_array(x) for x in input]
 
 
+def Invert(*, x, name="Invert"):
+    return ivy.bitwise_invert(x)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
