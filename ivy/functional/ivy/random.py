@@ -553,8 +553,9 @@ def shuffle(
 @handle_exceptions
 def dirichlet(
     alpha: ivy.Array,
-    size: Optional[Union[int, Sequence[int]]],
+    /,
     *,
+    size: Optional[Union[int, Sequence[int]]],
     out: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:

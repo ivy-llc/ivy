@@ -149,8 +149,9 @@ def shuffle(
 
 def dirichlet(
     alpha: JaxArray,
-    size: Optional[Union[int, Sequence[int]]] = None,
-    *, 
+    /,
+    *,
+    size: Optional[Union[int, Sequence[int]]] = None, 
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
