@@ -365,3 +365,23 @@ class ArrayWithLayers(abc.ABC):
             bias=bias,
             recurrent_bias=recurrent_bias,
         )
+
+    def max_pool2d(
+        self: ivy.Array,
+        kernel: Union[ivy.Array, ivy.NativeArray],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+       
+        return ivy.max_pool2d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )

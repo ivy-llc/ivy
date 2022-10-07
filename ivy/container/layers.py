@@ -995,3 +995,62 @@ class ContainerWithLayers(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_max_pool2d(
+            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            kernel: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            strides: Union[int, Tuple[int], Tuple[int, int]],
+            padding: str,
+            /,
+            *,
+            data_format: str = "NHWC",
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return ContainerBase.multi_map_in_static_method(
+            "max_pool2d",
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def max_pool2d(
+            self: ivy.Container,
+            kernel: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            strides: Union[int, Tuple[int], Tuple[int, int]],
+            padding: str,
+            /,
+            *,
+            data_format: str = "NHWC",
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return self.static_max_pool2d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
