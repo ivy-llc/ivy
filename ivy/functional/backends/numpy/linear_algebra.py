@@ -49,6 +49,31 @@ def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 det.unsupported_dtypes = ("float16",)
 
 
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+    ret = np.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    # On the diagonal there will be
+    # 1 * padding_value + x_i - padding_value == x_i
+    ret += np.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: np.ndarray,
     /,
@@ -170,13 +195,14 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if atol and rtol is None:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
-    elif rtol and atol is None:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    elif rtol and atol:
-        tol = np.maximum(atol, rtol)
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    if type(atol) and type(rtol) == tuple:
+        if atol.all() and rtol.all() is None:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
+        elif atol.all() and rtol.all():
+            tol = np.maximum(atol, rtol)
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+        else:
+            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
     else:
         ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
     return ret
@@ -305,7 +331,7 @@ def trace(
     offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 

@@ -54,6 +54,30 @@ det.unsupported_dtypes = (
 )
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = jnp.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += jnp.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: JaxArray,
     /,
@@ -356,15 +380,12 @@ def trace(
     offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = (
-    "float16",
-    "bfloat16"
-)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(

@@ -592,6 +592,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        adjoint: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -602,6 +603,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "inv",
             x,
+            adjoint=adjoint,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -613,6 +615,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        adjoint: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -669,6 +672,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_inv(
             self,
+            adjoint=adjoint,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -804,6 +808,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -851,6 +856,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             "matrix_norm",
             x,
             ord=ord,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -864,6 +870,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -908,7 +915,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_norm(
             self,
-            ord,
+            ord=ord,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1553,12 +1561,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_trace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        offset: int = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1624,6 +1635,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             "trace",
             x,
             offset=offset,
+            axis1=axis1,
+            axis2=axis2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1633,12 +1646,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def trace(
         self: ivy.Container,
+        /,
+        *,
         offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1702,11 +1718,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_trace(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             offset=offset,
+            axis1=axis1,
+            axis2=axis2,
             out=out,
         )
 
