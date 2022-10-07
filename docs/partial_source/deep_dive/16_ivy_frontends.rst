@@ -461,6 +461,30 @@ computation graph in the source framework. In the case of instance methods, we t
 replace each of the original instance methods in the extracted computation graph with
 these new instance methods defined in the Ivy frontend class.
 
+Frontend Data Type Promotion Rules
+----------------------------------
+
+Each frontend framework has its own rules governing the common result type for two array
+operands during an arithmetic operation.
+
+In order to ensure that each frontend framework implemented in Ivy has the same data type
+promotion behaviors as the native framework does, we have implemented data type promotion
+rules according to framework-specific data type promotion tables for these we are currently
+supporting as frontends. The function can be accessed through calling
+:func:`promote_types_of_<frontend>_inputs` and pass in both array operands.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+    ...
+    def add(x, y, name=None):
+        x, y = promote_types_of_tensorflow_inputs(x, y)
+        return ivy.add(x, y)
+
+Although under most cases, array operands being passed into an arithmetic operation function
+should be the same data type, using the data type promotion rules can add a layer of sanity
+check to prevent data precision losses or exceptions from further arithmetic operations.
 
 **Round Up**
 
