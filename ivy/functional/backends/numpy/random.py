@@ -120,7 +120,7 @@ def shuffle(
 
 
 def dirichlet(
-    alpha: np.ndarray,
+    alpha: Union[float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]] = None,

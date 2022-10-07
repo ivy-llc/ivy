@@ -131,7 +131,7 @@ def shuffle(
 
 
 def dirichlet(
-    alpha: tf.Tensor,
+    alpha: Union[float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]] = None,
@@ -139,8 +139,11 @@ def dirichlet(
     dtype: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     size = size if not None else len(alpha)
-    dtype = dtype if not None else tf.dtypes.float64
-    return tf.constant(
+    if dtype is None:
+        dtype = tf.float64
+    else:
+        dtype = dtype
+    return tf.cast(
         tfd.Dirichlet(
             concentration=alpha,
             validate_args=False,

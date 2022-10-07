@@ -552,7 +552,7 @@ def shuffle(
 @handle_nestable
 @handle_exceptions
 def dirichlet(
-    alpha: ivy.Array,
+    alpha: Union[float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]],
@@ -567,7 +567,7 @@ def dirichlet(
     Parameters
     ----------
     alpha
-        Input array of length k 
+        Sequence of floats of length k 
     size
         optional int or tuple of ints, Output shape. If the given shape is,
         e.g., (m, n), then m * n * k samples are drawn. Default is None,
@@ -583,40 +583,22 @@ def dirichlet(
     Functional Examples
     -------------------
 
-    With :class: 'ivy.Array' input:
+    >>> alpha = [1.0, 2.0, 3.0]
+    >>> ivy.dirichlet(alpha)
+    ivy.array([0.10598304, 0.21537054, 0.67864642])
 
-    >>> alpha = ivy.array([1,2,3])
-    >>> print(alpha)
-    ivy.array([0.08812053, 0.21853086, 0.69334861])
+    >>> alpha = [1.0, 2.0, 3.0]
+    >>> ivy.dirichlet(alpha, size = (2,3))
+    ivy.array([[[0.48006698, 0.07472073, 0.44521229],
+        [0.55479872, 0.05426367, 0.39093761],
+        [0.19531053, 0.51675832, 0.28793114]],
 
-    >>> alpha = ivy.array([1,2,3])
-    >>> print(alpha, size = (2,3))
-    ivy.array([[[0.48926701, 0.17841151, 0.33232148],
-        [0.12634574, 0.57150038, 0.30215388],
-        [0.0731946 , 0.75307338, 0.17373202]],
-
-       [[0.02726438, 0.56313618, 0.40959944],
-        [0.01554968, 0.2011584 , 0.78329192],
-        [0.26483532, 0.48201896, 0.25314572]]])
-
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class: 'ivy.Array' input:
-
-    >>> alpha = ivy.array([1,2,3])
-    >>> print(alpha)
-    ivy.array([0.33236424, 0.44677371, 0.22086206])
-
-    Using :class: 'ivy.Container' input:
-
-    >>> alpha = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([4, 5, 6]))
-    >>> print(alpha)
-    {
-        a: ivy.array([0.17405065, 0.09940241, 0.72654694]),
-        b: ivy.array([0.40641465, 0.21859894, 0.37498641]))
-    }
+       [[0.12315625, 0.29823365, 0.5786101 ],
+        [0.15564976, 0.50542368, 0.33892656],
+        [0.1325352 , 0.44439589, 0.42306891]]])
     """
-    return current_backend().dirichlet(alpha, size, out=out, dtype=dtype)
+    return current_backend().dirichlet(
+        alpha,
+        size=size,
+        out=out,
+        dtype=dtype)
