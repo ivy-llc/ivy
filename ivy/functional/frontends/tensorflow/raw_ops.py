@@ -233,3 +233,7 @@ def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
 
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
+def Reciprocal(*, x, name="Reciprocal"):
+    return ivy.reciprocal(x)
