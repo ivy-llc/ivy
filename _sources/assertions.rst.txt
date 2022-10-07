@@ -22,6 +22,7 @@ Assertions
    assertions/check_true.rst
    assertions/check_false.rst
    assertions/check_all.rst
+   assertions/check_all_bitshifts.rst
    assertions/check_any.rst
    assertions/check_all_or_any_fn.rst
    assertions/check_fill_value_and_dtype_are_compatible.rst
