@@ -889,7 +889,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
     _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
@@ -899,6 +898,7 @@ def test_method(
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+    _assert_dtypes_are_valid(input_dtypes_init)
 
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
