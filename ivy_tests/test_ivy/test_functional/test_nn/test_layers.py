@@ -969,11 +969,48 @@ def test_lstm_update(
         recurrent_bias=recurrent_bias,
     )
 
-import numpy as np
-# max_pool
+
+# max_pool2d
 @handle_cmd_line_args
 @given(
-    x_k_s_p = helpers.arrays_for_pooling(array_dim=4),
+    x_k_s_p=helpers.arrays_for_pooling(array_dim=4),
+    num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
+)
+def test_max_pool2d(
+    *,
+    x_k_s_p,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype[0],
+        as_variable_flags=as_variable,
+        with_out=[False],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="max_pool2d",
+        rtol_=1e-2,
+        atol_=1e-2,
+        ground_truth_backend="jax",
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad
+    )
+
+@handle_cmd_line_args
+@given(
+    x_k_s_p=helpers.arrays_for_pooling(array_dim=4),
     num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
 )
 def test_max_pool2d(
@@ -992,7 +1029,7 @@ def test_max_pool2d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=[False],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,

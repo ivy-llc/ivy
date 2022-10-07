@@ -376,7 +376,7 @@ class ArrayWithLayers(abc.ABC):
         data_format: str = "NHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-       
+
         return ivy.max_pool2d(
             self,
             kernel,
