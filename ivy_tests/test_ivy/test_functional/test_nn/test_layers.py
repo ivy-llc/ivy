@@ -63,7 +63,6 @@ def test_linear(
     fw,
     device,
 ):
-
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
         input_dtypes=dtype,
@@ -78,6 +77,7 @@ def test_linear(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x,
         weight=weight,
         bias=bias,
@@ -215,6 +215,7 @@ def test_scaled_dot_product_attention(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         q=q,
         k=k,
         v=v,
@@ -297,6 +298,7 @@ def test_multi_head_attention(
         ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
+        test_gradients=True,
         x=x_mha,
         scale=scale,
         num_heads=num_heads,
@@ -350,7 +352,7 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    dilations = draw(st.integers(1, 1))
+    dilations = draw(st.integers(1, 3))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
