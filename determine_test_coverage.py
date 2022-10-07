@@ -15,6 +15,7 @@ test_names = []
 with open("test_names") as f:
     i = 0
     for line in f:
+        print(line)
         i += 1
         if i <= 5:
             continue
