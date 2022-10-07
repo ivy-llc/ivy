@@ -3309,6 +3309,41 @@ def log(
         The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([1.39, 0., -inf, nan])
+
+    >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                       [+0, -1.0, -5, float('-inf')]])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([[nan, 0., 1.61, inf],
+               [-inf, nan, nan, nan]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([5.78, float('-inf')])
+    >>> y = ivy.log(x)
+    >>> print(y)
+    ivy.array([1.75, nan])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                          b=ivy.array([-0., -3.9, float('+inf')]),\
+                          c=ivy.array([7.9, 1.1, 1.]))
+    >>> y = ivy.log(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([2.07, 0.0953, 0.])
+    }
     """
     return ivy.current_backend(x).log(x, out=out)
 
@@ -5723,6 +5758,7 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
+    use_where: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
@@ -5733,6 +5769,9 @@ def maximum(
         Input array containing elements to maximum threshold.
     x2
         Tensor containing maximum values, must be broadcastable to x1.
+    use_where
+        Whether to use :func:`where` to calculate the maximum. If ``False``, the maximum
+        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5742,7 +5781,6 @@ def maximum(
     ret
         An array with the elements of x1, but clipped to not be lower than the x2
         values.
-
 
     Examples
     --------
@@ -5795,7 +5833,7 @@ def maximum(
         b: ivy.array([5, 9, 7])
     }
     """
-    return ivy.current_backend(x1).maximum(x1, x2, out=out)
+    return ivy.current_backend(x1).maximum(x1, x2, use_where=use_where, out=out)
 
 
 @to_native_arrays_and_back
@@ -5807,6 +5845,7 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
@@ -5817,6 +5856,9 @@ def minimum(
         Input array containing elements to minimum threshold.
     x2
         Tensor containing minimum values, must be broadcastable to x1.
+    use_where
+        Whether to use :func:`where` to calculate the minimum. If ``False``, the minimum
+        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5880,7 +5922,7 @@ def minimum(
         b: ivy.array([2, 8, 5])
     }
     """
-    return ivy.current_backend(x1).minimum(x1, x2, out=out)
+    return ivy.current_backend(x1).minimum(x1, x2, use_where=use_where, out=out)
 
 
 @to_native_arrays_and_back

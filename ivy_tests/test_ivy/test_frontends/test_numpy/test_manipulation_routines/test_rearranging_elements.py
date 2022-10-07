@@ -26,7 +26,6 @@ def test_numpy_roll(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -61,7 +60,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
         fn_name="ivy.functional.frontends.numpy.flip"
     ),
 )
-def test_numpy_flip(dtype_x_axis, num_positional_args, native_array, fw):
+def test_numpy_flip(dtype_x_axis, num_positional_args, native_array):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

@@ -22,7 +22,6 @@ def test_jax_nn_relu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -54,7 +53,6 @@ def test_jax_nn_relu6(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -86,7 +84,6 @@ def test_jax_nn_soft_sign(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -118,7 +115,6 @@ def test_jax_nn_silu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -151,7 +147,6 @@ def test_jax_nn_leaky_relu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     negative_slope,
 ):
     input_dtype, x = dtype_and_x
@@ -186,7 +181,6 @@ def test_jax_nn_gelu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     approximate,
 ):
     input_dtype, x = dtype_and_x
@@ -222,7 +216,6 @@ def test_jax_nn_sigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -258,7 +251,6 @@ def test_jax_nn_one_hot(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -294,7 +286,6 @@ def test_jax_nn_softmax(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -328,7 +319,6 @@ def test_jax_nn_softplus(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -360,7 +350,6 @@ def test_jax_nn_log_sigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -396,7 +385,6 @@ def test_jax_nn_log_softmax(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -437,7 +425,6 @@ def test_jax_nn_glu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -483,7 +470,6 @@ def test_jax_nn_normalize(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -521,7 +507,6 @@ def test_jax_nn_hard_tanh(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -555,7 +540,6 @@ def test_jax_nn_celu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -590,7 +574,6 @@ def test_jax_nn_elu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -631,7 +614,6 @@ def test_jax_nn_logsumexp(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -667,7 +649,6 @@ def test_jax_nn_swish(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -699,7 +680,6 @@ def test_jax_nn_hard_swish(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -730,7 +710,6 @@ def test_jax_nn_hard_silu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -761,7 +740,6 @@ def test_jax_nn_hard_sigmoid(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(

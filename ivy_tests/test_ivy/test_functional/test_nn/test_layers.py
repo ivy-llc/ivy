@@ -15,26 +15,19 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
-    outer_batch_shape = draw(
-        st.tuples(
-            helpers.ints(min_value=3, max_value=5),
-            helpers.ints(min_value=1, max_value=3),
-            helpers.ints(min_value=1, max_value=3),
-        )
-    )
-    inner_batch_shape = draw(
-        st.tuples(
-            helpers.ints(min_value=3, max_value=5),
-            helpers.ints(min_value=1, max_value=3),
-            helpers.ints(min_value=1, max_value=3),
-        )
-    )
-    in_features = draw(helpers.ints(min_value=1, max_value=3))
-    out_features = draw(helpers.ints(min_value=1, max_value=3))
+    in_features = draw(helpers.ints(min_value=1, max_value=2))
+    out_features = draw(helpers.ints(min_value=1, max_value=2))
 
-    x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
-    weight_shape = outer_batch_shape + (out_features,) + (in_features,)
-    bias_shape = outer_batch_shape + (out_features,)
+    x_shape = (
+        1,
+        1,
+        in_features,
+    )
+    weight_shape = (1,) + (out_features,) + (in_features,)
+    bias_shape = (
+        1,
+        out_features,
+    )
 
     x = draw(
         helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
@@ -70,7 +63,6 @@ def test_linear(
     fw,
     device,
 ):
-
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
         input_dtypes=dtype,
@@ -85,6 +77,7 @@ def test_linear(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         x=x,
         weight=weight,
         bias=bias,
@@ -154,22 +147,15 @@ def test_dropout(
 @st.composite
 def x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
-    batch_shape = draw(
-        st.tuples(
-            helpers.ints(min_value=3, max_value=5),
-            helpers.ints(min_value=1, max_value=3),
-            helpers.ints(min_value=1, max_value=3),
-        )
-    )
-    num_queries = draw(helpers.ints(min_value=1, max_value=3))
-    num_keys = draw(helpers.ints(min_value=1, max_value=3))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
+    num_queries = draw(helpers.ints(min_value=1, max_value=2))
+    num_keys = draw(helpers.ints(min_value=1, max_value=2))
+    feat_dim = draw(helpers.ints(min_value=1, max_value=2))
     scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
 
-    q_shape = batch_shape + (num_queries,) + (feat_dim,)
-    k_shape = batch_shape + (num_keys,) + (feat_dim,)
-    v_shape = batch_shape + (num_keys,) + (feat_dim,)
-    mask_shape = batch_shape + (num_queries,) + (num_keys,)
+    q_shape = (1,) + (num_queries,) + (feat_dim,)
+    k_shape = (1,) + (num_keys,) + (feat_dim,)
+    v_shape = (1,) + (num_keys,) + (feat_dim,)
+    mask_shape = (1,) + (num_queries,) + (num_keys,)
 
     q = draw(
         helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=1)
@@ -229,6 +215,7 @@ def test_scaled_dot_product_attention(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         q=q,
         k=k,
         v=v,
@@ -311,6 +298,7 @@ def test_multi_head_attention(
         ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
+        test_gradients=True,
         x=x_mha,
         scale=scale,
         num_heads=num_heads,
@@ -349,22 +337,22 @@ def x_and_filters(
         dim = draw(dim)
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = draw(st.integers(1, 5))
+    batch_size = 1
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
     )
     dtype = draw(helpers.get_dtypes("float", full=False))
-    input_channels = draw(st.integers(1, 5))
-    output_channels = draw(st.integers(1, 5))
+    input_channels = draw(st.integers(1, 3))
+    output_channels = draw(st.integers(1, 3))
     group_list = [i for i in range(1, 6)]
     if not transpose:
         group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    dilations = draw(st.integers(1, 1))
+    dilations = draw(st.integers(1, 3))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -377,7 +365,7 @@ def x_and_filters(
         output_shape = []
         x_dim = draw(
             helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=20
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
         for i in range(dim):
@@ -389,7 +377,7 @@ def x_and_filters(
     else:
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-            x_dim.append(draw(st.integers(min_x, 20)))
+            x_dim.append(draw(st.integers(min_x, 5)))
         x_dim = tuple(x_dim)
     if not depthwise:
         if not transpose:
@@ -854,17 +842,11 @@ def test_conv3d_transpose(
 @st.composite
 def x_and_lstm(draw, dtypes):
     dtype = draw(dtypes)
-    batch_shape = draw(
-        st.tuples(
-            helpers.ints(min_value=3, max_value=5),
-            helpers.ints(min_value=1, max_value=3),
-            helpers.ints(min_value=1, max_value=3),
-        )
-    )
+    batch_shape = (1,)
 
-    t = draw(helpers.ints(min_value=1, max_value=3))
-    _in_ = draw(helpers.ints(min_value=1, max_value=3))
-    _out_ = draw(helpers.ints(min_value=1, max_value=3))
+    t = draw(helpers.ints(min_value=1, max_value=2))
+    _in_ = draw(helpers.ints(min_value=1, max_value=2))
+    _out_ = draw(helpers.ints(min_value=1, max_value=2))
 
     x_lstm_shape = batch_shape + (t,) + (_in_,)
     init_h_shape = batch_shape + (_out_,)

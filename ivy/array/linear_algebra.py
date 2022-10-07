@@ -161,7 +161,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> ivy.Array:
         return ivy.inner(self._data, x2, out=out)
 
-    def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def inv(
+        self: ivy.Array, /, *, adjoint: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inv.
         This method simply wraps the function, and so the docstring for
@@ -176,22 +178,26 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         ivy.array([[-2., 1.],[1.5, -0.5]])
         """
-        return ivy.inv(self._data, out=out)
+        return ivy.inv(self._data, adjoint=adjoint, out=out)
 
     def matrix_norm(
         self: ivy.Array,
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(self._data, ord=ord, keepdims=keepdims, out=out)
+        return ivy.matrix_norm(
+            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+        )
 
     def matrix_rank(
         self: ivy.Array,
         /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -205,6 +211,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self
             input array having shape ``(..., M, N)`` and whose innermost two dimensions
             form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -251,7 +261,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
+        return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
@@ -347,9 +357,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices=full_matrices)
+        return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
@@ -365,8 +376,11 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def trace(
         self: ivy.Array,
+        /,
         *,
         offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -412,7 +426,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         ivy.array(6.)
         """
-        return ivy.trace(self._data, offset=offset, out=out)
+        return ivy.trace(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
     def vecdot(
         self: ivy.Array,
