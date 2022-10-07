@@ -284,8 +284,7 @@ def slogdet(
     /,
 ) -> NamedTuple:
     results = NamedTuple(
-        "slogdet",
-        [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
+        "slogdet", [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
     )
     sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)

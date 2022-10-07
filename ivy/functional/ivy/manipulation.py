@@ -409,7 +409,7 @@ def permute_dims(
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = x.permute_dims( axes=(1, 0))
     >>> print(y)
-    ivy.array([[3.],[4.],[5.]])
+    {a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}
 
 
     This function conforms to the `Array API Standard

@@ -1118,7 +1118,14 @@ def conv3d_transpose(
     (1, 6, 56, 56, 3)
     """
     return current_backend(x).conv3d_transpose(
-        x, filters, strides, padding, output_shape=output_shape, data_format=data_format, dilations=dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
