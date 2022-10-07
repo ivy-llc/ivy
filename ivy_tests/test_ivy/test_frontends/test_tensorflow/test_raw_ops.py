@@ -1563,7 +1563,7 @@ def test_tensorflow_Inv(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("integer"), num_arrays=2, shared_dtype=True
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.TruncateDiv"
