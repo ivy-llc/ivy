@@ -16,7 +16,7 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
-           pip install pydriller tqdm
+           pip install pydriller tqdm pytest
            cd ivy
            python determine_test_coverage.py
            cd ..
