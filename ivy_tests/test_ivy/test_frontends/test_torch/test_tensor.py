@@ -111,18 +111,12 @@ def test_torch_instance_reshape(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1e04,
-        max_value=1e04,
         allow_inf=False,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.Tensor.sin",
     ),
 )
 def test_torch_instance_sin(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
 ):
     input_dtype, x = dtype_and_x
@@ -136,7 +130,7 @@ def test_torch_instance_sin(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=1,
+        num_positional_args_method=0,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
