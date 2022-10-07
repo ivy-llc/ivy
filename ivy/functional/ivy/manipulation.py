@@ -2,11 +2,11 @@
 # global
 from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
+from numpy import prod
 from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
-from numpy import prod
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
@@ -1445,8 +1445,8 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    start_dim: int,
-    end_dim: int,
+    start_dim: int = None,
+    end_dim: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.

@@ -8,7 +8,7 @@ from typing import Union, Tuple, Optional, List, Sequence
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 
-  
+
 # Array API Standard #
 # -------------------#
 
@@ -318,4 +318,3 @@ def unstack(
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
-

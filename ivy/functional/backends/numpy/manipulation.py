@@ -228,4 +228,3 @@ def clip(
 
 
 clip.support_native_out = True
-
