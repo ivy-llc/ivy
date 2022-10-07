@@ -31,6 +31,8 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.det",
+        rtol=1e-04,
+        atol=1e-04,
         a=np.asarray(x[0], dtype=dtype[0]),
     )
 
