@@ -18,7 +18,7 @@ jobs:
          run: |
            pip install pydriller tqdm coverage
            cd ivy
-           docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest pip install coverage
+           docker run --rm -v "$(pwd)":/ivy unifyai/ivy:latest pip install coverage
            python determine_test_coverage.py
            cd ..
            mkdir tests
