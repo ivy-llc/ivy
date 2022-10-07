@@ -118,8 +118,10 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ret.astype(dtype)
 
 
-def arctan(
-    x,
-):
+def arctan(x):
     ret = ivy.atan(x)
     return ret
+
+def arctan2(x1, x2):
+    return ivy.atan2(x1, x2)
+
