@@ -73,6 +73,30 @@ det.support_native_out = True
 det.unsupported_dtypes = ("float16", "bfloat16")
 
 
+def diag(
+    x: torch.Tensor,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = torch.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += torch.diag(x - padding_value, diagonal=offset)
+
+    return ret
+
+
 def diagonal(
     x: torch.Tensor,
     /,
@@ -151,7 +175,6 @@ inv.unsupported_dtypes = (
     "bfloat16",
     "float16",
 )
-
 inv.support_native_out = True
 
 
@@ -182,15 +205,16 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
+    if isinstance(ord, float):
+        ord = int(ord)
+    return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
 matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
-
-
 matrix_norm.support_native_out = True
 
 
@@ -388,12 +412,20 @@ tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(
-    x: torch.Tensor, offset: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    desired_dtype = x.dtype
-    ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
-    ret = torch.sum(ret, dim=-1)
-    return ret.type(desired_dtype)
+    ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+    ret = torch.sum(ret)
+    return ret
+
+
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(

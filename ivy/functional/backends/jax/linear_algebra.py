@@ -54,6 +54,30 @@ det.unsupported_dtypes = (
 )
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = jnp.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += jnp.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: JaxArray,
     /,
@@ -150,17 +174,13 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.size == 0:
-        if keepdims:
-            ret = x.reshape(x.shape[:-2] + (1, 1))
-        else:
-            ret = x.reshape(x.shape[:-2])
-    else:
-        ret = jnp.linalg.norm(x, ord, (-2, -1), keepdims)
-    return ret
+    if not isinstance(axis, tuple) and axis:
+        axis = tuple(axis)
+    return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 matrix_norm.unsupported_dtypes = (
@@ -354,12 +374,18 @@ def tensordot(
 
 
 def trace(
-    x: JaxArray, /, *, offset: int = 0, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
+    return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = ("float16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
