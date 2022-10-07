@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -29,10 +28,9 @@ def test_numpy_logical_and(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtype, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=[input_dtype],
         as_variable=as_variable,
@@ -44,11 +42,10 @@ def test_numpy_logical_and(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logical_and",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -76,9 +73,8 @@ def test_numpy_logical_or(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=[input_dtype],
@@ -91,11 +87,10 @@ def test_numpy_logical_or(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logical_or",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -122,7 +117,6 @@ def test_numpy_logical_not(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     input_dtype = [input_dtype]
@@ -138,10 +132,9 @@ def test_numpy_logical_not(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logical_not",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         dtype=dtype,
@@ -169,9 +162,8 @@ def test_numpy_logical_xor(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=[input_dtype],
@@ -184,11 +176,10 @@ def test_numpy_logical_xor(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="logical_xor",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,

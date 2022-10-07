@@ -121,13 +121,14 @@ def stack(
 
 
 def split(
-    x,
+    x: JaxArray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[JaxArray]:
+
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(

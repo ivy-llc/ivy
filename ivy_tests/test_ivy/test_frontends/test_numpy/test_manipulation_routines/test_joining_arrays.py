@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -67,18 +66,15 @@ def test_numpy_concatenate(
     dtype_n_with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="concatenate",
         arrays=xs,

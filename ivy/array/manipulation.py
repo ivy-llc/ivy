@@ -335,9 +335,9 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
-        axis: int = 0,
-        with_remainder: bool = False,
+        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[int] = 0,
+        with_remainder: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.split. This method simply

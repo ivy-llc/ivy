@@ -143,6 +143,10 @@ def exp(x):
     return ivy.exp(x)
 
 
+def expand_dims(array, dimensions):
+    return ivy.expand_dims(array, axis=dimensions)
+
+
 def expm1(x):
     return ivy.expm1(x)
 
@@ -269,3 +273,7 @@ def tan(x):
 
 def transpose(operand, permutation):
     return ivy.permute_dims(operand, permutation)
+
+
+def shift_right_logical(x, y):
+    return ivy.bitwise_right_shift(x, y)

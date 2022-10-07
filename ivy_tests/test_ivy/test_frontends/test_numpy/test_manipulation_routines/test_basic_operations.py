@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -22,21 +21,18 @@ def test_numpy_shape(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
-    xs = np.asarray(xs, dtype=input_dtypes)
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        with_out=False,
-        fw=fw,
         frontend="numpy",
         fn_tree="shape",
-        array=xs,
         test_values=False,
+        array=xs[0],
     )
     # Manually compare the shape here because ivy.shape doesn't return an array, so
     # ivy.to_numpy will narrow the bit-width, resulting in different dtypes. This is

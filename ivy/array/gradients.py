@@ -27,7 +27,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([2., 4., -1.])
         >>> y = x.variable()
@@ -60,7 +60,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([[2], [3], [5]])
         >>> is_var = x.is_variable(exclusive=True)
@@ -69,8 +69,6 @@ class ArrayWithGradients(abc.ABC):
 
         """
         return ivy.is_variable(self, exclusive=exclusive)
-
-    # is_variable.computes_gradients = True
 
     def variable_data(self: ivy.Array) -> bool:
         """
@@ -174,7 +172,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> dcdw = ivy.array([1, 2, 3])
         >>> mw = ivy.ones(3)
@@ -281,7 +279,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> w = ivy.array([[1., 2, 3],\
                        [4, 6, 1],\
@@ -480,7 +478,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> w = ivy.array([1., 2, 3])
         >>> dcdw = ivy.array([0.5,0.2,0.1])

@@ -52,7 +52,7 @@ class ContainerWithNorms(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                                'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
@@ -65,7 +65,7 @@ class ContainerWithNorms(ContainerBase):
                           [1.24, 1.24, 1.24]])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                                'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})

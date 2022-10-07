@@ -36,7 +36,7 @@ def bitwise_xor(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return torch.bitwise_xor(x1, x2, out=out)
 
 
@@ -107,7 +107,7 @@ def bitwise_and(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return torch.bitwise_and(x1, x2, out=out)
 
 
@@ -404,10 +404,11 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.div(x1, x2, rounding_mode="floor", out=out)
+    return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
 
 floor_divide.support_native_out = True
+floor_divide.unsupported_dtypes = ("float16",)
 
 
 def bitwise_or(
@@ -417,7 +418,7 @@ def bitwise_or(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return torch.bitwise_or(x1, x2, out=out)
 
 
@@ -592,7 +593,7 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
-    return torch.remainder(x1, x2, out=out)
+    return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 
 remainder.support_native_out = True
@@ -615,8 +616,8 @@ def bitwise_right_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
+    x2 = torch.clamp(x2, min=0, max=torch.iinfo(x2.dtype).bits - 1)
     return torch.bitwise_right_shift(x1, x2, out=out)
 
 
@@ -630,8 +631,7 @@ def bitwise_left_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return torch.bitwise_left_shift(x1, x2, out=out)
 
 
@@ -656,10 +656,16 @@ def minimum(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    use_where: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.min(x1, x2, out=out)
+    if use_where:
+        ret = torch.where(x1 <= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.minimum(x1, x2, out=out)
 
 
 minimum.support_native_out = True
@@ -670,10 +676,16 @@ def maximum(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    use_where: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.max(x1, x2, out=out)
+    if use_where:
+        ret = torch.where(x1 >= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.maximum(x1, x2, out=out)
 
 
 maximum.support_native_out = True

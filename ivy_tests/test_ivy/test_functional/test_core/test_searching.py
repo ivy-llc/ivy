@@ -1,10 +1,10 @@
 """Collection of tests for searching functions."""
 
 # Global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -44,7 +44,7 @@ def _broadcastable_trio(draw):
             safety_factor_scale="log",
         )
     )
-    return cond, xs[0], xs[1], dtypes[0], dtypes[1]
+    return cond, xs, dtypes
 
 
 # Functions #
@@ -80,7 +80,7 @@ def test_argmax(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmax",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
@@ -90,12 +90,14 @@ def test_argmax(
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
+    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),
     num_positional_args=helpers.num_positional_args(fn_name="argmin"),
 )
 def test_argmin(
     *,
     dtype_x_axis,
     keepdims,
+    output_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -115,9 +117,10 @@ def test_argmin(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmin",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
+        dtype=output_dtype,
     )
 
 
@@ -130,11 +133,17 @@ def test_argmin(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    as_tuple=st.booleans(),
+    size=st.integers(min_value=1, max_value=5),
+    fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
 )
 def test_nonzero(
     *,
     dtype_and_x,
+    as_tuple,
+    size,
+    fill_value,
     as_variable,
     num_positional_args,
     native_array,
@@ -153,7 +162,10 @@ def test_nonzero(
         instance_method=instance_method,
         fw=fw,
         fn_name="nonzero",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
+        as_tuple=as_tuple,
+        size=size,
+        fill_value=fill_value,
     )
 
 
@@ -173,10 +185,10 @@ def test_where(
     instance_method,
     fw,
 ):
-    cond, x1, x2, dtype1, dtype2 = broadcastables
+    cond, xs, dtypes = broadcastables
 
     helpers.test_function(
-        input_dtypes=["bool", dtype1, dtype2],
+        input_dtypes=["bool"] + dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -185,9 +197,9 @@ def test_where(
         instance_method=instance_method,
         fw=fw,
         fn_name="where",
-        condition=np.asarray(cond, dtype="bool"),
-        x1=np.asarray(x1, dtype=dtype1),
-        x2=np.asarray(x2, dtype=dtype2),
+        condition=cond,
+        x1=xs[0],
+        x2=xs[1],
     )
 
 
@@ -219,5 +231,5 @@ def test_argwhere(
         instance_method=instance_method,
         fw=fw,
         fn_name="argwhere",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )

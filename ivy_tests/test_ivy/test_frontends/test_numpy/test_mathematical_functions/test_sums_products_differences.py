@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -30,7 +29,6 @@ def test_numpy_sum(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if initial is None:
@@ -41,12 +39,11 @@ def test_numpy_sum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="sum",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         keepdims=keep_dims,
         initial=initial,
         where=where,
@@ -75,7 +72,6 @@ def test_numpy_prod(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     (input_dtype, x, axis), where = dtype_x_axis
     if initial is None:
@@ -86,12 +82,11 @@ def test_numpy_prod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="prod",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         keepdims=keep_dims,
         initial=initial,
         where=where,
@@ -119,7 +114,6 @@ def test_numpy_cumsum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -128,12 +122,11 @@ def test_numpy_cumsum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="cumsum",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -158,7 +151,6 @@ def test_numpy_cumprod(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -167,12 +159,11 @@ def test_numpy_cumprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="cumprod",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -196,7 +187,6 @@ def test_numpy_nancumprod(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -205,12 +195,11 @@ def test_numpy_nancumprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nancumprod",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -234,7 +223,6 @@ def test_numpy_nancumsum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -243,12 +231,11 @@ def test_numpy_nancumsum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nancumsum",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -276,13 +263,11 @@ def test_numpy_nanprod(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     where,
     keepdims,
 ):
     input_dtype, x, axis = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -294,12 +279,11 @@ def test_numpy_nanprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nanprod",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         where=where,
         keepdims=keepdims,
     )
@@ -329,13 +313,11 @@ def test_numpy_nansum(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     where,
     keepdims,
 ):
     input_dtype, x, axis = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -347,12 +329,11 @@ def test_numpy_nansum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="nansum",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         where=where,
         keepdims=keepdims,
     )

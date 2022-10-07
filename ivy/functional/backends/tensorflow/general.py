@@ -93,7 +93,10 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.nd
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
-    return to_numpy(x).item()
+    ret = to_numpy(x).item()
+    if x.dtype == tf.bfloat16:
+        return float(ret)
+    return ret
 
 
 def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
@@ -106,10 +109,10 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=None)
+    return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
 def gather_nd(
@@ -123,7 +126,11 @@ def gather_nd(
 
 
 def get_num_dims(x, /, *, as_array=False):
-    return tf.shape(tf.shape(x))[0] if as_array else int(tf.shape(tf.shape(x)))
+    return (
+        tf.cast(tf.shape(tf.shape(x))[0], tf.int64)
+        if as_array
+        else int(tf.shape(tf.shape(x)))
+    )
 
 
 def inplace_arrays_supported():
@@ -159,10 +166,11 @@ def inplace_increment(
         else:
             x = ivy.Array(x_native)
     else:
+        x_native += val_native
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x._data = x_native
         else:
-            x = ivy.Array(val_native)
+            x = ivy.Array(x_native)
     return x
 
 
@@ -321,14 +329,18 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, -1)
+            indices = tf.expand_dims(indices, 0)
 
-        if len(updates.shape) < 2:
-            updates = tf.expand_dims(updates, 0)
-
-    # broadcast updates to indices
-    if updates.shape == ():
-        updates = tf.broadcast_to(updates, indices.shape[:1])
+    # broadcast updates to correct shape
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + shape[indices.shape[-1] :]
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -403,6 +415,7 @@ def scatter_nd(
     return res
 
 
+scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 

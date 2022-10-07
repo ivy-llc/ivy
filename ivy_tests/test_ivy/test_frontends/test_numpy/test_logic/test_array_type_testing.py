@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -27,12 +26,11 @@ def test_numpy_isfinite(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -42,10 +40,9 @@ def test_numpy_isfinite(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="isfinite",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         dtype=dtype,
@@ -71,12 +68,11 @@ def test_numpy_isinf(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -86,17 +82,15 @@ def test_numpy_isinf(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="isinf",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -119,12 +113,11 @@ def test_numpy_isnan(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -134,15 +127,13 @@ def test_numpy_isnan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="isnan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
