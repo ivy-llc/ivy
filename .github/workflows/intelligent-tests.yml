@@ -14,7 +14,7 @@ jobs:
            path: ivy
            persist-credentials: false
            submodules: "recursive"
-           fetch-depth: 0
+           fetch-depth: 100
 
        - name: Determine and Run Tests
          run: |
