@@ -7,16 +7,14 @@ if __name__ == "__main__":
     with open("tests.pkl", "rb") as f:
         tests = pickle.load(f)
     tests_to_run = set()
-    ref_commit_hash = tests['commit']
-    for commit in Repository('.', single=ref_commit_hash).traverse_commits():
+    ref_commit_hash = tests["commit"]
+    for commit in Repository(".", single=ref_commit_hash).traverse_commits():
         ref_commit = commit._c_object
         break
 
     for commit in Repository(".", order="reverse").traverse_commits():
-        tests['commit'] = commit.hash
-        diff_index = ref_commit.diff(
-            commit._c_object, create_patch=True
-        )
+        tests["commit"] = commit.hash
+        diff_index = ref_commit.diff(commit._c_object, create_patch=True)
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
             file_name = file.new_path + ",cover"
@@ -65,7 +63,9 @@ if __name__ == "__main__":
     # Run Tests
     failed = False
     for test in tests_to_run:
-        ret = os.system(f"docker run --rm -it -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest {test}")
+        ret = os.system(
+            f'docker run --rm -it -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest {test}'  # noqa
+        )
         if ret != 0:
             failed = True
 
