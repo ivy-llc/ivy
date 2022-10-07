@@ -358,9 +358,9 @@ class ArrayWithStatistical(abc.ABC):
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[1, 2],
-                   [1, 5],
-                   [1, 11]])
+        ivy.array([[0, 0],
+                   [0, 0],
+                   [0, 0]])
         """
         return ivy.cumprod(
             self._data, axis=axis, exclusive=exclusive, reverse=reverse, out=out

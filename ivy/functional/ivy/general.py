@@ -1155,7 +1155,7 @@ def clip_matrix_norm(
     >>> x = ivy.array([[[5., 4.], [-2., 6.]], \
                        [[3., 7.], [0., -5.]]])
     >>> y = ivy.empty((2, 2, 2))
-    >>> ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)
+    >>> y = ivy.clip_matrix_norm(x, 0.5, p=2.0)
     >>> print(y)
     ivy.array([[[ 0.339,  0.271],
                 [-0.135,  0.406]],
@@ -1185,7 +1185,7 @@ def clip_matrix_norm(
     >>> x = ivy.native_array([[[5., 4.], [-2., 6.]], \
                        [[3., 7.], [0., -5.]]])
     >>> y = ivy.empty((2, 2, 2))
-    >>> ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)
+    >>> y = ivy.clip_matrix_norm(x, 0.5, p=2.0)
     >>> print(y)
     ivy.array([[[ 0.339,  0.271],
                 [-0.135,  0.406]],
@@ -1743,17 +1743,17 @@ def match_kwargs(
 
     Examples
     --------
-    >>> o = ivy.zeros(3, dtype=int)
+    >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
     >>> print(x)
-    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+    [{'out': ivy.array([0., 0., 0.])}, {'bias': ivy.array([0, 1, 2])}]
 
-    >>> o = ivy.zeros(3, dtype=int)
+    >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
     >>> print(x)
-    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
+    [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
@@ -2482,7 +2482,7 @@ def supports_inplace_updates(
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
-    True
+    False
 
     With :class:`ivy.Container` input and backend set as `torch`:
 
@@ -2490,8 +2490,8 @@ def supports_inplace_updates(
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
     {
-        a: true,
-        b: true
+        a: false,
+        b: false
     }
     """
     if ivy.is_variable(x):
