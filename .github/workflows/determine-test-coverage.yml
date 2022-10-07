@@ -38,5 +38,5 @@ jobs:
            destination-github-username: 'unifyai'
            destination-repository-name: 'Mapping'
            user-email: rashul.chutani@gmail.com
-           commit-message: Testing
+           commit-message: Update Mapping
            target-branch: master
