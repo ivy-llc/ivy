@@ -158,13 +158,13 @@ def cumprod(
     elif exclusive and reverse:
         x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
         x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = jnp.swapaxes(x, axis, -1)
         return jnp.flip(x, axis=(axis,))
 
     elif exclusive:
         x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = jnp.cumprod(x, -1, dtype=dtype)
         return jnp.swapaxes(x, axis, -1)
     else:
