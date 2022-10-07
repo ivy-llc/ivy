@@ -1,20 +1,25 @@
 # local
 import ivy
+from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
 
 
+@inputs_to_ivy_arrays
 def abs(x):
     return ivy.abs(x)
 
 
+@inputs_to_ivy_arrays
 def absolute(x):
     return ivy.abs(x)
 
 
+@inputs_to_ivy_arrays
 def add(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
+@inputs_to_ivy_arrays
 def all(a, axis=None, out=None, keepdims=False, *, where=False):
     return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
