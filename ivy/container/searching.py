@@ -126,12 +126,7 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmin",
-            x,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            "argmin", x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def argmin(
@@ -174,11 +169,7 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_argmin(
-            self,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     @staticmethod
