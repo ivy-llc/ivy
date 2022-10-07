@@ -12,7 +12,6 @@ def absolute(x):
 
 
 def add(x1, x2):
-    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
@@ -21,7 +20,6 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    input, other = promote_types_of_jax_inputs(input, other)
     abs_ = ivy.abs(ivy.subtract(input, other))
     rtol, other = promote_types_of_jax_inputs(rtol, ivy.abs(other))
     mul = ivy.multiply(rtol, other)
@@ -35,11 +33,9 @@ def _compute_allclose_with_tol(input, other, rtol, atol):
 
 
 def _compute_isclose_with_tol(input, other, rtol, atol):
-    input, other = promote_types_of_jax_inputs(input, other)
     abs_ = ivy.abs(ivy.subtract(input, other))
     rtol, other = promote_types_of_jax_inputs(rtol, ivy.abs(other))
     mul = ivy.multiply(rtol, other)
-    atol, mul = promote_types_of_jax_inputs(atol, mul)
     add_ = ivy.add(atol, mul)
     abs_, add_ = promote_types_of_jax_inputs(abs_, add_)
     return ivy.less_equal(
