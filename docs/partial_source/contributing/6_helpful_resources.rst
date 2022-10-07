@@ -7,7 +7,7 @@ when climbing the steep Ivy learning curve.
 **Docs for respective Backends**
 
 `Tensorflow Documentation <https://www.tensorflow.org/api_docs>`_, 
-`PyTorch Documentatio <https://pytorch.org/docs>`_, 
+`PyTorch Documentation <https://pytorch.org/docs>`_, 
 `NumPy Documentation <https://numpy.org/doc/stable/reference/>`_ and 
 `Jax Documentation <https://jax.readthedocs.io/>`_ are the most useful resources to find your way
 through the behaviours from different backends. These are the most important resources 
