@@ -26,6 +26,7 @@ TEST_BACKENDS: Dict[str, callable] = {
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
+    "cupy": lambda: helpers.get_ivy_cupy(),
     "": lambda: None,
 }
 

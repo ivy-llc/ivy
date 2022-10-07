@@ -275,5 +275,5 @@ def transpose(operand, permutation):
     return ivy.permute_dims(operand, permutation)
 
 
-def shift_right_logical(x, y):
-    return ivy.bitwise_right_shift(x, y)
+def shift_right_logical(x,y):
+    return ivy.bitwise_right_shift(x,y)

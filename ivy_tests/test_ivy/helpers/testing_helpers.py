@@ -60,6 +60,14 @@ def get_ivy_torch():
     return ivy.functional.backends.torch
 
 
+def get_ivy_cupy():
+    """Import CuPy module from ivy"""
+    try:
+        import ivy.functional.backends.cupy
+    except ImportError:
+        return None
+    return ivy.functional.backends.cupy
+
 _ivy_fws_dict = {
     "numpy": lambda: get_ivy_numpy(),
     "jax": lambda: get_ivy_jax(),

@@ -2025,6 +2025,34 @@ def test_jax_lax_shift_left(
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.jax.lax.shift_right_logical"
+    ),
+)
+def test_jax_lax_shift_right_logical(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+
+    #helpers.test_frontend_function(
+    #    input_dtypes=input_dtype,
+    #    as_variable_flags=as_variable,
+    #    with_out=with_out,
 
 @handle_cmd_line_args
 @given(
@@ -2088,7 +2116,13 @@ def test_jax_lax_expand_dims(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-        fn_tree="lax.expand_dims",
-        array=x[0],
-        dimensions=(axis,),
+        fn_tree="lax.shift_right_logical",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
+
+ #       fn_tree="lax.expand_dims",
+ #       array=x[0],
+ #       dimensions=(axis,),
+ #   )
+

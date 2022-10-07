@@ -215,6 +215,12 @@ def test_asarray(
 ):
     dtype, x = dtype_and_x
 
+    #print(f"YOU ARE LOOKING FOR THIS: {fw=}")
+    with open("result.txt", mode="a") as file:
+        file.write(fw)
+        file.write("\n")
+
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
