@@ -109,39 +109,39 @@ backend = "cupy"
 backend_version = cp.__version__
 
 # local sub-modules
-from . import activations # noqa: F401
-from .activations import * # noqa: F401 F403
-from . import compilation # noqa: F401
-from .compilation import * # noqa: F401 F403
-from . import creation # noqa: F401
-from .creation import * # noqa: F401 F403
-from . import data_type # noqa: F401
-from .data_type import * # noqa: F401 F403
-from . import device # noqa: F401
-from .device import * # noqa: F401 F403
-from . import elementwise # noqa: F401
-from .elementwise import * # noqa: F401 F403
-from . import extensions # noqa: F401
-from .extensions import * # noqa: F401 F403
-from . import general # noqa: F401
-from .general import * # noqa: F401 F403
-from . import gradients # noqa: F401
-from .gradients import * # noqa: F401 F403
-from . import layers # noqa: F401
-from .layers import * # noqa: F401 F403
-from . import linear_algebra as linalg
-from .linear_algebra import * # noqa: F401 F403
-from . import manipulation # noqa: F401
-from .manipulation import * # noqa: F401 F403
-from . import random # noqa: F401
-from .random import * # noqa: F401 F403
-from . import searching # noqa: F401
-from .searching import * # noqa: F401 F403
-from . import set # noqa: F401
-from .set import * # noqa: F401 F403
-from . import sorting # noqa: F401
-from .sorting import * # noqa: F401 F403
-from . import statistical # noqa: F401
-from .statistical import * # noqa: F401 F403
-from . import utility # noqa: F401
-from .utility import * # noqa: F401 F403
+from . import activations # noqa: F401 E261
+from .activations import * # noqa: F401 F403 E261
+from . import compilation # noqa: F401 E261
+from .compilation import * # noqa: F401 F403 E261
+from . import creation # noqa: F401 E261
+from .creation import * # noqa: F401 F403 E261
+from . import data_type # noqa: F401 E261
+from .data_type import * # noqa: F401 F403 E261
+from . import device # noqa: F401 E261
+from .device import * # noqa: F401 F403 E261
+from . import elementwise # noqa: F401 E261
+from .elementwise import * # noqa: F401 F403 E261
+from . import extensions # noqa: F401 E261
+from .extensions import * # noqa: F401 F403 E261
+from . import general # noqa: F401 E261
+from .general import * # noqa: F401 F403 E261
+from . import gradients # noqa: F401 E261
+from .gradients import * # noqa: F401 F403 E261
+from . import layers # noqa: F401 E261
+from .layers import * # noqa: F401 F403 E261
+from . import linear_algebra as linalg  # noqa: F401 E261
+from .linear_algebra import * # noqa: F401 F403 E261
+from . import manipulation # noqa: F401 E261
+from .manipulation import * # noqa: F401 F403 E261
+from . import random # noqa: F401 E261
+from .random import * # noqa: F401 F403 E261
+from . import searching # noqa: F401 E261
+from .searching import * # noqa: F401 F403 E261
+from . import set # noqa: F401 E261
+from .set import * # noqa: F401 F403 E261
+from . import sorting # noqa: F401 E261
+from .sorting import * # noqa: F401 F403 E261
+from . import statistical # noqa: F401 E261
+from .statistical import * # noqa: F401 F403 E261
+from . import utility # noqa: F401 E261
+from .utility import * # noqa: F401 F403 E261
