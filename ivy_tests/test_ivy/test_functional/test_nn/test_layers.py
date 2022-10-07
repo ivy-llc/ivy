@@ -215,6 +215,7 @@ def test_scaled_dot_product_attention(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=True,
         q=q,
         k=k,
         v=v,
