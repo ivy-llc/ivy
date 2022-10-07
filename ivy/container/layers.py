@@ -1015,7 +1015,7 @@ class ContainerWithLayers(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "max_pool2d",
             x,
-            filters,
+            kernel,
             strides,
             padding,
             data_format=data_format,
