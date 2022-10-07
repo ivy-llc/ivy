@@ -23,9 +23,9 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-        
+
         return np_frontend.argmax(
-            self.data, 
+            self.data,
             axis=axis,
             out=out,
             keepdims=keepdims,
