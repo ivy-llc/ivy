@@ -127,3 +127,6 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
+
+def max_pool2d(input, ksize, strides, padding, data_format='NHWC', name=None):
+    return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
