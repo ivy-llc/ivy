@@ -1,5 +1,6 @@
 # global
 import ivy
+import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 def AddN(*, inputs, name="AddN"):
@@ -15,11 +16,12 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
+def Add(*, x, y, name="Add"):
+    return ivy.add(x, y)
+
+
 def ArgMax(*, input, dimension, output_type=None, name=None):
-    if output_type in ["uint16", "int16", "int32", "int64"]:
-        return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
-    else:
-        return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
+    return tf_frontend.argmax(input, dimension, output_type)
 
 
 def ArgMin(*, input, dimension, output_type=None, name=None):
@@ -66,6 +68,10 @@ def Cos(*, x, name="Cos"):
 
 def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
+
+
+def Div(*, x, y, name="Div"):
+    return ivy.divide(x, y)
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
@@ -139,7 +145,7 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 def Maximum(*, x, y, name="Maximum"):
-    return ivy.maximum(x, y)
+    return tf_frontend.maximum(x, y)
 
 
 def Minimum(*, x, y, name="Minimum"):
@@ -147,7 +153,7 @@ def Minimum(*, x, y, name="Minimum"):
 
 
 def Neg(*, x, name="Neg"):
-    return ivy.negative(x)
+    return tf_frontend.negative(x)
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
@@ -189,11 +195,11 @@ def Square(*, x, name="Square"):
 
 
 def Sub(*, x, y, name="Sub"):
-    return ivy.subtract(x, y)
+    return tf_frontend.subtract(x, y)
 
 
 def Tan(*, x, name="Tan"):
-    return ivy.tan(x)
+    return tf_frontend.tan(x)
 
 
 def Tanh(*, x, name="Tanh"):

@@ -2645,10 +2645,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]]),
+                      [1, 0, -1]],dtype=int32),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]])
+                      [1, 1, 1]]), dtype=int32
         }
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -2658,10 +2658,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]]),
+                      [1, 0, -1]],dtype=int32),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]])
+                      [1, 1, 1]]),dtype=int32
         }
 
         Examples
@@ -3575,8 +3575,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: true,
-            b: true
+            a: false,
+            b: false
         }
 
         With an `ivy.Container` instance and backend set as 'tensorflow':
@@ -3585,8 +3585,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: true,
-            b: true
+            a: false,
+            b: false
         }
         """
         return ContainerWithGeneral.static_supports_inplace_updates(
