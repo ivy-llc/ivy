@@ -40,6 +40,7 @@ def _compute_isclose_with_tol(input, other, rtol, atol):
     )
 
 
+@inputs_to_ivy_arrays
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_input = ivy.isfinite(a)
     finite_other = ivy.isfinite(b)
@@ -64,10 +65,12 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     return ivy.array(ret, dtype=ivy.bool)
 
 
+@inputs_to_ivy_arrays
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
 
+@inputs_to_ivy_arrays
 def clip(a, a_min=None, a_max=None, out=None):
     ivy.assertions.check_all_or_any_fn(
         a_min,
@@ -87,6 +90,7 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+@inputs_to_ivy_arrays
 def concatenate(arrays, axis=0, dtype=None):
     ret = ivy.concat(arrays, axis=axis)
     if dtype:
@@ -94,15 +98,18 @@ def concatenate(arrays, axis=0, dtype=None):
     return ret
 
 
+@inputs_to_ivy_arrays
 def dot(a, b, *, precision=None):
     a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
+@inputs_to_ivy_arrays
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
     return ivy.einsum(equation=optimize, *operands, out=out)
 
 
+@inputs_to_ivy_arrays
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:
@@ -113,10 +120,12 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     return ret.astype(dtype)
 
 
+@inputs_to_ivy_arrays
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
 
+@inputs_to_ivy_arrays
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:
@@ -127,10 +136,12 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ret.astype(dtype)
 
 
+@inputs_to_ivy_arrays
 def arctan(x):
     ret = ivy.atan(x)
     return ret
 
 
+@inputs_to_ivy_arrays
 def arctan2(x1, x2):
     return ivy.atan2(x1, x2)
