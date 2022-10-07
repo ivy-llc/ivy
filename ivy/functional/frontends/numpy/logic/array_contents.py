@@ -1,13 +1,16 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back, inputs_to_ivy_arrays
 
 
+@to_ivy_arrays_and_back
 def isneginf(x, out=None):
     isinf = ivy.isinf(x)
     neg_sign_bit = ivy.less(x, 0)
     return ivy.logical_and(isinf, neg_sign_bit, out=out)
 
 
+@to_ivy_arrays_and_back
 def isposinf(x, out=None):
     isinf = ivy.isinf(x)
     pos_sign_bit = ivy.bitwise_invert(ivy.less(x, 0))
@@ -23,6 +26,7 @@ def _compute_allclose_with_tol(a, b, rtol, atol):
     )
 
 
+@inputs_to_ivy_arrays
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_a = ivy.isfinite(a)
     finite_b = ivy.isfinite(b)
@@ -52,6 +56,7 @@ def _compute_isclose_with_tol(a, b, rtol, atol):
     )
 
 
+@inputs_to_ivy_arrays
 def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_a = ivy.isfinite(a)
     finite_b = ivy.isfinite(b)

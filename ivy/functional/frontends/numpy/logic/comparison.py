@@ -3,9 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back, inputs_to_ivy_arrays
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def equal(
     x1,
     x2,
@@ -27,6 +29,7 @@ def equal(
     return ret
 
 
+@to_ivy_arrays_and_back
 def array_equal(a1, a2, equal_nan=False):
     if not equal_nan:
         return ivy.array(ivy.array_equal(a1, a2))
@@ -36,6 +39,7 @@ def array_equal(a1, a2, equal_nan=False):
     return ivy.array(ivy.array_equal(a1[~a1nan], a2[~a2nan]))
 
 
+@to_ivy_arrays_and_back
 def greater(
     x1,
     x2,
@@ -57,6 +61,7 @@ def greater(
     return ret
 
 
+@to_ivy_arrays_and_back
 def greater_equal(
     x1,
     x2,
@@ -78,6 +83,7 @@ def greater_equal(
     return ret
 
 
+@to_ivy_arrays_and_back
 def less(
     x1,
     x2,
@@ -99,6 +105,7 @@ def less(
     return ret
 
 
+@to_ivy_arrays_and_back
 def less_equal(
     x1,
     x2,
@@ -120,6 +127,7 @@ def less_equal(
     return ret
 
 
+@to_ivy_arrays_and_back
 def not_equal(
     x1,
     x2,
@@ -141,6 +149,7 @@ def not_equal(
     return ret
 
 
+@inputs_to_ivy_arrays
 def array_equiv(a1, a2):
     if len(ivy.shape(a1)) < len(ivy.shape(a2)):
         a1 = ivy.broadcast_to(a1, ivy.shape(a2))

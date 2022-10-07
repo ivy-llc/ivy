@@ -8,22 +8,17 @@ from ndarray import ndarray
 
 
 def _numpy_to_ivy(x: Any) -> Any:
-    if isinstance(x, ivy.Array):
-        return x
-    else:
-        ivy.assertions.check_true(
-            isinstance(x, ndarray),
-            message="input should be an `ivy.Array` or `ndarray` instance",
-        )
+    if isinstance(x, ndarray):
         return x.data
+    else:
+        return x
 
 
 def _ivy_to_numpy(x: Any) -> Any:
-    ivy.assertions.check_true(
-        isinstance(x, ivy.Array),
-        message="input should be an `ivy.Array` instance",
-    )
-    return ndarray(x)
+    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        return ndarray(x)
+    else:
+        return x
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:

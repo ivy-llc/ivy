@@ -3,9 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def exp(
     x,
     /,
@@ -26,6 +28,7 @@ def exp(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def expm1(
     x,
     /,
@@ -46,6 +49,7 @@ def expm1(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def exp2(
     x,
     /,
@@ -66,6 +70,7 @@ def exp2(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def log(
     x,
     /,
@@ -86,6 +91,7 @@ def log(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def log10(
     x,
     /,
@@ -106,6 +112,7 @@ def log10(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def log2(
     x,
     /,
@@ -126,6 +133,7 @@ def log2(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def log1p(
     x,
     /,
@@ -146,6 +154,7 @@ def log1p(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def logaddexp(
     x1,
     x2,

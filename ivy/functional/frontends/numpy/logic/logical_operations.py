@@ -1,7 +1,9 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def logical_and(
     x1,
     x2,
@@ -23,6 +25,7 @@ def logical_and(
     return ret
 
 
+@to_ivy_arrays_and_back
 def logical_or(
     x1,
     x2,
@@ -44,6 +47,7 @@ def logical_or(
     return ret
 
 
+@to_ivy_arrays_and_back
 def logical_not(
     x,
     /,
@@ -63,6 +67,7 @@ def logical_not(
     return ret
 
 
+@to_ivy_arrays_and_back
 def logical_xor(
     x1,
     x2,

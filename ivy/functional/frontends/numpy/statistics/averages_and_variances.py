@@ -1,9 +1,11 @@
 # global
 import ivy
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def mean(
     x,
     /,

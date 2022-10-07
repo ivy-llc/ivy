@@ -1,7 +1,9 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def isfinite(
     x,
     /,
@@ -21,6 +23,7 @@ def isfinite(
     return ret
 
 
+@to_ivy_arrays_and_back
 def isinf(
     x,
     /,
@@ -40,6 +43,7 @@ def isinf(
     return ret
 
 
+@to_ivy_arrays_and_back
 def isnan(
     x,
     /,

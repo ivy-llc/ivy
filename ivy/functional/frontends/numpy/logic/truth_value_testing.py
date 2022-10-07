@@ -1,7 +1,9 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def all(
     a,
     axis=None,
@@ -16,6 +18,7 @@ def all(
     return ret
 
 
+@to_ivy_arrays_and_back
 def any(
     a,
     axis=None,

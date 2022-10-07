@@ -1,6 +1,8 @@
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def asarray(
     a,
     dtype=None,

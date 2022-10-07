@@ -1,7 +1,9 @@
 # local
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def transpose(array, /, *, axes=None):
     if axes is None:
         axes = list(range(len(array.shape)))[::-1]
@@ -10,5 +12,6 @@ def transpose(array, /, *, axes=None):
     return ivy.permute_dims(array, axes, out=None)
 
 
+@to_ivy_arrays_and_back
 def swapaxes(a, axis1, axis2):
     return ivy.swapaxes(a, axis1, axis2)

@@ -1,7 +1,9 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def add(
     x1,
     x2,
@@ -23,6 +25,7 @@ def add(
     return ret
 
 
+@to_ivy_arrays_and_back
 def subtract(
     x1,
     x2,
@@ -44,6 +47,7 @@ def subtract(
     return ret
 
 
+@to_ivy_arrays_and_back
 def divide(
     x1,
     x2,
@@ -68,6 +72,7 @@ def divide(
 true_divide = divide
 
 
+@to_ivy_arrays_and_back
 def multiply(
     x1,
     x2,
@@ -89,6 +94,7 @@ def multiply(
     return ret
 
 
+@to_ivy_arrays_and_back
 def vdot(
     a,
     b,
@@ -97,6 +103,7 @@ def vdot(
     return ivy.multiply(a, b).sum()
 
 
+@to_ivy_arrays_and_back
 def positive(
     x,
     /,
@@ -116,6 +123,7 @@ def positive(
     return ret
 
 
+@to_ivy_arrays_and_back
 def negative(
     x,
     /,

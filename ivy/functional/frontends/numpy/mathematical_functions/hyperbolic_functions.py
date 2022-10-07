@@ -1,9 +1,11 @@
 # global
 import ivy
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def sinh(
     x,
     /,
@@ -24,6 +26,7 @@ def sinh(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def cosh(
     x,
     /,
@@ -44,6 +47,7 @@ def cosh(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def tanh(
     x,
     /,
@@ -65,6 +69,7 @@ def tanh(
 
 # arcsinh
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def arcsinh(
     x,
     /,
@@ -85,6 +90,7 @@ def arcsinh(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def arccosh(
     x,
     /,
@@ -105,6 +111,7 @@ def arccosh(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def arctanh(
     x,
     /,

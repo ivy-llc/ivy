@@ -1,7 +1,9 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def correlate(a, v, mode=None, *, old_behavior=False):
     dtypes = [x.dtype for x in [a, v]]
     mode = mode if mode is not None else "valid"
