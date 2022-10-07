@@ -93,7 +93,10 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.nd
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
-    return to_numpy(x).item()
+    ret = to_numpy(x).item()
+    if x.dtype == tf.bfloat16:
+        return float(ret)
+    return ret
 
 
 def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
@@ -106,10 +109,10 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=None)
+    return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
 def gather_nd(
@@ -123,7 +126,11 @@ def gather_nd(
 
 
 def get_num_dims(x, /, *, as_array=False):
-    return tf.shape(tf.shape(x))[0] if as_array else int(tf.shape(tf.shape(x)))
+    return (
+        tf.cast(tf.shape(tf.shape(x))[0], tf.int64)
+        if as_array
+        else int(tf.shape(tf.shape(x)))
+    )
 
 
 def inplace_arrays_supported():
@@ -159,10 +166,11 @@ def inplace_increment(
         else:
             x = ivy.Array(x_native)
     else:
+        x_native += val_native
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x._data = x_native
         else:
-            x = ivy.Array(val_native)
+            x = ivy.Array(x_native)
     return x
 
 

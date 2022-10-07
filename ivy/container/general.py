@@ -472,10 +472,9 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
         >>> print(y)
         {
@@ -542,7 +541,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -717,8 +716,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Decrement by a value
-        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
-                              b=ivy.array([0., -25., 50.]))
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
         {
@@ -795,7 +793,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
                                b=ivy.array([1.5, -0.3, 0]),\
                                c=ivy.array([-4.7, -5.4, 7.5]))
@@ -858,8 +856,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Increment by a value
-        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
-                              b=ivy.array([0., -25., 50.]))
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
         {
@@ -936,7 +933,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
                                b=ivy.array([1.5, -0.3, 0]),\
                                c=ivy.array([-4.7, -5.4, 7.5]))
@@ -952,93 +949,6 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_inplace_increment(
             self,
             val,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    @staticmethod
-    def static_supports_inplace_update(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.supports_inplace_update. This
-        method simply wrapsthe function, and so the docstring for
-        ivy.supports_inplace_update also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container to check for inplace support for.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of whether or not inplace operations are supported for x and
-            its leaves.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "supports_inplace_update",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def supports_inplace_update(
-        self: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.supports_inplace_update. This
-        method simply wrapsthe function, and so the docstring for
-        ivy.supports_inplace_update also applies to this methodwith minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container to check for inplace support for.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            True if support, raises exception otherwise`
-        """
-        return self.static_supports_inplace_update(
-            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1177,7 +1087,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
@@ -1188,7 +1098,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([True, False, False, False])
         }
 
-        With multiple :code:`ivy.Container` input:
+        With multiple :class:`ivy.Container` input:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
                                 b=ivy.native_array([1, 0, 0, 1]))
@@ -1257,7 +1167,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
@@ -1277,7 +1187,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
 
-        With multiple :code:`ivy.Container` instances:
+        With multiple :class:`ivy.Container` instances:
 
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
                                 b=ivy.array([1, 2, 3]))
@@ -1447,7 +1357,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1468,6 +1379,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1479,8 +1392,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            A container for writing the result to. It must have a shapethat the inputs 
-            broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
 
         Returns
@@ -1491,7 +1404,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
                             b = ivy.array([4., 5., 6.]))
@@ -1503,7 +1416,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([5., 6.])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
         
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
                             b = ivy.array([4., 5., 6.]))
@@ -1520,6 +1433,7 @@ class ContainerWithGeneral(ContainerBase):
             params,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1532,7 +1446,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1553,6 +1468,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1565,8 +1482,8 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            A container for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -1591,6 +1508,7 @@ class ContainerWithGeneral(ContainerBase):
             self,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1639,7 +1557,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
@@ -1769,6 +1687,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an empty array
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -1783,6 +1702,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         scatter into a container
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                   b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -1864,6 +1784,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an empty container
+
         >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
                         b=ivy.array([[5],[1],[2]]))
         >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),\
@@ -1878,6 +1799,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         scatter into a container.
+
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
@@ -2483,7 +2405,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2492,7 +2415,8 @@ class ContainerWithGeneral(ContainerBase):
             b: true
         }
 
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2501,7 +2425,8 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
 
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
         >>> print(y)
@@ -2631,7 +2556,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
                             b=ivy.array([1, -1, 0, 0]))
@@ -2653,7 +2578,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` static method:
+        With one :class:`ivy.Container` static method:
         
         >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
                             b=ivy.array([-1, 0, 1, 1, 1, 0]))
@@ -2711,7 +2636,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
                     b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
@@ -2720,10 +2645,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]]),
+                      [1, 0, -1]],dtype=int32),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]])
+                      [1, 1, 1]]), dtype=int32
         }
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -2733,15 +2658,15 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]]),
+                      [1, 0, -1]],dtype=int32),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]])
+                      [1, 1, 1]]),dtype=int32
         }
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
                             b=ivy.array([-1, 0, 1, 1]))
@@ -2799,7 +2724,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
         >>> y = ivy.Container.static_to_scalar(x)
@@ -2808,13 +2733,6 @@ class ContainerWithGeneral(ContainerBase):
             a: -1,
             b: 3
         }
-
-        >>> print(ivy.is_int_dtype(y))
-        {
-            a: true,
-            b: true
-        }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "to_scalar",
@@ -2862,7 +2780,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instance:
 
 
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
@@ -2873,9 +2791,7 @@ class ContainerWithGeneral(ContainerBase):
             a: 1,
             b: 0,
             c: -1
-        }
-
-
+        }      
         """
         return self.static_to_scalar(
             self,
@@ -2922,7 +2838,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
@@ -2976,7 +2892,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
@@ -3444,7 +3360,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
@@ -3514,7 +3430,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
@@ -3585,6 +3501,7 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With `ivy.Container` input and backend set as 'numpy':
+
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
@@ -3594,6 +3511,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With `ivy.Container` input and backend set as 'tensorflow':
+
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
@@ -3657,8 +3575,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: true,
-            b: true
+            a: false,
+            b: false
         }
 
         With an `ivy.Container` instance and backend set as 'tensorflow':
@@ -3667,8 +3585,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: true,
-            b: true
+            a: false,
+            b: false
         }
         """
         return ContainerWithGeneral.static_supports_inplace_updates(

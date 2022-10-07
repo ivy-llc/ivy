@@ -169,7 +169,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([-1., 1., 4., 0.8])
         >>> y = x.asin()
@@ -575,7 +575,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([1., 0., 2.,])
         >>> y = x.cos()
@@ -658,7 +658,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([2., 2., 2.])
@@ -666,7 +666,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 3.5, 4.5])
 
-        With mixed :code:`ivy.Array` and `ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and `ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.native_array([2., 2., 2.])
@@ -708,7 +708,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([1., 7., 9.])
@@ -716,7 +716,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([False, True, True])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([2.5, 7.3, 9.375])
         >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
@@ -724,7 +724,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([True, False,  True])
 
-        With mixed :code:`ivy.Array` and `float` inputs:
+        With mixed :class:`ivy.Array` and `float` inputs:
 
         >>> x1 = ivy.array([2.5, 7.3, 9.375])
         >>> x2 = 7.3
@@ -732,7 +732,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([False, True, False])
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([3., 1., 0.9])
         >>> x2 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
@@ -851,7 +851,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([13., 7., 8.])
         >>> x2 = ivy.array([3., 2., 7.])
@@ -859,7 +859,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([4., 3., 1.])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([13., 7., 8.])
         >>> x2 = ivy.native_array([3., 2., 7.])
@@ -1141,6 +1141,27 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([1.39, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 1.61, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                           [+0, -1.0, -5, float('-inf')]])
+        >>> y = x.log()
+        >>> print(y)
+        ivy.array([[nan, 0., 1.61, inf],
+                   [-inf, nan, nan, nan]])
         """
         return ivy.log(self._data, out=out)
 
@@ -1226,7 +1247,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log10()
@@ -1388,12 +1409,12 @@ class ArrayWithElementwise(abc.ABC):
         in the standard.
 
         Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
         instances in place of any of the arguments.
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([False, 3, 0])
         >>> y = ivy.array([2, True, False])
@@ -1474,6 +1495,71 @@ class ArrayWithElementwise(abc.ABC):
             must have a data type determined by :ref:`type-promotion`.
         """
         return ivy.multiply(self._data, x2, out=out)
+
+    def maximum(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        use_where: bool = False,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        ivy.Array instance method variant of ivy.maximum.
+        This method simply wraps the function, and so the docstring
+        for ivy.maximum also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array containing elements to maximum threshold.
+        x2
+            Tensor containing maximum values, must be broadcastable to x1.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of x1, but clipped to not be lower than the x2
+            values.
+        """
+        return ivy.maximum(self, x2, use_where=use_where, out=out)
+
+    def minimum(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        use_where: bool = False,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        Parameters
+        ----------
+        self
+            Input array containing elements to minimum threshold.
+        x2
+            Tensor containing minimum values, must be broadcastable to x1.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of x1, but clipped to not exceed the x2 values.
+        """
+        return ivy.minimum(self, x2, use_where=use_where, out=out)
 
     def negative(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -1621,7 +1707,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 5., 15.])
         >>> x2 = ivy.array([3., 2., 4.])
@@ -1629,7 +1715,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([2., 1., 3.])
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([11., 4., 18.])
         >>> x2 = ivy.native_array([2., 5., 8.])
@@ -1661,7 +1747,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])
         >>> y = x.round()
@@ -2041,7 +2127,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x=ivy.array([90,180,270,360])
         >>> y=x.deg2rad()
@@ -2072,7 +2158,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x=ivy.array([1,5,8,10])
         >>> y=x.rad2deg()
@@ -2115,7 +2201,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
         >>> x2 = ivy.array([2., -2., 2.])

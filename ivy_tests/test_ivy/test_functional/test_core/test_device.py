@@ -86,7 +86,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if as_variable:
+        if as_variable and ivy.is_float_dtype(dtype[0]):
             x = ivy.variable(x)
 
         ret = ivy.dev(x)
@@ -121,7 +121,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if as_variable:
+        if as_variable and ivy.is_float_dtype(dtype[0]):
             x = ivy.variable(x)
 
         native_device = ivy.dev(x, as_native=True)
@@ -223,7 +223,7 @@ def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, str
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
     x = ivy.asarray(x)
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         x = ivy.variable(x)
 
     # create a dummy array for out that is broadcastable to x
@@ -295,7 +295,7 @@ def test_split_func_call(
     x2 = np.random.uniform(size=shape).astype(dtype[0])
     x1 = ivy.asarray(x1)
     x2 = ivy.asarray(x2)
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
 
@@ -339,7 +339,7 @@ def test_split_func_call_with_cont_input(
     x2 = ivy.asarray(x2, device=device)
     # inputs
 
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         in0 = ivy.Container(cont_key=ivy.variable(x1))
         in1 = ivy.Container(cont_key=ivy.variable(x2))
     else:
