@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
@@ -367,7 +367,7 @@ def test_torch_arccos(
         allow_inf=False,
         shared_dtype=True,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.subtract"
     ),

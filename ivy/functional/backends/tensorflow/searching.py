@@ -3,6 +3,7 @@ from numbers import Number
 from typing import Optional, Union, Tuple
 
 import tensorflow as tf
+from tensorflow.python.framework.dtypes import DType
 
 import ivy
 
@@ -29,9 +30,12 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: DType = tf.dtypes.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
+    if dtype is not None:
+        return tf.convert_to_tensor(ret, dtype=dtype)
     return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
