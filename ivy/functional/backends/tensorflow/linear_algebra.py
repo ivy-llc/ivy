@@ -393,11 +393,12 @@ matrix_rank.unsupported_dtypes = (
 
 
 def matrix_transpose(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.constant, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.swapaxes(x, -1, -2)
+    out: Optional[Union[tf.constant, tf.Variable]] = None,
+) -> Union[tf.constant, tf.Variable]:
+    res = tf.linalg.matrix_transpose(x)
+    return res
 
 
 matrix_transpose.unsupported_dtypes = (

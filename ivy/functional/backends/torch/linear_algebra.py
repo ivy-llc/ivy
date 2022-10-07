@@ -245,10 +245,14 @@ matrix_rank.support_native_out = True
 
 
 def matrix_transpose(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, 
+    axis1: int = 0, 
+    axis2: int = 1,
+    /, *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.swapaxes(x, -1, -2)
-
+    res = torch.transpose(x, axis1, axis2)
+    return res
 
 def outer(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None

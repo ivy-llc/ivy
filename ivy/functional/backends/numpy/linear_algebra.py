@@ -214,8 +214,15 @@ matrix_rank.unsupported_dtypes = (
 )
 
 
-def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.swapaxes(x, -1, -2)
+def matrix_transpose(
+    x: np.ndarray,
+    *,
+    axis1: int = 1,
+    axis2: int = 2,
+    out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
+    ret = x.transpose(axis1, axis2)
+    return ret
 
 
 def outer(

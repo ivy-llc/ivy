@@ -1131,14 +1131,61 @@ def matrix_transpose(
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result in. Must have the same number
+        of dimensions as the function output.
 
     Returns
     -------
     ret
         an array containing the transpose for each matrix and having shape
         ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.]])
+    >>> t = ivy.matrix_transpose(x)
+    >>> print(t)
+    ivy.array([[1., 3.],\
+               [2., 4.])
+    
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.],\
+                       [5., 6.]])
+    >>> t = ivy.matrix_transpose(x)
+    >>> print(t)
+    ivy.array([[1., 3., 5.],\
+               [2., 4., 6.]])
+
+    With :code:`ivy.Container` inputs:
+    >>> x = ivy.Container(\
+            a = ivy.array([[7, 1, 2],\
+                           [1, 3, 5],\
+                           [0, 7, 4]]),\
+            b = ivy.array([[4, 3, 2],\
+                           [1, 9, 5],\
+                           [7, 0, 6]])\
+        )
+    >>> t = ivy.diagonal(x)
+    >>> print(t)
+    {
+        a: ivy.array([[7, 1, 0],\
+                      [1, 3, 7],\
+                      [2, 5, 4]]),
+        b: ivy.array([[4, 1, 7],\
+                      [3, 9, 5],\
+                      [2, 5, 6]]),
+    }
 
 
     This function conforms to the `Array API Standard

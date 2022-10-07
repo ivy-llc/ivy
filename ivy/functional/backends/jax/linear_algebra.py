@@ -238,8 +238,13 @@ matrix_rank.unsupported_dtypes = (
 )
 
 
-def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.swapaxes(x, -1, -2)
+def matrix_transpose(x: JaxArray,
+    /,
+    *, 
+    out: Optional[JaxArray] = None
+    ) -> JaxArray:
+    res = jnp.transpose(x)
+    return res
 
 
 matrix_transpose.unsupported_dtypes = ("float16", "int8")
