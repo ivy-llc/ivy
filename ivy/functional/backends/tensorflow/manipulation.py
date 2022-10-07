@@ -8,31 +8,6 @@ from typing import Union, Tuple, Optional, List, Sequence
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 
-def _flatten(x, start_dim=0, end_dim=-1):
-    if start_dim  not in range(- len(x.shape), len(x.shape)):
-        raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
-            )
-    if end_dim  not in range(- len(x.shape), len(x.shape)):        
-        raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
-            )
-    if start_dim < 0:
-        start_dim = len(x.shape) + start_dim
-    if end_dim < 0:
-        end_dim = len(x.shape) + end_dim
-    c = 1
-    for i in range(start_dim, end_dim + 1):
-        c *= x.shape[i]
-    lst = [c]
-    if start_dim != 0:
-        for i in range(0, start_dim):
-            lst.insert(i, x.shape[i])
-    for i in range(end_dim + 1, len(x.shape)):
-        lst.insert(i, x.shape[i])
-    return tf.reshape(x, tuple(lst))
   
 # Array API Standard #
 # -------------------#
@@ -344,12 +319,3 @@ def unstack(
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
 
-
-def flatten(
-    x: Union[tf.Tensor, tf.Variable],
-    start_dim: int,
-    end_dim: int,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return _flatten(x, start_dim, end_dim)

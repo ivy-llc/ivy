@@ -6,6 +6,7 @@ from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
+from numpy import prod
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
@@ -1442,9 +1443,10 @@ def zero_pad(
 @handle_exceptions
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     start_dim: int,
     end_dim: int,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -1544,5 +1546,38 @@ def flatten(
         b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
     }]
     """
-    return current_backend(x).flatten(
-        x, start_dim=start_dim, end_dim=end_dim, out=out)
+    if start_dim == end_dim and len(x.shape) != 0:
+        return x
+    if start_dim not in range(- len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+        )
+    if end_dim not in range(- len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+        )
+    if start_dim is None:
+        start_dim = 0
+    if end_dim is None:
+        end_dim = x.shape[-1]
+    if start_dim < 0:
+        start_dim = len(x.shape) + start_dim
+    if end_dim < 0:
+        end_dim = len(x.shape) + end_dim
+    # c = 1
+    # for i in range(start_dim, end_dim + 1):
+    #     c *= x.shape[i]
+    # lst = [c]
+    # if start_dim != 0:
+    #     for i in range(0, start_dim):
+    #         lst.insert(i, x.shape[i])
+    # for i in range(end_dim + 1, len(x.shape)):
+    #     lst.insert(i, x.shape[i])
+
+    x_shape = x.shape
+    new_shape = tuple(x_shape[:start_dim])\
+        + (int(prod(x_shape[start_dim:end_dim + 1])),)\
+        + tuple(x_shape[end_dim + 1:])
+    return ivy.reshape(x, new_shape)
