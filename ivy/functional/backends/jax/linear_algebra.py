@@ -7,7 +7,7 @@ from collections import namedtuple
 import ivy
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-
+from ivy import promote_types_of_inputs
 
 # Array API Standard #
 # -------------------#
@@ -41,6 +41,7 @@ def cross(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
@@ -174,11 +175,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple):
+    if not isinstance(axis, tuple) and axis:
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -370,6 +371,7 @@ def tensordot(
     axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes)
 
 
@@ -391,6 +393,7 @@ trace.unsupported_dtypes = ("float16", "bfloat16")
 def vecdot(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes=(axis, axis))
 
 
