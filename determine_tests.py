@@ -56,6 +56,9 @@ if __name__ == "__main__":
                 tests_to_run.update(tests_file[line])
         break
 
+    with open("tests.pkl", "wb") as f:
+        pickle.dump(tests, f)
+
     # with open("tests_to_run", "w") as f:
     #     for test in tests_to_run:
     #         f.write(test + "\n")
@@ -64,12 +67,10 @@ if __name__ == "__main__":
     failed = False
     for test in tests_to_run:
         ret = os.system(
-            f'docker run --rm -it -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest {test}'  # noqa
+            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
         )
         if ret != 0:
             failed = True
 
     if failed:
         exit(1)
-    # print(tests_to_run)
-    # Output Tests to a File

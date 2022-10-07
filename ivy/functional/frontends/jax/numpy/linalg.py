@@ -33,3 +33,7 @@ def qr(a, mode="reduced"):
 
 def eigvals(a):
     return ivy.eigh(a)
+
+
+def cholesky(a):
+    return ivy.cholesky(a)
