@@ -38,7 +38,6 @@ def test_numpy_empty(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -78,7 +77,6 @@ def test_numpy_empty_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -115,7 +113,6 @@ def test_numpy_eye(
     k,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -146,7 +143,6 @@ def test_numpy_identity(
     n,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -181,7 +177,6 @@ def test_numpy_ones(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -220,7 +215,6 @@ def test_numpy_ones_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -258,7 +252,6 @@ def test_numpy_zeros(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -297,7 +290,6 @@ def test_numpy_zeros_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -348,7 +340,6 @@ def test_numpy_full(
     dtype_and_fill_value,
     # dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     dtype, fill_value = dtype_and_fill_value
@@ -393,7 +384,6 @@ def test_numpy_full_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     dtype, fill_value = dtype_and_fill_value

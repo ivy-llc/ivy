@@ -85,7 +85,7 @@ def broadcast_to(
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
-        from_ = from_.dtype
+        from_ = ivy.as_ivy_dtype(from_.dtype)
     from_str = str(from_)
     to_str = str(to)
     if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
@@ -103,6 +103,8 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> boo
     if "uint" in from_str and ("int" in to_str and "u" not in to_str):
         if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
             return False
+    if "float16" in from_str and "float16" in to_str:
+        return from_str == to_str
     return True
 
 
