@@ -377,7 +377,7 @@ def x_and_filters(
     else:
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-            x_dim.append(draw(st.integers(min_x, 5)))
+            x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
         if not transpose:
