@@ -6,8 +6,9 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
+
 os.system(
-    "docker run --rm -it -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings "
+    "docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings "
     "ivy_tests/test_ivy/ --my_test_dump true > test_names "
 )  # noqa
 test_names = []
