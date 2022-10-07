@@ -874,3 +874,177 @@ def array_and_broadcastable_shape(draw, dtype):
         label="shape",
     )
     return x, to_shape
+
+
+@st.composite
+def dtype_values_axes_offsets(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=5,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+    num_axes=1,
+    allow_negative_axes=True,
+    max_axis=None,
+    min_axis=None,
+    axes_are_within_shape=True,
+    num_offsets=1,
+    offsets_are_within_shape=True,
+    allow_negative_offset=True,
+    min_offset=None,
+    max_offset=None,
+):
+    """Samples a dtype and an array along with some axes and some offsets which
+    are all within the array or are -1.
+
+    Parameters
+    ----------
+    available_dtypes
+        The dtypes that are permitted for the array, expected to be
+        `helpers.get_dtypes("valid") or similar.
+
+    min_num_dims
+        The minimum number of dimensions the array can have. Defaults to 1
+
+    max_num_dims
+        The maximum number of dimensions the array can have. Defaults to 5
+
+    min_dim_size
+        The minimum size of any dimension in the array. Defaults to 1
+
+    max_dim_size
+        The maximum size of any dimension in the array. Defaults to 5
+
+    allow_negative_end_axis
+        If true, the last axis can be drawn as -1.
+
+    Returns
+    -------
+    ret
+        A 4-tuple (dtype, array, start_dim, end_dim) where dtype is
+        one of the available dtypes, the array is an array of values
+        and start_dim and end_dim are legal dimensions contained
+        within the array, with either start_dim <= end_dim or
+        end_dim = 1.
+
+    """
+
+    # Sanity check the inputs
+    if min_axis is not None and max_axis is not None:
+        assert (
+            min_axis <= max_axis - num_axes
+        ), "Axis bounds are too tight for the required number of axes."
+    if min_offset is not None and max_offset is not None:
+        assert (
+            min_offset <= max_offset - num_offsets
+        ), "Offset bounds are too tight for the required number of offsets."
+    if max_axis is not None and max_axis < 0:
+        assert (
+            allow_negative_axes
+        ), "Max axis is negative, but negative axes have been disallowed."
+    if max_offset is not None and max_offset < 0:
+        assert (
+            allow_negative_offset
+        ), "Max offset is negative, but negative offsets have been disallowed"
+
+    num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    shape = tuple(
+        draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+        for _ in range(num_dims)
+    )
+
+    dtype, values = draw(
+        dtype_and_values(
+            available_dtypes=available_dtypes,
+            shape=shape,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
+        )
+    )
+
+    values = np.array(values)
+
+    axes = []
+
+    # We want to avoid a situation where repeated filtering
+    # causes Hypothesis to give up trying to randomly find values
+    # if possible.
+
+    if num_axes == num_dims:
+        if min_axis is not None and max_axis is not None:
+            assert (
+                min_axis <= 0 and max_axis >= num_dims
+            ), "Tried to draw all axes when bounds don't allow this."
+        axes = [i for i in range(num_dims)]
+
+    min_axis_value = min_axis
+    if axes_are_within_shape:
+        if allow_negative_axes:
+            if min_axis is not None:
+                min_axis_value = max(min_axis, -num_dims)
+            else:
+                min_axis_value = -num_dims
+        else:
+            if min_axis is not None:
+                min_axis_value = max(min_axis, 0)
+            else:
+                min_axis_value = 0
+
+    max_axis_value = max_axis
+    if axes_are_within_shape:
+        if max_axis is not None:
+            max_axis_value = min(max_axis, num_dims - 1)
+        else:
+            max_axis_value = num_dims - 1
+
+    else:
+        for _ in range(num_axes):
+            new_value = draw(
+                st.integers(min_value=min_axis_value, max_value=max_axis_value).filter(
+                    lambda x: x not in axes
+                )
+            )
+            axes.append(new_value)
+
+        axes.sort()
+
+    # GETTING OFFSETS
+    offsets = []
+
+    min_offset_value = min_offset
+    if offsets_are_within_shape:
+        if allow_negative_offset:
+            if min_offset is not None:
+                min_offset_value = max(min_offset, -min(ivy.shape(values)))
+            else:
+                min_offset_value = -min(ivy.shape(values))
+        else:
+            if min_offset is not None:
+                min_offset_value = max(min_offset, 0)
+            else:
+                min_offset = 0
+
+    max_offset_value = max_offset
+    if offsets_are_within_shape:
+        if max_offset is not None:
+            max_offset_value = min(max_offset, min(ivy.shape(values)))
+        else:
+            max_offset_value = min(ivy.shape(values))
+
+    for _ in range(num_offsets):
+        new_value = draw(
+            st.integers(min_value=min_offset_value, max_value=max_offset_value).filter(
+                lambda x: x not in offsets
+            )
+        )
+        offsets.append(new_value)
+
+    offsets.sort()
+
+    return dtype, values, axes, offsets
