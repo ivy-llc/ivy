@@ -689,11 +689,17 @@ def test_slogdet(
 @st.composite
 def _get_first_matrix(draw):
     # batch_shape, random_size, shared
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
@@ -710,11 +716,16 @@ def _get_first_matrix(draw):
 @st.composite
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
@@ -757,8 +768,8 @@ def test_solve(
         fn_name="solve",
         rtol_=1e-1,
         atol_=1e-1,
-        x1=x1[0],
-        x2=x2[0],
+        x1=x1,
+        x2=x2,
     )
 
 
