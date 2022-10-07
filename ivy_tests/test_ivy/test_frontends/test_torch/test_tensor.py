@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -25,6 +25,7 @@ def test_torch_instance_add(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -64,6 +65,7 @@ def test_torch_instance_reshape(
     native_array,
 ):
     input_dtype, x = dtype_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -99,6 +101,7 @@ def test_torch_instance_sin(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -132,6 +135,7 @@ def test_torch_instance_sin_(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
