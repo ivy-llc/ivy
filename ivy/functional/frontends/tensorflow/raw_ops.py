@@ -74,6 +74,12 @@ def Div(*, x, y, name="Div"):
     return ivy.divide(x, y)
 
 
+def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
+
+
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
     if incompatible_shape_error:
         return ivy.equal(x, y)
