@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 def matrix_rank(a, tol=None, valiate_args=False, name=None):
@@ -19,6 +20,7 @@ def eigvalsh(tensor, name=None):
 
 
 def solve(x, y):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.solve(x, y)
 
 
@@ -34,6 +36,7 @@ def slogdet(input, name=None):
 
 
 def cholesky_solve(chol, rhs, name=None):
+    chol, rhs = promote_types_of_tensorflow_inputs(chol, rhs)
     y = ivy.solve(chol, rhs)
     return ivy.solve(ivy.matrix_transpose(chol), y)
 
@@ -43,6 +46,7 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 
 
 def tensordot(a, b, axes, name=None):
+    a, b = promote_types_of_tensorflow_inputs(a, b)
     return ivy.tensordot(a, b, axes)
 
 
