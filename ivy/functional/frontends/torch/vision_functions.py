@@ -80,22 +80,11 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
-def pad(input, padding):
-    """
-    This functions replicates zero padding for 4D, 3D and 2D images.
-    Parameters
-    ----------
-    input: input image.
-    padding: number of padding layers required.
-
-    Returns: padded image.
-    -------
-
-    """
+def pad(input, padding, value=0):
     #  derive image shape
     input_shape = ivy.shape(input)
 
-    #  4D input
+    # 4D input
     if len(input_shape) == 4:
         #  derive individual dimensions
         b = input_shape[0]
@@ -103,44 +92,82 @@ def pad(input, padding):
         h = input_shape[2]
         w = input_shape[3]
 
-        # create a placeholder version of padded image
-        padded = ivy.zeros((b, c, h + (2 * padding), w + (2 * padding)))
+        if len(padding) % 2 != 0:
+            raise RuntimeError('Padding length must be divisible by 2')
 
-        #  iterate over total number of images in the batch
-        for i in range(b):
-            padded[i, :, padding:-padding, padding:-padding] = input[i]
+        elif len(padding) > 4:
+            raise RuntimeError('Padding length too large')
 
-        return padded
+        elif len(padding) == 2:
+            padded = ivy.ones((b, c, h, w + sum(padding))) * value
 
-    #  3D input
+            for i in range(b):
+                padded[i, :, :, padding[0]:-padding[1]] = input[i]
+            return padded
+
+        elif len(padding) == 4:
+            padded = ivy.ones((b, c, h + sum(padding[:1:-1]),
+                              w + sum(padding[:2]))) * value
+
+            for i in range(b):
+                padded[i, :, padding[-1]:-padding[-2], padding[0]:-padding[1]] = input[i]
+
+            return padded
+
+    # 3D input
     elif len(input_shape) == 3:
+
         #  derive individual dimensions
         c = input_shape[0]
         h = input_shape[1]
         w = input_shape[2]
 
-        # create a placeholder version of padded image
-        padded = ivy.zeros((c, h + (2 * padding), w + (2 * padding)))
+        if len(padding) % 2 != 0:
+            raise RuntimeError('Padding length must be divisible by 2')
 
-        #  iterate over total number of images in the batch
-        for i in range(c):
-            padded[i, padding:-padding, padding:-padding] = input[i]
+        elif len(padding) > 4:
+            raise RuntimeError('Padding length too large')
 
-        return padded
+        elif len(padding) == 2:
+            padded = ivy.ones((c, h, w + sum(padding))) * value
 
-    #  2D input
+            for i in range(c):
+                padded[i, :, padding[0]:-padding[1]] = input[i]
+
+            return padded
+
+        elif len(padding) == 4:
+            padded = ivy.ones((c, h + sum(padding[:1:-1]),
+                              w + sum(padding[:2]))) * value
+
+            for i in range(c):
+                padded[i, padding[-1]:-padding[-2], padding[0]:-padding[1]] = input[i]
+
+            return padded
+
+    # 2D input
     elif len(input_shape) == 2:
+
         #  derive individual dimensions
         h = input_shape[0]
         w = input_shape[1]
 
-        # create a placeholder version of padded image
-        padded = ivy.zeros((h + (2 * padding), w + (2 * padding)))
+        if len(padding) % 2 != 0:
+            raise RuntimeError('Padding length must be divisible by 2')
 
-        #  iterate over total number of images in the batch
-        padded[padding:-padding, padding:-padding] = input
+        elif len(padding) > 4:
+            raise RuntimeError('Padding length too large')
 
-        return padded
+        elif len(padding) == 2:
+            padded = ivy.ones((h, w + sum(padding))) * value
 
-    else:
-        print(f'Pad expects one of either 4D, 3D or 2D input but got input of size {input_shape}')
+            padded[:, padding[0]:-padding[1]] = input
+
+            return padded
+
+        elif len(padding) == 4:
+            padded = ivy.ones((h + sum(padding[:1:-1]), w + sum(padding[:2]))) * value
+
+            padded[padding[-1]:-padding[-2], padding[0]:-padding[1]] = input
+
+            return padded
