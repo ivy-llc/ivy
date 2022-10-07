@@ -6,21 +6,21 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
-# os.system("pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names") # noqa
+os.system(
+    "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"
+)  # noqa
 test_names = []
-# with open("test_names") as f:
-#     i = 0
-#     for line in f:
-#         i += 1
-#         if i <= 5:
-#             continue
-#         test_names.append(line[:-1])
-#
-# test_names = test_names[:-3]
+with open("test_names") as f:
+    i = 0
+    for line in f:
+        i += 1
+        if i <= 5:
+            continue
+        test_names.append(line[:-1])
 
-test_names = [
-    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs",
-]
+test_names = test_names[:-3]
+
+
 directories = [
     "ivy",
     "ivy/array",
