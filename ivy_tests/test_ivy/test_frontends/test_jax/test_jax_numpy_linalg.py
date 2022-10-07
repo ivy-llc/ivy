@@ -122,6 +122,8 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
         frontend="jax",
         fn_tree="numpy.linalg.inv",
         a=np.asarray(x[0], dtype=dtype[0]),
