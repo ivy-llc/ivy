@@ -453,6 +453,12 @@ which itself is implemented as follows:
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
     def reshape(x, /, newshape, order="C"):
         return ivy.reshape(x, shape=newshape)
+        
+The :code:`np_frontend` above is a reference to the numpy frontend of ivy:
+:code:`ivy.functional.frontends.numpy`. 
+So when implementing other instance methods, please import the corrisponding ivy frontend, 
+in addition to importing ivy itself, like: 
+    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
