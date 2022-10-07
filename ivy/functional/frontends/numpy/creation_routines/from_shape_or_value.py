@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.functional.frontends.numpy import outputs_to_numpy_arrays
+from ivy.functional.frontends.numpy.func_wrapper import outputs_to_numpy_arrays
 
 
 @outputs_to_numpy_arrays

@@ -4,7 +4,7 @@ from typing import Callable, Any
 
 # local
 import ivy
-from ndarray import ndarray
+from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 
 
 def _numpy_to_ivy(x: Any) -> Any:
