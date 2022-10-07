@@ -1,13 +1,23 @@
 # local
 import ivy
 
+# global
+import math
+
 
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
 
 def chunk(input, chunks, dim=0):
-    return ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
+    shape = ivy.shape(input)[dim]
+    if chunks > shape:
+        split_size = shape
+    else:
+        split_size = math.ceil(shape / chunks) if shape % chunks != 0 else chunks
+    return ivy.split(
+        input, num_or_size_splits=split_size, axis=dim, with_remainder=True
+    )
 
 
 def concat(tensors, dim=0, *, out=None):
