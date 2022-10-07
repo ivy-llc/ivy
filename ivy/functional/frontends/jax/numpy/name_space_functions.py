@@ -129,3 +129,6 @@ def arctan(x):
 
 def arctan2(x1, x2):
     return ivy.atan2(x1, x2)
+
+def argmin(a, axis=None, out=None, keepdims=None):
+    return ivy.argmin(a)
