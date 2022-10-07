@@ -54,6 +54,7 @@ det.unsupported_dtypes = (
     "bfloat16",
 )
 
+
 def diag(
     x: JaxArray,
     /,
@@ -63,13 +64,13 @@ def diag(
     align: Optional[str] = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
-    out:Optional[JaxArray] = None,
+    out: Optional[JaxArray] = None,
 ):
     if num_rows is None:
         num_rows = len(x)
     if num_cols is None:
         num_cols = len(x)
-    
+
     ret = jnp.ones((num_rows, num_cols))
     ret *= padding_value
 
@@ -174,11 +175,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple):
+    if not isinstance(axis, tuple) and axis:
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -381,15 +382,12 @@ def trace(
     offset: int = 0,
     axis1: int = 0,
     axis2: int = 1,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = (
-    "float16",
-    "bfloat16"
-)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
