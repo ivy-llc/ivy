@@ -189,6 +189,7 @@ def test_sparse_categorical_crossentropy(
         from_logits=from_logits,
     )
 
+
 # log_cosh
 @handle_cmd_line_args
 @given(
