@@ -1855,7 +1855,7 @@ def trace(
                         [7., 8.]]])
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array([2., 6.])
+    ivy.array([3., 4.])
 
     With :class:`ivy.NativeArray` inputs:
 

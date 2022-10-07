@@ -109,7 +109,7 @@ def grad(func: Callable):
             tape.watch(x_in)
             y = grad_fn(x_in)
         return _unused_variables_to_zero_gradients(
-            x_in, ivy.to_ivy(tape.gradient(y, x_in))
+            ivy.to_ivy(x_in), ivy.to_ivy(tape.gradient(y, x_in))
         )
 
     return callback_fn

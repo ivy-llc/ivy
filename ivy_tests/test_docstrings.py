@@ -254,7 +254,8 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
-        "sinc"
+        "sinc",
+        "grad"
     ]
 
     # skip list for array and container docstrings
