@@ -538,14 +538,6 @@ class Array(
         return self._data.__bool__()
 
     @_native_wrapper
-    def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
-
-    @_native_wrapper
-    def __dlpack_device__(self):
-        return self._data.__dlpack_device__()
-
-    @_native_wrapper
     def __lt__(self, other):
         return ivy.less(self._data, other)
 
