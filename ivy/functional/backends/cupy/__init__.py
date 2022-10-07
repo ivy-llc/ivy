@@ -108,41 +108,40 @@ def closest_valid_dtype(type):
 backend = "cupy"
 backend_version = cp.__version__
 
-# noinspection PyPackageRequirements
 # local sub-modules
-from . import activations
-from .activations import *
-from . import compilation
-from .compilation import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import extensions
-from .extensions import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
+from . import activations # noqa: F401
+from .activations import * # noqa: F401 F403
+from . import compilation # noqa: F401
+from .compilation import * # noqa: F401 F403
+from . import creation # noqa: F401
+from .creation import * # noqa: F401 F403
+from . import data_type # noqa: F401
+from .data_type import * # noqa: F401 F403
+from . import device # noqa: F401
+from .device import * # noqa: F401 F403
+from . import elementwise # noqa: F401
+from .elementwise import * # noqa: F401 F403
+from . import extensions # noqa: F401
+from .extensions import * # noqa: F401 F403
+from . import general # noqa: F401
+from .general import * # noqa: F401 F403
+from . import gradients # noqa: F401
+from .gradients import * # noqa: F401 F403
+from . import layers # noqa: F401
+from .layers import * # noqa: F401 F403
 from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
+from .linear_algebra import * # noqa: F401 F403
+from . import manipulation # noqa: F401
+from .manipulation import * # noqa: F401 F403
+from . import random # noqa: F401
+from .random import * # noqa: F401 F403
+from . import searching # noqa: F401
+from .searching import * # noqa: F401 F403
+from . import set # noqa: F401
+from .set import * # noqa: F401 F403
+from . import sorting # noqa: F401
+from .sorting import * # noqa: F401 F403
+from . import statistical # noqa: F401
+from .statistical import * # noqa: F401 F403
+from . import utility # noqa: F401
+from .utility import * # noqa: F401 F403
