@@ -1,29 +1,9 @@
 # global
-import functools
 
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-
-
-def _frontend_wrapper(f):
-    @functools.wraps(f)
-    def decor(self, *args, **kwargs):
-        args = list(args)
-        if isinstance(self, jax_frontend.DeviceArray):
-            i = 0
-            for arg in args:
-                if isinstance(arg, jax_frontend.DeviceArray):
-                    args[i] = arg.data
-                i += 1
-            for u, v in kwargs.items():
-                if isinstance(v, jax_frontend.DeviceArray):
-                    kwargs[u] = v.data
-            return f(self, *args, **kwargs)
-        return getattr(self, f.__name__)(*args, **kwargs)
-
-    return decor
 
 
 class DeviceArray:
@@ -49,75 +29,75 @@ class DeviceArray:
     # Special Methods #
     # --------------- #
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __add__(self, other):
         return jax_frontend.add(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __radd__(self, other):
         return jax_frontend.add(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __sub__(self, other):
         return jax_frontend.sub(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rsub__(self, other):
         return jax_frontend.sub(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __mul__(self, other):
         return jax_frontend.mul(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rmul__(self, other):
         return jax_frontend.mul(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __div__(self, other):
         return jax_frontend.div(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rdiv__(self, other):
         return jax_frontend.div(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __mod__(self, other):
         return jax_frontend.rem(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rmod__(self, other):
         return jax_frontend.rem(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __divmod__(self, other):
-        return divmod(self.data, other)
+        return jax_frontend.divmod(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rdivmod__(self, other):
-        return divmod(self.data, other)
+        return jax_frontend.divmod(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __truediv__(self, other):
         return jax_frontend.div(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rtruediv__(self, other):
         return jax_frontend.div(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __floordiv__(self, other):
         return jax_frontend.floor_divide(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rfloordiv__(self, other):
         return jax_frontend.floor_divide(other, self.data)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __matmul__(self, other):
         return jax_frontend.dot(self.data, other)
 
-    @_frontend_wrapper
+    @to_ivy_arrays_and_back
     def __rmatmul__(self, other):
         return jax_frontend.dot(other, self.data)
 

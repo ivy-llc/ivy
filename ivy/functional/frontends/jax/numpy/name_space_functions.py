@@ -94,6 +94,12 @@ def dot(a, b, *, precision=None):
     return ivy.matmul(a, b)
 
 
+def divmod(x1, x2):
+    out1 = ivy.floor_divide(x1, x2)
+    out2 = ivy.remainder(x1, x2)
+    return out1, out2
+
+
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
     return ivy.einsum(equation=optimize, *operands, out=out)
 

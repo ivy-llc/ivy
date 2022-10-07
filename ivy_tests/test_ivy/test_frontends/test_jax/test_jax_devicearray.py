@@ -984,7 +984,7 @@ def test_jax_special_divmod(
     data = DeviceArray(x[0])
     other = DeviceArray(x[1])
     ret = data.__divmod__(other)
-    ret_gt = divmod(
+    ret_gt = jnp.divmod(
         jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1014,7 +1014,7 @@ def test_jax_special_rdivmod(
     data = DeviceArray(x[0])
     other = DeviceArray(x[1])
     ret = data.__rdivmod__(other)
-    ret_gt = divmod(
+    ret_gt = jnp.divmod(
         jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1087,18 +1087,27 @@ def test_jax_special_rfloordiv(
         )
 
 
+@st.composite
+def _get_dtype_input_and_vectors(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
+    vec1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+        )
+    )
+    vec2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+        )
+    )
+    return dtype, [vec1, vec2]
+
+
 # __matmul__
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shared_dtype=True,
-        num_arrays=2,
-    )
+    dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_matmul(
     dtype_x,
@@ -1108,9 +1117,7 @@ def test_jax_special_matmul(
     data = DeviceArray(x[0])
     other = DeviceArray(x[1])
     ret = data.__matmul__(other)
-    ret_gt = jnp.matmul(
-        jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
-    )
+    ret_gt = jnp.matmul(jnp.array(x[0]), jnp.array(x[1]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -1124,15 +1131,7 @@ def test_jax_special_matmul(
 # __rmatmul__
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shared_dtype=True,
-        num_arrays=2,
-    )
+    dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_rmatmul(
     dtype_x,
@@ -1142,9 +1141,7 @@ def test_jax_special_rmatmul(
     data = DeviceArray(x[0])
     other = DeviceArray(x[1])
     ret = data.__rmatmul__(other)
-    ret_gt = jnp.matmul(
-        jnp.array(x[1], dtype=input_dtype[1]), jnp.array(x[0], dtype=input_dtype[0])
-    )
+    ret_gt = jnp.matmul(jnp.array(x[1]), jnp.array(x[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
