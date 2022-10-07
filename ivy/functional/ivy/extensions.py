@@ -389,7 +389,8 @@ def sinc(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates an implementation-dependent approximation of the principal value of
+    """
+    Calculates an implementation-dependent approximation of the principal value of
     the normalized sinc function, having domain ``(-infinity, +infinity)`` and
     codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
     Each element ``x_i`` is assumed to be expressed in radians.
@@ -450,6 +451,43 @@ def sinc(
         a: ivy.array([0.637,-0.212,0.127]),
         b: ivy.array([-0.0909,0.0707,-0.0579])
     }
-
     """
     return ivy.current_backend(x).sinc(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vorbis_window(
+    window_length: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns an array that contains a vorbis power complementary window
+    of size window_length.
+
+    Parameters
+    ----------
+    window_length
+        the length of the vorbis window.
+    dtype
+        data type of the returned array. By default float32.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Input array with the vorbis window.
+
+    Examples
+    --------
+    >>> ivy.vorbis_window(3)
+    ivy.array([0.38268346, 1. , 0.38268352])
+
+    >>> ivy.vorbis_window(5)
+    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    """
+    return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)

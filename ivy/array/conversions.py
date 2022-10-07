@@ -3,7 +3,7 @@ instances.
 """
 
 # global
-from typing import Any, Union, Tuple, Dict, Iterable
+from typing import Any, Union, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
@@ -13,7 +13,7 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any, inplace=False) -> Any:
+def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
@@ -36,7 +36,7 @@ def _to_ivy(x: Any) -> Any:
 def to_ivy(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
-    include_derived: Dict[type, bool] = None,
+    include_derived: Optional[Dict[type, bool]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Returns the input array converted to an ivy.Array instances if it is an array
     type, otherwise the input is returned unchanged. If nested is set, the check is
@@ -57,8 +57,7 @@ def to_ivy(
     Returns
     -------
      ret
-        the input in it's native framework form in the case of ivy.Array or instances.
-
+        the input in its native framework form in the case of ivy.Array or instances.
     """
     if nested:
         return ivy.nested_map(x, _to_ivy, include_derived)
@@ -67,7 +66,7 @@ def to_ivy(
 
 def args_to_ivy(
     *args: Iterable[Any],
-    include_derived: Dict[type, bool] = None,
+    include_derived: Optional[Dict[type, bool]] = None,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """Returns args and keyword args in their ivy.Array or form for all nested
@@ -98,13 +97,13 @@ def args_to_ivy(
 def to_native(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
-    include_derived: Dict[type, bool] = None,
-    cont_inplace = False,
+    include_derived: Optional[Dict[type, bool]] = None,
+    cont_inplace: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
-    """Returns the input item in it's native backend framework form if it is an
-    ivy.Array or instance. otherwise the input is returned unchanged. If nested is set,
-    the check is applied to all nested leafs of tuples, lists and dicts contained within
-    x.
+    """Returns the input item in its native backend framework form if it is an
+    ivy.Array instance, otherwise the input is returned unchanged. If nested is set,
+    the check is applied to all nested leaves of tuples, lists and dicts contained
+    within ``x``.
 
     Parameters
     ----------
@@ -118,24 +117,24 @@ def to_native(
         Whether to also recursive for classes derived from tuple, list and dict.
         Default is False.
     cont_inplace
-        Whether to update containers in place.
-        Default is False
+        Whether to update containers in place. Default is False
 
     Returns
     -------
      ret
-        the input in it's native framework form in the case of ivy.Array or instances.
-
+        the input in its native framework form in the case of ivy.Array instances.
     """
     if nested:
-        return ivy.nested_map(x, lambda x: _to_native(x, inplace=cont_inplace), include_derived)
-    return _to_native(x,inplace=cont_inplace)
+        return ivy.nested_map(
+            x, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+        )
+    return _to_native(x, inplace=cont_inplace)
 
 
 def args_to_native(
     *args: Iterable[Any],
     include_derived: Dict[type, bool] = None,
-    cont_inplace = False,
+    cont_inplace: bool = False,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """Returns args and keyword args in their native backend framework form for all
@@ -161,6 +160,10 @@ def args_to_native(
         native form.
 
     """
-    native_args = ivy.nested_map(args, lambda x: _to_native(x,inplace=cont_inplace), include_derived)
-    native_kwargs = ivy.nested_map(kwargs, lambda x: _to_native(x,inplace=cont_inplace), include_derived)
+    native_args = ivy.nested_map(
+        args, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+    )
+    native_kwargs = ivy.nested_map(
+        kwargs, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+    )
     return native_args, native_kwargs

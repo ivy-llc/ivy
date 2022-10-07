@@ -1,5 +1,5 @@
-Ivy Tests
-=========
+Ivy Tests 🧪
+============
 
 .. _`test suite`: https://github.com/data-apis/array-api-tests
 .. _`Hypothesis`: https://hypothesis.readthedocs.io/en/latest/

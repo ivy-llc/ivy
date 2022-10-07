@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
 )
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+import math
 
 
 def is_native_sparse_array(x):
@@ -48,11 +49,31 @@ def native_sparse_array(
 
 def native_sparse_array_to_indices_values_and_shape(x):
     logging.warning(
-        "Jax does not support sparse array natively, None is returned for \
-        indices, values and shape."
+        "Jax does not support sparse array natively, None is returned for        "
+        " indices, values and shape."
     )
     return None, None, None
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+def vorbis_window(
+    window_length: JaxArray,
+    *,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.array(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )

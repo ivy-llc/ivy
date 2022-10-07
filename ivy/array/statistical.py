@@ -320,7 +320,6 @@ class ArrayWithStatistical(abc.ABC):
         reverse: bool = False,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -359,16 +358,13 @@ class ArrayWithStatistical(abc.ABC):
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[1, 2],
-                   [1, 5],
-                   [1, 11]])
+        ivy.array([[0, 0],
+                   [0, 0],
+                   [0, 0]])
         """
-
-        return ivy.cumprod(self._data,
-                           axis=axis,
-                           exclusive=exclusive,
-                           reverse=reverse,
-                           out=out)
+        return ivy.cumprod(
+            self._data, axis=axis, exclusive=exclusive, reverse=reverse, out=out
+        )
 
     def einsum(
         self: ivy.Array,

@@ -47,9 +47,10 @@ def cross(
     axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    promote_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(promote_type)
-    x2 = x2.type(promote_type)
+
+    if axis is None:
+        axis = -1
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if axis:
         return torch.linalg.cross(input=x1, other=x2, dim=axis)
@@ -71,6 +72,30 @@ def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 det.support_native_out = True
 
 det.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def diag(
+    x: torch.Tensor,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = torch.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += torch.diag(x - padding_value, diagonal=offset)
+
+    return ret
 
 
 def diagonal(
@@ -151,7 +176,6 @@ inv.unsupported_dtypes = (
     "bfloat16",
     "float16",
 )
-
 inv.support_native_out = True
 
 
@@ -164,14 +188,13 @@ def matmul(
     transpose_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if transpose_a is True:
         x1 = torch.t(x1)
     if transpose_b is True:
         x2 = torch.t(x2)
-    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(dtype_from)
-    x2 = x2.type(dtype_from)
-    return torch.matmul(x1, x2, out=out).type(dtype_from)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.matmul(x1, x2, out=out)
 
 
 matmul.support_native_out = True
@@ -182,15 +205,16 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
+    if isinstance(ord, float):
+        ord = int(ord)
+    return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
 matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
-
-
 matrix_norm.support_native_out = True
 
 
@@ -207,11 +231,11 @@ def matrix_rank(
     x: torch.Tensor,
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
 
 
@@ -284,8 +308,7 @@ def slogdet(
     /,
 ) -> NamedTuple:
     results = NamedTuple(
-        "slogdet",
-        [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
+        "slogdet", [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
     )
     sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
@@ -334,12 +357,20 @@ solve.unsupported_dtypes = (
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True
+    x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    return results(U, D, VT)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        svd = torch.linalg.svd(x, full_matrices=full_matrices)
+        # torch.linalg.svd returns a tuple with U, S, and Vh
+        D = svd[1]
+        return results(D)
 
 
 svd.unsupported_dtypes = ("float16", "bfloat16")
@@ -362,7 +393,7 @@ def tensordot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     # type conversion to one that torch.tensordot can work with
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
 
@@ -381,12 +412,20 @@ tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(
-    x: torch.Tensor, offset: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    desired_dtype = x.dtype
-    ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
-    ret = torch.sum(ret, dim=-1)
-    return ret.type(desired_dtype)
+    ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+    ret = torch.sum(ret)
+    return ret
+
+
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
