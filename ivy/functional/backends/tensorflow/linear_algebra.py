@@ -208,10 +208,6 @@ def matmul(
     transpose_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if transpose_a is True:
-        x1 = tf.transpose(x1)
-    if transpose_b is True:
-        x2 = tf.transpose(x2)
     dtype_from = tf.experimental.numpy.promote_types(
         x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
     )
@@ -258,7 +254,7 @@ def matmul(
             x2 = tf.expand_dims(x2, axis=1)
             x2_padded = True
 
-        ret = tf.matmul(x1, x2)
+        ret = tf.matmul(x1, x2, transpose_a=transpose_a, transpose_b=transpose_b)
 
     ret = tf.cast(ret, dtype=dtype_from)
     if x1_padded_2:
