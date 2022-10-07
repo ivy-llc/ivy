@@ -20,7 +20,7 @@ with open("test_names") as f:
         test_names.append(line[:-1])
 
 test_names = test_names[:-3]
-
+test_names = test_names[:10]
 
 directories = [
     "ivy",
@@ -66,11 +66,7 @@ directories = [
 ]
 
 if __name__ == "__main__":
-    i = 0
     for test_name in tqdm(test_names):
-        i += 1
-        if i == 10:
-            break
         os.system(
             f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
