@@ -2,5 +2,5 @@
 import ivy
 
 
-def reshape(x, /, shape, *, copy=None):
-    return ivy.reshape(x, shape, copy=copy)
+def reshape(x, /, newshape, order="C"):
+    return ivy.reshape(x, shape=newshape)

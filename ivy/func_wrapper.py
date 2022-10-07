@@ -3,48 +3,6 @@ import functools
 from types import FunctionType
 from typing import Callable
 
-FW_FN_KEYWORDS = {
-    "numpy": [],
-    "jax": [],
-    "tensorflow": [],
-    "torch": [],
-}
-
-NATIVE_KEYS_TO_SKIP = {
-    "numpy": [],
-    "jax": [
-        "device",
-        "platform",
-        "clone",
-        "block_host_until_ready",
-        "block_until_ready",
-        "copy_to_device",
-        "copy_to_host_async",
-        "copy_to_remote_device",
-        "delete",
-        "is_deleted",
-        "is_known_ready",
-        "is_ready",
-        "on_device_size_in_bytes",
-        "to_py",
-        "unsafe_buffer_pointer",
-        "xla_dynamic_shape",
-        "xla_shape",
-    ],
-    "tensorflow": [],
-    "torch": [
-        "classes",
-        "torch",
-        "is_grad_enabled",
-        "get_default_dtype",
-        "numel",
-        "clone",
-        "cpu",
-        "set_",
-        "type",
-        "requires_grad_",
-    ],
-}
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
@@ -63,22 +21,19 @@ FN_DECORATORS = [
 # --------#
 
 
-# noinspection DuplicatedCode
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     arr = None
     if args:
-        arr_idxs = ivy.nested_indices_where(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_indices_where(
-                kwargs, ivy.is_array, stop_after_n_found=1
-            )
+            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr

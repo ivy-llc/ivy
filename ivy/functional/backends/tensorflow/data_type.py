@@ -69,6 +69,21 @@ class Finfo:
         return float(self._tf_finfo.tiny)
 
 
+class Bfloat16Finfo:
+    def __init__(self):
+        self.resolution = 0.01
+        self.bits = 16
+        self.eps = 0.0078125
+        self.max = 3.38953e38
+        self.min = -3.38953e38
+        self.tiny = 1.17549e-38
+
+    def __repr__(self):
+        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
+            self.resolution, self.min, self.max, "bfloat16"
+        )
+
+
 # Array API Standard #
 # -------------------#
 
@@ -118,12 +133,14 @@ def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
+    if tf.rank(x) > len(shape):
+        return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
-        from_ = from_.dtype
+        from_ = ivy.as_ivy_dtype(from_.dtype)
     from_str = str(from_)
     to_str = str(to)
     if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
@@ -141,6 +158,8 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
     if "uint" in from_str and ("int" in to_str and "u" not in to_str):
         if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
             return False
+    if "float16" in from_str and "float16" in to_str:
+        return from_str == to_str
     return True
 
 
@@ -149,7 +168,7 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     if ivy.as_native_dtype(type) == tf.bfloat16:
-        return Finfo(tf.experimental.numpy.finfo(tf.float32))
+        return Finfo(Bfloat16Finfo())
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 

@@ -1,4 +1,3 @@
-# For Review
 # global
 import math
 import jax.numpy as jnp
@@ -45,7 +44,7 @@ def expand_dims(
         ret = jnp.expand_dims(x, axis)
         return ret
     except ValueError as error:
-        raise IndexError(error)
+        raise ivy.exceptions.IvyException(repr(error))
 
 
 def flip(
@@ -99,7 +98,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     else:
@@ -122,16 +121,17 @@ def stack(
 
 
 def split(
-    x,
+    x: JaxArray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[JaxArray]:
+
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -178,7 +178,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
@@ -226,7 +226,7 @@ def constant_pad(
 constant_pad.unsupported_dtypes = ("uint64",)
 
 
-def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
+def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]

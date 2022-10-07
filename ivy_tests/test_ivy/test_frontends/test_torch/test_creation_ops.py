@@ -1,6 +1,5 @@
 # global
 import ivy
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -63,21 +62,19 @@ def test_torch_full(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=[False],
+        device=device,
         frontend="torch",
         fn_tree="full",
         size=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -98,21 +95,19 @@ def test_torch_ones_like(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=[False],
+        device=device,
         frontend="torch",
         fn_tree="ones_like",
-        input=np.asarray(input, dtype=dtype),
+        input=input[0],
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -139,20 +134,18 @@ def test_torch_ones(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=[False],
+        device=device,
         frontend="torch",
         fn_tree="ones",
         size=shape,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -179,19 +172,55 @@ def test_torch_zeros(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
+        native_array_flags=[False],
+        device=device,
         frontend="torch",
         fn_tree="zeros",
         size=shape,
         dtype=dtypes[0],
+        requires_grad=requires_grad,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes("float", full=False),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.empty"
+    ),
+)
+def test_torch_empty(
+    shape,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[dtypes],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=[False],
         device=device,
+        frontend="torch",
+        fn_tree="empty",
+        test_values=False,
+        size=shape,
+        dtype=dtypes,
         requires_grad=requires_grad,
     )

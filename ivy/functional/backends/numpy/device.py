@@ -46,14 +46,14 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
     """Private version of `to_device` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
@@ -66,14 +66,14 @@ def to_device(
     if device is not None:
         device = as_native_dev(device)
         if "gpu" in device:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )

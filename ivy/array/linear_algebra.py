@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List
+from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
 
 # local
 import ivy
@@ -14,13 +14,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Examples
         ------------------------
 
-        With :code:`ivy.Array` instance inputs:
+        With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 4.])
         >>> y = ivy.array([3., 2.])
@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: bool = False,
+        upper: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -119,7 +119,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
@@ -161,23 +161,44 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> ivy.Array:
         return ivy.inner(self._data, x2, out=out)
 
-    def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        return ivy.inv(self._data, out=out)
+    def inv(
+        self: ivy.Array, /, *, adjoint: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inv.
+        This method simply wraps the function, and so the docstring for
+        ivy.inv also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+        >>> y = ivy.inv(x)
+        >>> print(y)
+        ivy.array([[-2., 1.],[1.5, -0.5]])
+        """
+        return ivy.inv(self._data, adjoint=adjoint, out=out)
 
     def matrix_norm(
         self: ivy.Array,
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(self._data, ord=ord, keepdims=keepdims, out=out)
+        return ivy.matrix_norm(
+            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+        )
 
     def matrix_rank(
         self: ivy.Array,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
+        /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -190,6 +211,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self
             input array having shape ``(..., M, N)`` and whose innermost two dimensions
             form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -236,7 +261,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol, out=out)
+        return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
@@ -257,6 +282,24 @@ class ArrayWithLinearAlgebra(abc.ABC):
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        --------
+        x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+        y = pinv(x, None, None)
+        print(y)
+        ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+    
+        x = ivy.array([[1., 2.],\
+                      [3., 4.]])
+        out = ivy.array()
+        pinv(x, 0, out)
+        print(out)
+        ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
     def qr(
@@ -265,6 +308,43 @@ class ArrayWithLinearAlgebra(abc.ABC):
         mode: str = "reduced",
     ) -> NamedTuple:
         return ivy.qr(self._data, mode=mode)
+
+    def slogdet(
+        self: ivy.Array,
+    ) -> NamedTuple:
+        """
+        ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
+        function, and so the docstring for ivy.slogdet also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
+
+        Returns
+        -------
+        ret
+            This function returns NamedTuple with two values -
+                sign:
+                An array containing a number representing the sign of the determinant
+                for each square matrix.
+
+                logabsdet:
+                An array containing natural log of the absolute determinant of each
+                square matrix.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.0, 2.0], \
+                           [3.0, 4.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+
+        """
+        return ivy.slogdet(self._data)
 
     def solve(
         self: ivy.Array,
@@ -277,9 +357,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         *,
+        compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices=full_matrices)
+        return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
@@ -295,11 +376,57 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def trace(
         self: ivy.Array,
+        /,
         *,
         offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.trace(self._data, offset=offset, out=out)
+        """
+        ivy.Array instance method variant of ivy.trace.
+        This method Returns the sum along the specified diagonals of a matrix (or a
+        stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        offset
+            Offset of the diagonal from the main diagonal. Can be both positive and
+            negative. Defaults to 0.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+
+            ::
+
+            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> y = x.trace()
+        >>> print(y)
+        ivy.array(5.)
+
+        >>> x = ivy.array([[1., 2., 4.], [6., 5., 3.]])
+        >>> y = ivy.Array.trace(x)
+        >>> print(y)
+        ivy.array(6.)
+        """
+        return ivy.trace(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
     def vecdot(
         self: ivy.Array,
@@ -313,7 +440,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vector_norm(
         self: ivy.Array,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Array] = None,

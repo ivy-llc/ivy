@@ -15,7 +15,7 @@ def _get_dtype_and_square_matrix(draw):
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat = draw(
         helpers.array_values(
-            dtype=dtype, shape=(dim_size, dim_size), min_value=0, max_value=10
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
         )
     )
     return dtype, mat
@@ -27,15 +27,19 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     vec1 = draw(
-        helpers.array_values(dtype=dtype, shape=(dim_size1,), min_value=2, max_value=5)
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size1,), min_value=2, max_value=5
+        )
     )
     vec2 = draw(
-        helpers.array_values(dtype=dtype, shape=(dim_size2,), min_value=2, max_value=5)
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size2,), min_value=2, max_value=5
+        )
     )
     if with_input:
         input = draw(
             helpers.array_values(
-                dtype=dtype, shape=(dim_size1, dim_size2), min_value=2, max_value=5
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
             )
         )
         return dtype, input, vec1, vec2
@@ -50,18 +54,18 @@ def _get_dtype_input_and_matrices(draw, with_input=False):
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat1 = draw(
         helpers.array_values(
-            dtype=dtype, shape=(dim_size1, shared_size), min_value=2, max_value=5
+            dtype=dtype[0], shape=(dim_size1, shared_size), min_value=2, max_value=5
         )
     )
     mat2 = draw(
         helpers.array_values(
-            dtype=dtype, shape=(shared_size, dim_size2), min_value=2, max_value=5
+            dtype=dtype[0], shape=(shared_size, dim_size2), min_value=2, max_value=5
         )
     )
     if with_input:
         input = draw(
             helpers.array_values(
-                dtype=dtype, shape=(dim_size1, dim_size2), min_value=2, max_value=5
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
             )
         )
         return dtype, input, mat1, mat2
@@ -77,7 +81,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
     batch_size = draw(helpers.ints(min_value=2, max_value=4))
     mat1 = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=(batch_size, dim_size1, shared_size),
             min_value=2,
             max_value=5,
@@ -85,7 +89,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
     )
     mat2 = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=(batch_size, shared_size, dim_size2),
             min_value=2,
             max_value=5,
@@ -95,7 +99,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
         if input_3d:
             input = draw(
                 helpers.array_values(
-                    dtype=dtype,
+                    dtype=dtype[0],
                     shape=(batch_size, dim_size1, dim_size2),
                     min_value=2,
                     max_value=5,
@@ -104,7 +108,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
             return dtype, input, mat1, mat2
         input = draw(
             helpers.array_values(
-                dtype=dtype, shape=(dim_size1, dim_size2), min_value=2, max_value=5
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
             )
         )
         return dtype, input, mat1, mat2
@@ -138,8 +142,8 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False, skip_float16=False):
                 dtype=dtype, shape=(dim_size,), min_value=2, max_value=5
             )
         )
-        return dtype, input, mat, vec
-    return dtype, mat, vec
+        return [dtype], input, mat, vec
+    return [dtype], mat, vec
 
 
 # addbmm
@@ -172,23 +176,20 @@ def test_torch_addbmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addbmm",
         rtol=1e-01,
-        input=np.asarray(input, dtype=dtype),
-        batch1=np.asarray(mat1, dtype=dtype),
-        batch2=np.asarray(mat2, dtype=dtype),
+        input=input,
+        batch1=mat1,
+        batch2=mat2,
         beta=beta,
         alpha=alpha,
         out=None,
@@ -225,23 +226,20 @@ def test_torch_addmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addmm",
         rtol=1e-01,
-        input=np.asarray(input, dtype=dtype),
-        mat1=np.asarray(mat1, dtype=dtype),
-        mat2=np.asarray(mat2, dtype=dtype),
+        input=input,
+        mat1=mat1,
+        mat2=mat2,
         beta=beta,
         alpha=alpha,
         out=None,
@@ -278,23 +276,20 @@ def test_torch_addmv(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat, vec = dtype_and_matrices
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addmv",
         rtol=1e-03,
-        input=np.asarray(input, dtype=dtype),
-        mat=np.asarray(mat, dtype=dtype),
-        vec=np.asarray(vec, dtype=dtype),
+        input=input,
+        mat=mat,
+        vec=vec,
         beta=beta,
         alpha=alpha,
         out=None,
@@ -331,23 +326,21 @@ def test_torch_addr(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
 
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addr",
         rtol=1e-01,
-        input=np.asarray(input, dtype=dtype),
-        vec1=np.asarray(vec1, dtype=dtype),
-        vec2=np.asarray(vec2, dtype=dtype),
+        input=input,
+        vec1=vec1,
+        vec2=vec2,
         beta=beta,
         alpha=alpha,
         out=None,
@@ -384,23 +377,21 @@ def test_torch_baddbmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, batch1, batch2 = dtype_and_matrices
 
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="baddbmm",
         rtol=1e-01,
-        input=np.asarray(input, dtype=dtype),
-        batch1=np.asarray(batch1, dtype=dtype),
-        batch2=np.asarray(batch2, dtype=dtype),
+        input=input,
+        batch1=batch1,
+        batch2=batch2,
         beta=beta,
         alpha=alpha,
         out=None,
@@ -421,22 +412,19 @@ def test_torch_bmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, mat1, mat2 = dtype_and_matrices
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bmm",
         rtol=1e-02,
-        input=np.asarray(mat1, dtype=dtype),
-        mat2=np.asarray(mat2, dtype=dtype),
+        input=mat1,
+        mat2=mat2,
         out=None,
     )
 
@@ -465,25 +453,22 @@ def test_torch_cholesky(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
+    x = x[0]
     x = (
         np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     )  # make symmetric positive-definite
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cholesky",
         rtol=1e-02,
-        input=np.asarray(x, dtype=dtype),
+        input=x,
         upper=upper,
     )
 
@@ -502,21 +487,18 @@ def test_torch_ger(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="ger",
-        input=np.asarray(vec1, dtype=dtype),
-        vec2=np.asarray(vec2, dtype=dtype),
+        input=vec1,
+        vec2=vec2,
     )
 
 
@@ -539,21 +521,18 @@ def test_torch_inverse(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="inverse",
         rtol=1e-03,
-        input=np.asarray(x, dtype=dtype),
+        input=x[0],
     )
 
 
@@ -571,20 +550,17 @@ def test_torch_det(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="det",
-        input=np.asarray(x, dtype=dtype),
+        input=x,
     )
 
 
@@ -602,20 +578,17 @@ def test_torch_logdet(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logdet",
-        input=np.asarray(x, dtype=dtype),
+        input=x,
     )
 
 
@@ -633,20 +606,17 @@ def test_torch_slogdet(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="slogdet",
-        input=np.asarray(x, dtype=dtype),
+        input=x,
     )
 
 
@@ -664,22 +634,19 @@ def test_torch_matmul(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x, y = dtype_xy
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matmul",
         rtol=1e-02,
-        input=np.asarray(x, dtype=dtype),
-        other=np.asarray(y, dtype=dtype),
+        input=x,
+        other=y,
         out=None,
     )
 
@@ -700,21 +667,18 @@ def test_torch_matrix_power(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matrix_power",
         rtol=1e-01,
-        input=np.asarray(x, dtype=dtype),
+        input=x,
         n=n,
         out=None,
     )
@@ -738,21 +702,18 @@ def test_torch_matrix_rank(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matrix_rank",
         rtol=1e-01,
-        input=np.asarray(x, dtype=dtype),
+        input=x,
         tol=rtol,
         symmetric=sym,
     )
@@ -772,22 +733,19 @@ def test_torch_mm(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x, y = dtype_xy
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="mm",
         rtol=1e-03,
-        input=np.asarray(x, dtype=dtype),
-        mat2=np.asarray(y, dtype=dtype),
+        input=x,
+        mat2=y,
         out=None,
     )
 
@@ -806,22 +764,19 @@ def test_torch_mv(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, mat, vec = dtype_mat_vec
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="mv",
         rtol=1e-03,
-        input=np.asarray(mat, dtype=dtype),
-        vec=np.asarray(vec, dtype=dtype),
+        input=mat,
+        vec=vec,
         out=None,
     )
 
@@ -840,23 +795,18 @@ def test_torch_outer(
     with_out,
     num_positional_args,
     native_array,
-    container,
-    instance_method,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="outer",
-        input=np.asarray(vec1, dtype=dtype),
-        vec2=np.asarray(vec2, dtype=dtype),
+        input=vec1,
+        vec2=vec2,
         out=None,
     )
 
@@ -883,21 +833,18 @@ def test_torch_pinverse(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="pinverse",
         rtol=1e-03,
-        input=np.asarray(x, dtype=dtype),
+        input=x[0],
         rcond=rtol,
     )
 
@@ -926,20 +873,18 @@ def test_torch_qr(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="qr",
         rtol=1e-02,
-        input=np.array(x, dtype=dtype),
+        input=x[0],
         some=some,
         out=None,
     )
@@ -969,19 +914,17 @@ def test_torch_svd(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="svd",
-        input=np.array(x, dtype=dtype),
+        input=x[0],
         some=some,
         compute_uv=compute,
         out=None,
@@ -1002,19 +945,16 @@ def test_torch_vdot(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
-
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="vdot",
-        input=np.asarray(vec1, dtype=dtype),
-        other=np.asarray(vec2, dtype=dtype),
+        input=vec1,
+        other=vec2,
     )

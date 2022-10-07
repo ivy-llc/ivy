@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import math
@@ -27,7 +26,7 @@ def concat(
         xs = list(xs)
     highest_dtype = xs[0].dtype
     for i in xs:
-        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
 
     for i in range(len(xs)):
         if is_axis_none:
@@ -52,7 +51,7 @@ def expand_dims(
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:
-        raise IndexError(error)
+        raise ivy.exceptions.IvyException(repr(error))
 
 
 def flip(
@@ -132,12 +131,14 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        if x.shape[axis] > 1:
-            raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[axis]
-                )
-            )
+        ivy.assertions.check_less(
+            x.shape[axis],
+            1,
+            allow_equal=True,
+            message="Expected dimension of size 1, but found dimension size {}".format(
+                x.shape[axis]
+            ),
+        )
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -154,7 +155,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ValueError(
+                raise ivy.exceptions.IvyException(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )
@@ -183,13 +184,13 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -197,7 +198,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -206,6 +207,7 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+
     return tf.split(x, num_or_size_splits, axis)
 
 
@@ -288,10 +290,12 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
-        promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
         x = tf.cast(x, promoted_type)
         x_min = tf.cast(x_min, promoted_type)
         x_max = tf.cast(x_max, promoted_type)
@@ -306,7 +310,7 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]

@@ -9,19 +9,6 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def _cast_for_bitwise_op(x1, x2, clamp=False):
-    if not isinstance(x1, int):
-        if isinstance(x2, int):
-            x2 = jnp.asarray(x2, dtype=x1.dtype)
-    if clamp:
-        x2 = jax.lax.clamp(
-            jnp.array(0, dtype=x2.dtype),
-            x2,
-            jnp.array(x1.dtype.itemsize * 8 - 1, dtype=x2.dtype),
-        )
-    return x1, x2
-
-
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
@@ -39,12 +26,16 @@ def add(
     x2: Union[float, JaxArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
 
 
-def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
+def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
@@ -72,7 +63,7 @@ def bitwise_and(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -89,7 +80,8 @@ def bitwise_left_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.left_shift(x1, x2)
 
 
@@ -100,7 +92,7 @@ def bitwise_or(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_or(x1, x2)
 
 
@@ -111,7 +103,8 @@ def bitwise_right_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
 
@@ -122,7 +115,7 @@ def bitwise_xor(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -335,12 +328,6 @@ def pow(
     return jnp.power(x1, x2)
 
 
-def reciprocal(
-    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.reciprocal(x)
-
-
 def remainder(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -391,9 +378,12 @@ def subtract(
     x2: Union[float, JaxArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
     return jnp.subtract(x1, x2)
 
 
@@ -420,17 +410,17 @@ def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
 
 
-def floormod(
-    x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return x % y
-
-
 def maximum(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray],
+    /,
+    *,
+    use_where: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 >= x2, x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -439,7 +429,24 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 <= x2, x1, x2)
     return jnp.minimum(x1, x2)
+
+
+def reciprocal(
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.reciprocal(x)
+
+
+def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.deg2rad(x)
+
+
+def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.rad2deg(x)

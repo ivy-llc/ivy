@@ -42,7 +42,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([3., 4.]))
         >>> y = ivy.Container.static_variable(x)
@@ -96,7 +96,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0.3, 1.]), b=ivy.array([-1., 2.2]))
         >>> y = x.variable()
@@ -158,7 +158,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
         >>> is_var = ivy.Container.static_is_variable(x, exclusive=True)
@@ -168,7 +168,7 @@ class ContainerWithGradients(ContainerBase):
             b: false
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
                               b=ivy.array([0., -0.4, 8]))
@@ -235,7 +235,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
         >>> is_var = x.is_variable(exclusive=True)
@@ -245,7 +245,7 @@ class ContainerWithGradients(ContainerBase):
             b: false
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
                               b=ivy.array([0., -0.4, 8]))
@@ -389,8 +389,8 @@ class ContainerWithGradients(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -402,7 +402,7 @@ class ContainerWithGradients(ContainerBase):
         
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                               b=ivy.array([3., 4., 5.]))
@@ -413,7 +413,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([3., 4., 5.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                               b=ivy.array([3., 4., 5.]))
@@ -467,8 +467,8 @@ class ContainerWithGradients(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -480,7 +480,7 @@ class ContainerWithGradients(ContainerBase):
         
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                               b=ivy.array([3., 4., 5.]))
@@ -491,7 +491,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([3., 4., 5.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
                               b=ivy.array([3., 4., 5.]))
@@ -558,7 +558,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                                  b=ivy.array([3., 4., 5.]))
@@ -582,7 +582,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([0.216, 0.384, 0.6])
         })
         
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                                 b=ivy.array([3., 4., 5.]))
@@ -649,7 +649,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
         
         >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                             b=ivy.array([3., 4., 5.]))
@@ -662,7 +662,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([3., 4., 5.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         
         >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                               b=ivy.array([3., 4., 5.]))
@@ -741,7 +741,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                               b=ivy.array([3.48, 5.72, 1.98]))
@@ -754,7 +754,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([3.33, 5.66, 1.95])
         }
         
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                               b=ivy.array([3.48, 5.72, 1.98]))
@@ -956,7 +956,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` inputs:
+        With one :class:`ivy.Container` inputs:
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
         >>> dcdw = ivy.array([3., 4., 5.])
@@ -971,7 +971,7 @@ class ContainerWithGradients(ContainerBase):
             b: ivy.array([4., 5., 6.])
         }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         
         >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
                               b=ivy.array([3.,4.,2.]))

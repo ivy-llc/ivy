@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -10,11 +10,26 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+
+
+min.support_native_out = True
+
+
 def max(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -40,21 +55,6 @@ def mean(
 mean.support_native_out = True
 
 
-def min(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
-
-
-min.support_native_out = True
-
-
 def _infer_dtype(dtype: np.dtype):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -66,11 +66,12 @@ def prod(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -84,7 +85,7 @@ def std(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
@@ -147,7 +148,8 @@ def var(
         size *= x.shape[a]
     return np.asarray(
         np.multiply(
-            np.var(x, axis=axis, keepdims=keepdims, out=out), size / (size - correction)
+            np.var(x, axis=axis, keepdims=keepdims, out=out),
+            ivy.stable_divide(size, (size - correction)),
         )
     ).astype(x.dtype)
 
@@ -163,20 +165,31 @@ def cumprod(
     x: np.ndarray,
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if exclusive:
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if not (exclusive or reverse):
+        return np.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive and reverse:
+        x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1, dtype=dtype)
-        res = np.swapaxes(res, axis, -1)
-        if out is not None:
-            return ivy.inplace_update(out, res)
-        return res
-    return np.cumprod(x, axis, dtype=dtype, out=out)
+        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.swapaxes(x, axis, -1)
+        return np.flip(x, axis=axis)
+    elif exclusive:
+        x = np.swapaxes(x, axis, -1)
+        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.cumprod(x, -1, dtype=dtype)
+        return np.swapaxes(x, axis, -1)
+    elif reverse:
+        x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+        return np.flip(x, axis=axis)
 
 
 cumprod.support_native_out = True

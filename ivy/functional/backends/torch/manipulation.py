@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import torch
@@ -101,6 +100,9 @@ def roll(
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
+    if isinstance(shift, torch.Tensor):
+        shift = shift.tolist()
+        shift = tuple([shift])
     return torch.roll(x, shift, axis)
 
 
@@ -113,12 +115,14 @@ def squeeze(
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
+            raise ivy.exceptions.IvyException(
+                f"Expected size of axis to be 1 but was {x.shape[axis]}"
+            )
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -133,7 +137,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )
@@ -164,12 +168,12 @@ def split(
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -238,9 +242,8 @@ def constant_pad(
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
         pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width.reverse()
     pad_width_flat: List[int] = list()
-    for pad_width_sec in pad_width:
+    for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
     return torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
@@ -270,9 +273,7 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert torch.all(
-        torch.less(torch.tensor(x_min), x_max)
-    ), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -286,7 +287,9 @@ clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

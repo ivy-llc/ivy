@@ -1,21 +1,41 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
 
-
 # Array API Standard #
 # -------------------#
+
+
+def min(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if axis == ():
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        return torch.amin(input=x, out=out)
+    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+min.support_native_out = True
 
 
 def max(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -54,27 +74,6 @@ def mean(
 mean.support_native_out = True
 
 
-def min(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
-
-
-min.support_native_out = True
-
-
 def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
     default_dtype = ivy.infer_default_dtype(dtype)
     if default_dtype in ivy.valid_dtypes:
@@ -87,17 +86,17 @@ def prod(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if axis is None:
-        axis = 0
     if axis == ():
         return x.type(dtype)
+    if axis is None:
+        return torch.prod(input=x, dtype=dtype)
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
             x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)
@@ -114,7 +113,7 @@ def std(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
@@ -210,22 +209,31 @@ def cumprod(
     x: torch.Tensor,
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
-    if exclusive:
+        dtype = _infer_dtype(x.dtype)
+
+    if not (exclusive or reverse):
+        return torch.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive and reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
         x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, dtype=dtype, out=out)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, dtype=dtype, out=out)
+        x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        return torch.flip(x, dims=(axis,))
+    elif exclusive:
+        x = torch.transpose(x, axis, -1)
+        x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cumprod(x, -1, dtype=dtype)
+        return torch.transpose(x, axis, -1)
+    elif reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        return torch.flip(x, dims=(axis,))
 
 
 cumprod.support_native_out = True
@@ -234,6 +242,7 @@ cumprod.support_native_out = True
 cumprod.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
@@ -274,6 +283,7 @@ cumsum.support_native_out = True
 cumsum.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 

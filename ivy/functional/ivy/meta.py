@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
+from ivy.exceptions import handle_exceptions
 
 # local
 from typing import Optional, Union, Callable, Tuple, Any
@@ -372,6 +373,7 @@ def _train_tasks(
 # First Order
 
 
+@handle_exceptions
 def fomaml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -491,6 +493,7 @@ def fomaml_step(
 fomaml_step.computes_gradients = True
 
 
+@handle_exceptions
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -581,6 +584,7 @@ reptile_step.computes_gradients = True
 # Second Order
 
 
+@handle_exceptions
 def maml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -696,7 +700,7 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    return (cost, grads.sum(axis=0), *rets)
+    return cost, grads.sum(axis=0), *rets
 
 
 maml_step.computes_gradients = True

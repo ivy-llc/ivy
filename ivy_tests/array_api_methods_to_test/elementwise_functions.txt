@@ -45,7 +45,7 @@ not_equal
 pow
 remainder # torch and tensorflow deviate from standard in zeros handling, passing otherwise
 round
-#sign #tests are passing but uncommenting causes everything in test_signatures to run
+sign #tests are passing but uncommenting causes everything in test_signatures to run
 sin
 sinh
 square

@@ -1,5 +1,4 @@
 # global
-import ivy
 import torch
 from typing import Union, Optional, Sequence
 
@@ -12,7 +11,7 @@ def all(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x.type(torch.bool)
+    x = torch.as_tensor(x).type(torch.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
@@ -37,7 +36,7 @@ def any(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = ivy.asarray(x).type(torch.bool)
+    x = torch.as_tensor(x).type(torch.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
