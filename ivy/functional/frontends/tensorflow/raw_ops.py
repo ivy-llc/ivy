@@ -176,6 +176,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
+
+
 def Relu(features, name="Relu"):
     return ivy.relu(features)
 
