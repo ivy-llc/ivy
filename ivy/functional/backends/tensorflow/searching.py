@@ -45,10 +45,6 @@ def argmin(
             return tf.convert_to_tensor(ret, dtype=tf.int32)
         else:
             return tf.convert_to_tensor(ret, dtype=ret.dtype)
-    #
-    # if dtype is not None:
-    #     return tf.convert_to_tensor(ret, dtype=dtype)
-    # return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def nonzero(
