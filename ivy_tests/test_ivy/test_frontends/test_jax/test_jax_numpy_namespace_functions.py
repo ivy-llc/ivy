@@ -665,3 +665,35 @@ def test_jax_numpy_arctan2(
         x1=x[0],
         x2=x[1],
     )
+
+
+# argmin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.argmin"
+    ),
+    keepdims=st.booleans(),
+
+)
+def test_jax_numpy_argmin(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdims,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.argmin",
+        a=np.asarray(x, dtype=input_dtype),
+    )
