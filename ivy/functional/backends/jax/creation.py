@@ -176,6 +176,7 @@ def linspace(
         raise ivy.exceptions.IvyException(
             f"Number of samples, {num}, must be non-negative."
         )
+
     # if bool(re.search('float64', str(ivy.finfo(stop)))):
     #     dtype = jnp.float64
     # dtype32_lim = jnp.abs(jnp.finfo(start)).tiny
