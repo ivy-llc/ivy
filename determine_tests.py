@@ -56,6 +56,9 @@ if __name__ == "__main__":
                 tests_to_run.update(tests_file[line])
         break
 
+    with open("tests.pkl", "wb") as f:
+        pickle.dump(tests, f)
+
     # with open("tests_to_run", "w") as f:
     #     for test in tests_to_run:
     #         f.write(test + "\n")
