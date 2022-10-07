@@ -15,7 +15,6 @@ test_names = []
 with open("test_names") as f:
     i = 0
     for line in f:
-        print(line)
         i += 1
         if i <= 5:
             continue
@@ -70,9 +69,9 @@ directories = [
 if __name__ == "__main__":
     for test_name in tqdm(test_names):
         os.system(
-            f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
+            f"docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
-        os.system("coverage annotate > coverage_output")
+        os.system("docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest coverage annotate > coverage_output")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
