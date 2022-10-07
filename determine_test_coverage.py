@@ -9,7 +9,7 @@ tests = {}
 
 os.system(
     "docker run --rm -v \"$(pwd)\":/ivy unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings "
-    "ivy_tests/test_ivy/ --my_test_dump true > test_names "
+    "ivy_tests/test_ivy/ --my_test_dump true > test_names"
 )  # noqa
 test_names = []
 with open("test_names") as f:
