@@ -669,7 +669,7 @@ def max_pool2d(
     pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
     pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = torch.nn.functional.pad(
-        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
+        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=float("-inf")
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.exceptions.IvyException(
@@ -680,3 +680,5 @@ def max_pool2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
+
+max_pool2d.unsupported_dtypes = ("bfloat16", "float16")

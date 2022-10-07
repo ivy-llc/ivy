@@ -682,7 +682,7 @@ def max_pool2d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "constant",
+        "edge",
     )
 
     x_shape = x.shape

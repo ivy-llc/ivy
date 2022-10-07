@@ -1388,16 +1388,26 @@ def lstm_update(
 # Helpers #
 
 
-def handle_padding(x, strides, filters, padding):
+def handle_padding(x, strides, filters, padding, base=0):
     if padding == "SAME":
         if x % strides == 0:
-            pad = max(filters - strides, 0)
+            pad = max(filters - strides, base)
         else:
-            pad = max(filters - (x % strides), 0)
+            pad = max(filters - (x % strides), base)
     else:
-        pad = 0
+        pad = base
     return pad
 
+
+def handle_pool_padding(x, strides, filters, padding, base=0):
+    if padding == "SAME":
+        if x % strides == 0:
+            pad = min(filters - strides, base)
+        else:
+            pad = min(filters - (x % strides), base)
+    else:
+        pad = base
+    return pad
 
 def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
