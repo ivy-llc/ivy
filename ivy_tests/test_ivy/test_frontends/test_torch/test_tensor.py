@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -48,35 +47,23 @@ def test_torch_instance_add(
     )
 
 
-# reshape
-@st.composite
-def dtypes_x_reshape(draw):
-    dtypes, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", full=True),
-            shape=helpers.get_shape(
-                allow_none=False,
-                min_num_dims=1,
-                max_num_dims=5,
-                min_dim_size=1,
-                max_dim_size=10,
-            ),
-        )
-    )
-    shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
-    return dtypes, x, shape
-
-
 @handle_cmd_line_args
 @given(
-    dtypes_x_reshape=dtypes_x_reshape(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    shape=helpers.reshape_shapes(
+        shape=st.shared(helpers.get_shape(), key="value_shape")
+    ),
 )
 def test_torch_instance_reshape(
-    dtypes_x_reshape,
+    dtype_x,
+    shape,
     as_variable,
     native_array,
 ):
-    input_dtype, x, shape = dtypes_x_reshape
+    input_dtype, x = dtype_x
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
