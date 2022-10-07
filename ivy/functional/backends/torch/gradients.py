@@ -7,6 +7,7 @@ from typing import Optional, Callable
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _unused_variables_to_zero_gradients
 
 
 def variable(x):
@@ -55,13 +56,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         )[0]
     y = ivy.to_ivy(y)
     grads = ivy.to_ivy(grads)
-    if isinstance(grads, ivy.Container):
-        arrays = {
-            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
-        }
-        grads = ivy.Container(**arrays)
-    else:
-        grads = ivy.zeros_like(xs) if grads is None else grads
+    grads = _unused_variables_to_zero_gradients(grads, xs)
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
@@ -82,6 +77,7 @@ def value_and_grad(func):
                 else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
             )
             grad = ivy.to_ivy(grad)
+            grad = _unused_variables_to_zero_gradients(grad, xs)
             return grad
 
         grads = ivy.nested_map(
