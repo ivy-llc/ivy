@@ -71,5 +71,3 @@ if __name__ == "__main__":
 
     if failed:
         exit(1)
-    # print(tests_to_run)
-    # Output Tests to a File
