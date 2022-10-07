@@ -122,6 +122,7 @@ def arctan(x):
     ret = ivy.atan(x)
     return ret
 
+
 def arctan2(x1, x2):
     return ivy.atan2(x1, x2)
 
