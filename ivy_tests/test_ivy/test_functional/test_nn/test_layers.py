@@ -298,6 +298,7 @@ def test_multi_head_attention(
         ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
+        test_gradients=True,
         x=x_mha,
         scale=scale,
         num_heads=num_heads,
