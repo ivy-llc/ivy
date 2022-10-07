@@ -16,6 +16,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
+def Add(*, x, y, name="Add"):
+    return ivy.add(x, y)
+
+
 def ArgMax(*, input, dimension, output_type=None, name=None):
     return tf_frontend.argmax(input, dimension, output_type)
 
@@ -66,6 +70,16 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
+def Div(*, x, y, name="Div"):
+    return ivy.divide(x, y)
+
+
+def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
+
+
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
     if incompatible_shape_error:
         return ivy.equal(x, y)
@@ -110,6 +124,10 @@ def Identity(*, input, name="Identity"):
 
 def IdentityN(*, input, name="IdentityN"):
     return [ivy.copy_array(x) for x in input]
+
+
+def Inv(*, x, name="Inv"):
+    return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
 def Less(*, x, y, name="Less"):

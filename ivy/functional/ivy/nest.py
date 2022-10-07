@@ -366,7 +366,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 64., -17.], [11., 9., 25.]])
+    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
     [map_nest_at_index(nest, index, fn) for index in indices]
 

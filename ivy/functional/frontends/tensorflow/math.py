@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+import ivy.functional.frontends.tensorflow.raw_ops as tf_raw_ops
 
 
 def add(x, y, name=None):
@@ -96,11 +97,9 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
-    ret = ivy.cumprod(x, axis, exclusive)
-    if reverse:
-        return ivy.flip(ret, axis)
-    return ret
+cumprod = tf_raw_ops.Cumprod
+
+cumsum = tf_raw_ops.Cumsum
 
 
 def divide(x, y, name=None):

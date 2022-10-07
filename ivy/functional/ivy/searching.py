@@ -236,13 +236,7 @@ def argmin(
     >>> print(y)
     {a:ivy.array(1),b:ivy.array(0)}
     """
-    return current_backend(x).argmin(
-        x,
-        axis,
-        keepdims,
-        dtype=dtype,
-        out=out
-    )
+    return current_backend(x).argmin(x, axis, keepdims, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
