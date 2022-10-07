@@ -13,6 +13,8 @@ def abs(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if not tf.is_tensor(x):
+        x = tf.convert_to_tensor(x)
     if "uint" in ivy.dtype(x):
         return x
     else:
