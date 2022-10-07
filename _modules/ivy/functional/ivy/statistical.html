@@ -138,6 +138,7 @@
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">integer_arrays_to_float</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -363,7 +364,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean/mean_functional.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean/mean_functional.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">integer_arrays_to_float</span>
+<span class="nd">to_native_arrays_and_back</span>
 <span class="nd">handle_out_argument</span>
 <span class="nd">handle_nestable</span>
 <span class="nd">handle_exceptions</span>
@@ -462,9 +464,9 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.mean(x, axis=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [1., 4.]</span>
+<span class="sd">    ivy.array([1., 4.])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
@@ -520,8 +522,8 @@
 <span class="sd">    &gt;&gt;&gt; x.mean(out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array(0.),</span>
-<span class="sd">        b: ivy.array(1.)</span>
+<span class="sd">        a: ivy.array(1.),</span>
+<span class="sd">        b: ivy.array(0.)</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \</span>

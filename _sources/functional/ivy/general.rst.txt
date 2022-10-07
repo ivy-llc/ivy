@@ -24,10 +24,14 @@ General
    general/set_nestable_mode.rst
    general/unset_nestable_mode.rst
    general/get_nestable_mode.rst
+   general/set_exception_trace_mode.rst
+   general/unset_exception_trace_mode.rst
+   general/get_exception_trace_mode.rst
    general/array_equal.rst
    general/arrays_equal.rst
    general/all_equal.rst
    general/to_numpy.rst
+   general/isscalar.rst
    general/to_scalar.rst
    general/to_list.rst
    general/clip_vector_norm.rst

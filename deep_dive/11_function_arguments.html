@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Function Arguments &mdash; Ivy 1.0 documentation</title>
+  <title>Function Arguments 📑 &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Docstrings" href="12_docstrings.html" />
-    <link rel="prev" title="Formatting" href="10_formatting.html" /> 
+    <link rel="next" title="Docstrings 📄" href="12_docstrings.html" />
+    <link rel="prev" title="Formatting 📋" href="10_formatting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,18 +48,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Function Arguments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code 🔍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types 🧮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour ⭕</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting ⚙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays 🔢</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers 🗂️</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types 💾</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices 💽</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates 🎯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping 🎁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting 📋</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Function Arguments 📑</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#positional-and-keyword-arguments">Positional and Keyword Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arrays">Arrays</a></li>
@@ -70,14 +70,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration (CI) 🔁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings 📄</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples 💯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests 🤝</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends ➡</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling ⚠</a></li>
+<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration 🔁</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -154,7 +154,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Function Arguments</li>
+      <li>Function Arguments 📑</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/deep_dive/11_function_arguments.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -165,12 +165,12 @@
            <div itemprop="articleBody">
              
   <section id="function-arguments">
-<h1>Function Arguments<a class="headerlink" href="#function-arguments" title="Permalink to this heading"></a></h1>
+<h1>Function Arguments 📑<a class="headerlink" href="#function-arguments" title="Permalink to this heading"></a></h1>
 <p>Here, we explain how the function arguments differ between the placeholder implementation at
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>Many of these points are already adressed in the previous sections:
-<a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
+<a class="reference internal" href="#arrays"><span class="std std-ref">Arrays</span></a>, <span class="xref std std-ref">Data Types</span>, <span class="xref std std-ref">Devices</span> and <span class="xref std std-ref">Inplace Updates</span>.
 However, we thought it would be convenient to revisit all of these considerations in a single section,
 dedicated to function arguments.</p>
 <p>As for type-hints,
@@ -275,9 +275,9 @@ Likewise, all backend implementations at
 </ul>
 <p>Nearly all the functions in the <a class="reference external" href="https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root">Array API Standard convention</a> have strictly positional-only and keyword-only arguments, with an exception of
 few <code class="code docutils literal notranslate"><span class="pre">creation</span></code> functions such as <code class="code docutils literal notranslate"><span class="pre">ones(shape,</span> <span class="pre">*,</span> <span class="pre">dtype=None,</span> <span class="pre">device=None)</span></code> , <code class="code docutils literal notranslate"><span class="pre">linspace(start,</span> <span class="pre">stop,</span> <span class="pre">/,</span> <span class="pre">num,</span> <span class="pre">*,</span> <span class="pre">dtype=None,</span> <span class="pre">device=None,</span> <span class="pre">endpoint=True)</span></code> etc.
-The rationale behind this is purely a convention. The <code class="code docutils literal notranslate"><span class="pre">shape</span></code> argument is often passed as a keyword, while the <code class="code docutils literal notranslate"><span class="pre">nums</span></code> argument in <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> is often
+The rationale behind this is purely a convention. The <code class="code docutils literal notranslate"><span class="pre">shape</span></code> argument is often passed as a keyword, while the <code class="code docutils literal notranslate"><span class="pre">num</span></code> argument in <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> is often
 passed as a keyword for improved understandability of the code. Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adopts these same exceptions to the
-general rule for the :code:shape and :code:num arguments in these functions.</p>
+general rule for the <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">num</span></code> arguments in these functions.</p>
 </section>
 <section id="arrays">
 <h2>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
@@ -291,14 +291,14 @@ calling any of (<code class="code docutils literal notranslate"><span class="pre
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are also not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, which is used in many functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is specified.
-This is all explained in more detail in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
+This is all explained in more detail in the <a class="reference internal" href="#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
 </section>
 <section id="out-argument">
 <h2>out Argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should always be provided as a keyword-only argument,
 and it should be added to all functions in the Ivy API and backend API which support
 inplace updates, with a default value of <code class="code docutils literal notranslate"><span class="pre">None</span></code> in all cases.
-The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is explained in more detail in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is explained in more detail in the <span class="xref std std-ref">Inplace Updates</span> section.</p>
 </section>
 <section id="dtype-and-device-arguments">
 <h2>dtype and device arguments<a class="headerlink" href="#dtype-and-device-arguments" title="Permalink to this heading"></a></h2>
@@ -310,7 +310,7 @@ at <code class="xref py py-mod docutils literal notranslate"><span class="pre">i
 In a nutshell, by the time the backend implementation is entered,
 the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
-This is futher explained in the <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> sections respectively.</p>
+This is futher explained in the <span class="xref std std-ref">Data Types</span> and <span class="xref std std-ref">Devices</span> sections respectively.</p>
 </section>
 <section id="numbers-in-operator-functions">
 <h2>Numbers in Operator Functions<a class="headerlink" href="#numbers-in-operator-functions" title="Permalink to this heading"></a></h2>
@@ -365,8 +365,8 @@ src="https://www.youtube.com/embed/5cAbryXza18" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="10_formatting.html" class="btn btn-neutral float-left" title="Formatting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="12_docstrings.html" class="btn btn-neutral float-right" title="Docstrings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="10_formatting.html" class="btn btn-neutral float-left" title="Formatting 📋" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="12_docstrings.html" class="btn btn-neutral float-right" title="Docstrings 📄" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

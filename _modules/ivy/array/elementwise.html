@@ -1271,6 +1271,27 @@
 <span class="sd">            an array containing the evaluated result for each element in ``self``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :class:`ivy.Array` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([4.0, 1, -0.0, -5.0])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.log()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1.39, 0., -inf, nan])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([float(&#39;nan&#39;), -5.0, -0.0, 1.0, 5.0, float(&#39;+inf&#39;)])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.log()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([nan, nan, -inf, 0., 1.61, inf])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],\</span>
+<span class="sd">                           [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.log()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[nan, 0., 1.61, inf],</span>
+<span class="sd">                   [-inf, nan, nan, nan]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1604,6 +1625,71 @@
 <span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementwise.maximum"><a class="viewcode-back" href="../../../data_classes/array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise.maximum">[docs]</a>    <span class="k">def</span> <span class="nf">maximum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.maximum.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for ivy.maximum also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array containing elements to maximum threshold.</span>
+<span class="sd">        x2</span>
+<span class="sd">            Tensor containing maximum values, must be broadcastable to x1.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the maximum. If ``False``, the</span>
+<span class="sd">            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An array with the elements of x1, but clipped to not be lower than the x2</span>
+<span class="sd">            values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementwise.minimum"><a class="viewcode-back" href="../../../data_classes/array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise.minimum">[docs]</a>    <span class="k">def</span> <span class="nf">minimum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">use_where</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array containing elements to minimum threshold.</span>
+<span class="sd">        x2</span>
+<span class="sd">            Tensor containing minimum values, must be broadcastable to x1.</span>
+<span class="sd">        use_where</span>
+<span class="sd">            Whether to use :func:`where` to calculate the minimum. If ``False``, the</span>
+<span class="sd">            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is</span>
+<span class="sd">            ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An array with the elements of x1, but clipped to not exceed the x2 values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">use_where</span><span class="o">=</span><span class="n">use_where</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithElementwise.negative"><a class="viewcode-back" href="../../../data_classes/array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise.negative">[docs]</a>    <span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -73,10 +73,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../set_nestable_mode.html">set_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unset_nestable_mode.html">unset_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_nestable_mode.html">get_nestable_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_exception_trace_mode.html">set_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_exception_trace_mode.html">unset_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../get_exception_trace_mode.html">get_exception_trace_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isscalar.html">isscalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_vector_norm.html">clip_vector_norm</a></li>
@@ -241,36 +245,36 @@ is False.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([452]), b=ivy.array([float(‘inf’)]))
-&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><p>a: false,
-b: true</p>
-</div></blockquote>
-<p>}</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘nan’)]), b=ivy.array([0]))
-&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><p>a: true,
-b: false</p>
-</div></blockquote>
-<p>}</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘inf’)]), b=ivy.array([22]))
-&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x, include_infs=False)
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><p>a: false,
-b: false</p>
-</div></blockquote>
-<p>}</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">452</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_value_is_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: true</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_value_is_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: true,</span>
+<span class="go">    b: false</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">22</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_value_is_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">include_infs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: false</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

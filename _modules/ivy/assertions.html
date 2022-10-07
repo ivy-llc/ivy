@@ -247,6 +247,18 @@
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;type must be all or any&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="check_shape"><a class="viewcode-back" href="../../assertions/check_shape.html#ivy.assertions.check_shape">[docs]</a><span class="k">def</span> <span class="nf">check_shape</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">message</span>
+        <span class="k">if</span> <span class="n">message</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> must have the same shape (</span><span class="si">{}</span><span class="s2"> vs </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
 <span class="c1"># Creation #</span>
 <span class="c1"># -------- #</span>
 

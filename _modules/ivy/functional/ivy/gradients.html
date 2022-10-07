@@ -147,6 +147,20 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
+<span class="c1"># Helpers #</span>
+<span class="c1"># ------- #</span>
+
+
+<span class="k">def</span> <span class="nf">_unused_variables_to_zero_gradients</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+        <span class="n">arrays</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">grads</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="o">**</span><span class="n">arrays</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="k">if</span> <span class="n">grads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">grads</span>
+
+
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 

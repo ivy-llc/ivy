@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backend Setting &mdash; Ivy 1.0 documentation</title>
+  <title>Backend Setting ⚙ &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Arrays" href="4_arrays.html" />
-    <link rel="prev" title="Superset Behaviour" href="2_superset_behaviour.html" /> 
+    <link rel="next" title="Arrays 🔢" href="4_arrays.html" />
+    <link rel="prev" title="Superset Behaviour ⭕" href="2_superset_behaviour.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,29 +48,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Setting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code 🔍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types 🧮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour ⭕</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Setting ⚙</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#backend-and-frontend-version-support">Backend and Frontend Version Support</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration (CI) 🔁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays 🔢</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers 🗂️</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types 💾</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices 💽</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates 🎯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping 🎁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting 📋</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments 📑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings 📄</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples 💯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests 🤝</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends ➡</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling ⚠</a></li>
+<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration 🔁</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -147,7 +147,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Backend Setting</li>
+      <li>Backend Setting ⚙</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/deep_dive/3_backend_setting.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -158,7 +158,7 @@
            <div itemprop="articleBody">
              
   <section id="backend-setting">
-<h1>Backend Setting<a class="headerlink" href="#backend-setting" title="Permalink to this heading"></a></h1>
+<h1>Backend Setting ⚙<a class="headerlink" href="#backend-setting" title="Permalink to this heading"></a></h1>
 <p>The backend framework can either be set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code> or it can inferred from the arguments. For the latter, a global variable <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> is located in the file which is initialized as numpy, and is always used to infer the backend in cases where: (a) no backend has been set using the <code class="code docutils literal notranslate"><span class="pre">set_backend</span></code> function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then this is always used, and the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> is overwritten with the framework inferred. numpy will always be the default backend unless it is explicitly set or is inferred.</p>
 <p>When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154">this function</a> for setting the backend, the following steps are performed:</p>
 <ol class="arabic simple">
@@ -170,7 +170,7 @@ function from <code class="code docutils literal notranslate"><span class="pre">
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">wrap the functions</a> where necessary, extending them with shared repeated functionality and
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212">writing the function</a> to <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code>. Wrapping is used in order to avoid excessive code duplication in
 every backend function implementation. This is explained in more detail in the next section:
-<a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
+<span class="xref std std-ref">Function Wrapping</span>.</p></li>
 </ol>
 <p>It’s helpful to look at an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
@@ -224,8 +224,8 @@ src="https://www.youtube.com/embed/ROt5E8aHgww" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="2_superset_behaviour.html" class="btn btn-neutral float-left" title="Superset Behaviour" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="4_arrays.html" class="btn btn-neutral float-right" title="Arrays" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="2_superset_behaviour.html" class="btn btn-neutral float-left" title="Superset Behaviour ⭕" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_arrays.html" class="btn btn-neutral float-right" title="Arrays 🔢" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

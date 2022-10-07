@@ -73,10 +73,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../set_nestable_mode.html">set_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unset_nestable_mode.html">unset_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_nestable_mode.html">get_nestable_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_exception_trace_mode.html">set_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_exception_trace_mode.html">unset_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../get_exception_trace_mode.html">get_exception_trace_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isscalar.html">isscalar</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../to_scalar.html">to_scalar</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="to_scalar_functional.html">ivy.to_scalar</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_to_scalar</a></li>
@@ -240,20 +244,13 @@ Default is False.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_to_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    a: -1,</span>
 <span class="go">    b: 3</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-<span class="go">{</span>
-<span class="go">    a: true,</span>
-<span class="go">    b: true</span>
 <span class="go">}</span>
 </pre></div>
 </div>

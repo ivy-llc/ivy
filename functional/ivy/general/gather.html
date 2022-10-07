@@ -73,10 +73,14 @@
 <li class="toctree-l2"><a class="reference internal" href="set_nestable_mode.html">set_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_nestable_mode.html">unset_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_nestable_mode.html">get_nestable_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_exception_trace_mode.html">set_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unset_exception_trace_mode.html">unset_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_exception_trace_mode.html">get_exception_trace_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isscalar.html">isscalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
@@ -232,16 +236,13 @@ that the inputs broadcast to.</p></li>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    </p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – New array with the values gathered at the specified indices along the
-specified axis.</p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for</em></p></li>
-<li><p><em>simplicity, but this function is *nestable</em>, and therefore also accepts*</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of any of the arguments.</p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – New array with the values gathered at the specified indices along the
+specified axis.</p>
 </dd>
 </dl>
+<p>Both the description and the type hints above assumes an array input for
+simplicity, but this function is <em>nestable</em>, and therefore also accepts
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
@@ -250,9 +251,9 @@ specified axis.</p></li>
 <span class="go">ivy.array([1., 2.])</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                         <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>                         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>                         <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="go">ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])</span>

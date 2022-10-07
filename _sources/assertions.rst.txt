@@ -24,5 +24,6 @@ Assertions
    assertions/check_all.rst
    assertions/check_any.rst
    assertions/check_all_or_any_fn.rst
+   assertions/check_shape.rst
    assertions/check_fill_value_and_dtype_are_compatible.rst
 

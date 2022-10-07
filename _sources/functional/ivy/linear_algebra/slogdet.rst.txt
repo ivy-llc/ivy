@@ -3,6 +3,8 @@ slogdet
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.slogdet
 
+.. autofunction:: ivy.array.array_methods.slogdet
+
 .. autofunction:: ivy.container.container_methods.slogdet
 
 .. autofunction:: ivy.container.container_methods.static_slogdet
@@ -33,6 +35,7 @@ slogdet
    :caption: slogdet
 
    slogdet/slogdet_functional.rst
+   slogdet/slogdet_array.rst
    slogdet/slogdet_container.rst
    slogdet/static_slogdet_container.rst
 

@@ -68,6 +68,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../det.html">det</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diag.html">diag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../eigh.html">eigh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../eigvalsh.html">eigvalsh</a></li>
@@ -217,7 +218,7 @@ instances in place of any of the arguments.</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span>                              <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go">torch.Size([4, 3])</span>
+<span class="go">(4, 3)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -233,7 +234,7 @@ instances in place of any of the arguments.</p>
 <p>Compare the singular value S by ivy.svdvals() with the result by ivy.svd().</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">SS</span> <span class="o">-</span> <span class="n">S</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-<span class="go">ivy.array([0.00e+00, 2.38e-07, 0.00e+00])</span>
+<span class="go">ivy.array([0., 0., 0.])</span>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>

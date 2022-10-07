@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arrays &mdash; Ivy 1.0 documentation</title>
+  <title>Arrays 🔢 &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Containers" href="5_containers.html" />
-    <link rel="prev" title="Backend Setting" href="3_backend_setting.html" /> 
+    <link rel="next" title="Containers 🗂️" href="5_containers.html" />
+    <link rel="prev" title="Backend Setting ⚙" href="3_backend_setting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,31 +48,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Arrays</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code 🔍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types 🧮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour ⭕</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting ⚙</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Arrays 🔢</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#native-array">Native Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-array">Ivy Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#array-handling">Array Handling</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration (CI) 🔁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers 🗂️</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types 💾</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices 💽</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates 🎯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping 🎁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting 📋</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments 📑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings 📄</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples 💯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests 🤝</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends ➡</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling ⚠</a></li>
+<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration 🔁</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -149,7 +149,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Arrays</li>
+      <li>Arrays 🔢</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/deep_dive/4_arrays.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -160,7 +160,7 @@
            <div itemprop="articleBody">
              
   <section id="arrays">
-<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h1>
+<h1>Arrays 🔢<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h1>
 <p>There are two types of array in Ivy, there is the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and also the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
 <section id="native-array">
 <h2>Native Array<a class="headerlink" href="#native-array" title="Permalink to this heading"></a></h2>
@@ -234,7 +234,7 @@ otherwise it would be impossible to chain functions together!</p>
 <li><p>convert all of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
 </ol>
 <p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149">inputs_to_native_arrays</a> and
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <span class="xref std std-ref">Function Wrapping</span> section.</p>
 <p>All Ivy functions <em>also</em> accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
 This is for a couple of reasons.
 Firstly, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,
@@ -242,11 +242,11 @@ and so supporting them in the input is not a problem.
 Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.</p>
 <p>Therefore, all input arrays to Ivy functions have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>,
-whereas the output arrays have type <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+whereas the output arrays have type <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <span class="xref std std-ref">Function Arguments</span> section.</p>
 <p>However, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
 which is used in most functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dictates the array to which the result should be written, and so it effectively
-serves the same purpose as the function return. This is further explained in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+serves the same purpose as the function return. This is further explained in the <span class="xref std std-ref">Inplace Updates</span> section.</p>
 <p>As a final point, extra attention is required for <em>compositional</em> functions,
 as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array,
@@ -269,8 +269,8 @@ src="https://www.youtube.com/embed/tAlDPnWcLDE" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="3_backend_setting.html" class="btn btn-neutral float-left" title="Backend Setting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="5_containers.html" class="btn btn-neutral float-right" title="Containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="3_backend_setting.html" class="btn btn-neutral float-left" title="Backend Setting ⚙" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_containers.html" class="btn btn-neutral float-right" title="Containers 🗂️" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -73,10 +73,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../set_nestable_mode.html">set_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unset_nestable_mode.html">unset_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_nestable_mode.html">get_nestable_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_exception_trace_mode.html">set_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_exception_trace_mode.html">unset_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../get_exception_trace_mode.html">get_exception_trace_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isscalar.html">isscalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_vector_norm.html">clip_vector_norm</a></li>
@@ -228,22 +232,15 @@
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – The array following the in-place decrement.</p></li>
-<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (<em>//data-apis.org/array-api/latest/API_specification/generated/</em>) – signatures.elementwise_functions.tan.html&gt;`_</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – The array following the in-place decrement.</p>
 </dd>
 </dl>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.3</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">6.8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.3</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],[</span><span class="mf">6.8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([[ 4.05,  5.75, -1.25],</span>

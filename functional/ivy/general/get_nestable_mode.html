@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="array_equal" href="array_equal.html" />
+    <link rel="next" title="set_exception_trace_mode" href="set_exception_trace_mode.html" />
     <link rel="prev" title="unset_nestable_mode" href="unset_nestable_mode.html" /> 
 </head>
 
@@ -73,10 +73,14 @@
 <li class="toctree-l2"><a class="reference internal" href="set_nestable_mode.html">set_nestable_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_nestable_mode.html">unset_nestable_mode</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">get_nestable_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_exception_trace_mode.html">set_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unset_exception_trace_mode.html">unset_exception_trace_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_exception_trace_mode.html">get_exception_trace_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isscalar.html">isscalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
@@ -212,12 +216,12 @@
 <dd><p>Get the current mode of whether to check if function inputs are ivy.Container.
 Default is True.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_nestable_mode</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
 <span class="go">True</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_nestable_mode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_nestable_mode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
 <span class="go">False</span>
 </pre></div>
 </div>
@@ -240,7 +244,7 @@ Default is True.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="unset_nestable_mode.html" class="btn btn-neutral float-left" title="unset_nestable_mode" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="array_equal.html" class="btn btn-neutral float-right" title="array_equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="set_exception_trace_mode.html" class="btn btn-neutral float-right" title="set_exception_trace_mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

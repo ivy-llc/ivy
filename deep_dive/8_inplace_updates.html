@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inplace Updates &mdash; Ivy 1.0 documentation</title>
+  <title>Inplace Updates 🎯 &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Function Wrapping" href="9_function_wrapping.html" />
-    <link rel="prev" title="Devices" href="7_devices.html" /> 
+    <link rel="next" title="Function Wrapping 🎁" href="9_function_wrapping.html" />
+    <link rel="prev" title="Devices 💽" href="7_devices.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,30 +48,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Inplace Updates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code 🔍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types 🧮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour ⭕</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting ⚙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays 🔢</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers 🗂️</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types 💾</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices 💽</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Inplace Updates 🎯</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#out-argument">out argument</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#copy-argument">copy argument</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration (CI) 🔁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping 🎁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting 📋</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments 📑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings 📄</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples 💯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests 🤝</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends ➡</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling ⚠</a></li>
+<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration 🔁</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -148,7 +148,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Inplace Updates</li>
+      <li>Inplace Updates 🎯</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/deep_dive/8_inplace_updates.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -159,7 +159,7 @@
            <div itemprop="articleBody">
              
   <section id="inplace-updates">
-<h1>Inplace Updates<a class="headerlink" href="#inplace-updates" title="Permalink to this heading"></a></h1>
+<h1>Inplace Updates 🎯<a class="headerlink" href="#inplace-updates" title="Permalink to this heading"></a></h1>
 <p>Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program,
 preventing old unused arrays from being kept in memory for any longer than is strictly necessary.</p>
@@ -275,14 +275,14 @@ This could for example be the input array itself, but can also be any other arra
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
 However, as discussed above, if the function is <em>nestable</em> then <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
-as explained in the <a class="reference internal" href="11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+as explained in the <span class="xref std std-ref">Function Arguments</span> section.</p>
 <p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>
 (or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
 However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.</p>
 <p>In the case of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340">handle_out_argument</a>. As explained in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340">handle_out_argument</a>. As explained in the <span class="xref std std-ref">Function Wrapping</span> section,
 this wrapping is applied to every function with the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code> decorator
 dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
 <p><strong>Primary Functions</strong></p>
@@ -419,7 +419,7 @@ like <a class="reference external" href="https://github.com/unifyai/ivy/blob/204
 wrapping, but we opt to implement this in the compositional function itself,
 due to point 1 mentioned above.</p>
 <p><strong>Mixed Functions</strong></p>
-<p>As explained in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section, <em>mixed</em> functions can effectively
+<p>As explained in the <span class="xref std std-ref">Function Types</span> section, <em>mixed</em> functions can effectively
 behave as either compositional or primary functions, depending on the backend
 that is selected.</p>
 <p>Unlike <em>compositional</em> arguments, where the <code class="code docutils literal notranslate"><span class="pre">handle_out_argument</span></code> decorator is not
@@ -476,8 +476,8 @@ src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="7_devices.html" class="btn btn-neutral float-left" title="Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="9_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="7_devices.html" class="btn btn-neutral float-left" title="Devices 💽" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="9_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping 🎁" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

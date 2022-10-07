@@ -3,6 +3,8 @@ minimum
 
 .. autofunction:: ivy.functional.ivy.elementwise.minimum
 
+.. autofunction:: ivy.array.array_methods.minimum
+
 .. autofunction:: ivy.container.container_methods.static_minimum
 
 .. autofunction:: ivy.container.container_methods.minimum
@@ -33,6 +35,7 @@ minimum
    :caption: minimum
 
    minimum/minimum_functional.rst
+   minimum/minimum_array.rst
    minimum/minimum_container.rst
    minimum/static_minimum_container.rst
 

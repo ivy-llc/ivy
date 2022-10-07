@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Containers &mdash; Ivy 1.0 documentation</title>
+  <title>Containers 🗂️ &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data Types" href="6_data_types.html" />
-    <link rel="prev" title="Arrays" href="4_arrays.html" /> 
+    <link rel="next" title="Data Types 💾" href="6_data_types.html" />
+    <link rel="prev" title="Arrays 🔢" href="4_arrays.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,12 +48,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code 🔍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types 🧮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour ⭕</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting ⚙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays 🔢</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers 🗂️</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#container-instance-methods">Container Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#container-static-methods">Container Static Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api-static-methods">API Static Methods</a></li>
@@ -62,20 +62,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration (CI) 🔁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types 💾</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices 💽</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates 🎯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping 🎁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting 📋</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments 📑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings 📄</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples 💯</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests 🤝</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends ➡</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling ⚠</a></li>
+<li class="toctree-l2"><a class="reference internal" href="19_continuous_integration.html">Continuous Integration 🔁</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -152,7 +152,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Containers</li>
+      <li>Containers 🗂️</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/deep_dive/5_containers.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -163,7 +163,7 @@
            <div itemprop="articleBody">
              
   <section id="containers">
-<h1>Containers<a class="headerlink" href="#containers" title="Permalink to this heading"></a></h1>
+<h1>Containers 🗂️<a class="headerlink" href="#containers" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56">dict</a>, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
 or for storing the weights of a network.</p>
@@ -207,7 +207,7 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 <p>Unlike the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements
 <strong>all nestable functions</strong> in the functional API as <em>static</em> methods.
 The main reason for this is to support the <em>nestable</em> property of all functions in the API,
-which is explained in detail in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+which is explained in detail in the <span class="xref std std-ref">Function Types</span> section.</p>
 <p>To recap, what this means is that every function can arbitrarily accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
 of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
 When multiple containers are passed, this mapping is only applied to their shared nested structure,
@@ -284,7 +284,7 @@ class, they all make calls to the corresponding standard operator functions.</p>
 passed input objects if available, otherwise it will make use of the reverse special
 method of the righthand operand. For instance, if the lefthand operand at any given leaf
 of the container in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to
-the special methods of this array object. As explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section of
+the special methods of this array object. As explained in the <a class="reference internal" href="11_function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a> section of
 the Deep Dive, these special methods will in turn call the corresponding functions from
 the ivy functional API.</p>
 <p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which will make
@@ -295,11 +295,11 @@ the container, such as int, float, <code class="xref py py-class docutils litera
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
-<p>As introduced in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section, most functions in Ivy are
+<p>As introduced in the <span class="xref std std-ref">Function Types</span> section, most functions in Ivy are
 <em>nestable</em>, which means that they can accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments.</p>
 <p>Here, we expand on this explanation.
-Please check out the explanation in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section first.</p>
+Please check out the explanation in the <span class="xref std std-ref">Function Types</span> section first.</p>
 <p><strong>Explicitly Nestable Functions</strong></p>
 <p>The <em>nestable</em> behaviour is added to any function which is decorated with the
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a>
@@ -451,8 +451,8 @@ src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="4_arrays.html" class="btn btn-neutral float-left" title="Arrays" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="6_data_types.html" class="btn btn-neutral float-right" title="Data Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="4_arrays.html" class="btn btn-neutral float-left" title="Arrays 🔢" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_data_types.html" class="btn btn-neutral float-right" title="Data Types 💾" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

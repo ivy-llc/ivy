@@ -604,8 +604,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` instance method:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
-<span class="sd">                              b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_clip_vector_norm(x, 2.0)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -847,8 +846,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        Decrement by a value</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \</span>
-<span class="sd">                              b=ivy.array([0., -25., 50.]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.inplace_decrement(x, 1.5)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -988,8 +986,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        Increment by a value</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \</span>
-<span class="sd">                              b=ivy.array([0., -25., 50.]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.inplace_increment(x, 1.5)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -1820,6 +1817,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        scatter into an empty array</span>
+
 <span class="sd">        &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\</span>
 <span class="sd">                                    b=ivy.array([[2],[3],[4]]))</span>
 <span class="sd">        &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),\</span>
@@ -1834,6 +1832,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        scatter into a container</span>
+
 <span class="sd">        &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\</span>
 <span class="sd">                  b=ivy.array([[2],[3],[4]]))</span>
 <span class="sd">        &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),\</span>
@@ -1915,6 +1914,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        scatter into an empty container</span>
+
 <span class="sd">        &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\</span>
 <span class="sd">                        b=ivy.array([[5],[1],[2]]))</span>
 <span class="sd">        &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([100, 200, 200]),\</span>
@@ -1929,6 +1929,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        scatter into a container.</span>
+
 <span class="sd">        &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\</span>
 <span class="sd">                                    b=ivy.array([[2],[3],[4]]))</span>
 <span class="sd">        &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),\</span>
@@ -2535,6 +2536,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([452]), b=ivy.array([float(&#39;inf&#39;)]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -2544,6 +2546,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        With :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;nan&#39;)]), b=ivy.array([0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -2553,6 +2556,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        With :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;inf&#39;)]), b=ivy.array([22]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x, include_infs=False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -2771,10 +2775,10 @@
 <span class="sd">        {</span>
 <span class="sd">            a: array([[-1, 0, 1],</span>
 <span class="sd">                      [-1, 0, 1],</span>
-<span class="sd">                      [1, 0, -1]]),</span>
+<span class="sd">                      [1, 0, -1]],dtype=int32),</span>
 <span class="sd">            b: array([[-1, 0, 0],</span>
 <span class="sd">                      [1, 0, 1],</span>
-<span class="sd">                      [1, 1, 1]])</span>
+<span class="sd">                      [1, 1, 1]]), dtype=int32</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\</span>
@@ -2784,10 +2788,10 @@
 <span class="sd">        {</span>
 <span class="sd">            a: array([[-1, 0, 1],</span>
 <span class="sd">                      [-1, 0, 1],</span>
-<span class="sd">                      [1, 0, -1]]),</span>
+<span class="sd">                      [1, 0, -1]],dtype=int32),</span>
 <span class="sd">            b: array([[-1, 0, 0],</span>
 <span class="sd">                      [1, 0, 1],</span>
-<span class="sd">                      [1, 1, 1]])</span>
+<span class="sd">                      [1, 1, 1]]),dtype=int32</span>
 <span class="sd">        }</span>
 
 <span class="sd">        Examples</span>
@@ -2850,7 +2854,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With one :class:`ivy.Container` inputs:</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_to_scalar(x)</span>
@@ -2859,13 +2863,6 @@
 <span class="sd">            a: -1,</span>
 <span class="sd">            b: 3</span>
 <span class="sd">        }</span>
-
-<span class="sd">        &gt;&gt;&gt; print(ivy.is_int_dtype(y))</span>
-<span class="sd">        {</span>
-<span class="sd">            a: true,</span>
-<span class="sd">            b: true</span>
-<span class="sd">        }</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;to_scalar&quot;</span><span class="p">,</span>
@@ -2913,7 +2910,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With one :class:`ivy.Container` instances:</span>
+<span class="sd">        With one :class:`ivy.Container` instance:</span>
 
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\</span>
@@ -2924,9 +2921,7 @@
 <span class="sd">            a: 1,</span>
 <span class="sd">            b: 0,</span>
 <span class="sd">            c: -1</span>
-<span class="sd">        }</span>
-
-
+<span class="sd">        }      </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_to_scalar</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -3636,6 +3631,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With `ivy.Container` input and backend set as &#39;numpy&#39;:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))</span>
 <span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace_updates(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
@@ -3645,6 +3641,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        With `ivy.Container` input and backend set as &#39;tensorflow&#39;:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\</span>
 <span class="sd">                              b=ivy.array([0., 5.5, -8]))</span>
 <span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace_updates(x)</span>
@@ -3708,8 +3705,8 @@
 <span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: true,</span>
-<span class="sd">            b: true</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
 <span class="sd">        }</span>
 
 <span class="sd">        With an `ivy.Container` instance and backend set as &#39;tensorflow&#39;:</span>
@@ -3718,8 +3715,8 @@
 <span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: true,</span>
-<span class="sd">            b: true</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="n">static_supports_inplace_updates</span><span class="p">(</span>
