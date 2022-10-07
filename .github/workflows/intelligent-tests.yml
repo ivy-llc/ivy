@@ -21,6 +21,8 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pkl ivy/
            cd ivy
+           ls
+           git status
            python determine_tests.py
 
 #       - name: Run Functional-Core Tests
