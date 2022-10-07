@@ -3,8 +3,6 @@ maximum
 
 .. autofunction:: ivy.functional.ivy.elementwise.maximum
 
-.. autofunction:: ivy.array.array_methods.maximum
-
 .. autofunction:: ivy.container.container_methods.maximum
 
 .. autofunction:: ivy.container.container_methods.static_maximum
@@ -35,7 +33,6 @@ maximum
    :caption: maximum
 
    maximum/maximum_functional.rst
-   maximum/maximum_array.rst
    maximum/maximum_container.rst
    maximum/static_maximum_container.rst
 

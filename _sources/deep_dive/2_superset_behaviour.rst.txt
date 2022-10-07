@@ -1,5 +1,5 @@
-Superset Behaviour ⭕
-=====================
+Superset Behaviour
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
