@@ -221,6 +221,10 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
+def TruncateDiv(*, x, y, name="TruncateDiv"):
+    return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
+
+
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
 
