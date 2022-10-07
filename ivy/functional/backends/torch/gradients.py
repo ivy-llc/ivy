@@ -41,6 +41,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
                 [v for k, v in xs.to_iterator()],
                 retain_graph=retain_grads,
                 create_graph=retain_grads,
+                allow_unused=True,
             )
         )
         grads = xs.from_flat_list(x_grads_flat)
@@ -50,9 +51,17 @@ def execute_with_gradients(func, xs, retain_grads=False):
             xs,
             retain_graph=retain_grads,
             create_graph=retain_grads,
+            allow_unused=True,
         )[0]
     y = ivy.to_ivy(y)
     grads = ivy.to_ivy(grads)
+    if isinstance(grads, ivy.Container):
+        arrays = {
+            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
+        }
+        grads = ivy.Container(**arrays)
+    else:
+        grads = ivy.zeros_like(xs) if grads is None else grads
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
