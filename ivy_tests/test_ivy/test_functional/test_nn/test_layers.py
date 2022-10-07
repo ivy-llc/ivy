@@ -352,7 +352,7 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    dilations = draw(st.integers(1, 1))
+    dilations = draw(st.integers(1, 3))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
