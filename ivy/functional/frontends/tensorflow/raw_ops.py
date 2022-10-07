@@ -221,6 +221,10 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
+def Unpack(*, value, num, axis=0, name="Unpack"):
+    return ivy.unstack(value, axis=axis)[:num]
+
+
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
 
