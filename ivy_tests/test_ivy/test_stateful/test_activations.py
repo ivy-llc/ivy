@@ -43,7 +43,6 @@ def test_gelu(
         native_array_flags_method=native_array,
         container_flags_method=container,
         all_as_kwargs_np_method={"x": x[0]},
-        fw=fw,
         class_name="GELU",
     )
 

@@ -457,6 +457,8 @@ def array_indices_axis(
             max_dim_size=max_dim_size,
         )
     )
+    x_dtype = x_dtype[0]
+    x = x[0]
     if disable_random_axis:
         axis = -1
         batch_dims = 0
@@ -497,6 +499,8 @@ def array_indices_axis(
             shape=indices_shape,
         )
     )
+    indices_dtype = indices_dtype[0]
+    indices = indices[0]
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
     return [x_dtype, indices_dtype], x, indices, axis, batch_dims
@@ -631,6 +635,9 @@ def array_values(
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
+
     size = 1
     if isinstance(shape, int):
         size = shape
@@ -659,35 +666,27 @@ def array_values(
     if kind_dtype != "bool":
         if min_value is None:
             min_value = dtype_info.min
-            b_scale_min = True
         else:
             min_value = _clamp_value(min_value, dtype_info)
-            b_scale_min = False
 
         if max_value is None:
             max_value = dtype_info.max
-            b_scale_max = True
         else:
             max_value = _clamp_value(max_value, dtype_info)
-            b_scale_max = False
 
         assert max_value >= min_value
 
         # Scale the values
         if safety_factor_scale == "linear":
-            if b_scale_min:
-                min_value = min_value / large_abs_safety_factor
-            if b_scale_max:
-                max_value = max_value / large_abs_safety_factor
+            min_value = min_value / large_abs_safety_factor
+            max_value = max_value / large_abs_safety_factor
             if kind_dtype == "float" and not abs_smallest_val:
                 abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
         elif safety_factor_scale == "log":
-            if b_scale_min:
-                min_sign = math.copysign(1, min_value)
-                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-            if b_scale_max:
-                max_sign = math.copysign(1, max_value)
-                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            min_sign = math.copysign(1, min_value)
+            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            max_sign = math.copysign(1, max_value)
+            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
             if kind_dtype == "float" and not abs_smallest_val:
                 m, e = math.frexp(dtype_info.smallest_normal)
                 abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
@@ -863,8 +862,11 @@ def mutually_broadcastable_shapes(
 @st.composite
 def array_and_broadcastable_shape(draw, dtype):
     """Returns an array and a shape that the array can be broadcast to"""
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
     in_shape = draw(nph.array_shapes(min_dims=1, max_dims=4))
-    x = draw(nph.arrays(shape=in_shape, dtype=dtype))
+    x = draw(array_values(shape=in_shape, dtype=dtype))
     to_shape = draw(
         mutually_broadcastable_shapes(1, base_shape=in_shape)
         .map(lambda S: S[0])

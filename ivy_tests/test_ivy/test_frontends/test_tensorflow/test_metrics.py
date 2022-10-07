@@ -129,7 +129,6 @@ def test_tensorflow_binary_accuracy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     threshold,
 ):
     input_dtype, x = dtype_and_x
@@ -139,7 +138,6 @@ def test_tensorflow_binary_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_accuracy",
         y_true=x[0],
@@ -170,7 +168,6 @@ def test_sparse_categorical_crossentropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -185,7 +182,6 @@ def test_sparse_categorical_crossentropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_categorical_crossentropy",
         y_true=y_true,
@@ -210,7 +206,7 @@ def test_sparse_categorical_crossentropy(
     ),
 )
 def test_tensorflow_mean_absolute_error(
-    input_dtype_x, as_variable, num_positional_args, native_array, fw
+    input_dtype_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = input_dtype_x
     helpers.test_frontend_function(
@@ -219,7 +215,6 @@ def test_tensorflow_mean_absolute_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_error",
         y_true=x[0],
@@ -253,7 +248,6 @@ def test_binary_crossentropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -268,7 +262,6 @@ def test_binary_crossentropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_crossentropy",
         y_true=y_true,
@@ -294,7 +287,7 @@ def test_binary_crossentropy(
     ),
 )
 def test_sparse_top_k_categorical_accuracy(
-    dtype_pred_and_labels, k, as_variable, num_positional_args, native_array, fw
+    dtype_pred_and_labels, k, as_variable, num_positional_args, native_array
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -303,7 +296,6 @@ def test_sparse_top_k_categorical_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_top_k_categorical_accuracy",
         y_true=y_true,
@@ -329,7 +321,7 @@ def test_sparse_top_k_categorical_accuracy(
     ),
 )
 def test_categorical_accuracy(
-    dtype_and_y, as_variable, num_positional_args, native_array, fw
+    dtype_and_y, as_variable, num_positional_args, native_array
 ):
     input_dtype, y = dtype_and_y
     helpers.test_frontend_function(
@@ -338,7 +330,6 @@ def test_categorical_accuracy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.categorical_accuracy",
         y_true=y[0],
@@ -360,7 +351,7 @@ def test_categorical_accuracy(
     ),
 )
 def test_tensorflow_kl_divergence(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -369,7 +360,6 @@ def test_tensorflow_kl_divergence(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.kl_divergence",
         y_true=x[0],
@@ -391,7 +381,7 @@ def test_tensorflow_kl_divergence(
     ),
 )
 def test_tensorflow_poisson(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -400,7 +390,6 @@ def test_tensorflow_poisson(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.poisson",
         y_true=x[0],
@@ -424,7 +413,7 @@ def test_tensorflow_poisson(
     ),
 )
 def test_tensorflow_mean_squared_error(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -433,7 +422,6 @@ def test_tensorflow_mean_squared_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_error",
         y_true=x[0],
@@ -457,7 +445,7 @@ def test_tensorflow_mean_squared_error(
     ),
 )
 def test_tensorflow_mean_absolute_percentage_error(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -466,7 +454,6 @@ def test_tensorflow_mean_absolute_percentage_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_percentage_error",
         y_true=x[0],
@@ -488,7 +475,7 @@ def test_tensorflow_mean_absolute_percentage_error(
     ),
 )
 def test_tensorflow_hinge(
-    dtype_pred_and_labels, as_variable, num_positional_args, native_array, fw
+    dtype_pred_and_labels, as_variable, num_positional_args, native_array
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -497,7 +484,6 @@ def test_tensorflow_hinge(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.hinge",
         y_pred=y_pred,
@@ -519,7 +505,7 @@ def test_tensorflow_hinge(
     ),
 )
 def test_tensorflow_squared_hinge(
-    dtype_pred_and_labels, as_variable, num_positional_args, native_array, fw
+    dtype_pred_and_labels, as_variable, num_positional_args, native_array
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -528,7 +514,6 @@ def test_tensorflow_squared_hinge(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.squared_hinge",
         y_pred=y_pred,
@@ -554,7 +539,6 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -563,7 +547,6 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_logarithmic_error",
         y_true=x[0],
@@ -594,7 +577,6 @@ def test_tensorflow_cosine_similarity(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     with_out,  # noqa: E501
 ):
     dtype = d_type
@@ -607,7 +589,6 @@ def test_tensorflow_cosine_similarity(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.cosine_similarity",
         y_true=y_true,

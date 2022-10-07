@@ -1,3 +1,4 @@
+from typing import Optional
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -5,7 +6,9 @@ from ivy.functional.ivy.extensions import (
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
+from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
+import math
 
 
 def is_native_sparse_array(x):
@@ -19,7 +22,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     if _is_data_not_indices_values_and_shape(
         data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -59,3 +62,35 @@ def native_sparse_array_to_indices_values_and_shape(x):
     elif x.layout == torch.sparse_csr:
         return [x.crow_indices(), x.col_indices()], x.values(), x.size()
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
+
+
+def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
+    return torch.sinc(x, out=out)
+
+
+sinc.support_native_out = True
+sinc.unsupported_dtypes = ("float16",)
+
+
+def vorbis_window(
+    window_length: torch.tensor,
+    *,
+    dtype: Optional[torch.dtype] = torch.float32,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.tensor(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )
+
+
+vorbis_window.support_native_out = False

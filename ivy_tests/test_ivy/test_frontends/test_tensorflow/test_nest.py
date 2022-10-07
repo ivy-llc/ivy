@@ -24,7 +24,6 @@ def test_tensorflow_flatten(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -33,7 +32,6 @@ def test_tensorflow_flatten(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="tensorflow",
         fn_tree="nest.flatten",
         structure=x[0] if use_array else x[0].tolist(),

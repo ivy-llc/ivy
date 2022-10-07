@@ -40,13 +40,12 @@ def test_constant(
             "var_shape": var_shape,
             "device": "cpu",
         },
-        fw=fw,
         class_name="Constant",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -79,13 +78,12 @@ def test_zeros(
             "var_shape": var_shape,
             "device": "cpu",
         },
-        fw=fw,
         class_name="Zeros",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -117,13 +115,12 @@ def test_ones(
             "var_shape": var_shape,
             "device": "cpu",
         },
-        fw=fw,
         class_name="Ones",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -180,13 +177,12 @@ def test_uniform(
             "fan_in": fan_in,
             "fan_out": fan_out,
         },
-        fw=fw,
         class_name="Uniform",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
     if fan_mode == "fan_in":
         fan = fan_in
@@ -239,13 +235,12 @@ def test_glorot_uniform(
             "fan_in": fan_in,
             "fan_out": fan_out,
         },
-        fw=fw,
         class_name="GlorotUniform",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     bound = (6 / (fan_in + fan_out)) ** 0.5
@@ -287,13 +282,12 @@ def test_first_layer_siren(
             "device": "cpu",
             "fan_in": fan_in,
         },
-        fw=fw,
         class_name="FirstLayerSiren",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     bound = fan_in
@@ -337,13 +331,12 @@ def test_siren(
             "device": "cpu",
             "fan_in": fan_in,
         },
-        fw=fw,
         class_name="Siren",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
 
     bound = ((6 / fan_in) ** 0.5) / w0
@@ -398,13 +391,12 @@ def test_kaiming_normal(
             "negative_slope": negative_slope,
             "dtype": dtype,
         },
-        fw=fw,
         class_name="KaimingNormal",
         method_name="create_variables",
-        test_values=False,
-        ground_truth_backend="numpy",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_values=False,
+        ground_truth_backend="numpy",
     )
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype

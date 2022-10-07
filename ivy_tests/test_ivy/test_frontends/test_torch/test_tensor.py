@@ -26,10 +26,8 @@ def test_torch_instance_add(
     dtype_and_x,
     alpha,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -48,7 +46,6 @@ def test_torch_instance_add(
             "other": x[1],
             "alpha": alpha,
         },
-        fw=fw,
         frontend="torch",
         class_name="Tensor",
         method_name="add",
@@ -84,10 +81,8 @@ def dtypes_x_reshape(draw):
 def test_torch_instance_reshape(
     dtypes_x_reshape,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_method(
@@ -105,7 +100,6 @@ def test_torch_instance_reshape(
         all_as_kwargs_np_method={
             "shape": shape,
         },
-        fw=fw,
         frontend="torch",
         class_name="Tensor",
         method_name="reshape",

@@ -486,12 +486,11 @@ def test_clip(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     dtypes, (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtypes[0],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -510,7 +509,7 @@ def test_clip(
 def _constant_pad_helper(draw):
     dtype, value, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True, min_num_dims=1
+            available_dtypes=helpers.get_dtypes("float"), ret_shape=True, min_num_dims=1
         )
     )
     pad_width = tuple(
@@ -525,8 +524,7 @@ def _constant_pad_helper(draw):
             )
         )
     )
-    constant = draw(helpers.array_values(dtype=dtype[0], shape=()))
-    return dtype, value, pad_width, constant
+    return dtype, value, pad_width
 
 
 @st.composite
@@ -664,8 +662,8 @@ def test_constant_pad(
     instance_method,
     fw,
 ):
-    dtype, value, pad_width, constant = dtype_value_pad_width_constant
-
+    dtype, value, pad_width = dtype_value_pad_width_constant
+    constant = float(value[0].flat[0])  # just use the first value as fill value
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -976,8 +974,7 @@ def test_zero_pad(
     instance_method,
     fw,
 ):
-    # Drop the generated constant as only 0 is used
-    dtype, value, pad_width, _ = dtype_value_pad_width
+    dtype, value, pad_width = dtype_value_pad_width
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

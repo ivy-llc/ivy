@@ -1,5 +1,5 @@
-Function Types
-==============
+Function Types 🧮
+=================
 
 .. _`_wrap_function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
@@ -151,7 +151,7 @@ As a first example, every function in the `nest.py`_ module is a standalone func
 All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
 or (c) reference other standalone functions.
 
-A few other examples outside of the :code:`nest.py` module are:
+A few other examples outside of the :mod:`nest.py` module are:
 `ivy.default`_ which simply returns :code:`x` if it exists else the default value,
 `ivy.cache_fn`_ which wraps a function such that when :code:`cache=True` is passed,
 then a previously cached output is returned,
