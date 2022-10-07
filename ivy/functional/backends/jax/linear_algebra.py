@@ -2,6 +2,7 @@
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
 from collections import namedtuple
+from typeguard import check_type
 
 # local
 import ivy
@@ -175,11 +176,12 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Sequence[int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple) and axis:
+    check_type("axis", axis, Sequence[int])
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 

@@ -2,6 +2,7 @@
 import tensorflow as tf
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
+from typeguard import check_type
 
 # local
 import ivy
@@ -278,10 +279,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Sequence[int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    check_type("axis", axis, Sequence[int])
     if ord == -float("inf"):
         reduce_min = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis

@@ -424,6 +424,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if (
                 isinstance(linalg_v, FunctionType)
                 and linalg_k != "namedtuple"
+                and linalg_k != "check_type"
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
