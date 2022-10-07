@@ -121,7 +121,7 @@ def IdentityN(*, input, name="IdentityN"):
 
 
 def Inv(*, x, name="Inv"):
-    return ivy.astype(ivy.divide(ivy.ones_like(x), x), x.dtype)
+    return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
 def Less(*, x, y, name="Less"):

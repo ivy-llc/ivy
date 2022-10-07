@@ -1493,7 +1493,7 @@ def test_tensorflow_IdentityN(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
+        available_dtypes=helpers.get_dtypes("numeric", full=True)
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Inv"
@@ -1502,7 +1502,6 @@ def test_tensorflow_IdentityN(
 def test_tensorflow_Inv(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
 ):
@@ -1510,7 +1509,7 @@ def test_tensorflow_Inv(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
