@@ -114,11 +114,31 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    sl = [slice(None)] * params.ndim
-    sl[axis] = indices.type(torch.int64)
-    return params[tuple(sl)]
+    result = []
+    if batch_dims == 0:
+        result = params[
+            (slice(None),) * (axis % params.ndim) + (indices.type(torch.int64),)
+        ]
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = p[
+                (slice(None),) * (axis - batch_dims % p.ndim) + (i.type(torch.int64),)
+            ]
+            result.append(r)
+        result = torch.stack(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 
 def gather_nd(

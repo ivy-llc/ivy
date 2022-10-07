@@ -228,6 +228,7 @@ def test_docstrings(backend):
         "namedtuple",
         "invalid_dtype",
         "DType",
+        "NativeDtype",
         "Dtype",
         "multinomial",
         "num_cpu_cores",

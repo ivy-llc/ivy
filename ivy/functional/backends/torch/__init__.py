@@ -88,6 +88,7 @@ def closest_valid_dtype(type):
 
 
 backend = "torch"
+backend_version = torch.__version__
 
 
 # local sub-modules
