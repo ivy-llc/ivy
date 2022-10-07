@@ -11,6 +11,7 @@ def absolute(x):
 
 
 def add(x1, x2):
+    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
@@ -73,8 +74,10 @@ def clip(a, a_min=None, a_max=None, out=None):
     )
     a = ivy.array(a)
     if a_min is None:
+        a, a_max = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_max)
         return ivy.minimum(a, a_max, out=out)
     if a_max is None:
+        a, a_min = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_min)
         return ivy.maximum(a, a_min, out=out)
     return ivy.clip(a, a_min, a_max, out=out)
 
@@ -87,6 +90,7 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 def dot(a, b, *, precision=None):
+    a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
@@ -116,3 +120,12 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
+
+
+def arctan(x):
+    ret = ivy.atan(x)
+    return ret
+
+
+def arctan2(x1, x2):
+    return ivy.atan2(x1, x2)
