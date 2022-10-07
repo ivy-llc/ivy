@@ -20,8 +20,8 @@ jobs:
            pip3 install --upgrade pip
            pip3 install setuptools==58.5.3
            pip3 install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-           pip3 install -r requirements/requirements.txt
-           pip3 install -r requirements/optional.txt
+           pip3 install -r ivy/requirements/requirements.txt
+           pip3 install -r ivy/requirements/optional.txt
            pip3 install pydriller tqdm coverage
            cd ivy
            python3 determine_test_coverage.py
