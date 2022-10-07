@@ -167,7 +167,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0., 1., 2. , 1. , 0.])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.unique_counts()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        uc(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))</span>
+<span class="sd">        Results(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
@@ -212,7 +212,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0.3,0.4,0.7,0.4,0.2,0.8,0.5])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.unique_inverse()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        unique_inverse(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),</span>
+<span class="sd">        Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),</span>
 <span class="sd">        inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

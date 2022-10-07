@@ -247,7 +247,7 @@ data type of x.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input and backend set as <cite>torch</cite>:</p>
@@ -255,8 +255,8 @@ data type of x.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: true,</span>
-<span class="go">    b: true</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: false</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -283,7 +283,7 @@ framework supports in-place operations with argument’s data type.</p>
 <p class="rubric">Examples</p>
 <p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">supports_inplace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 <span class="go">False</span>
 </pre></div>
@@ -326,8 +326,8 @@ True if nodes of the Container support in-place operations. False otherwise.</p>
 &gt;&gt;&gt; print(ret)
 {</p>
 <blockquote>
-<div><p>a: true,
-b: true</p>
+<div><p>a: false,
+b: false</p>
 </div></blockquote>
 <p>}</p>
 <p>With an <cite>ivy.Container</cite> instance and backend set as ‘tensorflow’:
@@ -336,8 +336,8 @@ b: true</p>
 &gt;&gt;&gt; print(ret)
 {</p>
 <blockquote>
-<div><p>a: true,
-b: true</p>
+<div><p>a: false,
+b: false</p>
 </div></blockquote>
 <p>}</p>
 </dd></dl>
