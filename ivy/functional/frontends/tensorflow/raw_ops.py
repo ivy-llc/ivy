@@ -2,7 +2,6 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
-
 def AddN(*, inputs, name="AddN"):
     inputs = ivy.array(inputs)
     return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
@@ -17,7 +16,7 @@ def Acosh(*, x, name="Acosh"):
 
 
 def Add(*, x, y, name="Add"):
-    return ivy.add(x, y)
+    return tf_frontend.add(x,y)
 
 
 def ArgMax(*, input, dimension, output_type=None, name=None):
@@ -71,7 +70,7 @@ def Cosh(*, x, name="cosh"):
 
 
 def Div(*, x, y, name="Div"):
-    return ivy.divide(x, y)
+    return tf_frontend.divide(x,y)
 
 
 def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
