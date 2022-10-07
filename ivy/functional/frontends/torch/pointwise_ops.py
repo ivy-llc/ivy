@@ -1,10 +1,10 @@
 # global
 import ivy
-from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import ivy.functional.frontends.torch as torch_frontend
 
 
 def add(input, other, *, alpha=None, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
@@ -57,7 +57,7 @@ def cosh(input, *, out=None):
 
 
 def subtract(input, other, *, alpha=1, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.subtract(input, other * alpha, out=out)
 
 
@@ -94,7 +94,7 @@ def square(input, *, out=None):
 
 
 def atan2(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.atan2(input, other, out=out)
 
 
@@ -103,7 +103,7 @@ def negative(input, *, out=None):
 
 
 def bitwise_and(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_and(input, other, out=out)
 
 
@@ -112,22 +112,22 @@ def bitwise_not(input, *, out=None):
 
 
 def bitwise_xor(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_xor(input, other, out=out)
 
 
 def bitwise_or(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_or(input, other, out=out)
 
 
 def bitwise_left_shift(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_left_shift(input, other, out=out)
 
 
 def bitwise_right_shift(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_right_shift(input, other, out=out)
 
 
@@ -156,17 +156,17 @@ def logical_not(input, *, out=None):
 
 
 def logical_and(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_and(input, other, out=out)
 
 
 def logical_or(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_or(input, other, out=out)
 
 
 def logical_xor(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_xor(input, other, out=out)
 
 

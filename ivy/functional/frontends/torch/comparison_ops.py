@@ -6,14 +6,14 @@ to ivy functional API
 """
 # global
 import ivy
-from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import ivy.functional.frontends.torch as torch_frontend
 
 # local
 from collections import namedtuple
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.all(
         ivy.less_equal(
             ivy.abs(ivy.subtract(input, other)),
@@ -23,7 +23,7 @@ def _compute_allclose_with_tol(input, other, rtol, atol):
 
 
 def _compute_isclose_with_tol(input, other, rtol, atol):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less_equal(
         ivy.abs(ivy.subtract(input, other)),
         ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
@@ -31,7 +31,7 @@ def _compute_isclose_with_tol(input, other, rtol, atol):
 
 
 def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     finite_input = ivy.isfinite(input)
     finite_other = ivy.isfinite(other)
     if ivy.all(finite_input) and ivy.all(finite_other):
@@ -55,12 +55,12 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 
 def equal(input, other):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.all_equal(input, other, equality_matrix=False)
 
 
 def eq(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.equal(input, other, out=out)
 
 
@@ -69,7 +69,7 @@ def argsort(input, dim=-1, descending=False):
 
 
 def greater_equal(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.greater_equal(input, other, out=out)
 
 
@@ -77,7 +77,7 @@ ge = greater_equal
 
 
 def greater(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.greater(input, other, out=out)
 
 
@@ -85,7 +85,7 @@ gt = greater
 
 
 def isclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     finite_input = ivy.isfinite(input)
     finite_other = ivy.isfinite(other)
     if ivy.all(finite_input) and ivy.all(finite_other):
@@ -139,7 +139,7 @@ def isnan(input):
 
 
 def less_equal(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less_equal(input, other, out=out)
 
 
@@ -147,7 +147,7 @@ le = less_equal
 
 
 def less(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less(input, other, out=out)
 
 
@@ -155,7 +155,7 @@ lt = less
 
 
 def not_equal(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.not_equal(input, other, out=out)
 
 
@@ -208,12 +208,12 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
 
 
 def minimum(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.minimum(input, other, out=out)
 
 
 def fmax(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.where(
         ivy.bitwise_or(ivy.greater(input, other), ivy.isnan(other)),
         input,
@@ -223,7 +223,7 @@ def fmax(input, other, *, out=None):
 
 
 def fmin(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.where(
         ivy.bitwise_or(ivy.less(input, other), ivy.isnan(other)),
         input,
@@ -237,7 +237,7 @@ def msort(input, *, out=None):
 
 
 def maximum(input, other, *, out=None):
-    input, other = promote_types_of_torch_inputs(input, other)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.maximum(input, other, out=out)
 
 
