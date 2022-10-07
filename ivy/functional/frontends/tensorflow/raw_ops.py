@@ -184,6 +184,10 @@ def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
 
 
+def RightShift(*, x, y, name="RightShift"):
+    return ivy.bitwise_right_shift(x, y)
+
+
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
