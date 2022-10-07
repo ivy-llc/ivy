@@ -20,7 +20,6 @@ with open("test_names") as f:
         test_names.append(line[:-1])
 
 test_names = test_names[:-3]
-test_names = test_names[:10]
 
 directories = [
     "ivy",
