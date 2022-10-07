@@ -191,6 +191,33 @@ def test_arange(
         device=device,
     )
 
+@st.composite
+def st_dtype_and_x_nested_seq(draw):
+    dtype_and_x_and_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("numeric")),
+            num_arrays=draw(st.integers(min_value=1, max_value=10)),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            ret_shape=True
+        )
+    )
+    dtype, x, x_shape = dtype_and_x_and_shape
+    # turning x into nested sequence input
+    # alter some dims into a mixture of list/tuple
+    def nested_step_in(x, _depth=0):
+        import random
+        if _depth < len(x_shape) - 1:
+            for k in range(x_shape[_depth]):
+                x[k] = nested_step_in(x[k], _depth + 1)
+        # 50-50 chance for list or tuple
+        return list(x) if random.randint(0, 1) == 0 else tuple(x)
+    for i in range(len(x)):
+        x[i] = nested_step_in(ivy.to_list(x[i]))  # arbitrary nested sequence inputs
+    return dtype, x
+
 
 # asarray
 @handle_cmd_line_args
@@ -203,13 +230,22 @@ def test_arange(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    nested_dtype_and_x=st_dtype_and_x_nested_seq(),
+    scalar_dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=st.integers(min_value=1, max_value=10),
+            min_num_dims=0,
+            max_num_dims=0,
+            min_dim_size=1,
+            max_dim_size=1,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
-    as_list=st.booleans(),
 )
 def test_asarray(
     *,
     dtype_and_x,
-    as_list,
+    nested_dtype_and_x,
+    scalar_dtype_and_x,
     device,
     as_variable,
     num_positional_args,
@@ -218,15 +254,7 @@ def test_asarray(
 ):
     dtype, x = dtype_and_x
 
-    if as_list:
-        if isinstance(x, list):
-            x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
-        else:
-            x = list(x)
-    else:
-        if len(x) == 1:
-            x = x[0]
-
+    # TODO: original line always fails with test_unsupported == True
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -239,6 +267,40 @@ def test_asarray(
         fn_name="asarray",
         object_in=x,
         dtype=dtype,
+        device=device,
+    )
+
+    nested_dtype, nested_x = nested_dtype_and_x
+    # test arbitrary nested sequence with mixture of list & tuple
+    helpers.test_function(
+        input_dtypes=nested_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=fw,
+        fn_name="asarray",
+        object_in=nested_x,
+        dtype=nested_dtype,
+        device=device,
+    )
+
+    scalar_dtype, scalar_x = scalar_dtype_and_x
+    # test scalar input
+    helpers.test_function(
+        input_dtypes=scalar_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=fw,
+        fn_name="asarray",
+        object_in=[ivy.to_scalar(x) for x in scalar_x],
+        dtype=scalar_dtype,
         device=device,
     )
 
