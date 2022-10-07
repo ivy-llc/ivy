@@ -271,10 +271,8 @@ def soft_sign(x):
     return ret.astype(dtype)
 
 
-def softmax(x, /, *, axis=-1):
-    dtype = _type_conversion(x).dtype
-    ret = ivy.softmax(x, axis=axis)
-    return ret.astype(dtype)
+def softmax(x, axis=-1):
+    return ivy.softmax(x, axis=axis)
 
 
 def softplus(x):
