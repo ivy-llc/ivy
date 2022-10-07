@@ -537,9 +537,9 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.permute_dims( axes=(1, 0))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[3.],[4.],[5.]])</span>
+<span class="sd">    {a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}</span>
 
 
 <span class="sd">    This function conforms to the `Array API Standard</span>

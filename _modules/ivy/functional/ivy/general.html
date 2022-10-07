@@ -1285,7 +1285,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[5., 4.], [-2., 6.]], \</span>
 <span class="sd">                       [[3., 7.], [0., -5.]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 0.5, p=2.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
 <span class="sd">                [-0.135,  0.406]],</span>
@@ -1315,7 +1315,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[5., 4.], [-2., 6.]], \</span>
 <span class="sd">                       [[3., 7.], [0., -5.]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 0.5, p=2.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
 <span class="sd">                [-0.135,  0.406]],</span>
@@ -1873,17 +1873,17 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3, dtype=int)</span>
+<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; kwargs = {&#39;out&#39;: o, &#39;bias&#39;: ivy.arange(3)}</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    [{&#39;out&#39;: ivy.array([0, 0, 0])}, {&#39;bias&#39;: ivy.array([0, 1, 2])}]</span>
+<span class="sd">    [{&#39;out&#39;: ivy.array([0., 0., 0.])}, {&#39;bias&#39;: ivy.array([0, 1, 2])}]</span>
 
-<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3, dtype=int)</span>
+<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; kwargs = {&#39;out&#39;: o, &#39;bias&#39;: ivy.arange(3)}</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    [{&#39;out&#39;: ivy.array([0, 0, 0]), &#39;bias&#39;: ivy.array([0, 1, 2])}, {}]</span>
+<span class="sd">    [{&#39;out&#39;: ivy.array([0., 0., 0.]), &#39;bias&#39;: ivy.array([0, 1, 2])}, {}]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">split_kwargs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -2612,7 +2612,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.supports_inplace_updates(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    True</span>
+<span class="sd">    False</span>
 
 <span class="sd">    With :class:`ivy.Container` input and backend set as `torch`:</span>
 
@@ -2620,8 +2620,8 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.supports_inplace_updates(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: true,</span>
-<span class="sd">        b: true</span>
+<span class="sd">        a: false,</span>
+<span class="sd">        b: false</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>

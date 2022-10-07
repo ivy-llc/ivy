@@ -2253,8 +2253,8 @@ True if nodes of the Container support in-place operations. False otherwise.</p>
 &gt;&gt;&gt; print(ret)
 {</p>
 <blockquote>
-<div><p>a: true,
-b: true</p>
+<div><p>a: false,
+b: false</p>
 </div></blockquote>
 <p>}</p>
 <p>With an <cite>ivy.Container</cite> instance and backend set as ‘tensorflow’:
@@ -2263,8 +2263,8 @@ b: true</p>
 &gt;&gt;&gt; print(ret)
 {</p>
 <blockquote>
-<div><p>a: true,
-b: true</p>
+<div><p>a: false,
+b: false</p>
 </div></blockquote>
 <p>}</p>
 </dd></dl>
@@ -2338,10 +2338,10 @@ Default is False.</p></li>
 <span class="go">{</span>
 <span class="go">    a: array([[-1, 0, 1],</span>
 <span class="go">              [-1, 0, 1],</span>
-<span class="go">              [1, 0, -1]]),</span>
+<span class="go">              [1, 0, -1]],dtype=int32),</span>
 <span class="go">    b: array([[-1, 0, 0],</span>
 <span class="go">              [1, 0, 1],</span>
-<span class="go">              [1, 1, 1]])</span>
+<span class="go">              [1, 1, 1]]), dtype=int32</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -2351,10 +2351,10 @@ Default is False.</p></li>
 <span class="go">{</span>
 <span class="go">    a: array([[-1, 0, 1],</span>
 <span class="go">              [-1, 0, 1],</span>
-<span class="go">              [1, 0, -1]]),</span>
+<span class="go">              [1, 0, -1]],dtype=int32),</span>
 <span class="go">    b: array([[-1, 0, 0],</span>
 <span class="go">              [1, 0, 1],</span>
-<span class="go">              [1, 1, 1]])</span>
+<span class="go">              [1, 1, 1]]),dtype=int32</span>
 <span class="go">}</span>
 </pre></div>
 </div>
