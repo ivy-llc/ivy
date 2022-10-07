@@ -126,6 +126,10 @@ def IdentityN(*, input, name="IdentityN"):
     return [ivy.copy_array(x) for x in input]
 
 
+def Inv(*, x, name="Inv"):
+    return ivy.astype(ivy.reciprocal(x), x.dtype)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
