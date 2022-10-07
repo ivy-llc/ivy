@@ -130,6 +130,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def LeftShift(*, x, y, name="LeftShift"):
+    return ivy.bitwise_left_shift(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
