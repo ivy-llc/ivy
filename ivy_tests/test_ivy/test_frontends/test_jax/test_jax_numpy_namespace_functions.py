@@ -80,12 +80,14 @@ def test_jax_numpy_absolute(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.argmax"
     ),
+    keepdims=st.booleans(),
 )
 def test_jax_numpy_argmax(
     dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
+    keepdims,
     fw,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -99,6 +101,7 @@ def test_jax_numpy_argmax(
         fn_tree="numpy.argmax",
         a=x[0],
         axis=axis,
+        keepdims=keepdims
     )
 
 
