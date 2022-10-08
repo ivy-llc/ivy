@@ -719,7 +719,10 @@ def gradient_test(
         kwargs_writeable = ivy.copy_nest(kwargs)
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
-        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
+        ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
+        if isinstance(ret, tuple):
+            ret = ret[0]
+        return ivy.mean(ret)
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
