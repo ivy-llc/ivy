@@ -21,10 +21,10 @@ def argmax(
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
     if output_dtype is not None:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return tf.math.argmax(x, axis=axis, output_type=output_dtype, keepdims=keepdims)
-    return tf.math.argmax(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(ret, output_dtype)
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def argmin(
