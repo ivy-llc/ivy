@@ -1,4 +1,5 @@
 # global
+import sys
 import ivy
 from hypothesis import given, strategies as st
 import numpy as np
@@ -1725,4 +1726,49 @@ def test_tensorflow_Max(
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+import tensorflow as tf
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float32",
+            "float64",
+        ],
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    compute_v=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Eig"
+    ),
+)
+def test_tensorflow_Eig(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    compute_v,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Eig",
+        input=x[0],
+        Tout=tf.complex64,
+        compute_v=compute_v,
     )
