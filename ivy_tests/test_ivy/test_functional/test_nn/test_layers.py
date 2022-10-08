@@ -146,6 +146,7 @@ def test_dropout(
         # cardinality test
         assert u.shape == x[0].shape
 
+
 # dropout1d
 @handle_cmd_line_args
 @given(

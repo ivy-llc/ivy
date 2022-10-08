@@ -55,7 +55,7 @@ class ArrayWithLayers(abc.ABC):
             self._data,
             prob,
             training=training,
-            data_format = data_format,
+            data_format=data_format,
             dtype=dtype,
             out=out,
         )

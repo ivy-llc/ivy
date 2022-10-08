@@ -144,13 +144,14 @@ def dropout1d(
     prob: float,
     /,
     *,
-    training:bool = True,
+    training: bool = True,
     data_format: str = "NWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples from a Bernoulli distribution and the
-    remaining channels are scaled by (1/1-prob). In this case, dropout1d performs a channel-wise dropout but assumes a
-    channel is a 1D feature map.
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout1d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
 
     Parameters
     ----------
@@ -171,8 +172,11 @@ def dropout1d(
         an array with some channels zero-ed and the rest of channels are scaled by (1/1-prob).
 
     """
-
-    return current_backend(x).dropout1d(x,prob, training=training, data_format=data_format, out=out)
+    return current_backend(x).dropout1d(x,
+                                        prob,
+                                        training=training,
+                                        data_format=data_format,
+                                        out=out)
 
 
 # Attention #

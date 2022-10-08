@@ -415,8 +415,8 @@ def dropout1d(
         global RNG
         noise_shape = list(x.shape)
         noise_shape[-1] = 1
-        mask = jax.random.bernoulli(RNG, 1-prob, noise_shape)
-        res = jnp.where(mask, x/(1-prob), 0)
+        mask = jax.random.bernoulli(RNG, 1 - prob, noise_shape)
+        res = jnp.where(mask, x / (1 - prob), 0)
         if data_format == "NWC":
             res = jnp.transpose(res, perm)
         return res

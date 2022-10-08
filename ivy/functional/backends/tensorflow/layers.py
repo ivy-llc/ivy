@@ -456,17 +456,17 @@ def dropout1d(
     prob: float,
     /,
     *,
-    training:bool = True,
+    training: bool = True,
     data_format: str = 'NWC',
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable] :
+) -> Union[tf.Tensor, tf.Variable]:
     if training:
         if data_format == "NCW":
-            perm = (0,2,1) if len(x.shape)==3 else (1,0)
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
             x = tf.transpose(x, perm)
         noise_shape = x.shape.as_list()
         noise_shape[-2] = 1
-        res = tf.nn.dropout (x, prob, noise_shape= noise_shape)
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
         if data_format == "NCW":
             res = tf.transpose(res, perm)
         return res
