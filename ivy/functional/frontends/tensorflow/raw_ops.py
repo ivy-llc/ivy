@@ -2,6 +2,7 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
+
 def AddN(*, inputs, name="AddN"):
     inputs = ivy.array(inputs)
     return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
