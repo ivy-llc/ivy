@@ -90,7 +90,7 @@ class Tensor:
         return tf_frontend.subtract(x, self.data, name=name)
 
     def __rtruediv__(self, x, name="rtruediv"):
-        return tf_frontend.divide(x, self.data, name=name)
+        return tf_frontend.truediv(x, self.data, name=name)
 
     def __sub__(self, y, name="sub"):
         return y.__rsub__(self.data)
