@@ -1,5 +1,5 @@
-Backend Setting
-===============
+Backend Setting ⚙
+=================
 
 .. _`this function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
 .. _`implicit_backend`: https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16

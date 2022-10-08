@@ -1756,8 +1756,8 @@ def test_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
         safety_factor_scale="log",
     ),
     modulus=st.booleans(),
@@ -1789,6 +1789,7 @@ def test_remainder(
         instance_method=instance_method,
         fw=fw,
         fn_name="remainder",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         rtol_=1e-2,
