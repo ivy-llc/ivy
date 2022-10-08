@@ -1741,7 +1741,7 @@ def test_tensorflow_Max(
         fn_name="ivy.functional.frontends.tensorflow.LeftShift"
     ),
 )
-def test_tensorflow_RightShift(
+def test_tensorflow_LeftShift(
     dtype_and_x, as_variable, num_positional_args, native_array
 ):
     dtype, xs = dtype_and_x
