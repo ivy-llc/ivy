@@ -3,9 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def ceil(
     x,
     /,
