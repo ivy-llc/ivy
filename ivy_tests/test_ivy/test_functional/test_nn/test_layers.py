@@ -146,6 +146,59 @@ def test_dropout(
         # cardinality test
         assert u.shape == x[0].shape
 
+# dropout1d
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=3,
+    ),
+    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
+    training=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="dropout1d"),
+)
+def test_dropout1d(
+    *,
+    dtype_and_x,
+    prob,
+    training,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x = dtype_and_x
+    ret = helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="dropout1d",
+        test_values=False,
+        x=x[0],
+        prob=prob,
+        training=training,
+        dtype=dtype,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    for u in ret:
+        # cardinality test
+        assert u.shape == x[0].shape
+
 
 # Attention #
 # ----------#

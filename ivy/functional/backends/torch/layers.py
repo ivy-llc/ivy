@@ -653,6 +653,13 @@ def dropout1d(
     /,
     *,
     training:bool = True,
+    data_format: str = "NWC",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-  return torch.nn.functional.dropout1d(x, p=prob, training=training)
+    if data_format == "NWC":
+        perm = (0,2,1) if len(x.shape)==3 else (1,0)
+        x = torch.permute(x, perm)
+    res = torch.nn.functional.dropout1d(x, p=prob, training=training)
+    if data_format == "NWC":
+        res = torch.permute(res, perm)
+    return res

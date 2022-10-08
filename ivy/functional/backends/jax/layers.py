@@ -1,12 +1,18 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
+import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
+
+# Extra #
+# ------#
+
+RNG = jax.random.PRNGKey(0)
 
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
@@ -398,14 +404,21 @@ def dropout1d(
     prob: float,
     /,
     *,
-    training:bool = True,
+    training: bool = True,
+    data_format: str = 'NWC',
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-  rng_key = jax.random.PRNGKey(42)
-  if training:
-    noise_shape = list(x.shape)
-    noise_shape[-1] = 1
-    mask = jax.random.bernoulli(rng_key, 1-prob, noise_shape)
-    return jnp.where(mask, x/(1-prob), 0)
-  else:
-    return x
+    if training:
+        if data_format == "NWC":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = jnp.transpose(x, perm)
+        global RNG
+        noise_shape = list(x.shape)
+        noise_shape[-1] = 1
+        mask = jax.random.bernoulli(RNG, 1-prob, noise_shape)
+        res = jnp.where(mask, x/(1-prob), 0)
+        if data_format == "NWC":
+            res = jnp.transpose(res, perm)
+        return res
+    else:
+        return x

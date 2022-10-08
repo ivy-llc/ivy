@@ -145,6 +145,7 @@ def dropout1d(
     /,
     *,
     training:bool = True,
+    data_format: str = "NWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Randomly zero out entire channels with probability prob using samples from a Bernoulli distribution and the
@@ -157,9 +158,10 @@ def dropout1d(
         a 2D or 3D input array. Should have a floating-point data type.
     prob
         probability of a channel to be zero-ed.
-
     training
         controls whether dropout1d is performed during training or ignored during testing.
+    data_format
+        NWC" or "NCW". Defaults to "NWC"..
     out
         optional output array, for writing the result to. Must have a shape that the
         inputs broadcast to.
@@ -169,7 +171,8 @@ def dropout1d(
         an array with some channels zero-ed and the rest of channels are scaled by (1/1-prob).
 
     """
-    return current_backend(x).dropout1d(x,prob, training=training, out=out)
+
+    return current_backend(x).dropout1d(x,prob, training=training, data_format=data_format, out=out)
 
 
 # Attention #
