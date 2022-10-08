@@ -105,7 +105,7 @@ def _searchsorted_case1(draw):
     dtype_x, x = draw(
         helpers.dtype_and_values(
             dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
-            shape=(draw(st.integers(min_value=1, max_value=25)),),
+            shape=(draw(st.integers(min_value=1, max_value=5)),),
         )
     )
     dtype_v, v = draw(
