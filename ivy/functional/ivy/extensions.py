@@ -5,7 +5,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
-    inputs_to_native_arrays
+    inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
 from numpy import prod
@@ -155,7 +155,7 @@ class SparseArray:
         csr_crow_indices=None,
         csr_col_indices=None,
         values=None,
-        dense_shape=None
+        dense_shape=None,
     ):
         if _is_data_not_indices_values_and_shape(
             data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -362,7 +362,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     return ivy.current_backend().native_sparse_array(
         data,
@@ -390,7 +390,8 @@ def sinc(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates an implementation-dependent approximation of the principal value of
+    """
+    Calculates an implementation-dependent approximation of the principal value of
     the normalized sinc function, having domain ``(-infinity, +infinity)`` and
     codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
     Each element ``x_i`` is assumed to be expressed in radians.
@@ -451,7 +452,6 @@ def sinc(
         a: ivy.array([0.637,-0.212,0.127]),
         b: ivy.array([-0.0909,0.0707,-0.0579])
     }
-
     """
     return ivy.current_backend(x).sinc(x, out=out)
 
@@ -461,12 +461,12 @@ def sinc(
 @handle_nestable
 @handle_exceptions
 def flatten(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    start_dim: int = None,
-    end_dim: int = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        start_dim: int = None,
+        end_dim: int = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
         If start_dim or end_dim are passed, only dimensions starting
@@ -476,7 +476,7 @@ def flatten(
     Parameters
     ----------
     x
-        input array to flatten. 
+        input array to flatten.
     start_dim
         first dim to flatten. If not set, defaults to 0.
     end_dim
@@ -485,7 +485,7 @@ def flatten(
     Returns
     -------
     ret
-        the flattened array over the specified dimensions. 
+        the flattened array over the specified dimensions.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -500,7 +500,7 @@ def flatten(
     --------
 
     With :class:`ivy.Array` input:
-    
+
     >>> x = np.array([1,2], [3,4])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
@@ -561,7 +561,7 @@ def flatten(
     ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
     >>> ivy.flatten(x)
     [{
-        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
         b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
     }]
     """
@@ -587,7 +587,42 @@ def flatten(
         end_dim = len(x.shape) + end_dim
 
     x_shape = x.shape
-    new_shape = tuple(x_shape[:start_dim])\
-        + (int(prod(x_shape[start_dim:end_dim + 1])),)\
-        + tuple(x_shape[end_dim + 1:])
+    new_shape = tuple(x_shape[:start_dim]) \
+                + (int(prod(x_shape[start_dim:end_dim + 1])),) \
+                + tuple(x_shape[end_dim + 1:])
     return ivy.reshape(x, new_shape)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vorbis_window(
+    window_length: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns an array that contains a vorbis power complementary window
+    of size window_length.
+    Parameters
+    ----------
+    window_length
+        the length of the vorbis window.
+    dtype
+        data type of the returned array. By default float32.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        Input array with the vorbis window.
+    Examples
+    --------
+    >>> ivy.vorbis_window(3)
+    ivy.array([0.38268346, 1. , 0.38268352])
+    >>> ivy.vorbis_window(5)
+    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    """
+    return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
+

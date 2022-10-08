@@ -304,7 +304,7 @@ class Array(
 
     @_native_wrapper
     def __rpow__(self, power):
-        return self._data.__rpow__(power)
+        return ivy.pow(power, self._data)
 
     @_native_wrapper
     def __ipow__(self, power):
@@ -536,6 +536,14 @@ class Array(
     @_native_wrapper
     def __bool__(self):
         return self._data.__bool__()
+
+    @_native_wrapper
+    def __dlpack__(self, stream=None):
+        return self._data.__dlpack__()
+
+    @_native_wrapper
+    def __dlpack_device__(self):
+        return self._data.__dlpack_device__()
 
     @_native_wrapper
     def __lt__(self, other):
