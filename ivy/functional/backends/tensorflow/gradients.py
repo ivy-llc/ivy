@@ -39,7 +39,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     y = ivy.to_native(y)
     grads = tape.gradient(y, ivy.to_native(xs))
     grads = ivy.to_ivy(grads)
-    grads = _unused_variables_to_zero_gradients(xs, grads)
+    grads = _unused_variables_to_zero_gradients(grads, xs)
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)

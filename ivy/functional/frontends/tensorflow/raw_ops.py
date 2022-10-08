@@ -180,6 +180,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
+
+
 def Relu(features, name="Relu"):
     return ivy.relu(features)
 
