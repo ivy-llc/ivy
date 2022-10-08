@@ -748,9 +748,3 @@ def lcm(
 
 
 lcm.support_native_out = True
-lcm.supported_dtypes = ( 
-    "int8",
-    "int16", 
-    "int32", 
-    "int64"
-)

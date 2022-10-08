@@ -7867,3 +7867,97 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    
+    @staticmethod
+    def static_lcm(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the the element-wise least common multiples
+            of the arrays contained in x1 and x2.
+
+        Examples
+        --------
+
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
+                            b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
+                            b=ivy.array([32, 40, 25, 13]))
+        >>> ivy.lcm(x1, x2)
+        {
+            a: ivy.array([10, 21, 60]),
+            b: ivy.array([96, 1080, 1550, 130])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "lcm",
+            x1,
+            x2,
+            out=out,
+        )
+
+    def lcm(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the the element-wise least common multiples
+            of the arrays contained in x1 and x2.
+
+        Examples
+        --------
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
+                            b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
+                            b=ivy.array([32, 40, 25, 13]))
+        >>> ivy.lcm(x1, x2)
+        {
+            a: ivy.array([10, 21, 60]),
+            b: ivy.array([96, 1080, 1550, 130])
+        }
+
+        """
+        return self.static_lcm(
+            self,
+            x2,
+            out=out,
+        )

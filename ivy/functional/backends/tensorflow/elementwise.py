@@ -780,11 +780,3 @@ def lcm(
             dtype=dtype
         ),
     )
-
-
-lcm.supported_dtypes = ( 
-    "int8",
-    "int16", 
-    "int32", 
-    "int64"
-)

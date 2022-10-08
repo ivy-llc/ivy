@@ -459,6 +459,4 @@ def lcm(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.abs(
-        jnp.lcm(x1, x2)
-    )
+    return jnp.lcm(x1, x2)

@@ -2210,3 +2210,38 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([ 1., -3.,  4.])
         """
         return ivy.trunc_divide(self._data, x2, out=out)
+
+    def lcm(
+        self: ivy.Array,
+        x2: ivy.Array,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array.
+        x2
+            second input array
+        out
+            optional output array, for writing the result to. 
+
+        Returns
+        -------
+        ret
+            an array that includes the element-wise least common multiples
+            of 'self' and x2
+
+        Examples
+        --------
+        >>> x1=ivy.array([2, 3, 4])
+        >>> x2=ivy.array([5, 8, 15])
+        >>> ivy.lcm(x1, x2)
+        ivy.array([10, 21, 60])
+        """
+        return ivy.lcm(self, x2, out=out)

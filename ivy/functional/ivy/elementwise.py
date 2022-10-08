@@ -6206,8 +6206,6 @@ def lcm(
         first input array.
     x2
         second input array
-    dtype
-        dtype of the output array
     out
         optional output array, for writing the result to.
 
@@ -6224,24 +6222,5 @@ def lcm(
     >>> x2=ivy.array([5, 8, 15])
     >>> ivy.lcm(x1, x2)
     ivy.array([10, 21, 60])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x1=ivy.array([6, 54, 62, 10])
-    >>> x2=ivy.array([32, 40, 25, 13])
-    >>> ivy.lcm(x1, x2)
-    ivy.array([96, 1080, 1550, 130])
-
-    With :class:`ivy.Container` input:
-    
-    >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
-                        b=ivy.array([6, 54, 62, 10]))
-    >>> x1=ivy.Container(a=ivy.array([5, 8, 15]),\
-                        b=ivy.array([32, 40, 25, 13]))
-    >>> ivy.lcm(x1, x2)
-    {
-        a: ivy.array([10, 21, 60]),
-        b: ivy.array([96, 1080, 1550, 130])
-    }
     """
     return ivy.current_backend().lcm(x1, x2, out=out)
