@@ -495,16 +495,17 @@ def test_conv1d_transpose(
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
+        as_variable_flags=[True],
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        container_flags=[False],
+        instance_method=False,
         fw=fw,
         fn_name="conv1d_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
