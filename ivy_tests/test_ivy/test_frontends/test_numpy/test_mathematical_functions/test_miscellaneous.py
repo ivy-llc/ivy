@@ -52,7 +52,6 @@ def _get_clip_inputs(draw):
 @handle_cmd_line_args
 @given(
     input_and_ranges=_get_clip_inputs(),
-    dtype=helpers.get_dtypes("valid", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.clip"
@@ -60,22 +59,25 @@ def _get_clip_inputs(draw):
 )
 def test_numpy_clip(
     input_and_ranges,
-    dtype,
     where,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
 ):
-    x_dtype, x, min, max = input_and_ranges
+    input_dtype, x, min, max = input_and_ranges
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -87,8 +89,8 @@ def test_numpy_clip(
         a_max=max,
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
     )
@@ -100,7 +102,6 @@ def test_numpy_clip(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cbrt"
@@ -108,7 +109,6 @@ def test_numpy_clip(
 )
 def test_numpy_cbrt(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -116,6 +116,10 @@ def test_numpy_cbrt(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -133,11 +137,10 @@ def test_numpy_cbrt(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -146,7 +149,6 @@ def test_numpy_cbrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sqrt"
@@ -154,7 +156,6 @@ def test_numpy_cbrt(
 )
 def test_numpy_sqrt(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -162,6 +163,10 @@ def test_numpy_sqrt(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -179,11 +184,10 @@ def test_numpy_sqrt(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -192,7 +196,6 @@ def test_numpy_sqrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.square"
@@ -200,7 +203,6 @@ def test_numpy_sqrt(
 )
 def test_numpy_square(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -208,6 +210,10 @@ def test_numpy_square(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -225,18 +231,16 @@ def test_numpy_square(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.absolute"
@@ -244,7 +248,6 @@ def test_numpy_square(
 )
 def test_numpy_absolute(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -252,6 +255,10 @@ def test_numpy_absolute(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -263,18 +270,16 @@ def test_numpy_absolute(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
-        subok=False,
-        test_values=False,
+        subok=True,
     )
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.fabs"
@@ -282,7 +287,6 @@ def test_numpy_absolute(
 )
 def test_numpy_fabs(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -290,6 +294,10 @@ def test_numpy_fabs(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -301,11 +309,10 @@ def test_numpy_fabs(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
-        subok=False,
-        test_values=False,
+        subok=True,
     )
 
 
@@ -316,7 +323,6 @@ def test_numpy_fabs(
         num_arrays=2,
         shared_dtype=True,
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.heaviside"
@@ -324,7 +330,6 @@ def test_numpy_fabs(
 )
 def test_numpy_heaviside(
     x1_x2,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -332,6 +337,10 @@ def test_numpy_heaviside(
     native_array,
 ):
     input_dtypes, (x1_list, x2_list) = x1_x2
+    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtypes,
+        get_dtypes_kind="float",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -350,11 +359,10 @@ def test_numpy_heaviside(
         x2=x2_list,
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
