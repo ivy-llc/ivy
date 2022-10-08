@@ -176,6 +176,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
+
+
 def Pack(*, values, axis=0, name="Pack"):
     return ivy.stack(values, axis=axis)
 
