@@ -174,6 +174,10 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
+def Mul(*, x, y, name="Mul"):
+    return ivy.multiply(x, y)
+
+
 def Neg(*, x, name="Neg"):
     return tf_frontend.negative(x)
 
