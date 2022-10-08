@@ -7874,6 +7874,10 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7914,6 +7918,10 @@ class ContainerWithElementwise(ContainerBase):
             "lcm",
             x1,
             x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -7921,6 +7929,10 @@ class ContainerWithElementwise(ContainerBase):
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7959,5 +7971,9 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_lcm(
             self,
             x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

@@ -774,9 +774,7 @@ def lcm(
         x2 = tf.cast(x2, dtype=tf.int16)
     else: 
         dtype = x1.dtype 
-    return tf.math.abs(
-        tf.cast(
-            tf.experimental.numpy.lcm(x1, x2),
-            dtype=dtype
-        ),
+    return tf.cast(
+        tf.experimental.numpy.lcm(x1, x2),
+        dtype=dtype
     )

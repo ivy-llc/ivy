@@ -742,9 +742,7 @@ def lcm(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.abs(
-        torch.lcm(x1, x2, out=out)
-    )
+    return torch.lcm(x1, x2, out=out)
 
 
 lcm.support_native_out = True
