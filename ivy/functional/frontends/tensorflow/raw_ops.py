@@ -58,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
