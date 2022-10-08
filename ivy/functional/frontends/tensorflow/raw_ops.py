@@ -134,6 +134,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def InvGrad(*, y, dy, name="InvGrad"):
+    return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
