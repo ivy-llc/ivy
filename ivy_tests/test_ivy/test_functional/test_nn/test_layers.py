@@ -952,6 +952,7 @@ def test_lstm_update(
         fn_name="lstm_update",
         rtol_=1e-01,
         atol_=1e-01,
+        test_gradients=True,
         x=x_lstm,
         init_h=init_h,
         init_c=init_c,
