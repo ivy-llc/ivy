@@ -555,6 +555,8 @@ def test_jax_numpy_dot(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
         frontend="jax",
         fn_tree="numpy.dot",
         a=x,
@@ -604,9 +606,7 @@ def test_jax_numpy_einsum(
 # arctan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.arctan"
