@@ -1076,7 +1076,6 @@ def dtype_values_axes_offsets(
 
         axes.sort()
 
-    # GETTING OFFSETS
     offsets = []
 
     min_offset_value = min_offset
