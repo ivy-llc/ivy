@@ -876,30 +876,32 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
 
-        Parameters
-        ----------
-        self
-            input array.
-        axis
-            axis is the axis(int) to stack along
-            Default ``0`` wich means the first dimension.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            An array with the stacked elements.
-
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-        >>> y = ivy.Container.static_stack(x)
-        >>> y
+        >>> x
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([[0, 1],
+                        [2, 3]]),
+            b: ivy.array([[4, 5]])
+        }
+        >>> ivy.Container.static_tile(x,(2,3))
+        {
+            a: (<class ivy.array.array.Array> shape=[4, 6]),
+            b: (<class ivy.array.array.Array> shape=[2, 6])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> ivy.Container.static_stack(x)
+        {
+            a: ivy.array([[0, 1],
+                        [2, 3]]),
+            b: ivy.array([[4, 5]])
+        }
+        >>> ivy.Container.static_stack(x,axis = 1)
+        {
+            a: ivy.array([[0, 2],
+                        [1, 3]]),
+            b: ivy.array([[4],
+                        [5]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -937,30 +939,29 @@ class ContainerWithManipulation(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
             b=ivy.array([3., 4., 5.]))
-        >>> y = ivy.stack(x)
-        >>> y
+        >>> x
         {
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
         }
-
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3., 4., 5.]), \
-            c=ivy.array([6.,7.,8.]))
-        >>> y = ivy.stack(x)
-        >>> y
+        >>> x.stack([[1.,2.,3.],[0.,1.,2.]],axis=1)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.]),
-            c: ivy.array([6., 7., 8.])
+            a: ivy.array([[0., 1., 0.],
+                        [1., 2., 1.],
+                        [2., 3., 2.]]),
+            b: ivy.array([[3., 1., 0.],
+                        [4., 2., 1.],
+                        [5., 3., 2.]])
         }
-
-        >>> ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-        array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-        >>> x = ivy.native_array([0., 1., 2., 3.])
-        >>> y = ivy.stack(x)
-        >>> y
-        ivy.array([0., 1., 2., 3.])
+        >>> x.stack([[1.,2.,3.],[0.,1.,2.]],axis=0)
+        {
+            a: ivy.array([[0., 1., 2.],
+                        [1., 2., 3.],
+                        [0., 1., 2.]]),
+            b: ivy.array([[3., 4., 5.],
+                        [1., 2., 3.],
+                        [0., 1., 2.]])
+        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())

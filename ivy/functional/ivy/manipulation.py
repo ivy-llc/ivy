@@ -787,40 +787,71 @@ def stack(
 
     Examples
     --------
-    With :code: `ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.Container.static_stack(x)
-    >>> y
-    {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
-    }
+    With :code: `ivy.Array` input:
 
-    With :code: `ivy.Array  ` input:
+    >>> x = ivy.array([0., 1., 2., 3., 4.])
+    >>> y = ivy.array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
 
-    >>> x = ivy.stack([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x
-    ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    With :code: `ivy.Array` input and different `axis` :
 
-     With :code: `ivy.Array` & `ivy.Container` input:
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
+
+    With :code: `ivy.Array` & `ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
             b=ivy.array([3., 4., 5.]), \
             c=ivy.array([6.,7.,8.]))
-    >>> y = ivy.stack(x)
-    >>> y
+
+    With :code: `ivy.native_array` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.native_array` input and different `axis` :
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
+
+    With :code: `ivy.Container` input and different `axis` :
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1.],[3.,4.]]), \
+    ...             b=ivy.array([[5., 6.],[7.,8.]]), \
+    ...             c=ivy.array([[9., 10.],[11.,12.]]))
+    >>> ivy.stack(x,axis=0)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.]),
-        c: ivy.array([6., 7., 8.])
+        a: ivy.array([[0., 1.],
+                    [3., 4.]]),
+        b: ivy.array([[5., 6.],
+                    [7., 8.]]),
+        c: ivy.array([[9., 10.],
+                    [11., 12.]])
     }
-    With :code: `ivy.native_array  ` input:
-     >>> ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x = ivy.native_array([0., 1., 2., 3.])
-    >>> y = ivy.stack(x)
-    >>> y
-    ivy.array([0., 1., 2., 3.])
+    >>> ivy.stack(x,axis=1)
+    {
+        a: ivy.array([[0., 3.],
+                    [1., 4.]]),
+        b: ivy.array([[5., 7.],
+                    [6., 8.]]),
+        c: ivy.array([[9., 11.],
+                    [10., 12.]])
+    }
     """
     res = current_backend(arrays).stack(arrays, axis=axis, out=out)
     if ivy.exists(out):
