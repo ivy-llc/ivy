@@ -781,25 +781,29 @@ def gradient_test(
     if len(ret_np_flat) < 2:
         return
 
-    grads_np_flat = ret_np_flat[1]
-    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
-    condition_np_flat = np.isfinite(grads_np_flat)
-    grads_np_flat = np.where(
-        condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
-    )
-    condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
-    grads_np_from_gt_flat = np.where(
-        condition_np_from_gt_flat,
-        grads_np_from_gt_flat,
-        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
-    )
+    grad_list_np_flat = ret_np_flat[1:]
+    grad_list_np_from_gt_flat = ret_np_from_gt_flat[1:]
 
-    value_test(
-        ret_np_flat=grads_np_flat,
-        ret_np_from_gt_flat=grads_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-    )
+    for grads_np_flat, grads_np_from_gt_flat in zip(
+        grad_list_np_flat, grad_list_np_from_gt_flat
+    ):
+        condition_np_flat = np.isfinite(grads_np_flat)
+        grads_np_flat = np.where(
+            condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
+        )
+        condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
+        grads_np_from_gt_flat = np.where(
+            condition_np_from_gt_flat,
+            grads_np_from_gt_flat,
+            np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        )
+
+        value_test(
+            ret_np_flat=grads_np_flat,
+            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_method(
