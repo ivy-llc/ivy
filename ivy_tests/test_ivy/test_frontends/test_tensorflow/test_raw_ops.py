@@ -1650,3 +1650,79 @@ def test_tensorflow_Mul(dtype_and_x, as_variable, num_positional_args, native_ar
         x=xs[0],
         y=xs[1],
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Min"
+    ),
+)
+def test_tensorflow_Min(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    keep_dims,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Min",
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Max"
+    ),
+)
+def test_tensorflow_Max(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    keep_dims,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Max",
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
