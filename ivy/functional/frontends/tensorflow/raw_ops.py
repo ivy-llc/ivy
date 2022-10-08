@@ -58,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -174,6 +178,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
+
+
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):
