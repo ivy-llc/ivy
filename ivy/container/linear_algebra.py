@@ -2009,3 +2009,148 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_vander(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.vander.
+        This method simply wraps the function, and so the docstring for
+        ivy.vander also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            ivy container that contains 1-D arrays.
+        N
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
+        increasing 
+            Order of the powers of the columns. If True, the powers increase
+            from left to right, if False (the default) they are reversed.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container that contains the Vandermonde matrix of the arrays included
+            in the input container.
+
+        Examples
+        --------
+
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(
+                a = ivy.array([1, 2, 3, 5])
+                b = ivy.array([6, 7, 8, 9])
+            )
+        >>> ivy.vander(x)
+        {
+            a: ivy.array(
+                    [[  1,   1,   1,   1],
+                    [  8,   4,   2,   1],
+                    [ 27,   9,   3,   1],
+                    [125,  25,   5,   1]]
+                    ),
+            b: ivy.array(
+                    [[216,  36,   6,   1],
+                    [343,  49,   7,   1],
+                    [512,  64,   8,   1],
+                    [729,  81,   9,   1]]
+                    )
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "vander",
+            x,
+            N=N,
+            increasing=increasing,
+            out=out,
+        )
+
+    def vander(
+        self: ivy.Container,
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.vander.
+        This method Returns the sum along the specified diagonals of a matrix (or a
+        stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input container having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        offset
+            Offset of the diagonal from the main diagonal. Can be both positive and
+            negative. Defaults to 0.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+
+            ::
+
+            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(
+                a = ivy.array([1, 2, 3, 5])
+                b = ivy.array([6, 7, 8, 9])
+            )
+        >>> ivy.vander(x)
+        {
+            a: ivy.array(
+                    [[  1,   1,   1,   1],
+                    [  8,   4,   2,   1],
+                    [ 27,   9,   3,   1],
+                    [125,  25,   5,   1]]
+                    ),
+            b: ivy.array(
+                    [[216,  36,   6,   1],
+                    [343,  49,   7,   1],
+                    [512,  64,   8,   1],
+                    [729,  81,   9,   1]]
+                    )
+        }
+        """
+        return self.static_vander(
+            self,
+            N=N,
+            increasing=increasing,
+            out=out,
+        )

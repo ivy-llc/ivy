@@ -2168,39 +2168,6 @@ def vander(
         [ 1,  3,  9],
         [ 1,  5, 25]]
         )
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([1, 2, 3, 5])
-    >>> ivy.vander(x)
-    ivy.array(
-       [[  1,   1,   1,   1],
-        [  8,   4,   2,   1],
-        [ 27,   9,   3,   1],
-        [125,  25,   5,   1]]
-        )
-
-    With :class:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(
-            a = ivy.array([1, 2, 3, 5])
-            b = ivy.array([6, 7, 8, 9])
-        )
-    >>> ivy.vander(x)
-    {
-        a: ivy.array(
-                [[  1,   1,   1,   1],
-                 [  8,   4,   2,   1],
-                 [ 27,   9,   3,   1],
-                 [125,  25,   5,   1]]
-                ),
-        b: ivy.array(
-                [[216,  36,   6,   1],
-                 [343,  49,   7,   1],
-                 [512,  64,   8,   1],
-                 [729,  81,   9,   1]]
-                )
-    }
     """
     return current_backend().vander(
         x, N=N, increasing=increasing, out=out
