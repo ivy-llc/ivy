@@ -18,8 +18,10 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
-def solve(x, y):
-    return ivy.solve(x, y)
+def solve(matrix, rhs):
+    return ivy.solve(matrix, rhs)
+
+solve.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def logdet(matrix, name=None):
