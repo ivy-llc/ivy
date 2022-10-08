@@ -60,7 +60,7 @@ def searchsorted(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
-        sorter_dtype = ivy.as_native_dtype(ret_dtype)
+        sorter_dtype = ivy.as_native_dtype(sorter.dtype)
         assert ivy.is_int_dtype(sorter_dtype) and not ivy.is_uint_dtype(
             sorter_dtype
         ), TypeError(
