@@ -760,6 +760,7 @@ def test_solve(
         input_dtypes=input_dtype1 + input_dtype2,
         as_variable_flags=as_variable,
         with_out=with_out,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -864,7 +865,6 @@ def test_tensordot(
 @handle_cmd_line_args
 @given(
     dtype_x_axes_offsets=helpers.dtype_values_axes_offsets(
-        # dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=2,
@@ -879,15 +879,11 @@ def test_tensordot(
         num_axes=2,
         num_offsets=1,
     ),
-    # offset=st.integers(min_value=0, max_value=0),
-    # axis1=st.integers(min_value=0, max_value=0),
-    # axis2=st.integers(min_value=1, max_value=1),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
 )
 def test_trace(
     *,
     dtype_x_axes_offsets,
-    # dtype_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -895,13 +891,10 @@ def test_trace(
     container,
     instance_method,
     fw,
-    # offset,
-    # axis1,
-    # axis2,
 ):
     dtype, x, axes, offset = dtype_x_axes_offsets
     offset = offset[0]
-    # dtype, x = dtype_x
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -918,8 +911,6 @@ def test_trace(
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
-        # axis1=axis1,
-        # axis2=axis2,
     )
 
 
