@@ -183,7 +183,7 @@ def logaddexp2(
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
-    ret = ivy.log2(ivy.pow(2, x1)+ivy.pow(2, x2), out=out)
+    ret = ivy.log2(ivy.pow(2, x1) + ivy.pow(2, x2), out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
