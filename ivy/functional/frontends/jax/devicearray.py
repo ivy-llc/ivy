@@ -18,12 +18,6 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
-    def reshape(self, new_sizes, dimensions=None):
-        return jax_frontend.reshape(self.data, new_sizes, dimensions)
-
-    def add(self, other):
-        return jax_frontend.add(self.data, other)
-
     # Special Methods #
     # --------------- #
 
