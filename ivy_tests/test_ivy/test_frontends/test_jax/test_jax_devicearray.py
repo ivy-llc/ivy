@@ -911,7 +911,7 @@ def test_jax_special_rtruediv(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -924,7 +924,7 @@ def test_jax_special_mod(
     data = DeviceArray(x[0])
     other = DeviceArray(x[1])
     ret = data.__mod__(other)
-    ret_gt = jnp.remainder(
+    ret_gt = jnp.mod(
         jnp.array(x[0], dtype=input_dtype[0]), jnp.array(x[1], dtype=input_dtype[1])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -941,7 +941,7 @@ def test_jax_special_mod(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -971,7 +971,7 @@ def test_jax_special_rmod(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -1001,7 +1001,7 @@ def test_jax_special_divmod(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -1031,7 +1031,7 @@ def test_jax_special_rdivmod(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -1061,7 +1061,8 @@ def test_jax_special_floordiv(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
+        exclude_min=True,
         shared_dtype=True,
         num_arrays=2,
     )

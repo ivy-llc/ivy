@@ -95,7 +95,7 @@ def dot(a, b, *, precision=None):
 
 
 def divmod(x1, x2):
-    out1 = ivy.floor_divide(x1, x2)
+    out1 = ivy.divide(x1, x2)
     out2 = ivy.remainder(x1, x2)
     return out1, out2
 
@@ -116,6 +116,10 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
+
+
+def mod(x1, x2):
+    return ivy.remainder(x1, x2)
 
 
 def reshape(a, newshape, order="C"):

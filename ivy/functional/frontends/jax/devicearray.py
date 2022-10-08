@@ -63,11 +63,11 @@ class DeviceArray:
 
     @to_ivy_arrays_and_back
     def __mod__(self, other):
-        return jax_frontend.rem(self.data, other)
+        return jax_frontend.mod(self.data, other)
 
     @to_ivy_arrays_and_back
     def __rmod__(self, other):
-        return jax_frontend.rem(other, self.data)
+        return jax_frontend.mod(other, self.data)
 
     @to_ivy_arrays_and_back
     def __divmod__(self, other):
@@ -75,7 +75,7 @@ class DeviceArray:
 
     @to_ivy_arrays_and_back
     def __rdivmod__(self, other):
-        return jax_frontend.divmod(self.data, other)
+        return jax_frontend.divmod(other, self.data)
 
     @to_ivy_arrays_and_back
     def __truediv__(self, other):

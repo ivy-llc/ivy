@@ -404,7 +404,7 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
+    return torch.floor_divide(x1, x2, out=out).type(x1.dtype)
 
 
 floor_divide.support_native_out = True
