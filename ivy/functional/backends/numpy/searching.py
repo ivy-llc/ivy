@@ -16,10 +16,13 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    return np.array(ret)
+    ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims, out=out))
+    if output_dtype:
+        ret = ret.astype(output_dtype)
+    return ret
 
 
 argmax.support_native_out = True
@@ -35,9 +38,17 @@ def argmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
+    # The returned array must have the default array index data type.
     if dtype is not None:
-        return np.array(ret, dtype=dtype)
-    return np.array(ret)
+        if dtype not in (np.int32, np.int64):
+            return np.array(ret, dtype=np.int32)
+        else:
+            return np.array(ret, dtype=dtype)
+    else:
+        if ret.dtype not in (np.int32, np.int64):
+            return np.array(ret, dtype=np.int32)
+        else:
+            return np.array(ret, dtype=ret.dtype)
 
 
 argmin.support_native_out = True

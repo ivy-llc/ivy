@@ -2958,13 +2958,6 @@ def isinf(
        [False, False, False],
        [False, False, False]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
-    >>> z = ivy.isinf(x)
-    >>> print(z)
-    ivy.array([[False],[False],[True]])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]), \
@@ -3003,11 +2996,6 @@ def isinf(
         [False, False, False],
         [False, False, False]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
-    >>> x.isinf()
-    ivy.array([[False],[False],[True]])
 
     With :class:`ivy.Container` input:
 
@@ -3114,14 +3102,7 @@ def isnan(
        [False, False, False],
        [False, False, False]])
 
-    With :class:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
-    >>> z = ivy.isnan(x)
-    >>> print(z)
-    ivy.array([[False],
-        [False],
-        [True]])
 
     With :class:`ivy.Container` input:
 
@@ -3167,13 +3148,6 @@ def isnan(
         [False, False, False],
         [False, False, False]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
-    >>> x.isnan()
-    ivy.array([[False],
-        [False],
-        [True]])
 
     With :class:`ivy.Container` input:
 

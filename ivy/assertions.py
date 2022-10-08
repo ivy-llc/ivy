@@ -93,12 +93,6 @@ def check_all(results, message="one of the args is False"):
         raise ivy.exceptions.IvyException(message)
 
 
-# lshift, rshift array-api type_promotion tests need an OverflowError to be raised
-def check_all_bitshifts(results):
-    if not ivy.all(results):
-        raise OverflowError
-
-
 def check_any(results, message="all of the args are False"):
     if not ivy.any(results):
         raise ivy.exceptions.IvyException(message)
@@ -121,6 +115,18 @@ def check_all_or_any_fn(
             raise ivy.exceptions.IvyException(message)
     else:
         raise ivy.exceptions.IvyException("type must be all or any")
+
+
+def check_shape(x1, x2, message=""):
+    message = (
+        message
+        if message != ""
+        else "{} and {} must have the same shape ({} vs {})".format(
+            x1, x2, ivy.shape(x1), ivy.shape(x2)
+        )
+    )
+    if ivy.shape(x1) != ivy.shape(x2):
+        raise ivy.exceptions.IvyException(message)
 
 
 # Creation #
