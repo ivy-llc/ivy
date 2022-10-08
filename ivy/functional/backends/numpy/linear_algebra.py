@@ -391,3 +391,17 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+def vander(
+    x: np.ndarray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vander(x, N=N, increasing=increasing)
+
+
+vander.support_native_out = False

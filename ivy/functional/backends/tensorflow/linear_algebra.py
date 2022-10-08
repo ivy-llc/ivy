@@ -689,3 +689,16 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "float16",
     "float64",
 )
+
+
+def vander(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.vander(
+        x, N=N, increasing=increasing
+    )

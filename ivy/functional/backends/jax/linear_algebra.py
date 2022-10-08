@@ -437,3 +437,14 @@ def vector_to_skew_symmetric_matrix(
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return jnp.concatenate((row1, row2, row3), -2)
+
+
+def vander(
+    x: JaxArray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vander(x, N=N, increasing=increasing)
