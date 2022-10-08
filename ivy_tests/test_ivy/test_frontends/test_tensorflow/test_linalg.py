@@ -34,7 +34,7 @@ def _get_dtype_and_matrix(draw):
     ),
 )
 def test_tensorflow_det(
-    dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -57,7 +57,7 @@ def test_tensorflow_det(
     ),
 )
 def test_tensorflow_eigh(
-    dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -80,7 +80,7 @@ def test_tensorflow_eigh(
     ),
 )
 def test_tensorflow_eigvalsh(
-    dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -108,9 +108,7 @@ def test_tensorflow_eigvalsh(
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
-def test_matrix_rank(
-    *, dtype_x, as_variable, num_positional_args, native_array, tolr, fw
-):
+def test_matrix_rank(*, dtype_x, as_variable, num_positional_args, native_array, tolr):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -175,7 +173,6 @@ def test_tensorflow_solve(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -205,7 +202,6 @@ def test_tensorflow_logdet(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -234,7 +230,6 @@ def test_tensorflow_slogdet(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -311,7 +306,6 @@ def test_tensorflow_cholesky_solve(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype1, x1 = x
     input_dtype2, x2 = y
@@ -339,7 +333,7 @@ def test_tensorflow_cholesky_solve(
     ),
 )
 def test_tensorflow_pinv(
-    dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -372,7 +366,6 @@ def test_tensorflow_tensordot(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     (
         dtype,
@@ -414,7 +407,6 @@ def test_tensorflow_eye(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
