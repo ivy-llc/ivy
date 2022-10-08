@@ -687,6 +687,7 @@ def test_conv3d(
         fn_name="conv3d",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
