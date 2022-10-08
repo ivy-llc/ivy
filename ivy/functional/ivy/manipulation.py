@@ -1566,15 +1566,6 @@ def flatten(
         start_dim = len(x.shape) + start_dim
     if end_dim < 0:
         end_dim = len(x.shape) + end_dim
-    # c = 1
-    # for i in range(start_dim, end_dim + 1):
-    #     c *= x.shape[i]
-    # lst = [c]
-    # if start_dim != 0:
-    #     for i in range(0, start_dim):
-    #         lst.insert(i, x.shape[i])
-    # for i in range(end_dim + 1, len(x.shape)):
-    #     lst.insert(i, x.shape[i])
 
     x_shape = x.shape
     new_shape = tuple(x_shape[:start_dim])\
