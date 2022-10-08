@@ -422,8 +422,6 @@ scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 
-
-
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     /,

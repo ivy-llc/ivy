@@ -13,7 +13,6 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
-
 from . import version
 
 # noinspection PyProtectedMember
