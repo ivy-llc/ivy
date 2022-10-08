@@ -596,6 +596,7 @@ def test_conv2d_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         device_=device,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -643,6 +644,7 @@ def test_depthwise_conv2d(
         fn_name="depthwise_conv2d",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not support dilations > 1 and stride > 1
         ground_truth_backend="jax",
         x=x,
@@ -685,6 +687,7 @@ def test_conv3d(
         fn_name="conv3d",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -730,6 +733,7 @@ def test_conv_general_dilated(
         fn_name="conv_general_dilated",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -779,6 +783,7 @@ def test_conv_general_transpose(
         fn_name="conv_general_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -828,6 +833,7 @@ def test_conv3d_transpose(
         fn_name="conv3d_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -946,6 +952,7 @@ def test_lstm_update(
         fn_name="lstm_update",
         rtol_=1e-01,
         atol_=1e-01,
+        test_gradients=True,
         x=x_lstm,
         init_h=init_h,
         init_c=init_c,
