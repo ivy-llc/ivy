@@ -40,9 +40,9 @@ class ArrayWithExtensions(abc.ABC):
 
     def flatten(
         self: ivy.Array,
+        *,
         start_dim: int,
         end_dim: int,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flatten. This method simply

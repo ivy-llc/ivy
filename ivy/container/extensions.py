@@ -133,9 +133,14 @@ class ContainerWithExtensions(ContainerBase):
     @staticmethod
     def static_flatten(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         start_dim: int,
         end_dim: int,
-        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -173,16 +178,20 @@ class ContainerWithExtensions(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "flatten",
             x,
-            start_dim,
-            end_dim,
+            start_dim=start_dim,
+            end_dim=end_dim,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     def flatten(
         self: ivy.Container,
+        *,
         start_dim: int,
         end_dim: int,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flatten. This method simply
