@@ -1483,9 +1483,11 @@ def test_diagonal(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=(helpers.ints(min_value=1, max_value=10),)
+        shape=st.tuples(
+            helpers.ints(min_value=1, max_value=5),
+        ),
     ),
-    N=st.integers(min_value=1, max_value=10),
+    N=st.integers(min_value=1, max_value=5),
     increasing=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vander"),
 )

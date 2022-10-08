@@ -699,6 +699,10 @@ def vander(
     increasing: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype in [tf.int8, tf.int16, tf.int32]:
+        x = tf.cast(x, tf.int64)
+    elif x.dtype in [tf.float16, tf.float32]:
+        x = tf.cast(x, tf.float64)
     return tf.experimental.numpy.vander(
         x, N=N, increasing=increasing
     )
