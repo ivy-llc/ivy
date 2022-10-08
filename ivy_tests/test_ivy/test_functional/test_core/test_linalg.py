@@ -1478,16 +1478,14 @@ def test_diagonal(
     )
 
 
-# vander 
+# vander
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.tuples(st.integers(1), st.integers(min_value=1, max_value=3)),
-        min_value=-10,
-        max_value=10,
+        shape=(helpers.ints(min_value=1, max_value=10),)
     ),
-    N=st.integers(min_value=1, max_value=3),
+    N=st.integers(min_value=1, max_value=10),
     increasing=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vander"),
 )
