@@ -3,9 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def ceil(
     x,
     /,
@@ -17,8 +19,6 @@ def ceil(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.ceil(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
