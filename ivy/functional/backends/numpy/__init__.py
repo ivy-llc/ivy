@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 
-version = {"version": np.__version__}
+backend_version = {"version": np.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -109,7 +109,7 @@ def closest_valid_dtype(type):
 
 
 backend = "numpy"
-backend_version = np.__version__
+
 
 # local sub-modules
 from . import activations

@@ -17,7 +17,7 @@ from ivy import (
 
 
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
@@ -39,7 +39,7 @@ from ivy.functional.ivy.creation import (
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 def arange(
     start: float,
@@ -165,7 +165,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,

@@ -11,7 +11,7 @@ import ivy
 # noinspection PyProtectedMember
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
-from . import version
+from . import backend_version
 
 
 # Array API Standard #
@@ -216,7 +216,7 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, version)
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -238,7 +238,7 @@ def repeat(
             "int16",
         )
     },
-    version,
+    backend_version,
 )
 def tile(
     x: Union[tf.Tensor, tf.Variable],

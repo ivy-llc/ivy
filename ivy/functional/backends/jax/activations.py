@@ -12,7 +12,7 @@ from typing import Optional, Union
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from . import version
+from . import backend_version
 
 
 def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

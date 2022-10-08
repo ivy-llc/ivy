@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from . import version
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -214,7 +214,7 @@ def clip(
     return jnp.clip(x, x_min, x_max)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, version)
+@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

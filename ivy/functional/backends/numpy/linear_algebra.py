@@ -12,14 +12,14 @@ import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
-from . import version
+from . import backend_version
 
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cholesky(
     x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -46,7 +46,7 @@ def cross(
 
 
 @_handle_0_dim_output
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
 
@@ -88,14 +88,14 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.linalg.eigh(x, UPLO=UPLO)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -110,7 +110,7 @@ def inner(
     return np.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def inv(
     x: np.ndarray,
     /,
@@ -153,7 +153,7 @@ matmul.support_native_out = True
 
 
 @_handle_0_dim_output
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
     x: np.ndarray,
     /,
@@ -181,7 +181,7 @@ def matrix_power(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 @_handle_0_dim_output
 def matrix_rank(
@@ -219,7 +219,7 @@ def outer(
 outer.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def pinv(
     x: np.ndarray,
     /,
@@ -233,14 +233,14 @@ def pinv(
         return np.linalg.pinv(x, rtol)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def slogdet(
     x: np.ndarray,
     /,
@@ -255,7 +255,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -273,7 +273,7 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def svd(
     x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
@@ -287,7 +287,7 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 

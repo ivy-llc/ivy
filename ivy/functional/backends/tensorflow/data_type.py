@@ -9,7 +9,7 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from . import version
+from . import backend_version
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -182,7 +182,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:

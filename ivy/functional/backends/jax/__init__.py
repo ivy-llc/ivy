@@ -16,7 +16,7 @@ from jax.tree_util import tree_flatten, tree_unflatten
 # local
 import ivy
 
-version = {"version": jax.__version__}
+backend_version = {"version": jax.__version__}
 
 config.update("jax_enable_x64", True)
 
@@ -138,7 +138,7 @@ def closest_valid_dtype(type):
 
 
 backend = "jax"
-backend_version = jax.__version__
+
 
 # local sub-modules
 from . import activations

@@ -15,7 +15,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from . import version
+from . import backend_version
 
 
 def _parse_ellipsis(so, ndims):
@@ -62,7 +62,7 @@ def current_backend_str() -> str:
 
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query):
@@ -443,7 +443,7 @@ def gather_nd(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, version
+    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, backend_version
 )
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],

@@ -10,14 +10,14 @@ import tensorflow as tf
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -33,7 +33,7 @@ def cholesky(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -59,7 +59,7 @@ def cross(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 def det(
     x: Union[tf.Tensor, tf.Variable],
@@ -109,7 +109,7 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -128,7 +128,7 @@ def eigh(
         return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -158,7 +158,7 @@ def eigvalsh(
             "uint64",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def inner(
@@ -171,7 +171,7 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -263,7 +263,7 @@ def matmul(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -301,7 +301,7 @@ def matrix_norm(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: Union[tf.Tensor, tf.Variable],
     n: int,
@@ -333,7 +333,7 @@ def matrix_power(
     return result
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 # noinspection PyPep8Naming
 def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
@@ -387,7 +387,7 @@ def matrix_rank(
             "uint64",
         )
     },
-    version,
+    backend_version,
 )
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
@@ -408,7 +408,7 @@ def outer(
     return tf.experimental.numpy.outer(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -423,7 +423,7 @@ def pinv(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -440,7 +440,7 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -450,7 +450,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -486,7 +486,7 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def svd(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -513,7 +513,7 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -540,7 +540,7 @@ def tensordot(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -555,7 +555,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, version
+    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
 )
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
@@ -570,7 +570,7 @@ def vecdot(
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Sequence[int]]] = None,
@@ -619,7 +619,7 @@ def vector_norm(
             "float64",
         )
     },
-    version,
+    backend_version,
 )
 def vector_to_skew_symmetric_matrix(
     vector: Union[tf.Tensor, tf.Variable],

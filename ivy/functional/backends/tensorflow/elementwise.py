@@ -6,7 +6,7 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 
 def abs(
@@ -394,7 +394,7 @@ def log2(
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def logaddexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -462,7 +462,7 @@ def multiply(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
@@ -496,7 +496,7 @@ def positive(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, backend_version
 )
 def pow(
     x1: Union[float, tf.Tensor, tf.Variable],
@@ -517,7 +517,7 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -536,7 +536,7 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -730,7 +730,7 @@ minimum.unsupported_dtypes = (
             "int64",
         )
     },
-    version,
+    backend_version,
 )
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],
@@ -741,7 +741,7 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def deg2rad(
     x: Union[tf.Tensor, tf.Variable],
     /,

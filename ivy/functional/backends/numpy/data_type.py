@@ -7,7 +7,7 @@ import numpy as np
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from . import version
+from . import backend_version
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -164,7 +164,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in

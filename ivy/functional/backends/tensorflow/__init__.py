@@ -9,7 +9,7 @@ from tensorflow.python.types.core import Tensor
 # local
 import ivy
 
-version = {"version": tf.__version__}
+backend_version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -107,7 +107,7 @@ def closest_valid_dtype(type):
 
 
 backend = "tensorflow"
-backend_version = tf.__version__
+
 
 
 # local sub-modules
