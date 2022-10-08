@@ -294,14 +294,3 @@ def unstack(
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
-
-
-def flatten(
-    x: torch.Tensor,
-    /,
-    *,
-    start_dim: int,
-    end_dim: int,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.flatten(x, start_dim, end_dim)

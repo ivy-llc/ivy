@@ -159,3 +159,43 @@ def test_sinc(
         fn_name="sinc",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+# flatten
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(min_num_dims=5, max_num_dims=5),
+    ),
+    start_dim=st.integers(1, 3),
+    end_dim=st.integers(3, 4),
+    num_positional_args=helpers.num_positional_args(fn_name="flatten"),
+)
+def test_flatten(
+    dtype_and_x,
+    start_dim,
+    end_dim,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="flatten",
+        x=np.asarray(x[0], dtype=input_dtypes[0]),
+        start_dim=start_dim,
+        end_dim=end_dim,
+    )

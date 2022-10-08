@@ -70,3 +70,14 @@ def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 sinc.support_native_out = True
 sinc.unsupported_dtypes = ("float16",)
+
+
+def flatten(
+    x: torch.Tensor,
+    /,
+    *,
+    start_dim: int,
+    end_dim: int,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.flatten(x, start_dim, end_dim)
