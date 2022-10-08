@@ -1,4 +1,5 @@
 # global
+import sys
 import ivy
 from hypothesis import given, strategies as st
 import numpy as np
@@ -1725,4 +1726,36 @@ def test_tensorflow_Max(
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    adjoint=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.MatrixInverse"
+    ),
+)
+def test_tensorflow_MatrixInverse(
+    dtype_x,
+    adjoint,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatrixInverse",
+        input=x[0],
+        adjoint=adjoint,
     )
