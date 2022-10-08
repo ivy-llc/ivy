@@ -2479,5 +2479,5 @@ def test_isreal(
         instance_method=instance_method,
         fw=fw,
         fn_name="isreal",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
