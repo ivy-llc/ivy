@@ -1,7 +1,6 @@
 # global
 
 torch_scatter = None
-import torch
 from typing import Union, Optional, Sequence
 
 

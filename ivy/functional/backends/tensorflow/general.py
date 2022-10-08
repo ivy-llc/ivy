@@ -422,28 +422,9 @@ scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 
-def gather(
-    params: Union[tf.Tensor, tf.Variable],
-    indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
-
-
-def gather_nd(
-    params: Union[tf.Tensor, tf.Variable],
-    indices: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
-
-
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, backend_version
+    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")},
+    backend_version,
 )
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
@@ -459,16 +440,6 @@ def one_hot(
         with tf.device(ivy.as_native_dev(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
-
-
-def current_backend_str():
-    return "tensorflow"
-
-
-def multiprocessing(context=None):
-    return (
-        _multiprocessing if context is None else _multiprocessing.get_context(context)
-    )
 
 
 def indices_where(

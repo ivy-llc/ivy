@@ -496,7 +496,8 @@ def positive(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, backend_version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")},
+    backend_version,
 )
 def pow(
     x1: Union[float, tf.Tensor, tf.Variable],
