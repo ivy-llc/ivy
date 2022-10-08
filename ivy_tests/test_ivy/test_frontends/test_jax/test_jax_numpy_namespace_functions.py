@@ -23,7 +23,6 @@ def test_jax_numpy_abs(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -53,7 +52,6 @@ def test_jax_numpy_absolute(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -83,7 +81,6 @@ def test_jax_numpy_add(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -114,7 +111,6 @@ def test_jax_numpy_all(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -148,7 +144,6 @@ def test_jax_numpy_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -201,7 +196,6 @@ def test_jax_numpy_broadcast_to(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_broadcast
     helpers.test_frontend_function(
@@ -271,7 +265,6 @@ def test_jax_numpy_clip(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -323,7 +316,6 @@ def test_jax_numpy_reshape(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, shape = input_x_shape
     helpers.test_frontend_function(
@@ -389,7 +381,6 @@ def test_jax_numpy_concat(
     dtype,
     num_positional_args,
     native_array,
-    fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -433,7 +424,6 @@ def test_jax_numpy_mean(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
@@ -448,7 +438,6 @@ def test_jax_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.mean",
         a=x[0],
@@ -490,7 +479,6 @@ def test_jax_numpy_var(
     with_out,
     as_variable,
     native_array,
-    fw,
 ):
     x_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
@@ -505,7 +493,6 @@ def test_jax_numpy_var(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.var",
         a=x[0],
@@ -521,16 +508,9 @@ def test_jax_numpy_var(
 # dot
 @st.composite
 def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=0, max_value=5))
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    if dim_size == 0:
-        vec1 = draw(
-            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
-        )
-        vec2 = draw(
-            helpers.array_values(dtype=dtype[0], shape=(), min_value=2, max_value=5)
-        )
-    elif dim_size == 1:
+    if dim_size == 1:
         vec1 = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
@@ -567,11 +547,10 @@ def test_jax_numpy_dot(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, y = dtype_x_y
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -607,7 +586,7 @@ def test_jax_numpy_einsum(
         i += 1
     num_positional_args = len(operands)
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -619,4 +598,70 @@ def test_jax_numpy_einsum(
         precision=None,
         _use_xeinsum=False,
         **kw
+    )
+
+
+# arctan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.arctan"
+    ),
+)
+def test_jax_numpy_arctan(
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.arctan",
+        x=x[0],
+    )
+
+
+# arctan2
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.jax.numpy.arctan2"
+    ),
+)
+def test_jax_numpy_arctan2(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.arctan2",
+        x1=x[0],
+        x2=x[1],
     )

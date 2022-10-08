@@ -15,6 +15,8 @@ def abs(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if not tf.is_tensor(x):
+        x = tf.convert_to_tensor(x)
     if "uint" in ivy.dtype(x):
         return x
     else:
@@ -670,10 +672,24 @@ def maximum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    use_where: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.maximum(x1, x2)
+    dtype = x1.dtype
+    if use_where:
+        return tf.math.maximum(x1, x2)
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
+
+
+maximum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def minimum(
@@ -681,10 +697,24 @@ def minimum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    use_where: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.minimum(x1, x2)
+    dtype = x1.dtype
+    if use_where:
+        return tf.math.minimum(x1, x2)
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
+
+
+minimum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 @with_unsupported_dtypes(

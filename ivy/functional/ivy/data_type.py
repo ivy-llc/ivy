@@ -244,8 +244,7 @@ def astype(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,2,1]), \
-                            b=ivy.array([1,0,0]))
+    >>> x = ivy.Container(a=ivy.array([0,2,1]),b=ivy.array([1,0,0]))
     >>> print(ivy.astype(x, ivy.bool))
     {
         a: ivy.array([False, True, True]),
@@ -260,8 +259,8 @@ def astype(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), \
-                            b=ivy.array([3.14, 2.718, 1.618]))
+    >>> x = ivy.Container(a=ivy.array([False,True,True]),\
+        b=ivy.array([3.14, 2.718, 1.618]))
     >>> print(x.astype(ivy.int32))
     {
         a: ivy.array([0, 1, 1]),
@@ -527,6 +526,7 @@ def finfo(
 
           smallest positive floating-point number with full precision.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
@@ -618,6 +618,7 @@ def iinfo(
         - **min**: *int*
 
           smallest representable number.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -943,10 +944,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     ret
         The closest valid data type as a native ivy.Dtype
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard.
 
     Examples
     --------
@@ -1579,8 +1576,7 @@ def is_int_dtype(
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype = ivy.int16)
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]],dtype = ivy.int16)
     >>> x.dtype
     torch.int16
 
@@ -1595,8 +1591,7 @@ def is_int_dtype(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-        b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
     >>> x.b.dtype
@@ -1654,8 +1649,7 @@ def check_float(x):
 @handle_exceptions
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
-    *,
-    out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
+    /,
 ) -> bool:
     """
     Determine whether the input data type is a float dtype.

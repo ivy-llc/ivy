@@ -115,3 +115,22 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
+
+
+def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
+    ivy.assertions.check_shape(labels, logits)
+    zeros = ivy.zeros_like(logits)
+    max_logits = ivy.where(logits >= zeros, logits, zeros)
+    neg_abs_logits = ivy.negative(ivy.abs(logits))
+    neg_multiple = ivy.negative(ivy.multiply(logits, labels))
+    ret_val = ivy.add(max_logits, neg_multiple)
+    return ivy.add(ret_val, ivy.log1p(ivy.exp(neg_abs_logits)))
+
+
+sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+)

@@ -253,6 +253,16 @@ def tile(
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
+    # code to unify behaviour with numpy and torch
+    if len(x.shape) < len(reps):
+        while len(x.shape) != len(reps):
+            x = tf.expand_dims(x, 0)
+    elif len(x.shape) > len(reps):
+        reps = list(reps)
+        while len(x.shape) != len(reps):
+            reps = [1] + reps
+    # TODO remove the unifying behaviour code if tensorflow handles this
+    # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
 
 
