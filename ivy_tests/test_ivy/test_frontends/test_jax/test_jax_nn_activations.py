@@ -525,8 +525,8 @@ def test_jax_nn_hard_tanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        min_value=-5,
+        max_value=5,
         safety_factor_scale="linear",
         num_arrays=2,
         shared_dtype=True,

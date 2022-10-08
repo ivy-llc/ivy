@@ -1,4 +1,5 @@
 import ivy
+from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
 
 
 # Helpers #
@@ -121,9 +122,10 @@ def _mean(x, axis=None, keepdims=False, where=None):
     return ivy.divide(sums, counts)
 
 
+@inputs_to_ivy_arrays
 def celu(x, alpha=1.0):
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float32")
+    dtype = _batch_promotion(x, alpha, default_dtype="float64")
     return ivy.asarray(ret, dtype=dtype)
 
 
