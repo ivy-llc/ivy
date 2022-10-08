@@ -16,6 +16,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
+def Add(*, x, y, name="Add"):
+    return ivy.add(x, y)
+
+
 def ArgMax(*, input, dimension, output_type=None, name=None):
     return tf_frontend.argmax(input, dimension, output_type)
 
@@ -54,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -64,6 +72,16 @@ def Cos(*, x, name="Cos"):
 
 def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
+
+
+def Div(*, x, y, name="Div"):
+    return ivy.divide(x, y)
+
+
+def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
@@ -112,6 +130,10 @@ def IdentityN(*, input, name="IdentityN"):
     return [ivy.copy_array(x) for x in input]
 
 
+def Inv(*, x, name="Inv"):
+    return ivy.astype(ivy.reciprocal(x), x.dtype)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -156,6 +178,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
+
+
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):

@@ -36,9 +36,17 @@ def argmin(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
+    # The returned array must have the default array index data type.
     if dtype is not None:
-        return jnp.array(ret, dtype=dtype)
-    return ret
+        if dtype not in (jnp.int32, jnp.int64):
+            return jnp.array(ret, dtype=jnp.int32)
+        else:
+            return jnp.array(ret, dtype=dtype)
+    else:
+        if ret.dtype not in (jnp.int32, jnp.int64):
+            return jnp.array(ret, dtype=jnp.int32)
+        else:
+            return jnp.array(ret, dtype=ret.dtype)
 
 
 def nonzero(
