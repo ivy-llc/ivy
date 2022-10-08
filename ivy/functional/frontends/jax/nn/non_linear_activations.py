@@ -269,40 +269,48 @@ def relu6(x):
     return _type_conversion_64(res)
 
 
+@inputs_to_ivy_arrays
 def sigmoid(x):
     x = _type_conversion(x)
     ret = ivy.sigmoid(x)
     return ivy.astype(ret, x.dtype)
 
 
+@inputs_to_ivy_arrays
 def silu(x):
     x = _type_conversion(x)
     return x * sigmoid(x)
 
 
+@inputs_to_ivy_arrays
 def soft_sign(x):
     dtype = _type_conversion(x).dtype
     ret = x / (ivy.abs(x) + 1)
     return ret.astype(dtype)
 
 
+@inputs_to_ivy_arrays
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
 
 
+@inputs_to_ivy_arrays
 def softplus(x):
     x = _type_conversion(x)
     return ivy.softplus(x).astype(x.dtype)
 
 
+@inputs_to_ivy_arrays
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
 
 
+@inputs_to_ivy_arrays
 def hard_silu(x):
     return x * hard_sigmoid(x)
 
 
+@inputs_to_ivy_arrays
 def hard_sigmoid(x):
     return relu6(x + 3) / 6
