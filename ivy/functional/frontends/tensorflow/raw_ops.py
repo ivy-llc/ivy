@@ -2,7 +2,6 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
-
 def AddN(*, inputs, name="AddN"):
     inputs = ivy.array(inputs)
     return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
@@ -17,11 +16,13 @@ def Acosh(*, x, name="Acosh"):
 
 
 def Add(*, x, y, name="Add"):
-    return tf_frontend.add(x, y)
+    Add = tf_frontend.add
+    return Add(x, y)
 
 
 def ArgMax(*, input, dimension, output_type=None, name=None):
-    return tf_frontend.argmax(input, dimension, output_type)
+    ArgMax = tf_frontend.argmax
+    return ArgMax(input, dimension, output_type)
 
 
 def ArgMin(*, input, dimension, output_type=None, name=None):
@@ -71,7 +72,8 @@ def Cosh(*, x, name="cosh"):
 
 
 def Div(*, x, y, name="Div"):
-    return tf_frontend.divide(x, y)
+    Div = tf_frontend.divide
+    return Div(x, y)
 
 
 def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
@@ -155,7 +157,8 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 def Maximum(*, x, y, name="Maximum"):
-    return tf_frontend.maximum(x, y)
+    Maximum = tf_frontend.maximum
+    return Maximum(x, y)
 
 
 def Minimum(*, x, y, name="Minimum"):
@@ -163,7 +166,8 @@ def Minimum(*, x, y, name="Minimum"):
 
 
 def Neg(*, x, name="Neg"):
-    return tf_frontend.negative(x)
+    Neg = tf_frontend.negative
+    return Neg(x)
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
@@ -174,10 +178,6 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
-
-
-def OnesLike(*, x, name="OnesLike"):
-    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):
@@ -209,11 +209,13 @@ def Square(*, x, name="Square"):
 
 
 def Sub(*, x, y, name="Sub"):
-    return tf_frontend.subtract(x, y)
+    Sub = tf_frontend.subtract
+    return Sub(x, y)
 
 
 def Tan(*, x, name="Tan"):
-    return tf_frontend.tan(x)
+    Tan = tf_frontend.tan
+    return Tan(x)
 
 
 def Tanh(*, x, name="Tanh"):
