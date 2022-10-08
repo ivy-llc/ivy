@@ -1343,6 +1343,47 @@ def test_tensroflow_MatMul(
     )
 
 
+# Cumprod
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Cumprod"
+    ),
+)
+def test_tensorflow_Cumprod(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    exclusive,
+    reverse,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Cumprod",
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+    )
+
+
 # Greater
 @handle_cmd_line_args
 @given(
@@ -1487,4 +1528,60 @@ def test_tensorflow_IdentityN(
         frontend="tensorflow",
         fn_tree="raw_ops.IdentityN",
         input=x,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True)
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Inv"
+    ),
+)
+def test_tensorflow_Inv(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Inv",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True)
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.OnesLike"
+    ),
+)
+def test_tensorflow_OnesLike(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.OnesLike",
+        x=x[0],
     )

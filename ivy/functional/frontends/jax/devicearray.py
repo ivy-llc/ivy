@@ -20,12 +20,6 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
-    def reshape(self, new_sizes, dimensions=None):
-        return jax_frontend.reshape(self.data, new_sizes, dimensions)
-
-    def add(self, other):
-        return jax_frontend.add(self.data, other)
-
     # Special Methods #
     # --------------- #
 
@@ -103,88 +97,88 @@ class DeviceArray:
 
     @to_ivy_arrays_and_back
     def __pos__(self):
-        return ivy.positive(self.data)
+        return ivy.positive(self)
 
     @to_ivy_arrays_and_back
     def __neg__(self):
-        return jax_frontend.neg(self.data)
+        return jax_frontend.neg(self)
 
     @to_ivy_arrays_and_back
     def __eq__(self, other):
-        return jax_frontend.eq(self.data, other)
+        return jax_frontend.eq(self, other)
 
     @to_ivy_arrays_and_back
     def __ne__(self, other):
-        return jax_frontend.ne(self.data, other)
+        return jax_frontend.ne(self, other)
 
     @to_ivy_arrays_and_back
     def __lt__(self, other):
-        return jax_frontend.lt(self.data, other)
+        return jax_frontend.lt(self, other)
 
     @to_ivy_arrays_and_back
     def __le__(self, other):
-        return jax_frontend.le(self.data, other)
+        return jax_frontend.le(self, other)
 
     @to_ivy_arrays_and_back
     def __gt__(self, other):
-        return jax_frontend.gt(self.data, other)
+        return jax_frontend.gt(self, other)
 
     @to_ivy_arrays_and_back
     def __ge__(self, other):
-        return jax_frontend.ge(self.data, other)
+        return jax_frontend.ge(self, other)
 
     @to_ivy_arrays_and_back
     def __abs__(self):
-        return jax_frontend.abs(self.data)
+        return jax_frontend.abs(self)
 
     @to_ivy_arrays_and_back
     def __pow__(self, other):
-        return jax_frontend.pow(self.data, other)
+        return jax_frontend.pow(self, other)
 
     @to_ivy_arrays_and_back
     def __rpow__(self, other):
-        return jax_frontend.pow(other, self.data)
+        return jax_frontend.pow(other, self)
 
     @to_ivy_arrays_and_back
     def __and__(self, other):
-        return jax_frontend.bitwise_and(self.data, other)
+        return jax_frontend.bitwise_and(self, other)
 
     @to_ivy_arrays_and_back
     def __rand__(self, other):
-        return jax_frontend.bitwise_and(other, self.data)
+        return jax_frontend.bitwise_and(other, self)
 
     @to_ivy_arrays_and_back
     def __or__(self, other):
-        return jax_frontend.bitwise_or(self.data, other)
+        return jax_frontend.bitwise_or(self, other)
 
     @to_ivy_arrays_and_back
     def __ror__(self, other):
-        return jax_frontend.bitwise_or(other, self.data)
+        return jax_frontend.bitwise_or(other, self)
 
     @to_ivy_arrays_and_back
     def __xor__(self, other):
-        return jax_frontend.bitwise_xor(self.data, other)
+        return jax_frontend.bitwise_xor(self, other)
 
     @to_ivy_arrays_and_back
     def __rxor__(self, other):
-        return jax_frontend.bitwise_xor(other, self.data)
+        return jax_frontend.bitwise_xor(other, self)
 
     @to_ivy_arrays_and_back
     def __invert__(self):
-        return jax_frontend.bitwise_not(self.data)
+        return jax_frontend.bitwise_not(self)
 
     @to_ivy_arrays_and_back
     def __lshift__(self, other):
-        return jax_frontend.shift_left(self.data, other)
+        return jax_frontend.shift_left(self, other)
 
     @to_ivy_arrays_and_back
     def __rlshift__(self, other):
-        return jax_frontend.shift_left(other, self.data)
+        return jax_frontend.shift_left(other, self)
 
     @to_ivy_arrays_and_back
     def __rshift__(self, other):
-        return jax_frontend.shift_right_logical(self.data, other)
+        return jax_frontend.shift_right_logical(self, other)
 
     @to_ivy_arrays_and_back
     def __rrshift__(self, other):
-        return jax_frontend.shift_right_logical(other, self.data)
+        return jax_frontend.shift_right_logical(other, self)

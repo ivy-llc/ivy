@@ -47,9 +47,10 @@ def cross(
     axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    promote_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(promote_type)
-    x2 = x2.type(promote_type)
+
+    if axis is None:
+        axis = -1
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if axis:
         return torch.linalg.cross(input=x1, other=x2, dim=axis)
@@ -187,14 +188,13 @@ def matmul(
     transpose_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if transpose_a is True:
         x1 = torch.t(x1)
     if transpose_b is True:
         x2 = torch.t(x2)
-    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(dtype_from)
-    x2 = x2.type(dtype_from)
-    return torch.matmul(x1, x2, out=out).type(dtype_from)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.matmul(x1, x2, out=out)
 
 
 matmul.support_native_out = True
@@ -393,7 +393,7 @@ def tensordot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     # type conversion to one that torch.tensordot can work with
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
 
@@ -425,7 +425,7 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("bfloat16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
