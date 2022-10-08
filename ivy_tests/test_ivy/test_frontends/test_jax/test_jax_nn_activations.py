@@ -486,6 +486,8 @@ def test_jax_nn_normalize(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-02,
+        atol=1e-02,
         frontend="jax",
         fn_tree="nn.normalize",
         x=xs[0],

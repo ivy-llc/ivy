@@ -233,6 +233,7 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
     return out.astype(out_dtype)
 
 
+@inputs_to_ivy_arrays
 def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
     default = "float64" if mean is not None and variance is not None else "float32"
 
@@ -251,15 +252,18 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
     return ivy.asarray(res, dtype=out_type)
 
 
+@inputs_to_ivy_arrays
 def one_hot(x, num_classes, *, device=None, out=None):
     ret = ivy.one_hot(x, num_classes, device=device, out=out)
     return ret.astype("float64")
 
 
+@inputs_to_ivy_arrays
 def relu(x):
     return ivy.relu(x)
 
 
+@inputs_to_ivy_arrays
 def relu6(x):
     res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
     return _type_conversion_64(res)
