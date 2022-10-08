@@ -783,6 +783,7 @@ def test_conv_general_transpose(
         fn_name="conv_general_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
