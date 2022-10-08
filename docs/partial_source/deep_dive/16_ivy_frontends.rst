@@ -32,8 +32,18 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Basics
 ----------
 
-**NOTE:** Type hints, docstrings and examples are not required when working on
+**NOTE:** 
+
+Type hints, docstrings and examples are not required when working on
 frontend functions.
+
+When using functions and methods of Ivy Frontends, in addition to importing ivy itself 
+like :code:`import ivy` please also import the corrisponding Frontend module.
+For example, to use ivy's tensorflow frontend:
+
+    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+
+----
 
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
@@ -453,12 +463,6 @@ which itself is implemented as follows:
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
     def reshape(x, /, newshape, order="C"):
         return ivy.reshape(x, shape=newshape)
-        
-The :code:`np_frontend` above is a reference to the numpy frontend of ivy:
-:code:`ivy.functional.frontends.numpy`. 
-So when implementing other instance methods, please import the corrisponding ivy frontend, 
-in addition to importing ivy itself, like: 
-    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
