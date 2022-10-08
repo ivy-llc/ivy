@@ -587,9 +587,8 @@ def flatten(
         end_dim = len(x.shape) + end_dim
 
     x_shape = x.shape
-    new_shape = tuple(x_shape[:start_dim]) \
-                + (int(prod(x_shape[start_dim:end_dim + 1])),) \
-                + tuple(x_shape[end_dim + 1:])
+    new_shape = tuple(x_shape[:start_dim]) + (
+        int(prod(x_shape[start_dim:end_dim + 1])),) + tuple(x_shape[end_dim + 1:])
     return ivy.reshape(x, new_shape)
 
 
@@ -625,4 +624,3 @@ def vorbis_window(
     ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
     """
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
-
