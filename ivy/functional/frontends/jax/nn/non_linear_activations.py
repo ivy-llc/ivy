@@ -136,10 +136,12 @@ def elu(x, alpha=1.0):
     return ivy.asarray(ret, dtype=dtype)
 
 
+@inputs_to_ivy_arrays
 def gelu(x, approximate=True):
     return ivy.gelu(x, approximate=approximate)
 
 
+@inputs_to_ivy_arrays
 def glu(x, axis=-1):
     size = x.shape[axis]
     ivy.assertions.check_equal(size % 2, 0, message="axis size must be divisible by 2")
@@ -147,11 +149,13 @@ def glu(x, axis=-1):
     return ivy.multiply(x1, ivy.sigmoid(x2))
 
 
+@inputs_to_ivy_arrays
 def hard_swish(x):
     res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
     return ivy.asarray(res, dtype=x.dtype)
 
 
+@inputs_to_ivy_arrays
 def hard_tanh(x):
     x = ivy.asarray(x)
     n1 = -1
@@ -163,20 +167,24 @@ def hard_tanh(x):
     return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
 
 
+@inputs_to_ivy_arrays
 def leaky_relu(x, negative_slope=0.01):
     x = _type_conversion_64(x)
     return ivy.leaky_relu(x, alpha=negative_slope)
 
 
+@inputs_to_ivy_arrays
 def log_sigmoid(x):
     x = _type_conversion(x)
     return -ivy.softplus(-x).astype(x.dtype)
 
 
+@inputs_to_ivy_arrays
 def log_softmax(x, axis=-1):
     return ivy.log_softmax(x, axis=axis)
 
 
+@inputs_to_ivy_arrays
 def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
     a = ivy.asarray(a)
     if b is not None:

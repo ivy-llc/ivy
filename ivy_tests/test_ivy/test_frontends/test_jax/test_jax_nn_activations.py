@@ -156,6 +156,8 @@ def test_jax_nn_leaky_relu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
         frontend="jax",
         fn_tree="nn.leaky_relu",
         x=x[0],
@@ -337,8 +339,10 @@ def test_jax_nn_softplus(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        # large_abs_safety_factor=3,
+        # small_abs_safety_factor=3,
+        min_value=-1,
+        max_value=1,
         safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
@@ -358,6 +362,8 @@ def test_jax_nn_log_sigmoid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-02,
+        atol=1e-02,
         frontend="jax",
         fn_tree="nn.log_sigmoid",
         x=x[0],
@@ -395,13 +401,14 @@ def test_jax_nn_log_softmax(
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="nn.log_softmax",
-        rtol=1e-3,
-        atol=1e-3,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
         axis=axis,
     )
 
 
+# glu
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -435,8 +442,8 @@ def test_jax_nn_glu(
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="nn.glu",
-        rtol=1e-3,
-        atol=1e-3,
+        rtol=1e-01,
+        atol=1e-01,
         x=x[0],
         axis=axis,
     )
@@ -668,8 +675,8 @@ def test_jax_nn_swish(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        min_value=-10,
+        max_value=10,
         safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
@@ -689,6 +696,8 @@ def test_jax_nn_hard_swish(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-02,
+        atol=1e-02,
         frontend="jax",
         fn_tree="nn.hard_swish",
         x=x[0],
