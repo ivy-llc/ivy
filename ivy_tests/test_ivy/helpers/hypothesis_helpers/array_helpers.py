@@ -885,6 +885,8 @@ def dtype_values_axes_offsets(
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=5,
+    max_value=None,
+    min_value=None,
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
@@ -962,6 +964,8 @@ def dtype_values_axes_offsets(
         dtype_and_values(
             available_dtypes=available_dtypes,
             shape=shape,
+            max_value=max_value,
+            min_value=min_value,
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
