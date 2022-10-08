@@ -101,6 +101,9 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
             "signed_integer": tuple(
                 set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
             ),
+            "bool": tuple(
+                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
+            ),
         }
 
     backend_dtypes = _get_type_dict(ivy)[kind]
