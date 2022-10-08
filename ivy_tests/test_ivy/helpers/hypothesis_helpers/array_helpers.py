@@ -922,18 +922,76 @@ def dtype_values_axes_offsets(
     max_dim_size
         The maximum size of any dimension in the array. Defaults to 5
 
-    allow_negative_end_axis
-        If true, the last axis can be drawn as -1.
+    max_value
+        The maximum value of any entry in the array.
+
+    min_value
+        The minimum value of any entry in the array.
+
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+
+    safety_factor_scale
+        The operation to use when calculating the maximum value of the list. Can be
+        "linear" or "log". Default value = "linear".
+
+    num_axes
+        The number of axes (or dimensions) to draw.
+
+    allow_negative_axes
+        Whether or not any drawn axes can be negative.
+
+    max_axis
+        The maximum axis that can be drawn.
+
+    min_axis
+        The minimum axis that can be drawn.
+
+    axes_are_within_shape
+        Whether or not the axes drawn must be within the shape of the array
+
+    num_offsets
+        The number of offsets to drawn
+
+    offsets_are_within_shape
+        Whether or not the offsets drawn must be within the shape of the array
+
+    allow_negative_offset
+        Whether or not the offsets drawn are allowed to be negative
+
+    min_offset
+        The minimum offset that can be drawn
+
+    max_offset
+        The maximum offset that can be drawn
 
     Returns
     -------
     ret
-        A 4-tuple (dtype, array, start_dim, end_dim) where dtype is
-        one of the available dtypes, the array is an array of values
-        and start_dim and end_dim are legal dimensions contained
-        within the array, with either start_dim <= end_dim or
-        end_dim = 1.
-
+        A 4-tuple (dtype, values, axes, offsets) where dtype is
+        one of the available dtypes, values is an array of values,
+        axes is a list of axes, and offsets is a list of offsets.
+        Axes and offsets are always lists, even when only one is
+        drawn.
     """
 
     # Sanity check the inputs
