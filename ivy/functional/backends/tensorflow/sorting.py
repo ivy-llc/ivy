@@ -61,6 +61,13 @@ def searchsorted(
     )
     is_supported_int_ret_dtype = ret_dtype in [tf.int32, tf.int64]
     if sorter is not None:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
+        if sorter.dtype not in [tf.int32, tf.int64]:
+            sorter = tf.cast(sorter, tf.int32)
         if x.ndim == 1:
             x = tf.gather(x, sorter)
         else:

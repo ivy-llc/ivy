@@ -52,6 +52,11 @@ def searchsorted(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
         x = jnp.take(x, sorter)
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(

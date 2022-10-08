@@ -59,6 +59,15 @@ def searchsorted(
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
     )
+    if sorter is not None:
+        sorter_dtype = ivy.as_native_dtype(ret_dtype)
+        assert ivy.is_int_dtype(sorter_dtype) and not ivy.is_uint_dtype(
+            sorter_dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter_dtype }."
+        )
+        if sorter_dtype is not torch.int64:
+            sorter = sorter.to(torch.int64)
     ret_dtype = ivy.as_native_dtype(ret_dtype)
     if ret_dtype is torch.int64:
         return torch.searchsorted(

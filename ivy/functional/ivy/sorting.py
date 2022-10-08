@@ -273,7 +273,7 @@ def searchsorted(
         'right', return the last such index.
     ret_dtype
         the data type for the return value, Default: ivy.int64,
-        only ivy.int32 or ivy.int64 is allowed.
+        only integer data types is allowed.
     sorter
         optional array of integer indices that sort array x into ascending order,
         typically the result of argsort.

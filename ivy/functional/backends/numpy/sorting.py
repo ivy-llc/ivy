@@ -49,6 +49,12 @@ def searchsorted(
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
     )
+    if sorter is not None:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(
             f"the first N-1 dimensions of x array and v array "
@@ -58,6 +64,7 @@ def searchsorted(
         x = x.reshape(-1, x.shape[-1])
         v = v.reshape(-1, v.shape[-1])
         out_array = np.empty_like(v)
+        # ToDo support for sorter
         for i in range(x.shape[0]):
             out_array[i] = np.searchsorted(x[i], v[i], side=side)
         ret = out_array.reshape(original_shape)
