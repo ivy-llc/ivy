@@ -1425,7 +1425,7 @@ def test_diag(
     offset_dtype, offset = dtype_offset
     padding_value_dtype, padding_value = dtype_padding_value
     helpers.test_function(
-        input_dtypes=[dtype_x, offset_dtype, dtype_padding_value],
+        input_dtypes=x_dtype + offset_dtype + padding_value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -1433,9 +1433,10 @@ def test_diag(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="diagonal",
+        fn_name="diag",
         x=x,
         offset=offset,
+        padding_value=padding_value,
         align=align,
         num_rows=num_rows,
         num_cols=num_cols,
