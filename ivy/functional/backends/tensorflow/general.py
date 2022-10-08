@@ -422,38 +422,6 @@ scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")},
-    backend_version,
-)
-def one_hot(
-    indices: Union[tf.Tensor, tf.Variable],
-    depth: int,
-    *,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    device = ivy.default_device(device)
-    dtype = indices.dtype
-    if device is not None:
-        indices = tf.cast(indices, tf.int64)
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth)
-    return tf.one_hot(indices, depth)
-
-
-def indices_where(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate(
-        [tf.expand_dims(item, -1) for item in where_x], -1
-    )
-    return res
 
 
 def shape(

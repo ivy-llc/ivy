@@ -9,11 +9,6 @@ import tensorflow as tf
 # local
 import ivy
 
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-    as_ivy_dtype,
-)
 
 
 from ivy.func_wrapper import with_unsupported_dtypes

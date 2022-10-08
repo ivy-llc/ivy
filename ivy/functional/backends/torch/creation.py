@@ -10,12 +10,8 @@ from torch import Tensor
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-)
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
-from ivy.functional.backends.numpy.data_type import as_ivy_dtype
+
 
 
 from . import version
