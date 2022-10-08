@@ -644,6 +644,7 @@ def test_depthwise_conv2d(
         fn_name="depthwise_conv2d",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not support dilations > 1 and stride > 1
         ground_truth_backend="jax",
         x=x,
