@@ -78,6 +78,10 @@ def Div(*, x, y, name="Div"):
     return ivy.divide(x, y)
 
 
+def Diag(*, diagonal, name="Diag"):
+    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+
+
 def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
