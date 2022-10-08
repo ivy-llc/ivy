@@ -44,6 +44,8 @@ def cross(
     axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.cross(
         x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis
     )
@@ -62,6 +64,33 @@ det.unsupported_dtypes = (
     "float16",
     "bfloat16",
 )
+
+
+def diag(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if num_rows is None:
+        num_rows = -1
+    if num_cols is None:
+        num_cols = -1
+
+    return tf.linalg.diag(
+        x,
+        name="diag",
+        k=offset,
+        num_rows=num_rows,
+        num_cols=num_rows,
+        padding_value=padding_value,
+        align=align,
+    )
 
 
 def diagonal(
@@ -181,14 +210,15 @@ def matmul(
     transpose_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    dtype_from = tf.as_dtype(x1.dtype)
+
     if transpose_a is True:
         x1 = tf.transpose(x1)
     if transpose_b is True:
         x2 = tf.transpose(x2)
-    dtype_from = tf.experimental.numpy.promote_types(
-        x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
-    )
-    dtype_from = tf.as_dtype(dtype_from)
+
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
         x1 = tf.cast(x1, tf.int64)
         x2 = tf.cast(x2, tf.int64)
@@ -248,21 +278,22 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axes = (-2, -1)
     if ord == -float("inf"):
-        ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes
+        reduce_min = tf.reduce_min(
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis
         )
+        ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes
+            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True), axis=axis
         )
     elif ord == -2:
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=(-2, -1), keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False), axis=axis, keepdims=keepdims
         )
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
@@ -270,7 +301,7 @@ def matrix_norm(
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     else:
-        ret = tf.linalg.norm(x, ord, axes, keepdims)
+        ret = tf.linalg.norm(x, ord, axis, keepdims)
 
     if keepdims:
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
@@ -324,6 +355,7 @@ def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -343,8 +375,13 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if rtol:
+    if atol and rtol is None:
+        ret = tf.experimental.numpy.sum(singular_values > atol, axis=axis)
+    elif rtol and atol is None:
         ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)
+    elif rtol and atol:
+        tol = tf.maximum(atol, max_values * rtol)
+        ret = tf.experimental.numpy.sum(singular_values > tol, axis=axis)
     else:
         ret = tf.experimental.numpy.sum(singular_values != 0, axis=axis)
     if len(ret_shape):
@@ -554,17 +591,18 @@ def tensordot(
 
 def trace(
     x: Union[tf.Tensor, tf.Variable],
-    offset: int = 0,
+    /,
     *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.trace(
-        x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
-    )
+    ret = tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
 
 
-trace.unsupported_dtypes = ("float16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(

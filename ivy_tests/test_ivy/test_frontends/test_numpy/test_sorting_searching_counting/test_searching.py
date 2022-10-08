@@ -32,7 +32,6 @@ def test_numpy_where(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
@@ -62,7 +61,6 @@ def test_numpy_nonzero(
     dtype_and_a,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
@@ -96,7 +94,6 @@ def test_numpy_argmin(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -135,7 +132,6 @@ def test_numpy_argmax(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -163,9 +159,7 @@ def test_numpy_argmax(
         fn_name="ivy.functional.frontends.numpy.flatnonzero"
     ),
 )
-def test_numpy_flatnonzero(
-    dtype_and_x, as_variable, native_array, num_positional_args, fw
-):
+def test_numpy_flatnonzero(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -193,7 +187,7 @@ def test_numpy_flatnonzero(
     ),
 )
 def test_numpy_searchsorted(
-    dtype_x_v, side, as_variable, native_array, num_positional_args, fw
+    dtype_x_v, side, as_variable, native_array, num_positional_args
 ):
     input_dtypes, xs = dtype_x_v
     helpers.test_frontend_function(

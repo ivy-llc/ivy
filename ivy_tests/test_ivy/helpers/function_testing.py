@@ -448,6 +448,10 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     _assert_dtypes_are_valid(input_dtypes)
+    assert (
+        not with_out or not with_inplace
+    ), "only one of with_out or with_inplace can be set as True"
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -546,9 +550,36 @@ def test_frontend_function(
     copy_kwargs = copy.deepcopy(kwargs)
     copy_args = copy.deepcopy(args)
     ret = frontend_fn(*args, **kwargs)
-    ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-    out = ret
-    if with_inplace:
+    if with_out:
+        if not inspect.isclass(ret):
+            is_ret_tuple = issubclass(ret.__class__, tuple)
+        else:
+            is_ret_tuple = issubclass(ret, tuple)
+        if is_ret_tuple:
+            ret = ivy.nested_map(
+                ret,
+                lambda _x: ivy.array(_x) if not ivy.is_array(_x) else _x,
+                include_derived=True,
+            )
+        elif not ivy.is_array(ret):
+            ret = ivy.array(ret)
+        out = ret
+        # pass return value to out argument
+        # check if passed reference is correctly updated
+        kwargs["out"] = out
+        ret = frontend_fn(*args, **kwargs)
+        if is_ret_tuple:
+            flatten_ret = flatten(ret=ret)
+            flatten_out = flatten(ret=out)
+            for ret_array, out_array in zip(flatten_ret, flatten_out):
+                if ivy.native_inplace_support:
+                    assert ret_array.data is out_array.data
+                assert ret_array is out_array
+        else:
+            if ivy.native_inplace_support:
+                assert ret.data is out.data
+            assert ret is out
+    elif with_inplace:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
         if "inplace" in inspect.getfullargspec(frontend_fn).args:
@@ -570,16 +601,6 @@ def test_frontend_function(
                 assert ret.data is first_array.data
             assert first_array is ret
             args, kwargs = copy_args, copy_kwargs
-    elif with_out:
-        assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        # pass return value to out argument
-        # check if passed reference is correctly updated
-        kwargs["out"] = out
-        ret = frontend_fn(*args, **kwargs)
-        if ivy.native_inplace_support:
-            assert ret.data is out.data
-        assert ret is out
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -698,7 +719,10 @@ def gradient_test(
         kwargs_writeable = ivy.copy_nest(kwargs)
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
-        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
+        ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
+        if isinstance(ret, tuple):
+            ret = ret[0]
+        return ivy.mean(ret)
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
@@ -760,25 +784,29 @@ def gradient_test(
     if len(ret_np_flat) < 2:
         return
 
-    grads_np_flat = ret_np_flat[1]
-    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
-    condition_np_flat = np.isfinite(grads_np_flat)
-    grads_np_flat = np.where(
-        condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
-    )
-    condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
-    grads_np_from_gt_flat = np.where(
-        condition_np_from_gt_flat,
-        grads_np_from_gt_flat,
-        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
-    )
+    grad_list_np_flat = ret_np_flat[1:]
+    grad_list_np_from_gt_flat = ret_np_from_gt_flat[1:]
 
-    value_test(
-        ret_np_flat=grads_np_flat,
-        ret_np_from_gt_flat=grads_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-    )
+    for grads_np_flat, grads_np_from_gt_flat in zip(
+        grad_list_np_flat, grad_list_np_from_gt_flat
+    ):
+        condition_np_flat = np.isfinite(grads_np_flat)
+        grads_np_flat = np.where(
+            condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
+        )
+        condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
+        grads_np_from_gt_flat = np.where(
+            condition_np_from_gt_flat,
+            grads_np_from_gt_flat,
+            np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        )
+
+        value_test(
+            ret_np_flat=grads_np_flat,
+            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_method(
@@ -868,7 +896,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
     _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
@@ -878,6 +905,7 @@ def test_method(
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+    _assert_dtypes_are_valid(input_dtypes_init)
 
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
@@ -1777,7 +1805,14 @@ def flatten(*, ret):
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
-    return ivy.multi_index_nest(ret, ret_idxs)
+    # no ivy array in the returned values, which means it returned scalar
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [ivy.asarray(x) for x in ret_flat]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    return ret_flat
 
 
 def flatten_and_to_np(*, ret):

@@ -38,7 +38,6 @@ def test_jax_lax_svd(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -109,7 +108,6 @@ def test_jax_lax_cholesky(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
     symmetrize_input,
 ):
     dtype, x = dtype_and_x
@@ -155,7 +153,6 @@ def test_jax_lax_eigh(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
     lower,
     symmetrize_input,
 ):
@@ -170,7 +167,6 @@ def test_jax_lax_eigh(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.linalg.eigh",
         test_values=False,
