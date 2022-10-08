@@ -49,6 +49,31 @@ def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 det.unsupported_dtypes = ("float16",)
 
 
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+    ret = np.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    # On the diagonal there will be
+    # 1 * padding_value + x_i - padding_value == x_i
+    ret += np.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: np.ndarray,
     /,
@@ -140,11 +165,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if not isinstance(axis, tuple):
+    if not isinstance(axis, tuple) and axis:
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -295,6 +320,7 @@ def tensordot(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
 
 
@@ -311,12 +337,14 @@ def trace(
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
+trace.unsupported_dtypes = ("float16", "bfloat16")
 trace.support_native_out = True
 
 
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
 
 

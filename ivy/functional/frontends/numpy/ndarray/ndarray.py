@@ -23,9 +23,9 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-        
+
         return np_frontend.argmax(
-            self.data, 
+            self.data,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -46,8 +46,17 @@ class ndarray:
             value,
         )
 
+    def squeeze(
+        self, 
+        axis=None
+    ):
+        return np_frontend.squeeze(self.data, axis)
+
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
 
     def any(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.any(self.data, axis, out, keepdims, where=where)
+
+    def argsort(self, *, axis=-1, kind=None, order=None):
+        return np_frontend.argsort(self.data, axis, kind, order)
