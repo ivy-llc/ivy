@@ -65,7 +65,6 @@ class ArrayWithExtensions(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1,2], [3,4])
         >>> ivy.flatten(x)
         ivy.array([1, 2, 3, 4])

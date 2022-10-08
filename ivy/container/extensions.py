@@ -164,7 +164,6 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
@@ -214,7 +213,6 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),

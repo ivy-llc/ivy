@@ -498,7 +498,6 @@ def flatten(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = np.array([1,2], [3,4])
