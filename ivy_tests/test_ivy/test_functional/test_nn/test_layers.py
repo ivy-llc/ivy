@@ -495,12 +495,12 @@ def test_conv1d_transpose(
     assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=[True],
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
-        instance_method=False,
+        container_flags=container,
+        instance_method=instance_method,
         fw=fw,
         fn_name="conv1d_transpose",
         rtol_=1e-2,
