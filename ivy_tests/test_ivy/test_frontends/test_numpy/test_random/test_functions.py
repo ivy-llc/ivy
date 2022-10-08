@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
     ),
     size=helpers.get_shape(allow_none=True),
 )
-def test_numpy_random(input_dtypes, num_positional_args, size, fw, native_array):
+def test_numpy_random(input_dtypes, num_positional_args, size, native_array):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=[False],

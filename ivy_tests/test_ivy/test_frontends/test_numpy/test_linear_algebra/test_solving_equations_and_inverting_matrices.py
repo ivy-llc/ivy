@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         fn_name="ivy.functional.frontends.numpy.solve"
     ),
 )
-def test_numpy_solve(x, y, as_variable, native_array, num_positional_args, fw):
+def test_numpy_solve(x, y, as_variable, native_array, num_positional_args):
     dtype1, x1 = x
     dtype2, x2 = y
     helpers.test_frontend_function(
@@ -53,7 +53,7 @@ def test_numpy_solve(x, y, as_variable, native_array, num_positional_args, fw):
         fn_name="ivy.functional.frontends.numpy.linalg.inv"
     ),
 )
-def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -81,7 +81,7 @@ def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, 
         fn_name="ivy.functional.frontends.numpy.linalg.pinv"
     ),
 )
-def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,

@@ -3,6 +3,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -43,19 +44,10 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-@st.composite
-def _dtype_n_with_out(draw):
-    dtype = draw(helpers.get_dtypes("float", none=True))
-    if dtype is None:
-        return dtype, draw(st.booleans())
-    return dtype, False
-
-
 # concat
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype_n_with_out=_dtype_n_with_out(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.concatenate"
     ),
@@ -63,13 +55,15 @@ def _dtype_n_with_out(draw):
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
-    dtype_n_with_out,
+    with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
-    dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtypes,
+        get_dtypes_kind="valid",
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -82,4 +76,5 @@ def test_numpy_concatenate(
         axis=unique_idx,
         out=None,
         dtype=dtype,
+        casting=casting,
     )

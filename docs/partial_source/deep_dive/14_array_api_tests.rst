@@ -1,5 +1,5 @@
-Array API Tests
-===============
+Array API Tests 🤝
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`test suite`: https://github.com/data-apis/array-api-tests
@@ -13,6 +13,7 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
+.. _`here`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing
 
 All functions which are present in the `Array API Standard`_ have a corresponding unit test in the
 `test suite`_ for the standard.
@@ -33,23 +34,31 @@ functions which are part of the standard. If a test fails on the CI, you can see
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
-Using bash file
+Using the bash file (runs Docker)
 ****
 
-Using the terminal, you can run our bash file `test_array_api.sh`_ and specify which framework backend you want to use.
-You can use the following command as an example.
+Using the terminal, you can run all array-api tests for a certain backend using the bash file `test_array_api.sh`_:
 
 .. code-block:: none
 
+        # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
 
-You can change the argument with any of our supported frameworks - 'tensorflow', 'numpy', 'torch' or 'jax'.
+You can change the argument with any of our supported frameworks - 'tensorflow', 'numpy', 'torch' or 'jax'. If you rather
+run a single test or test file with terminal, use the following commands:
+.. code-block:: none
 
-Using IDE
+        # run all tests in a file
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+
+        # run a single test
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_array_method_signature"
+
+Using the IDE
 ****
-If you prefer, you can also run a specific test or test file by using your IDE. To make this work, you should set the
+You can also run a specific test or test file by using your IDE. To make this work, you should set the
 backend explicitly in the '_array_module.py' file. You can find it on the 'array_api_tests' submodule. At the beginning
-of the file, you will see the following line of code :code:`array_module = None`. You need to comment that line and add
+of the file, you will see the following line of code :code:`array_module = None`. You need to comment out that line and add
 the following code:
 
 .. code-block:: none
@@ -57,8 +66,8 @@ the following code:
         import ivy as array_module
         array_module.set_backend("<insert_chosen_backend>")
 
-After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
-changes to your commit.
+After that, you can run the API test files as you typically would with other tests. See `here`_  for instructions on how
+to run tests in ivy more generally. *NB*: make sure to not add any changes to the array-api files to your commit.
 
 Re-Running Failed Array API Tests
 ****
