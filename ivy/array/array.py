@@ -14,6 +14,7 @@ from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
+from .extensions import ArrayWithExtensions
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -47,6 +48,7 @@ class Array(
     ArrayWithDataTypes,
     ArrayWithDevice,
     ArrayWithElementwise,
+    ArrayWithExtensions,
     ArrayWithGeneral,
     ArrayWithGradients,
     ArrayWithImage,
