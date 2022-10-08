@@ -1,6 +1,7 @@
 # global
 import ivy
 from hypothesis import given, strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1584,4 +1585,80 @@ def test_tensorflow_OnesLike(
         frontend="tensorflow",
         fn_tree="raw_ops.OnesLike",
         x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Cholesky"
+    ),
+)
+def test_tensorflow_Cholesky(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = (
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Cholesky",
+        input=x,
+        rtol=1e-4,
+        atol=1e-4,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Min"
+    ),
+)
+def test_tensorflow_Min(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    keep_dims,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Min",
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
     )

@@ -58,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -156,6 +160,10 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 def Maximum(*, x, y, name="Maximum"):
     return tf_frontend.maximum(x, y)
+
+
+def Min(*, input, axis, keep_dims=False, name="Min"):
+    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
 def Minimum(*, x, y, name="Minimum"):
