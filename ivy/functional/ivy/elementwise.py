@@ -6206,6 +6206,8 @@ def lcm(
         first input array.
     x2
         second input array
+    dtype
+        dtype of the output array
     out
         optional output array, for writing the result to.
 

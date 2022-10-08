@@ -2456,8 +2456,9 @@ def test_trunc_divide(
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
-        min_value=0,
-        exclude_min=True,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
         allow_nan=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="lcm"),
@@ -2484,6 +2485,6 @@ def test_lcm(
         fw=fw,
         fn_name="lcm",
         test_gradients=True,
-        x1=x[0],
-        x2=x[1]
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )

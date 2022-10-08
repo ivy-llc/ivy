@@ -452,5 +452,13 @@ def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
 
 
-def lcm(x1: JaxArray, x2:JaxArray, /, *, out:Optional[JaxArray] = None) -> JaxArray:
-    return jnp.abs(jnp.lcm(x1, x2))
+def lcm(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.abs(
+        jnp.lcm(x1, x2)
+    )

@@ -5,7 +5,6 @@ import tensorflow as tf
 
 # local
 import ivy
-from math import prod
 
 
 def abs(
@@ -767,9 +766,20 @@ def lcm(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.abs(tf.experimental.numpy.lcm(x1, x2))
+    if [x1.dtype, x2.dtype] == [tf.int8, tf.int8]:
+        dtype = tf.int8
+        x1 = tf.cast(x1, dtype=tf.int16)
+        x2 = tf.cast(x2, dtype=tf.int16)
+    else: 
+        dtype = x1.dtype 
+    return tf.math.abs(
+        tf.cast(
+            tf.experimental.numpy.lcm(x1, x2),
+            dtype=dtype
+        ),
+    )
 
 
 lcm.supported_dtypes = ( 

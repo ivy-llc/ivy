@@ -729,9 +729,16 @@ def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 rad2deg.support_native_out = True
 
 
-def lcm(x1: np.ndarray, x2: np.ndarray, /, *, out:Optional[np.ndarray] = None) -> np.ndarray:
+def lcm(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return np.abs(
-    np.lcm(x1, x2, out=out, where=True, casting='same_kind', order='K', dtype=None, subok=True)
+        np.lcm(x1, x2, out=out, where=True, casting='same_kind',
+               order='K', dtype=None, subok=True)
     )
 
 
