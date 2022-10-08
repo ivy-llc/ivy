@@ -505,6 +505,7 @@ def test_conv1d_transpose(
         fn_name="conv1d_transpose",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -548,6 +549,7 @@ def test_conv2d(
         fn_name="conv2d",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
