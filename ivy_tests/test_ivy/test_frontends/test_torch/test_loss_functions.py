@@ -156,20 +156,13 @@ def test_torch_binary_cross_entropy(
 # triplet_margin_loss
 @handle_cmd_line_args
 @given(
-    dtype_and_anchor=helpers.dtype_and_values(
+    dtype_and_triplet=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
-    ),
-    dtype_and_positive=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
-    ),
-    dtype_and_negative=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="triplet_shape"),
+        num_arrays=3,
+        shape=helpers.get_shape(min_num_dims=1),
     ),
     margin=helpers.ints_or_floats(min_value=1.0, max_value=5),
-    p=helpers.ints(min_value=1),
+    p=helpers.ints(min_value=1, max_value=1e03),
     eps=helpers.floats(min_value=1e-06, max_value=5),
     swap=st.booleans(),
     size_average=st.booleans(),
@@ -180,9 +173,7 @@ def test_torch_binary_cross_entropy(
     ),
 )
 def test_torch_triplet_margin_loss(
-    dtype_and_anchor,
-    dtype_and_positive,
-    dtype_and_negative,
+    dtype_and_triplet,
     margin,
     p,
     eps,
@@ -194,20 +185,18 @@ def test_torch_triplet_margin_loss(
     num_positional_args,
     native_array,
 ):
-    anchor_dtype, anchor = dtype_and_anchor
-    positive_dtype, positive = dtype_and_positive
-    negative_dtype, negative = dtype_and_negative
+    triplet_dtype, triplet = dtype_and_triplet
     helpers.test_frontend_function(
-        input_dtypes=anchor_dtype + positive_dtype + negative_dtype,
+        input_dtypes=triplet_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="nn.functional.triplet_margin_loss",
-        anchor=anchor[0],
-        positive=positive[0],
-        negative=negative[0],
+        anchor=triplet[0],
+        positive=triplet[1],
+        negative=triplet[2],
         margin=margin,
         p=p,
         eps=eps,
@@ -215,4 +204,5 @@ def test_torch_triplet_margin_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+        rtol=1e-01,
     )

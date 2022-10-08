@@ -125,3 +125,6 @@ def triplet_margin_loss(
     ret = ivy.maximum(delta_plus - delta_minus + margin, 0)
     ret = _apply_reduction(reduction, size_average, reduce, ret)
     return ret
+
+
+triplet_margin_loss.unsupported_dtypes = ("float16", "bloat16")
