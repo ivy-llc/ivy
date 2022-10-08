@@ -1,5 +1,4 @@
 import ivy
-import ivy.functional.frontends as frontends
 from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 
