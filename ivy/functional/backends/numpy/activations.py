@@ -47,6 +47,11 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
         return np.asarray(1 / (1 + np.exp(-x)))
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
 
+def tanh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if not ivy.is_array(x):
+        return np.asarray((np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x)))
+    return np.asarray((np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))).astype(x.dtype)
+
 
 def softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None

@@ -155,3 +155,24 @@ class ArrayWithActivations(abc.ABC):
         ivy.array([-1.62, -0.221, -7.82 ])
         """
         return ivy.log_softmax(self._data, axis=axis, out=out)
+
+
+    def tanh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Formula
+        --------
+        tanh = (e^x - e^(-x)) / (e^x + e^(-x))
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 1., 2.])
+        >>> y = x.tanh()
+        >>> print(y)
+        ivy.array([-0.762, 0.762, 0.964])
+
+        """
+        return ivy.tanh(self._data, out=out)

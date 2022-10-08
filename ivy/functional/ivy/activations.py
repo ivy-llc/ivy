@@ -480,3 +480,64 @@ def log_softmax(
     }
     """
     return current_backend(x).log_softmax(x, axis=axis, out=out)
+
+
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def tanh(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Applies the tanh function element-wise. The job of tanh function is scaling input data
+        in range (-1; 1) in order to make computation time faster
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the tanh activation of each element in ``x``.
+
+    Formula
+    --------
+        tanh = (e^x - e^(-x)) / (e^x + e^(-x))
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 1., 2.])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([-0.762, 0.762, 0.964])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([-0.862, 0.999, 0.97])
+
+    Instance Method Example
+    -----------------------
+
+    Using :class:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1., 1., 2.])
+    >>> y = x.tanh()
+    >>> print(y)
+    ivy.array([-0.762, 0.762, 0.964])
+
+    """
+    return current_backend(x).tanh(x, out=out)
+    

@@ -33,6 +33,11 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
         x = float(x)
     return tf.nn.sigmoid(x)
 
+def tanh(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    if not ivy.is_array(x):
+        x = float(x)
+    return tf.nn.tanh(x)
+
 
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None

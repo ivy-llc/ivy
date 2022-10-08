@@ -40,6 +40,13 @@ def softmax(
         axis = -1
     return jax.nn.softmax(x, axis)
 
+def tanh(
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if axis is None:
+        axis = -1
+    return jax.nn.tanh(x, axis)
+
 
 def softplus(
     x: JaxArray,

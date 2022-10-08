@@ -50,6 +50,11 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
+def tanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    if not ivy.is_array(x):
+        x = torch.tensor(x)
+    return torch.tanh(x, out=out)
+
 
 sigmoid.unsupported_dtypes = ("float16",)
 sigmoid.support_native_out = True
