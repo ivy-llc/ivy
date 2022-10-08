@@ -129,6 +129,7 @@ def celu(x, alpha=1.0):
     return ivy.asarray(ret, dtype=dtype)
 
 
+@inputs_to_ivy_arrays
 def elu(x, alpha=1.0):
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
     dtype = _batch_promotion(x, alpha, default_dtype="float64")
