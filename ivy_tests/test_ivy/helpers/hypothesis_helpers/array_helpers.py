@@ -874,3 +874,33 @@ def array_and_broadcastable_shape(draw, dtype):
         label="shape",
     )
     return x, to_shape
+
+
+@st.composite
+def dtype_indices_depth_axis(
+    draw, available_dtypes=dtype_helpers.get_dtypes("numeric")
+):
+    depth = draw(number_helpers.ints(min_value=2, max_value=100))
+    dtype, indices, shape = draw(
+        dtype_and_values(
+            available_dtypes=available_dtypes,
+            min_value=0,
+            max_value=depth - 1,
+            small_abs_safety_factor=4,
+            ret_shape=True,
+        )
+    )
+
+    axis = draw(st.integers(min_value=-1, max_value=len(shape) - 1))
+    return dtype, indices, depth, axis
+
+
+@st.composite
+def onehot_values_on_off_dtype(draw):
+    dtype, value = draw(
+        dtype_and_values(
+            available_dtypes=dtype_helpers.get_dtypes("numeric"), shape=(2,)
+        )
+    )
+    [on_value, off_value] = value[0]
+    return on_value, off_value, dtype[0]

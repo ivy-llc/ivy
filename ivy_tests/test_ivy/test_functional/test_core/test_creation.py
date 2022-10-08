@@ -819,39 +819,11 @@ def test_copy_array(dtype_and_x, device, fw):
     assert id(x) != id(ret)
 
 
-@st.composite
-def _dtype_indices_depth_axis(draw):
-    depth = draw(helpers.ints(min_value=2, max_value=100))
-    dtype, indices, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            min_value=0,
-            max_value=depth - 1,
-            small_abs_safety_factor=4,
-            ret_shape=True,
-        )
-    )
-
-    axis = draw(st.integers(min_value=-1, max_value=len(shape) - 1))
-    return dtype, indices, depth, axis
-
-
-@st.composite
-def _on_off_dtype(draw):
-    dtype, value = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), shape=(2,)
-        )
-    )
-    [on_value, off_value] = value[0]
-    return on_value, off_value, dtype[0]
-
-
 # one_hot
 @handle_cmd_line_args
 @given(
-    dtype_indices_depth_axis=_dtype_indices_depth_axis(),
-    on_off_dtype=_on_off_dtype(),
+    dtype_indices_depth_axis=helpers.dtype_indices_depth_axis(),
+    on_off_dtype=helpers.onehot_values_on_off_dtype(),
     num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(

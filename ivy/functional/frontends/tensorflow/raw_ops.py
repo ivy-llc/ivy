@@ -176,6 +176,12 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def OneHot(*, indices, depth, on_value, off_value, axis=-1, name="OneHot"):
+    return ivy.one_hot(
+        indices, depth, on_value=on_value, off_value=off_value, axis=axis
+    )
+
+
 def Relu(features, name="Relu"):
     return ivy.relu(features)
 
