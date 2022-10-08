@@ -58,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -180,6 +184,10 @@ def OneHot(*, indices, depth, on_value, off_value, axis=-1, name="OneHot"):
     return ivy.one_hot(
         indices, depth, on_value=on_value, off_value=off_value, axis=axis
     )
+
+
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):
