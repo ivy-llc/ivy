@@ -596,6 +596,7 @@ def test_conv2d_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         device_=device,
+        test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
