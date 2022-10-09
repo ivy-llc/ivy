@@ -3651,7 +3651,6 @@ class ContainerWithGeneral(ContainerBase):
             b: 3
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
                                             c = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> ivy.get_num_dims(a)
@@ -3713,8 +3712,6 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Shape of the array
 
-        Examples
-        --------
         >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> ivy.get_num_dims(a)
         {
@@ -3728,7 +3725,6 @@ class ContainerWithGeneral(ContainerBase):
             b: 3
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
                                             c = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> ivy.get_num_dims(a)
