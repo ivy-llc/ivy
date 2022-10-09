@@ -160,17 +160,18 @@ def dropout1d(
     prob
         probability of a channel to be zero-ed.
     training
-        controls whether dropout1d is performed during training or ignored during testing.
+        controls whether dropout1d is performed during training or
+        ignored during testing.
     data_format
         NWC" or "NCW". Defaults to "NWC"..
     out
-        optional output array, for writing the result to. Must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         an array with some channels zero-ed and the rest of channels are scaled by (1/1-prob).
-
     """
     return current_backend(x).dropout1d(x,
                                         prob,
