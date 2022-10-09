@@ -73,8 +73,6 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
 
 
 norm.supported_dtypes = (
-    "float16",
-    "bfloat16",
     "float32",
     "float64",
 )
@@ -88,8 +86,6 @@ def normalize(tensor, ord="euclidean", axis=None, name=None):
 
 
 normalize.supported_dtypes = (
-    "float16",
-    "bfloat16",
     "float32",
     "float64",
 )
