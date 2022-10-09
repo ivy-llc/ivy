@@ -3746,4 +3746,3 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
-        
