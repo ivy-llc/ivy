@@ -76,14 +76,10 @@ def sinc(
 def vorbis_window(
     window_length: Union[tf.Tensor, tf.Variable],
     *,
-    dtype:Optional[tf.DType] = tf.dtypes.float32,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.vorbis_window(
-    window_length,
-    dtype=dtype,
-    name=None
-    )
+    return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
 
 
 def hann_window(
@@ -95,4 +91,4 @@ def hann_window(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
-        )
+    )
