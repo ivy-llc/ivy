@@ -1,5 +1,9 @@
 # global
 import ivy
+
+from .. import versions
+from ivy.func_wrapper import with_unsupported_dtypes
+
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
@@ -50,11 +54,8 @@ def tensordot(a, b, axes, name=None):
     return ivy.tensordot(a, b, axes)
 
 
-tensordot.supported_dtypes = ("float32", "float64")
-
-
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
-
-
-eye.unsupported_dtypes = ("float16", "bfloat16")

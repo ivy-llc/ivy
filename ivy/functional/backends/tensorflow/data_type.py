@@ -1,12 +1,15 @@
 # global
+from typing import Union, Sequence, List
+
 import numpy as np
 import tensorflow as tf
-from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -186,6 +189,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -198,9 +202,6 @@ def result_type(
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
     return as_ivy_dtype(result)
-
-
-result_type.unsupported_dtypes = ("bfloat16",)
 
 
 # Extra #
