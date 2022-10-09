@@ -1718,13 +1718,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_trace(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
             offset=offset,
             axis1=axis1,
             axis2=axis2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
