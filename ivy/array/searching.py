@@ -14,6 +14,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -32,6 +33,8 @@ class ArrayWithSearching(abc.ABC):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+            Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
@@ -45,7 +48,9 @@ class ArrayWithSearching(abc.ABC):
             the default array index data type.
 
         """
-        return ivy.argmax(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.argmax(
+            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        )
 
     def argmin(
         self: ivy.Array,
@@ -89,11 +94,7 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.argmin(
-            self._data,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def nonzero(

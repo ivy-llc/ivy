@@ -864,8 +864,7 @@ def test_zero_pad(
     instance_method,
     fw,
 ):
-    # Drop the generated constant as only 0 is used
-    dtype, value, pad_width, _ = dtype_value_pad_width
+    dtype, value, pad_width = dtype_value_pad_width
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
