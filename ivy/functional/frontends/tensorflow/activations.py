@@ -25,8 +25,8 @@ def softmax(x, axis=-1):
 
 
 def elu(x, alpha=1.0):
-    zeros = ivy.zeros_like(x)
-    ones = ivy.ones_like(x)
+    zeros = ivy.zeros_like(x, dtype=ivy.dtype(x))
+    ones = ivy.ones_like(x, dtype=ivy.dtype(x))
     ret_val = ivy.where(
         x > zeros, x, ivy.multiply(alpha, ivy.subtract(ivy.exp(x), ones))
     )
@@ -42,8 +42,8 @@ elu.supported_dtypes = (
 
 
 def selu(x):
-    alpha = 1.67326324
-    scale = 1.05070098
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
     return ivy.multiply(scale, elu(x=x, alpha=alpha))
 
 
