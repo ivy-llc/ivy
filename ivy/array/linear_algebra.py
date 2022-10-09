@@ -162,11 +162,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.inner(self._data, x2, out=out)
 
     def inv(
-        self: ivy.Array,
-        /,
-        *,
-        adjoint: bool = False,
-        out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, adjoint: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inv.
@@ -193,7 +189,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(self._data, ord=ord, axis=axis, keepdims=keepdims, out=out)
+        return ivy.matrix_norm(
+            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+        )
 
     def matrix_rank(
         self: ivy.Array,
