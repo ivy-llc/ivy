@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
+from numpy import prod
 
 
 # helpers
@@ -459,6 +460,141 @@ def sinc(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def flatten(
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        start_dim: int = None,
+        end_dim: int = None,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Flattens input by reshaping it into a one-dimensional tensor.
+        If start_dim or end_dim are passed, only dimensions starting
+        with start_dim and ending with end_dim are flattened.
+        The order of elements in input is unchanged.
+
+    Parameters
+    ----------
+    x
+        input array to flatten.
+    start_dim
+        first dim to flatten. If not set, defaults to 0.
+    end_dim
+        last dim to flatten. If not set, defaults to -1.
+
+    Returns
+    -------
+    ret
+        the flattened array over the specified dimensions.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = np.array([1,2], [3,4])
+    >>> ivy.flatten(x)
+    ivy.array([1, 2, 3, 4])
+
+    >>> x = np.array(
+        [[[[ 5,  5,  0,  6],
+         [17, 15, 11, 16],
+         [ 6,  3, 13, 12]],
+
+        [[ 6, 18, 10,  4],
+         [ 5,  1, 17,  3],
+         [14, 14, 18,  6]]],
+
+
+       [[[12,  0,  1, 13],
+         [ 8,  7,  0,  3],
+         [19, 12,  6, 17]],
+
+        [[ 4, 15,  6, 15],
+         [ 0,  5, 17,  9],
+         [ 9,  3,  6, 19]]],
+
+
+       [[[17, 13, 11, 16],
+         [ 4, 18, 17,  4],
+         [10, 10,  9,  1]],
+
+        [[19, 17, 13, 10],
+         [ 4, 19, 16, 17],
+         [ 2, 12,  8, 14]]]]
+         )
+    >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
+    ivy.array(
+        [[[ 5,  5,  0,  6],
+          [17, 15, 11, 16],
+          [ 6,  3, 13, 12],
+          [ 6, 18, 10,  4],
+          [ 5,  1, 17,  3],
+          [14, 14, 18,  6]],
+
+         [[12,  0,  1, 13],
+          [ 8,  7,  0,  3],
+          [19, 12,  6, 17],
+          [ 4, 15,  6, 15],
+          [ 0,  5, 17,  9],
+          [ 9,  3,  6, 19]],
+
+         [[17, 13, 11, 16],
+          [ 4, 18, 17,  4],
+          [10, 10,  9,  1],
+          [19, 17, 13, 10],
+          [ 4, 19, 16, 17],
+          [ 2, 12,  8, 14]]]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.flatten(x)
+    [{
+        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
+    }]
+    """
+    if start_dim == end_dim and len(x.shape) != 0:
+        return x
+    if start_dim not in range(- len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+        )
+    if end_dim not in range(- len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+        )
+    if start_dim is None:
+        start_dim = 0
+    if end_dim is None:
+        end_dim = x.shape[-1]
+    if start_dim < 0:
+        start_dim = len(x.shape) + start_dim
+    if end_dim < 0:
+        end_dim = len(x.shape) + end_dim
+
+    x_shape = x.shape
+    new_shape = tuple(x_shape[:start_dim]) + (
+        int(prod(x_shape[start_dim:end_dim + 1])),) + tuple(x_shape[end_dim + 1:])
+    return ivy.reshape(x, new_shape)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -467,7 +603,6 @@ def vorbis_window(
 ) -> ivy.Array:
     """Returns an array that contains a vorbis power complementary window
     of size window_length.
-
     Parameters
     ----------
     window_length
@@ -476,17 +611,14 @@ def vorbis_window(
         data type of the returned array. By default float32.
     out
         optional output array, for writing the result to.
-
     Returns
     -------
     ret
         Input array with the vorbis window.
-
     Examples
     --------
     >>> ivy.vorbis_window(3)
     ivy.array([0.38268346, 1. , 0.38268352])
-
     >>> ivy.vorbis_window(5)
     ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
     """

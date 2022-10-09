@@ -38,7 +38,7 @@ from .assertions import (
 # into helpers.get_dtypes
 def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
     for dtype in input_dtypes:
-        if dtype not in ivy.valid_dtypes:
+        if dtype not in ivy.valid_dtypes + ivy.valid_complex_dtypes:
             raise Exception(f"{dtype} is not a valid data type.")
 
 
@@ -719,7 +719,10 @@ def gradient_test(
         kwargs_writeable = ivy.copy_nest(kwargs)
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
-        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
+        ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
+        if isinstance(ret, tuple):
+            ret = ret[0]
+        return ivy.mean(ret)
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
@@ -781,25 +784,29 @@ def gradient_test(
     if len(ret_np_flat) < 2:
         return
 
-    grads_np_flat = ret_np_flat[1]
-    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
-    condition_np_flat = np.isfinite(grads_np_flat)
-    grads_np_flat = np.where(
-        condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
-    )
-    condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
-    grads_np_from_gt_flat = np.where(
-        condition_np_from_gt_flat,
-        grads_np_from_gt_flat,
-        np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
-    )
+    grad_list_np_flat = ret_np_flat[1:]
+    grad_list_np_from_gt_flat = ret_np_from_gt_flat[1:]
 
-    value_test(
-        ret_np_flat=grads_np_flat,
-        ret_np_from_gt_flat=grads_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-    )
+    for grads_np_flat, grads_np_from_gt_flat in zip(
+        grad_list_np_flat, grad_list_np_from_gt_flat
+    ):
+        condition_np_flat = np.isfinite(grads_np_flat)
+        grads_np_flat = np.where(
+            condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
+        )
+        condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
+        grads_np_from_gt_flat = np.where(
+            condition_np_from_gt_flat,
+            grads_np_from_gt_flat,
+            np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
+        )
+
+        value_test(
+            ret_np_flat=grads_np_flat,
+            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_method(
@@ -889,7 +896,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
     _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
@@ -899,6 +905,7 @@ def test_method(
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+    _assert_dtypes_are_valid(input_dtypes_init)
 
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (

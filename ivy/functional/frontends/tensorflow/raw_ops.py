@@ -58,6 +58,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -130,6 +134,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def LeftShift(*, x, y, name="LeftShift"):
+    return ivy.bitwise_left_shift(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -154,12 +162,24 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
+def Max(*, input, axis, keep_dims=False, name="Max"):
+    return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return tf_frontend.maximum(x, y)
 
 
+def Min(*, input, axis, keep_dims=False, name="Min"):
+    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
+
+
+def Mul(*, x, y, name="Mul"):
+    return ivy.multiply(x, y)
 
 
 def Neg(*, x, name="Neg"):
@@ -174,6 +194,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
+
+
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):
