@@ -22,3 +22,6 @@ def sigmoid(x):
 
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
+
+def relu(x):
+    return max(0, x)
