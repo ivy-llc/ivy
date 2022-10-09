@@ -454,7 +454,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> ivy.Array:
         return ivy.vector_to_skew_symmetric_matrix(self._data, out=out)
 
-    def vandedr(
+    def vander(
         self: ivy.Array,
         /,
         *,
@@ -471,8 +471,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self
             1-D input array.
         N
-         Number of columns in the output. If N is not specified,
-         a square array is returned (N = len(x))
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
         increasing 
             Order of the powers of the columns. If True, the powers increase
             from left to right, if False (the default) they are reversed.
