@@ -46,10 +46,7 @@ class ndarray:
             value,
         )
 
-    def squeeze(
-        self, 
-        axis=None
-    ):
+    def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis)
 
     def all(self, axis=None, out=None, keepdims=False, *, where=True):

@@ -1,15 +1,18 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-import ivy
-import numpy as np
-import torch
-from operator import mul
 from functools import reduce
-from typing import Optional, Union, Sequence, Callable
 from numbers import Number
+from operator import mul
+from typing import Optional, Union, Sequence, Callable
 
 import functorch
+import numpy as np
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import version
 
 torch_scatter = None
 
@@ -40,14 +43,12 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
-
-
-array_equal.unsupported_dtypes = ("bfloat16",)
 
 
 def container_types():
@@ -210,6 +211,29 @@ def inplace_increment(
     return x
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
+)  # TODO Fixed in PyTorch 1.12.1
+def cumprod(
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is torch.bool:
+            dtype = ivy.default_int_dtype(as_native=True)
+
+
+cumprod.support_native_out = True
+
+
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
     val: Union[ivy.Array, torch.Tensor],
@@ -220,6 +244,7 @@ def inplace_update(
         x_native.data = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
+
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
@@ -241,6 +266,12 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
+)
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -296,9 +327,15 @@ def scatter_flat(
     return res
 
 
-scatter_flat.unsupported_dtypes = ("bfloat16",)
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -445,10 +482,7 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+scatter_nd.support_native_out = True
 
 
 def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

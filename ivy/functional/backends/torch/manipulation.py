@@ -1,12 +1,17 @@
 # global
-import ivy
-import torch
 import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import version
 
 
 # Array API Standard #
@@ -205,6 +210,7 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
+@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -217,9 +223,6 @@ def repeat(
         axis = None
     repeats = torch.tensor(repeats)
     return torch.repeat_interleave(x, repeats, axis)
-
-
-repeat.unsupported_dtypes = ("int8", "int16", "uint8")
 
 
 def tile(
@@ -265,6 +268,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
+@with_unsupported_dtypes({"1.11.0": ("float16",)}, version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
@@ -284,7 +288,6 @@ def clip(
 
 
 clip.support_native_out = True
-clip.unsupported_dtypes = ("float16",)
 
 
 def unstack(
