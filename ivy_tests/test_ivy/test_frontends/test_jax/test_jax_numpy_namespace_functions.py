@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 import numpy as np
 
 # local
@@ -666,7 +666,9 @@ def test_jax_numpy_arctan2(
         x2=x[1],
     )
 
+
 @handle_cmd_line_args
+@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
