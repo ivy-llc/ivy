@@ -104,19 +104,9 @@ def dot(a, b, *, precision=None):
     return ivy.matmul(a, b)
 
 
-def divmod(x1, x2):
-    out1 = ivy.divide(x1, x2)
-    out2 = ivy.remainder(x1, x2)
-    return out1, out2
-
-
 @inputs_to_ivy_arrays
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
     return ivy.einsum(equation=optimize, *operands, out=out)
-
-
-def floor_divide(x1, x2):
-    return ivy.floor_divide(x1, x2)
 
 
 @inputs_to_ivy_arrays
@@ -130,6 +120,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     return ret.astype(dtype)
 
 
+@inputs_to_ivy_arrays
 def mod(x1, x2):
     return ivy.remainder(x1, x2)
 
