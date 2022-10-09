@@ -67,10 +67,10 @@ def test_numpy_mean(
         test_values=False,
     )
 
-#
+# nanmean
 @handle_cmd_line_args
 @given(
-    dtype_and_a=statistical_dtype_values(function="nanmean"),
+    dtype_and_a=statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
