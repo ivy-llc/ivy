@@ -623,3 +623,41 @@ def vorbis_window(
     ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
     """
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def lcm(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the element-wise least common multiple (LCM) of x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        first input array.
+    x2
+        second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array that includes the element-wise least common multiples of x1 and x2
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1=ivy.array([2, 3, 4])
+    >>> x2=ivy.array([5, 8, 15])
+    >>> x1.lcm(x1, x2)
+    ivy.array([10, 21, 60])
+    """
+    return ivy.current_backend().lcm(x1, x2, out=out)
