@@ -1494,7 +1494,7 @@ def test_diagonal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         shape=st.tuples(
             helpers.ints(min_value=1, max_value=3),
         ),
