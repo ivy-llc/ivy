@@ -942,6 +942,10 @@ def test_function_dtype_versioning(func_and_version, fw):
     ],
 )
 def test_function_dtype_versioning_frontend(func_and_version, fw):
+    # todo need to devise a method to hack into the versions dict
+    # change stuff before importing. Currently the decorators are executed
+    # as soon as the module is loaded and modifying the dictionary doesn't
+    # help as the attributes have already been assigned
     for key in func_and_version:
         if key != fw:
             continue
