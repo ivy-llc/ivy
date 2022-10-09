@@ -1082,5 +1082,28 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Shape of the array
 
+        Examples
+        --------
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> ivy.get_num_dims(a)
+        {
+            b: 2
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> ivy.get_num_dims(a)
+        {
+            b: 3
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]]), c = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> ivy.get_num_dims(a)
+        {
+            b: 3,
+            c: 2
+        }
+        >>> ivy.get_num_dims(a, as_array=True)
+        {
+            b: ivy.array(3),
+            c: ivy.array(2)
+        }
         """
         return ivy.get_num_dims(self, as_array=as_array)
