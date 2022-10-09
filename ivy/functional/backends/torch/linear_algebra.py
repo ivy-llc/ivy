@@ -502,3 +502,4 @@ def vander(
 
 
 vander.support_native_out = False
+vander.unsupported_dtypes = ("bfloat16",)
