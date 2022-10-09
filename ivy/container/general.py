@@ -3652,7 +3652,7 @@ class ContainerWithGeneral(ContainerBase):
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> ivy.get_num_dims(a)
         {
             b: 3,
@@ -3726,7 +3726,7 @@ class ContainerWithGeneral(ContainerBase):
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> ivy.get_num_dims(a)
         {
             b: 3,
@@ -3746,3 +3746,4 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+        
