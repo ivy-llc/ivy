@@ -106,6 +106,8 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
                 set(framework.valid_numeric_dtypes).union(
                     framework.valid_complex_dtypes
                 )
+            "bool": tuple(
+                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
             ),
         }
 
