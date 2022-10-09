@@ -155,7 +155,7 @@ class ArrayWithExtensions(abc.ABC):
         --------
         >>> x1=ivy.array([2, 3, 4])
         >>> x2=ivy.array([5, 8, 15])
-        >>> ivy.lcm(x1, x2)
+        >>> x1.lcm(x2)
         ivy.array([10, 21, 60])
         """
         return ivy.lcm(self, x2, out=out)

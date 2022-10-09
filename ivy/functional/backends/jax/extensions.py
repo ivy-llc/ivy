@@ -78,6 +78,7 @@ def vorbis_window(
         dtype=dtype,
     )
 
+
 def lcm(
     x1: JaxArray,
     x2: JaxArray,

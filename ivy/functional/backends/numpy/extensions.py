@@ -86,6 +86,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
+def lcm(
     x1: np.ndarray,
     x2: np.ndarray,
     /,

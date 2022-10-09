@@ -657,7 +657,7 @@ def lcm(
 
     >>> x1=ivy.array([2, 3, 4])
     >>> x2=ivy.array([5, 8, 15])
-    >>> ivy.lcm(x1, x2)
+    >>> x1.lcm(x1, x2)
     ivy.array([10, 21, 60])
     """
     return ivy.current_backend().lcm(x1, x2, out=out)

@@ -268,7 +268,7 @@ class ContainerWithExtensions(ContainerBase):
                             b=ivy.array([6, 54, 62, 10]))
         >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
                             b=ivy.array([32, 40, 25, 13]))
-        >>> ivy.lcm(x1, x2)
+        >>> ivy.Container.lcm(x1, x2)
         {
             a: ivy.array([10, 21, 60]),
             b: ivy.array([96, 1080, 1550, 130])
@@ -322,7 +322,7 @@ class ContainerWithExtensions(ContainerBase):
                             b=ivy.array([6, 54, 62, 10]))
         >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
                             b=ivy.array([32, 40, 25, 13]))
-        >>> ivy.lcm(x1, x2)
+        >>> x1.lcm(x2)
         {
             a: ivy.array([10, 21, 60]),
             b: ivy.array([96, 1080, 1550, 130])
