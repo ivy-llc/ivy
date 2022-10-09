@@ -107,6 +107,7 @@ def test_tensorflow_softmax(
         axis=axis,
     )
 
+
 # relu
 @handle_cmd_line_args
 @given(
