@@ -26,4 +26,3 @@ def softmax(x, axis=-1):
 
 def relu(x):
     return max(0, x)
-
