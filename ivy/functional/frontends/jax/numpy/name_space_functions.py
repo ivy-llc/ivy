@@ -175,3 +175,4 @@ def sinh(x):
 @inputs_to_ivy_arrays
 def sin(x):
     return ivy.sin(x)
+
