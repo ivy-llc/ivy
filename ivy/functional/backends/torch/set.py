@@ -1,13 +1,13 @@
 # global
 import torch
-from typing import NamedTuple, Optional
+from typing import Tuple, Optional
 from collections import namedtuple
 
 
 def unique_all(
     x: torch.Tensor,
     /,
-) -> NamedTuple:
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     Results = namedtuple(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
@@ -50,7 +50,7 @@ def unique_all(
 unique_all.unsupported_dtypes = ("float16",)
 
 
-def unique_counts(x: torch.Tensor, /) -> NamedTuple:
+def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
     nan_idx = torch.where(torch.isnan(v))
     c[nan_idx] = 1
@@ -61,7 +61,7 @@ def unique_counts(x: torch.Tensor, /) -> NamedTuple:
 unique_counts.unsupported_dtypes = ("float16",)
 
 
-def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
+def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
     values, inverse_indices = torch.unique(x, return_inverse=True)
     nan_idx = torch.isnan(x)
