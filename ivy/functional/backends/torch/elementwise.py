@@ -732,19 +732,3 @@ def trunc_divide(
     else:
         ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
-
-
-def lcm(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.abs(
-        torch.lcm(x1, x2, out=out)
-    )
-
-
-lcm.support_native_out = True
