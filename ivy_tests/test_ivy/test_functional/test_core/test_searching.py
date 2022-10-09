@@ -4,6 +4,7 @@
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -89,12 +90,14 @@ def test_argmax(
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
+    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),
     num_positional_args=helpers.num_positional_args(fn_name="argmin"),
 )
 def test_argmin(
     *,
     dtype_x_axis,
     keepdims,
+    output_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -117,6 +120,7 @@ def test_argmin(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
+        dtype=output_dtype,
     )
 
 

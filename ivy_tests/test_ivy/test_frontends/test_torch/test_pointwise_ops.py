@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
@@ -29,7 +29,6 @@ def test_torch_add(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -64,7 +63,6 @@ def test_torch_tan(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -96,7 +94,6 @@ def test_torch_atan(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -128,7 +125,6 @@ def test_torch_tanh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -159,7 +155,6 @@ def test_torch_abs(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -191,7 +186,6 @@ def test_torch_cos(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -223,7 +217,6 @@ def test_torch_sin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -255,7 +248,6 @@ def test_torch_acos(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -287,7 +279,6 @@ def test_torch_sinh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -319,7 +310,6 @@ def test_torch_acosh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -351,7 +341,6 @@ def test_torch_arccos(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -378,7 +367,7 @@ def test_torch_arccos(
         allow_inf=False,
         shared_dtype=True,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.subtract"
     ),
@@ -390,7 +379,6 @@ def test_torch_subtract(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -425,7 +413,6 @@ def test_torch_exp(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -457,7 +444,6 @@ def test_torch_asin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -489,7 +475,6 @@ def test_torch_arccosh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -521,7 +506,6 @@ def test_torch_arcsin(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -553,7 +537,6 @@ def test_torch_asinh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -585,7 +568,6 @@ def test_torch_cosh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -617,7 +599,6 @@ def test_torch_atanh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -649,7 +630,6 @@ def test_torch_arctanh(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -681,7 +661,6 @@ def test_torch_log2(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -713,7 +692,6 @@ def test_torch_square(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -747,7 +725,6 @@ def test_torch_atan2(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -780,7 +757,6 @@ def test_torch_negative(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -813,7 +789,6 @@ def test_torch_bitwise_and(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -847,7 +822,6 @@ def test_torch_bitwise_not(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -880,7 +854,6 @@ def test_torch_bitwise_xor(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -914,7 +887,6 @@ def test_torch_bitwise_or(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -948,7 +920,6 @@ def test_torch_bitwise_left_shift(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -987,7 +958,6 @@ def test_torch_bitwise_right_shift(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -1025,7 +995,6 @@ def test_torch_log10(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1057,7 +1026,6 @@ def test_torch_trunc(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1087,7 +1055,6 @@ def test_torch_sqrt(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -1119,7 +1086,6 @@ def test_torch_sign(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1151,7 +1117,6 @@ def test_torch_absolute(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -1183,7 +1148,6 @@ def test_torch_logical_not(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1215,7 +1179,6 @@ def test_torch_logical_and(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1248,7 +1211,6 @@ def test_torch_logical_or(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1281,7 +1243,6 @@ def test_torch_logical_xor(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1314,7 +1275,6 @@ def test_torch_ceil(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1384,7 +1344,6 @@ def test_torch_clamp(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -1416,7 +1375,6 @@ def test_torch_clip(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
