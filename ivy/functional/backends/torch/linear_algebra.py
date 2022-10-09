@@ -357,7 +357,8 @@ def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 svdvals.support_native_out = True
 
 
-# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530) is fixed
+# ToDo: re-add int32 support once
+# (https://github.com/pytorch/pytorch/issues/84530) is fixed
 @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, version)
 def tensordot(
     x1: torch.Tensor,
