@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
+from typing import Union, Optional, Literal, Tuple, List, Sequence
 
 # local
 import ivy
@@ -147,7 +147,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array]:
         return ivy.eigh(self._data)
 
     def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
