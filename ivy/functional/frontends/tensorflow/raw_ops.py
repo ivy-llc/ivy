@@ -138,6 +138,10 @@ def InvGrad(*, y, dy, name="InvGrad"):
     return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
 
 
+def LeftShift(*, x, y, name="LeftShift"):
+    return ivy.bitwise_left_shift(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -176,6 +180,10 @@ def Min(*, input, axis, keep_dims=False, name="Min"):
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
+
+
+def Mul(*, x, y, name="Mul"):
+    return ivy.multiply(x, y)
 
 
 def Neg(*, x, name="Neg"):
