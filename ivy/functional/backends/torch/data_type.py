@@ -1,10 +1,13 @@
 # global
-import torch
 from typing import Union, Sequence, List
+
+import torch
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import version
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -77,6 +80,9 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.broadcast_tensors(*arrays))
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+)
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
@@ -167,6 +173,7 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, version)
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
