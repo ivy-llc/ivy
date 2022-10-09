@@ -82,17 +82,25 @@ def eigh(
     *,
     UPLO: Optional[str] = "L",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
 
     if UPLO not in ("L", "U"):
         raise ValueError("UPLO argument must be 'L' or 'U'")
+    result_tuple = NamedTuple(
+        "eigh",
+        [
+            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
+            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
+        ],
+    )
 
     if UPLO == "L":
-        return tf.linalg.eigh(x)
+        eigenvalues, eigenvectors = tf.linalg.eigh(x)
+
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
-        return ret
+        eigenvalues, eigenvectors = tf.linalg.eigh(tf.transpose(x, perm=axes))
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 eigh.unsupported_dtypes = (
@@ -410,7 +418,9 @@ pinv.unsupported_dtypes = (
 )
 
 
-def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: Union[tf.Tensor, tf.Variable], mode: str = "reduced"
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)

@@ -87,8 +87,12 @@ def diagonal(
 
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.linalg.eigh(x, UPLO=UPLO, out=out)
+) -> Tuple[torch.Tensor]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
+    )
+    eigenvalues, eigenvectors = torch.linalg.eigh(x, UPLO=UPLO, out=out)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 eigh.unsupported_dtypes = (
@@ -258,7 +262,7 @@ pinv.support_native_out = True
 
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
-) -> NamedTuple:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = torch.qr(x, some=True, out=out)

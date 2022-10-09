@@ -63,8 +63,12 @@ def diagonal(
 
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 eigh.unsupported_dtypes = ("float16",)
@@ -205,7 +209,7 @@ def pinv(
 pinv.unsupported_dtypes = ("float16",)
 
 
-def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
+def qr(x: np.ndarray, mode: str = "reduced") -> Tuple[np.ndarray, np.ndarray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)

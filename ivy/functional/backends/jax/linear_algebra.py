@@ -77,8 +77,12 @@ def diagonal(
 
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 eigh.unsupported_dtypes = (
@@ -243,7 +247,7 @@ pinv.unsupported_dtypes = (
 )
 
 
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
+def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)

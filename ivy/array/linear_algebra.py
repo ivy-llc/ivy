@@ -296,7 +296,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         *,
         mode: str = "reduced",
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         return ivy.qr(self._data, mode=mode)
 
     def slogdet(
