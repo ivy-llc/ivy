@@ -66,10 +66,13 @@ native_bfloat16 = jnp.dtype("bfloat16")
 native_float16 = jnp.dtype("float16")
 native_float32 = jnp.dtype("float32")
 native_float64 = jnp.dtype("float64")
+native_complex64 = jnp.dtype("complex64")
+native_complex128 = jnp.dtype("complex128")
 native_double = native_float64
 native_bool = jnp.dtype("bool")
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -111,6 +114,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = ()
@@ -118,6 +122,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = False
 
