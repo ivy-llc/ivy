@@ -1,15 +1,16 @@
 # local
 import ivy
+from ... import versions
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
+# solve
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, versions["numpy"])
 def norm(x, ord=None, axis=None, keepdims=False):
     ret = ivy.vector_norm(x, axis, keepdims, ord)
     if axis is None:
         return ret[0]
     return ret
-
-
-norm.unsupported_dtypes = ("float16",)
 
 
 # matrix_rank

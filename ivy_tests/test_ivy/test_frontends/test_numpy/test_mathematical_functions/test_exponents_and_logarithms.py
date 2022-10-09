@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.exp"
@@ -21,7 +20,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_numpy_exp(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -29,7 +27,10 @@ def test_numpy_exp(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -47,7 +48,10 @@ def test_numpy_exp(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -57,7 +61,6 @@ def test_numpy_exp(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.expm1"
@@ -65,7 +68,6 @@ def test_numpy_exp(
 )
 def test_numpy_expm1(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -73,6 +75,10 @@ def test_numpy_expm1(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -90,7 +96,10 @@ def test_numpy_expm1(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -100,7 +109,6 @@ def test_numpy_expm1(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.exp2"
@@ -108,7 +116,6 @@ def test_numpy_expm1(
 )
 def test_numpy_exp2(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -116,6 +123,10 @@ def test_numpy_exp2(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -133,7 +144,10 @@ def test_numpy_exp2(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -143,7 +157,6 @@ def test_numpy_exp2(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.log10"
@@ -151,7 +164,6 @@ def test_numpy_exp2(
 )
 def test_numpy_log10(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -159,6 +171,10 @@ def test_numpy_log10(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -176,7 +192,10 @@ def test_numpy_log10(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -188,7 +207,6 @@ def test_numpy_log10(
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.log"
@@ -196,7 +214,6 @@ def test_numpy_log10(
 )
 def test_numpy_log(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -204,6 +221,10 @@ def test_numpy_log(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -221,7 +242,10 @@ def test_numpy_log(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -233,7 +257,6 @@ def test_numpy_log(
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.log2"
@@ -241,7 +264,6 @@ def test_numpy_log(
 )
 def test_numpy_log2(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -249,6 +271,10 @@ def test_numpy_log2(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -266,7 +292,10 @@ def test_numpy_log2(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -276,7 +305,6 @@ def test_numpy_log2(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.log1p"
@@ -284,7 +312,6 @@ def test_numpy_log2(
 )
 def test_numpy_log1p(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -292,6 +319,10 @@ def test_numpy_log1p(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -309,7 +340,10 @@ def test_numpy_log1p(
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
@@ -319,7 +353,6 @@ def test_numpy_log1p(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logaddexp"
@@ -327,7 +360,6 @@ def test_numpy_log1p(
 )
 def test_numpy_logaddexp(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -335,6 +367,10 @@ def test_numpy_logaddexp(
     native_array,
 ):
     input_dtype, xs = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -353,5 +389,8 @@ def test_numpy_logaddexp(
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
