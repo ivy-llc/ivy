@@ -2253,7 +2253,16 @@ def stable_pow(
 
 
     """
-    return (base + default(min_base, ivy._MIN_BASE)) ** exponent
+    return_dtype = ivy.promote_types(
+        ivy.default_dtype(item=base),
+        ivy.default_dtype(item=default(min_base, ivy._MIN_BASE)),
+    )
+    return_dtype = ivy.promote_types(return_dtype, ivy.default_dtype(item=exponent))
+    ret = (base + default(min_base, ivy._MIN_BASE)) ** exponent
+    return ret.astype(return_dtype)
+
+
+stable_pow.unsupported_dtypes = ("bfloat16",)
 
 
 @handle_exceptions
