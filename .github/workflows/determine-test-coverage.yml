@@ -1,7 +1,6 @@
-name: intelligent-tests
+name: determine-test-coverage
 on:
   workflow_dispatch:
-  push:
 permissions:
   actions: read
 jobs:
@@ -14,15 +13,18 @@ jobs:
            path: ivy
            persist-credentials: false
            submodules: "recursive"
-           fetch-depth: 100
 
-       - name: Determine and Run Tests
+       - name: Determine Test Coverage
          run: |
-           git clone https://github.com/unifyai/Mapping.git
-           pip install pydriller
-           cp Mapping/tests.pkl ivy/
+           sudo apt-get install -y python3 python3-pip python3-tk
+           pip3 install --upgrade pip
+           pip3 install setuptools==58.5.3
+           pip3 install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+           pip3 install -r ivy/requirements/requirements.txt
+           pip3 install -r ivy/requirements/optional.txt
+           pip3 install pydriller tqdm coverage
            cd ivy
-           python determine_tests.py
+           python3 determine_test_coverage.py
            cd ..
            mkdir tests
            cp ivy/tests.pkl tests/

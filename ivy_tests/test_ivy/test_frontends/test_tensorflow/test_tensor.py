@@ -674,7 +674,7 @@ def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
         },
         frontend="tensorflow",
         class_name="Tensor",
-        method_name="__truediv__",
+        method_name="__rtruediv__",
     )
 
 

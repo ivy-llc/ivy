@@ -11,6 +11,7 @@ from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
+from .extensions import ContainerWithExtensions
 from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
@@ -34,6 +35,7 @@ class Container(
     ContainerWithDataTypes,
     ContainerWithDevice,
     ContainerWithElementwise,
+    ContainerWithExtensions,
     ContainerWithGeneral,
     ContainerWithGradients,
     ContainerWithImage,
