@@ -1,8 +1,8 @@
 """Collection of tests for unified dtype functions."""
 
-
 # global
 import numpy as np
+import importlib
 import pytest
 from hypothesis import given, strategies as st
 import typing
@@ -897,6 +897,76 @@ def test_function_unsupported_dtypes(func, expected):
         exp.add("float16")
 
     assert sorted(tuple(exp)) == sorted(res)
+
+
+@pytest.mark.parametrize(
+    "func_and_version",
+    [
+        {
+            "torch": {
+                "cumsum": {"1.11.0": {"bfloat16", "uint8", "float16"}, "1.12.1": set()}
+            }
+        },
+    ],
+)
+def test_function_dtype_versioning(func_and_version, fw):
+    for key in func_and_version:
+        if key != fw:
+            continue
+        var = ivy.get_backend().version
+
+        for key1 in func_and_version[key]:
+            for key2 in func_and_version[key][key1]:
+                var["version"] = key2
+                fn = getattr(ivy.get_backend(), key1)
+                expected = func_and_version[key][key1][key2]
+                res = fn.unsupported_dtypes
+                if res is None:
+                    res = set()
+                else:
+                    res = set(res)
+                if res != expected:
+                    print(res, expected)
+                    raise Exception
+        return True
+
+
+@pytest.mark.parametrize(
+    "func_and_version",
+    [
+        {
+            "torch": {
+                "cumsum": {"1.11.0": {"bfloat16", "uint8", "float16"}, "1.12.1": set()}
+            }
+        },
+    ],
+)
+def test_function_dtype_versioning_frontend(func_and_version, fw):
+    # todo need to devise a method to hack into the versions dict
+    # change stuff before importing. Currently the decorators are executed
+    # as soon as the module is loaded and modifying the dictionary doesn't
+    # help as the attributes have already been assigned
+    for key in func_and_version:
+        if key != fw:
+            continue
+        frontend = importlib.import_module("ivy.functional.frontends." + fw)
+        var = frontend.versions
+
+        for key1 in func_and_version[key]:
+            for key2 in func_and_version[key][key1]:
+                var[fw] = key2
+                print(key2)
+                fn = getattr(frontend, key1)
+                expected = func_and_version[key][key1][key2]
+                res = fn.unsupported_dtypes
+                if res is None:
+                    res = set()
+                else:
+                    res = set(res)
+                if res != expected:
+                    print(res, expected)
+                    raise Exception
+        return True
 
 
 # invalid_dtype
