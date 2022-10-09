@@ -33,17 +33,11 @@ def elu(x, alpha=1.0):
     return ret_val
 
 
-elu.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
+elu.supported_dtypes = (
+    "float16",
     "bfloat16",
-    "bool",
+    "float32",
+    "float64",
 )
 
 
@@ -53,15 +47,9 @@ def selu(x):
     return ivy.multiply(scale, elu(x=x, alpha=alpha))
 
 
-selu.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
+selu.supported_dtypes = (
+    "float16",
     "bfloat16",
-    "bool",
+    "float32",
+    "float64",
 )

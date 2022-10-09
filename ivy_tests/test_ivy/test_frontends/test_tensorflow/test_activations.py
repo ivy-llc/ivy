@@ -112,7 +112,7 @@ def test_tensorflow_softmax(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-3,
         max_value=3,
         min_num_dims=1,
@@ -157,7 +157,7 @@ def test_tensorflow_elu(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-3,
         max_value=3,
         min_num_dims=1,
