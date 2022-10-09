@@ -253,7 +253,42 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> 
             <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span> 
             <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span> 
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ArrayWithExtensions.lcm"><a class="viewcode-back" href="../../../data_classes/array/extensions/ArrayWithExtensions.html#ivy.array.extensions.ArrayWithExtensions.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.lcm. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.lcm also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array.</span>
+<span class="sd">        x2</span>
+<span class="sd">            second input array</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array that includes the element-wise least common multiples</span>
+<span class="sd">            of &#39;self&#39; and x2</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1=ivy.array([2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; x2=ivy.array([5, 8, 15])</span>
+<span class="sd">        &gt;&gt;&gt; x1.lcm(x2)</span>
+<span class="sd">        ivy.array([10, 21, 60])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lcm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

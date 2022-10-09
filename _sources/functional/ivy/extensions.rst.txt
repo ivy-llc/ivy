@@ -20,6 +20,7 @@ Extensions
    extensions/sinc.rst
    extensions/flatten.rst
    extensions/vorbis_window.rst
+   extensions/lcm.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:
