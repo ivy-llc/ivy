@@ -15,7 +15,9 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_nestable",
     "handle_exceptions",
+    "with_unsupported_dtypes"
 ]
+
 
 # Helpers #
 # --------#
@@ -424,6 +426,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if (
                 isinstance(linalg_v, FunctionType)
                 and linalg_k != "namedtuple"
+                and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
@@ -446,3 +449,107 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
+
+
+# Gets dtype from a version dictionary
+def _dtype_from_version(dic, version):
+    # if version is a dict, extract the version
+    if isinstance(version, dict):
+        version = version["version"]
+
+    # If version dict is empty, then there is an error
+    if not dic:
+        raise Exception("No version found in the dictionary")
+
+    # If key is already in the dictionary, return the value
+    if version in dic:
+        return dic[version]
+
+    version_tuple = tuple(map(int, version.split('.')))
+
+    # If key is not in the dictionary, check if it's in any range
+    # three formats are supported:
+    # 1. x.y.z and above
+    # 2. x.y.z and below
+    # 3. x.y.z to x.y.z
+    for key in dic.keys():
+        kl = key.split(" ")
+        k1 = tuple(map(int, kl[0].split('.')))
+
+        if "above" in key and k1 <= version_tuple:
+            return dic[key]
+        if "below" in key and k1 >= version_tuple:
+            return dic[key]
+        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split('.'))):
+            return dic[key]
+
+    # if no version is found, return the last version
+    return dic[list(dic.keys())[-1]]
+
+
+def _versioned_attribute_factory(attribute_function, base):
+    class VersionedAttributes(base):
+        """
+        Creates a class which inherits `base` this way if isinstance is called on an
+        instance of the class, it will return True if testing for the baseclass, such as
+        isinstance(instance, tuple) if `base` is tuple.
+        """
+
+        def __init__(self):
+            self.attribute_function = attribute_function
+
+        def __get__(self, instance=None, owner=None):
+            # version dtypes recalculated everytime it's accessed
+            return self.attribute_function()
+
+        def __iter__(self):
+            # iter allows for iteration over current version that's selected
+            return iter(self.__get__())
+
+        def __repr__(self):
+            return repr(self.__get__())
+
+    return VersionedAttributes()
+
+
+def _dtype_device_wrapper_creator(attrib, t):
+    """
+    Creates a wrapper for a dtype or device attribute, which returns the correct
+    dtype or device for the current version of the backend.
+    Parameters
+    ----------
+    attrib
+        The attribute name to be wrapped. for example, "unsupported_dtypes"
+    t
+        The type of the attribute. for example, "tuple"
+
+    Returns
+    -------
+    A wrapper function for the attribute.
+
+    """
+
+    def _wrapper_outer(version_dict, version):
+        def _wrapped(func):
+            val = _versioned_attribute_factory(
+                lambda: _dtype_from_version(version_dict, version), t
+            )
+            # set the attribute on the function and return the function as is
+            setattr(func, attrib, val)
+            return func
+
+        return _wrapped
+
+    return _wrapper_outer
+
+
+# Decorators to allow for versioned attributes
+with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tuple)
+with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
+with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
+with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
+with_unsupported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict))
+with_supported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+)
