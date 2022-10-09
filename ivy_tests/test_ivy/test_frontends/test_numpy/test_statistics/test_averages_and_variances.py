@@ -67,17 +67,18 @@ def test_numpy_mean(
         test_values=False,
     )
 
+#
 @handle_cmd_line_args
 @given(
-    dtype_and_a=statistical_dtype_values(function="nan_mean"),
+    dtype_and_a=statistical_dtype_values(function="nanmean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nan_mean"
+        fn_name="ivy.functional.frontends.numpy.nanmean"
     ),
     keep_dims=st.booleans(),
 )
-def test_numpy_mean(
+def test_numpy_nanmean(
     dtype_and_a,
     dtype,
     where,
@@ -112,7 +113,7 @@ def test_numpy_mean(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="numpy",
-        fn_tree="nan_mean",
+        fn_tree="nanmean",
         a=a[0],
         axis=axis,
         dtype=dtype,

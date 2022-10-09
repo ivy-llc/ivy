@@ -25,7 +25,7 @@ def mean(
     return ret
 
 
-def nan_mean(
+def nanmean(
     a,
     /,
     *,
