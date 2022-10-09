@@ -635,6 +635,9 @@ def array_values(
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
+
     size = 1
     if isinstance(shape, int):
         size = shape
@@ -646,6 +649,8 @@ def array_values(
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
+    if "complex" in dtype:
+        dtype = "float32" if dtype == "complex64" else "float64"
     if "float" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
@@ -859,8 +864,11 @@ def mutually_broadcastable_shapes(
 @st.composite
 def array_and_broadcastable_shape(draw, dtype):
     """Returns an array and a shape that the array can be broadcast to"""
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
     in_shape = draw(nph.array_shapes(min_dims=1, max_dims=4))
-    x = draw(nph.arrays(shape=in_shape, dtype=dtype))
+    x = draw(array_values(shape=in_shape, dtype=dtype))
     to_shape = draw(
         mutually_broadcastable_shapes(1, base_shape=in_shape)
         .map(lambda S: S[0])

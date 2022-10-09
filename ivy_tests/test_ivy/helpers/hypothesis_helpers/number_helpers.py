@@ -1,3 +1,4 @@
+import math
 from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 
@@ -234,11 +235,15 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """
     return draw(
         ints(
-            min_value=int(min_value),
-            max_value=int(max_value),
+            min_value=int(math.ceil(min_value)),
+            max_value=int(math.ceil(max_value)),
             safety_factor=safety_factor,
         )
-        | floats(min_value=min_value, max_value=max_value, safety_factor=safety_factor)
+        | floats(
+            min_value=min_value,
+            max_value=max_value,
+            safety_factor=safety_factor,
+        )
     )
 
 

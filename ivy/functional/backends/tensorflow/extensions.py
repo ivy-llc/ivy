@@ -73,6 +73,15 @@ def sinc(
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
+def vorbis_window(
+    window_length: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
+
+
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],

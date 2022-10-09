@@ -324,7 +324,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> x = ivy.array([4,5,3,2,4,1,3])
     >>> y = ivy.unique_inverse(x)
     >>> print(y)
-    unique_inverse(values=ivy.array([1, 2, 3, 4, 5]),
+    Results(values=ivy.array([1, 2, 3, 4, 5]),
     inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
 
     With :class:`ivy.NativeArray` input:
@@ -332,7 +332,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
     >>> y = ivy.ivy.unique_inverse(x)
     >>> print(y)
-    unique_inverse(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
+    Results(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
     inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
 
     With :class:`ivy.Container` input:

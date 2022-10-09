@@ -362,18 +362,19 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[[5,4],
-                       [11, 2]],
-                      [[3, 5],
+        >>> x = ivy.array([[[5,4],\
+                       [11, 2]],\
+                      [[3, 5],\
                        [9, 7]]])
+
         >>> y = x.einops_reduce('a b c -> b c', 'max')
         >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
-        >>> x = ivy.array([[[5, 4, 3],
-                        [11, 2, 9]],
-                       [[3, 5, 7],
+        >>> x = ivy.array([[[5, 4, 3],\
+                        [11, 2, 9]],\
+                       [[3, 5, 7],\
                         [9, 7, 1]]])
         >>> y = x.einops_reduce('a b c -> a () c', 'min')
         >>> print(y)
@@ -419,18 +420,13 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
         >>> print(y)
-        ivy.array([[5, 4],
-                   [5, 4],
-                  [5, 4]])
+        ivy.array([[5,5,5],[4,4,4]])
 
-        >>> x = ivy.array([[5,4],
-                    [2, 3]])
+        >>> x = ivy.array([[5,4],\
+                    [2, 3]])\
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
-        ivy.array([[[5, 5, 5],
-                    [4, 4, 4]],
-                   [[2, 2, 2],
-                    [3, 3, 3]]])
+        ivy.array([[5,5,5],[4,4,4]])
 
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
@@ -501,8 +497,9 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         With `ivy.Array` input and backend set as "tensorflow":
+
         >>> x = ivy.array([1., 4.2, 2.2])
-        >>> ret = x.supports_inplace()
+        >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         False
         """
