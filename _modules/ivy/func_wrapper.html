@@ -145,7 +145,9 @@
     <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_exceptions&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;with_unsupported_dtypes&quot;</span>
 <span class="p">]</span>
+
 
 <span class="c1"># Helpers #</span>
 <span class="c1"># --------#</span>
@@ -554,6 +556,7 @@
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">isinstance</span><span class="p">(</span><span class="n">linalg_v</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">linalg_k</span> <span class="o">!=</span> <span class="s2">&quot;namedtuple&quot;</span>
+                <span class="ow">and</span> <span class="n">linalg_k</span> <span class="o">!=</span> <span class="s2">&quot;with_unsupported_dtypes&quot;</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="n">linalg_k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">linalg_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_function</span><span class="p">(</span>
@@ -576,6 +579,110 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
                 <span class="n">to_wrap</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">attr</span><span class="p">)(</span><span class="n">to_wrap</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_wrap</span>
+
+
+<span class="c1"># Gets dtype from a version dictionary</span>
+<span class="k">def</span> <span class="nf">_dtype_from_version</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="c1"># if version is a dict, extract the version</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">version</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span>
+
+    <span class="c1"># If version dict is empty, then there is an error</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No version found in the dictionary&quot;</span><span class="p">)</span>
+
+    <span class="c1"># If key is already in the dictionary, return the value</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">version</span><span class="p">]</span>
+
+    <span class="n">version_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+
+    <span class="c1"># If key is not in the dictionary, check if it&#39;s in any range</span>
+    <span class="c1"># three formats are supported:</span>
+    <span class="c1"># 1. x.y.z and above</span>
+    <span class="c1"># 2. x.y.z and below</span>
+    <span class="c1"># 3. x.y.z to x.y.z</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">kl</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">k1</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="s2">&quot;above&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;below&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&gt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;to&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span> <span class="o">&lt;=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))):</span>
+            <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># if no version is found, return the last version</span>
+    <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+
+<span class="k">def</span> <span class="nf">_versioned_attribute_factory</span><span class="p">(</span><span class="n">attribute_function</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">VersionedAttributes</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a class which inherits `base` this way if isinstance is called on an</span>
+<span class="sd">        instance of the class, it will return True if testing for the baseclass, such as</span>
+<span class="sd">        isinstance(instance, tuple) if `base` is tuple.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attribute_function</span> <span class="o">=</span> <span class="n">attribute_function</span>
+
+        <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># version dtypes recalculated everytime it&#39;s accessed</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_function</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># iter allows for iteration over current version that&#39;s selected</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__get__</span><span class="p">())</span>
+
+        <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__get__</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">VersionedAttributes</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="n">attrib</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a wrapper for a dtype or device attribute, which returns the correct</span>
+<span class="sd">    dtype or device for the current version of the backend.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    attrib</span>
+<span class="sd">        The attribute name to be wrapped. for example, &quot;unsupported_dtypes&quot;</span>
+<span class="sd">    t</span>
+<span class="sd">        The type of the attribute. for example, &quot;tuple&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A wrapper function for the attribute.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_wrapper_outer</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_wrapped</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">_versioned_attribute_factory</span><span class="p">(</span>
+                <span class="k">lambda</span><span class="p">:</span> <span class="n">_dtype_from_version</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">),</span> <span class="n">t</span>
+            <span class="p">)</span>
+            <span class="c1"># set the attribute on the function and return the function as is</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">_wrapped</span>
+
+    <span class="k">return</span> <span class="n">_wrapper_outer</span>
+
+
+<span class="c1"># Decorators to allow for versioned attributes</span>
+<span class="n">with_unsupported_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="n">with_supported_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="n">with_unsupported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="n">with_supported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="n">with_unsupported_device_and_dtypes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span>
+<span class="n">with_supported_device_and_dtypes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 
            </div>

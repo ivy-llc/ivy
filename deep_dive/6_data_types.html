@@ -532,7 +532,30 @@ but not <code class="docutils literal notranslate"><span class="pre">1.12.1</spa
 to the backend implementations, and introduce the risk of forgetting about the patch,
 needlessly bloating the codebase with redundant code.
 In such cases, we can explicitly flag which versions support which data types like so:</p>
-<p>[ToDo add a code example]</p>
+<p>We use a decorator <code class="code docutils literal notranslate"><span class="pre">with_unsupported_dtypes</span></code> which takes two arguments, a dictionary with the unsupported
+dtypes mapped to the corresponding version of the backend framework  and the current version of the
+backend framework on the user’s system. Based on that, the version specific unsupported dtypes and devices
+are set for the given function everytime the function is called.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">with_unsupported_dtypes</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;float16&quot;</span><span class="p">),</span> <span class="s2">&quot;1.12.1&quot;</span><span class="p">:</span> <span class="p">()},</span> <span class="n">version</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>In the above example the <code class="code docutils literal notranslate"><span class="pre">torch.cumsum</span></code> function undergoes changes in the unsupported dtypes
+from one version to another. Starting from version <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code> it doesn’t have any unsupported
+dtypes. The decorator assigns the version specific unsupported dtypes to the function and if the current
+version is not found in the dictionary, then it defaults to the behaviour of the last known version.</p>
+<p>The same workflow has been implemented for <code class="code docutils literal notranslate"><span class="pre">supported_dtypes</span></code>, <code class="code docutils literal notranslate"><span class="pre">unsupported_devices</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">supported_devices</span></code>.</p>
 <p>The slight downside of this approach is that there is less data type coverage for each
 version of each backend, but taking responsibility for patching this support for all
 versions would substantially inflate the implementational requirements for ivy, and so
