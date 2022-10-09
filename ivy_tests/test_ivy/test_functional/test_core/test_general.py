@@ -1804,8 +1804,8 @@ def _get_valid_numeric_no_unsigned(draw):
     dtype_and_min_base=helpers.dtype_and_values(
         available_dtypes=_get_valid_numeric_no_unsigned(),
         num_arrays=1,
-        large_abs_safety_factor=72,
-        small_abs_safety_factor=72,
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
         shared_dtype=True,
     ),
@@ -1822,6 +1822,7 @@ def test_stable_pow(
 ):
     dtypes, xs = dtypes_and_xs
     input_dtype_min_base, min_base = dtype_and_min_base
+    assume(all(["bfloat16" not in x for x in dtypes + input_dtype_min_base]))
     helpers.test_function(
         input_dtypes=dtypes + input_dtype_min_base,
         as_variable_flags=as_variable,
@@ -1834,7 +1835,7 @@ def test_stable_pow(
         fn_name="stable_pow",
         rtol_=1e-2,
         atol_=1e-2,
-        base=xs[0],
+        base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],
     )
