@@ -32,7 +32,8 @@ class ArrayWithNorms(abc.ABC):
         normalized_idxs
             Indices to apply the normalization to.
         weight
-            Learnable gamma variables for elementwise post-multiplication, default is None.
+            Learnable gamma variables for elementwise post-multiplication,
+            default is None.
         bias
             Learnable beta variables for elementwise post-addition, default is None.
         epsilon
