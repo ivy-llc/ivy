@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, handle_numpy_casting
 
 
 @to_ivy_arrays_and_back
@@ -13,6 +13,7 @@ def inner(a, b, /):
     return ivy.inner(a, b)
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True

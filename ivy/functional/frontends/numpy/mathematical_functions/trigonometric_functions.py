@@ -3,10 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def cos(
     x,
@@ -19,8 +20,6 @@ def cos(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.cos(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -28,6 +27,7 @@ def cos(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def sin(
     x,
@@ -40,8 +40,6 @@ def sin(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sin(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -49,6 +47,7 @@ def sin(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def tan(
     x,
@@ -61,8 +60,6 @@ def tan(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.tan(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -70,6 +67,7 @@ def tan(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def arcsin(
     x,
@@ -82,8 +80,6 @@ def arcsin(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.asin(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -91,6 +87,7 @@ def arcsin(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def arccos(
     x,
@@ -103,8 +100,6 @@ def arccos(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.acos(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -112,6 +107,7 @@ def arccos(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def arctan(
     x,
@@ -124,8 +120,6 @@ def arctan(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.atan(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -133,6 +127,7 @@ def arctan(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def deg2rad(
     x,
@@ -147,8 +142,6 @@ def deg2rad(
     signature=None,
     extobj=None,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.deg2rad(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -156,6 +149,7 @@ def deg2rad(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def rad2deg(
     x,
@@ -168,8 +162,6 @@ def rad2deg(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.rad2deg(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)

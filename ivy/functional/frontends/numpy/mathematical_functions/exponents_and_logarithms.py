@@ -3,10 +3,11 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def exp(
     x,
@@ -19,8 +20,6 @@ def exp(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.exp(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -28,6 +27,7 @@ def exp(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def expm1(
     x,
@@ -40,8 +40,6 @@ def expm1(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.expm1(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -49,6 +47,7 @@ def expm1(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def exp2(
     x,
@@ -61,8 +60,6 @@ def exp2(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.pow(2, x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -70,6 +67,7 @@ def exp2(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def log(
     x,
@@ -82,8 +80,6 @@ def log(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.log(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -91,6 +87,7 @@ def log(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def log10(
     x,
@@ -103,8 +100,6 @@ def log10(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.log10(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -112,6 +107,7 @@ def log10(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def log2(
     x,
@@ -124,8 +120,6 @@ def log2(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.log2(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -133,6 +127,7 @@ def log2(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def log1p(
     x,
@@ -145,8 +140,6 @@ def log1p(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.log1p(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -154,8 +147,28 @@ def log1p(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def logaddexp(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.logaddexp(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@from_zero_dim_arrays_to_float
+def logaddexp2(
     x1,
     x2,
     /,
@@ -170,7 +183,7 @@ def logaddexp(
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
-    ret = ivy.logaddexp(x1, x2, out=out)
+    ret = ivy.log2(ivy.pow(2, x1) + ivy.pow(2, x2), out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret

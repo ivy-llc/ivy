@@ -337,6 +337,31 @@ def det(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def diag(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+):
+    return current_backend(x).diag(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -908,6 +933,7 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -943,7 +969,9 @@ def matrix_norm(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).matrix_norm(x, ord=ord, keepdims=keepdims, out=out)
+    return current_backend(x).matrix_norm(
+        x, ord=ord, axis=axis, keepdims=keepdims, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -1622,7 +1650,7 @@ def svdvals(
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
-    torch.Size([4, 3])
+    (4, 3)
 
     >>> S = ivy.svdvals(x)
     >>> print(S)
@@ -1636,7 +1664,7 @@ def svdvals(
 
     >>> error = (SS - S).abs()
     >>> print(error)
-    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+    ivy.array([0., 0., 0.])
 
     With :class:`ivy.Container` input:
 
@@ -1774,6 +1802,8 @@ def trace(
     /,
     *,
     offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
@@ -1809,17 +1839,6 @@ def trace(
 
          The returned array must have the same data type as ``x``.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -1836,7 +1855,7 @@ def trace(
                         [7., 8.]]])
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array([2., 6.])
+    ivy.array([3., 4.])
 
     With :class:`ivy.NativeArray` inputs:
 
@@ -1867,7 +1886,7 @@ def trace(
     {
         a: ivy.array(14),
         b: ivy.array(19)
-    }   
+    }
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
@@ -1884,7 +1903,7 @@ def trace(
         b: ivy.array(8)
     }
     """
-    return current_backend(x).trace(x, offset=offset, out=out)
+    return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
 @to_native_arrays_and_back

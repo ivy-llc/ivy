@@ -3,10 +3,12 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, inputs_to_ivy_arrays
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, \
+    inputs_to_ivy_arrays, handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def equal(
     x1,
@@ -20,9 +22,6 @@ def equal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.equal(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -39,6 +38,7 @@ def array_equal(a1, a2, equal_nan=False):
     return ivy.array(ivy.array_equal(a1[~a1nan], a2[~a2nan]))
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def greater(
     x1,
@@ -52,15 +52,13 @@ def greater(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.greater(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def greater_equal(
     x1,
@@ -74,15 +72,13 @@ def greater_equal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.greater_equal(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def less(
     x1,
@@ -96,15 +92,13 @@ def less(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.less(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def less_equal(
     x1,
@@ -118,15 +112,13 @@ def less_equal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.less_equal(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting
 @to_ivy_arrays_and_back
 def not_equal(
     x1,
@@ -140,9 +132,6 @@ def not_equal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.not_equal(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
