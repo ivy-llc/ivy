@@ -1208,6 +1208,23 @@
 <span class="sd">        ret</span>
 <span class="sd">            Shape of the array</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])</span>
+<span class="sd">        &gt;&gt;&gt; b = x.get_num_dims()</span>
+<span class="sd">        &gt;&gt;&gt; print(b)</span>
+<span class="sd">        2</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\</span>
+<span class="sd">                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\</span>
+<span class="sd">                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])</span>
+<span class="sd">        &gt;&gt;&gt; b = x.get_num_dims(as_array=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(b)</span>
+<span class="sd">        3</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; b = x.get_num_dims(as_array=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(b)</span>
+<span class="sd">        ivy.array(3)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_num_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_array</span><span class="o">=</span><span class="n">as_array</span><span class="p">)</span></div></div>
 </pre></div>
