@@ -121,8 +121,17 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
 
 
 @inputs_to_ivy_arrays
+def mod(x1, x2):
+    return ivy.remainder(x1, x2)
+
+
+@inputs_to_ivy_arrays
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+
+def uint16(x):
+    return ivy.astype(x, ivy.uint16)
 
 
 @inputs_to_ivy_arrays

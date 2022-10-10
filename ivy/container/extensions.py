@@ -151,7 +151,7 @@ class ContainerWithExtensions(ContainerBase):
         Parameters
         ----------
         x
-            input container to flatten at leaves. 
+            input container to flatten at leaves.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -160,7 +160,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container with arrays flattened at leaves. 
+            Container with arrays flattened at leaves.
 
         Examples
         --------
@@ -170,7 +170,7 @@ class ContainerWithExtensions(ContainerBase):
         ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> ivy.flatten(x)
         [{
-            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
         """
@@ -194,13 +194,13 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.flatten also applies to this 
+        wraps the function, and so the docstring for ivy.flatten also applies to this
         method with minimal changes.
 
         Parameters
         ----------
         self
-            input container to flatten at leaves. 
+            input container to flatten at leaves.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -209,7 +209,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container with arrays flattened at leaves. 
+            Container with arrays flattened at leaves.
 
         Examples
         --------
@@ -219,12 +219,117 @@ class ContainerWithExtensions(ContainerBase):
         ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> ivy.flatten(x)
         [{
-            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
         """
-        return self.static_flatten(
-            self, 
-            start_dim=start_dim, 
-            end_dim=end_dim, 
-            out=out)
+        return self.static_flatten(self, start_dim=start_dim, end_dim=end_dim, out=out)
+
+    @staticmethod
+    def static_lcm(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise least common multiples
+            of the arrays contained in x1 and x2.
+
+        Examples
+        --------
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
+                            b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
+                            b=ivy.array([32, 40, 25, 13]))
+        >>> ivy.Container.lcm(x1, x2)
+        {
+            a: ivy.array([10, 21, 60]),
+            b: ivy.array([96, 1080, 1550, 130])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "lcm",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def lcm(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the the element-wise least common multiples
+            of the arrays contained in x1 and x2.
+
+        Examples
+        --------
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
+                            b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
+                            b=ivy.array([32, 40, 25, 13]))
+        >>> x1.lcm(x2)
+        {
+            a: ivy.array([10, 21, 60]),
+            b: ivy.array([96, 1080, 1550, 130])
+        }
+
+        """
+        return self.static_lcm(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
