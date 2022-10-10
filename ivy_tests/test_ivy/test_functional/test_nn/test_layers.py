@@ -978,13 +978,12 @@ def test_max_pool2d(
     container,
     instance_method,
     fw,
-    device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out= False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,

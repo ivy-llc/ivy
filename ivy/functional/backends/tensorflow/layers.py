@@ -455,4 +455,3 @@ def max_pool2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
-

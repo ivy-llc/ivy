@@ -1047,7 +1047,6 @@ class ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
-            dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
