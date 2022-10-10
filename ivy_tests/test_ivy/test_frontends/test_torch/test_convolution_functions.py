@@ -12,11 +12,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
+    strides = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=2),
+        )
+    )
     padding = draw(
         st.one_of(
             st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
             st.integers(min_value=1, max_value=3),
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
     batch_size = 1
