@@ -668,4 +668,3 @@ def hann_window(
     """
     return ivy.current_backend().hann_window(
         window_length, periodic, dtype=dtype, out=out)
-
