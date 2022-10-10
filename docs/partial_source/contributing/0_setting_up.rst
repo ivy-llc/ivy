@@ -1,14 +1,12 @@
 Setting Up
 ==========
 
-.. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
-.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
@@ -511,8 +509,6 @@ or on `discord`_ in the `pre-commit channel`_!
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `setting up discussion`_,
-or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
-depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ 
+in the `pycharm channel`_, `docker channel`_,
+`pre-commit channel`_, `pip packages channel`_ depending on the question!

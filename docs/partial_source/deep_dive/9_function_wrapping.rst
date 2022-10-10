@@ -15,10 +15,10 @@ Function Wrapping 🎁
 .. _`infer_device`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L213
 .. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L250
 .. _`handle_nestable`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L297
-.. _`function wrapping discussion`: https://github.com/unifyai/ivy/discussions/1314
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
+.. _`function wrapping forum`: https://discord.com/channels/799879767196958751/1028297461611122809
 .. _`integer_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244
 .. _`handle_cmd_line_args`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081
 .. _`corresponding flags`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174
@@ -88,9 +88,8 @@ detail in the next sections. For now, suffice it to say that they do quite a lot
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `function wrapping discussion`_,
-or reach out on `discord`_ in the `function wrapping channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function wrapping channel`_
+or in the `function wrapping forum`_!
 
 
 **Video**

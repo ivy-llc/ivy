@@ -4,7 +4,7 @@ Superset Behaviour ⭕
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
-.. _`superset behavior discussion`: https://github.com/unifyai/ivy/discussions/4367
+.. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
 
 When implementing functions in Ivy, whether they are primary, compositional or mixed,
 we are constantly faced with the question: which backend implementation should Ivy most
@@ -315,9 +315,8 @@ In many cases, there is not a clear right and wrong answer, and we arrive at the
 decision via open discussion. If you find yourself proposing the addition of a new
 function in Ivy, then we will most likely have this discussion on your Pull Request!
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `superset behavior discussion`_,
-or reach out on `discord`_ in the `superset behavior channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_
+or in the `superset behavior forum`_!
 
 
 **Video**

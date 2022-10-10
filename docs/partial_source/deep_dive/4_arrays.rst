@@ -19,10 +19,10 @@ Arrays 🔢
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
-.. _`arrays discussion`: https://github.com/unifyai/ivy/discussions/1315
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
+.. _`arrays forum`: https://discord.com/channels/799879767196958751/1028296936203235359
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 
 There are two types of array in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
@@ -145,9 +145,8 @@ instances are converted to :class:`ivy.Array` instances before entering into the
 
 This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `arrays discussion`_,
-or reach out on `discord`_ in the `arrays channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `arrays channel`_
+or in the `arrays forum`_!
 
 
 **Video**

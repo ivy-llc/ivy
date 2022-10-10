@@ -63,4 +63,4 @@ We are very excited to be working with them on this standard, and bringing Ivy i
 
 Hopefully this has given some clear motivation for why standardization in ML frameworks could be a great thing, and convinced you that we we should celebrate and encourage the foundational work by the Array API Standard 🙂
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

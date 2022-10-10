@@ -3,6 +3,8 @@ Formatting 📋
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit
+.. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
+.. _`formatting forum`: https://discord.com/channels/799879767196958751/1028297504820838480
 
 Lint Checks
 -----------
@@ -120,6 +122,18 @@ then the arguments should indeed be listed on the same line, together with the f
 This would pass the lint checks, and :code:`pre-commit` would allow the code to be
 committed without error.
 
+.. code-block:: none
+
+    black....................................................................Passed
+    flake8...................................................................Passed
+
+
+**Round Up**
+
+This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+
+If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_
+or in the `formatting forum`_!
 
 **Video**
 

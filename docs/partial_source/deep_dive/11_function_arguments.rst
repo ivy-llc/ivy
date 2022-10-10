@@ -3,10 +3,10 @@ Function Arguments 📑
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
-.. _`function arguments discussion`: https://github.com/unifyai/ivy/discussions/1320
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
+.. _`function arguments forum`: https://discord.com/channels/799879767196958751/1028297557178331187
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at
@@ -218,9 +218,8 @@ and instead mention in the docstring whether the function is *nestable* or not.
 
 These examples should hopefully give you a good understanding of what is required when adding function arguments.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `function arguments discussion`_,
-or reach out on `discord`_ in the `function arguments channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function arguments channel`_
+or in the `function arguments forum`_!
 
 
 **Video**

@@ -26,10 +26,10 @@ Function Types 🧮
 .. _`ivy.dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L325
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131
-.. _`function types discussion`: https://github.com/unifyai/ivy/discussions/1312
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
+.. _`function types forum`: https://discord.com/channels/799879767196958751/1028296516030451823
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**,
@@ -226,10 +226,8 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `function types discussion`_,
-or reach out on `discord`_ in the `function types channel`_!
-
+If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_ 
+or in the `function types forum`_ !
 
 **Video**
 

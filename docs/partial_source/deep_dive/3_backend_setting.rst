@@ -6,10 +6,10 @@ Backend Setting ⚙
 .. _`import the backend module`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
 .. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`backend setting discussion`: https://github.com/unifyai/ivy/discussions/1313
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
+.. _`backend setting forum`: https://discord.com/channels/799879767196958751/982737886963187772
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the \
 arguments. For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as numpy\
@@ -93,9 +93,8 @@ framework on the user's system . If the user's system doesn't have the backend f
 
 This should have hopefully given you a good feel for how the backend framework is set.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `backend setting discussion`_,
-or reach out on `discord`_ in the `backend setting channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_
+or in the `backend setting forum`_!
 
 
 **Video**

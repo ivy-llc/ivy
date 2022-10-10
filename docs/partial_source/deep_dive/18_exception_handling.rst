@@ -1,6 +1,10 @@
 Exception Handling ⚠
 ====================
 
+.. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
+.. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+
 As Ivy is unifying multiple backends, various issues are seen during exception
 handling:
 
@@ -207,3 +211,10 @@ Let's look at an example!
 Instead of coding a conditional block and raising an exception if the
 conditions are not met, a helper function is used to simplify
 the logic and increase code readability.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+
+If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_
+or in the `exception handling forum`_!
