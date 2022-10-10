@@ -1,12 +1,17 @@
 # global
-import ivy
 import math
-import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import tensorflow as tf
+
+# local
+import ivy
+
 # noinspection PyProtectedMember
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
 
 
 # Array API Standard #
@@ -211,6 +216,7 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -222,12 +228,18 @@ def repeat(
     return tf.repeat(x, repeats, axis)
 
 
-repeat.supported_dtypes = (
-    "int32",
-    "int64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "int8",
+            "int16",
+        )
+    },
+    backend_version,
 )
-
-
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -252,15 +264,6 @@ def tile(
     # TODO remove the unifying behaviour code if tensorflow handles this
     # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
-
-
-tile.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "int8",
-    "int16",
-)
 
 
 def constant_pad(
