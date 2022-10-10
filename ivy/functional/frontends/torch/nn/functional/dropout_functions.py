@@ -1,6 +1,7 @@
+# local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from .. import versions
+from . import versions
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions["torch"])
