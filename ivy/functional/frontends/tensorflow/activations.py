@@ -25,4 +25,7 @@ def softmax(x, axis=-1):
 
 
 def relu(x):
-    return x if x > 0 else 0
+    if x > 0:
+        return x
+    else:
+        return 0
