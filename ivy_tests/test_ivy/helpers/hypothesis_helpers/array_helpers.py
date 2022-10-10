@@ -387,7 +387,7 @@ def dtype_values_axis(
     else:
         axis = draw(number_helpers.ints(min_value=min_axis, max_value=max_axis))
     if ret_shape:
-        return dtype, values, axis, shape
+        return dtype, values, axis, arr_shape
     return dtype, values, axis
 
 
