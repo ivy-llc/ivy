@@ -9,7 +9,10 @@ import jax.numpy as jnp
 from typing import Optional, Union
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+
+from . import backend_version
 
 
 def gelu(
@@ -36,6 +39,7 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def softmax(
     x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:

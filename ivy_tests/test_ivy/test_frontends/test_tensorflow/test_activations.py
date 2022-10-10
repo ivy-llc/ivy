@@ -83,7 +83,6 @@ def test_tensorflow_sigmoid(
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-        max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
     ),
