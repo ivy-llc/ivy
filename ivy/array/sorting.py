@@ -103,6 +103,7 @@ class ArrayWithSorting(abc.ABC):
         *,
         side="left",
         sorter=None,
+        ret_dtype=ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -111,4 +112,6 @@ class ArrayWithSorting(abc.ABC):
         ivy.searchsorted also applies to this method with minimal changes.
 
         """
-        return ivy.searchsorted(self.data, v, side=side, sorter=sorter, out=out)
+        return ivy.searchsorted(
+            self.data, v, side=side, sorter=sorter, ret_dtype=ret_dtype, out=out
+        )
