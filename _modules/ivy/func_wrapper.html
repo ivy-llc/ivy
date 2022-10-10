@@ -145,7 +145,7 @@
     <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_exceptions&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;with_unsupported_dtypes&quot;</span>
+    <span class="s2">&quot;with_unsupported_dtypes&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -595,7 +595,7 @@
     <span class="k">if</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">version</span><span class="p">]</span>
 
-    <span class="n">version_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+    <span class="n">version_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
 
     <span class="c1"># If key is not in the dictionary, check if it&#39;s in any range</span>
     <span class="c1"># three formats are supported:</span>
@@ -604,13 +604,13 @@
     <span class="c1"># 3. x.y.z to x.y.z</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">kl</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-        <span class="n">k1</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+        <span class="n">k1</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="s2">&quot;above&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;below&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&gt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;to&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span> <span class="o">&lt;=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="s2">&quot;to&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span> <span class="o">&lt;=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))):</span>
             <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="c1"># if no version is found, return the last version</span>
@@ -646,6 +646,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a wrapper for a dtype or device attribute, which returns the correct</span>
 <span class="sd">    dtype or device for the current version of the backend.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    attrib</span>
@@ -678,10 +679,11 @@
 <span class="n">with_supported_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
 <span class="n">with_unsupported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
 <span class="n">with_supported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-<span class="n">with_unsupported_device_and_dtypes</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span>
-<span class="n">with_supported_device_and_dtypes</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="n">with_unsupported_device_and_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+    <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span>
+<span class="p">)</span>
+<span class="n">with_supported_device_and_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+    <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span>
 <span class="p">)</span>
 </pre></div>
 
