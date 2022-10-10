@@ -19,7 +19,6 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
-
 # Helpers #
 # --------#
 
@@ -68,11 +67,16 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         and return arrays are all converted to `ivy.Array` instances. This wrapper is
         specifically for the backend implementations of asarray.
         """
-        if isinstance(args[0], list):
-            return to_ivy(fn(*args, dtype=dtype, **kwargs))
-
-        # args is a tuple and therefore is immutable.
-        new_args = (to_native(args[0]),) + args[1:]
+        # When possible we want to not nest this
+        # because nested calls introduce massive overhead
+        # and the checks to see if we can avoid it are cheap
+        nested = (
+            isinstance(args[0], (list, tuple))
+            and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple)))
+        ) or (isinstance(args[0], np.ndarray) and args[0].ndim == 1)
+        new_args = (to_native(args[0], nested=nested),) + args[1:]
+        if dtype is not None:
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
     return new_fn

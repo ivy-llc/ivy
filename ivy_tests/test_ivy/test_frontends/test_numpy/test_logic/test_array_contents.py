@@ -18,9 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.isneginf"
     ),
 )
-def test_numpy_isneginf(
-    dtype_and_x, as_variable, native_array, num_positional_args, fw
-):
+def test_numpy_isneginf(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -45,9 +43,7 @@ def test_numpy_isneginf(
         fn_name="ivy.functional.frontends.numpy.isposinf"
     ),
 )
-def test_numpy_isposinf(
-    dtype_and_x, as_variable, native_array, num_positional_args, fw
-):
+def test_numpy_isposinf(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -77,7 +73,6 @@ def test_numpy_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -112,7 +107,6 @@ def test_numpy_isclose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
