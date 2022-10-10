@@ -3639,26 +3639,26 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
-        >>> ivy.Container.get_num_dims(x)
+        >>> ivy.Container.static_get_num_dims(x)
         {
             b: 2
         }
         >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]))
-        >>> ivy.Container.get_num_dims(x)
+        >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3
         }
         >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
                                             c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
-        >>> ivy.Container.get_num_dims(x)
+        >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3,
             c: 2
         }
-        >>> ivy.Container.get_num_dims(x, as_array=True)
+        >>> ivy.Container.static_get_num_dims(x, as_array=True)
         {
             b: ivy.array(3),
             c: ivy.array(2)
