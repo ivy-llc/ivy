@@ -77,3 +77,13 @@ def vorbis_window(
         ],
         dtype=dtype,
     )
+
+
+def lcm(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.lcm(x1, x2)

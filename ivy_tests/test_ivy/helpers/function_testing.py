@@ -38,7 +38,7 @@ from .assertions import (
 # into helpers.get_dtypes
 def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
     for dtype in input_dtypes:
-        if dtype not in ivy.valid_dtypes:
+        if dtype not in ivy.valid_dtypes + ivy.valid_complex_dtypes:
             raise Exception(f"{dtype} is not a valid data type.")
 
 
