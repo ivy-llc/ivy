@@ -131,7 +131,10 @@ def _solve_get_dtype_and_data(draw):
     random_size = draw(st.integers(min_value=2, max_value=4))
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))).filter(lambda x: "float16" not in x), key="shared_dtype"
+            st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+                lambda x: "float16" not in x
+            ),
+            key="shared_dtype",
         )
     )
     shape = (random_size, random_size)
@@ -251,8 +254,9 @@ def _get_cholesky_matrix(draw):
     input_dtype = draw(
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-            lambda x: "float16" not in x
-        ), key="shared_dtype"
+                lambda x: "float16" not in x
+            ),
+            key="shared_dtype",
         )
     )
     shared_size = draw(
@@ -277,8 +281,9 @@ def _get_second_matrix(draw):
     input_dtype = draw(
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-            lambda x: "float16" not in x
-        ), key="shared_dtype"
+                lambda x: "float16" not in x
+            ),
+            key="shared_dtype",
         )
     )
     shared_size = draw(
