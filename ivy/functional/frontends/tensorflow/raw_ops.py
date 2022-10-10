@@ -134,6 +134,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def InvGrad(*, y, dy, name="InvGrad"):
+    return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
+
+
 def LeftShift(*, x, y, name="LeftShift"):
     return ivy.bitwise_left_shift(x, y)
 
