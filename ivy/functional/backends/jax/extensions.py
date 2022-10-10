@@ -87,3 +87,14 @@ def lcm(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.lcm(x1, x2)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[jnp.dtype] = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    window_length = window_length + 1 if periodic is True else window_length
+    return jnp.array(jnp.hanning(window_length), dtype=dtype)
