@@ -798,6 +798,50 @@
 <span class="sd">    ivy.array([10, 21, 60])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">lcm</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/ivy/extensions/hann_window/hann_window_functional.html#ivy.functional.ivy.extensions.hann_window">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generate a Hann window. The Hanning window </span>
+<span class="sd">    is a taper formed by using a weighted cosine.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        the size of the returned window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a window to be used as periodic function. </span>
+<span class="sd">        If False, return a symmetric window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The data type to produce. Must be a floating point type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(4, True)</span>
+<span class="sd">    ivy.array([0. , 0.5, 1. , 0.5])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(7, False)</span>
+<span class="sd">    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">hann_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
