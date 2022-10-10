@@ -1,7 +1,6 @@
 Building the Docs
 =================
 
-.. _`doc building discussion`: https://github.com/unifyai/ivy/discussions/1310
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`doc building channel`: https://discord.com/channels/799879767196958751/982733967998484520
@@ -201,6 +200,4 @@ All files involved in the generation of documentation are removed by executing t
 This should have hopefully given you a good understanding of the basics for
 building the docs locally.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `doc building discussion`_,
-or reach out on `discord`_ in the `doc building channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `doc building channel`_!
