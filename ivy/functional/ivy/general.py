@@ -3192,9 +3192,8 @@ def get_num_dims(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
-    
+
     >>> a = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])
     >>> b = ivy.get_num_dims(a)
     >>> print(b)
