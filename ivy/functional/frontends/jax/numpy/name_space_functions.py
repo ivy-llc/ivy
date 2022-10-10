@@ -130,6 +130,10 @@ def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
 
+def uint16(x):
+    return ivy.astype(x, ivy.uint16)
+
+
 @inputs_to_ivy_arrays
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     a = ivy.array(a)
