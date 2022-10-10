@@ -972,7 +972,7 @@ def test_lstm_update(
 
 @handle_cmd_line_args
 @given(
-    x_k_s_p=helpers.arrays_for_pooling(array_dim=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
     num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
 )
 def test_max_pool2d(
