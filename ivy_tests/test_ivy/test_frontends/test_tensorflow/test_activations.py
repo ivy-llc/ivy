@@ -111,13 +111,7 @@ def test_tensorflow_softmax(
 # gelu test
 @handle_cmd_line_args
 @given(
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_axes_size=1,
-        force_int_axis=True,
-        valid_axis=True,
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.gelu"
     ),
@@ -137,5 +131,4 @@ def test_tensorflow_gelu(
         x=x[0],
         approximate=approximate,
     )
-
 
