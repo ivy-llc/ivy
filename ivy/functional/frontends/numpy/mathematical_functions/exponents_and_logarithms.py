@@ -158,6 +158,7 @@ def logaddexp(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+
 @from_zero_dim_arrays_to_float
 def logaddexp2(
     x1,
