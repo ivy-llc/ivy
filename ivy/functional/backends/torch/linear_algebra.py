@@ -4,7 +4,6 @@ import torch
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 from collections import namedtuple
-from typeguard import check_type
 
 
 # local
@@ -198,11 +197,10 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Sequence[int]] = (-2, -1),
+    axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    check_type("axis", axis, Sequence[int])
     if isinstance(ord, float):
         ord = int(ord)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)

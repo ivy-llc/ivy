@@ -185,7 +185,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Sequence[int]] = (-2, -1),
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

@@ -3,7 +3,6 @@
 from collections import namedtuple
 
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
-from typeguard import check_type
 
 
 import numpy as np
@@ -160,12 +159,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Sequence[int]] = (-2, -1),
+    axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    check_type("axis", axis, Sequence[int])
-    if not isinstance(axis, tuple):
+    if not isinstance(axis, tuple) and axis:
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
