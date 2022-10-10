@@ -168,7 +168,7 @@
 <p>In conjunction with our own ivy unit tests, we import the array-api <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>. These tests check that all
 ivy backend libraries behave according to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> which was established
 in May 2020 by a group of maintainers. It was intended to bring some consistency and completeness to the various python
-libraries which have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
+libraries that have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
 it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.</p>
 <p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
 which we keep updated with the upstream test suite. The array-api tests repository is maintained by a group of developers
@@ -192,7 +192,7 @@ Therefore, every function which exists in the standard is thoroughly tested for
 adherence to the standard on a continuous basis.</p>
 <p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-‘Details’ -&gt; ‘Run [backend] Tests’.</p>
+<cite>Details -&gt; ‘Run [backend] Tests</cite>.</p>
 <p>You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.</p>
 <section id="using-the-bash-file-runs-docker">
 <h3>Using the bash file (runs Docker)<a class="headerlink" href="#using-the-bash-file-runs-docker" title="Permalink to this heading"></a></h3>
@@ -201,15 +201,15 @@ functions which are part of the standard. If a test fails on the CI, you can see
 /bin/bash -e ./run_tests_CLI/test_array_api.sh  &#39;&lt;insert_chosen_backend&gt;&#39;
 </pre></div>
 </div>
-<p>You can change the argument with any of our supported frameworks - ‘tensorflow’, ‘numpy’, ‘torch’ or ‘jax’. If you rather
-run a single test or test file with terminal, use the following commands:
-.. code-block:: none</p>
-<blockquote>
-<div><p># run all tests in a file
-pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py</p>
-<p># run a single test
-pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k “test_array_method_signature”</p>
-</div></blockquote>
+<p>You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax. If you rather
+run a single test or test file with terminal, use the following commands:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># run all tests in a file
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+
+# run a single test
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k &quot;test_array_method_signature&quot;
+</pre></div>
+</div>
 </section>
 <section id="using-the-ide">
 <h3>Using the IDE<a class="headerlink" href="#using-the-ide" title="Permalink to this heading"></a></h3>
