@@ -24,7 +24,6 @@ def test_numpy_argsort(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -33,7 +32,6 @@ def test_numpy_argsort(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="argsort",
         x=x[0],
