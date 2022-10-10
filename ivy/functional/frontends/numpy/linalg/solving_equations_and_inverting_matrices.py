@@ -19,4 +19,4 @@ def inv(a):
 
 # pinv
 def pinv(a, rtol=1e-15, hermitian=False):
-    return ivy.pinv(a, rtol)
+    return ivy.pinv(a, rtol=rtol)

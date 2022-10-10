@@ -87,10 +87,10 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        rtol=1e-15,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="linalg.pinv",
-        rtol=1e-15,
         a=x[0],
     )
