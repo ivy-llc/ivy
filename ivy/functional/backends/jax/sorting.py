@@ -57,7 +57,7 @@ def searchsorted(
         ), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
-        x = jnp.take(x, sorter)
+        x = jnp.take_along_axis(x, sorter, axis=-1)
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(
             f"the first N-1 dimensions of x array and v array "
