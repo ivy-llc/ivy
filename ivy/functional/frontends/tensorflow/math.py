@@ -319,3 +319,5 @@ def truediv(x, y, name="truediv"):
 
 
 # TODO: Ibeta for Future Release
+def absolute_value(x):
+    return ivy.abs(x)
