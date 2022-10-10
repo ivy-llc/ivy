@@ -256,22 +256,22 @@ class ArrayWithManipulation(abc.ABC):
         --------
         >>> x = ivy.array([[2,3],[1,4]])
         >>> y = ivy.array([[4,5],[6,7]])
-        >>> x.stack(y)
+        >>> x.stack([y])
         ivy.array([[[ 6,  8],
                 [ 7, 11]]])
         >>>
 
         >>> x = ivy.array([[1,2],[3,4]])
         >>> y = ivy.array([[5,6],[7,8]])
-        >>> x.stack(y,axis=1)
+        >>> x.stack([y],axis=1)
         ivy.array([[[ 6,  8]],
             [[10, 12]]])
-        >>> x.stack(y,axis=0)
+        >>> x.stack([y],axis=0)
         ivy.array([[[ 6,  8],
                 [10, 12]]])
         >>>
         """
-        return ivy.stack([self._data] + arrays, axis=axis, out=out)
+        return ivy.stack(self._data.concat(arrays), axis=axis, out=out)
 
     def clip(
         self: ivy.Array,

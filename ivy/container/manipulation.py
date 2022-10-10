@@ -878,30 +878,34 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x
-        {
-            a: ivy.array([[0, 1],
-                        [2, 3]]),
-            b: ivy.array([[4, 5]])
-        }
-        >>> ivy.Container.static_tile(x,(2,3))
-        {
-            a: (<class ivy.array.array.Array> shape=[4, 6]),
-            b: (<class ivy.array.array.Array> shape=[2, 6])
-        }
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
-        >>> ivy.Container.static_stack(x)
-        {
-            a: ivy.array([[0, 1],
-                        [2, 3]]),
-            b: ivy.array([[4, 5]])
-        }
         >>> ivy.Container.static_stack(x,axis = 1)
         {
             a: ivy.array([[0, 2],
                         [1, 3]]),
             b: ivy.array([[4],
                         [5]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> ivy.Container.static_stack([x,y])
+        {
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
+        }
+        >>> ivy.Container.static_stack([x,y],axis=1)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -937,30 +941,27 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3., 4., 5.]))
-        >>> x
+
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.stack([y])
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
         }
-        >>> x.stack([[1.,2.,3.],[0.,1.,2.]],axis=1)
+        >>> ivy.Container.static_stack([x,y],axis=1)
         {
-            a: ivy.array([[0., 1., 0.],
-                        [1., 2., 1.],
-                        [2., 3., 2.]]),
-            b: ivy.array([[3., 1., 0.],
-                        [4., 2., 1.],
-                        [5., 3., 2.]])
-        }
-        >>> x.stack([[1.,2.,3.],[0.,1.,2.]],axis=0)
-        {
-            a: ivy.array([[0., 1., 2.],
-                        [1., 2., 3.],
-                        [0., 1., 2.]]),
-            b: ivy.array([[3., 4., 5.],
-                        [1., 2., 3.],
-                        [0., 1., 2.]])
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
         }
         """
         new_xs = xs.copy()
