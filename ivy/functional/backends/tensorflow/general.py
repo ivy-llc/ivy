@@ -5,6 +5,8 @@ signature.
 # global
 from typing import Optional, Union, Sequence, Callable
 
+from ivy.func_wrapper import with_unsupported_dtypes
+
 _round = round
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -13,6 +15,7 @@ import tensorflow as tf
 
 # local
 import ivy
+from . import backend_version
 
 
 def _parse_ellipsis(so, ndims):
@@ -57,6 +60,10 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
+# tensorflow does not support uint indexing
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query):
         return x.__getitem__(query)
@@ -68,10 +75,6 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if dtype in [tf.int8, tf.int16]:
         query = tf.cast(query, tf.int32)
     return tf.gather(x, query)
-
-
-# tensorflow does not support uint indexing
-get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -93,7 +96,10 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.nd
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
-    return to_numpy(x).item()
+    ret = to_numpy(x).item()
+    if x.dtype == tf.bfloat16:
+        return float(ret)
+    return ret
 
 
 def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
@@ -123,7 +129,11 @@ def gather_nd(
 
 
 def get_num_dims(x, /, *, as_array=False):
-    return tf.shape(tf.shape(x))[0] if as_array else int(tf.shape(tf.shape(x)))
+    return (
+        tf.cast(tf.shape(tf.shape(x))[0], tf.int64)
+        if as_array
+        else int(tf.shape(tf.shape(x)))
+    )
 
 
 def inplace_arrays_supported():
@@ -159,10 +169,11 @@ def inplace_increment(
         else:
             x = ivy.Array(x_native)
     else:
+        x_native += val_native
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x._data = x_native
         else:
-            x = ivy.Array(val_native)
+            x = ivy.Array(x_native)
     return x
 
 

@@ -1,5 +1,5 @@
-Ivy Frontends
-=============
+Ivy Frontends ➡
+===============
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
@@ -32,11 +32,21 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Basics
 ----------
 
-**NOTE:** Type hints, docstrings and examples are not required when working on
+**NOTE:** 
+
+Type hints, docstrings and examples are not required when working on
 frontend functions.
 
+When using functions and methods of Ivy Frontends, in addition to importing ivy itself 
+like :code:`import ivy` please also import the corrisponding Frontend module.
+For example, to use ivy's tensorflow frontend:
+
+    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+
+----
+
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
 
 **Jax**
 
@@ -154,6 +164,7 @@ See the section "Unused Arguments" below for more details.
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
+    @from_zero_dim_arrays_to_float
     def tan(
         x,
         /,
@@ -161,7 +172,7 @@ See the section "Unused Arguments" below for more details.
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
@@ -217,19 +228,15 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
-    def add(input, other, *, alpha=1, out=None):
-        return ivy.add(input, other * alpha, out=out)
+    def add(input, other, *, alpha=None, out=None):
+        return ivy.add(input, other, alpha=alpha, out=out)
 
 For PyTorch, :func:`add` is categorised under :code:`pointwise_ops` as is the case in
 the `torch`_ framework.
 
 In this case, the native `torch.add`_ has both positional and keyword arguments,
 and we therefore use the same for our PyTorch frontend :func:`add`.
-We wrap :func:`ivy.add` as usual, but the arguments work slightly different in this
-example. Looking at the PyTorch `torch.add`_ documentation,
-we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
-into :func:`ivy.add`.
+We wrap :func:`ivy.add` as usual.
 
 .. code-block:: python
 
@@ -308,16 +315,16 @@ the backend :func:`ivy.cumprod` does not support this argument or behaviour.
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/general.py
+    # in ivy/functional/ivy/statistical.py
     def cumprod(
         x: Union[ivy.Array, ivy.NativeArray],
-        /,
         axis: int = 0,
-        *,
         exclusive: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return current_backend(x).cumprod(x, axis, exclusive, out=out)
+        return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
 compositionally able to mimic the required behaviour.
@@ -420,6 +427,11 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
+It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
+may not support the data type due to backend limitation. For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ do support all data types,
+but PyTorch does not support :code:`bfloat16` for the function :code:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
+function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
+
 Classes and Instance Methods
 ----------------------------
 
@@ -435,13 +447,13 @@ the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`,
 
 For an example of how these are implemented, we first show the instance method for
 :meth:`np.ndarray.reshape`, which is implemented in the frontend
-`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+`ndarray class <https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def reshape(self, shape, order="C"):
+        return np_frontend.reshape(self.data, shape)
 
 Under the hood, this simply calls the frontend :func:`np_frontend.reshape` function,
 which itself is implemented as follows:
@@ -449,8 +461,8 @@ which itself is implemented as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
-    def reshape(x, /, shape, *, copy=None):
-        return ivy.reshape(x, shape, copy=copy)
+    def reshape(x, /, newshape, order="C"):
+        return ivy.reshape(x, shape=newshape)
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
@@ -459,118 +471,30 @@ computation graph in the source framework. In the case of instance methods, we t
 replace each of the original instance methods in the extracted computation graph with
 these new instance methods defined in the Ivy frontend class.
 
+Frontend Data Type Promotion Rules
+----------------------------------
 
-Framework-Specific Argument Types
----------------------------------
+Each frontend framework has its own rules governing the common result type for two array
+operands during an arithmetic operation.
 
-Some of the frontend functions that we need to implement include framework-specific
-classes as the default values for some of the arguments,
-which do not have a counterpart in other frameworks.
-When re-implementing these functions in Ivy's frontend, we would like to still include
-those arguments without directly using these special classes, which do not exist in Ivy.
-
-A good example is the special class :code:`numpy._NoValue`, which is sometimes used
-instead of :code:`None` as the default value for arguments in numpy. For example,
-the :code:`keepdims`, :code:`initial` and :code:`where` arguments of :func:`numpy.sum`
-use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtype` and
-:code:`out` use :code:`None`, as can be seen in the
-`source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
-
-We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
-`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
-This holds pairs of framework-specific classes and the corresponding Ivy or
-native Python classes to map to.
-For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
+In order to ensure that each frontend framework implemented in Ivy has the same data type
+promotion behaviors as the native framework does, we have implemented data type promotion
+rules according to framework-specific data type promotion tables for these we are currently
+supporting as frontends. The function can be accessed through calling
+:func:`promote_types_of_<frontend>_inputs` and pass in both array operands.
 
 .. code-block:: python
 
-    numpy_classes_to_ivy_classes = {np._NoValue: None}
+    # ivy/functional/frontends/tensorflow/math.py
+    from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+    ...
+    def add(x, y, name=None):
+        x, y = promote_types_of_tensorflow_inputs(x, y)
+        return ivy.add(x, y)
 
-Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in
-:code:`numpy/numpy/_globals.py`.
-
-Any time a new framework-specific data type is discovered, such as the
-:code:`numpy._NoValue` example given, then this should be added as a key to the
-dictionary, and the most appropriate pure-python or Ivy class or instance should be
-added as the value.
-
-During frontend testing, the helper :func:`test_frontend_function` by default passes
-all the generated inputs into both Ivy's frontend implementation and also the original
-function. For the framework-specific classes discussed, this is a problem.
-Handling the framework-specific class in the Ivy frontend would add a dependency to the
-frontend framework being mimicked. This breaks Ivy's design philosophy,
-whereby only the specific backend framework being used should be a dependency.
-Our solution is to pass the value from the :code:`<framework>_classes_to_ivy_classes`
-dict to the Ivy frontend function and the key from the
-:code:`<framework>_classes_to_ivy_classes` dict to the original function during testing
-in :func:`test_frontend_function`.
-
-The way we do this is to wrap all framework-specific classes inside a
-:class:`NativeClass` during frontend testing. The :class:`NativeClass` is defined in
-:mod:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
-placeholder class to represent the framework-specific class and its counterpart.
-It has only one attribute, :code:`_native_class`, which holds the reference to the
-special class being used by the targeted framework.
-Then, in order to pass the key and value to the original and frontend functions
-respectively, :func:`test_frontend_function` detects all :code:`NativeClass` instances
-in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
-to find the corresponding value to the key wrapped inside the :class:`NativeClass`
-instance, and then passes the key and value as inputs to the corresponding functions
-correctly.
-
-
-As an example, we show how :class:`NativeClass` is used in the frontend test for the
-:func:`sum` function in the NumPy frontend:
-
-.. code-block:: python
-    # sum
-    Novalue = NativeClass(numpy._NoValue)
-    @handle_cmd_line_args
-    @given(
-        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
-        dtype=helpers.get_dtypes("float", full=False, none=True),
-        keep_dims= st.one_of (st.booleans(), Novalue),
-        initial=st.one_of(st.floats(), Novalue),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.sum"
-        ),
-    )
-    def test_numpy_sum(
-        dtype_x_axis,
-        dtype,
-        keep_dims,
-        initial,
-        as_variable,
-        num_positional_args,
-        native_array,
-        with_out,
-        fw,
-    ):
-        (input_dtype, x, axis), where = dtype_x_axis
-        if where is None:
-            where = Novalue
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="numpy",
-            fn_tree="sum",
-            x=np.asarray(x, dtype=input_dtype[0]),
-            axis=axis,
-            dtype=dtype,
-            keepdims=keep_dims,
-            initial=initial,
-            where=where,
-        )
-
-The function has three optional arguments which have the default value of
-:code:`numpy._NoValue`, being: :code:`where`, :code:`keep_dims` and :code:`initial`.
-We therefore define a :class:`NativeClass` object :code:`Novalue`, and pass this as input
-to each of these arguments when calling :func:`test_frontend_function`.
+Although under most cases, array operands being passed into an arithmetic operation function
+should be the same data type, using the data type promotion rules can add a layer of sanity
+check to prevent data precision losses or exceptions from further arithmetic operations.
 
 **Round Up**
 

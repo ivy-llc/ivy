@@ -1,11 +1,15 @@
 # global
+
 torch_scatter = None
-import torch
 from typing import Union, Optional, Sequence
+
+
+import torch
 
 # local
 import ivy
-
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import version
 
 # Array API Standard #
 # -------------------#
@@ -83,6 +87,11 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
     return ivy.as_native_dtype(dtype)
 
 
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16", "uint8")}, version
+)
 def prod(
     x: torch.Tensor,
     /,
@@ -105,11 +114,9 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-# Function does support uint8, but allowing support for unsigned will cause
-# the function to break the upcasting rule defined in the Array API Standard
-prod.unsupported_dtypes = ("bfloat16", "float16", "uint8")
-
-
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("int8", "int16", "int32", "int64", "float16")}, version
+)
 def std(
     x: torch.Tensor,
     /,
@@ -142,9 +149,9 @@ def std(
     return ret
 
 
-std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
-
-
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+@with_unsupported_dtypes({"1.11.0": ("uint8",)}, version)
 def sum(
     x: torch.Tensor,
     /,
@@ -163,11 +170,6 @@ def sum(
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
-
-
-# Function does support uint8, but allowing support for unsigned will cause
-# the function to break the upcasting rule defined in the Array API Standard
-sum.unsupported_dtypes = ("uint8",)
 
 
 def var(
@@ -205,39 +207,50 @@ def var(
 # Extra #
 # ----- #
 
-
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+# TODO: bfloat16 support is added in PyTorch 1.12.1
+@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "bfloat16")}, version)
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
-    if exclusive:
+        dtype = _infer_dtype(x.dtype)
+
+    if not (exclusive or reverse):
+        return torch.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive and reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
         x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, dtype=dtype, out=out)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, dtype=dtype, out=out)
+        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        return torch.flip(x, dims=(axis,))
+    elif exclusive:
+        x = torch.transpose(x, axis, -1)
+        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cumprod(x, -1, dtype=dtype)
+        return torch.transpose(x, axis, -1)
+    elif reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        return torch.flip(x, dims=(axis,))
 
 
 cumprod.support_native_out = True
+
+
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-cumprod.unsupported_dtypes = (
-    "uint8",
-    "bfloat16",
-    "float16",
-)  # TODO: bfloat16 support is added in PyTorch 1.12.1
-
-
+# TODO: bfloat16 support is added in PyTorch 1.12.1
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, version
+)
 def cumsum(
     x: torch.Tensor,
     axis: int = 0,
@@ -270,13 +283,6 @@ def cumsum(
 
 
 cumsum.support_native_out = True
-# Function does support uint8, but allowing support for unsigned will cause
-# the function to break the upcasting rule defined in the Array API Standard
-cumsum.unsupported_dtypes = (
-    "uint8",
-    "bfloat16",
-    "float16",
-)  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
 def einsum(

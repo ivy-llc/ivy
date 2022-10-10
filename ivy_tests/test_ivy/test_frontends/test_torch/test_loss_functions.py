@@ -51,7 +51,6 @@ def test_torch_cross_entropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -131,7 +130,6 @@ def test_torch_binary_cross_entropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true

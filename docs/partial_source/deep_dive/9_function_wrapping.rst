@@ -1,5 +1,5 @@
-Function Wrapping
-=================
+Function Wrapping 🎁
+====================
 
 .. _`wrapped`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`_wrap_function`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340

@@ -128,7 +128,7 @@ def dropout(
     """
     x = ivy.where(
         ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
-        ivy.zeros_like(x),
+        ivy.zeros_like(x, dtype=dtype),
         x,
     )
     if scale:
@@ -1118,7 +1118,14 @@ def conv3d_transpose(
     (1, 6, 56, 56, 3)
     """
     return current_backend(x).conv3d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 

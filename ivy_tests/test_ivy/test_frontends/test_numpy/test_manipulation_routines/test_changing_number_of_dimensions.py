@@ -33,7 +33,6 @@ def test_numpy_squeeze(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -69,7 +68,6 @@ def test_numpy_expand_dims(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
