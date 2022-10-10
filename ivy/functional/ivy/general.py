@@ -3194,18 +3194,19 @@ def get_num_dims(
     --------
     With :class:`ivy.Array` input:
 
-    >>> a = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])
-    >>> b = ivy.get_num_dims(a)
-    >>> print(b)
-    2
-
     >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
                         [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
                         [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
     >>> b = ivy.get_num_dims(a, as_array=False)
     >>> print(b)
     3
-    
+
+    With :class:`ivy.Container` input:
+
+    >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+    >>> ivy.get_num_dims(a)
+    2
+
     >>> b = ivy.get_num_dims(a, as_array=True)
     >>> print(b)
     ivy.array(3)
