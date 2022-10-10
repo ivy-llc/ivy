@@ -383,11 +383,11 @@ Now, let's take another example, this time setting the desired backend as tensor
 |                                        |                                         |                                         |                                          
 | def pure_ivy(x):                       | def pure_tf(x):                         | def mix(x):                             | 
 |     y = ivy.mean(x)                    |     y = tf.math_reduce_mean(x)          |     y = ivy.mean(x)                     |             
-|     z = ivy.sum(x)                     |     z = tf.math.reduce_sum(x)           |     z = torch.sum(x)                    |     
+|     z = ivy.sum(x)                     |     z = tf.math.reduce_sum(x)           |     z = tf.reduce_sum(x)                    |     
 |     f = ivy.var(y)                     |     f = tf.Variable(y)                  |     f = ivy.var(y)                      |   
-|     k = ivy.cos(z)                     |     k = tf.math.cos(z)                  |     k = torch.cos(z)                    |     
+|     k = ivy.cos(z)                     |     k = tf.math.cos(z)                  |     k = tf.math.cos(z)                    |     
 |     m = ivy.sin(f)                     |     m = tf.math.sin(f)                  |     m = ivy.sin(f)                      |     
-|     o = ivy.tan(y)                     |     o = tf.math.tan(y)                  |     o = torch.tan(y)                    |    
+|     o = ivy.tan(y)                     |     o = tf.math.tan(y)                  |     o = tf.math.tan(y)                    |    
 |     return ivy.concatenate(            |     return tf.concat(                   |     return ivy.concatenate(             |     
 |         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |        
 |                                        |                                         |                                         |                                        
