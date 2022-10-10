@@ -294,3 +294,14 @@ def median(
             keepdim=keepdims,
             out=out,
         )
+
+
+def rfft(
+    input: torch.Tensor,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.fft.rfft(input, n, norm=norm, out=out)

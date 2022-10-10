@@ -381,3 +381,44 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([6.5, 4.5, 2.5])
         """
         return ivy.median(self._data, axis=axis, keepdims=keepdims, out=out)
+
+    def rfft(
+        input: ivy.Array,
+        n: Optional[int] = None,
+        norm: Optional[str] = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.rfft. This method simply
+        wraps the function, and so the docstring for ivy.rfft also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            The real input array.
+        n
+            Signal length. If given, the input will either be zero-padded or trimmed
+            to this length before computing the real FFT.
+        norm
+            Normalization mode.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The output array
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2, 3])
+        >>> ivy.flatten(x)
+        ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
+        >>> ivy.flatten(x, norm='ortho')
+        ivy.array([ 3.+0.j, -1.+1.j, -1.+0.j])
+        >>> ivy.flatten(x, norm='forward')
+        ivy.array([ 1.5000+0.0000j, -0.5000+0.5000j, -0.5000+0.0000j])
+        """
+        return ivy.rfft(input, n, norm)

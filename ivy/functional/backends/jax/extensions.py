@@ -274,3 +274,14 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def rfft(
+    input: JaxArray,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.fft.rfft(input, n, norm=norm)

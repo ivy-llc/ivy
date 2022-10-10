@@ -10,7 +10,7 @@ from ivy.functional.ivy.extensions import (
 import tensorflow as tf
 import tensorflow_probability as tfp
 import logging
-
+from math import sqrt
 
 def is_native_sparse_array(x):
     return isinstance(x, tf.SparseTensor)
@@ -215,3 +215,24 @@ def median(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def rfft(
+    input: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if n == None:
+        n = len(input)
+    if norm == 'forward':
+        return tf.signal.rfft(input, n, norm, out=out)/n
+    elif norm == 'ortho':
+        return tf.signal.rfft(input, n, norm, out=out)/sqrt(n)
+    elif norm == None or norm == 'backward':
+        return tf.signal.rfft(input, n, norm, out=out)
+    else:
+        raise ValueError(f'Invalid norm value {norm}; should be "backward",'
+        '"ortho" or "forward".')

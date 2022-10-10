@@ -1090,3 +1090,44 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_median(self, axis=axis, keepdims=keepdims, out=out)
+
+    def rfft(
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        n: Optional[int] = None,
+        norm: Optional[str] = None,
+        /,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.rfft. This method simply
+        wraps the function, and so the docstring for ivy.rfft also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            The real input container.
+        n
+            Signal length. If given, the input will either be zero-padded or trimmed
+            to this length before computing the real FFT.
+        norm
+            Normalization mode.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The output container.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),
+        ...                   b=ivy.array([0, 1, 2, 3]))
+        >>> ivy.flatten(x)
+        {
+            a: ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j])
+            b: ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
+        }
+        """
+        return ivy.rfft(input, n, norm)
