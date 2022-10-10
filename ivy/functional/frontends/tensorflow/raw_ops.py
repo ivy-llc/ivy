@@ -2,6 +2,9 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
+from .. import versions
+from ivy.func_wrapper import with_unsupported_dtypes
+
 
 def AddN(*, inputs, name="AddN"):
     inputs = ivy.array(inputs)
@@ -249,6 +252,9 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
 def Unpack(*, value, num, axis=0, name="Unpack"):
     return ivy.unstack(value, axis=axis)[:num]
 
