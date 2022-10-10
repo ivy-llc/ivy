@@ -259,7 +259,7 @@ def astype(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), /
+    >>> x = ivy.Container(a=ivy.array([False,True,True]),\
         b=ivy.array([3.14, 2.718, 1.618]))
     >>> print(x.astype(ivy.int32))
     {

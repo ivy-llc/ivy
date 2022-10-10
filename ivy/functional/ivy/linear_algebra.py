@@ -1650,7 +1650,7 @@ def svdvals(
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
-    torch.Size([4, 3])
+    (4, 3)
 
     >>> S = ivy.svdvals(x)
     >>> print(S)
@@ -1664,7 +1664,7 @@ def svdvals(
 
     >>> error = (SS - S).abs()
     >>> print(error)
-    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+    ivy.array([0., 0., 0.])
 
     With :class:`ivy.Container` input:
 
@@ -1855,7 +1855,7 @@ def trace(
                         [7., 8.]]])
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array([2., 6.])
+    ivy.array([3., 4.])
 
     With :class:`ivy.NativeArray` inputs:
 

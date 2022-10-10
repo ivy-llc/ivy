@@ -133,7 +133,6 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all_bitshifts(x2 >= 0)  # shifts must be non-negative
     return np.left_shift(x1, x2, out=out)
 
 
@@ -164,7 +163,6 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all_bitshifts(x2 >= 0)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -244,6 +242,7 @@ def equal(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.equal(x1, x2, out=out)
 
 
@@ -300,6 +299,7 @@ def greater(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.greater(x1, x2, out=out)
 
 
@@ -314,6 +314,7 @@ def greater_equal(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.greater_equal(x1, x2, out=out)
 
 
@@ -352,6 +353,7 @@ def less(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.less(x1, x2, out=out)
 
 
@@ -366,6 +368,7 @@ def less_equal(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.less_equal(x1, x2, out=out)
 
 
@@ -486,6 +489,7 @@ def not_equal(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.not_equal(x1, x2, out=out)
 
 
@@ -727,3 +731,11 @@ def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 rad2deg.support_native_out = True
+
+
+@_handle_0_dim_output
+def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.isreal(x)
+
+
+isreal.support_native_out = False

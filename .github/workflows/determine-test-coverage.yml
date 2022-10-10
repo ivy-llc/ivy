@@ -7,27 +7,27 @@ jobs:
    run_tests:
      runs-on: ubuntu-latest
      steps:
-#       - name: Checkout Ivy 🛎
-#         uses: actions/checkout@v2
-#         with:
-#           path: ivy
-#           persist-credentials: false
-#           submodules: "recursive"
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
 
-#       - name: Determine Test Coverage
-#         run: |
-#           pip install pydriller tqdm
-#           cd ivy
-#           python determine_test_coverage.py
-#           cd ..
-#           mkdir tests
-#           cp ivy/tests.pkl tests/
-
-       - name: Temp
+       - name: Determine Test Coverage
          run: |
+           sudo apt-get install -y python3 python3-pip python3-tk
+           pip3 install --upgrade pip
+           pip3 install setuptools==58.5.3
+           pip3 install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+           pip3 install -r ivy/requirements/requirements.txt
+           pip3 install -r ivy/requirements/optional.txt
+           pip3 install pydriller tqdm coverage
+           cd ivy
+           python3 determine_test_coverage.py
+           cd ..
            mkdir tests
-           cd tests
-           echo "Hello" > tests.pkl
+           cp ivy/tests.pkl tests/
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
@@ -38,13 +38,5 @@ jobs:
            destination-github-username: 'unifyai'
            destination-repository-name: 'Mapping'
            user-email: rashul.chutani@gmail.com
-           commit-message: Testing
+           commit-message: Update Mapping
            target-branch: master
-
-#       - name: Run Functional-Core Tests
-#         id: tests
-#         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
-#         run: |
-#           cd ivy
-#           ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
-#         continue-on-error: true
