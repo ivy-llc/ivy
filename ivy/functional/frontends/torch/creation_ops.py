@@ -68,3 +68,10 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     if requires_grad:
         return ivy.variable(ret)
     return ret
+
+
+def arange(start, end=None, step=1, *, dtype=None, device=None, requires_grad=False):
+    ret = ivy.arange(start, end, step, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
