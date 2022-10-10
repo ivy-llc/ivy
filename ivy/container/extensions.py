@@ -151,7 +151,7 @@ class ContainerWithExtensions(ContainerBase):
         Parameters
         ----------
         x
-            input container to flatten at leaves. 
+            input container to flatten at leaves.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -160,7 +160,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container with arrays flattened at leaves. 
+            Container with arrays flattened at leaves.
 
         Examples
         --------
@@ -170,7 +170,7 @@ class ContainerWithExtensions(ContainerBase):
         ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> ivy.flatten(x)
         [{
-            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
         """
@@ -194,13 +194,13 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.flatten also applies to this 
+        wraps the function, and so the docstring for ivy.flatten also applies to this
         method with minimal changes.
 
         Parameters
         ----------
         self
-            input container to flatten at leaves. 
+            input container to flatten at leaves.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -209,7 +209,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container with arrays flattened at leaves. 
+            Container with arrays flattened at leaves.
 
         Examples
         --------
@@ -219,15 +219,11 @@ class ContainerWithExtensions(ContainerBase):
         ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> ivy.flatten(x)
         [{
-            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8]) 
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
         """
-        return self.static_flatten(
-            self, 
-            start_dim=start_dim, 
-            end_dim=end_dim, 
-            out=out)
+        return self.static_flatten(self, start_dim=start_dim, end_dim=end_dim, out=out)
 
     @staticmethod
     def static_lcm(
@@ -258,12 +254,11 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            a container containing the the element-wise least common multiples
+            a container containing the element-wise least common multiples
             of the arrays contained in x1 and x2.
 
         Examples
         --------
-
         >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
                             b=ivy.array([6, 54, 62, 10]))
         >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
