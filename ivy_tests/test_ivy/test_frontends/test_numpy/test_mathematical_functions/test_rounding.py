@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ceil"
@@ -21,7 +20,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_numpy_ceil(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -29,6 +27,10 @@ def test_numpy_ceil(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -46,11 +48,10 @@ def test_numpy_ceil(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 

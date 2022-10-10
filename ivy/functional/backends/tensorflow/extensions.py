@@ -80,3 +80,31 @@ def vorbis_window(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
+
+
+def lcm(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if [x1.dtype, x2.dtype] == [tf.int8, tf.int8]:
+        dtype = tf.int8
+        x1 = tf.cast(x1, dtype=tf.int16)
+        x2 = tf.cast(x2, dtype=tf.int16)
+    else: 
+        dtype = x1.dtype 
+    return tf.math.abs(
+        tf.cast(
+            tf.experimental.numpy.lcm(x1, x2),
+            dtype=dtype
+        )
+    )
+
+
+lcm.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64")
