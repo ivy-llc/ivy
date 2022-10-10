@@ -26,6 +26,7 @@ jobs:
 
     - name: Build and push DockerfileCopsim
       run: |
+        cd docker
         docker build . --file DockerfileCopsim --tag unifyai/ivy:latest-copsim
         docker push unifyai/ivy:latest-copsim
         

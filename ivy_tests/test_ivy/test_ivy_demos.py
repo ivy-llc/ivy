@@ -6,16 +6,15 @@ import pytest
 # local
 import ivy
 import ivy.functional.backends.numpy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # Tests #
 # ------#
 
 # training
-def test_training_demo(device, call):
+def test_training_demo(device):
 
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # numpy does not support gradients
         pytest.skip()
 
@@ -44,7 +43,7 @@ def test_training_demo(device, call):
 
 
 # functional api
-def test_array(device, call):
+def test_array(device):
     ivy.unset_backend()
     import jax.numpy as jnp
 
@@ -55,9 +54,6 @@ def test_array(device, call):
     import numpy as np
 
     assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
-    import mxnet as mx
-
-    assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
     import torch
 
     assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)

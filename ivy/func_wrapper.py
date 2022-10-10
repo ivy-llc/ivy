@@ -3,53 +3,39 @@ import functools
 from types import FunctionType
 from typing import Callable
 
-FW_FN_KEYWORDS = {
-    "numpy": [],
-    "jax": [],
-    "tensorflow": [],
-    "torch": [],
-    "mxnet": ["ndarray"],
-}
 
-NATIVE_KEYS_TO_SKIP = {
-    "numpy": [],
-    "jax": [],
-    "tensorflow": [],
-    "torch": [
-        "classes",
-        "torch",
-        "is_grad_enabled",
-        "get_default_dtype",
-        "numel",
-        "clone",
-        "cpu",
-        "set_",
-        "type",
-        "requires_grad_",
-    ],
-    "mxnet": [],
-}
+# for wrapping (sequence matters)
+FN_DECORATORS = [
+    "infer_device",
+    "infer_dtype",
+    "integer_arrays_to_float",
+    "outputs_to_ivy_arrays",
+    "inputs_to_native_arrays",
+    "inputs_to_ivy_arrays",
+    "handle_out_argument",
+    "handle_nestable",
+    "handle_exceptions",
+    "with_unsupported_dtypes"
+]
+
 
 # Helpers #
 # --------#
 
 
-# noinspection DuplicatedCode
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     arr = None
     if args:
-        arr_idxs = ivy.nested_indices_where(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_indices_where(
-                kwargs, ivy.is_array, stop_after_n_found=1
-            )
+            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -121,10 +107,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        has_out = False
+        if "out" in kwargs:
+            out = kwargs["out"]
+            has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args, ivy_kwargs = ivy.args_to_ivy(
             *args, **kwargs, include_derived={tuple: True}
         )
+        if has_out:
+            ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
@@ -238,6 +230,43 @@ def infer_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     new_fn.infer_dtype = True
+    return new_fn
+
+
+def integer_arrays_to_float(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Promotes all the integer array inputs passed to the function both
+        as positional or keyword arguments to the default float dtype.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with integer array arguments
+            promoted to default float dtype.
+
+        """
+
+        def _to_float_array(x):
+            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
+                return x
+            if ivy.is_ivy_array(x):
+                return ivy.asarray(x, dtype=ivy.default_float_dtype())
+            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
+
+        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
+        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
+        return fn(*args, **kwargs)
+
+    new_fn.integer_arrays_to_float = True
     return new_fn
 
 
@@ -397,6 +426,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if (
                 isinstance(linalg_v, FunctionType)
                 and linalg_k != "namedtuple"
+                and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
@@ -410,16 +440,116 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
-        # wrap decorators (sequence matters)
-        for attr in [
-            "infer_device",
-            "infer_dtype",
-            "outputs_to_ivy_arrays",
-            "inputs_to_native_arrays",
-            "inputs_to_ivy_arrays",
-            "handle_out_argument",
-            "handle_nestable",
-        ]:
+        # Copy docstring
+        docstring_attr = ["__annotations__", "__doc__"]
+        for attr in docstring_attr:
+            setattr(to_wrap, attr, getattr(original, attr))
+        # wrap decorators
+        for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
+
+
+# Gets dtype from a version dictionary
+def _dtype_from_version(dic, version):
+    # if version is a dict, extract the version
+    if isinstance(version, dict):
+        version = version["version"]
+
+    # If version dict is empty, then there is an error
+    if not dic:
+        raise Exception("No version found in the dictionary")
+
+    # If key is already in the dictionary, return the value
+    if version in dic:
+        return dic[version]
+
+    version_tuple = tuple(map(int, version.split('.')))
+
+    # If key is not in the dictionary, check if it's in any range
+    # three formats are supported:
+    # 1. x.y.z and above
+    # 2. x.y.z and below
+    # 3. x.y.z to x.y.z
+    for key in dic.keys():
+        kl = key.split(" ")
+        k1 = tuple(map(int, kl[0].split('.')))
+
+        if "above" in key and k1 <= version_tuple:
+            return dic[key]
+        if "below" in key and k1 >= version_tuple:
+            return dic[key]
+        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split('.'))):
+            return dic[key]
+
+    # if no version is found, return the last version
+    return dic[list(dic.keys())[-1]]
+
+
+def _versioned_attribute_factory(attribute_function, base):
+    class VersionedAttributes(base):
+        """
+        Creates a class which inherits `base` this way if isinstance is called on an
+        instance of the class, it will return True if testing for the baseclass, such as
+        isinstance(instance, tuple) if `base` is tuple.
+        """
+
+        def __init__(self):
+            self.attribute_function = attribute_function
+
+        def __get__(self, instance=None, owner=None):
+            # version dtypes recalculated everytime it's accessed
+            return self.attribute_function()
+
+        def __iter__(self):
+            # iter allows for iteration over current version that's selected
+            return iter(self.__get__())
+
+        def __repr__(self):
+            return repr(self.__get__())
+
+    return VersionedAttributes()
+
+
+def _dtype_device_wrapper_creator(attrib, t):
+    """
+    Creates a wrapper for a dtype or device attribute, which returns the correct
+    dtype or device for the current version of the backend.
+    Parameters
+    ----------
+    attrib
+        The attribute name to be wrapped. for example, "unsupported_dtypes"
+    t
+        The type of the attribute. for example, "tuple"
+
+    Returns
+    -------
+    A wrapper function for the attribute.
+
+    """
+
+    def _wrapper_outer(version_dict, version):
+        def _wrapped(func):
+            val = _versioned_attribute_factory(
+                lambda: _dtype_from_version(version_dict, version), t
+            )
+            # set the attribute on the function and return the function as is
+            setattr(func, attrib, val)
+            return func
+
+        return _wrapped
+
+    return _wrapper_outer
+
+
+# Decorators to allow for versioned attributes
+with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tuple)
+with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
+with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
+with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
+with_unsupported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict))
+with_supported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+)

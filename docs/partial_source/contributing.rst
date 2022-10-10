@@ -34,6 +34,12 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
 |
 | (e) :ref:`Open Tasks`
 | See where you can help us out! ðŸ™‹
+|
+| (f) :ref:`Applied Libraries`
+| Getting started with our applied libraries! ðŸ“š
+| 
+| (g) :ref:`Helpful Resources`
+| Resources you would find useful when learning Ivy ðŸ“–
 
 .. toctree::
    :hidden:
@@ -45,6 +51,8 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
    contributing/building_the_docs.rst
    deep_dive.rst
    contributing/4_open_tasks.rst
+   contributing/5_applied_libraries.rst
+   contributing/6_helpful_resources.rst
 
 **Video**
 

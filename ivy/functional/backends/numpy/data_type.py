@@ -1,10 +1,13 @@
 # global
+from typing import Optional, Union, Sequence, List
+
 import numpy as np
-from typing import Union, Sequence, List
 
 # local
 import ivy
-
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -15,10 +18,12 @@ ivy_dtype_dict = {
     np.dtype("uint16"): "uint16",
     np.dtype("uint32"): "uint32",
     np.dtype("uint64"): "uint64",
-    "bfloat16": "bfloat16",
+    np.dtype("bfloat16"): "bfloat16",
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",
+    np.dtype("complex64"): "complex64",
+    np.dtype("complex128"): "complex128",
     np.dtype("bool"): "bool",
     np.int8: "int8",
     np.int16: "int16",
@@ -31,6 +36,8 @@ ivy_dtype_dict = {
     np.float16: "float16",
     np.float32: "float32",
     np.float64: "float64",
+    np.complex64: "complex64",
+    np.complex128: "complex128",
     np.bool_: "bool",
 }
 
@@ -46,6 +53,8 @@ native_dtype_dict = {
     "float16": np.dtype("float16"),
     "float32": np.dtype("float32"),
     "float64": np.dtype("float64"),
+    "complex64": np.dtype("complex64"),
+    "complex128": np.dtype("complex128"),
     "bool": np.dtype("bool"),
 }
 
@@ -82,7 +91,14 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: np.ndarray, dtype: np.dtype, *, copy: bool = True) -> np.ndarray:
+def astype(
+    x: np.ndarray,
+    dtype: np.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
@@ -104,10 +120,12 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
 def broadcast_to(
     x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> np.ndarray:
+    if x.ndim > len(shape):
+        return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
     if isinstance(from_, np.ndarray):
         from_ = str(from_.dtype)
     from_ = str(from_)
@@ -119,12 +137,14 @@ def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
     return np.can_cast(from_, to)
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
@@ -150,18 +170,16 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
-
-
-as_native_dtype.unsupported_dtypes = ("bfloat16",)
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
@@ -179,4 +197,5 @@ def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )

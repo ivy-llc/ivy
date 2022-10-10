@@ -8,6 +8,7 @@ from typing import Union, Optional, Callable
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _unused_variables_to_zero_gradients
 
 
 def variable(x):
@@ -27,7 +28,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     with tf.GradientTape(
         persistent=retain_grads, watch_accessed_variables=False
     ) as tape:
-        tape.watch(xs)
+        tape.watch(ivy.to_native(xs))
         func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -36,7 +37,9 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    grads = tape.gradient(y, xs)
+    grads = tape.gradient(y, ivy.to_native(xs))
+    grads = ivy.to_ivy(grads)
+    grads = _unused_variables_to_zero_gradients(grads, xs)
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
@@ -57,9 +60,14 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grad_idxs = ivy.nested_indices_where(grads_, lambda x: x is not None)
+        grads = _unused_variables_to_zero_gradients(xs, grads_)
+        grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
-        ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
+        xs = ivy.to_ivy(xs)
+        if isinstance(xs, ivy.Array):
+            grads = grads_
+        else:
+            ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
         y = ivy.to_ivy(y)
         return y, grads
 
@@ -100,6 +108,8 @@ def grad(func: Callable):
             x_in = ivy.to_native(ivy.array(x_in))
             tape.watch(x_in)
             y = grad_fn(x_in)
-        return ivy.to_ivy(tape.gradient(y, x_in))
+        return _unused_variables_to_zero_gradients(
+            ivy.to_ivy(x_in), ivy.to_ivy(tape.gradient(y, x_in))
+        )
 
     return callback_fn

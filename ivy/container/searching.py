@@ -1,5 +1,6 @@
 # global
-from typing import Optional, Union
+from numbers import Number
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -11,10 +12,12 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmax. This method simply
@@ -32,6 +35,8 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+             Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
@@ -44,15 +49,22 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmax", x, axis=axis, keepdims=keepdims, out=out
+            "argmax",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            out=out,
         )
 
     def argmax(
         self: ivy.Container,
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmax. This method simply
@@ -70,6 +82,8 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+            Optional output dtype of the container.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
@@ -81,15 +95,19 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return self.static_argmax(self, axis=axis, keepdims=keepdims, out=out)
+        return self.static_argmax(
+            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        )
 
     @staticmethod
     def static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmin. This method simply
@@ -108,6 +126,8 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
+        dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -119,15 +139,17 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmin", x, axis=axis, keepdims=keepdims, out=out
+            "argmin", x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def argmin(
         self: ivy.Container,
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmin. This method simply
@@ -146,6 +168,8 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
+        dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -157,11 +181,18 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
+        return self.static_argmin(
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
 
     @staticmethod
     def static_nonzero(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray]
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        as_tuple: bool = True,
+        size: Optional[int] = None,
+        fill_value: Number = 0,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply
@@ -172,6 +203,19 @@ class ContainerWithSearching(ContainerBase):
         ----------
         x
             input array or container. Should have a numeric data type.
+        as_tuple
+            if True, the output is returned as a tuple of indices, one for each
+            dimension of the input, containing the indices of the true elements in that
+            dimension. If False, the coordinates are returned in a (N, ndim) array,
+            where N is the number of true elements. Default = True.
+        size
+            if specified, the function will return an array of shape (size, ndim).
+            If the number of non-zero elements is fewer than size, the remaining
+            elements will be filled with fill_value. Default = None.
+        fill_value
+            when size is specified and there are fewer than size number of elements,
+            the remaining elements in the output array will be filled with fill_value.
+            Default = 0.
 
         Returns
         -------
@@ -179,9 +223,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.multi_map_in_static_method("nonzero", x)
+        return ContainerBase.multi_map_in_static_method(
+            "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
+        )
 
-    def nonzero(self: ivy.Container) -> ivy.Container:
+    def nonzero(
+        self: ivy.Container,
+        /,
+        *,
+        as_tuple: bool = True,
+        size: Optional[int] = None,
+        fill_value: Number = 0,
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -191,6 +244,19 @@ class ContainerWithSearching(ContainerBase):
         ----------
         self
             input array or container. Should have a numeric data type.
+        as_tuple
+            if True, the output is returned as a tuple of indices, one for each
+            dimension of the input, containing the indices of the true elements in that
+            dimension. If False, the coordinates are returned in a (N, ndim) array,
+            where N is the number of true elements. Default = True.
+        size
+            if specified, the function will return an array of shape (size, ndim).
+            If the number of non-zero elements is fewer than size, the remaining
+            elements will be filled with fill_value. Default = None.
+        fill_value
+            when size is specified and there are fewer than size number of elements,
+            the remaining elements in the output array will be filled with fill_value.
+            Default = 0.
 
         Returns
         -------
@@ -198,15 +264,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return self.static_nonzero(self)
+        return self.static_nonzero(
+            self, as_tuple=as_tuple, size=size, fill_value=fill_value
+        )
 
     @staticmethod
     def static_where(
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.where. This method simply
@@ -240,8 +309,9 @@ class ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.where. This method simply
@@ -268,3 +338,96 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_where(self, x1, x2, out=out)
+
+    # Extra #
+    # ----- #
+
+    @staticmethod
+    def static_argwhere(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "argwhere",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def argwhere(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return self.static_argwhere(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

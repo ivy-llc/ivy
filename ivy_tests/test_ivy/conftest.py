@@ -1,31 +1,34 @@
 # global
 import os
 import pytest
+import redis
 from typing import Dict, Union, Tuple
 from hypothesis import settings
+from hypothesis.extra.redis import RedisExampleDatabase
 
 # local
-from ivy_tests.test_ivy import helpers
 from ivy import clear_backend_stack, DefaultDevice
+from ivy_tests.test_ivy import helpers
 
 
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
+r = None
+if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
+    r = redis.Redis.from_url(
+        os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
+    )
 
+MAX_EXAMPLES: int
+
+FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 
 TEST_BACKENDS: Dict[str, callable] = {
     "numpy": lambda: helpers.get_ivy_numpy(),
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
-    "mxnet": lambda: helpers.get_ivy_mxnet(),
+    "": lambda: None,
 }
-TEST_CALL_METHODS: Dict[str, callable] = {
-    "numpy": helpers.np_call,
-    "jax": helpers.jnp_call,
-    "tensorflow": helpers.tf_call,
-    "torch": helpers.torch_call,
-    "mxnet": helpers.mx_call,
-}
+
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
     "native_array": None,
@@ -45,32 +48,39 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = deadline if deadline else 2000
+    deadline = int(deadline) if deadline else 150000
+    profile_settings = {}
+    os.getenv("REDIS_URL")
     if num_examples is not None:
-        settings.register_profile(
-            "custom max_examples",
-            max_examples=int(num_examples),
-            deadline=int(deadline),
+        profile_settings["max_examples"] = int(num_examples)
+    if r is not None:
+        profile_settings["database"] = RedisExampleDatabase(
+            r, key_prefix=b"hypothesis-examples:"
         )
-        settings.load_profile("custom max_examples")
+
+    if profile_settings:
+        settings.register_profile(
+            "custom-profile", **profile_settings, deadline=deadline
+        )
+        settings.load_profile("custom-profile")
     else:
-        settings.register_profile("default", max_examples=5, deadline=deadline)
+        settings.register_profile("default", deadline=deadline)
         settings.load_profile("default")
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, compile_graph, implicit, call, fw):
-    if "gpu" in device and call is helpers.np_call:
-        # Numpy does not support GPU
-        pytest.skip()
+def run_around_tests(device, f, compile_graph, fw, implicit):
     clear_backend_stack()
-    with f.use:
+    if f is not None:
+        with f.use:
+            with DefaultDevice(device):
+                yield
+    else:
         with DefaultDevice(device):
             yield
 
 
 def pytest_generate_tests(metafunc):
-
     # device
     raw_value = metafunc.config.getoption("--device")
     if raw_value == "all":
@@ -81,7 +91,7 @@ def pytest_generate_tests(metafunc):
     # framework
     raw_value = metafunc.config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = TEST_BACKENDS.keys()
+        backend_strs = FW_STRS
     else:
         backend_strs = raw_value.split(",")
 
@@ -113,12 +123,10 @@ def pytest_generate_tests(metafunc):
                             TEST_BACKENDS[backend_str](),
                             compile_graph,
                             implicit,
-                            TEST_CALL_METHODS[backend_str],
                             backend_str,
                         )
                     )
-
-    metafunc.parametrize("device,f,compile_graph,implicit,call,fw", configs)
+    metafunc.parametrize("device,f,compile_graph,implicit,fw", configs)
 
 
 @pytest.fixture(scope="session")
@@ -177,7 +185,7 @@ def get_command_line_flags(request) -> Dict[str, bool]:
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="jax,numpy,tensorflow,torch")
+    parser.addoption("--backend", action="store", default="")
     parser.addoption("--compile_graph", action="store", default="true")
     parser.addoption("--with_implicit", action="store", default="false")
 
@@ -208,3 +216,16 @@ def pytest_addoption(parser):
         default=None,
         help="set deadline for testing one example",
     )
+    parser.addoption(
+        "--my_test_dump",
+        action="store",
+        default=None,
+        help="Print test items in my custom format",
+    )
+
+
+def pytest_collection_finish(session):
+    if session.config.option.my_test_dump is not None:
+        for item in session.items:
+            print("{}::{}".format(item.fspath, item.name))
+        pytest.exit("Done!")

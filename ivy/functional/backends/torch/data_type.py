@@ -1,9 +1,13 @@
 # global
-import torch
 from typing import Union, Sequence, List
+
+import torch
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import version
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -15,6 +19,8 @@ native_dtype_dict = {
     "float16": torch.float16,
     "float32": torch.float32,
     "float64": torch.float64,
+    "complex64": torch.complex64,
+    "complex128": torch.complex128,
     "bool": torch.bool,
 }
 
@@ -51,7 +57,9 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.Tensor:
+def astype(
+    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)
@@ -72,18 +80,20 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.broadcast_tensors(*arrays))
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+)
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
+    if x.ndim > len(shape):
+        return torch.broadcast_to(x.reshape(-1), shape)
     return torch.broadcast_to(x, shape)
 
 
-broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
-def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
+def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
-        from_ = from_.dtype
+        from_ = ivy.as_ivy_dtype(from_.dtype)
     from_str = str(from_)
     to_str = str(to)
     if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
@@ -101,15 +111,22 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     if "uint" in from_str and ("int" in to_str and "u" not in to_str):
         if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
             return False
+    if "float16" in from_str and "float16" in to_str:
+        return from_str == to_str
     return True
 
 
+can_cast.unsupported_dtypes = ("complex64", "complex128")
+
+
+@_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
@@ -149,23 +166,23 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
             torch.float16: "float16",
             torch.float32: "float32",
             torch.float64: "float64",
+            torch.complex64: "complex64",
+            torch.complex128: "complex128",
             torch.bool: "bool",
         }[dtype_in]
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, version)
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
-
-
-as_native_dtype.unsupported_dtypes = ("uint16",)
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
@@ -184,4 +201,9 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
+
+
+# ToDo:
+# 1. can_cast : Add support for complex64, complex128

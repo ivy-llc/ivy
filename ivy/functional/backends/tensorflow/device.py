@@ -22,6 +22,8 @@ def _same_device(dev_a, dev_b):
 
 def dev(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     as_native: bool = False,
 ) -> Union[ivy.Device, str]:
     dv = x.device
@@ -33,6 +35,8 @@ def dev(
 def to_device(
     x: Union[tf.Tensor, tf.Variable],
     device: str,
+    /,
+    *,
     stream: Optional[int] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
@@ -45,7 +49,7 @@ def to_device(
     return x
 
 
-def as_ivy_dev(device):
+def as_ivy_dev(device: str, /):
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
     dev_in_split = device[1:].split(":")[-2:]
@@ -58,7 +62,7 @@ def as_ivy_dev(device):
     return ivy.Device(":".join([dev_type, dev_idx]))
 
 
-def as_native_dev(device):
+def as_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
         return device
     ret = "/" + ivy.Device(device).upper()
@@ -67,7 +71,7 @@ def as_native_dev(device):
     return ret
 
 
-def clear_mem_on_dev(device):
+def clear_mem_on_dev(device: str, /):
     return None
 
 

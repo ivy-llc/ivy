@@ -28,13 +28,13 @@ class IvyModule(ivy.Module):
         )
         ivy.Module.__init__(self, device=device, devices=devices)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         return self._native_params
 
-    def _build(self):
+    def _build(self, *args, **kwargs):
         self._native_module = ivy.default(
             lambda: self._native_module,
-            lambda: self._native_module_class(*self._args, **self._kwargs),
+            lambda: self._native_module_class(*args, **kwargs),
             with_callable=True,
         )
         self._native_params = ivy.Container(
@@ -72,7 +72,7 @@ class IvyModule(ivy.Module):
                     # noinspection PyProtectedMember
                     native.__setattr__(k, v.data)
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "found item in variable container {} which was neither a "
                     "sub ivy.Container nor a variable.".format(v)
                 )
@@ -101,10 +101,10 @@ def to_ivy_module(
     kwargs = ivy.default(kwargs, {})
 
     if not ivy.exists(native_module):
-        if not ivy.exists(native_module_class):
-            raise Exception(
-                "native_module_class must be specified if native_module is not given"
-            )
+        ivy.assertions.check_exists(
+            native_module_class,
+            message="native_module_class must be specified if native_module is None",
+        )
 
     return IvyModule(
         native_module_class,

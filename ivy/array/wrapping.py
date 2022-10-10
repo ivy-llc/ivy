@@ -2,7 +2,7 @@
 import ivy
 
 # global
-from typing import Callable, Type, List, Iterable, Optional
+from typing import Callable, Type, List, Iterable
 from types import ModuleType
 
 TO_IGNORE = ["shape"]
@@ -58,7 +58,7 @@ def _wrap_function(function_name: str) -> Callable:
 
 
 def add_ivy_array_instance_methods(
-    cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Optional[Iterable] = ()
+    cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Iterable = ()
 ):
     """Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy arrays as instance methods using _wrap_function.

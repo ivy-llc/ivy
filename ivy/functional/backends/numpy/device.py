@@ -11,21 +11,21 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
+def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
     if as_native:
         return "cpu"
     return as_ivy_dev("cpu")
 
 
-def as_ivy_dev(device):
+def as_ivy_dev(device: str, /):
     return ivy.Device("cpu")
 
 
-def as_native_dev(device):
+def as_native_dev(device: str, /):
     return "cpu"
 
 
-def clear_mem_on_dev(device):
+def clear_mem_on_dev(device: str, /):
     return None
 
 
@@ -46,14 +46,14 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
     """Private version of `to_device` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
@@ -61,19 +61,19 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
 
 
 def to_device(
-    x: np.ndarray, device: str, *, stream: Optional[Union[int, Any]] = None
+    x: np.ndarray, device: str, /, *, stream: Optional[Union[int, Any]] = None
 ) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
         if "gpu" in device:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )

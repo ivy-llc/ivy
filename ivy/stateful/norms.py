@@ -10,9 +10,11 @@ class LayerNorm(Module):
     def __init__(
         self,
         normalized_shape,
-        epsilon=None,
+        /,
+        *,
+        epsilon: float = ivy._MIN_BASE,
         elementwise_affine=True,
-        new_std=None,
+        new_std: float = 1.0,
         device=None,
         v=None,
         dtype=None,
@@ -46,7 +48,7 @@ class LayerNorm(Module):
         self._offset_shape = normalized_shape
         self._scale_init = Ones()
         self._offset_init = Zeros()
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer"""

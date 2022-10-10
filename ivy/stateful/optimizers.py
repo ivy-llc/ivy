@@ -1,8 +1,9 @@
+# For Review
 """Collection of Ivy optimizers."""
 
 # global
 import abc
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 
 # local
 import ivy
@@ -15,7 +16,7 @@ import ivy
 class Optimizer(abc.ABC):
     def __init__(
         self,
-        lr: float,
+        lr: Union[float, Callable],
         inplace: bool = True,
         stop_gradients: bool = True,
         init_on_first_step: bool = False,
@@ -86,7 +87,7 @@ class Optimizer(abc.ABC):
             The updated variables, following update step.
 
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     # Given #
 
@@ -126,7 +127,7 @@ class Optimizer(abc.ABC):
         state
             Nested state to update.
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     # Given #
 
@@ -165,7 +166,7 @@ class Optimizer(abc.ABC):
 class SGD(Optimizer):
     def __init__(
         self,
-        lr: float = lambda: 1e-4,
+        lr: float = 1e-4,
         inplace: bool = True,
         stop_gradients: bool = True,
         compile_on_next_step: bool = False,
@@ -216,7 +217,6 @@ class SGD(Optimizer):
             v,
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
 
@@ -240,7 +240,7 @@ class SGD(Optimizer):
 class LARS(Optimizer):
     def __init__(
         self,
-        lr: float = lambda: 1e-4,
+        lr: float = 1e-4,
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,
@@ -296,7 +296,6 @@ class LARS(Optimizer):
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
             decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
 
@@ -403,7 +402,6 @@ class Adam(Optimizer):
             beta1=self._beta1,
             beta2=self._beta2,
             epsilon=self._epsilon,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
         return new_v
@@ -520,7 +518,6 @@ class LAMB(Optimizer):
             epsilon=self._epsilon,
             max_trust_ratio=self._max_trust_ratio,
             decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
         return new_v
