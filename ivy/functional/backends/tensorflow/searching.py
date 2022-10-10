@@ -1,8 +1,11 @@
 # global
+from numbers import Number
 from typing import Optional, Union, Tuple
 
-import ivy
 import tensorflow as tf
+from tensorflow.python.framework.dtypes import DType
+
+import ivy
 
 
 # Array API Standard #
@@ -15,9 +18,12 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+    if output_dtype is not None:
+        ret = tf.cast(ret, output_dtype)
     return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
@@ -27,17 +33,48 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: DType = tf.dtypes.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    return tf.convert_to_tensor(ret, dtype=ret.dtype)
+    # The returned array must have the default array index data type.
+    if dtype is not None:
+        if dtype not in (tf.int32, tf.int64):
+            return tf.convert_to_tensor(ret, dtype=tf.int32)
+        else:
+            return tf.convert_to_tensor(ret, dtype=dtype)
+    else:
+        if ret.dtype not in (tf.int32, tf.int64):
+            return tf.convert_to_tensor(ret, dtype=tf.int32)
+        else:
+            return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-    return tuple(tf.experimental.numpy.nonzero(x))
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
+    res = tf.experimental.numpy.nonzero(x)
+
+    if size is not None:
+        dtype = tf.int64
+        if isinstance(fill_value, float):
+            dtype = tf.float64
+        res = tf.cast(res, dtype)
+
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = tf.pad(res, [[0, 0], [0, diff]], constant_values=fill_value)
+        elif diff < 0:
+            res = tf.slice(res, [0, 0], [-1, size])
+
+    if as_tuple:
+        return tuple(res)
+    return tf.stack(res, axis=1)
 
 
 def where(

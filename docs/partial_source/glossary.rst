@@ -68,7 +68,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Convenience functions can be used to organize and improve the code for other functions.
     
     Native Array
-        The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class, such as :code:`np.ndarray`, :code:`tf.Tensor` or :code:`torch.Tensor`.
+        The :class:`ivy.NativeArray` is simply a placeholder class for a backend-specific array class, such as :class:`np.ndarray`, :class:`tf.Tensor` or :class:`torch.Tensor`.
     
     Ivy Array
         The :class:`ivy.Array` is a simple wrapper class, which wraps around the :class:`ivy.NativeArray`.

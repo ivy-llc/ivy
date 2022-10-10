@@ -58,17 +58,18 @@ def argsort(
         returned array must have the default array index data type.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
-    With: code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)
@@ -170,13 +171,14 @@ def sort(
         along the given `axis`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.sort.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
 
     Examples

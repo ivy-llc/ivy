@@ -31,7 +31,6 @@ def test_numpy_tile(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     repeats_dtype, repeats = dtype_and_repeats
@@ -41,7 +40,6 @@ def test_numpy_tile(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="tile",
         A=x[0],
@@ -70,7 +68,6 @@ def test_numpy_repeat(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -79,7 +76,6 @@ def test_numpy_repeat(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="repeat",
         a=x[0],

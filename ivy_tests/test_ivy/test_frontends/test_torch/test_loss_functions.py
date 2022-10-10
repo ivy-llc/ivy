@@ -41,17 +41,16 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     label_smoothing=helpers.floats(min_value=0, max_value=0.49),
 )
 def test_torch_cross_entropy(
-        dtype_and_input,
-        dtype_and_target,
-        dtype_and_weights,
-        size_average,
-        reduce,
-        reduction,
-        label_smoothing,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_input,
+    dtype_and_target,
+    dtype_and_weights,
+    size_average,
+    reduce,
+    reduction,
+    label_smoothing,
+    as_variable,
+    num_positional_args,
+    native_array,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -62,7 +61,6 @@ def test_torch_cross_entropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.cross_entropy",
         input=input[0],
@@ -122,17 +120,17 @@ def test_torch_cross_entropy(
         fn_name="ivy.functional.frontends.torch.binary_cross_entropy"
     ),
 )
-def test_binary_cross_entropy(
-        dtype_and_true,
-        dtype_and_pred,
-        dtype_and_weight,
-        size_average,
-        reduce,
-        reduction,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+
+def test_torch_binary_cross_entropy(
+    dtype_and_true,
+    dtype_and_pred,
+    dtype_and_weight,
+    size_average,
+    reduce,
+    reduction,
+    as_variable,
+    num_positional_args,
+    native_array,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -143,7 +141,6 @@ def test_binary_cross_entropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.binary_cross_entropy",
         input=pred[0],
