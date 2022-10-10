@@ -668,7 +668,6 @@ def test_jax_numpy_arctan2(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -699,7 +698,6 @@ def test_jax_numpy_cos(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -730,7 +728,6 @@ def test_jax_numpy_cosh(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -761,7 +758,6 @@ def test_jax_numpy_tanh(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -792,7 +788,6 @@ def test_jax_numpy_sinh(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
