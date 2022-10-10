@@ -790,7 +790,6 @@ def test_torch_vander(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -799,7 +798,6 @@ def test_torch_vander(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="vander",
         x=np.asarray(x[0], dtype=input_dtype[0]),
