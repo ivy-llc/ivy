@@ -115,7 +115,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
-
+    
 
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     ivy.assertions.check_shape(labels, logits)
