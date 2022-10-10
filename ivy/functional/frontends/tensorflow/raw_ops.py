@@ -200,6 +200,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def NthElement(*, input, n, reverse=False, name="NthElement"):
+    return ivy.astype(ivy.sort(input, descending=reverse)[..., n], input.dtype)
+
+
 def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
 
