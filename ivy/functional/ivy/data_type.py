@@ -146,7 +146,7 @@ def _get_dtypes(fn, complement=True):
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if "einops" in fn.__name__ and isinstance(v, dict):
+            if isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
 
             ivy.assertions.check_isinstance(v, tuple)
