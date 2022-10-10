@@ -180,8 +180,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             out = kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _numpy_to_ivy, include_derived={tuple: True})
-        ivy_kwargs = ivy.nested_map(kwargs, _numpy_to_ivy, include_derived={tuple: True})
+        ivy_args = ivy.nested_map(args,
+                                  _numpy_to_ivy,
+                                  include_derived={tuple: True})
+        ivy_kwargs = ivy.nested_map(kwargs,
+                                    _numpy_to_ivy,
+                                    include_derived={tuple: True})
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)

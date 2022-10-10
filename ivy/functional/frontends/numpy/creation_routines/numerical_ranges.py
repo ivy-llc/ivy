@@ -1,6 +1,7 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import outputs_to_numpy_arrays, to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import outputs_to_numpy_arrays, \
+                                                        to_ivy_arrays_and_back
 
 
 @outputs_to_numpy_arrays
