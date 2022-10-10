@@ -941,8 +941,6 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-
-
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.stack([y])
