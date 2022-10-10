@@ -804,7 +804,7 @@ def test_torch_vander(
         fw=fw,
         frontend="torch",
         fn_tree="vander",
-        x=np.asarray(x, dtype=input_dtype),
-        N=None,
-        increasing=False,
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        N=N,
+        increasing=increasing,
     )
