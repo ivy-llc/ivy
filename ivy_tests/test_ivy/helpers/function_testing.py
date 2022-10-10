@@ -38,7 +38,7 @@ from .assertions import (
 # into helpers.get_dtypes
 def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
     for dtype in input_dtypes:
-        if dtype not in ivy.valid_dtypes:
+        if dtype not in ivy.valid_dtypes + ivy.valid_complex_dtypes:
             raise Exception(f"{dtype} is not a valid data type.")
 
 
@@ -896,7 +896,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
     _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
@@ -906,6 +905,7 @@ def test_method(
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+    _assert_dtypes_are_valid(input_dtypes_init)
 
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
@@ -1809,7 +1809,10 @@ def flatten(*, ret):
     if len(ret_idxs) == 0:
         ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-        ret_flat = [ivy.asarray(x) for x in ret_flat]
+        ret_flat = [
+            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(ret_flat).dtype)))
+            for x in ret_flat
+        ]
     else:
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     return ret_flat

@@ -5,6 +5,8 @@ signature.
 # global
 from typing import Optional, Union, Sequence, Callable
 
+from ivy.func_wrapper import with_unsupported_dtypes
+
 _round = round
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -13,6 +15,7 @@ import tensorflow as tf
 
 # local
 import ivy
+from . import backend_version
 
 
 def _parse_ellipsis(so, ndims):
@@ -57,6 +60,10 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
+# tensorflow does not support uint indexing
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query):
         return x.__getitem__(query)
@@ -68,10 +75,6 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if dtype in [tf.int8, tf.int16]:
         query = tf.cast(query, tf.int32)
     return tf.gather(x, query)
-
-
-# tensorflow does not support uint indexing
-get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
