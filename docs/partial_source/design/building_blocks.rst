@@ -211,7 +211,7 @@ The functions in this returned module are populated by iterating through the glo
 .. code-block:: python
 
    # ivy/backend_handler.py
-   def set_backend(backend):
+   def set_backend(f):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
