@@ -144,14 +144,16 @@ def _searchsorted_case2(draw):
 
 @handle_cmd_line_args
 @given(
+    data=st.data(),
     dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     num_positional_args=helpers.num_positional_args(fn_name="searchsorted"),
     side=st.sampled_from(["left", "right"]),
     use_sorter=st.booleans(),
-    ret_dtype=st.sampled_from(["int32", "int64"]),
+    ret_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_searchsorted(
     *,
+    data,
     dtypes_and_xs,
     num_positional_args,
     as_variable,
@@ -166,7 +168,9 @@ def test_searchsorted(
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
-        sorter = np.argsort(xs[0])
+        sorter_dtype = data.draw(helpers.get_dtypes("signed_integer", full=False))
+        dtypes += sorter_dtype
+        sorter = np.argsort(xs[0]).astype(sorter_dtype[0])
     else:
         sorter = None
         xs[0] = np.sort(xs[0])
@@ -180,9 +184,9 @@ def test_searchsorted(
         instance_method=instance_method,
         fw=fw,
         fn_name="searchsorted",
-        x=np.sort(xs[0]),
+        x=xs[0],
         v=xs[1],
         side=side,
         sorter=sorter,
-        ret_dtype=ret_dtype,
+        ret_dtype=ret_dtype[0],
     )
