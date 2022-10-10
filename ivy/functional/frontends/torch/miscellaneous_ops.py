@@ -231,11 +231,15 @@ def rot90(input, k, dims):
     )
 
     k = (4 + (k % 4)) % 4
+    new_axes = list(range(total_dims))
+    new_axes[min(dims)], new_axes[max(dims)] = max(dims), min(dims)
     if k == 1:
-        return ivy.matrix_transpose(ivy.flip(input, axis=dims[1]))
+        flipped = ivy.flip(input, axis=dims[1])
+        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
     elif k == 2:
-        return ivy.flip(axis=dims)
+        return ivy.flip(input, axis=dims)
     elif k == 3:
-        return ivy.matrix_transpose(ivy.flip(input, axis=dims[0]))
+        flipped = ivy.flip(input, axis=dims[0])
+        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
     else:
         return ivy.copy_array(input)
