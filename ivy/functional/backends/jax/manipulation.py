@@ -1,12 +1,14 @@
 # global
 import math
-import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence, Iterable, Callable, Literal
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence, Iterable, Callable, Literal
+import jax.numpy as jnp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -160,7 +162,6 @@ def repeat(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     return jnp.repeat(x, repeats, axis)
 
 
@@ -277,6 +278,7 @@ def pad(
         )
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
@@ -286,9 +288,6 @@ def constant_pad(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-
-
-constant_pad.unsupported_dtypes = ("uint64",)
 
 
 def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:

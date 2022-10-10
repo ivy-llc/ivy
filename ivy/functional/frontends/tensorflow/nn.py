@@ -53,9 +53,6 @@ def conv2d(
     )
 
 
-conv2d.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv2d_transpose(
     input,
     filters,
@@ -77,18 +74,12 @@ def conv2d_transpose(
     )
 
 
-conv2d_transpose.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
     return ivy.conv3d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
-
-
-conv3d.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def conv3d_transpose(
@@ -112,9 +103,6 @@ def conv3d_transpose(
     )
 
 
-conv3d_transpose.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
@@ -127,3 +115,22 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
+
+
+def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
+    ivy.assertions.check_shape(labels, logits)
+    zeros = ivy.zeros_like(logits)
+    max_logits = ivy.where(logits >= zeros, logits, zeros)
+    neg_abs_logits = ivy.negative(ivy.abs(logits))
+    neg_multiple = ivy.negative(ivy.multiply(logits, labels))
+    ret_val = ivy.add(max_logits, neg_multiple)
+    return ivy.add(ret_val, ivy.log1p(ivy.exp(neg_abs_logits)))
+
+
+sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+)

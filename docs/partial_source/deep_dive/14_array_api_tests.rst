@@ -14,12 +14,31 @@ Array API Tests 🤝
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
 .. _`here`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing
+.. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 
-All functions which are present in the `Array API Standard`_ have a corresponding unit test in the
-`test suite`_ for the standard.
+In conjunction with our own ivy unit tests, we import the array-api `test suite`_. These tests check that all
+ivy backend libraries behave according to the `Array API Standard`_ which was established
+in May 2020 by a group of maintainers. It was intended to bring some consistency and completeness to the various python
+libraries which have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
+it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.
 
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_,
-which we keep updated with the upstream test suite.
+which we keep updated with the upstream test suite. The array-api tests repository is maintained by a group of developers
+unconnected to Ivy. We have made the decision to import the test suite directly from this repository rather than having
+our own fork. This means that the test suite you see in the ivy source code cannot be modified in the usual way of
+pushing to the ivy master branch. Instead, the change must be made to the array-api repository directly and then our
+submodule must be updated with the commands:
+
+.. code-block:: none
+
+        # to initialise local config file and fetch + checkout submodule (not needed everytime)
+        git submodule update --init --recursive
+
+        # pulls changes from upstream remote repo and merges them
+        git submodule update --recursive --remote --merge
+
+and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the
+source array-api repository. See the `git website`_ for further information on working with submodules.
 
 Running the tests
 -----------------
