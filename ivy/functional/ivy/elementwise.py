@@ -2757,11 +2757,16 @@ def multiply(
     ----------
     x1
         first input array. Should have a numeric data type.
+
     x2
-        second input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
-        Should have a numeric data type.
+        second input array. Should have a numeric data type.
+        Must be compatible with ``x1``
+        The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .
+        The arrays must be boradcastble to get a common shape for the output.
+
+
     out
-        optional output array, for writing the result to. It must have a shape that the
+        optional output array, for writing the array result to. It must have a shape that the
         inputs broadcast to.
 
 
@@ -2772,13 +2777,61 @@ def multiply(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
+    instances in place of any of the arguments.
 
     Returns
     -------
     ret
         an array containing the element-wise products. The returned array must have a
         data type determined by :ref:`Type Promotion Rules`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([3., 5., 7.])
+        >>> x2 = ivy.array([4., 6., 8.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([12., 3., 56.])
+
+        With :class:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.native_array([1., 3., 9.])
+        >>> x2 = ivy.native_array([4., 7.2, 1.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([4., 2.1, 9.])
+
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([8., 6., 7.])
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([8., 12., 21.])
+
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]), b=ivy.array([3.2, 5., 7.5]))
+        >>> x2 = ivy.Container(a=ivy.array([1.7., 2.8, 3.]), b=ivy.array([5.6, 1.2, 4.2]))
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([25.5, 12.6, 19.5]),
+            b: ivy.array([17.92, 6, 31.5])
+        }
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]), b=ivy.array([5., 1.7, 0.1]))
+        >>> x2 = ivy.array([8.3, 3.2, 6.5])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([51.46, 15.36, 14.95]),
+            b: ivy.array([41.5, 5.44, 0.65])
+        }
 
     """
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
