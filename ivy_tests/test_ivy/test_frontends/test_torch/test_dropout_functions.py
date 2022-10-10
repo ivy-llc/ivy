@@ -20,7 +20,9 @@ import ivy_tests.test_ivy.helpers as helpers
     ),
     prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     training=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.torch.dropout"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.dropout"
+    ),
     with_inplace=st.booleans(),
 )
 def test_torch_dropout(
@@ -53,4 +55,3 @@ def test_torch_dropout(
     for u in ret:
         # cardinality test
         assert u.shape == x.shape
-
