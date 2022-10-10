@@ -23,9 +23,12 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
-def solve(x, y):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
-    return ivy.solve(x, y)
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
+def solve(matrix, rhs):
+    matrix, rhs = promote_types_of_tensorflow_inputs(matrix, rhs)
+    return ivy.solve(matrix, rhs)
 
 
 def logdet(matrix, name=None):
