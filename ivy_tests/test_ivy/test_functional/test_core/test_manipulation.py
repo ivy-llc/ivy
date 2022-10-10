@@ -539,13 +539,17 @@ def _pad_helper(draw):
     ndim = len(shape)
     pad_width = draw(
         st.one_of(
-            helpers.array_values(dtype="int32", min_value=1, shape=(ndim, 2)),
-            helpers.ints(min_value=1, max_value=5),
+            helpers.array_values(
+                dtype="int8", min_value=1, max_value=4, shape=(ndim, 2)
+            ),
+            helpers.ints(min_value=1, max_value=4),
         )
     )
     stat_length = draw(
         st.one_of(
-            helpers.array_values(dtype="int32", min_value=1, shape=(ndim, 2)),
+            helpers.array_values(
+                dtype="int8", min_value=1, max_value=4, shape=(ndim, 2)
+            ),
             helpers.ints(min_value=1, max_value=4),
         )
     )
@@ -565,7 +569,7 @@ def _pad_helper(draw):
     )
     if len(end_values.shape) == 1:
         end_values = end_values[0]
-    dtype = dtype + 2 * ["int32"] + 2 * dtype
+    dtype = dtype + 2 * ["int8"] + 2 * dtype
     return dtype, value, pad_width, stat_length, constant_values, end_values
 
 
@@ -585,7 +589,6 @@ def _pad_helper(draw):
             "reflect",
             "symmetric",
             "wrap",
-            "empty",
         ]
     ),
     reflect_type=st.sampled_from(["even", "odd"]),
@@ -634,6 +637,7 @@ def test_pad(
         instance_method=instance_method,
         fw=fw,
         fn_name="pad",
+        ground_truth_backend="numpy",
         x=value[0],
         pad_width=pad_width,
         mode=mode,
