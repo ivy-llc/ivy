@@ -3638,27 +3638,27 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
-        >>> ivy.get_num_dims(a)
+        >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> ivy.Container.get_num_dims(x)
         {
             b: 2
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]))
-        >>> ivy.get_num_dims(a)
+        >>> ivy.Container.get_num_dims(x)
         {
             b: 3
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
                                             c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
-        >>> ivy.get_num_dims(a)
+        >>> ivy.Container.get_num_dims(x)
         {
             b: 3,
             c: 2
         }
-        >>> ivy.get_num_dims(a, as_array=True)
+        >>> ivy.Container.get_num_dims(x, as_array=True)
         {
             b: ivy.array(3),
             c: ivy.array(2)
@@ -3712,27 +3712,29 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Shape of the array
 
-        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
-        >>> ivy.get_num_dims(a)
+        Examples
+        --------
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])) 
+        >>> a.get_num_dims()
         {
             b: 2
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]))
-        >>> ivy.get_num_dims(a)
+        >>> a.get_num_dims()
         {
             b: 3
         }
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
                                             [[0,0,0],[0,0,0],[0,0,0]]]),\
                                             c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
-        >>> ivy.get_num_dims(a)
+        >>> a.get_num_dims()
         {
             b: 3,
             c: 2
         }
-        >>> ivy.get_num_dims(a, as_array=True)
+        >>> a.get_num_dims(as_array=True)
         {
             b: ivy.array(3),
             c: ivy.array(2)
