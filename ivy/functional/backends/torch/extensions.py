@@ -124,11 +124,11 @@ lcm.support_native_out = True
 
 
 def rfft(
-    input: torch.Tensor, 
+    x: torch.Tensor, 
     n: Optional[int] = None,
     norm: Optional[str] = None,
     /,
-    *, 
+    *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.fft.rfft(input, n, norm=norm, out=out)
+    return torch.fft.rfft(x, n, norm=norm, out=out)

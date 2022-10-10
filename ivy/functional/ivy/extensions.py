@@ -672,11 +672,11 @@ def lcm(
 @handle_nestable
 @handle_exceptions
 def rfft(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     n: Optional[int] = None, 
     norm: Optional[str] = None,
     /,
-    *, 
+    *,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Compute the one-dimensional discrete Fourier Transform for real input.
@@ -707,21 +707,21 @@ def rfft(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 2, 3])
-    >>> ivy.flatten(x)
+    >>> ivy.rfft(x)
     ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
-    >>> ivy.flatten(x, norm='ortho')
+    >>> ivy.rfft(x, norm='ortho')
     ivy.array([ 3.+0.j, -1.+1.j, -1.+0.j])
-    >>> ivy.flatten(x, norm='forward')
+    >>> ivy.rfft(x, norm='forward')
     ivy.array([ 1.5000+0.0000j, -0.5000+0.5000j, -0.5000+0.0000j])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),
     ...                   b=ivy.array([0, 1, 2, 3]))
-    >>> ivy.flatten(x)
+    >>> ivy.rfft(x)
     {
         a: ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j])
         b: ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
     }
     """
-    return ivy.current_backend().rfft(input, n, norm)
+    return ivy.current_backend().rfft(x, n, norm, out=out)

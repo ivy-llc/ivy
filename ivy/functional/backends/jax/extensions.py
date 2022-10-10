@@ -90,11 +90,11 @@ def lcm(
 
 
 def rfft(
-    input: JaxArray,
+    x: JaxArray,
     n: Optional[int] = None, 
     norm: Optional[str] = None,
     /,
-    *, 
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.fft.rfft(input, n, norm=norm)
+    return jnp.fft.rfft(x, n, norm=norm)

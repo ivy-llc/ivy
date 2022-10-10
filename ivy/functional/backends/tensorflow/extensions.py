@@ -10,6 +10,7 @@ import tensorflow as tf
 import logging
 from math import sqrt
 
+
 def is_native_sparse_array(x):
     return isinstance(x, tf.SparseTensor)
 
@@ -111,21 +112,21 @@ lcm.unsupported_dtypes = (
 
 
 def rfft(
-    input: Union[tf.Tensor, tf.Variable],
-    n: Optional[int] = None, 
+    x: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
     norm: Optional[str] = None,
     /,
-    *, 
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if n == None:
-        n = len(input)
-    if norm == 'forward': 
-        return tf.signal.rfft(input, n, norm, out=out)/n
+    if n is None:
+        n = len(x)
+    if norm == 'forward':
+        return tf.signal.rfft(x, n, norm) / n
     elif norm == 'ortho':
-        return tf.signal.rfft(input, n, norm, out=out)/sqrt(n)
-    elif norm == None or norm == 'backward':
-        return tf.signal.rfft(input, n, norm, out=out)
+        return tf.signal.rfft(x, n, norm) / sqrt(n)
+    elif norm is None or norm == 'backward':
+        return tf.signal.rfft(x, n, norm)
     else:
         raise ValueError(f'Invalid norm value {norm}; should be "backward",'
-        '"ortho" or "forward".')
+                         '"ortho" or "forward".')

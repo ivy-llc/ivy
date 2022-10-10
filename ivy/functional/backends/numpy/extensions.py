@@ -103,11 +103,11 @@ lcm.support_native_out = True
 
 
 def rfft(
-    input: np.ndarray,
-    n: Optional[int] = None, 
+    x: np.ndarray,
+    n: Optional[int] = None,
     norm: Optional[str] = None,
     /,
     *, 
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.fft.rfft(input, n, norm=norm)
+    return np.fft.rfft(x, n, norm=norm)
