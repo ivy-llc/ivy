@@ -492,7 +492,6 @@ def test_frontend_function(
 
     # check for unsupported dtypes in backend framework
     function = getattr(function_dict, fn_name)
-
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
