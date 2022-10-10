@@ -129,7 +129,7 @@
              
   <h1>Source code for ivy.array.norms</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 
 <span class="c1"># local</span>
@@ -144,9 +144,9 @@
         <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
-        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -161,13 +161,13 @@
 <span class="sd">            Input array</span>
 <span class="sd">        normalized_idxs</span>
 <span class="sd">            Indices to apply the normalization to.</span>
+<span class="sd">        weight</span>
+<span class="sd">            Learnable gamma variables for elementwise post-multiplication, default is None.</span>
+<span class="sd">        bias</span>
+<span class="sd">            Learnable beta variables for elementwise post-addition, default is None.</span>
 <span class="sd">        epsilon</span>
 <span class="sd">            small constant to add to the denominator, use global ivy._MIN_BASE by</span>
 <span class="sd">            default.</span>
-<span class="sd">        scale</span>
-<span class="sd">            Learnable gamma variables for post-multiplication, default is None.</span>
-<span class="sd">        offset</span>
-<span class="sd">            Learnable beta variables for post-addition, default is None.</span>
 <span class="sd">        new_std</span>
 <span class="sd">            The standard deviation of the new normalized values. Default is 1.</span>
 <span class="sd">        out</span>
@@ -184,20 +184,20 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
 <span class="sd">                           [0.1047,  0.5886,  1.2732], \</span>
 <span class="sd">                           [0.7696, -1.7024, -2.2518]])</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm([0, 1], epsilon=0.001, \</span>
-<span class="sd">                                new_std=1.5, offset=0.5, scale=0.5)</span>
+<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(x, [0, 1], epsilon=0.001, \</span>
+<span class="sd">                                  new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
-<span class="sd">        ivy.array([[ 0.576,  0.292,  1.33 ],</span>
-<span class="sd">                   [ 0.581,  0.891,  1.33 ],</span>
-<span class="sd">                   [ 1.01 , -0.579, -0.931]])</span>
+<span class="sd">        ivy.array([[ 0.576,  0.312,  1.43 ],</span>
+<span class="sd">                   [ 0.581,  0.911,  1.43 ],</span>
+<span class="sd">                   [ 1.01 , -0.599, -0.69]])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">normalized_idxs</span><span class="p">,</span>
+            <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+            <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
             <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
-            <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
-            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
             <span class="n">new_std</span><span class="o">=</span><span class="n">new_std</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
