@@ -668,3 +668,47 @@ def lcm(
     ivy.array([10, 21, 60])
     """
     return ivy.current_backend().lcm(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Hann window. The Hanning window 
+    is a taper formed by using a weighted cosine.
+    
+    Parameters
+    ----------
+    window_length
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function. 
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.hann_window(4, True)
+    ivy.array([0. , 0.5, 1. , 0.5])
+
+    >>> ivy.hann_window(7, False)
+    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
+
+    """
+    return ivy.current_backend().hann_window(
+        window_length, periodic, dtype=dtype, out=out)
