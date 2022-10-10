@@ -176,8 +176,16 @@ transpilations, as explained <a href="#id5"><span class="problematic" id="id6">`
 </section>
 <section id="the-basics">
 <h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this heading"></a></h2>
-<p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
+<p><strong>NOTE:</strong></p>
+<p>Type hints, docstrings and examples are not required when working on
 frontend functions.</p>
+<p>When using functions and methods of Ivy Frontends, in addition to importing ivy itself
+like <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span></code> please also import the corrisponding Frontend module.
+For example, to use ivy’s tensorflow frontend:</p>
+<blockquote>
+<div><p><code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.frontends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy_tf</span></code></p>
+</div></blockquote>
+<hr class="docutils" />
 <p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks">open task</a>.</p>
 <p><strong>Jax</strong></p>
