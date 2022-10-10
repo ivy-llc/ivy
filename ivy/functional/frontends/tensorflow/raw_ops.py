@@ -138,6 +138,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def InvGrad(*, y, dy, name="InvGrad"):
+    return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
+
+
 def LeftShift(*, x, y, name="LeftShift"):
     return ivy.bitwise_left_shift(x, y)
 
@@ -164,6 +168,10 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
+def MatrixDeterminant(*, input, name="MatrixDeterminant"):
+    return ivy.det(input)
 
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
