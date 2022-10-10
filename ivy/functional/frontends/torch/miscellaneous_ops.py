@@ -163,3 +163,7 @@ def repeat_interleave(input, repeats, dim=None, *, output_size=None):
 
 def ravel(input):
     return ivy.reshape(input, (-1,))
+
+
+def lcm(input, other, *, out=None):
+    return ivy.lcm(input, other, out=out)
