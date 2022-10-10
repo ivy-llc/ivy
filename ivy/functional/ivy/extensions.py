@@ -461,12 +461,12 @@ def sinc(
 @handle_nestable
 @handle_exceptions
 def flatten(
-        x: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        start_dim: int = None,
-        end_dim: int = None,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    start_dim: int = None,
+    end_dim: int = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
         If start_dim or end_dim are passed, only dimensions starting
@@ -566,12 +566,12 @@ def flatten(
     """
     if start_dim == end_dim and len(x.shape) != 0:
         return x
-    if start_dim not in range(- len(x.shape), len(x.shape)):
+    if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
             {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
-    if end_dim not in range(- len(x.shape), len(x.shape)):
+    if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
             {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
@@ -586,8 +586,11 @@ def flatten(
         end_dim = len(x.shape) + end_dim
 
     x_shape = x.shape
-    new_shape = tuple(x_shape[:start_dim]) + (
-        int(prod(x_shape[start_dim:end_dim + 1])),) + tuple(x_shape[end_dim + 1:])
+    new_shape = (
+        tuple(x_shape[:start_dim])
+        + (int(prod(x_shape[start_dim : end_dim + 1])),)
+        + tuple(x_shape[end_dim + 1 :])
+    )
     return ivy.reshape(x, new_shape)
 
 
@@ -603,6 +606,7 @@ def vorbis_window(
 ) -> ivy.Array:
     """Returns an array that contains a vorbis power complementary window
     of size window_length.
+
     Parameters
     ----------
     window_length
@@ -611,16 +615,19 @@ def vorbis_window(
         data type of the returned array. By default float32.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Input array with the vorbis window.
+
     Examples
     --------
     >>> ivy.vorbis_window(3)
     ivy.array([0.38268346, 1. , 0.38268352])
+
     >>> ivy.vorbis_window(5)
-    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
     """
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 

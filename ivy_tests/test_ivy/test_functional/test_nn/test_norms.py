@@ -122,4 +122,3 @@ def test_layer_norm(
         bias=bias,
         new_std=new_std,
     )
-
