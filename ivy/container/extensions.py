@@ -373,11 +373,11 @@ class ContainerWithExtensions(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=3, b=5)
-        >>> ivy.hann_window(x)
-        [{
+        >>> ivy.Container.static_hann(x)
+        {
             a: ivy.array([0.0000, 0.7500, 0.7500])
             b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455]) 
-        }]
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "hann_window",
@@ -425,10 +425,10 @@ class ContainerWithExtensions(ContainerBase):
 
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.hann_window(x)
-        [{
+        {
             a: ivy.array([0.0000, 0.7500, 0.7500])
             b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455]) 
-        }]
+        }
         """
         return self.static_hann_window(
             self,

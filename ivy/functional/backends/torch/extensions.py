@@ -141,4 +141,3 @@ def hann_window(
 
 
 hann_window.support_native_out = False
-hann_window.unsupported_dtypes = ("int32", "int64")
