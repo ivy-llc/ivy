@@ -169,7 +169,7 @@ def tanh(x):
 
 @inputs_to_ivy_arrays
 def sinh(x):
-    return ivy.tanh(x)
+    return ivy.sinh(x)
 
 
 @inputs_to_ivy_arrays
