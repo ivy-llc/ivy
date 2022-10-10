@@ -70,8 +70,82 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     return ret
 
 
-def arange(start, end=None, step=1, *, dtype=None, device=None, requires_grad=False):
-    ret = ivy.arange(start, end, step, dtype=dtype, device=device)
+def arange(
+    start,
+    end=None,
+    step=1,
+    *,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = ivy.arange(start=start, stop=end, step=step, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def range(
+    start,
+    end=None,
+    step=1,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = arange(start=start, stop=end, step=step, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def linspace(
+    start,
+    end,
+    steps,
+    *,
+    out=None,
+    dtype=None,
+    device=None,
+    layout=None,
+    requires_grad=False
+):
+    ret = ivy.linspace(
+        start=start, stop=end, num=steps, dtype=dtype, device=device, out=out
+    )
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def logspace(
+    start,
+    end,
+    steps,
+    *,
+    base=10.0,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = ivy.logspace(
+        start=start, stop=end, num=steps, base=base, dtype=dtype, device=device, out=out
+    )
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def eye(
+    n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
+):
+    ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
     if requires_grad:
         return ivy.variable(ret)
     return ret
