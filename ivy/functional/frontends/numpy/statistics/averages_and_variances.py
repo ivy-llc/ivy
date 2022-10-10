@@ -25,6 +25,7 @@ def mean(
     return ret
 
 
+@from_zero_dim_arrays_to_float
 def nanmean(
     a,
     /,
