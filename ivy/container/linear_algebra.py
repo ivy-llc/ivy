@@ -2055,7 +2055,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                 a = ivy.array([1, 2, 3, 5])
                 b = ivy.array([6, 7, 8, 9])
             )
-        >>> ivy.vander(x)
+        >>> ivy.Container.static_vander(x)
         {
             a: ivy.array(
                     [[  1,   1,   1,   1],
@@ -2074,10 +2074,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "vander",
             x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             N=N,
             increasing=increasing,
             out=out,
