@@ -88,7 +88,7 @@ def gelu(
     # approximate = False
     # else:
     # approximate = True
-    return ivy.gelu(input)
+    return ivy.gelu(input, approximate=False)
 
 
 def tanh(input):

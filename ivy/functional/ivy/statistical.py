@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    integer_arrays_to_float,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -233,6 +234,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -332,9 +334,9 @@ def mean(
 
     >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
     >>> y = ivy.native_array([0., 0.])
-    >>> ivy.mean(x, axis=1, out=y)
+    >>> y = ivy.mean(x, axis=1)
     >>> print(y)
-    [1., 4.]
+    ivy.array([1., 4.])
 
     With :class:`ivy.Container` input:
 
@@ -390,8 +392,8 @@ def mean(
     >>> x.mean(out=x)
     >>> print(x)
     {
-        a: ivy.array(0.),
-        b: ivy.array(1.)
+        a: ivy.array(1.),
+        b: ivy.array(0.)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
@@ -1022,6 +1024,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -1036,6 +1039,9 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    reverse
+        Whether to perform the cumprod from last to first element in the selected
+        axis. Default is False (from first to last element)
     dtype
         data type of the returned array. If None,
         if the default data type corresponding to the data type “kind” (integer or
@@ -1152,7 +1158,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back

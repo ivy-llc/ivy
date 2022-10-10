@@ -81,10 +81,28 @@ def gather(
     indices: JaxArray,
     /,
     *,
-    axis: int = -1,
+    axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take(params, indices, axis))
+    result = []
+    if batch_dims == 0:
+        result = jnp.take(params, indices, axis)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = jnp.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = jnp.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def gather_nd(
