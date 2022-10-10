@@ -255,11 +255,11 @@ def test_docstrings(backend):
         "cumprod",
         "where",
         "sinc",
-        "grad"
+        "grad",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ['cumprod','supports_inplace_updates','slogdet']
+    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet"]
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
