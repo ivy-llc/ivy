@@ -143,7 +143,7 @@
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
-        <span class="n">elementwise_affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">elementwise_affine</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -174,21 +174,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span> <span class="o">=</span> <span class="n">new_std</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span> <span class="o">=</span> <span class="n">Ones</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span> <span class="o">=</span> <span class="n">Zeros</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bias_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_init</span> <span class="o">=</span> <span class="n">Ones</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bias_init</span> <span class="o">=</span> <span class="n">Zeros</span><span class="p">()</span>
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create internal variables for the layer&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+                <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_weight_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+                <span class="s2">&quot;bias&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bias_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_bias_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
                 <span class="p">),</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="p">{}</span>
@@ -206,14 +206,13 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            The outputs following the layer normalization operation.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
             <span class="n">inputs</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span><span class="p">,</span>
             <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">scale</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">offset</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">weight</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">weight</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">bias</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">new_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span><span class="p">,</span>
         <span class="p">)</span></div>
 </pre></div>

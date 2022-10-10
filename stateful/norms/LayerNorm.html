@@ -150,7 +150,7 @@
 <li><p><strong>normalized_shape</strong> – Trailing shape to applying the normalization to.</p></li>
 <li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – small constant to add to the denominator, (default: <code class="docutils literal notranslate"><span class="pre">1e-05</span></code>)
 use global ivy._MIN_BASE by default.</p></li>
-<li><p><strong>elementwise_affine</strong> – Whether to include learnable affine parameters, default is True.</p></li>
+<li><p><strong>elementwise_affine</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to include learnable affine parameters, default is True. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
 <li><p><strong>new_std</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The standard deviation of the new normalized values. Default is 1. (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></li>
 <li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
 etc. (Default value = None)</p></li>
