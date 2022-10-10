@@ -417,3 +417,88 @@ def test_tensorflow_eye(
         batch_shape=batch_shape,
         dtype=dtype,
     )
+
+
+# norm
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    ord=st.sampled_from([1, 2, np.inf]),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.norm"
+    ),
+)
+def test_tensorflow_norm(
+    dtype_values_axis,
+    ord,
+    keepdims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.norm",
+        tensor=x[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
+    )
+
+
+# normalize
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    ord=st.sampled_from([1, 2, np.inf]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.normalize"
+    ),
+)
+def test_tensorflow_normalize(
+    dtype_values_axis,
+    ord,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.normalize",
+        tensor=x[0],
+        ord=ord,
+        axis=axis,
+    )
