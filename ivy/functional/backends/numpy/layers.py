@@ -649,8 +649,8 @@ def conv_general_transpose(
 
 def max_pool2d(
     x: np.ndarray,
-    kernel: np.ndarray,
-    strides: Union[int, Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     /,
     *,
@@ -686,8 +686,6 @@ def max_pool2d(
     )
 
     x_shape = x.shape
-    #input_dim = filters.shape[-2]
-    #output_dim = filters.shape[-1]
     new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
     new_w = (x_shape[2] - kernel[1]) // strides[1] + 1
     new_shape = [x_shape[0], new_h, new_w] + list(kernel) + [x_shape[-1]]

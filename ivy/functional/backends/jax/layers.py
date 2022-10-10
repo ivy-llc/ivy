@@ -430,7 +430,16 @@ def conv_general_transpose(
     return res
 
 
-def max_pool2d(x, kernel, strides, padding, data_format="NHWC"):
+def max_pool2d(
+        x: JaxArray,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[JaxArray] = None,
+) -> JaxArray:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
@@ -440,4 +449,3 @@ def max_pool2d(x, kernel, strides, padding, data_format="NHWC"):
         return np.transpose(res, (0, 3, 1, 2))
 
     return res
-

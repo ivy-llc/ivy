@@ -682,8 +682,8 @@ conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")
 # noinspection PyUnresolvedReferences
 def max_pool2d(
     x: torch.Tensor,
-    kernel: torch.Tensor,
-    strides: Union[int, Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     /,
     *,
@@ -712,5 +712,6 @@ def max_pool2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
+
 
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")

@@ -368,7 +368,7 @@ class ArrayWithLayers(abc.ABC):
 
     def max_pool2d(
         self: ivy.Array,
-        kernel: Union[ivy.Array, ivy.NativeArray],
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
         /,

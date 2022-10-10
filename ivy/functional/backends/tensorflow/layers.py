@@ -441,8 +441,8 @@ conv_general_transpose.unsupported_dtypes = ("bfloat16",)
 
 def max_pool2d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[tf.Tensor, tf.Variable],
-    strides: Union[int, Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     /,
     *,

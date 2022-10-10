@@ -999,7 +999,7 @@ class ContainerWithLayers(ContainerBase):
     @staticmethod
     def static_max_pool2d(
             x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            kernel: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            kernel: Union[int, Tuple[int], Tuple[int, int]],
             strides: Union[int, Tuple[int], Tuple[int, int]],
             padding: str,
             /,
@@ -1028,7 +1028,7 @@ class ContainerWithLayers(ContainerBase):
 
     def max_pool2d(
             self: ivy.Container,
-            kernel: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            kernel: Union[int, Tuple[int], Tuple[int, int]],
             strides: Union[int, Tuple[int], Tuple[int, int]],
             padding: str,
             /,
