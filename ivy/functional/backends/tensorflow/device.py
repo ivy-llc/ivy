@@ -20,6 +20,15 @@ def _same_device(dev_a, dev_b):
     )
 
 
+def print_all_ivy_arrays_on_dev(
+    device: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    attr_only: bool = True
+) -> None:
+    return None
+    
+
 def dev(
     x: Union[tf.Tensor, tf.Variable],
     /,
