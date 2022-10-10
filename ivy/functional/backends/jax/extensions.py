@@ -79,6 +79,16 @@ def vorbis_window(
     )
 
 
+def lcm(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.lcm(x1, x2)
+
+
 def hann_window(
     window_length: int,
     periodic: Optional[bool] = True,
