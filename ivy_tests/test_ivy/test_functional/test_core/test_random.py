@@ -1,7 +1,6 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-import numpy as np
 from hypothesis import given, assume, strategies as st
 
 # local
@@ -48,7 +47,7 @@ def test_random_uniform(
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
     ret, ret_gt = helpers.test_function(
-        input_dtypes=[low_dtype, high_dtype],
+        input_dtypes=low_dtype + high_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -58,10 +57,10 @@ def test_random_uniform(
         test_values=False,
         fw=fw,
         fn_name="random_uniform",
-        low=np.asarray(low, dtype=low_dtype),
-        high=np.asarray(high, dtype=high_dtype),
+        low=low[0],
+        high=high[0],
         shape=None,
-        dtype=dtype,
+        dtype=dtype[0],
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -90,12 +89,14 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
     dtype_and_mean,
     dtype_and_std,
     dtype,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -108,7 +109,7 @@ def test_random_normal(
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
     ret, ret_gt = helpers.test_function(
-        input_dtypes=[mean_dtype, std_dtype],
+        input_dtypes=mean_dtype + std_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -118,10 +119,11 @@ def test_random_normal(
         test_values=False,
         fw=fw,
         fn_name="random_normal",
-        mean=np.asarray(mean, dtype=mean_dtype),
-        std=np.asarray(std, dtype=std_dtype),
+        mean=mean[0],
+        std=std[0],
         shape=None,
-        dtype=dtype,
+        dtype=dtype[0],
+        seed=seed,
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -142,7 +144,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
         num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
     probs = draw(
         helpers.array_values(
-            dtype=prob_dtype,
+            dtype=prob_dtype[0],
             shape=[batch_size, num_samples],
             min_value=1.0013580322265625e-05,
             max_value=1.0,
@@ -158,10 +160,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -175,7 +179,7 @@ def test_multinomial(
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
     ret = helpers.test_function(
-        input_dtypes=[prob_dtype],
+        input_dtypes=prob_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -189,8 +193,9 @@ def test_multinomial(
         population_size=population_size,
         num_samples=num_samples,
         batch_size=batch_size,
-        probs=np.asarray(probs, dtype=prob_dtype) if probs is not None else probs,
+        probs=probs[0] if probs is not None else probs,
         replace=replace,
+        seed=seed,
         device=device,
     )
     if not ivy.exists(ret):
@@ -209,7 +214,7 @@ def _gen_randint_data(draw):
     dim2 = draw(helpers.ints(min_value=2, max_value=8))
     low = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=(dim1, dim2),
             min_value=-100,
             max_value=25,
@@ -217,7 +222,7 @@ def _gen_randint_data(draw):
     )
     high = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=(dim1, dim2),
             min_value=26,
             max_value=100,
@@ -230,10 +235,12 @@ def _gen_randint_data(draw):
 @handle_cmd_line_args
 @given(
     dtype_low_high=_gen_randint_data(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
     dtype_low_high,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -245,7 +252,7 @@ def test_randint(
 ):
     dtype, low, high = dtype_low_high
     ret, ret_gt = helpers.test_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -255,10 +262,11 @@ def test_randint(
         test_values=False,
         fw=fw,
         fn_name="randint",
-        low=np.asarray(low, dtype=dtype),
-        high=np.asarray(high, dtype=dtype),
+        low=low,
+        high=high,
         shape=None,
-        dtype=dtype,
+        dtype=dtype[0],
+        seed=seed,
         device=device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -287,10 +295,12 @@ def test_seed(seed_val):
         min_num_dims=1,
         min_dim_size=2,
     ),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
 )
 def test_shuffle(
     dtype_and_x,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -301,7 +311,7 @@ def test_shuffle(
 ):
     dtype, x = dtype_and_x
     ret, ret_gt = helpers.test_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -311,7 +321,8 @@ def test_shuffle(
         test_values=False,
         fw=fw,
         fn_name="shuffle",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)

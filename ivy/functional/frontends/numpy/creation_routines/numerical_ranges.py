@@ -27,7 +27,7 @@ def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
     # Todo: add sparse check
     ret = ivy.meshgrid(*xi, indexing=indexing)
     if copy:
-        return ivy.copy_array(ret)
+        return [ivy.copy_array(x) for x in ret]
     return ret
 
 

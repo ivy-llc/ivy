@@ -17,8 +17,10 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            large_abs_safety_factor=8,
-            small_abs_safety_factor=8,
+            min_value=-1e20,
+            max_value=1e20,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
             safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
@@ -78,7 +80,7 @@ def test_variable(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -86,7 +88,7 @@ def test_variable(
         instance_method=instance_method,
         fw=fw,
         fn_name="variable",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -108,7 +110,7 @@ def test_is_variable(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -116,7 +118,7 @@ def test_is_variable(
         instance_method=instance_method,
         fw=fw,
         fn_name="is_variable",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -133,14 +135,14 @@ def test_variable_data(
     helpers.test_function(
         input_dtypes=dtype,
         with_out=False,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="variable_data",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -166,14 +168,14 @@ def test_stop_gradient(
     helpers.test_function(
         input_dtypes=dtype,
         with_out=with_out,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="stop_gradient",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         preserve_type=preserve_type,
     )
 
@@ -209,18 +211,18 @@ def test_execute_with_gradients(
     dtype, xs = dtype_and_xs
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=True,
+        as_variable_flags=[True],
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=False,
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
         rtol_=1e-1,
         atol_=1e-1,
-        xs=np.asarray(xs, dtype=dtype),
+        xs=xs[0],
         retain_grads=retain_grads,
     )
 
@@ -356,9 +358,9 @@ def test_adam_step(
         fn_name="adam_step",
         rtol_=1e-2,
         atol_=1e-2,
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[0]),
-        mw=np.asarray(mw, input_dtypes[1]),
-        vw=np.asarray(vw, dtype=input_dtypes[2]),
+        dcdw=dcdw,
+        mw=mw,
+        vw=vw,
         step=step,
         beta1=beta1,
         beta2=beta2,
@@ -397,9 +399,9 @@ def test_optimizer_update(
         fn_name="optimizer_update",
         rtol_=1e-2,
         atol_=1e-2,
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        effective_grad=np.asarray(effective_grad, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        w=w,
+        effective_grad=effective_grad,
+        lr=lr,
         stop_gradients=stop_gradients,
     )
 
@@ -436,9 +438,9 @@ def test_gradient_descent_update(
         fn_name="gradient_descent_update",
         rtol_=1e-2,
         atol_=1e-2,
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
         stop_gradients=stop_gradients,
     )
 
@@ -475,11 +477,11 @@ def test_lars_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="lars_update",
-        rtol_=1e-2,
-        atol_=1e-2,
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        rtol_=1e-1,
+        atol_=1e-1,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
         decay_lambda=decay_lambda,
         stop_gradients=stop_gradients,
     )
@@ -527,11 +529,11 @@ def test_adam_update(
         fn_name="adam_update",
         rtol_=1e-2,
         atol_=1e-2,
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
-        mw_tm1=np.asarray(mw_tm1, input_dtypes[2]),
-        vw_tm1=np.asarray(vw_tm1, dtype=input_dtypes[3]),
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
         step=step,
         beta1=beta1,
         beta2=beta2,
@@ -590,13 +592,13 @@ def test_lamb_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="lamb_update",
-        rtol_=1e-2,
-        atol_=1e-2,
-        w=np.asarray(w, dtype=input_dtypes[0]),
-        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
-        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
-        mw_tm1=np.asarray(mw_tm1, input_dtypes[2]),
-        vw_tm1=np.asarray(vw_tm1, dtype=input_dtypes[3]),
+        rtol_=1e-1,
+        atol_=1e-1,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
         step=step,
         beta1=beta1,
         beta2=beta2,

@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -52,23 +51,21 @@ def test_torch_cross_entropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
     weights_dtype, weights = dtype_and_weights
     helpers.test_frontend_function(
-        input_dtypes=[inputs_dtype, target_dtype, weights_dtype],
+        input_dtypes=inputs_dtype + target_dtype + weights_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.cross_entropy",
-        input=np.asarray(input, dtype=inputs_dtype),
-        target=np.asarray(target, dtype=target_dtype),
-        weight=(np.asarray(weights, dtype=weights_dtype)).reshape(-1),
+        input=input[0],
+        target=target[0],
+        weight=weights[0].reshape(-1),
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
@@ -133,7 +130,6 @@ def test_torch_binary_cross_entropy(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -144,12 +140,11 @@ def test_torch_binary_cross_entropy(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.binary_cross_entropy",
-        input=np.asarray(pred, dtype=pred_dtype),
-        target=np.asarray(true, dtype=true_dtype),
-        weight=np.asarray(weight, dtype=weight_dtype),
+        input=pred[0],
+        target=true[0],
+        weight=weight[0],
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,

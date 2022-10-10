@@ -4,6 +4,7 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
 def convolve(a, v, mode="full"):
@@ -11,6 +12,7 @@ def convolve(a, v, mode="full"):
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def clip(
     a,
     a_min,
@@ -24,19 +26,28 @@ def clip(
     dtype=None,
     subok=True,
 ):
-
-    if not dtype:
-        dtype = a.dtype
-    ret = ivy.where(
-        ivy.broadcast_to(where, a.shape),
-        ivy.clip(a, a_min, a_max),
-        ivy.default(out, a),
-        out=out,
+    ivy.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min and a_max can be None",
     )
-    return ivy.astype(ret, dtype, out=out)
+    a = ivy.array(a, dtype=dtype)
+    if a_min is None:
+        ret = ivy.minimum(a, a_max, out=out)
+    elif a_max is None:
+        ret = ivy.maximum(a, a_min, out=out)
+    else:
+        ret = ivy.clip(a, a_min, a_max, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def sqrt(
     x,
     /,
@@ -49,8 +60,6 @@ def sqrt(
     subok=True,
 ):
     x = ivy.array(x)
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
     )
@@ -58,6 +67,7 @@ def sqrt(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def cbrt(
     x,
     /,
@@ -69,8 +79,6 @@ def cbrt(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
     fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
     ret = ivy.where(
@@ -80,6 +88,7 @@ def cbrt(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def square(
     x,
     /,
@@ -91,8 +100,6 @@ def square(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out
     )
@@ -100,6 +107,7 @@ def square(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def absolute(
     x,
     /,
@@ -111,8 +119,6 @@ def absolute(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
@@ -120,6 +126,7 @@ def absolute(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def fabs(
     x,
     /,
@@ -131,8 +138,6 @@ def fabs(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
@@ -140,6 +145,7 @@ def fabs(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def sign(
     x,
     /,
@@ -151,8 +157,6 @@ def sign(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sign(x, out=out)
     if where is not None:
         ret = ivy.where(
@@ -162,6 +166,7 @@ def sign(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def heaviside(
     x1,
     x2,
@@ -176,9 +181,6 @@ def heaviside(
 ):
     x1 = ivy.array(x1)
     x2 = ivy.array(x2)
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.equal(x1, x1.full_like(0.0)),
         x2,

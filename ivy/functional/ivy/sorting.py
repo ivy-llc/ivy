@@ -57,17 +57,19 @@ def argsort(
         an array of indices. The returned array must have the same shape as ``x``. The
         returned array must have the default array index data type.
 
-    This method conforms to the `Array API Standard
+
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
-    With: code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)
@@ -89,7 +91,7 @@ def argsort(
     >>> print(y)
     ivy.array([[[0, 1], [1, 0]], [[0, 1], [1, 0]]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([5,1,3]), b=ivy.array([[0, 3], [3, 2]]))
     >>> y = ivy.argsort(x)
@@ -169,18 +171,19 @@ def sort(
         along the given `axis`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.sort.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
@@ -205,14 +208,14 @@ def sort(
     ivy.array([[ 1.1,  2.2,  3.3],
         [-6.6, -5.5, -4.4]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[[8.9, 0], [19, 5]],[[6, 0.3], [19, 0.5]]])
     >>> y = ivy.sort(x, descending=True)
     >>> print(y)
     ivy.array([[[ 8.9,  0.],[19. ,  5. ]],[[ 6. ,  0.3 ],[19. ,  0.5]]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 6, 6]),b=ivy.array([[9, 0.7], [0.4, 0]]))
     >>> y = ivy.sort(x, descending=True)
@@ -259,7 +262,8 @@ def searchsorted(
     Parameters
     ----------
     x
-        input array
+        Input array. If `sorter` is None, then it must be sorted in ascending order,
+        otherwise `sorter` must be an array of indices that sort it.
     v
         specific elements to insert in array x1
     side
@@ -271,7 +275,8 @@ def searchsorted(
         the data type for the return value, Default: ivy.int64,
         only ivy.int32 or ivy.int64 is allowed.
     sorter
-
+        optional array of integer indices that sort array x into ascending order,
+        typically the result of argsort.
     out
         optional output array, for writing the result to.
 
@@ -282,7 +287,7 @@ def searchsorted(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([2,1,0])
     >>> x2 = ivy.array([1])
@@ -301,6 +306,7 @@ def searchsorted(
     >>> y  = ivy.searchsorted(x1, x2, side='left')
     >>> print(y)
     ivy.array([3,2,4])
+
     """
     return ivy.current_backend(x, v).searchsorted(
         x,

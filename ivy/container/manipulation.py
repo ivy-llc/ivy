@@ -120,7 +120,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1.]), \
                               b=ivy.array([3., 4.]), \
@@ -136,7 +136,7 @@ class ContainerWithManipulation(ContainerBase):
                           [7.]])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]), \
@@ -227,9 +227,9 @@ class ContainerWithManipulation(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
-        axis: int = 0,
-        with_remainder: bool = False,
+        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[int] = 0,
+        with_remainder: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -285,9 +285,9 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
-        axis: int = 0,
-        with_remainder: bool = False,
+        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[int] = 0,
+        with_remainder: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -510,7 +510,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
                               b=ivy.array([0, 1, 2, 3, 4, 5]))
@@ -672,7 +672,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -683,7 +683,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([5., 3., 4.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -1291,7 +1291,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
@@ -1378,7 +1378,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
@@ -1453,7 +1453,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
@@ -1464,7 +1464,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([3., 4., 5.])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
         
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))

@@ -1,6 +1,5 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import numpy as np
 from hypothesis import given
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -34,20 +33,17 @@ def test_numpy_squeeze(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
         fn_tree="squeeze",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
     )
 
@@ -72,19 +68,16 @@ def test_numpy_expand_dims(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
         fn_tree="expand_dims",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
     )

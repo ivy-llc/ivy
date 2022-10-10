@@ -1,9 +1,11 @@
 # global
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 
 
-def add(input, other, *, alpha=1, out=None):
-    return ivy.add(input, other * alpha, out=out)
+def add(input, other, *, alpha=None, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    return ivy.add(input, other, alpha=alpha, out=out)
 
 
 def tan(input, *, out=None):
@@ -55,6 +57,7 @@ def cosh(input, *, out=None):
 
 
 def subtract(input, other, *, alpha=1, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.subtract(input, other * alpha, out=out)
 
 
@@ -91,6 +94,7 @@ def square(input, *, out=None):
 
 
 def atan2(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.atan2(input, other, out=out)
 
 
@@ -99,6 +103,7 @@ def negative(input, *, out=None):
 
 
 def bitwise_and(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_and(input, other, out=out)
 
 
@@ -107,18 +112,22 @@ def bitwise_not(input, *, out=None):
 
 
 def bitwise_xor(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_xor(input, other, out=out)
 
 
 def bitwise_or(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_or(input, other, out=out)
 
 
 def bitwise_left_shift(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_left_shift(input, other, out=out)
 
 
 def bitwise_right_shift(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_right_shift(input, other, out=out)
 
 
@@ -147,12 +156,53 @@ def logical_not(input, *, out=None):
 
 
 def logical_and(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_and(input, other, out=out)
 
 
 def logical_or(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_or(input, other, out=out)
 
 
 def logical_xor(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_xor(input, other, out=out)
+
+
+def ceil(input, *, out=None):
+    return ivy.ceil(input, out=out)
+
+
+def clamp(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)
+
+
+def clip(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)

@@ -28,7 +28,7 @@ With Ivy, this process becomes:
 
 We have turned a 4-step process which can take 100s of hours into a 1-step process which takes a few seconds.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/perceiver_effort.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/why_unify/perceiver_effort.png?raw=true
    :align: center
    :width: 100%
 
@@ -47,7 +47,7 @@ What about the next framework that gets released in a few years from now, must w
 
 With Ivy, you can write your code **once**, and then it will support all future ML frameworks with **zero** changes needed.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/future_proof.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/future_proof.png?raw=true
    :align: center
    :width: 80%
 
@@ -55,7 +55,7 @@ The same can be said about high-level code for: Modules, Optimizers and Trainers
 
 With Ivy, we have implemented Modules, Optimizers and Trainers **once** with simultaneous support for all **current** and **future** frameworks.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/reinvented_wheels.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/reinvented_wheels.png?raw=true
    :align: center
    :width: 100%
 

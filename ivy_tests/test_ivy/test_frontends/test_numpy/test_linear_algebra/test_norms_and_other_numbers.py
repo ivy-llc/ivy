@@ -27,7 +27,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     ),
 )
 def test_numpy_norm(
-    dtype_values_axis, keepdims, as_variable, native_array, num_positional_args, fw
+    dtype_values_axis, keepdims, as_variable, native_array, num_positional_args
 ):
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
@@ -36,12 +36,11 @@ def test_numpy_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="linalg.norm",
-        x=np.array(x, dtype=dtype),
+        x=x[0],
         ord=None,
         axis=axis,
         keepdims=keepdims,
@@ -65,19 +64,18 @@ def test_numpy_norm(
     ),
 )
 def test_numpy_matrix_rank(
-    dtype_and_x, rtol, as_variable, native_array, num_positional_args, fw
+    dtype_and_x, rtol, as_variable, native_array, num_positional_args
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="linalg.matrix_rank",
-        A=np.array(x, dtype=dtype),
+        A=x[0],
         tol=rtol,
     )
 
@@ -92,18 +90,17 @@ def test_numpy_matrix_rank(
         fn_name="ivy.functional.frontends.numpy.linalg.det"
     ),
 )
-def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="linalg.det",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
     )
 
 
@@ -122,7 +119,7 @@ def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, 
         fn_name="ivy.functional.frontends.numpy.linalg.slogdet"
     ),
 )
-def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -130,8 +127,7 @@ def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_ar
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linalg.slogdet",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
     )

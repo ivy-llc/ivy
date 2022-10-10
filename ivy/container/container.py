@@ -11,6 +11,7 @@ from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
+from .extensions import ContainerWithExtensions
 from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
@@ -34,6 +35,7 @@ class Container(
     ContainerWithDataTypes,
     ContainerWithDevice,
     ContainerWithElementwise,
+    ContainerWithExtensions,
     ContainerWithGeneral,
     ContainerWithGradients,
     ContainerWithImage,
@@ -139,7 +141,7 @@ class Container(
             b: 6
         }
 
-        With :code:`ivy.Array` instances at the leaves:
+        With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
                               b=ivy.array([2, 3, 4]))
@@ -152,7 +154,7 @@ class Container(
             b: ivy.array([7, 9, 11])
         }
 
-        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                               b=ivy.array([[5.], [6.], [7.]]))
@@ -238,7 +240,7 @@ class Container(
             b: -2
         }
 
-        With :code:`ivy.Array` instances at the leaves:
+        With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
                               b=ivy.array([4, 3, 2]))
@@ -251,7 +253,7 @@ class Container(
             b: ivy.array([-2, -2, -2])
         }
 
-        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                               b=ivy.array([[5.], [6.], [7.]]))
@@ -449,7 +451,7 @@ class Container(
             b: 5
         }
 
-        With :code:`ivy.Array` instances at the leaves:
+        With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
                               b=ivy.array([15, 45, 143]))
@@ -462,7 +464,7 @@ class Container(
             b: ivy.array([15, 5, 8])
         }
 
-        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
                               b=ivy.array([15, 45, 143]))

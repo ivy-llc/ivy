@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -31,11 +30,10 @@ def test_numpy_mean(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    x_array = ivy.array(x)
+    x_array = ivy.array(x[0])
 
     if len(x_array.shape) == 2:
         where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
@@ -45,8 +43,7 @@ def test_numpy_mean(
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -59,10 +56,9 @@ def test_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="mean",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         axis=axis,
         dtype=dtype,
         out=None,

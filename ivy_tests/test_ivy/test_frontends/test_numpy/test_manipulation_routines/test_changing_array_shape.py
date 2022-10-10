@@ -38,7 +38,6 @@ def test_numpy_reshape(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_function(
@@ -47,9 +46,8 @@ def test_numpy_reshape(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="reshape",
-        x=x,
+        x=x[0],
         newshape=shape,
     )
