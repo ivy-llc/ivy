@@ -1650,7 +1650,7 @@ def svdvals(
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
-    torch.Size([4, 3])
+    (4, 3)
 
     >>> S = ivy.svdvals(x)
     >>> print(S)
@@ -1664,7 +1664,7 @@ def svdvals(
 
     >>> error = (SS - S).abs()
     >>> print(error)
-    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+    ivy.array([0., 0., 0.])
 
     With :class:`ivy.Container` input:
 
@@ -1855,7 +1855,7 @@ def trace(
                         [7., 8.]]])
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array([2., 6.])
+    ivy.array([3., 4.])
 
     With :class:`ivy.NativeArray` inputs:
 
@@ -2098,3 +2098,77 @@ def vector_to_skew_symmetric_matrix(
 
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vander(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generates a Vandermonde matrix.
+    The columns of the output matrix are elementwise powers
+    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. 
+    If increasing is True, the order of the columns is reversed 
+    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression 
+    in each row is named for Alexandre-Theophile Vandermonde.
+
+    Parameters
+    ----------
+    x
+        1-D input array.
+    N
+         Number of columns in the output. If N is not specified,
+         a square array is returned (N = len(x))
+    increasing 
+        Order of the powers of the columns. If True, the powers increase
+        from left to right, if False (the default) they are reversed.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Vandermonde matrix.
+
+    Examples
+    --------
+    
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x)
+    ivy.array(
+       [[  1,   1,   1,   1],
+        [  8,   4,   2,   1],
+        [ 27,   9,   3,   1],
+        [125,  25,   5,   1]]
+        )
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x, N=3)
+    ivy.array(
+       [[ 1,  1,  1],
+        [ 4,  2,  1],
+        [ 9,  3,  1],
+        [25,  5,  1]]
+        )
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x, N=3, increasing=True)
+    ivy.array(
+       [[ 1,  1,  1],
+        [ 1,  2,  4],
+        [ 1,  3,  9],
+        [ 1,  5, 25]]
+        )
+    """
+    return current_backend().vander(
+        x, N=N, increasing=increasing, out=out
+    )

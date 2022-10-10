@@ -1,17 +1,23 @@
 # global
+
 import torch
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+
 from collections import namedtuple
+
 
 # local
 import ivy
 from ivy import inf
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import version
 
 
 # Array API Standard #
 # -------------------#
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -30,12 +36,10 @@ def cholesky(
         return ret
 
 
-cholesky.unsupported_dtypes = ("float16", "bfloat16")
-
-
 cholesky.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -47,9 +51,10 @@ def cross(
     axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    promote_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(promote_type)
-    x2 = x2.type(promote_type)
+
+    if axis is None:
+        axis = -1
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if axis:
         return torch.linalg.cross(input=x1, other=x2, dim=axis)
@@ -60,17 +65,15 @@ def cross(
     )
 
 
-cross.unsupported_dtypes = ("float16",)
 cross.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
 
 
 det.support_native_out = True
-
-det.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def diag(
@@ -109,34 +112,27 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
 
-eigh.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
 eigh.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def eigvalsh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
 
-eigvalsh.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
 eigvalsh.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, version)
 def inner(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -144,10 +140,10 @@ def inner(
     return torch.inner(x1, x2, out=out)
 
 
-inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
 inner.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def inv(
     x: torch.Tensor,
     /,
@@ -171,10 +167,6 @@ def inv(
             return ret
 
 
-inv.unsupported_dtypes = (
-    "bfloat16",
-    "float16",
-)
 inv.support_native_out = True
 
 
@@ -187,32 +179,33 @@ def matmul(
     transpose_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if transpose_a is True:
         x1 = torch.t(x1)
     if transpose_b is True:
         x2 = torch.t(x2)
-    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(dtype_from)
-    x2 = x2.type(dtype_from)
-    return torch.matmul(x1, x2, out=out).type(dtype_from)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.matmul(x1, x2, out=out)
 
 
 matmul.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def matrix_norm(
     x: torch.Tensor,
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if isinstance(ord, float):
+        ord = int(ord)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
-matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
 matrix_norm.support_native_out = True
 
 
@@ -225,6 +218,7 @@ def matrix_power(
 matrix_power.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def matrix_rank(
     x: torch.Tensor,
     /,
@@ -237,10 +231,6 @@ def matrix_rank(
     return ret.to(dtype=x.dtype)
 
 
-matrix_rank.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
 matrix_rank.support_native_out = True
 
 
@@ -260,6 +250,7 @@ def outer(
 outer.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def pinv(
     x: torch.Tensor,
     /,
@@ -272,12 +263,10 @@ def pinv(
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-pinv.unsupported_dtypes = ("float16", "bfloat16")
-
-
 pinv.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> NamedTuple:
@@ -295,12 +284,7 @@ def qr(
     return ret
 
 
-qr.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def slogdet(
     x: torch.Tensor,
     /,
@@ -312,11 +296,10 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16", "bfloat16")
-
 slogdet.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -348,12 +331,7 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
@@ -371,18 +349,17 @@ def svd(
         return results(D)
 
 
-svd.unsupported_dtypes = ("float16", "bfloat16")
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.svdvals(x, out=out)
 
 
-svdvals.unsupported_dtypes = ("float16", "bfloat16")
-
 svdvals.support_native_out = True
 
 
+# ToDo: re-add int32 support once
+# (https://github.com/pytorch/pytorch/issues/84530) is fixed
+@with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -391,7 +368,7 @@ def tensordot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     # type conversion to one that torch.tensordot can work with
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
 
@@ -402,11 +379,6 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
-
-
-# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
-#  is fixed.
-tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(
@@ -423,7 +395,7 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("bfloat16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(
@@ -486,3 +458,20 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+def vander(
+    x: torch.tensor,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.vander(
+        x, N=N, increasing=increasing
+    )
+
+
+vander.support_native_out = False
+vander.unsupported_dtypes = ("bfloat16", "float16")
