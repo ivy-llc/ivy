@@ -101,7 +101,8 @@ def test_jax_numpy_argmax(
         fn_tree="numpy.argmax",
         a=x[0],
         axis=axis,
-        keepdims=keepdims
+        out=None,
+        keepdims=keepdims,
     )
 
 
