@@ -1,5 +1,4 @@
 # global
-import math
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st
@@ -387,7 +386,7 @@ def dtype_values_axis(
     else:
         axis = draw(number_helpers.ints(min_value=min_axis, max_value=max_axis))
     if ret_shape:
-        return dtype, values, axis, shape
+        return dtype, values, axis, arr_shape
     return dtype, values, axis
 
 
@@ -649,6 +648,8 @@ def array_values(
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
+    if "complex" in dtype:
+        dtype = "float32" if dtype == "complex64" else "float64"
     if "float" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
@@ -664,37 +665,22 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        if min_value is None:
-            min_value = dtype_info.min
-        else:
+        if min_value is not None:
             min_value = _clamp_value(min_value, dtype_info)
 
-        if max_value is None:
-            max_value = dtype_info.max
-        else:
+        if max_value is not None:
             max_value = _clamp_value(max_value, dtype_info)
 
+        min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
+            dtype,
+            min_value=min_value,
+            max_value=max_value,
+            abs_smallest_val=abs_smallest_val,
+            small_abs_safety_factor=small_abs_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
+        )
         assert max_value >= min_value
-
-        # Scale the values
-        if safety_factor_scale == "linear":
-            min_value = min_value / large_abs_safety_factor
-            max_value = max_value / large_abs_safety_factor
-            if kind_dtype == "float" and not abs_smallest_val:
-                abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
-        elif safety_factor_scale == "log":
-            min_sign = math.copysign(1, min_value)
-            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-            max_sign = math.copysign(1, max_value)
-            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
-            if kind_dtype == "float" and not abs_smallest_val:
-                m, e = math.frexp(dtype_info.smallest_normal)
-                abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
-        else:
-            raise ValueError(
-                f"{safety_factor_scale} is not a valid safety factor scale."
-                f" use 'log' or 'linear'."
-            )
 
         if kind_dtype == "int":
             if exclude_min:
@@ -702,9 +688,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_length(
-                    x=st.integers(int(min_value), int(max_value)), length=size
-                )
+                list_of_length(x=st.integers(min_value, max_value), length=size)
             )
         elif kind_dtype == "float":
             floats_info = {

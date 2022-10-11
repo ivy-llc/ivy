@@ -17,6 +17,20 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+# Helpers #
+# ------- #
+
+
+def _unused_variables_to_zero_gradients(grads, xs):
+    if isinstance(grads, ivy.Container):
+        arrays = {
+            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
+        }
+        return ivy.Container(**arrays)
+    else:
+        return ivy.zeros_like(xs) if grads is None else grads
+
+
 # Extra #
 # ------#
 

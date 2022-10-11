@@ -1,5 +1,7 @@
 name: test-frontend-tensorflow-push
 on: push
+permissions:
+  actions: read
 jobs:
   run-nightly-tests:
     strategy:
@@ -16,18 +18,19 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
+          fetch-depth: 2
 
       - name: Check Files Changed
         shell: pwsh
         id: check_file_changed
         run: |
-            cd ivy
-            $diff = git diff --name-only HEAD^ HEAD
-            $SourceDiff = $diff | Where-Object { `
+          cd ivy
+          $diff = git diff --name-only HEAD^ HEAD
+          $SourceDiff = $diff | Where-Object { `
             $_ -match 'ivy_tests/test_ivy/test_frontends/test_tensorflow/test_${{ matrix.submodules }}.py' `
-            }
-            $HasDiff = $SourceDiff.Length -gt 0
-            Write-Host "::set-output name=changed::$HasDiff"
+          }
+          $HasDiff = $SourceDiff.Length -gt 0
+          Write-Host "::set-output name=changed::$HasDiff"
             
             
       - name: Run Frontend Tests
