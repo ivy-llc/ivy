@@ -305,11 +305,11 @@ def test_jax_numpy_cholesky(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        max_value=1e4,
-        min_value=-1e4,
+        max_value=100,
+        min_value=-100,
         shape=st.tuples(
-            st.shared(st.integers(1, 20), key="sq"),
-            st.shared(st.integers(1, 20), key="sq")
+            st.shared(st.integers(1, 5), key="sq"),
+            st.shared(st.integers(1, 5), key="sq")
         ),
         num_arrays=1,
     ),
@@ -322,7 +322,6 @@ def test_jax_slogdet(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -331,7 +330,6 @@ def test_jax_slogdet(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
