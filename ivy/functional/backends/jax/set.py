@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import NamedTuple, Optional
+from typing import Tuple, Optional
 from collections import namedtuple
 
 # local
@@ -10,7 +10,7 @@ from ivy.functional.backends.jax import JaxArray
 def unique_all(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray, JaxArray, JaxArray]:
     Results = namedtuple(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
@@ -53,7 +53,7 @@ def unique_all(
 def unique_counts(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray]:
     v, c = jnp.unique(x, return_counts=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
@@ -68,7 +68,7 @@ def unique_counts(
 def unique_inverse(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
     values, inverse_indices = jnp.unique(x, return_inverse=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))
