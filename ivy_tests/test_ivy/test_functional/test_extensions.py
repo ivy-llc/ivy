@@ -233,3 +233,120 @@ def test_flatten(
         start_dim=start_dim,
         end_dim=end_dim,
     )
+
+
+# lcm
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="lcm"),
+)
+def test_lcm(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="lcm",
+        test_gradients=True,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# hann_window
+@handle_cmd_line_args
+@given(
+    window_length=helpers.ints(min_value=1, max_value=10),
+    input_dtype=helpers.get_dtypes("integer"),
+    periodic=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="hann_window"),
+    dtype=helpers.get_dtypes("float"),
+)
+def test_hann_window(
+    window_length,
+    input_dtype,
+    periodic,
+    dtype,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="hann_window",
+        window_length=window_length,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
+)
+def test_max_pool2d(
+    *,
+    x_k_s_p,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="max_pool2d",
+        rtol_=1e-2,
+        atol_=1e-2,
+        ground_truth_backend="jax",
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad
+    )

@@ -36,7 +36,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.cross_entropy"
+        fn_name="ivy.functional.frontends.torch.nn.functional.cross_entropy"
     ),
     label_smoothing=helpers.floats(min_value=0, max_value=0.49),
 )
@@ -117,7 +117,7 @@ def test_torch_cross_entropy(
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum", None]),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.binary_cross_entropy"
+        fn_name="ivy.functional.frontends.torch.nn.functional.binary_cross_entropy"
     ),
 )
 def test_torch_binary_cross_entropy(

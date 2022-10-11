@@ -286,6 +286,16 @@ Ubuntu
 
 For questions, please reach out on `discord`_ in the `docker channel`_!
 
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    </iframe>
+
+
 Setting Up Testing
 ******************
 There are a couple of options to choose from when running ivy tests in PyCharm. To run a single unit test, e.g. `test_abs`,
@@ -365,6 +375,9 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
+
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
 
 GitHub Codespaces
 -----------------
