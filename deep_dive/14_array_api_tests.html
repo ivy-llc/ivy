@@ -66,7 +66,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#running-the-tests">Running the tests</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#using-the-bash-file-runs-docker">Using the bash file (runs Docker)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#using-the-ide">Using the IDE</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#re-running-failed-array-api-tests">Re-Running Failed Array API Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#test-skipping">Test Skipping</a></li>
@@ -192,7 +191,7 @@ Therefore, every function which exists in the standard is thoroughly tested for
 adherence to the standard on a continuous basis.</p>
 <p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-<cite>Details -&gt; ‘Run [backend] Tests</cite>.</p>
+<cite>Details -&gt; Run [backend] Tests</cite>.</p>
 <p>You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.</p>
 <section id="using-the-bash-file-runs-docker">
 <h3>Using the bash file (runs Docker)<a class="headerlink" href="#using-the-bash-file-runs-docker" title="Permalink to this heading"></a></h3>
@@ -214,7 +213,7 @@ pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.
 <section id="using-the-ide">
 <h3>Using the IDE<a class="headerlink" href="#using-the-ide" title="Permalink to this heading"></a></h3>
 <p>You can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the ‘_array_module.py’ file. You can find it on the ‘array_api_tests’ submodule. At the beginning
+backend explicitly in the <cite>_array_module.py</cite> file. You can find it in the <cite>array_api_tests</cite> submodule. At the beginning
 of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>. You need to comment out that line and add
 the following code:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
@@ -223,27 +222,6 @@ array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
 </div>
 <p>After that, you can run the API test files as you typically would with other tests. See <a class="reference external" href="https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing">here</a>  for instructions on how
 to run tests in ivy more generally. <em>NB</em>: make sure to not add any changes to the array-api files to your commit.</p>
-</section>
-<section id="re-running-failed-array-api-tests">
-<h3>Re-Running Failed Array API Tests<a class="headerlink" href="#re-running-failed-array-api-tests" title="Permalink to this heading"></a></h3>
-<p>When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
-For example, in the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we find the following output on running the test:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Falsifying</span> <span class="n">example</span><span class="p">:</span> <span class="n">test_trace</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.e-05</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{},</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>It is always efficient to fix this particular example first, before running any other examples.
-In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
-The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test.
-The decorator requires the test arguments as parameters.
-For the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we can add the decorator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">example</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.5e-46</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{})</span>
-<span class="k">def</span> <span class="nf">test_trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kw</span><span class="p">):</span>
-</pre></div>
-</div>
-<p>This ensures that the given example is always tested while running the test, allowing one to debug the failure
-efficiently.</p>
 </section>
 </section>
 <section id="test-skipping">
