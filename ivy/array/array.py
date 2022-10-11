@@ -14,6 +14,7 @@ from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
+from .extensions import ArrayWithExtensions
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -47,6 +48,7 @@ class Array(
     ArrayWithDataTypes,
     ArrayWithDevice,
     ArrayWithElementwise,
+    ArrayWithExtensions,
     ArrayWithGeneral,
     ArrayWithGradients,
     ArrayWithImage,
@@ -188,6 +190,11 @@ class Array(
     # Built-ins #
     # ----------#
 
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs={}):
+        args, kwargs = args_to_native(*args, **kwargs)
+        return func(*args, **kwargs)
+
     @_native_wrapper
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
@@ -299,7 +306,7 @@ class Array(
 
     @_native_wrapper
     def __rpow__(self, power):
-        return self._data.__rpow__(power)
+        return ivy.pow(power, self._data)
 
     @_native_wrapper
     def __ipow__(self, power):
@@ -531,6 +538,14 @@ class Array(
     @_native_wrapper
     def __bool__(self):
         return self._data.__bool__()
+
+    @_native_wrapper
+    def __dlpack__(self, stream=None):
+        return self._data.__dlpack__()
+
+    @_native_wrapper
+    def __dlpack_device__(self):
+        return self._data.__dlpack_device__()
 
     @_native_wrapper
     def __lt__(self, other):

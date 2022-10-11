@@ -1,10 +1,14 @@
 import logging
+from typing import Optional
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
     _verify_csr_components,
     _is_coo_not_csr,
 )
+from ivy.functional.backends.jax import JaxArray
+import jax.numpy as jnp
+import math
 
 
 def is_native_sparse_array(x):
@@ -19,7 +23,7 @@ def native_sparse_array(
     csr_crow_indices=None,
     csr_col_indices=None,
     values=None,
-    dense_shape=None
+    dense_shape=None,
 ):
     ivy.assertions.check_exists(
         data,
@@ -45,7 +49,52 @@ def native_sparse_array(
 
 def native_sparse_array_to_indices_values_and_shape(x):
     logging.warning(
-        "Jax does not support sparse array natively, None is returned for \
-        indices, values and shape."
+        "Jax does not support sparse array natively, None is returned for        "
+        " indices, values and shape."
     )
     return None, None, None
+
+
+def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.sinc(x)
+
+
+def vorbis_window(
+    window_length: JaxArray,
+    *,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.array(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )
+
+
+def lcm(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.lcm(x1, x2)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[jnp.dtype] = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    window_length = window_length + 1 if periodic is True else window_length
+    return jnp.array(jnp.hanning(window_length), dtype=dtype)

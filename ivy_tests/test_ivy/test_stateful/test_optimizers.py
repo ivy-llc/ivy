@@ -41,7 +41,6 @@ def test_sgd_optimizer(
     input_dtype, x = dtype_and_x
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
-        num_positional_args_method=num_positional_args_method,
         all_as_kwargs_np_init={
             "lr": lr,
             "inplace": inplace,
@@ -49,13 +48,13 @@ def test_sgd_optimizer(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
         all_as_kwargs_np_method={
             "v": x[0],
             "grads": x[1],
         },
-        fw=fw,
         class_name="SGD",
         method_name="step",
     )
@@ -93,7 +92,6 @@ def test_lars_optimizer(
     input_dtype, x = dtype_and_x
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
-        num_positional_args_method=num_positional_args_method,
         all_as_kwargs_np_init={
             "lr": lr,
             "decay_lambda": decay_lambda,
@@ -102,13 +100,13 @@ def test_lars_optimizer(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
         all_as_kwargs_np_method={
             "v": x[0],
             "grads": x[1],
         },
-        fw=fw,
         class_name="LARS",
         method_name="step",
     )
@@ -151,7 +149,6 @@ def test_adam_optimizer(
     input_dtype, x = dtype_and_x
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
-        num_positional_args_method=num_positional_args_method,
         all_as_kwargs_np_init={
             "lr": lr,
             "beta1": beta1,
@@ -162,16 +159,16 @@ def test_adam_optimizer(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        device_=device,
         all_as_kwargs_np_method={
             "v": x[0],
             "grads": x[1],
         },
-        fw=fw,
         class_name="Adam",
         method_name="step",
+        device_=device,
     )
 
 
@@ -216,7 +213,6 @@ def test_lamb_optimizer(
     input_dtype, x = dtype_and_x
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
-        num_positional_args_method=num_positional_args_method,
         all_as_kwargs_np_init={
             "lr": lr,
             "beta1": beta1,
@@ -229,14 +225,14 @@ def test_lamb_optimizer(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        device_=device,
         all_as_kwargs_np_method={
             "v": x[0],
             "grads": x[1],
         },
-        fw=fw,
         class_name="LAMB",
         method_name="step",
+        device_=device,
     )

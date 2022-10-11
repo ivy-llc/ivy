@@ -1,12 +1,17 @@
 # global
-import ivy
 import math
-import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Literal
+
+import tensorflow as tf
+
+# local
+import ivy
 
 # noinspection PyProtectedMember
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
 
 
 # Array API Standard #
@@ -184,10 +189,10 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -198,7 +203,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -207,9 +212,11 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+
     return tf.split(x, num_or_size_splits, axis)
 
 
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -221,12 +228,18 @@ def repeat(
     return tf.repeat(x, repeats, axis)
 
 
-repeat.supported_dtypes = (
-    "int32",
-    "int64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "int8",
+            "int16",
+        )
+    },
+    backend_version,
 )
-
-
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -240,16 +253,42 @@ def tile(
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
+    # code to unify behaviour with numpy and torch
+    if len(x.shape) < len(reps):
+        while len(x.shape) != len(reps):
+            x = tf.expand_dims(x, 0)
+    elif len(x.shape) > len(reps):
+        reps = list(reps)
+        while len(x.shape) != len(reps):
+            reps = [1] + reps
+    # TODO remove the unifying behaviour code if tensorflow handles this
+    # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
 
 
-tile.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "int8",
-    "int16",
-)
+def pad(
+    x: tf.Tensor,
+    /,
+    pad_width: tf.Tensor,
+    *,
+    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+    stat_length: Optional[Union[tf.Tensor, int]] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    if mode == "constant":
+        return tf.pad(
+            x,
+            pad_width,
+            mode=mode,
+            constant_values=constant_values,
+        )
+    else:
+        return tf.pad(x, pad_width, mode=mode)
 
 
 def constant_pad(
