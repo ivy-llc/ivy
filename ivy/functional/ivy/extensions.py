@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -712,3 +712,74 @@ def hann_window(
     """
     return ivy.current_backend().hann_window(
         window_length, periodic, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def max_pool2d(
+        x: Union[ivy.Array, ivy.NativeArray],
+        kernel: Union[ivy.Array, ivy.NativeArray],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 2-D max pool given 4-D input x.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[h,w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimensio paddings.
+        data_format
+            NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Both the description and the type hints above assumes an array input
+        for simplicity, but this function is *nestable*, and therefore
+        also accepts :class:`ivy.Container` instances in place of any of
+        the arguments.
+
+        Examples
+        --------
+        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
+        ivy.array([[[[ 2,  3],
+         [ 4,  5],
+         [ 4,  5]]],
+
+
+       [[[ 8,  9],
+         [10, 11],
+         [10, 11]]]])
+
+        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
+        ivy.array([[[[16, 17]],
+
+        [[22, 23]]],
+
+
+       [[[40, 41]],
+
+        [[46, 47]]]])
+
+        """
+
+    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)

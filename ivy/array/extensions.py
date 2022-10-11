@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -159,3 +159,74 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([10, 21, 60])
         """
         return ivy.lcm(self, x2, out=out)
+
+    def max_pool2d(
+        self: ivy.Array,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window for each dimension of the input tensor.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the max pooling operation.
+
+        Examples
+        --------
+        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
+        ivy.array([[[[ 2,  3],
+         [ 4,  5],
+         [ 4,  5]]],
+
+
+       [[[ 8,  9],
+         [10, 11],
+         [10, 11]]]])
+
+        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> print(x.max_pool2d(3, 1, 'VALID'))
+        ivy.array([[[[16, 17]],
+
+        [[22, 23]]],
+
+
+       [[[40, 41]],
+
+        [[46, 47]]]])
+
+        """
+        return ivy.max_pool2d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )
