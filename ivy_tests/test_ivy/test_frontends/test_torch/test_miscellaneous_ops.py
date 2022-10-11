@@ -772,12 +772,9 @@ def test_torch_ravel(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
-        max_value=1e4,
-        min_value=-1e4,
+        shape=st.tuples(st.integers(min_value=1, max_value=5),),
     ),
-    N=st.integers(min_value=0),
+    N=st.integers(min_value=0, max_value=5),
     increasing=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.vander"
