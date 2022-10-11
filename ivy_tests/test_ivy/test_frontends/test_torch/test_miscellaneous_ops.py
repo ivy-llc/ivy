@@ -814,7 +814,7 @@ def test_torch_rot90(
             st.integers(min_value=1, max_value=5),
         ),
     ),
-    N=st.integers(min_value=1, max_value=5),
+    N=st.integers(min_value=0, max_value=5),
     increasing=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.vander"
