@@ -1979,7 +1979,8 @@ def vector_norm(
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
+    """
+    Computes the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -2053,6 +2054,32 @@ def vector_norm(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    -------
+    With :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.vector_norm(x)
+    >>> print(y)
+    ivy.array(5.47722558)
+    
+    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+    >>> y = ivy.vector_norm(x, ord = 1, axis = 0)
+    >>> print(y)
+    ivy.array([12., 15., 18.])
+    
+    >>> x = ivy.array([1., 2., 3.], [4., 5., 6.])
+    >>> y = ivy.vector_norm(x, ord = float('inf'), axis = 1)
+    >>> print(y)
+    ivy.array([3., 6.])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([1., 2.], [3., 4.], [5., 6.])
+    >>> y = ivy.vector_norm(x, ord = float('-inf'), axis = 1)
+    >>> print(y)
+    ivy.array([1., 3., 5.])
+    
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, out=out
