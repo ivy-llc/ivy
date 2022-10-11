@@ -350,3 +350,89 @@ def test_max_pool2d(
         strides=stride,
         padding=pad
     )
+
+
+# moveaxis
+@st.composite
+def _array_dual_axes(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,        
+        ),
+    ),
+    dtype_and_a = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+            shape=st.shared(
+                shape,
+                key="shared_axes"
+            )
+        ),
+    )
+    source = draw(
+        st.lists(
+            helpers.get_axis(
+                allow_none=False,
+                unique=True,
+                shape=st.shared(
+                    shape,
+                    key="shared_axes"
+                ),
+                min_size=1,
+                force_tuple=True,
+            ),
+        )
+    )
+    destination = draw(
+        st.lists(
+            helpers.get_axis(
+                allow_none=False,
+                unique=True,
+                shape=st.shared(
+                    shape,
+                    key="shared_axes"
+                ),
+                min_size=1,
+                force_tuple=True,
+            ),
+        )
+    )
+    return dtype_and_a, source, destination
+
+
+@handle_cmd_line_args
+@given(
+    dtype_a_s_d=_array_dual_axes(),
+    num_positional_args=helpers.num_positional_args(fn_name="moveaxis"),
+)
+def test_moveaxis(
+    dtype_a_s_d,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype_and_a, source, destination = dtype_a_s_d
+    input_dtype, a = dtype_and_a
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="moveaxis",
+        a=np.asarray(a[0], dtype=input_dtype[0]),
+        source=source[0],
+        destination=destination[0],
+    )

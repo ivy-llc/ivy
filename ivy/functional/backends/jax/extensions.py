@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -156,3 +156,14 @@ def max_pool2d(
         return jnp.transpose(res, (0, 3, 1, 2))
 
     return res
+
+
+def moveaxis(
+    a: JaxArray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.moveaxis(a, source, destination)

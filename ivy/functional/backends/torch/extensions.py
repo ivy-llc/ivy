@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -183,3 +183,17 @@ def max_pool2d(
 
 
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
+
+
+def moveaxis(
+    a: torch.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False

@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import logging
 import ivy
 import numpy as np
@@ -176,3 +176,17 @@ def max_pool2d(
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
+
+
+def moveaxis(
+    a: np.ndarray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False

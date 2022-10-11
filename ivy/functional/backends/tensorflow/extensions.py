@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -138,3 +138,14 @@ def max_pool2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
+
+
+def moveaxis(
+    a: Union[tf.Tensor, tf.Variable],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.moveaxis(a, source, destination)
