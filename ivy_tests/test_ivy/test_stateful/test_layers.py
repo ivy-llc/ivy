@@ -342,9 +342,7 @@ def test_multi_head_attention_layer(
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
-def test_conv1d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
-):
+def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -1517,14 +1515,14 @@ def test_lstm_layer(
             "return_sequence": return_sequence,
             "return_state": return_state,
             "device": device,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(vals, dtype=input_dtype)},
+        all_as_kwargs_np_method={"inputs": np.asarray(vals[0], dtype=input_dtype[0])},
         class_name="LSTM",
         init_with_v=init_with_v,
         method_with_v=method_with_v,

@@ -1,9 +1,11 @@
 # global
 import ivy
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def sinh(
     x,
     /,
@@ -15,8 +17,6 @@ def sinh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sinh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -24,6 +24,7 @@ def sinh(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def cosh(
     x,
     /,
@@ -35,8 +36,6 @@ def cosh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.cosh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -44,6 +43,7 @@ def cosh(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def tanh(
     x,
     /,
@@ -55,8 +55,6 @@ def tanh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.tanh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -65,6 +63,7 @@ def tanh(
 
 # arcsinh
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def arcsinh(
     x,
     /,
@@ -76,8 +75,6 @@ def arcsinh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.asinh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -85,6 +82,7 @@ def arcsinh(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def arccosh(
     x,
     /,
@@ -96,8 +94,6 @@ def arccosh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.acosh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -105,6 +101,7 @@ def arccosh(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
 def arctanh(
     x,
     /,
@@ -116,8 +113,6 @@ def arctanh(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.atanh(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
