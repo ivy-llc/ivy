@@ -120,3 +120,24 @@ def hann_window(
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
     )
+
+
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if n is None:
+        n = len(x)
+    if norm == 'forward':
+        return tf.signal.rfft(x, n, norm) / n
+    elif norm == 'ortho':
+        return tf.signal.rfft(x, n, norm) / sqrt(n)
+    elif norm is None or norm == 'backward':
+        return tf.signal.rfft(x, n, norm)
+    else:
+        raise ValueError(f'Invalid norm value {norm}; should be "backward",'
+                         '"ortho" or "forward".')
