@@ -21,7 +21,7 @@ class ArrayWithNorms(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps 
+        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
 
@@ -58,9 +58,9 @@ class ArrayWithNorms(abc.ABC):
         >>> norm = x.layer_norm(x, [0, 1], epsilon=0.001, \
                                   new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
         >>> print(norm)
-        ivy.array([[ 0.576,  0.312,  1.43 ],
-                   [ 0.581,  0.911,  1.43 ],
-                   [ 1.01 , -0.599, -0.69]])
+        ivy.array([[ 0.826, -0.178, 0.981 ],
+                   [ 0.831,  0.421, 0.981 ],
+                   [ 1.26 , -1.05 , -1.28 ]])
 
         """
         return ivy.layer_norm(
