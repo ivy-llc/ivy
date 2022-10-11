@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
+from typing import Union, Optional, Literal, Tuple, List, Sequence
 
 # local
 import ivy
@@ -147,7 +147,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array]:
         return ivy.eigh(self._data)
 
     def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -161,7 +161,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> ivy.Array:
         return ivy.inner(self._data, x2, out=out)
 
-    def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def inv(
+        self: ivy.Array, /, *, adjoint: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inv.
         This method simply wraps the function, and so the docstring for
@@ -176,22 +178,26 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         ivy.array([[-2., 1.],[1.5, -0.5]])
         """
-        return ivy.inv(self._data, out=out)
+        return ivy.inv(self._data, adjoint=adjoint, out=out)
 
     def matrix_norm(
         self: ivy.Array,
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(self._data, ord=ord, keepdims=keepdims, out=out)
+        return ivy.matrix_norm(
+            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+        )
 
     def matrix_rank(
         self: ivy.Array,
         /,
         *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -205,6 +211,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self
             input array having shape ``(..., M, N)`` and whose innermost two dimensions
             form ``MxN`` matrices. Should have a floating-point data type.
+
+        atol
+            absolute tolerance. When None it’s considered to be zero.
+
         rtol
             relative tolerance for small singular values. Singular values approximately
             less than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -251,7 +261,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
+        return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
@@ -296,12 +306,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         *,
         mode: str = "reduced",
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         return ivy.qr(self._data, mode=mode)
 
     def slogdet(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
         function, and so the docstring for ivy.slogdet also applies to this method with
@@ -366,8 +376,11 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def trace(
         self: ivy.Array,
+        /,
         *,
         offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -413,7 +426,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         ivy.array(6.)
         """
-        return ivy.trace(self._data, offset=offset, out=out)
+        return ivy.trace(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
     def vecdot(
         self: ivy.Array,
@@ -440,3 +453,64 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.vector_to_skew_symmetric_matrix(self._data, out=out)
+
+    def vander(
+        self: ivy.Array,
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.vander.
+        This method Returns the Vandermonde matrix of the input array.
+
+        Parameters
+        ----------
+        self
+            1-D input array.
+        N
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
+        increasing
+            Order of the powers of the columns. If True, the powers increase
+            from left to right, if False (the default) they are reversed.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            an array containing the Vandermonde matrix.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x)
+        ivy.array(
+        [[  1,   1,   1,   1],
+            [  8,   4,   2,   1],
+            [ 27,   9,   3,   1],
+            [125,  25,   5,   1]]
+            )
+
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x, N=3)
+        ivy.array(
+        [[ 1,  1,  1],
+            [ 4,  2,  1],
+            [ 9,  3,  1],
+            [25,  5,  1]]
+            )
+
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x, N=3, increasing=True)
+        ivy.array(
+        [[ 1,  1,  1],
+            [ 1,  2,  4],
+            [ 1,  3,  9],
+            [ 1,  5, 25]]
+            )
+        """
+        return ivy.vander(self._data, N=N, increasing=increasing, out=out)

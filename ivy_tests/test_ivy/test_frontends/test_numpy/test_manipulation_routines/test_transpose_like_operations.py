@@ -26,7 +26,6 @@ def test_numpy_transpose(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
@@ -88,7 +87,6 @@ def test_numpy_swapaxes(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis1, axis2 = dtype_arr_and_axes
     helpers.test_frontend_function(

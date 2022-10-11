@@ -1,5 +1,5 @@
-Function Arguments
-==================
+Function Arguments 📑
+=====================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
@@ -129,9 +129,9 @@ In both signatures, we follow the `Array API Standard convention`_ about positio
 
 Nearly all the functions in the `Array API Standard convention`_ have strictly positional-only and keyword-only arguments, with an exception of
 few :code:`creation` functions such as :code:`ones(shape, *, dtype=None, device=None)` , :code:`linspace(start, stop, /, num, *, dtype=None, device=None, endpoint=True)` etc.
-The rationale behind this is purely a convention. The :code:`shape` argument is often passed as a keyword, while the :code:`nums` argument in :code:`linspace` is often
+The rationale behind this is purely a convention. The :code:`shape` argument is often passed as a keyword, while the :code:`num` argument in :code:`linspace` is often
 passed as a keyword for improved understandability of the code. Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adopts these same exceptions to the
-general rule for the :code:shape and :code:num arguments in these functions.
+general rule for the :code:`shape` and :code:`num` arguments in these functions.
 
 
 Arrays

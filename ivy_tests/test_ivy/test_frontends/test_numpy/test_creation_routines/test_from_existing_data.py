@@ -26,7 +26,6 @@ def test_numpy_asarray(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(

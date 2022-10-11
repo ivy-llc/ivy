@@ -1,5 +1,5 @@
-Inplace Updates
-===============
+Inplace Updates 🎯
+==================
 
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340

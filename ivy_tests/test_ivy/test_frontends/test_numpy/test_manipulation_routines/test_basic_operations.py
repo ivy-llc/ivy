@@ -21,7 +21,6 @@ def test_numpy_shape(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
     ret, ret_gt = helpers.test_frontend_function(
