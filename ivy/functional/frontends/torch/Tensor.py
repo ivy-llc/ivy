@@ -27,6 +27,13 @@ class Tensor:
         self.data = self.sin()
         return self.data
 
+    def sinh(self, *, out=None):
+        return torch_frontend.sinh(self.data, out=out)
+
+    def sinh_(self):
+        self.data = self.sinh()
+        return self.data
+
 
 # Tensor (alias)
 tensor = Tensor
