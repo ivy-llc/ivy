@@ -447,6 +447,45 @@ class ContainerWithExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.max_pool2dd. This method simply
+        wraps the function, and so the docstring for ivy.max_pool2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(ivy.Container.static_max_pool2d(x, (2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+
+        """
 
         return ContainerBase.multi_map_in_static_method(
             "max_pool2d",
@@ -476,6 +515,46 @@ class ContainerWithExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+        """
 
         return self.static_max_pool2d(
             self,
