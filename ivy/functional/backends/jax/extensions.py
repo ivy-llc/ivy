@@ -98,3 +98,14 @@ def hann_window(
 ) -> JaxArray:
     window_length = window_length + 1 if periodic is True else window_length
     return jnp.array(jnp.hanning(window_length), dtype=dtype)
+
+
+def rfft(
+    x: JaxArray,
+    n: Optional[int] = None, 
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.fft.rfft(x, n, norm=norm)
