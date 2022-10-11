@@ -43,3 +43,8 @@ def eigvals(a):
 @inputs_to_ivy_arrays
 def cholesky(a):
     return ivy.cholesky(a)
+
+
+@inputs_to_ivy_arrays
+def slogdet(a, method=None):
+    return ivy.slogdet(a)

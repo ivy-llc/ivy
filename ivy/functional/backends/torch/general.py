@@ -48,11 +48,13 @@ def _parse_index(indices, ndims):
             if s == -1:
                 break
             post.append(s.item())
-        ind.append(tuple(
-            pre
-            + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-            + list(reversed(post))
-        ))
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
     return ind
 
 
@@ -389,7 +391,13 @@ def scatter_nd(
             dim=-1,
         )
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = shape if ivy.exists(shape) else out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = torch.stack(
             [
@@ -414,28 +422,34 @@ def scatter_nd(
         if len(indices.shape) < 2:
             indices = torch.unsqueeze(indices, 0)
         if torch.any(indices == -1):
-            shape = shape if ivy.exists(shape) else out.shape if ivy.exists(out) else updates.shape
+            shape = (
+                shape
+                if ivy.exists(shape)
+                else out.shape
+                if ivy.exists(out)
+                else updates.shape
+            )
             indices = _parse_index(indices, len(shape))
             indices = [
                 torch.stack(
-            [
-                torch.reshape(value, (-1,))
-                for value in torch.meshgrid(
-                    *[
-                        torch.range(0, s - 1)
-                        if idx == slice(None, None, None)
-                        else torch.Tensor([idx % s])
-                        for s, idx in zip(shape, index)
+                    [
+                        torch.reshape(value, (-1,))
+                        for value in torch.meshgrid(
+                            *[
+                                torch.range(0, s - 1)
+                                if idx == slice(None, None, None)
+                                else torch.Tensor([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
                     ],
-                    indexing="xy",
+                    dim=-1,
                 )
-            ],
-            dim=-1,
-            )
-            for index in indices
+                for index in indices
             ]
             indices = torch.concat(indices, axis=0)
-            
+
     # broadcast updates to indices
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
