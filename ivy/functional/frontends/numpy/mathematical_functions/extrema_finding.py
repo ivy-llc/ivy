@@ -1,9 +1,13 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def minimum(
     x1,
     x2,
@@ -22,6 +26,7 @@ def minimum(
     return ret
 
 
+@to_ivy_arrays_and_back
 def amin(
     a,
     /,
@@ -51,6 +56,7 @@ def amin(
     return ivy.min(a, axis=axis, keepdims=keepdims, out=out)
 
 
+@to_ivy_arrays_and_back
 def nanmin(
     a,
     axis=None,

@@ -3186,6 +3186,30 @@ def get_num_dims(
     ret
         Shape of the array
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> b = ivy.get_num_dims(a, as_array=False)
+    >>> print(b)
+    3
+
+    With :class:`ivy.Container` input:
+
+    >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+    >>> ivy.get_num_dims(a)
+    2
+
+    >>> b = ivy.get_num_dims(a, as_array=True)
+    >>> print(b)
+    ivy.array(3)
     """
     return current_backend(x).get_num_dims(x, as_array=as_array)
 

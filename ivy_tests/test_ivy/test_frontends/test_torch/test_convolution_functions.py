@@ -12,11 +12,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
+    strides = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=2),
+        )
+    )
     padding = draw(
         st.one_of(
             st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
             st.integers(min_value=1, max_value=3),
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
     batch_size = 1
@@ -86,7 +92,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 @given(
     dtype_vals=x_and_filters(dim=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.conv2d"
+        fn_name="ivy.functional.frontends.torch.nn.functional.conv2d"
     ),
 )
 def test_torch_conv2d(
@@ -142,7 +148,7 @@ def _int_or_tuple(draw, min_val, max_val):
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.unfold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.unfold"
     ),
 )
 def test_torch_unfold(
@@ -186,7 +192,7 @@ def test_torch_unfold(
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.fold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.fold"
     ),
 )
 def test_torch_fold(
