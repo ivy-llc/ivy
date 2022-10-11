@@ -202,7 +202,8 @@ def matrix_norm(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(ord, float):
-        ord = int(ord)
+        if ord != inf and ord != -inf:
+            ord = int(ord)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
