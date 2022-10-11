@@ -231,6 +231,16 @@ If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    </iframe>
+
+
 Ubuntu
 ****
 
