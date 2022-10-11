@@ -42,6 +42,9 @@ def slogdet(input, name=None):
     return ivy.slogdet(input)
 
 
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
 def cholesky_solve(chol, rhs, name=None):
     chol, rhs = promote_types_of_tensorflow_inputs(chol, rhs)
     y = ivy.solve(chol, rhs)
