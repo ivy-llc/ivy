@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
-
+from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
 @handle_numpy_casting
 def add(
@@ -16,6 +16,7 @@ def add(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.add(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -35,6 +36,7 @@ def subtract(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.subtract(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -54,6 +56,7 @@ def divide(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.divide(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -76,6 +79,7 @@ def multiply(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.multiply(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -87,6 +91,7 @@ def vdot(
     b,
     /,
 ):
+    a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.multiply(a, b).sum()
 
 
