@@ -14,8 +14,59 @@ def where(draw):
 
 
 @st.composite
-def get_casting(draw):
-    return draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if ivy.can_cast(target_dtype, dtype):
+            target_dtype = dtype
+    if ivy.is_float_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["float64", None]))
+    elif ivy.is_uint_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["uint64", None]))
+    elif ivy.is_int_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["int64", None]))
+    else:
+        dtype = draw(st.sampled_from(["bool", None]))
+    return dtype
+
+
+@st.composite
+def dtype_x_casting_and_dtype(
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+):
+    dtypes, values = [], []
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for idx, func in enumerate(arr_func):
+        typ, val = draw(func())
+        typ = [typ] if not isinstance(typ, list) else typ
+        val = [val] if not isinstance(val, list) else val
+        if casting in ["no", "equiv"] and idx > 0:
+            dtypes.append(dtypes[0])
+        else:
+            dtypes += typ
+        values += val
+
+    if casting in ["no", "equiv"]:
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else:
+        dtype = draw(
+            helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+        )
+    return dtypes, values, casting, dtype
 
 
 @st.composite
@@ -163,7 +214,7 @@ def handle_dtype_and_casting(
     get_dtypes_none=True,
     get_dtypes_key=None,
 ):
-    casting = get_casting()
+    casting = st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"])
     if casting in ["no", "equiv"]:
         dtype = dtypes[0]
         dtypes = [dtype for x in dtypes]
