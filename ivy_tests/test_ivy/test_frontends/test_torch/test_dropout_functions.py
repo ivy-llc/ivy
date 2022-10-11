@@ -21,7 +21,7 @@ import ivy_tests.test_ivy.helpers as helpers
     prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     training=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.dropout"
+        fn_name="ivy.functional.frontends.torch.nn.functional.dropout"
     ),
     with_inplace=st.booleans(),
 )
@@ -48,7 +48,7 @@ def test_torch_dropout(
         input=x[0],
         p=prob,
         training=training,
-        test_values=False
+        test_values=False,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     x = np.asarray(x[0], input_dtype[0])
