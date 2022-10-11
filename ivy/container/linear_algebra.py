@@ -2034,7 +2034,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         N
             Number of columns in the output. If N is not specified,
             a square array is returned (N = len(x))
-        increasing 
+        increasing
             Order of the powers of the columns. If True, the powers increase
             from left to right, if False (the default) they are reversed.
         out
@@ -2048,7 +2048,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-
         With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(
@@ -2102,7 +2101,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         N
             Number of columns in the output. If N is not specified,
             a square array is returned (N = len(x))
-        increasing 
+        increasing
             Order of the powers of the columns. If True, the powers increase
             from left to right, if False (the default) they are reversed.
         out

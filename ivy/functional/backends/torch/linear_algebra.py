@@ -468,9 +468,7 @@ def vander(
     increasing: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.vander(
-        x, N=N, increasing=increasing
-    )
+    return torch.vander(x, N=N, increasing=increasing)
 
 
 vander.support_native_out = False

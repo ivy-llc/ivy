@@ -80,13 +80,7 @@ def vorbis_window(
     )
 
 
-def lcm(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.lcm(x1, x2)
 
 
@@ -108,8 +102,9 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
     elif len(strides) == 1:
         strides = (strides[0],) * len(window_shape)
 
-    assert len(window_shape) == len(strides), (
-        f"len({window_shape}) must equal len({strides})")
+    assert len(window_shape) == len(
+        strides
+    ), f"len({window_shape}) must equal len({strides})"
 
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,)
@@ -127,9 +122,11 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
         padding = tuple(map(tuple, padding))
         assert len(padding) == len(window_shape), (
             f"padding {padding} must specify pads for same number of dims as "
-            f"window_shape {window_shape}")
-        assert all([len(x) == 2 for x in padding]), (
-            f"each entry in padding {padding} must be length 2")
+            f"window_shape {window_shape}"
+        )
+        assert all(
+            [len(x) == 2 for x in padding]
+        ), f"each entry in padding {padding} must be length 2"
         padding = ((0, 0),) + padding + ((0, 0),)
     y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
     if is_single_input:
@@ -138,14 +135,14 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
 
 
 def max_pool2d(
-        x: JaxArray,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
-        /,
-        *,
-        data_format: str = "NHWC",
-        out: Optional[JaxArray] = None,
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))

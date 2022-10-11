@@ -2114,9 +2114,9 @@ def vander(
 ) -> ivy.Array:
     """Generates a Vandermonde matrix.
     The columns of the output matrix are elementwise powers
-    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. 
-    If increasing is True, the order of the columns is reversed 
-    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression 
+    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.
+    If increasing is True, the order of the columns is reversed
+    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression
     in each row is named for Alexandre-Theophile Vandermonde.
 
     Parameters
@@ -2126,7 +2126,7 @@ def vander(
     N
          Number of columns in the output. If N is not specified,
          a square array is returned (N = len(x))
-    increasing 
+    increasing
         Order of the powers of the columns. If True, the powers increase
         from left to right, if False (the default) they are reversed.
     out
@@ -2139,7 +2139,6 @@ def vander(
 
     Examples
     --------
-    
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3, 5])
@@ -2169,6 +2168,4 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(
-        x, N=N, increasing=increasing, out=out
-    )
+    return current_backend().vander(x, N=N, increasing=increasing, out=out)
