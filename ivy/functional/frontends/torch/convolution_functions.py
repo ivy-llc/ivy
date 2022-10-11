@@ -1,15 +1,48 @@
 import ivy
 
 
+def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
+          
+  in_channels = input.shape[1]
+  out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
+
+  ivy.assertions.check_equal(
+        in_channels % groups, 0, message="in_channels must be divisible by groups"
+  )
+  ivy.assertions.check_equal(
+        out_channels % groups, 0, message="out_channels must be divisible by groups"
+  )
+
+  if bias is not None:
+      ivy.assertions.check_equal(
+          bias.shape[0], out_channels, message="bias must be same shape as out_channels"
+      )
+
+  if padding == 'same':
+      if isinstance(stride, int):
+          ivy.assertions.check_equal(
+              stride, 1, message="padding cannot be 'same' for stride > 1"
+          )
+      else:
+          for i in padding:
+              ivy.assertions.check_equal(
+                  i, 1, message="padding cannot be 'same' for stride > 1"
+              )
+
+  if not transpose:
+      in_channels_by_groups = weight.shape[1]
+      ivy.assertions.check_equal(
+          in_channels, in_channels_by_groups * groups, message="in_channels must be consistent"
+      )
+  else:
+      ivy.assertions.check_equal(
+          in_channels, weight.shape[0], message="out_channels must be consistent"
+      )
+    
+
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-    in_channel = input.shape[1]
-    ivy.assertions.check_equal(
-        in_channel % groups, 0, message="in_channels must be divisible by groups"
-    )
-    out_channel = weight.shape[0]
-    ivy.assertions.check_equal(
-        out_channel % groups, 0, message="out_channel must be divisible by groups"
-    )
+    _valid_shapes(input, weight, bias, stride, padding, groups)
+    
     if isinstance(padding, str):
         padding = padding.upper()
     else:
