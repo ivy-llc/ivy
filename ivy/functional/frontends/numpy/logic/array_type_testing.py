@@ -1,9 +1,13 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting_special
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting_special,
+)
 
 
 @handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isfinite(
     x,
     /,
@@ -22,6 +26,7 @@ def isfinite(
 
 
 @handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isinf(
     x,
     /,
@@ -40,6 +45,7 @@ def isinf(
 
 
 @handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isnan(
     x,
     /,
