@@ -116,16 +116,25 @@ def eigh(
     *,
     UPLO: Optional[str] = "L",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+
     if UPLO not in ("L", "U"):
         raise ValueError("UPLO argument must be 'L' or 'U'")
+    result_tuple = NamedTuple(
+        "eigh",
+        [
+            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
+            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
+        ],
+    )
 
     if UPLO == "L":
-        return tf.linalg.eigh(x)
+        eigenvalues, eigenvectors = tf.linalg.eigh(x)
+
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
-        return ret
+        eigenvalues, eigenvectors = tf.linalg.eigh(tf.transpose(x, perm=axes))
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -423,7 +432,12 @@ def pinv(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+pinv.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
+
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -444,7 +458,7 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
     return results(sign, logabsdet)
@@ -493,7 +507,7 @@ def svd(
     *,
     full_matrices: bool = True,
     compute_uv: bool = True,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
+) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable], ...]]:
 
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
