@@ -383,8 +383,7 @@ def vander(
     increasing: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.vander(x, N=N, increasing=increasing).\
-        astype(x.dtype)
+    return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
 vander.support_native_out = False

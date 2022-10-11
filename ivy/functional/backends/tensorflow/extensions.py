@@ -93,21 +93,12 @@ def lcm(
         dtype = tf.int8
         x1 = tf.cast(x1, dtype=tf.int16)
         x2 = tf.cast(x2, dtype=tf.int16)
-    else: 
-        dtype = x1.dtype 
-    return tf.math.abs(
-        tf.cast(
-            tf.experimental.numpy.lcm(x1, x2),
-            dtype=dtype
-        )
-    )
+    else:
+        dtype = x1.dtype
+    return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
 
 
-lcm.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64")
+lcm.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def hann_window(

@@ -94,8 +94,16 @@ def lcm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.abs(
-        np.lcm(x1, x2, out=out, where=True, casting='same_kind',
-               order='K', dtype=None, subok=True)
+        np.lcm(
+            x1,
+            x2,
+            out=out,
+            where=True,
+            casting="same_kind",
+            order="K",
+            dtype=None,
+            subok=True,
+        )
     )
 
 
