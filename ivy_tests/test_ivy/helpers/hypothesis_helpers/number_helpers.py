@@ -5,7 +5,7 @@ from hypothesis.internal.floats import float_of
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
-from . import array_helpers as ah
+from . import general_helpers as gh, dtype_helpers
 
 
 @st.composite
@@ -158,9 +158,16 @@ def floats(
 
 
 @st.composite
-def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+def ints(
+    draw,
+    *,
+    min_value=None,
+    max_value=None,
+    safety_factor=1.1,
+    safety_factor_scale=None,
+):
     """Draws an arbitrarily sized list of integers with a safety factor
-    applied to values.
+    applied to values if a safety scale is specified.
 
     Parameters
     ----------
@@ -174,39 +181,23 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     safety_factor
         default = 0.95. Only values which are 95% or less than the edge of
         the limit for a given dtype are generated.
-
+    safety_factor_scale
     Returns
     -------
     ret
         list of integers.
     """
-    dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
-
-    if dtype == "int8":
-        min_value = ivy.default(min_value, round(-128 * safety_factor))
-        max_value = ivy.default(max_value, round(127 * safety_factor))
-    elif dtype == "int16":
-        min_value = ivy.default(min_value, round(-32768 * safety_factor))
-        max_value = ivy.default(max_value, round(32767 * safety_factor))
-    elif dtype == "int32":
-        min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
-        max_value = ivy.default(max_value, round(2147483647 * safety_factor))
-    elif dtype == "int64":
-        min_value = ivy.default(min_value, round(-9223372036854775808 * safety_factor))
-        max_value = ivy.default(max_value, round(9223372036854775807 * safety_factor))
-    elif dtype == "uint8":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(255 * safety_factor))
-    elif dtype == "uint16":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(65535 * safety_factor))
-    elif dtype == "uint32":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(4294967295 * safety_factor))
-    elif dtype == "uint64":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
-
+    dtype = draw(dtype_helpers.get_dtypes("integer", full=False))
+    if min_value is None and max_value is None:
+        safety_factor_scale = "linear"
+    if safety_factor_scale is not None:
+        min_value, max_value, _ = gh.apply_safety_factor(
+            dtype[0],
+            min_value=min_value,
+            max_value=max_value,
+            large_abs_safety_factor=safety_factor,
+            safety_factor_scale=safety_factor_scale,
+        )
     return draw(st.integers(min_value, max_value))
 
 
@@ -245,128 +236,3 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
             safety_factor=safety_factor,
         )
     )
-
-
-def none_or_list_of_floats(
-    *,
-    dtype,
-    size,
-    min_value=None,
-    max_value=None,
-    exclude_min=False,
-    exclude_max=False,
-    no_none=False,
-):
-    """Draws a List containing Nones or Floats.
-
-    Parameters
-    ----------
-    dtype
-        float data type ('float16', 'float32', or 'float64').
-    size
-        size of the list required.
-    min_value
-        lower bound for values in the list
-    max_value
-        upper bound for values in the list
-    exclude_min
-        if True, exclude the min_value
-    exclude_max
-        if True, exclude the max_value
-    no_none
-        if True, List does not contains None
-
-    Returns
-    -------
-    A strategy that draws a List containing Nones or Floats.
-    """
-    if no_none:
-        if dtype == "float16":
-            values = ah.list_of_length(
-                x=floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=16,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        elif dtype == "float32":
-            values = ah.list_of_length(
-                x=st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=32,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        elif dtype == "float64":
-            values = ah.list_of_length(
-                x=st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=64,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-    else:
-        if dtype == "float16":
-            values = ah.list_of_length(
-                x=st.none()
-                | st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=16,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        elif dtype == "float32":
-            values = ah.list_of_length(
-                x=st.none()
-                | st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=32,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        elif dtype == "float64":
-            values = ah.list_of_length(
-                x=st.none()
-                | st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
-                    width=64,
-                    allow_subnormal=False,
-                    allow_infinity=False,
-                    allow_nan=False,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-    return values

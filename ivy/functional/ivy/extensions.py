@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -432,8 +432,7 @@ def sinc(
     >>> y = ivy.zeros(3)
     >>> ivy.sinc(x, out=y)
     >>> print(y)
-    ivy.array(([-0.212,0.637,-0.212])
-
+    ivy.array([-0.212,0.637,-0.212])
 
     With :code:`ivy.NativeArray` input:
 
@@ -552,7 +551,7 @@ def flatten(
           [10, 10,  9,  1],
           [19, 17, 13, 10],
           [ 4, 19, 16, 17],
-          [ 2, 12,  8, 14]]]))
+          [ 2, 12,  8, 14]]])
 
     With :class:`ivy.Container` input:
 
@@ -668,3 +667,111 @@ def lcm(
     ivy.array([10, 21, 60])
     """
     return ivy.current_backend().lcm(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Hann window. The Hanning window
+    is a taper formed by using a weighted cosine.
+
+    Parameters
+    ----------
+    window_length
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.hann_window(4, True)
+    ivy.array([0. , 0.5, 1. , 0.5])
+
+    >>> ivy.hann_window(7, False)
+    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
+
+    """
+    return ivy.current_backend().hann_window(
+        window_length, periodic, dtype=dtype, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def max_pool2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 2-D max pool given 4-D input x.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,h,w,d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[h,w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimensio paddings.
+    data_format
+        NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+    >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
+    ivy.array([[[[ 2,  3],
+     [ 4,  5],
+     [ 4,  5]]],
+    [[[ 8,  9],
+     [10, 11],
+     [10, 11]]]])
+
+    >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+    >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
+    ivy.array([[[[16, 17]],
+    [[22, 23]]],
+    [[[40, 41]],
+    [[46, 47]]]])
+    """
+    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)

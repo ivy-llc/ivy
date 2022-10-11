@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -93,18 +93,39 @@ def lcm(
         dtype = tf.int8
         x1 = tf.cast(x1, dtype=tf.int16)
         x2 = tf.cast(x2, dtype=tf.int16)
-    else: 
-        dtype = x1.dtype 
-    return tf.math.abs(
-        tf.cast(
-            tf.experimental.numpy.lcm(x1, x2),
-            dtype=dtype
-        )
+    else:
+        dtype = x1.dtype
+    return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
+
+
+lcm.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[tf.DType] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.hann_window(
+        window_length, periodic=periodic, dtype=dtype, name=None
     )
 
 
-lcm.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64")
+def max_pool2d(
+    x: Union[tf.Tensor, tf.Variable],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.max_pool2d(x, kernel, strides, padding)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
