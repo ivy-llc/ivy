@@ -768,7 +768,7 @@ efficiently.
 This should have hopefully given you a good feel for how the tests are implemented in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests channel`_
-or in the `ivy tests channel`_!
+or in the `ivy tests forum`_!
 
 
 **Video**
