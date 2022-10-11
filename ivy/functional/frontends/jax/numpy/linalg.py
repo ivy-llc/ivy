@@ -25,7 +25,6 @@ def eigh(a, UPLO="L", symmetrize_input=True):
     return ivy.eigh(a, UPLO=UPLO)
 
 
-@inputs_to_ivy_arrays
 def eigvalsh(a, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
 
@@ -43,3 +42,7 @@ def eigvals(a):
 @inputs_to_ivy_arrays
 def cholesky(a):
     return ivy.cholesky(a)
+
+
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
