@@ -545,7 +545,7 @@ NumPy Special Argument - Casting
 NumPy supports an additional, special argument - :code:`casting`, which allows
 user to determine the kind of dtype casting that fits their objectives.
 The :code:`casting` rules are explained in the
-`:code:`numpy.can_cast` documentation <https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html>`_.
+`numpy.can_cast documentation <https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html>`_.
 While handling this argument, the :code:`dtype` argument is used to state the
 desired return dtype.
 
