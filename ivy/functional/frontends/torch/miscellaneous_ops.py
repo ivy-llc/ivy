@@ -147,6 +147,9 @@ def ravel(input):
 
 
 def vander(x, N=None, increasing=False):
-    return ivy.vander(
-        x, N=N, increasing=increasing, out=None
-    )
+    if N == 0:
+        return ivy.array([], dtype=input.dtype)
+    else:
+        return ivy.vander(
+            x, N=N, increasing=increasing, out=None
+        )
