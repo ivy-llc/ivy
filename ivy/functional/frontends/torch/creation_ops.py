@@ -68,3 +68,82 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     if requires_grad:
         return ivy.variable(ret)
     return ret
+
+
+def arange(
+    end,  # torch doesn't have a default for this.
+    start=0,
+    step=1,
+    *,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = ivy.arange(start, stop=end, step=step, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def range(
+    end,  # torch doesn't have a default for this.
+    start=0,
+    step=1,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = arange(start, stop=end, step=step, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def linspace(
+    start,
+    end,
+    steps,
+    *,
+    out=None,
+    dtype=None,
+    device=None,
+    layout=None,
+    requires_grad=False
+):
+    ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def logspace(
+    start,
+    end,
+    steps,
+    *,
+    base=10.0,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    ret = ivy.logspace(
+        start, end, num=steps, base=base, dtype=dtype, device=device, out=out
+    )
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def eye(
+    n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
+):
+    ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
