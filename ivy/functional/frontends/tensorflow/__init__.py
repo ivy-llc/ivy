@@ -252,16 +252,14 @@ def promote_types_of_tensorflow_inputs(
 
 from . import tensor
 from .tensor import Tensor
-from . import activations
-from .activations import *
-from . import layers
-from .layers import *
+from .keras import activations, layers, regularizers, metrics
+from ivy.functional.frontends.tensorflow.keras.activations import *
+from ivy.functional.frontends.tensorflow.keras.layers import *
 from . import linalg
 from .linalg import *
 from . import math
 from .math import *
-from . import metrics
-from .metrics import *
+from ivy.functional.frontends.tensorflow.keras.metrics import *
 from . import nest
 from .nest import *
 from . import nn
@@ -272,8 +270,7 @@ from . import random
 from .random import *
 from . import raw_ops
 from .raw_ops import *
-from . import regularizers
-from .regularizers import *
+from ivy.functional.frontends.tensorflow.keras.regularizers import *
 from . import sets
 from .sets import *
 from . import signal
