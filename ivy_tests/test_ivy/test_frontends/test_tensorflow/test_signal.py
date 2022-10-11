@@ -3,6 +3,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from symbol import tfpdef
 
 # hann_window
 
@@ -16,7 +17,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.tensorflow.hann_window",
     ),
 )
-# helpers.test_frontend_function to test ivy.hann_window
-def test_hann_window(dtype_and_x, num_positional_args):
+# helpers.test_frontend_function to test hann_window
+def test_hannn_window(dtype_and_x, num_positional_args):
     dtype, x = dtype_and_x
-    ivy.hann_window(x, dtype=dtype)
+    ivy_hann_window = helpers.test_frontend_function(
+        ivy.hann_window,
+        tfpdef.signal.hann_window,
+        num_positional_args,
+        dtype=dtype,
+        x=x,
+    )
+    ivy_hann_window()
