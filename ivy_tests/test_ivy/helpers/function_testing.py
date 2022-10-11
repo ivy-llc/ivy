@@ -477,10 +477,21 @@ def test_frontend_function(
     ]
 
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_tree = fn_tree.split(".")
+    *frontend_submods, fn_name = fn_tree.split(".")
+    function_dict = ivy.functional.frontends.__dict__[frontend]
+
+    # Getting function attributes when we have function tree such as
+    # nn.functional etc
+    len_frontend_submods = len(frontend_submods)
+    if len_frontend_submods > 0:
+        len_tracker = 0
+        while len_tracker < len_frontend_submods:
+            sub_tree = frontend_submods[len_tracker]
+            function_dict = function_dict.__dict__[sub_tree]
+            len_tracker += 1
 
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
+    function = getattr(function_dict, fn_name)
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -527,7 +538,7 @@ def test_frontend_function(
         )  # ToDo, probably redundant?
 
     # frontend function
-    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
+    frontend_fn = getattr(function_dict, fn_name)
 
     # check and replace NativeClass object in arguments with ivy counterparts
     convs = {
@@ -617,7 +628,7 @@ def test_frontend_function(
     backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
-        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
+        function = getattr(function_dict, fn_name)
         test_unsupported = check_unsupported_dtype(
             fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
         )
@@ -652,12 +663,12 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
             test_unsupported_function(
-                fn=frontend_fw.__dict__[fn_tree],
+                fn=frontend_fw.__dict__[fn_name],
                 args=args_frontend,
                 kwargs=kwargs_frontend,
             )
             return
-        frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
+        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
