@@ -666,6 +666,4 @@ def vander(
     increasing: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.vander(
-        x, N=N, increasing=increasing
-    )
+    return tf.experimental.numpy.vander(x, N=N, increasing=increasing)

@@ -394,8 +394,8 @@ def test_numpy_logaddexp(
         dtype=dtype,
         subok=True,
     )
-    
-    
+
+
 # logaddexp2
 @handle_cmd_line_args
 @given(
