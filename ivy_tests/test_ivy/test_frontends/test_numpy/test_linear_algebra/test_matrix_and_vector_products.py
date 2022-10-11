@@ -84,7 +84,7 @@ def test_numpy_inner(
 # matmul
 @handle_cmd_line_args
 @given(
-    dtypes_values_casting=np_frontend_helpers.dtype_x_casting_and_dtype(
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
         get_dtypes_kind="numeric",
     ),
