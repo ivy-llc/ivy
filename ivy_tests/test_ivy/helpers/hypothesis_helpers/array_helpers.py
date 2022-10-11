@@ -241,6 +241,7 @@ def dtype_values_axis(
     draw,
     *,
     available_dtypes,
+    num_arrays=1,
     abs_smallest_val=None,
     min_value=None,
     max_value=None,
@@ -266,8 +267,8 @@ def dtype_values_axis(
     force_int_axis=False,
     ret_shape=False,
 ):
-    """Draws an array with elements from the given data type, and a random axis of
-    the array.
+    """Draws a list of arrays with elements from the given data type,
+    and a random axis of the arrays.
 
     Parameters
     ----------
@@ -276,6 +277,8 @@ def dtype_values_axis(
         data-set (ex. list).
     available_dtypes
         if dtype is None, data type is drawn from this list randomly.
+    num_arrays
+        Number of arrays to be drawn.
     abs_smallest_val
         sets the absolute smallest value to be generated for float data types,
         this has no effect on integer data types. If none, the default data type
@@ -351,6 +354,7 @@ def dtype_values_axis(
     results = draw(
         dtype_and_values(
             available_dtypes=available_dtypes,
+            num_arrays=num_arrays,
             abs_smallest_val=abs_smallest_val,
             min_value=min_value,
             max_value=max_value,
