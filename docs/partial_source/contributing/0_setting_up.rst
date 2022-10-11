@@ -287,8 +287,15 @@ Ubuntu
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    </iframe>
+
 
 Setting Up Testing
 ******************
@@ -369,6 +376,9 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
+
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
 
 GitHub Codespaces
 -----------------
