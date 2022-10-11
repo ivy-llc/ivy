@@ -71,11 +71,11 @@ def layer_norm(
     ivy.array([[-1., -1., -1.],
                [ 1.,  1.,  1.]])
 
-    >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
-                       [0.1047,  0.5886,  1.2732], \
-                       [0.7696, -1.7024, -2.2518]])
-    >>> y = ivy.layer_norm(x, [0, 1], epsilon=0.001, \
-                              new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
+    >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
+    ...                   [0.1047,  0.5886,  1.2732],
+    ...                   [0.7696, -1.7024, -2.2518]])
+    >>> y = ivy.layer_norm(x, [0, 1], epsilon=0.001,
+    ...                          new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
     >>> print(y)
     ivy.array([[ 0.576,  0.312,  1.43 ],
                [ 0.581,  0.911,  1.43 ],
@@ -96,21 +96,21 @@ def layer_norm(
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                           'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+    >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+    ...                       'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >> normalized_idxs = [0]
     >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, weight=0.3)
     >>> print(y)
     {
         a: ivy.array([-0.342, 0.0427, 0.299]),
-        b: ivy.array([[-0.241, -0.241, -0.241], 
+        b: ivy.array([[-0.241, -0.241, -0.241],
                       [0.241, 0.241, 0.241]])
     }
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                           'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+    >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+    ...                       'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
     >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
     >>> bias = ivy.Container({'a': [0.2, 0.5, 0.7], 'b': 0.3})
@@ -118,7 +118,7 @@ def layer_norm(
     >>> print(y)
     {
         a: ivy.array([-1.42, 0.403, 1.62]),
-        b: ivy.array([[-1.54, 0.3, 2.14], 
+        b: ivy.array([[-1.54, 0.3, 2.14],
                       [-1.54, 0.3, 2.14]])
     }
 
