@@ -8,7 +8,10 @@ from typing import Union, Optional, Callable
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import _unused_variables_to_zero_gradients
+from ivy.functional.ivy.gradients import (
+    _get_native_arrays_and_indices,
+    _zero_gradients_to_none_and_to_ivy,
+)
 
 
 def variable(x):
@@ -25,25 +28,34 @@ def variable_data(x):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    with tf.GradientTape(
-        persistent=retain_grads, watch_accessed_variables=False
-    ) as tape:
-        tape.watch(ivy.to_native(xs))
+    with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+        xs = ivy.to_native(xs)
+        tape.watch(xs)
         func_ret = func(xs)
-    if isinstance(func_ret, tuple):
-        y = func_ret[0]
-        rest = func_ret[1:]
+    arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
+    grads = {}
+    if len(arr_values) == 1:
+        y = arr_values[0]
     else:
-        y = func_ret
-        rest = tuple()
-    y = ivy.to_native(y)
-    grads = tape.gradient(y, ivy.to_native(xs))
-    grads = ivy.to_ivy(grads)
-    grads = _unused_variables_to_zero_gradients(grads, xs)
-    y = ivy.to_ivy(y)
+        y = arr_values
+
+    def grad_func(y):
+        ret = tape.gradient(y, ivy.to_native(xs))
+        return ret
+
+    if isinstance(y, ivy.NativeArray):
+        grads = ivy.to_ivy(grad_func(y))
+    else:
+        grads_ = ivy.nested_map(y, grad_func, include_derived=True)
+        for i, grad in enumerate(grads_):
+            grads[arr_idxs[i]] = grad
+
+    grads = _zero_gradients_to_none_and_to_ivy(grads)
     if not retain_grads:
-        y = ivy.stop_gradient(y)
-    return (y, grads, *rest)
+        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+    if not isinstance(grads, ivy.Array):
+        grads = ivy.Container(grads)
+    return func_ret, grads
 
 
 def value_and_grad(func):
@@ -60,7 +72,7 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grads = _unused_variables_to_zero_gradients(xs, grads_)
+        grads = _zero_gradients_to_none_and_to_ivy(xs, grads_)
         grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
         xs = ivy.to_ivy(xs)
@@ -108,8 +120,6 @@ def grad(func: Callable):
             x_in = ivy.to_native(ivy.array(x_in))
             tape.watch(x_in)
             y = grad_fn(x_in)
-        return _unused_variables_to_zero_gradients(
-            ivy.to_ivy(x_in), ivy.to_ivy(tape.gradient(y, x_in))
-        )
+        return _zero_gradients_to_none_and_to_ivy(ivy.to_ivy(tape.gradient(y, x_in)))
 
     return callback_fn

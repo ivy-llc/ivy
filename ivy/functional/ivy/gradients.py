@@ -21,14 +21,36 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _unused_variables_to_zero_gradients(grads, xs):
-    if isinstance(grads, ivy.Container):
-        arrays = {
-            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
-        }
-        return ivy.Container(**arrays)
+def _zero_gradients_to_none_and_to_ivy(grads):
+    if isinstance(grads, ivy.Array):
+        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
-        return ivy.zeros_like(xs) if grads is None else grads
+        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
+        if not isinstance(zero_idxs, list) or len(zero_idxs[0]) == 0:
+            return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+        zero_idxs.reverse()
+        ivy.prune_nest_at_indices(grads, zero_idxs)
+        return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+
+
+def _get_native_arrays_and_indices(func_ret):
+    func_ret = ivy.nested_map(func_ret, ivy.to_native, include_derived=True)
+    arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
+    arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
+    for i in range(len(arr_idxs)):
+        arr_idxs[i] = [str(x) for x in arr_idxs[i]]
+        arr_idxs[i] = "_".join(arr_idxs[i])
+    return arr_idxs, arr_values
+
+
+def _forward_fn(xs, func):
+    if isinstance(xs, dict):
+        xs = ivy.Container(**xs)
+    ret = func(xs)
+    ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
+    array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
+    array_values = ivy.multi_index_nest(ret, array_idxs)
+    return array_values
 
 
 # Extra #

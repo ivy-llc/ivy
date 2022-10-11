@@ -30,13 +30,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     )
     xs = ivy.to_ivy(xs)
     func_ret = func(xs)
-    if isinstance(func_ret, tuple):
-        y = func_ret[0]
-        rest = func_ret[1:]
-    else:
-        y = func_ret
-        rest = tuple()
-    return (y, None, *rest)
+    return func_ret, None
 
 
 def value_and_grad(func):
