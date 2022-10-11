@@ -108,3 +108,15 @@ lcm.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64")
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[tf.DType] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.hann_window(
+        window_length, periodic=periodic, dtype=dtype, name=None
+    )
