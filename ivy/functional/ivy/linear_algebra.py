@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
 import ivy
@@ -549,7 +549,7 @@ def eigh(
     *,
     UPLO: Optional[str] = "L",
     out: Optional[ivy.Array] = None,
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
@@ -933,7 +933,7 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1317,7 +1317,7 @@ def qr(
     /,
     *,
     mode: str = "reduced",
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -1372,7 +1372,7 @@ def qr(
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """Computes the sign and natural logarithm of the determinant of an array.
 
     Parameters
@@ -1424,7 +1424,8 @@ def slogdet(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.slogdet.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
+        signatures.linalg.slogdet.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2114,9 +2115,9 @@ def vander(
 ) -> ivy.Array:
     """Generates a Vandermonde matrix.
     The columns of the output matrix are elementwise powers
-    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. 
-    If increasing is True, the order of the columns is reversed 
-    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression 
+    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.
+    If increasing is True, the order of the columns is reversed
+    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression
     in each row is named for Alexandre-Theophile Vandermonde.
 
     Parameters
@@ -2126,7 +2127,7 @@ def vander(
     N
          Number of columns in the output. If N is not specified,
          a square array is returned (N = len(x))
-    increasing 
+    increasing
         Order of the powers of the columns. If True, the powers increase
         from left to right, if False (the default) they are reversed.
     out
@@ -2139,7 +2140,6 @@ def vander(
 
     Examples
     --------
-    
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3, 5])
@@ -2169,6 +2169,4 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(
-        x, N=N, increasing=increasing, out=out
-    )
+    return current_backend().vander(x, N=N, increasing=increasing, out=out)
