@@ -207,7 +207,8 @@ def get_mean_std(draw, *, dtype):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    values = draw(number_helpers.none_or_list_of_floats(dtype=dtype, size=2))
+    none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+    values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
 
@@ -235,7 +236,8 @@ def get_bounds(draw, *, dtype):
         if low == high:
             return draw(get_bounds(dtype=dtype))
     else:
-        values = draw(number_helpers.none_or_list_of_floats(dtype=dtype, size=2))
+        none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+        values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
         if values[0] is not None and values[1] is not None:
             low, high = min(values), max(values)
         else:
