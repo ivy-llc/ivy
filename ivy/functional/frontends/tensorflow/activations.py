@@ -9,7 +9,7 @@ def hard_sigmoid(x):
     x = ivy.add(x, point_five)
     x = ivy.clip(x, 0.0, 1.0)
     x = ivy.asarray(x, dtype=dtype_in)
-    return x    
+    return x
 
 
 def linear(x):
@@ -26,5 +26,3 @@ def softmax(x, axis=-1):
 
 def gelu(x, approximate=False):
     return ivy.gelu(x, approximate=approximate)
-
-    
