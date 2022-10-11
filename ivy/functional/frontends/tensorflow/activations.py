@@ -16,6 +16,10 @@ def linear(x):
     return x
 
 
+def relu(x):
+    return ivy.relu(x)
+
+
 def sigmoid(x):
     return ivy.sigmoid(x)
 
