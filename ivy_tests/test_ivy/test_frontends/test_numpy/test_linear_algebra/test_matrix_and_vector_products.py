@@ -84,21 +84,18 @@ def test_numpy_inner(
 # matmul
 @handle_cmd_line_args
 @given(
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    dtypes_values_casting=np_frontend_helpers.dtype_x_casting_and_dtype(
+        arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
+        get_dtypes_kind="numeric",
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.matmul"
     ),
 )
 def test_numpy_matmul(
-    x, y, as_variable, with_out, native_array, num_positional_args, fw
+    dtypes_values_casting, as_variable, with_out, native_array, num_positional_args, fw
 ):
-    dtype1, x1 = x
-    dtype2, x2 = y
-    dtype, dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=dtype1 + dtype2,
-        get_dtypes_kind="numeric",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -107,8 +104,8 @@ def test_numpy_matmul(
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="matmul",
-        x1=x1,
-        x2=x2,
+        x1=x[0],
+        x2=x[1],
         out=None,
         casting=casting,
         order="K",
