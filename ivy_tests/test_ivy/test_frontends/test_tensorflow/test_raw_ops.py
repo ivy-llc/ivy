@@ -1756,3 +1756,131 @@ def test_tensorflow_LeftShift(
         x=xs[0],
         y=xs[1],
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        min_value=-5,
+        max_value=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.MatrixDeterminant"
+    ),
+)
+def test_tensorflow_MatrixDeterminant(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatrixDeterminant",
+        input=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    array_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric", full=True),
+        indices_dtypes=["int32"],
+        min_num_dims=1,
+        min_dim_size=1,
+        disable_random_axis=True,
+    ),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.NthElement"
+    ),
+)
+def test_tensorflow_NthElement(
+    array_indices_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    reverse,
+):
+    dtype, x, n = array_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.NthElement",
+        input=x,
+        n=n.flatten()[0],
+        reverse=reverse,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer", full=True),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Invert"
+    ),
+)
+def test_tensorflow_Invert(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Invert",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.InvGrad"
+    ),
+)
+def test_tensorflow_InvGrad(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.InvGrad",
+        y=x[0],
+        dy=x[1],
+    )
