@@ -15,9 +15,10 @@ def hard_sigmoid(x):
 def linear(x):
     return x
 
+
 def relu(x):
-    x = ivy.clip(x, 0.0, ivy.inf)
-    return x
+    return ivy.relu(x)
+
 
 def sigmoid(x):
     return ivy.sigmoid(x)
