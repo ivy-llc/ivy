@@ -22,6 +22,7 @@ Extensions
    extensions/vorbis_window.rst
    extensions/lcm.rst
    extensions/hann_window.rst
+   extensions/max_pool2d.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:

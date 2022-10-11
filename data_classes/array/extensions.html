@@ -275,6 +275,65 @@ of ‘self’ and x2</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.extensions.ArrayWithExtensions.max_pool2d">
+<span class="sig-name descname"><span class="pre">max_pool2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/extensions.html#ArrayWithExtensions.max_pool2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.extensions.ArrayWithExtensions.max_pool2d" title="Permalink to this definition"></a></dt>
+<dd><blockquote>
+<div><p>ivy.Array instance method variant of <cite>ivy.max_pool2d</cite>. This method simply
+wraps the function, and so the docstring for <cite>ivy.max_pool2d</cite> also applies
+to this method with minimal changes.</p>
+<dl class="simple">
+<dt>x</dt><dd><p>Input image <em>[batch_size,h,w,d_in]</em>.</p>
+</dd>
+<dt>kernel</dt><dd><p>The size of the window for each dimension of the input tensor.</p>
+</dd>
+<dt>strides</dt><dd><p>The stride of the sliding window for each dimension of input.</p>
+</dd>
+<dt>padding</dt><dd><p>“SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p>
+</dd>
+<dt>data_format</dt><dd><p>“NHWC” or “NCHW”. Defaults to “NHWC”.</p>
+</dd>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that
+the inputs broadcast to.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>ret</dt><dd><p>The result of the max pooling operation.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;SAME&#39;</span><span class="p">))</span>
+<span class="go">ivy.array([[[[ 2,  3],</span>
+<span class="go"> [ 4,  5],</span>
+<span class="go"> [ 4,  5]]],</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl>
+<dt>[[[ 8,  9],</dt><dd><blockquote>
+<div><p>[10, 11],
+[10, 11]]]])</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;VALID&#39;</span><span class="p">))</span>
+<span class="go">ivy.array([[[[16, 17]],</span>
+</pre></div>
+</div>
+<p>[[22, 23]]],</p>
+</dd>
+</dl>
+<p>[[[40, 41]],</p>
+<blockquote>
+<div><p>[[46, 47]]]])</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.extensions.ArrayWithExtensions.sinc">
 <span class="sig-name descname"><span class="pre">sinc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/extensions.html#ArrayWithExtensions.sinc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.extensions.ArrayWithExtensions.sinc" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.sinc. This method simply wraps the
