@@ -210,6 +210,9 @@ def matrix_norm(
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
+matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
+
+
 matrix_norm.support_native_out = True
 
 
