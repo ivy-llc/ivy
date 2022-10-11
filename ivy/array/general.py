@@ -718,14 +718,6 @@ class ArrayWithGeneral(abc.ABC):
         --------
         With :class:`ivy.Array` instance method:
 
-        >>> x = ivy.array([-1])
-        >>> y = x.to_scalar()
-        >>> print(y)
-        -1
-
-        >>> print(ivy.is_int_dtype(y))
-        True
-
         >>> x = ivy.array([3])
         >>> y = x.to_scalar()
         >>> print(y)
