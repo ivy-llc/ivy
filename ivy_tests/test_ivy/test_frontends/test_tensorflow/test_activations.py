@@ -143,7 +143,9 @@ def test_tensorflow_gelu(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.relu"
     ),
