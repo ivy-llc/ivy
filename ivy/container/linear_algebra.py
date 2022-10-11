@@ -724,8 +724,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ...               [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
+        x = ivy.Container(a=ivy.array([[1., 2.],\
+                                       [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
@@ -785,8 +785,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ...               [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
+        x = ivy.Container(a=ivy.array([[1., 2.], \
+                                       [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
@@ -1344,10 +1344,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-        ...                                [3.0, 4.0]]),
-        ...                   b=ivy.array([[1.0, 2.0],
-        ...                                [2.0, 1.0]]))
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                           [3.0, 4.0]]), \
+                              b=ivy.array([[1.0, 2.0],   \
+                                           [2.0, 1.0]]))
         >>> y = ivy.Container.static_slogdet(x)
         >>> print(y)
         {
@@ -1407,10 +1407,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-        ...                                [3.0, 4.0]]),
-        ...                   b=ivy.array([[1.0, 2.0],
-        ...                                [2.0, 1.0]]))
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                           [3.0, 4.0]]), \
+                              b=ivy.array([[1.0, 2.0],   \
+                                           [2.0, 1.0]]))
         >>> y = x.slogdet()
         >>> print(y)
         {
@@ -1758,13 +1758,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_trace(
             self,
-            offset=offset,
-            axis1=axis1,
-            axis2=axis2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
             out=out,
         )
 

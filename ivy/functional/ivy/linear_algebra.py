@@ -1313,9 +1313,9 @@ def outer(
 
     A 3-D Example
 
-    >>> x = ivy.array([[[1., 2.],
-                        [3., 4.]],
-                       [[5., 6.],
+    >>> x = ivy.array([[[1., 2.],\
+                        [3., 4.]],\
+                       [[5., 6.],\
                         [7., 8.]]])
     >>> y = ivy.array([[[9., 10.],
                         [11., 12.]],
@@ -1496,20 +1496,20 @@ def slogdet(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
+    With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([[1.0, 2.0],
-    ...                [3.0, 4.0]])
+    >>> x = ivy.array([[1.0, 2.0], \
+                       [3.0, 4.0]])
     >>> y = ivy.slogdet(x)
     >>> print(y)
     slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
-    With :class:`ivy.Container` input:
+    With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-    ...                                [3.0, 4.0]]),
-    ...                   b=ivy.array([[1.0, 2.0],
-    ...                                [2.0, 1.0]]))
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
+                                       [3.0, 4.0]]), \
+                          b=ivy.array([[1.0, 2.0],   \
+                                       [2.0, 1.0]]))
     >>> y = ivy.slogdet(x)
     >>> print(y)
     {
@@ -1985,14 +1985,14 @@ def trace(
         b: ivy.array(19)
     }
 
-    >>> x = ivy.Container(
-    ...        a = ivy.array([[7, 1, 2],
-    ...                       [1, 3, 5],
-    ...                       [0, 7, 4]]),
-    ...        b = ivy.array([[4, 3, 2],
-    ...                       [1, 9, 5],
-    ...                       [7, 0, 6]])
-    ...    )
+    >>> x = ivy.Container(\
+            a = ivy.array([[7, 1, 2],\
+                           [1, 3, 5],\
+                           [0, 7, 4]]),\
+            b = ivy.array([[4, 3, 2],\
+                           [1, 9, 5],\
+                           [7, 0, 6]])\
+        )
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
     {
