@@ -16,14 +16,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-def Add(*, x, y, name="Add"):
-    Add = tf_frontend.add
-    return Add(x, y)
+Add = tf_frontend.add
 
 
-def ArgMax(*, input, dimension, output_type=None, name=None):
-    ArgMax = tf_frontend.argmax
-    return ArgMax(input, dimension, output_type)
+ArgMax = tf_frontend.argmax
 
 
 def ArgMin(*, input, dimension, output_type=None, name=None):
@@ -72,9 +68,7 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-def Div(*, x, y, name="Div"):
-    Div = tf_frontend.divide
-    return Div(x, y)
+Div = tf_frontend.divide
 
 
 def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
@@ -157,18 +151,14 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
-def Maximum(*, x, y, name="Maximum"):
-    Maximum = tf_frontend.maximum
-    return Maximum(x, y)
+Maximum = tf_frontend.maximum
 
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Neg(*, x, name="Neg"):
-    Neg = tf_frontend.negative
-    return Neg(x)
+Neg = tf_frontend.negative
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
@@ -209,15 +199,10 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-def Sub(*, x, y, name="Sub"):
-    Sub = tf_frontend.subtract
-    return Sub(x, y)
+Sub = tf_frontend.subtract
 
 
-def Tan(*, x, name="Tan"):
-    Tan = tf_frontend.tan
-    return Tan(x)
-
+Tan = tf_frontend.tan
 
 def Tanh(*, x, name="Tanh"):
     return ivy.tanh(x)
