@@ -1,5 +1,5 @@
-Exception Handling
-==================
+Exception Handling ⚠
+====================
 
 As Ivy is unifying multiple backends, various issues are seen during exception
 handling:
@@ -52,14 +52,14 @@ This is to reduce repetition and the creation of similar exception classes.
 
     # in ivy/exceptions.py
     class IvyError(IndexError, ValueError, IvyException):
-    def __init__(self, *messages):
-        self._default = [
-            "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
-        ]
-        self._delimiter = ": "
-        for message in messages:
-            self._default.append(message)
-        super().__init__(self._delimiter.join(self._default))
+        def __init__(self, *messages):
+            self._default = [
+                "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
+            ]
+            self._delimiter = ": "
+            for message in messages:
+                self._default.append(message)
+            super().__init__(self._delimiter.join(self._default))
 
 @handle_exceptions Decorator
 ----------------------------

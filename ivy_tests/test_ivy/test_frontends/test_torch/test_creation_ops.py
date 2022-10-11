@@ -62,7 +62,6 @@ def test_torch_full(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -96,7 +95,6 @@ def test_torch_ones_like(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -136,7 +134,6 @@ def test_torch_ones(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -175,7 +172,6 @@ def test_torch_zeros(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -213,7 +209,6 @@ def test_torch_empty(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[dtypes],

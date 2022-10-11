@@ -11,9 +11,9 @@ def unique_all(
     x: JaxArray,
     /,
 ) -> NamedTuple:
-    UniqueAll = namedtuple(
-        typename="unique_all",
-        field_names=["values", "indices", "inverse_indices", "counts"],
+    Results = namedtuple(
+        "Results",
+        ["values", "indices", "inverse_indices", "counts"],
     )
 
     values, indices, inverse_indices, counts = jnp.unique(
@@ -45,7 +45,7 @@ def unique_all(
     else:
         pass
 
-    return UniqueAll(
+    return Results(
         values.astype(x.dtype), indices, jnp.reshape(inverse_indices, x.shape), counts
     )
 
@@ -61,21 +61,21 @@ def unique_counts(
         c = c.at[nan_idx].set(1)
         v = jnp.append(v, jnp.full(nan_count - 1, jnp.nan)).astype(x.dtype)
         c = jnp.append(c, jnp.full(nan_count - 1, 1)).astype("int32")
-    uc = namedtuple("uc", ["values", "counts"])
-    return uc(v, c)
+    Results = namedtuple("Results", ["values", "counts"])
+    return Results(v, c)
 
 
 def unique_inverse(
     x: JaxArray,
     /,
 ) -> NamedTuple:
-    out = namedtuple("unique_inverse", ["values", "inverse_indices"])
+    Results = namedtuple("Results", ["values", "inverse_indices"])
     values, inverse_indices = jnp.unique(x, return_inverse=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
         values = jnp.append(values, jnp.full(nan_count - 1, jnp.nan)).astype(x.dtype)
     inverse_indices = jnp.reshape(inverse_indices, x.shape)
-    return out(values, inverse_indices)
+    return Results(values, inverse_indices)
 
 
 def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

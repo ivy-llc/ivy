@@ -14,6 +14,7 @@ from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
+from .extensions import ArrayWithExtensions
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -46,6 +47,7 @@ class Array(
     ArrayWithDataTypes,
     ArrayWithDevice,
     ArrayWithElementwise,
+    ArrayWithExtensions,
     ArrayWithGeneral,
     ArrayWithGradients,
     ArrayWithImage,
@@ -490,6 +492,12 @@ class Array(
 
     def __bool__(self):
         return self._data.__bool__()
+
+    def __dlpack__(self, stream=None):
+        return self._data.__dlpack__()
+
+    def __dlpack_device__(self):
+        return self._data.__dlpack_device__()
 
     def __lt__(self, other):
         return ivy.less(self._data, other)
