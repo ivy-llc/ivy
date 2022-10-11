@@ -160,7 +160,6 @@ class ArrayWithExtensions(abc.ABC):
         """
         return ivy.lcm(self, x2, out=out)
 
-
     def max_pool2d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int], Tuple[int, int]],

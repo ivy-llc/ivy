@@ -782,4 +782,4 @@ def max_pool2d(
 
         """
 
-    return current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
