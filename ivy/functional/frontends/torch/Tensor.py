@@ -27,6 +27,9 @@ class Tensor:
         self.data = self.sin()
         return self.data
 
+    def tan(self, *, out=None):
+        return torch_frontend.tan(self.data, out=out)
+
 
 # Tensor (alias)
 tensor = Tensor
