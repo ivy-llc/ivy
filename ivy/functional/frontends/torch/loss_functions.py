@@ -84,9 +84,7 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
-    print(type(input))
     input = ivy.softmax(input)
-    print(type(input))
     ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
     if weight is not None:
         ret = ivy.multiply(weight, ret)
@@ -107,20 +105,18 @@ def binary_cross_entropy(
 
 
 def smooth_l1_loss(
-    input: Union[ivy.Array, ivy.NativeArray],
-    target: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    size_average: Optional[bool] = None,
-    reduce: Optional[bool] = None,
-    reduction: Optional[Literal['none', 'mean', 'sum']] = 'mean',
-    beta: Optional[float] = 1.0,
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction='mean',
+    beta=1.0,
 ):
     beta = ivy.array(beta, device=input.device)
     reduction = _get_reduction(reduction, size_average, reduce)
 
     if beta < 1e-5:
-        # [Copied from fvcore]
+        # [Copied and modified from fvcore]
         # if beta == 0, then torch.where will result in nan gradients when
         # the chain rule is applied due to pytorch implementation details
         # (the False branch "0.5 * _diff_abs ** 2 / 0" has an incoming
