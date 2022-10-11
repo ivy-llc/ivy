@@ -26,42 +26,6 @@ def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     return pad_a, pad_b
 
 
-def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
-
-    if isinstance(strides, int):
-        strides = (strides,) * len(window_shape)
-    elif len(strides) == 1:
-        strides = (strides[0],) * len(window_shape)
-
-    assert len(window_shape) == len(strides), (
-        f"len({window_shape}) must equal len({strides})")
-
-    window_shape = tuple(window_shape)
-    strides = (1,) + strides + (1,)
-    dims = (1,) + window_shape + (1,)
-
-    is_single_input = False
-    if inputs.ndim == len(dims) - 1:
-        # add singleton batch dimension because lax.reduce_window always
-        # needs a batch dimension.
-        inputs = inputs[None]
-        is_single_input = True
-
-    assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
-    if not isinstance(padding, str):
-        padding = tuple(map(tuple, padding))
-        assert len(padding) == len(window_shape), (
-            f"padding {padding} must specify pads for same number of dims as "
-            f"window_shape {window_shape}")
-        assert all([len(x) == 2 for x in padding]), (
-            f"each entry in padding {padding} must be length 2")
-        padding = ((0, 0),) + padding + ((0, 0),)
-    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
-    if is_single_input:
-        y = jnp.squeeze(y, axis=0)
-    return y
-
-
 def conv1d(
     x: JaxArray,
     filters: JaxArray,
@@ -429,23 +393,3 @@ def conv_general_transpose(
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
 
-
-def max_pool2d(
-        x: JaxArray,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
-        /,
-        *,
-        data_format: str = "NHWC",
-        out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if data_format == "NCHW":
-        x = jnp.transpose(x, (0, 2, 3, 1))
-
-    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
-
-    if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
-
-    return res
