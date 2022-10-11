@@ -32,7 +32,7 @@ and it makes it less likely that you will receive a response.
 For example, if you are applying for an internship, then you should make use of the **internship** channels,
 and **not** the general channel for your questions.
 
-!
+
 
 **Issues**
 
