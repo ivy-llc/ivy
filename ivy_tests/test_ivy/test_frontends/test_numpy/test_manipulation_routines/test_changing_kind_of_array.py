@@ -25,7 +25,6 @@ def test_numpy_asarray(
         native_array,
 ):
     input_dtype, x = dtype_and_x
-    like_dtypt, like = dtype_and_like
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
