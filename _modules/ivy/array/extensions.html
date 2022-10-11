@@ -182,7 +182,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
-<span class="sd">            input array to flatten. </span>
+<span class="sd">            input array to flatten.</span>
 <span class="sd">        start_dim</span>
 <span class="sd">            first dim to flatten. If not set, defaults to 0.</span>
 <span class="sd">        end_dim</span>
@@ -191,7 +191,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            the flattened array over the specified dimensions. </span>
+<span class="sd">            the flattened array over the specified dimensions.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -249,17 +249,10 @@
 <span class="sd">            [ 4, 19, 16, 17],</span>
 <span class="sd">            [ 2, 12,  8, 14]]]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> 
-            <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span> 
-            <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span> 
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-        
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span> <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithExtensions.lcm"><a class="viewcode-back" href="../../../data_classes/array/extensions/ArrayWithExtensions.html#ivy.array.extensions.ArrayWithExtensions.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.lcm. This method simply wraps the</span>
@@ -273,7 +266,7 @@
 <span class="sd">        x2</span>
 <span class="sd">            second input array</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. </span>
+<span class="sd">            optional output array, for writing the result to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -301,55 +294,55 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for `ivy.max_pool2d` also applies</span>
-<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">         ivy.Array instance method variant of `ivy.max_pool2d`. This method simply</span>
+<span class="sd">         wraps the function, and so the docstring for `ivy.max_pool2d` also applies</span>
+<span class="sd">         to this method with minimal changes.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x</span>
-<span class="sd">            Input image *[batch_size,h,w,d_in]*.</span>
-<span class="sd">        kernel</span>
-<span class="sd">            The size of the window for each dimension of the input tensor.</span>
-<span class="sd">        strides</span>
-<span class="sd">            The stride of the sliding window for each dimension of input.</span>
-<span class="sd">        padding</span>
-<span class="sd">            &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
-<span class="sd">            the per-dimension paddings.</span>
-<span class="sd">        data_format</span>
-<span class="sd">            &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">            the inputs broadcast to.</span>
+<span class="sd">         Parameters</span>
+<span class="sd">         ----------</span>
+<span class="sd">         x</span>
+<span class="sd">             Input image *[batch_size,h,w,d_in]*.</span>
+<span class="sd">         kernel</span>
+<span class="sd">             The size of the window for each dimension of the input tensor.</span>
+<span class="sd">         strides</span>
+<span class="sd">             The stride of the sliding window for each dimension of input.</span>
+<span class="sd">         padding</span>
+<span class="sd">             &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">             the per-dimension paddings.</span>
+<span class="sd">         data_format</span>
+<span class="sd">             &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
+<span class="sd">         out</span>
+<span class="sd">             optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">             the inputs broadcast to.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            The result of the max pooling operation.</span>
+<span class="sd">         Returns</span>
+<span class="sd">         -------</span>
+<span class="sd">         ret</span>
+<span class="sd">             The result of the max pooling operation.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
-<span class="sd">        &gt;&gt;&gt; print(x.max_pool2d((2, 2), (1, 1), &#39;SAME&#39;))</span>
-<span class="sd">        ivy.array([[[[ 2,  3],</span>
-<span class="sd">         [ 4,  5],</span>
-<span class="sd">         [ 4,  5]]],</span>
-
-
-<span class="sd">       [[[ 8,  9],</span>
-<span class="sd">         [10, 11],</span>
-<span class="sd">         [10, 11]]]])</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
-<span class="sd">        &gt;&gt;&gt; print(x.max_pool2d(3, 1, &#39;VALID&#39;))</span>
-<span class="sd">        ivy.array([[[[16, 17]],</span>
-
-<span class="sd">        [[22, 23]]],</span>
+<span class="sd">         Examples</span>
+<span class="sd">         --------</span>
+<span class="sd">         &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
+<span class="sd">         &gt;&gt;&gt; print(x.max_pool2d((2, 2), (1, 1), &#39;SAME&#39;))</span>
+<span class="sd">         ivy.array([[[[ 2,  3],</span>
+<span class="sd">          [ 4,  5],</span>
+<span class="sd">          [ 4,  5]]],</span>
 
 
-<span class="sd">       [[[40, 41]],</span>
+<span class="sd">        [[[ 8,  9],</span>
+<span class="sd">          [10, 11],</span>
+<span class="sd">          [10, 11]]]])</span>
 
-<span class="sd">        [[46, 47]]]])</span>
+<span class="sd">         &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
+<span class="sd">         &gt;&gt;&gt; print(x.max_pool2d(3, 1, &#39;VALID&#39;))</span>
+<span class="sd">         ivy.array([[[[16, 17]],</span>
+
+<span class="sd">         [[22, 23]]],</span>
+
+
+<span class="sd">        [[[40, 41]],</span>
+
+<span class="sd">         [[46, 47]]]])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span>

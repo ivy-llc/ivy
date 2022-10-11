@@ -2244,9 +2244,9 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generates a Vandermonde matrix.</span>
 <span class="sd">    The columns of the output matrix are elementwise powers</span>
-<span class="sd">    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. </span>
-<span class="sd">    If increasing is True, the order of the columns is reversed </span>
-<span class="sd">    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression </span>
+<span class="sd">    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.</span>
+<span class="sd">    If increasing is True, the order of the columns is reversed</span>
+<span class="sd">    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression</span>
 <span class="sd">    in each row is named for Alexandre-Theophile Vandermonde.</span>
 
 <span class="sd">    Parameters</span>
@@ -2256,7 +2256,7 @@
 <span class="sd">    N</span>
 <span class="sd">         Number of columns in the output. If N is not specified,</span>
 <span class="sd">         a square array is returned (N = len(x))</span>
-<span class="sd">    increasing </span>
+<span class="sd">    increasing</span>
 <span class="sd">        Order of the powers of the columns. If True, the powers increase</span>
 <span class="sd">        from left to right, if False (the default) they are reversed.</span>
 <span class="sd">    out</span>
@@ -2269,7 +2269,6 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
 <span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 5])</span>
@@ -2299,9 +2298,7 @@
 <span class="sd">        [ 1,  5, 25]]</span>
 <span class="sd">        )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vander</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">increasing</span><span class="o">=</span><span class="n">increasing</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vander</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">increasing</span><span class="o">=</span><span class="n">increasing</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
