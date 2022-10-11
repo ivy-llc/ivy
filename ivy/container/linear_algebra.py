@@ -1787,7 +1787,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        r"""
+        """
         ivy.Container static method variant of ivy.vector_norm.
         This method simply wraps the function, and so the docstring for
         ivy.vector_norm also applies to this method with minimal changes.
@@ -1796,6 +1796,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ----------
         x
             input array. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         axis
             If an integer, ``axis`` specifies the axis (dimension)
             along which to compute vector norms. If an n-tuple,
@@ -1861,6 +1871,28 @@ class ContainerWithLinearAlgebra(ContainerBase):
             array must have a floating-point data type determined
             by :ref:`type-promotion`.
 
+        Examples
+        -------
+        With :code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), 
+                                b = ivy.array([[5., 6.], [7., 8.]]))
+        >>> y = ivy.static_vector_norm(x)
+        >>> print(y)
+        {
+            a: ivy.array(5.47722558),
+            b: ivy.array(13.19090596)
+        }
+        
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [2., 1.]]), 
+                                b = ivy.array([[3., 4.], [4., 3.]]), ord = 1, axis = 1)
+        >>> y = ivy.static_vector_norm(x)
+        >>> print(y)
+        {
+            a: ivy.array([3., 3.]),
+            b: ivy.array([7., 7.])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
@@ -1887,15 +1919,24 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        r"""
+        """
         ivy.Container instance method variant of ivy.vector_norm.
-        This method simply wraps the function, and so the docstring for
-        ivy.vector_norm also applies to this method with minimal changes.
+        This method computes the vector norm of a vector (or batch of vectors) ``x``.
 
         Parameters
         ----------
         self
-            input array. Should have a floating-point data type.
+            Input array. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.        
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         axis
             If an integer, ``axis`` specifies the axis (dimension)
             along which to compute vector norms. If an n-tuple, ``axis``
@@ -1959,6 +2000,28 @@ class ContainerWithLinearAlgebra(ContainerBase):
             ``x``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        -------
+        With :code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), 
+                                b = ivy.array([[5., 6.], [7., 8.]]))
+        >>> y = x.vector_norm()
+        >>> print(y)
+        {
+            a: ivy.array(5.47722558),
+            b: ivy.array(13.19090596)
+        }
+        
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [2., 1.]]), 
+                                b = ivy.array([[3., 4.], [4., 3.]]))
+        >>> y = x.vector_norm(ord = 1, axis = 1)
+        >>> print(y)
+        {
+            a: ivy.array([3., 3.]),
+            b: ivy.array([7., 7.])
+        }
+        
         """
         return self.static_vector_norm(
             self,
