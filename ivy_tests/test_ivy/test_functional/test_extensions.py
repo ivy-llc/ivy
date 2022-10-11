@@ -193,7 +193,7 @@ def test_vorbis_window(
         x=x[0],
         dtype=dtype,
     )
-    
+
 
 # flatten
 @handle_cmd_line_args
@@ -246,7 +246,7 @@ def test_flatten(
         max_num_dims=3,
         min_value=-100,
         max_value=100,
-        allow_nan=False
+        allow_nan=False,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="lcm"),
 )
@@ -348,5 +348,5 @@ def test_max_pool2d(
         x=x[0],
         kernel=kernel,
         strides=stride,
-        padding=pad
+        padding=pad,
     )
