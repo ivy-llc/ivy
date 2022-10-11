@@ -765,3 +765,79 @@ def test_torch_ravel(
         fn_tree="ravel",
         input=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# rot90
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    dims=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+        min_size=2,
+        max_size=2,
+        unique=True,
+        allow_neg=False,
+        force_tuple=True,
+    ),
+    k=st.integers(min_value=-10, max_value=10),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.rot90"
+    ),
+)
+def test_torch_rot90(
+    dtype_and_x, dims, k, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="rot90",
+        input=x[0],
+        k=k,
+        dims=dims,
+    )
+
+
+# vander
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
+    ),
+    N=st.integers(min_value=0, max_value=5),
+    increasing=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.vander"
+    ),
+)
+def test_torch_vander(
+    dtype_and_x,
+    N,
+    increasing,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="vander",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        N=N,
+        increasing=increasing,
+    )
