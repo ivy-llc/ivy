@@ -3,6 +3,7 @@ import ivy
 from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
+
 # from .linalg.norms_and_other_numbers import trace
 from ivy import (
     int8,

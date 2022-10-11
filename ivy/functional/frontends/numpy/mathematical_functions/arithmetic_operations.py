@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
+
 @handle_numpy_casting
 def add(
     x1,
