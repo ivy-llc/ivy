@@ -2,6 +2,7 @@
 import ivy
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
+
 def where(cond, x1=None, x2=None, /):
     if x1 and x2:
         x1, x2 = promote_types_of_numpy_inputs(x1, x2)

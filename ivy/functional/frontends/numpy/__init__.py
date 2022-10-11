@@ -43,6 +43,7 @@ from typing import Union, Iterable, Tuple
 from numbers import Number
 from .linalg.decompositions import cholesky, qr, svd
 from ivy.exceptions import handle_exceptions
+
 # from .linalg.norms_and_other_numbers import trace
 from ivy import (
     int8,
@@ -58,11 +59,11 @@ from ivy import (
     float64,
     bool,
     bfloat16,
-complex64,
-complex128,
-complex256,
-
+    complex64,
+    complex128,
+    complex256,
 )
+
 numpy_promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,
@@ -206,18 +207,20 @@ numpy_promotion_table = {
     (complex256, complex256): complex256,
 }
 
+
 @handle_exceptions
 def promote_numpy_dtypes(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ):
-    type1,type2=ivy.as_ivy_dtype(type1),ivy.as_ivy_dtype(type2)
-    return ivy.as_native_dtype(numpy_promotion_table[(type1,type2)])
+    type1, type2 = ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)
+    return ivy.as_native_dtype(numpy_promotion_table[(type1, type2)])
+
 
 @handle_exceptions
 def promote_types_of_numpy_inputs(
-x1: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
@@ -226,9 +229,7 @@ x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_numpy_dtypes(
-            x1.dtype, x2.dtype
-        )
+        promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
