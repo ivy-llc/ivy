@@ -56,6 +56,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Cholesky(*, input, name="Cholesky"):
+    return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -71,10 +75,10 @@ def Cosh(*, x, name="cosh"):
 Div = tf_frontend.divide
 
 
-def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
+Cumprod = tf_frontend.cumprod
+
+
+Cumsum = tf_frontend.cumsum
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
@@ -127,6 +131,14 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def InvGrad(*, y, dy, name="InvGrad"):
+    return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
+
+
+def LeftShift(*, x, y, name="LeftShift"):
+    return ivy.bitwise_left_shift(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -153,12 +165,23 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 Maximum = tf_frontend.maximum
 
+MatrixDeterminant = tf_frontend.det
+
+def Max(*, input, axis, keep_dims=False, name="Max"):
+    return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
+def Min(*, input, axis, keep_dims=False, name="Min"):
+    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
+
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
-
 Neg = tf_frontend.negative
+
+
+Mul = tf_frontend.multiply
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
@@ -169,6 +192,14 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
+
+
+def NthElement(*, input, n, reverse=False, name="NthElement"):
+    return ivy.astype(ivy.sort(input, descending=reverse)[..., n], input.dtype)
+
+
+def OnesLike(*, x, name="OnesLike"):
+    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):
@@ -215,12 +246,6 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
-
-
-def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
 
 
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
