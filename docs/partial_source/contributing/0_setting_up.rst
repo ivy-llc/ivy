@@ -45,8 +45,7 @@ you should make sure to check whether you are eligible for a
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
 -------------------------------
@@ -285,8 +284,7 @@ Ubuntu
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker channel`_!
 
 Setting Up Testing
 ******************
@@ -502,8 +500,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly,
 as explained above.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit channel`_!
 
 **Round Up**
 

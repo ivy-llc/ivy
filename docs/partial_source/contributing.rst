@@ -2,14 +2,13 @@ Contributing
 ============
 
 .. _`issues`: https://github.com/unifyai/ivy/issues
-.. _`discussions`: https://github.com/unifyai/ivy/discussions
 .. _`pull-requests`: https://github.com/unifyai/ivy/pulls
 
 We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community,
 regardless of skill-level!
 
 Whether you're a veteran developer 🥷 or a total beginner 🤷,
-everyone is welcome to create `issues`_, start `discussions`_, and create `pull-requests`_.
+everyone is welcome to create `issues`_ and create `pull-requests`_.
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
 
@@ -23,7 +22,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (a) :ref:`Setting Up`
 | Building the right environment 🏛️
 |
-| (b) `The Basics <https://lets-unify.ai/ivy/contributing/1_the_basics.html`_
+| (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
 | (c) :ref:`Building the Docs`

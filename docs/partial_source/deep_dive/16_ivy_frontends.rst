@@ -29,7 +29,7 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-The Basics
+Frontends Basics
 ----------
 
 **NOTE:** Type hints, docstrings and examples are not required when working on

@@ -39,8 +39,7 @@ and **not** the general channel for your questions.
 As the name suggests, the `issues <https://github.com/unifyai/ivy/issues>`_ section on GitHub is the best place to
 raise issues or general bugs that you find with the project.
 It can also serve as a useful place to ask questions, but only if you suspect that the behaviour you are observing
-*might* be a bug. If you are confident there is nothing wrong with the code, but you just don't understand something,
-then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is your best bet.
+*might* be a bug.
 
 **Video**
 
@@ -195,13 +194,12 @@ check out this `Atlassian tutorial`_.
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `fork management channel`_!
+For questions, please reach out on `discord`_ in the `fork management channel`_!
 
 Who To Ask
 ----------
 
-When raising issues or starting discussions on the Ivy repo,
+When raising issues on the Ivy repo,
 it can be useful to know who in the team wrote which piece of code.
 Armed with this information, you can then for example directly tag (using @)
 the member of the team who worked on a particular piece of code,
@@ -313,8 +311,7 @@ The code review process is explained in more detail in the following video.
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `pull requests channel`_!
+For questions, please reach out on `discord`_ in the `pull requests channel`_!
 
 Small Commits Often
 -------------------
@@ -365,8 +362,7 @@ and that all developers are able to work efficiently.
 If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
 so don't stress about this too much 🙂
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `commit frequency channel`_!
+For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
 
 Interactive Ivy Docker Container
 --------------------------------
