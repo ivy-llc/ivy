@@ -384,7 +384,7 @@ def _array_dual_axes(draw):
                     key="shared_axes"
                 ),
                 min_size=1,
-                force_tuple=True,
+                force_int=True,
             ),
         )
     )
@@ -398,7 +398,7 @@ def _array_dual_axes(draw):
                     key="shared_axes"
                 ),
                 min_size=1,
-                force_tuple=True,
+                force_int=True,
             ),
         )
     )
@@ -433,6 +433,6 @@ def test_moveaxis(
         fw=fw,
         fn_name="moveaxis",
         a=np.asarray(a[0], dtype=input_dtype[0]),
-        source=source[0],
-        destination=destination[0],
+        source=source,
+        destination=destination,
     )
