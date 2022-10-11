@@ -478,6 +478,34 @@ Part of the code is shown below as an example:
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/matrix/methods.py
+    class matrix:
+        def __init__(self, data, dtype=None, copy=True):
+            self._init_data(data, dtype)
+
+        def _init_data(self, data, dtype):
+            if isinstance(data, str):
+                self._process_str_data(data, dtype)
+            elif isinstance(data, list) or ivy.is_array(data):
+                data = (
+                    ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
+                )
+                ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+                self._data = data
+            else:
+                raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
+            self._shape = ivy.shape(self._data)
+            self._dtype = self._data.dtype
+
+With this class available, the supported instance methods can now be included in the class.
+For example, :class:`numpy.matrix` has an instance method of :code:`any`:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/matrix/methods.py
+    def any(self, axis=None, out=None):
+        if ivy.exists(axis):
+            return ivy.any(self.A, axis=axis, keepdims=True, out=out)
+        return ivy.any(self.A, axis=axis, out=out)
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
@@ -510,6 +538,94 @@ supporting as frontends. The function can be accessed through calling
 Although under most cases, array operands being passed into an arithmetic operation function
 should be the same data type, using the data type promotion rules can add a layer of sanity
 check to prevent data precision losses or exceptions from further arithmetic operations.
+
+NumPy Special Argument - Casting
+--------------------------------
+
+NumPy supports an additional, special argument - :code:`casting`, which allows
+user to determine the kind of dtype casting that fits their objectives.
+The :code:`casting` rules are explained in the
+`:code:`numpy.can_cast` documentation <https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html>`_.
+While handling this argument, the :code:`dtype` argument is used to state the
+desired return dtype.
+
+To handle this, a decorator - :code:`handle_numpy_casting` is used to simplify
+the handling logic and reduce code redundancy. It is located in the
+`ivy/functional/frontends/numpy/func_wrapper.py <https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39>`_
+
+This decorator is then added to the numpy frontend functions with the
+:code:`casting` argument. An example of the :code:`add` function is shown below.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
+    def add(
+        x1,
+        x2,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="k",
+        dtype=None,
+        subok=True,
+    ):
+        ret = ivy.add(x1, x2, out=out)
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        return ret
+
+There is a special case for the :code:`casting` argument, where the allowed
+dtype must be :code:`bool`, therefore a :code:`handle_numpy_casting_special` is included
+to handle this.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/func_wrapper.py
+    def handle_numpy_casting_special(fn: Callable) -> Callable:
+        @functools.wraps(fn)
+        def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+            ivy.assertions.check_elem_in_list(
+                casting,
+                ["no", "equiv", "safe", "same_kind", "unsafe"],
+                message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
+            )
+            if ivy.exists(dtype):
+                ivy.assertions.check_equal(
+                    ivy.as_ivy_dtype(dtype),
+                    "bool",
+                    message="output is compatible with bool only",
+                )
+            return fn(*args, **kwargs)
+        new_fn.handle_numpy_casting_special = True
+        return new_fn
+
+
+An example function using this is the :code:`numpy.isfinite` function.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/logic/array_type_testing.py
+    @handle_numpy_casting_special
+    @to_ivy_arrays_and_back
+    def isfinite(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        ret = ivy.isfinite(x, out=out)
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        return ret
 
 **Round Up**
 
