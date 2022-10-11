@@ -112,7 +112,7 @@ def test_tensorflow_softmax(
 # gelu test
 @handle_cmd_line_args
 @given(
-    dtype_x_and_approximate=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float")
     ),
     approximate=st.booleans(),
