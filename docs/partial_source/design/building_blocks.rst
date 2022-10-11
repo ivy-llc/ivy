@@ -344,7 +344,7 @@ The compiler takes in any Ivy function, backend function, or composition, and re
    :align: center
    :width: 75%
 
-Let's look at a few examples, and observe the compiled graph of the requisite Ivy code, based on the desired backend.
+Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code.
 
 First, let's set our desired backend as torch.
 
@@ -376,6 +376,9 @@ First, let's set our desired backend as torch.
    :align: center
    :width: 75%
 
+In this example, we observe that both the Ivy code, and the native backend code, compile to the same desired backend code, which in our example was torch.
+Furthermore, the mix of Ivy and native backend code also compiles to the same graph in torch.
+
 Now, let's take another example, this time setting the desired backend as tensorflow as tf.
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
@@ -406,8 +409,9 @@ Now, let's take another example, this time setting the desired backend as tensor
    :align: center
    :width: 75%
 
-In both the examples, we observe that the same Ivy code, is converted into different computation graphs, based on the set framework. Similarly, we've also observed that using a mix of
-Ivy and the desired framework code, also creates the same computation graph as using pure Ivy code. Therefore, all Ivy code is converted into the set backend specific computation graph.
+Additionally, in the above example we also observe that Ivy code and native backend code is compiled to the desired backend code for any framework, not just torch.
+Another important point to observe is that the nodes in the compiled graph are not Ivy frontend functions, but rather the desired backend framework functions, so there
+is no further code conversions required after graph compilation.
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
