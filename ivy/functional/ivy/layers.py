@@ -1453,12 +1453,13 @@ def max_pool2d(
         x
             Input image *[batch_size,h,w,d_in]*.
         kernel
-            Size of the kernel i.e., the sliding window for each dimension of input. *[h,w]*.
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[h,w]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimensio paddings.
         data_format
             NHWC" or "NCHW". Defaults to "NHWC".
         out
@@ -1469,10 +1470,10 @@ def max_pool2d(
         ret
             The result of the pooling operation.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
-
+        Both the description and the type hints above assumes an array input
+        for simplicity, but this function is *nestable*, and therefore
+        also accepts :class:`ivy.Container` instances in place of any of
+        the arguments.
 
         Examples
         --------
