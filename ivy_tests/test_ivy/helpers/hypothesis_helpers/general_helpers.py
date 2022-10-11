@@ -73,7 +73,8 @@ def apply_safety_factor(
             f"{safety_factor_scale} is not a valid safety factor scale."
             f" use 'log' or 'linear'."
         )
-
+    if kind_dtype == "int":
+        return int(min_value), int(max_value), None
     return min_value, max_value, abs_smallest_val
 
 

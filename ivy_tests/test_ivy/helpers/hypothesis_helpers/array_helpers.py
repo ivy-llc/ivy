@@ -688,9 +688,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_length(
-                    x=st.integers(int(min_value), int(max_value)), length=size
-                )
+                list_of_length(x=st.integers(min_value, max_value), length=size)
             )
         elif kind_dtype == "float":
             floats_info = {
