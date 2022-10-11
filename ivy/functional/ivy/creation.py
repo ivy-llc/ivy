@@ -960,6 +960,10 @@ def linspace(
         Number of values to generate.
     axis
         Axis along which the operation is performed.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included.
+    dtype
+        output array data type.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
