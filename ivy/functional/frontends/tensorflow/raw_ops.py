@@ -165,6 +165,7 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 Maximum = tf_frontend.maximum
 
+
 MatrixDeterminant = tf_frontend.det
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
@@ -234,6 +235,7 @@ Sub = tf_frontend.subtract
 
 
 Tan = tf_frontend.tan
+
 
 def Tanh(*, x, name="Tanh"):
     return ivy.tanh(x)

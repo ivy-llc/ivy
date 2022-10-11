@@ -84,3 +84,33 @@ def vorbis_window(
 
 
 vorbis_window.support_native_out = False
+
+
+def lcm(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.abs(
+        np.lcm(x1, x2, out=out, where=True, casting='same_kind',
+               order='K', dtype=None, subok=True)
+    )
+
+
+lcm.support_native_out = True
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[np.dtype] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    window_length = window_length + 1 if periodic is True else window_length
+    return np.array(np.hanning(window_length), dtype=dtype)
+
+
+hann_window.support_native_out = False
