@@ -1,49 +1,8 @@
 # flake8: noqa
 import ivy
-from . import creation_routines
-from .creation_routines import *
-from . import indexing_routines
-from .indexing_routines import *
-from . import logic
-from .logic import *
-from . import manipulation_routines
-from .manipulation_routines import *
-from . import mathematical_functions
-from .mathematical_functions import *
-from . import sorting_searching_counting
-from .sorting_searching_counting import *
-from . import statistics
-from .statistics import *
-from . import ndarray
-from .ndarray import *
-from . import matrix
-from .matrix import *
-from . import random
-from .random import *
-
-from . import ma
-from . import fft
-from . import random
-from . import ndarray
-from . import ufunc
-
-from . import linalg
-from .linalg.matrix_and_vector_products import (
-    # dot,
-    # vdot,
-    inner,
-    outer,
-    matmul,
-    # tensordot,
-    # einsum,
-    # einsum_path,
-    # kron,
-)
+from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
-from .linalg.decompositions import cholesky, qr, svd
-from ivy.exceptions import handle_exceptions
-
 # from .linalg.norms_and_other_numbers import trace
 from ivy import (
     int8,
@@ -239,3 +198,46 @@ def promote_types_of_numpy_inputs(
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
     return ivy.to_native(x1), ivy.to_native(x2)
+
+
+from . import creation_routines
+from .creation_routines import *
+from . import indexing_routines
+from .indexing_routines import *
+from . import logic
+from .logic import *
+from . import manipulation_routines
+from .manipulation_routines import *
+from . import mathematical_functions
+from .mathematical_functions import *
+from . import sorting_searching_counting
+from .sorting_searching_counting import *
+from . import statistics
+from .statistics import *
+from . import ndarray
+from .ndarray import *
+from . import matrix
+from .matrix import *
+from . import random
+from .random import *
+
+from . import ma
+from . import fft
+from . import random
+from . import ndarray
+from . import ufunc
+
+from . import linalg
+from .linalg.matrix_and_vector_products import (
+    # dot,
+    # vdot,
+    inner,
+    outer,
+    matmul,
+    # tensordot,
+    # einsum,
+    # einsum_path,
+    # kron,
+)
+
+from .linalg.decompositions import cholesky, qr, svd
