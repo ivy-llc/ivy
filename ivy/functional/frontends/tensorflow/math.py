@@ -3,7 +3,6 @@ import ivy
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
-
 def add(x, y, name=None):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
@@ -101,6 +100,7 @@ def cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
+
 
 def cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
