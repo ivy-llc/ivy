@@ -32,12 +32,12 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Basics
 ----------
 
-**NOTE:** 
+**NOTE:**
 
 Type hints, docstrings and examples are not required when working on
 frontend functions.
 
-When using functions and methods of Ivy Frontends, in addition to importing ivy itself 
+When using functions and methods of Ivy Frontends, in addition to importing ivy itself
 like :code:`import ivy` please also import the corrisponding Frontend module.
 For example, to use ivy's tensorflow frontend:
 
@@ -445,6 +445,8 @@ code transpilations, it's necessary for us to also implement these instance meth
 the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`,
 :class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
 
+**numpy.ndarray**
+
 For an example of how these are implemented, we first show the instance method for
 :meth:`np.ndarray.reshape`, which is implemented in the frontend
 `ndarray class <https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
@@ -463,6 +465,19 @@ which itself is implemented as follows:
     # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
     def reshape(x, /, newshape, order="C"):
         return ivy.reshape(x, shape=newshape)
+
+**numpy.matrix**
+
+To support special classes and their instance methods,
+the equivalent classes are created in their respective frontend so that the useful
+instance methods are supported for transpilation.
+
+For instance, the :class:`numpy.matrix` class is supported in the Ivy NumPy frontend.
+Part of the code is shown below as an example:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/matrix/methods.py
 
 We need to create these frontend array classes and all of their instance methods such
 that we are able to transpile code which makes use of instance methods.
