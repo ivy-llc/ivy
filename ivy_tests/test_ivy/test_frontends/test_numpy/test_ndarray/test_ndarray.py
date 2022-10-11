@@ -23,7 +23,7 @@ def test_numpy_ndarray_argmax(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtype_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=0,
@@ -74,7 +74,7 @@ def test_numpy_ndarray_reshape(
     native_array,
 ):
     input_dtype, x, shape = dtypes_x_shape
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=0,
@@ -109,7 +109,7 @@ def test_numpy_ndarray_add(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=0,
@@ -149,7 +149,7 @@ def test_numpy_ndarray_squeeze(
     fw,
 ):
     input_dtype, x, axis = dtypes_x_axis
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=[input_dtype],
         as_variable_flags_init=as_variable,
         num_positional_args_init=0,
@@ -191,7 +191,7 @@ def test_numpy_ndarray_transpose(
     native_array,
 ):
     array, dtype, axes = array_and_axes
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
@@ -247,7 +247,7 @@ def test_numpy_ndarray_any(
         as_variable=as_variable,
         native_array=native_array,
     )
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
@@ -306,7 +306,7 @@ def test_numpy_ndarray_all(
         as_variable=as_variable,
         native_array=native_array,
     )
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         input_dtypes_method=input_dtype,
         as_variable_flags_init=as_variable,
