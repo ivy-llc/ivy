@@ -432,8 +432,7 @@ def sinc(
     >>> y = ivy.zeros(3)
     >>> ivy.sinc(x, out=y)
     >>> print(y)
-    ivy.array(([-0.212,0.637,-0.212])
-
+    ivy.array([-0.212,0.637,-0.212])
 
     With :code:`ivy.NativeArray` input:
 
@@ -552,7 +551,7 @@ def flatten(
           [10, 10,  9,  1],
           [19, 17, 13, 10],
           [ 4, 19, 16, 17],
-          [ 2, 12,  8, 14]]]))
+          [ 2, 12,  8, 14]]])
 
     With :class:`ivy.Container` input:
 
