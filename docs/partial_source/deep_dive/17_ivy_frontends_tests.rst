@@ -682,6 +682,59 @@ ivy.add()
 * We specify the :code:`fn_tree` to be :meth:`Tensor.add` which is the path to the function in the frontend class.
 
 
+Frontend Special Method Tests
+-----------------------------
+
+The implementation for the frontend special method tests are somewhat a little different from how the instance methods
+are being tested.
+
+**Important Helper Function**
+
+:func:`helpers.value_test` is being used to test frontend special methods.
+
+
+Frontend Special Method Test Examples
+-------------------------------------
+
+ivy.add()
+^^^^^^^^^
+
+**Jax**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
+    @handle_cmd_line_args
+    @given(
+        dtype_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True),
+            shared_dtype=True,
+            num_arrays=2,
+        )
+    )
+    def test_jax_special_add(
+        dtype_x,
+        fw,
+    ):
+        input_dtype, x = dtype_x
+        ret = DeviceArray(x[0]) + DeviceArray(x[1])
+        ret_gt = jnp.array(x[0]) + jnp.array(x[1], dtype=input_dtype[1])
+        ret = helpers.flatten_and_to_np(ret=ret)
+        ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+        for (u, v) in zip(ret, ret_gt):
+            helpers.value_test(
+                ret=ret,
+                ret_from_gt=ret_gt,
+                ground_truth_backend="jax",
+            )
+
+* We use :func:`helpers.value_test` to test the special method.
+* We use the frontend class :class:`DeviceArray` to calculate jax frontend special method's result, which is then compared
+to the regular frontend function's result, when passed into the :func:`helpers.value_test`.
+* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is
+to be tested.
+
+
 Hypothesis Helpers
 ------------------
 

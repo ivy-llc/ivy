@@ -441,6 +441,10 @@ and :func:`add`.
 This simple design choice comes with many advantages, some of which are explained
 in our :ref:`Ivy Array` section.
 
+**Important Note**
+Before implementing the instance method or special method, make sure that the regular function in the specific
+frontend is already implemented.
+
 In order to implement Ivy's frontend APIs to the extent that is required for arbitrary
 code transpilations, it's necessary for us to also implement these instance methods
 and special methods of the framework-specific array classes (:class:`tf.Tensor`,
