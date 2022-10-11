@@ -49,7 +49,7 @@ adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-`Details -> 'Run [backend] Tests`.
+`Details -> Run [backend] Tests`.
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
@@ -77,7 +77,7 @@ run a single test or test file with terminal, use the following commands:
 Using the IDE
 ****
 You can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the '_array_module.py' file. You can find it on the 'array_api_tests' submodule. At the beginning
+backend explicitly in the `_array_module.py` file. You can find it in the `array_api_tests` submodule. At the beginning
 of the file, you will see the following line of code :code:`array_module = None`. You need to comment out that line and add
 the following code:
 
@@ -88,32 +88,6 @@ the following code:
 
 After that, you can run the API test files as you typically would with other tests. See `here`_  for instructions on how
 to run tests in ivy more generally. *NB*: make sure to not add any changes to the array-api files to your commit.
-
-Re-Running Failed Array API Tests
-****
-
-When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
-For example, in the :code:`test_trace` Array API Test, we find the following output on running the test:
-
-.. code-block::
-
-        Falsifying example: test_trace(
-            x=ivy.array([[1.e-05]]), kw={},
-        )
-
-It is always efficient to fix this particular example first, before running any other examples.
-In order to achieve this functionality, we can use the :code:`@example` Hypothesis decorator.
-The :code:`@example` decorator ensures that a specific example is always tested, on running a particular test.
-The decorator requires the test arguments as parameters.
-For the :code:`test_trace` Array API Test, we can add the decorator as follows:
-
-.. code-block::
-
-        @example(x=ivy.array([[3.5e-46]]), kw={})
-        def test_trace(x, kw):
-
-This ensures that the given example is always tested while running the test, allowing one to debug the failure
-efficiently.
 
 Test Skipping
 -------------
