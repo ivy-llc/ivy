@@ -91,8 +91,12 @@ def diagonal(
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
@@ -244,7 +248,7 @@ def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: np.ndarray,
     /,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign

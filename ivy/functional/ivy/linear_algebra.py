@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
 import ivy
@@ -549,7 +549,7 @@ def eigh(
     *,
     UPLO: Optional[str] = "L",
     out: Optional[ivy.Array] = None,
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
@@ -1317,7 +1317,7 @@ def qr(
     /,
     *,
     mode: str = "reduced",
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -1372,7 +1372,7 @@ def qr(
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """Computes the sign and natural logarithm of the determinant of an array.
 
     Parameters
@@ -1424,7 +1424,8 @@ def slogdet(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.slogdet.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
+        signatures.linalg.slogdet.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

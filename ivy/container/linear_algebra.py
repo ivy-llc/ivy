@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict, Sequence
+from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -533,7 +533,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> NamedTuple:
+    ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.eigh(x_) if ivy.is_array(x_) else x_,
@@ -1451,7 +1451,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    # Unsure
     def svd(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1462,7 +1461,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
+    ) -> ivy.Container:
         return self.static_svd(
             self,
             key_chains,
