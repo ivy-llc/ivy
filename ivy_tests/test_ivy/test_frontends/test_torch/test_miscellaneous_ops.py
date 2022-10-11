@@ -772,7 +772,9 @@ def test_torch_ravel(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.tuples(st.integers(min_value=1, max_value=5),),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
     ),
     N=st.integers(min_value=0, max_value=5),
     increasing=st.booleans(),
