@@ -2109,8 +2109,9 @@ def promote_types_of_inputs(
         x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
         x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
+        x2 = ivy.asarray(x2, dtype=x1.dtype, device=x1.device)
     else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x1 = ivy.asarray(x1, dtype=x2.dtype, device=x2.device)
         x2 = ivy.asarray(x2)
     return ivy.to_native(x1), ivy.to_native(x2)
+

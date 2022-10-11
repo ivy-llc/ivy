@@ -1,5 +1,6 @@
 # global
 import ivy
+from typing import Union
 
 
 def _get_reduction_func(reduction):
@@ -83,7 +84,9 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
+    print(type(input))
     input = ivy.softmax(input)
+    print(type(input))
     ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
     if weight is not None:
         ret = ivy.multiply(weight, ret)
@@ -101,3 +104,28 @@ def binary_cross_entropy(
         result = ivy.multiply(weight, result)
     result = reduction(result)
     return result
+
+
+def smooth_l1_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    size_average=None,
+    reduce=None,
+    reduction='mean',
+    beta=1.0,
+):
+    beta = ivy.array(beta, device=input.device)
+    reduction = _get_reduction(reduction, size_average, reduce)
+
+    _diff_abs = ivy.subtract(input, target).abs()
+    
+    _idxs_less_than_beta = ivy.less(_diff_abs, beta)
+    _idxs_greater_than_beta = ivy.greater_equal(_diff_abs, beta)
+
+    ret = input.clone()
+    ret[_idxs_less_than_beta] = ((0.5 * _diff_abs[_idxs_less_than_beta]) ** 2) / beta
+    ret[_idxs_greater_than_beta] = _diff_abs[_idxs_greater_than_beta] - 0.5 / beta
+
+    return reduction(ret)
