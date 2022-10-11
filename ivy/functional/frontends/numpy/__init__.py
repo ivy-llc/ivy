@@ -33,6 +33,7 @@ from .linalg.matrix_and_vector_products import (
     inner,
     outer,
     matmul,
+    matrix_power,
     # tensordot,
     # einsum,
     # einsum_path,
@@ -41,4 +42,6 @@ from .linalg.matrix_and_vector_products import (
 
 from .linalg.decompositions import cholesky, qr, svd
 
-# from .linalg.norms_and_other_numbers import trace
+from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm
+
+from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve
