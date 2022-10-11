@@ -2,6 +2,7 @@
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st
+from hypothesis.internal.floats import float_of
 from functools import reduce
 from operator import mul
 
@@ -700,14 +701,8 @@ def array_values(
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:
                 float_strategy = st.floats(
-                    # Using np.array to assert that value
-                    # can be represented of compatible width.
-                    min_value=np.array(
-                        min_value, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist(),
-                    max_value=np.array(
-                        max_value, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist(),
+                    min_value=float_of(min_value, floats_info[dtype]["width"]),
+                    max_value=float_of(max_value, floats_info[dtype]["width"]),
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
@@ -718,12 +713,10 @@ def array_values(
             else:
                 float_strategy = st.one_of(
                     st.floats(
-                        min_value=np.array(
-                            min_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        max_value=np.array(
-                            -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
+                        min_value=float_of(min_value, floats_info[dtype]["width"]),
+                        max_value=float_of(
+                            -abs_smallest_val, floats_info[dtype]["width"]
+                        ),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -732,12 +725,10 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                     st.floats(
-                        min_value=np.array(
-                            abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        max_value=np.array(
-                            max_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
+                        min_value=float_of(
+                            abs_smallest_val, floats_info[dtype]["width"]
+                        ),
+                        max_value=float_of(max_value, floats_info[dtype]["width"]),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
