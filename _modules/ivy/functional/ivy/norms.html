@@ -207,9 +207,9 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, [0, 1], epsilon=0.001, \</span>
 <span class="sd">                              new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 0.576,  0.312,  1.43 ],</span>
-<span class="sd">               [ 0.581,  0.911,  1.43 ],</span>
-<span class="sd">               [ 1.01 , -0.599, -0.69]])</span>
+<span class="sd">    ivy.array([[ 0.826, -0.178, 0.981 ],</span>
+<span class="sd">               [ 0.831,  0.421, 0.981 ],</span>
+<span class="sd">               [ 1.26 , -1.05 , -1.28 ]])</span>
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
@@ -218,10 +218,10 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, bias=0.2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[-1.05, -1.05, -1.05],</span>
-<span class="sd">                      [1.45, 1.45, 1.45]]),</span>
-<span class="sd">        b: ivy.array([[-1.33, 0.2, 1.73],</span>
-<span class="sd">                      [-1.33, 0.2, 1.73]])</span>
+<span class="sd">        a: ivy.array([[-1.25, -1.25, -1.25],</span>
+<span class="sd">                      [1.25, 1.25, 1.25]]),</span>
+<span class="sd">        b: ivy.array([[-1.53, 0., 1.53],</span>
+<span class="sd">                      [-1.53, 0., 1.53]])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    With one :class:`ivy.Container` input:</span>
@@ -233,8 +233,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([-0.342, 0.0427, 0.299]),</span>
-<span class="sd">        b: ivy.array([[-0.241, -0.241, -0.241], </span>
-<span class="sd">                      [0.241, 0.241, 0.241]])</span>
+<span class="sd">        b: ivy.array([[-0.217, 0., 0.217], </span>
+<span class="sd">                      [-0.217, 0., 0.217]])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
@@ -247,9 +247,9 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, bias=bias)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([-1.42, 0.403, 1.62]),</span>
-<span class="sd">        b: ivy.array([[-1.54, 0.3, 2.14], </span>
-<span class="sd">                      [-1.54, 0.3, 2.14]])</span>
+<span class="sd">        a: ivy.array([-1.62, 0.203, 1.42]),</span>
+<span class="sd">        b: ivy.array([[-1.84, 0., 1.84], </span>
+<span class="sd">                      [-1.84, 0., 1.84]])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>

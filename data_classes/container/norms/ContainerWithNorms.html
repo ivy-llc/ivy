@@ -201,9 +201,9 @@ that the inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: ivy.array([0.658, 1.04, 1.3]),</span>
-<span class="go">    b: ivy.array([[0.759, 0.759, 0.759],</span>
-<span class="go">                  [1.24, 1.24, 1.24]])</span>
+<span class="go">    a: ivy.array([-0.342, 0.0427, 0.299]),</span>
+<span class="go">    b: ivy.array([[-0.241, -0.241, -0.241,</span>
+<span class="go">                  [0.241, 0.241, 0.241]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -215,9 +215,9 @@ that the inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="n">new_std</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: ivy.array([-1.42, 0.703, 2.12]),</span>
-<span class="go">    b: ivy.array([[-1.54, 0.3, 2.14],</span>
-<span class="go">                  [-1.54, 0.3, 2.14]])</span>
+<span class="go">    a: ivy.array([-1.62, 0.203, 1.42]),</span>
+<span class="go">    b: ivy.array([[-1.84, 0., 1.84],</span>
+<span class="go">                  [-1.84, 0., 1.84]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>

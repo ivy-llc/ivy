@@ -186,9 +186,9 @@ inputs broadcast to.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0976</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3452</span><span class="p">,</span>  <span class="mf">1.2740</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.1047</span><span class="p">,</span>  <span class="mf">0.5886</span><span class="p">,</span>  <span class="mf">1.2732</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.7696</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.7024</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2518</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>                               <span class="n">new_std</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[ 0.576,  0.312,  1.43 ],</span>
-<span class="go">           [ 0.581,  0.911,  1.43 ],</span>
-<span class="go">           [ 1.01 , -0.599, -0.69]])</span>
+<span class="go">ivy.array([[ 0.826, -0.178, 0.981 ],</span>
+<span class="go">           [ 0.831,  0.421, 0.981 ],</span>
+<span class="go">           [ 1.26 , -1.05 , -1.28 ]])</span>
 </pre></div>
 </div>
 <p>With a mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
@@ -197,10 +197,10 @@ inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: ivy.array([[-1.05, -1.05, -1.05],</span>
-<span class="go">                  [1.45, 1.45, 1.45]]),</span>
-<span class="go">    b: ivy.array([[-1.33, 0.2, 1.73],</span>
-<span class="go">                  [-1.33, 0.2, 1.73]])</span>
+<span class="go">    a: ivy.array([[-1.25, -1.25, -1.25],</span>
+<span class="go">                  [1.25, 1.25, 1.25]]),</span>
+<span class="go">    b: ivy.array([[-1.53, 0., 1.53],</span>
+<span class="go">                  [-1.53, 0., 1.53]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -211,8 +211,8 @@ inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    a: ivy.array([-0.342, 0.0427, 0.299]),</span>
-<span class="go">    b: ivy.array([[-0.241, -0.241, -0.241],</span>
-<span class="go">                  [0.241, 0.241, 0.241]])</span>
+<span class="go">    b: ivy.array([[-0.217, 0., 0.217],</span>
+<span class="go">                  [-0.217, 0., 0.217]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -224,9 +224,9 @@ inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="n">new_std</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: ivy.array([-1.42, 0.403, 1.62]),</span>
-<span class="go">    b: ivy.array([[-1.54, 0.3, 2.14],</span>
-<span class="go">                  [-1.54, 0.3, 2.14]])</span>
+<span class="go">    a: ivy.array([-1.62, 0.203, 1.42]),</span>
+<span class="go">    b: ivy.array([[-1.84, 0., 1.84],</span>
+<span class="go">                  [-1.84, 0., 1.84]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
