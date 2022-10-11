@@ -12,10 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid")
     ),
-    order=st.text(['C', 'F', 'A', 'K'], max_size=1),
-    dtype_and_like=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.asarray"
@@ -24,8 +20,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_numpy_asarray(
         dtype_and_x,
-        order,
-        dtype_and_like,
         as_variable,
         num_positional_args,
         native_array,
@@ -42,6 +36,4 @@ def test_numpy_asarray(
         fn_tree="asarray",
         a=x,
         dtype=input_dtype,
-        order=order,
-        like=like
     )
