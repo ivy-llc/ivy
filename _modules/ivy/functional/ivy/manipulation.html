@@ -130,7 +130,7 @@
   <h1>Source code for ivy.functional.ivy.manipulation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># For Review</span>
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">numpy.core.numeric</span> <span class="kn">import</span> <span class="n">normalize_axis_tuple</span>
 
@@ -1048,6 +1048,198 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pad"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/pad/pad_functional.html#ivy.functional.ivy.manipulation.pad">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">pad</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">pad_width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Literal</span><span class="p">[</span>
+                <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;edge&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;linear_ramp&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;minimum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reflect&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;symmetric&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;empty&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">Callable</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+    <span class="n">stat_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">constant_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span> <span class="n">Number</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">end_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span> <span class="n">Number</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">reflect_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;even&quot;</span><span class="p">,</span> <span class="s2">&quot;odd&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;even&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Pads an array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array to pad.</span>
+<span class="sd">    pad_width</span>
+<span class="sd">        Number of values padded to the edges of each axis.</span>
+<span class="sd">         - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths</span>
+<span class="sd">           for each axis.</span>
+<span class="sd">         - ((before, after),) yields same before and after pad for each axis.</span>
+<span class="sd">         - (pad,) or int is a shortcut for before = after = pad width for all axes.</span>
+<span class="sd">    mode</span>
+<span class="sd">        One of the following string values or a user supplied function.</span>
+<span class="sd">             - &quot;constant&quot;: Pads with a constant value.</span>
+<span class="sd">             - &quot;edge&quot;: Pads with the edge values of array.</span>
+<span class="sd">             - &quot;linear_ramp&quot;: Pads with the linear ramp between end_value</span>
+<span class="sd">               and the array edge value.</span>
+<span class="sd">             - &quot;maximum&quot;: Pads with the maximum value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;mean&quot;: Pads with the mean value of all or part of the vector along</span>
+<span class="sd">               each axis.</span>
+<span class="sd">             - &quot;median&quot;: Pads with the median value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;minimum&quot;: Pads with the minimum value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;reflect&quot;: Pads with the reflection mirrored on the first and last</span>
+<span class="sd">               values of the vector along each axis.</span>
+<span class="sd">             - &quot;symmetric&quot;: Pads with the reflection of the vector mirrored along</span>
+<span class="sd">               the edge of the array.</span>
+<span class="sd">             - &quot;wrap&quot;: Pads with the wrap of the vector along the axis.</span>
+<span class="sd">               The first values are used to pad the end and the end values are used</span>
+<span class="sd">               to pad the beginning.</span>
+<span class="sd">             - &quot;empty&quot;: Pads with undefined values.</span>
+<span class="sd">             - &lt;function&gt;: Pads with a user-defined padding function.</span>
+<span class="sd">                 The padding function should modify a rank 1 array in-place.</span>
+<span class="sd">                 It has the following signature:</span>
+<span class="sd">                 padding_func(vector, iaxis_pad_width, iaxis, kwargs), where:</span>
+<span class="sd">                     - vector is</span>
+<span class="sd">                       A rank 1 array already padded with zeros. Padded values are</span>
+<span class="sd">                       vector[:iaxis_pad_width[0]] and vector[-iaxis_pad_width[1]:].</span>
+<span class="sd">                     - iaxis_pad_width is</span>
+<span class="sd">                       A 2-tuple of ints, where iaxis_pad_width[0] represents the</span>
+<span class="sd">                       number of values padded at the beginning of vector and</span>
+<span class="sd">                       iaxis_pad_width[1] represents the number of values padded</span>
+<span class="sd">                       at the end of vector.</span>
+<span class="sd">                     - iaxis is</span>
+<span class="sd">                       The axis currently being calculated.</span>
+<span class="sd">                     - kwargs is</span>
+<span class="sd">                       A dict of any keyword arguments the function requires.</span>
+<span class="sd">    stat_length</span>
+<span class="sd">        Used in &quot;maximum&quot;, &quot;mean&quot;, &quot;median&quot;, and &quot;minimum&quot;.</span>
+<span class="sd">        Number of values at edge of each axis used to calculate the statistic value.</span>
+<span class="sd">         - ((before_1, after_1), … (before_N, after_N)) yields unique statistic</span>
+<span class="sd">           lengths for each axis.</span>
+<span class="sd">         - ((before, after),) yields same before and after statistic lengths for</span>
+<span class="sd">           each axis.</span>
+<span class="sd">         - (stat_length,) or int is a shortcut for before = after = statistic length</span>
+<span class="sd">           for all axes.</span>
+<span class="sd">         - None uses the entire axis.</span>
+<span class="sd">    constant_values</span>
+<span class="sd">        Used in &quot;constant&quot;. The values to set the padded values for each axis.</span>
+<span class="sd">         - ((before_1, after_1), ... (before_N, after_N)) yields unique pad constants</span>
+<span class="sd">           for each axis.</span>
+<span class="sd">         - ((before, after),) yields same before and after constants for each axis.</span>
+<span class="sd">         - (constant,) or constant is a shortcut for before = after = constant for</span>
+<span class="sd">           all axes.</span>
+<span class="sd">    end_values</span>
+<span class="sd">        Used in &quot;linear_ramp&quot;. The values used for the ending value of the linear_ramp</span>
+<span class="sd">        and that will form the edge of the padded array.</span>
+<span class="sd">         - ((before_1, after_1), ... (before_N, after_N)) yields unique end values</span>
+<span class="sd">           for each axis.</span>
+<span class="sd">         - ((before, after),) yields same before and after end values for each axis.</span>
+<span class="sd">         - (constant,) or constant is a shortcut for before = after = constant for</span>
+<span class="sd">           all axes.</span>
+<span class="sd">    reflect_type</span>
+<span class="sd">        Used in &quot;reflect&quot;, and &quot;symmetric&quot;. The &quot;even&quot; style is the default with an</span>
+<span class="sd">        unaltered reflection around the edge value. For the &quot;odd&quot; style, the extended</span>
+<span class="sd">        part of the array is created by subtracting the reflected values from two</span>
+<span class="sd">        times the edge value.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
+
+
+<span class="sd">    Both the description and the type hints above assume an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ivy.array([(1, 1), (2, 2)])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">               [0, 0, 1, 2, 3, 0, 0],</span>
+<span class="sd">               [0, 0, 4, 5, 6, 0, 0],</span>
+<span class="sd">               [0, 0, 0, 0, 0, 0, 0]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ivy.array([(1, 1), (2, 2)])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;reflect&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[6, 5, 4, 5, 6, 5, 4],</span>
+<span class="sd">               [3, 2, 1, 2, 3, 2, 1],</span>
+<span class="sd">               [6, 5, 4, 5, 6, 5, 4],</span>
+<span class="sd">               [3, 2, 1, 2, 3, 2, 1]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ivy.array([(1, 1), (2, 2)])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;symmetric&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2, 1, 1, 2, 3, 3, 2],</span>
+<span class="sd">               [2, 1, 1, 2, 3, 3, 2],</span>
+<span class="sd">               [5, 4, 4, 5, 6, 6, 5],</span>
+<span class="sd">               [5, 4, 4, 5, 6, 6, 5]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ivy.array([(1, 1), (2, 2)])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;, constant_values=7)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[7, 7, 7, 7, 7, 7, 7],</span>
+<span class="sd">               [7, 7, 1, 2, 3, 7, 7],</span>
+<span class="sd">               [7, 7, 4, 5, 6, 7, 7],</span>
+<span class="sd">               [7, 7, 7, 7, 7, 7, 7]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([0., 1., 2.]))</span>
+<span class="sd">    &gt;&gt;&gt; padding = ivy.array([(1, 1)])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 0., 1., 2., 0.]),</span>
+<span class="sd">        b: ivy.array([0., 0., 1., 2., 0.])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">pad_width</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+        <span class="n">stat_length</span><span class="o">=</span><span class="n">stat_length</span><span class="p">,</span>
+        <span class="n">constant_values</span><span class="o">=</span><span class="n">constant_values</span><span class="p">,</span>
+        <span class="n">end_values</span><span class="o">=</span><span class="n">end_values</span><span class="p">,</span>
+        <span class="n">reflect_type</span><span class="o">=</span><span class="n">reflect_type</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/constant_pad/constant_pad_functional.html#ivy.functional.ivy.manipulation.constant_pad">[docs]</a><span class="nd">to_native_arrays_and_back</span>
