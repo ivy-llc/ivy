@@ -8,23 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
-from math import sin, pi, sqrt
-
-
-def _KBDW(window_length, beta, dtype=None):
-    window_length = window_length // 2
-    w = np.kaiser(window_length + 1, beta)
-    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
-    
-    def sum_i_n(n):
-        return sum([w[i] for i in range(0, n + 1)])
-    dn_low = [sqrt(sum_i_n(i)/sum_i_N) for i in range(0, window_length)]
-    
-    def sum_2N_1_n(n):
-        return sum([w[i] for i in range(0, 2 * window_length - n)])
-    dn_mid = [sqrt(sum_2N_1_n(i)/sum_i_N) for i in range(window_length, 2*window_length)]
-    
-    return np.array(dn_low + dn_mid, dtype=dtype)
+import math
 
 
 def is_native_sparse_array(x):
@@ -44,8 +28,10 @@ def native_sparse_array(
     ivy.assertions.check_exists(
         data,
         inverse=True,
-        message="data cannot be specified, Numpy does not support sparse \
-        array natively",
+        message=(
+            "data cannot be specified, Numpy does not support sparse         array"
+            " natively"
+        ),
     )
     if _is_coo_not_csr(
         coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -66,8 +52,8 @@ def native_sparse_array(
 
 def native_sparse_array_to_indices_values_and_shape(x):
     logging.warning(
-        "Numpy does not support sparse array natively, None is returned for \
-        indices, values and shape."
+        "Numpy does not support sparse array natively, None is returned for        "
+        " indices, values and shape."
     )
     return None, None, None
 
@@ -80,30 +66,51 @@ def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def vorbis_window(
     window_length: np.ndarray,
     *,
-    dtype:Optional[np.dtype] = np.float32,
-    out: Optional[np.ndarray] = None
+    dtype: Optional[np.dtype] = np.float32,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.array([
-        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
-        for i in range(1, window_length*2)[0::2]
-    ], dtype=dtype)
+    return np.array(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )
 
 
 vorbis_window.support_native_out = False
 
 
-def kaiser_bessel_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
+def lcm(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
     *,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if periodic == True:
-        return _KBDW(window_length + 1, beta, dtype)[:-1]
-    else:
-        return _KBDW(window_length, beta, dtype)
+    return np.abs(
+        np.lcm(x1, x2, out=out, where=True, casting='same_kind',
+               order='K', dtype=None, subok=True)
+    )
 
 
-kaiser_bessel_window.support_native_out = False
+lcm.support_native_out = True
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[np.dtype] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    window_length = window_length + 1 if periodic is True else window_length
+    return np.array(np.hanning(window_length), dtype=dtype)
+
+
+hann_window.support_native_out = False

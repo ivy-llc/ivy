@@ -8,24 +8,7 @@ from ivy.functional.ivy.extensions import (
 )
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
-from math import sin, pi, sqrt
-
-
-def _KBDW(window_length, periodic, beta, dtype=None):
-    window_length = window_length // 2
-    w = torch.kaiser_window(
-        window_length + 1, periodic, beta, layout=torch.strided, device=None, requires_grad=False)
-    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
-    
-    def sum_i_n(n):
-        return sum([w[i] for i in range(0, n + 1)])
-    dn_low = [sqrt(sum_i_n(i)/sum_i_N) for i in range(0, window_length)]
-    
-    def sum_2N_1_n(n):
-        return sum([w[i] for i in range(0, 2 * window_length - n)])
-    dn_mid = [sqrt(sum_2N_1_n(i)/sum_i_N) for i in range(window_length, 2*window_length)]
-    
-    return torch.tensor(dn_low + dn_mid, dtype=dtype)
+import math
 
 
 def is_native_sparse_array(x):
@@ -90,27 +73,71 @@ sinc.support_native_out = True
 sinc.unsupported_dtypes = ("float16",)
 
 
+def flatten(
+    x: torch.Tensor,
+    /,
+    *,
+    start_dim: int,
+    end_dim: int,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.flatten(x, start_dim, end_dim)
+
+
 def vorbis_window(
     window_length: torch.tensor,
     *,
-    dtype:Optional[torch.dtype] = torch.float32,
-    out: Optional[torch.tensor] = None
+    dtype: Optional[torch.dtype] = torch.float32,
+    out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.tensor([
-        round(sin((pi/2)*(sin(pi*(i)/(window_length*2))**2)), 8)
-        for i in range(1, window_length*2)[0::2]
-    ], dtype=dtype)
+    return torch.tensor(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )
 
 
 vorbis_window.support_native_out = False
 
 
-def kaiser_bessel_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
+def lcm(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
     *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return _KBDW(window_length, periodic, beta, dtype)
+    return torch.abs(
+        torch.lcm(x1, x2, out=out)
+    )
+
+
+lcm.support_native_out = True
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[torch.dtype] = None,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.hann_window(
+        window_length, 
+        periodic=periodic, 
+        dtype=dtype, 
+        layout=torch.strided,
+        device=None,
+        requires_grad=None
+    )
+
+
+hann_window.support_native_out = False
