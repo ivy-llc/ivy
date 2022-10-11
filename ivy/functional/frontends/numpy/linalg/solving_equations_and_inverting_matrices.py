@@ -23,4 +23,4 @@ def inv(a):
 # pinv
 @to_ivy_arrays_and_back
 def pinv(a, rtol=1e-15, hermitian=False):
-    return ivy.pinv(a, rtol)
+    return ivy.pinv(a, rtol=rtol)
