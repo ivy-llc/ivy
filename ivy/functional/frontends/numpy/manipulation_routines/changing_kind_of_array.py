@@ -2,11 +2,9 @@
 import ivy
 
 
-def asarray(obj,
+def asarray(a,
             dtype=None,
             order=None,
             *,
             like=None):
-    if dtype:
-        obj = ivy.astype(ivy.array(obj), ivy.as_ivy_dtype(dtype))
-    return ivy.asarray(obj, dtype=dtype)
+    return ivy.asarray(a, dtype=dtype)
