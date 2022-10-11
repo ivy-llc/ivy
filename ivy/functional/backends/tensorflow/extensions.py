@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -120,3 +120,21 @@ def hann_window(
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
     )
+
+
+def max_pool2d(
+    x: Union[tf.Tensor, tf.Variable],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.max_pool2d(x, kernel, strides, padding)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
