@@ -3,7 +3,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from symbol import tfpdef
+
 
 # hann_window
 
@@ -18,13 +18,14 @@ from symbol import tfpdef
     ),
 )
 # helpers.test_frontend_function to test hann_window
-def test_hannn_window(dtype_and_x, num_positional_args):
+def test_hann_window(dtype_and_x, num_positional_args):
+    # unpack
     dtype, x = dtype_and_x
-    ivy_hann_window = helpers.test_frontend_function(
+
+    # test
+    helpers.test_frontend_function(
         ivy.hann_window,
-        tfpdef.signal.hann_window,
-        num_positional_args,
+        x,
         dtype=dtype,
-        x=x,
+        num_positional_args=num_positional_args,
     )
-    ivy_hann_window()
