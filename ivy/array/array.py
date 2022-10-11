@@ -31,16 +31,6 @@ from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
 
 
-def _native_wrapper(f):
-    @functools.wraps(f)
-    def decor(self, *args, **kwargs):
-        if isinstance(self, Array):
-            return f(self, *args, **kwargs)
-        return getattr(self, f.__name__)(*args, **kwargs)
-
-    return decor
-
-
 class Array(
     ArrayWithActivations,
     ArrayWithCreation,
