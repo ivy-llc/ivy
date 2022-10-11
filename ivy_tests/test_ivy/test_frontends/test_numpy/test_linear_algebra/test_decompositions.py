@@ -30,7 +30,6 @@ def test_numpy_cholesky(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = x[0]
@@ -73,7 +72,6 @@ def test_numpy_qr(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -108,7 +106,6 @@ def test_numpy_svd(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = x[0]

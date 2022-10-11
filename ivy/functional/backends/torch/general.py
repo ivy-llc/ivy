@@ -1,15 +1,18 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-import ivy
-import numpy as np
-import torch
-from operator import mul
 from functools import reduce
-from typing import Optional, Union, Sequence, Callable
 from numbers import Number
+from operator import mul
+from typing import Optional, Union, Sequence, Callable
 
 import functorch
+import numpy as np
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import version
 
 torch_scatter = None
 
@@ -40,14 +43,12 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
-
-
-array_equal.unsupported_dtypes = ("bfloat16",)
 
 
 def container_types():
@@ -141,44 +142,6 @@ def gather(
     return result
 
 
-def potato(
-    params,
-    indices,
-    /,
-    *,
-    axis,
-    batch_dims,
-):
-    assert batch_dims < len(
-        indices.shape
-    ), "batch_dims must be less than or equal to rank(indices)."
-    assert batch_dims <= axis, "batch_dims must be less than or equal to axis"
-    assert (
-        params.shape[0:batch_dims] == indices.shape[0:batch_dims]
-    ), "params.shape[0:batch_dims] should be equal to indices.shape[0:batch_dims]"
-    result = []
-    batch_dims = batch_dims % len(indices.shape)
-    if batch_dims == 0:
-        result = params[
-            (slice(None),) * (axis % params.ndim) + (indices.type(torch.int64),)
-        ]
-    else:
-        for b in range(batch_dims):
-            if b == 0:
-                zip_list = [(p, i) for p, i in zip(params, indices)]
-            else:
-                zip_list = [
-                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
-                ]
-        for z in zip_list:
-            p, i = z
-            r = p[(slice(None),) * (axis % p.ndim) + (i.type(torch.int64),)]
-            result.append(r)
-        result = torch.tensor(result)
-        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return result
-
-
 def gather_nd(
     params: torch.Tensor,
     indices: torch.Tensor,
@@ -248,6 +211,29 @@ def inplace_increment(
     return x
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
+)  # TODO Fixed in PyTorch 1.12.1
+def cumprod(
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is torch.bool:
+            dtype = ivy.default_int_dtype(as_native=True)
+
+
+cumprod.support_native_out = True
+
+
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
     val: Union[ivy.Array, torch.Tensor],
@@ -258,6 +244,7 @@ def inplace_update(
         x_native.data = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
+
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
@@ -279,6 +266,12 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
+)
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -334,9 +327,15 @@ def scatter_flat(
     return res
 
 
-scatter_flat.unsupported_dtypes = ("bfloat16",)
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -483,10 +482,7 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+scatter_nd.support_native_out = True
 
 
 def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

@@ -7164,6 +7164,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7187,6 +7188,10 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7204,6 +7209,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7216,6 +7222,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7240,6 +7247,10 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the minimum. If ``False``, the
+            minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7256,6 +7267,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7269,6 +7281,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7282,6 +7295,20 @@ class ContainerWithElementwise(ContainerBase):
             Input array containing elements to maximum threshold.
         x2
             Tensor containing maximum values, must be broadcastable to x1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7302,6 +7329,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7314,6 +7342,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        use_where: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7327,6 +7356,20 @@ class ContainerWithElementwise(ContainerBase):
             Input array containing elements to maximum threshold.
         x2
             Tensor containing maximum values, must be broadcastable to x1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        use_where
+            Whether to use :func:`where` to calculate the maximum. If ``False``, the
+            maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
+            ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7336,8 +7379,6 @@ class ContainerWithElementwise(ContainerBase):
         ret
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
-
-
         """
         return self.static_maximum(
             self,
@@ -7346,6 +7387,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            use_where=use_where,
             out=out,
         )
 
@@ -7819,6 +7861,107 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_trunc_divide(
             self,
             x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_isreal(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isreal.
+        This method simply wraps the function, and so the docstring for
+        ivy.isreal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``x_i`` is real number and ``False`` otherwise.
+            The returned array should have a data type of ``bool``.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "isreal",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def isreal(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isreal.
+        This method simply wraps the function, and so the docstring
+        for ivy.isreal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``self_i`` is real number and ``False`` otherwise.
+            The returned array should have a data type of ``bool``.
+
+        """
+        return self.static_isreal(
+            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
