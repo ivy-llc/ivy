@@ -1078,36 +1078,6 @@ def pad(
                [5, 4, 4, 5, 6, 6, 5],
                [5, 4, 4, 5, 6, 6, 5]])
 
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="edge")
-    >>> print(y)
-    ivy.array([[1, 1, 1, 2, 3, 3, 3],
-               [1, 1, 1, 2, 3, 3, 3],
-               [4, 4, 4, 5, 6, 6, 6],
-               [4, 4, 4, 5, 6, 6, 6]])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="wrap")
-    >>> print(y)
-    ivy.array([[5, 6, 4, 5, 6, 4, 5],
-               [2, 3, 1, 2, 3, 1, 2],
-               [5, 6, 4, 5, 6, 4, 5],
-               [2, 3, 1, 2, 3, 1, 2]])
-
-    >>> def pad_with(vector, pad_width, iaxis, kwargs):
-    >>>     pad_value = kwargs.get('padder', 10)
-    >>>     vector[:pad_width[0]] = pad_value
-    >>>     vector[-pad_width[1]:] = pad_value
-    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.pad(x, 1, mode=pad_with)
-    >>> print(y)
-    ivy.array([[10, 10, 10, 10, 10],
-               [10,  1,  2,  3, 10],
-               [10,  4,  5,  6, 10],
-               [10, 10, 10, 10, 10]])
-
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
