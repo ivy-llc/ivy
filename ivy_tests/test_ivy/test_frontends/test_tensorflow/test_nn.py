@@ -637,6 +637,51 @@ def test_tensorflow_dropout(
     )
 
 
+# silu
+@handle_cmd_line_args
+@given(
+    dtype_features=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    beta=st.one_of(
+        helpers.floats(
+            min_value=0,
+            max_value=3,
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.nn.silu",
+    ),
+)
+def test_tensorflow_silu(
+    dtype_features,
+    beta,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, features = dtype_features
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.silu",
+        features=features[0],
+        beta=beta,
+    )
+    
+
 # sigmoid_cross_entropy_with_logits
 @handle_cmd_line_args
 @given(
