@@ -333,5 +333,4 @@ def test_jax_slogdet(
         frontend="jax",
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
-        method=None
     )
