@@ -339,7 +339,7 @@ class ContainerWithExtensions(ContainerBase):
         window_length: Union[int, ivy.Container],
         periodic: Optional[bool] = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        *,        
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -347,8 +347,8 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.hann_window. This method simply wraps 
-        the function, and so the docstring for ivy.hann_window also applies to this 
+        ivy.Container static method variant of ivy.hann_window. This method simply wraps
+        the function, and so the docstring for ivy.hann_window also applies to this
         method with minimal changes.
 
         Parameters
@@ -356,7 +356,7 @@ class ContainerWithExtensions(ContainerBase):
         window_length
             container including multiple window sizes.
         periodic
-            If True, returns a window to be used as periodic function. 
+            If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
         dtype
             The data type to produce. Must be a floating point type.
@@ -376,7 +376,7 @@ class ContainerWithExtensions(ContainerBase):
         >>> ivy.Container.static_hann(x)
         {
             a: ivy.array([0.0000, 0.7500, 0.7500])
-            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455]) 
+            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -399,7 +399,7 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.hann_window. This method simply
-        wraps the function, and so the docstring for ivy.hann_window also applies to 
+        wraps the function, and so the docstring for ivy.hann_window also applies to
         this method with minimal changes.
 
         Parameters
@@ -407,7 +407,7 @@ class ContainerWithExtensions(ContainerBase):
         self
             input container with window sizes.
         periodic
-            If True, returns a window to be used as periodic function. 
+            If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
         dtype
             The data type to produce. Must be a floating point type.
@@ -427,29 +427,25 @@ class ContainerWithExtensions(ContainerBase):
         >>> ivy.hann_window(x)
         {
             a: ivy.array([0.0000, 0.7500, 0.7500])
-            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455]) 
+            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
         }
         """
-        return self.static_hann_window(
-            self,
-            periodic,
-            dtype,
-            out=out)
+        return self.static_hann_window(self, periodic, dtype, out=out)
 
     @staticmethod
     def static_max_pool2d(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            kernel: Union[int, Tuple[int], Tuple[int, int]],
-            strides: Union[int, Tuple[int], Tuple[int, int]],
-            padding: str,
-            /,
-            *,
-            data_format: str = "NHWC",
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -467,18 +463,18 @@ class ContainerWithExtensions(ContainerBase):
         )
 
     def max_pool2d(
-            self: ivy.Container,
-            kernel: Union[int, Tuple[int], Tuple[int, int]],
-            strides: Union[int, Tuple[int], Tuple[int, int]],
-            padding: str,
-            /,
-            *,
-            data_format: str = "NHWC",
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return self.static_max_pool2d(
