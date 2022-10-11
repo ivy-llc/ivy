@@ -224,3 +224,12 @@ def rot90(input, k, dims):
         return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
     else:
         return ivy.copy_array(input)
+
+
+def vander(x, N=None, increasing=False):
+    if N == 0:
+        return ivy.array([], dtype=x.dtype)
+    else:
+        return ivy.vander(
+            x, N=N, increasing=increasing, out=None
+        )
