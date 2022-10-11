@@ -1964,7 +1964,6 @@ def unset_default_dtype():
         default_dtype_stack.pop(-1)
 
 
-# noinspection PyShadowingNames
 @handle_exceptions
 def unset_default_float_dtype():
     """"""
@@ -1973,7 +1972,6 @@ def unset_default_float_dtype():
         default_float_dtype_stack.pop(-1)
 
 
-# noinspection PyShadowingNames
 @handle_exceptions
 def unset_default_int_dtype():
     """"""
@@ -1984,7 +1982,7 @@ def unset_default_int_dtype():
 
 @handle_exceptions
 def unset_default_uint_dtype():
-    """Reset the current default uint dtype to the previous state
+    """Reset the current default uint dtype to the previous state.
 
     Examples
     --------
@@ -2018,15 +2016,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
 
     Examples
     --------
-    with :class:`ivy.Dtype` inputs:
-
     >>> print(ivy.valid_dtype(None))
-    True
-
-    >>> print(ivy.valid_dtype('float16'))
-    True
-
-    >>> print(ivy.valid_dtype('float32'))
     True
 
     >>> print(ivy.valid_dtype(ivy.float64))
@@ -2035,46 +2025,8 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     >>> print(ivy.valid_dtype('bool'))
     True
 
-    >>> print(ivy.valid_dtype(ivy.int8))
-    True
-
-    >>> print(ivy.valid_dtype(ivy.int64))
-    True
-
-    >>> print(ivy.valid_dtype(ivy.uint8))
-    True
-
-    with :class:`ivy.NativeDtype` inputs:
-
-    >>> print(ivy.valid_dtype('native_bool'))
-    False
-
     >>> print(ivy.valid_dtype(ivy.native_float16))
     True
-
-    >>> print(ivy.valid_dtype(ivy.native_float32))
-    True
-
-    >>> print(ivy.valid_dtype('native_float64'))
-    False
-
-    >>> print(ivy.valid_dtype(ivy.native_int8))
-    True
-
-    >>> print(ivy.valid_dtype(ivy.native_int16))
-    True
-
-    >>> print(ivy.valid_dtype('native_int32'))
-    False
-
-    >>> print(ivy.valid_dtype(ivy.native_int64))
-    True
-
-    >>> print(ivy.valid_dtype(ivy.native_uint8))
-    True
-
-    >>> print(ivy.valid_dtype('native_uint64'))
-    False
     """
     if dtype_in is None:
         return True
