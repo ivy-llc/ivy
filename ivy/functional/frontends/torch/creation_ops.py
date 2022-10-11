@@ -71,8 +71,8 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
 
 
 def arange(
-    start,
-    end=None,
+    end,  # torch doesn't have a default for this.
+    start=0,
     step=1,
     *,
     out=None,
@@ -81,15 +81,15 @@ def arange(
     device=None,
     requires_grad=False
 ):
-    ret = ivy.arange(start=start, stop=end, step=step, dtype=dtype, device=device)
+    ret = ivy.arange(start, stop=end, step=step, dtype=dtype, device=device)
     if requires_grad:
         return ivy.variable(ret)
     return ret
 
 
 def range(
-    start,
-    end=None,
+    end,  # torch doesn't have a default for this.
+    start=0,
     step=1,
     *,
     dtype=None,
@@ -97,7 +97,7 @@ def range(
     device=None,
     requires_grad=False
 ):
-    ret = arange(start=start, stop=end, step=step, dtype=dtype, device=device)
+    ret = arange(start, stop=end, step=step, dtype=dtype, device=device)
     if requires_grad:
         return ivy.variable(ret)
     return ret
@@ -114,9 +114,7 @@ def linspace(
     layout=None,
     requires_grad=False
 ):
-    ret = ivy.linspace(
-        start=start, stop=end, num=steps, dtype=dtype, device=device, out=out
-    )
+    ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
     if requires_grad:
         return ivy.variable(ret)
     return ret
@@ -135,7 +133,7 @@ def logspace(
     requires_grad=False
 ):
     ret = ivy.logspace(
-        start=start, stop=end, num=steps, base=base, dtype=dtype, device=device, out=out
+        start, end, num=steps, base=base, dtype=dtype, device=device, out=out
     )
     if requires_grad:
         return ivy.variable(ret)

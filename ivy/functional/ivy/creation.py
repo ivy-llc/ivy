@@ -961,7 +961,7 @@ def linspace(
     axis
         Axis along which the operation is performed.
     endpoint
-        If True, stop is the last sample. Otherwise, it is not included. Default: True.
+        If True, stop is the last sample. Otherwise, it is not included.
     dtype
         output array data type.
     device
