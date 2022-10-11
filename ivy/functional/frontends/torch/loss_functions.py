@@ -1,6 +1,6 @@
 # global
 import ivy
-from typing import Union
+from typing import Union, Optional, Literal
 
 
 def _get_reduction_func(reduction):
@@ -111,21 +111,31 @@ def smooth_l1_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    size_average=None,
-    reduce=None,
-    reduction='mean',
-    beta=1.0,
+    size_average: Optional[bool] = None,
+    reduce: Optional[bool] = None,
+    reduction: Optional[Literal['none', 'mean', 'sum']] = 'mean',
+    beta: Optional[float] = 1.0,
 ):
     beta = ivy.array(beta, device=input.device)
     reduction = _get_reduction(reduction, size_average, reduce)
 
-    _diff_abs = ivy.subtract(input, target).abs()
-    
-    _idxs_less_than_beta = ivy.less(_diff_abs, beta)
-    _idxs_greater_than_beta = ivy.greater_equal(_diff_abs, beta)
+    if beta < 1e-5:
+        # [Copied from fvcore]
+        # if beta == 0, then torch.where will result in nan gradients when
+        # the chain rule is applied due to pytorch implementation details
+        # (the False branch "0.5 * _diff_abs ** 2 / 0" has an incoming
+        # gradient of zeros, rather than "no gradient"). To avoid this
+        # issue, we define small values of beta to be exactly l1 loss.
+        loss = ivy.abs(input - target)
+    else:
+        _diff_abs = ivy.abs(input - target)
+        
+        loss = ivy.where(
+            _diff_abs < beta,
+            0.5 * _diff_abs**2 / beta,
+            _diff_abs - 0.5 * beta,
+        )
 
-    ret = input.clone()
-    ret[_idxs_less_than_beta] = ((0.5 * _diff_abs[_idxs_less_than_beta]) ** 2) / beta
-    ret[_idxs_greater_than_beta] = _diff_abs[_idxs_greater_than_beta] - 0.5 / beta
+    ret = reduction(loss)
 
-    return reduction(ret)
+    return ret
