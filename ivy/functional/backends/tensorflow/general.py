@@ -123,9 +123,10 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):

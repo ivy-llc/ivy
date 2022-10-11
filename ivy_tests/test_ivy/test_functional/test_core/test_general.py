@@ -724,7 +724,7 @@ def test_gather(
 
 
 @st.composite
-def array_and_ndindices(
+def array_and_ndindices_batch_dims(
     draw,
     *,
     array_dtypes,
@@ -763,8 +763,14 @@ def array_and_ndindices(
             max_value=len(x_shape),
         )
     )
-    indices = []
-    indices_dtype = draw(st.sampled_from(indices_dtypes))
+    batch_dims = draw(
+        helpers.ints(
+            min_value=0,
+            max_value=indices_dims - 1,
+        )
+    )
+    ndindices = []
+    ndindices_dtype = draw(st.sampled_from(indices_dtypes))
     if num_ndindices == 1:
         index = draw(
             helpers.ints(
@@ -772,11 +778,11 @@ def array_and_ndindices(
                 max_value=max(0, x_shape[0] - 1),
             )
         )
-        indices.append(index)
+        ndindices.append(index)
     else:
         for _ in range(num_ndindices):
             nd_index = []
-            for j in range(indices_dims):
+            for j in range(batch_dims, indices_dims):
                 axis_index = draw(
                     helpers.ints(
                         min_value=0,
@@ -784,14 +790,15 @@ def array_and_ndindices(
                     )
                 )
                 nd_index.append(axis_index)
-            indices.append(nd_index)
-    return [x_dtype[0], indices_dtype], x[0], indices
+            ndindices.append(nd_index)
+    ndindices = np.asarray(ndindices, ndindices_dtype)
+    return [x_dtype[0], ndindices_dtype], x[0], ndindices, batch_dims
 
 
 # gather_nd
 @handle_cmd_line_args
 @given(
-    params_n_ndindices=array_and_ndindices(
+    params_n_ndindices_batch_dims=array_and_ndindices_batch_dims(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         min_num_ndindices=1,
@@ -806,7 +813,7 @@ def array_and_ndindices(
     instance_method=st.booleans(),
 )
 def test_gather_nd(
-    params_n_ndindices,
+    params_n_ndindices_batch_dims,
     as_variable,
     with_out,
     num_positional_args,
@@ -815,7 +822,7 @@ def test_gather_nd(
     instance_method,
     fw,
 ):
-    dtypes, params, ndindices = params_n_ndindices
+    dtypes, params, ndindices, batch_dims = params_n_ndindices_batch_dims
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -827,7 +834,8 @@ def test_gather_nd(
         fw=fw,
         fn_name="gather_nd",
         params=params,
-        indices=np.asarray(ndindices, dtypes[1]),
+        indices=ndindices,
+        batch_dims=batch_dims,
     )
 
 
@@ -1099,8 +1107,8 @@ def test_explicit_ivy_framework_handles(device):
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=3,
-        max_num_dims=3,
+        min_num_dims=4,
+        max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
     ).filter(
@@ -1150,25 +1158,22 @@ def test_einops_rearrange(
     )
 
 
+# einops_reduce
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=3,
-        max_num_dims=3,
+        min_num_dims=4,
+        max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
     ).filter(
         lambda x: ivy.array([x[1][0].tolist()]).shape[2] % 2 == 0
         and ivy.array([x[1][0].tolist()]).shape[3] % 2 == 0
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
-            # ('t b  -> b', {}),
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
@@ -1190,7 +1195,7 @@ def test_einops_reduce(
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
     if (reduction in ["mean", "prod"]) and (dtype not in ivy_np.valid_float_dtypes):
-        dtype = "float32"
+        dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1216,8 +1221,8 @@ def test_einops_reduce(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
+        min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=2,
     ),
     pattern_and_axes_lengths=st.sampled_from(

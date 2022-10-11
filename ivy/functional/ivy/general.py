@@ -2994,6 +2994,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gather slices from params into a array with shape specified by indices.
@@ -3044,7 +3045,9 @@ def gather_nd(
         b: ivy.array([0., 100., 200.])
     }
     """
-    res = current_backend(params, indices).gather_nd(params, indices)
+    res = current_backend(params, indices).gather_nd(
+        params, indices, batch_dims=batch_dims
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res

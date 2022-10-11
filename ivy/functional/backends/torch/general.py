@@ -142,13 +142,7 @@ def gather(
     return result
 
 
-def gather_nd(
-    params: torch.Tensor,
-    indices: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -173,6 +167,35 @@ def gather_nd(
         flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     )
     return res
+
+
+def gather_nd(
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    batch_dims: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, i)
+            result.append(r)
+        result = torch.stack(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 
 def get_num_dims(
