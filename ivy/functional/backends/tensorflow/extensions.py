@@ -141,10 +141,12 @@ def kaiser_window(
 ) -> Union[tf.Tensor, tf.Variable]:
     if periodic is False:
         return tf.signal.kaiser_window(
-            window_length, beta, dtype=tf.dtypes.float32, name=None) 
-    else: 
-        return tf.signal.kaiser_window(
-            window_length + 1, beta, dtype=dtype, name=None)[:-1] 
+            window_length, beta, dtype=tf.dtypes.float32, name=None
+        )
+    else:
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
+            :-1
+        ]
 
 
 def moveaxis(

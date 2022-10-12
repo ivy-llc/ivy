@@ -578,8 +578,8 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.kaiser_window. This method 
-        simply wraps the function, and so the docstring for ivy.kaiser_window 
+        ivy.Container static method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
 
         Parameters
@@ -592,7 +592,7 @@ class ContainerWithExtensions(ContainerBase):
         beta
             a float used as shape parameter for the window.
         dtype
-            data type of the returned array.        
+            data type of the returned array.
         out
             optional output container, for writing the result to.
 
@@ -636,8 +636,8 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.kaiser_window. This method 
-        simply wraps the function, and so the docstring for ivy.kaiser_window 
+        ivy.Container instance method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
 
         Parameters
@@ -650,7 +650,7 @@ class ContainerWithExtensions(ContainerBase):
         beta
             a float used as shape parameter for the window.
         dtype
-            data type of the returned array.        
+            data type of the returned array.
         out
             optional output container, for writing the result to.
 
@@ -679,7 +679,7 @@ class ContainerWithExtensions(ContainerBase):
             dtype=dtype,
             out=out,
         )
-    
+
     @staticmethod
     def static_moveaxis(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -694,7 +694,7 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.moveaxis. This method simply wraps 
+        ivy.Container static method variant of ivy.moveaxis. This method simply wraps
         the function, and so the docstring for ivy.moveaxis also applies to this method
         with minimal changes.
 
@@ -780,8 +780,4 @@ class ContainerWithExtensions(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return self.static_moveaxis(
-            self,
-            source,
-            destination,
-            out=out)
+        return self.static_moveaxis(self, source, destination, out=out)

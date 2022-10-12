@@ -1904,6 +1904,7 @@ def test_supports_inplace_updates(
         instance_method=True,
         fw=fw,
         fn_name="supports_inplace_updates",
+        test_values=False,
         x=x[0],
     )
 
