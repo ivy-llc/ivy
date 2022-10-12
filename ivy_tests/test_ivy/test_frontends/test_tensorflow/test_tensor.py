@@ -555,6 +555,7 @@ def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
         method_name="__rmod__",
     )
 
+
 # __rsub__
 @handle_cmd_line_args
 @given(
