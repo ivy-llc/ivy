@@ -552,12 +552,12 @@ def shuffle(
 @handle_nestable
 @handle_exceptions
 def dirichlet(
-    alpha: Union[float, Sequence[float]],
+    alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]],
-    out: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draw size samples of dimension k from a Dirichlet distribution. 
     A Dirichlet-distributed random variable can be seen as a multivariate
@@ -572,6 +572,9 @@ def dirichlet(
         optional int or tuple of ints, Output shape. If the given shape is,
         e.g., (m, n), then m * n * k samples are drawn. Default is None,
         in which case a vector of length k is returned.
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
     out
         optional output array, for writing the result to.
 

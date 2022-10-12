@@ -127,7 +127,7 @@ shuffle.support_native_out = True
 
 
 def dirichlet(
-    alpha: Union[float, Sequence[float]],
+    alpha: Union[torch.tensor, float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]] = None,

@@ -333,20 +333,27 @@ def test_shuffle(
 # dirichlet
 @handle_cmd_line_args
 @given(
-    alpha=st.lists(
-        st.integers(min_value=1 , max_value=3),
-        min_size=2,
-        max_size=4,
+    dtype_and_alpha=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(
+            st.tuples(
+                st.integers(min_value=1, max_value=5),
+            ),
+            key="dirichlet_shape"
+        ),
+        min_value=0,
+        max_value=100,
+        exclude_min=True,
     ),
-    size=st.tuples(st.integers(min_value=1, max_value=3),
-                   st.integers(min_value=1, max_value=3)), 
-    dtype=helpers.get_dtypes("numeric", full=False),
+    size=st.tuples(
+        st.integers(min_value=1, max_value=5),
+        st.integers(min_value=0, max_value=5)
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
 def test_dirichlet(
-    alpha,
+    dtype_and_alpha,
     size,
-    dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -355,6 +362,7 @@ def test_dirichlet(
     instance_method,
     fw,
 ):
+    dtype, alpha = dtype_and_alpha
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

@@ -131,7 +131,7 @@ def shuffle(
 
 
 def dirichlet(
-    alpha: Union[float, Sequence[float]],
+    alpha: Union[tf.Tensor, tf.Variable, float, Sequence[float]],
     /,
     *,
     size: Optional[Union[int, Sequence[int]]] = None,
