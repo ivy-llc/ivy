@@ -1499,7 +1499,7 @@ def slogdet(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0],
-                       [3.0, 4.0]])
+    ...                [3.0, 4.0]])
     >>> y = ivy.slogdet(x)
     >>> print(y)
     slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
@@ -1507,9 +1507,9 @@ def slogdet(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-                                       [3.0, 4.0]]),
-                          b=ivy.array([[1.0, 2.0],
-                                       [2.0, 1.0]]))
+    ...                                [3.0, 4.0]]),
+    ...                   b=ivy.array([[1.0, 2.0],
+    ...                                [2.0, 1.0]]))
     >>> y = ivy.slogdet(x)
     >>> print(y)
     {
@@ -1986,12 +1986,12 @@ def trace(
     }
 
     >>> x = ivy.Container(
-            a = ivy.array([[7, 1, 2],
-                           [1, 3, 5],
-                           [0, 7, 4]]),
-            b = ivy.array([[4, 3, 2],
-                           [1, 9, 5],
-                           [7, 0, 6]])
+    ...        a = ivy.array([[7, 1, 2],
+    ...                       [1, 3, 5],
+    ...                       [0, 7, 4]]),
+    ...        b = ivy.array([[4, 3, 2],
+    ...                       [1, 9, 5],
+    ...                       [7, 0, 6]])
         )
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)

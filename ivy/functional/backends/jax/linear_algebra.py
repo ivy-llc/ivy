@@ -179,12 +179,6 @@ def matrix_norm(
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
-matrix_norm.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
 def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 

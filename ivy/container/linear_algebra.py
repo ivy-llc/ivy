@@ -725,7 +725,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         x = ivy.Container(a=ivy.array([[1., 2.],
-                                       [3., 4.]]))
+        ...                            [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
@@ -786,7 +786,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         x = ivy.Container(a=ivy.array([[1., 2.],
-                                       [3., 4.]]))
+        ...                            [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
@@ -1345,9 +1345,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-                                           [3.0, 4.0]]),
-                              b=ivy.array([[1.0, 2.0],
-                                           [2.0, 1.0]]))
+        ...                                [3.0, 4.0]]),
+        ...                   b=ivy.array([[1.0, 2.0],
+        ...                                [2.0, 1.0]]))
         >>> y = ivy.Container.static_slogdet(x)
         >>> print(y)
         {
@@ -1408,9 +1408,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-                                           [3.0, 4.0]]),
-                              b=ivy.array([[1.0, 2.0],
-                                           [2.0, 1.0]]))
+        ...                                [3.0, 4.0]]),
+        ...                   b=ivy.array([[1.0, 2.0],
+        ...                                [2.0, 1.0]]))
         >>> y = x.slogdet()
         >>> print(y)
         {
