@@ -771,7 +771,8 @@ def test_array__truediv__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data / other
-    np_ret = x[0] / x[1]
+    dtype = ivy.dtype(ivy.to_numpy(ret))
+    np_ret = np.asarray(x[0] / x[1], dtype=dtype)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -802,7 +803,8 @@ def test_array__rtruediv__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__rtruediv__(other)
-    np_ret = x[1] / x[0]
+    dtype = ivy.dtype(ivy.to_numpy(ret))
+    np_ret = np.asarray(x[1] / x[0], dtype=dtype)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -833,7 +835,8 @@ def test_array__itruediv__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data.__itruediv__(other)
-    np_ret = x[0] / x[1]
+    dtype = ivy.dtype(ivy.to_numpy(ret))
+    np_ret = np.asarray(x[0] / x[1], dtype=dtype)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -863,7 +866,7 @@ def test_array__floordiv__(
     assume(not np.any(np.isclose(x[1], 0)))
     data = Array(x[0])
     other = Array(x[1])
-    ret = data // other
+    ret = data.__floordiv__(other)
     np_ret = x[0] // x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
