@@ -447,8 +447,7 @@ class ContainerWithExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_pool2dd. This method simply
+        """ivy.Container static method variant of ivy.max_pool2dd. This method simply
         wraps the function, and so the docstring for ivy.max_pool2d also applies
         to this method with minimal changes.
 
@@ -515,8 +514,7 @@ class ContainerWithExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
+        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
         wraps the function, and so the docstring for `ivy.max_pool2d` also applies
         to this method with minimal changes.
 
