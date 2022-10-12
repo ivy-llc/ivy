@@ -409,14 +409,14 @@ def test_get_num_dims(
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         min_num_dims=1,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
     ),
     max_norm_n_p=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         num_arrays=2,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
         shape=(),
     ),
@@ -449,8 +449,8 @@ def test_clip_vector_norm(
         rtol_=1e-1,
         atol_=1e-1,
         x=x[0],
-        max_norm=max_norm,
-        p=p,
+        max_norm=float(max_norm),
+        p=float(p),
     )
 
 
