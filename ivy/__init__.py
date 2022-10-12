@@ -93,27 +93,49 @@ class Dtype(str):
     def __ge__(self, other):
         if isinstance(other, str):
             other = Dtype(other)
-        assert isinstance(other, Dtype)
-        print("__ge__ ran")
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
         return self == ivy.promote_types(self, other)
 
     def __gt__(self, other):
         if isinstance(other, str):
             other = Dtype(other)
-        print("__gt__ ran")
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
         return self >= other and self != other
 
     def __lt__(self, other):
         if isinstance(other, str):
             other = Dtype(other)
-        assert isinstance(other, Dtype)
-        print("__lt__ ran")
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
         return self != ivy.promote_types(self, other)
 
     def __le__(self, other):
         if isinstance(other, str):
             other = Dtype(other)
-        print("__le__ ran")
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
         return self < other or self == other
 
 
