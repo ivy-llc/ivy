@@ -587,7 +587,7 @@ class ContainerWithExtensions(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
-        >>> x.moveaxis(, 0, -1).shape
+        >>> x.moveaxis(0, -1).shape
 
         {
             a: (4, 5, 3)
