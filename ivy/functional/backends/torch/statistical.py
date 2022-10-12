@@ -20,7 +20,7 @@ def min(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():

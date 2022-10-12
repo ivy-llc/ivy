@@ -15,7 +15,7 @@ def min(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
