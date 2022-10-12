@@ -293,16 +293,16 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]), \
-                              b =ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
+        >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]),
+        ...                   b=ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
         >>> result= ivy.Container.static_conv1d(x,filters,(1,),'VALID')
         >>> print(result)
         {
-            a: ivy.array([[[-1.25, 2.5, 6.25], \
-                           [-2., 5.5, 13.]]]), \
-            b: ivy.array([[[-2.5, 7.5, 17.5], \
-                           [-3.25, 10.5, 24.2]]])
+            ... a: ivy.array([[[-1.25, 2.5, 6.25],
+            ...                [-2., 5.5, 13.]]]),
+            ... b: ivy.array([[[-2.5, 7.5, 17.5],
+            ...                [-3.25, 10.5, 24.2]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -366,16 +366,16 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]), \
-                              b =ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
+        >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]),
+        ...                   b=ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
         >>> result= x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
         {
-            a: ivy.array([[[-1.25, 2.5, 6.25], \
-                           [-2., 5.5, 13.]]]), \
-            b: ivy.array([[[-2.5, 7.5, 17.5], \
-                           [-3.25, 10.5, 24.2]]])
+            ... a: ivy.array([[[-1.25, 2.5, 6.25],
+            ...                [-2., 5.5, 13.]]]),
+            ... b: ivy.array([[[-2.5, 7.5, 17.5],
+            ...                [-3.25, 10.5, 24.2]]])
         }
         """
         return self.static_conv1d(
@@ -412,7 +412,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container static method variant of ivy.conv2d. This method simply
         wraps the function, and so the docstring for ivy.conv2d also applies
         to this method with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -431,19 +431,19 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
             The result of the convolution operation.
-        
+
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
-                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> filters = ivy.array([[2., 0., 1.], \
-                                [1., 3., 1.], \
-                                [0., 1., 1.]]).reshape((3, 3, 1, 1))
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
+        ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> filters = ivy.array([[2., 0., 1.],
+        ...                      [1., 3., 1.],
+        ...                      [0., 1., 1.]]).reshape((3, 3, 1, 1))
         >>> result = ivy.Container.static_conv2d(x, filters, (2,), 'SAME')
         >>> print(result)
         {
@@ -485,7 +485,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container instance method variant of `ivy.conv2d`. This method simply
         wraps the function, and so the docstring for `ivy.conv2d` also applies
         to this method with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -504,19 +504,19 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
             The result of the convolution operation.
-        
+
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
-                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> filters = ivy.array([[2, 0, 1], \
-                                 [1, 3, 1], \
-                                 [0, 1, 1]], dtype= ivy.float32).reshape((3, 3, 1, 1))
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
+        ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> filters = ivy.array([[2, 0, 1],
+        ...                      [1, 3, 1],
+        ...                      [0, 1, 1]], dtype=ivy.float32).reshape((3, 3, 1, 1))
         >>> result = x.conv2d(filters, 2, 'SAME')
         >>> print(result)
         {
@@ -717,11 +717,11 @@ class ContainerWithLayers(ContainerBase):
         >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
-        >>> y = ivy.Container.static_depthwise_conv2d( \
-                                                    inp, \
-                                                    filters, \
-                                                    strides=2, \
-                                                    padding='SAME')
+        >>> y = ivy.Container.static_depthwise_conv2d(
+        ...                                            inp,
+        ...                                            filters,
+        ...                                            strides=2,
+        ...                                            padding='SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
         """

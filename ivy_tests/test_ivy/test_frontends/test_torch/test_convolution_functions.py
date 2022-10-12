@@ -92,7 +92,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 @given(
     dtype_vals=x_and_filters(dim=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.conv2d"
+        fn_name="ivy.functional.frontends.torch.nn.functional.conv2d"
     ),
 )
 def test_torch_conv2d(
@@ -148,7 +148,7 @@ def _int_or_tuple(draw, min_val, max_val):
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.unfold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.unfold"
     ),
 )
 def test_torch_unfold(
@@ -192,7 +192,7 @@ def test_torch_unfold(
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.fold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.fold"
     ),
 )
 def test_torch_fold(

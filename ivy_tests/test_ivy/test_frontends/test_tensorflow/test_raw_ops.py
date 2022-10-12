@@ -1828,6 +1828,35 @@ def test_tensorflow_NthElement(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer", full=True),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Invert"
+    ),
+)
+def test_tensorflow_Invert(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Invert",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=1,
         num_arrays=2,

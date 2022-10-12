@@ -49,8 +49,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
         >>> y = ivy.Container.static_abs(x)
         >>> print(y)
         {
@@ -109,8 +109,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -2.3]))
+        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -2.3]))
         >>> y = x.abs()
         >>> print(y)
         {
@@ -172,8 +172,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
-                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),
+        ...                   b=ivy.array([1., 3., 10.0, 6]))
         >>> y = ivy.Container.static_acosh(x)
         >>> print(y)
         {
@@ -234,8 +234,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
-                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),
+        ...                   b=ivy.array([1., 3., 10.0, 6]))
         >>> y = x.acosh()
         >>> print(y)
         {
@@ -368,8 +368,8 @@ class ContainerWithElementwise(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([[1.1, 2.3, -3.6]])
-        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> z = ivy.Container.static_add(x, y)
         >>> print(z)
         {
@@ -383,10 +383,10 @@ class ContainerWithElementwise(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_add(x, y)
         >>> print(z)
         {
@@ -394,10 +394,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([7, 9, 11])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_add(x, y, alpha=2)
         >>> print(z)
         {
@@ -525,10 +525,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                             b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                             b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
 
         >>> z = x.add(y)
         >>> print(z)
@@ -598,8 +598,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., -0.5, -1.]),\
-                              b=ivy.array([0.1, 0.8, 2.]))
+        >>> x = ivy.Container(a=ivy.array([0., -0.5, -1.]),
+        ...                   b=ivy.array([0.1, 0.8, 2.]))
         >>> y = ivy.Container.static_asin()
         >>> print(y)
         {
@@ -607,8 +607,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.1, 0.927, nan])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\
-                              b=ivy.array([[4, -3, -0.2]))
+        >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),
+        ...                   b=ivy.array([[4, -3, -0.2]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.static_asin(out=y)
         >>> print(y)
@@ -668,8 +668,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 0.5, 1.]),\
-                              b=ivy.array([-4., 0.8, 2.]))
+        >>> x = ivy.Container(a=ivy.array([0., 0.5, 1.]),
+        ...                   b=ivy.array([-4., 0.8, 2.]))
         >>> y = x.asin()
         >>> print(y)
         {
@@ -677,8 +677,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([nan, 0.927, nan])
         }
 
-        >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\
-                              b=ivy.array([-0.85, 0.6, 0.3]))
+        >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),
+        ...                   b=ivy.array([-0.85, 0.6, 0.3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.asin(out=y)
         >>> print(y)
@@ -740,8 +740,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),\
-                            b=ivy.array([3.4, -5.3, -0, -2.8]))
+        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),
+        ...                   b=ivy.array([3.4, -5.3, -0, -2.8]))
         >>> y = ivy.Container.static_asinh(x)
         >>> print(y)
         {
@@ -801,8 +801,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),\
-                            b=ivy.array([4.5, -2.4, -1.5]))
+        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),
+        ...                   b=ivy.array([4.5, -2.4, -1.5]))
         >>> y = x.asinh()
         >>> print(y)
         {
@@ -991,8 +991,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0]))
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> ivy.Container.static_atan2(x, y)
         {
@@ -1000,10 +1000,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.983, -1.21, 0.])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                              b=ivy.array([4.5, -5.3, -0, -2.3]))
-        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
-                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
+        ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
         >>> z = ivy.Container.static_atan2(x, y)
         >>> print(z)
         {
@@ -1070,8 +1070,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0]))
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> x.atan2(y)
         {
@@ -1079,10 +1079,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.983, -1.21, 0.])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                              b=ivy.array([4.5, -5.3, -0, -2.3]))
-        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
-                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
+        ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
         >>> z = x.atan2(y)
         >>> print(z)
         {
@@ -1727,10 +1727,10 @@ class ContainerWithElementwise(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_bitwise_or(x, y)
         >>> print(z)
         {
@@ -1793,10 +1793,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                                b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                                b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.bitwise_or(y)
         >>> print(z)
         {
@@ -2164,8 +2164,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
-                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
         >>> y = x.ceil()
         >>> print(y)
         {
@@ -2236,8 +2236,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.54, 3.76, 1.3])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
         >>> ivy.Container.static_cosh(x, out=y)
         >>> print(y)
@@ -2308,8 +2308,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.54, 3.76, 1.3])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.cosh(x, out=y)
         >>> print(y)
@@ -2792,8 +2792,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
-                              b=ivy.array([5.4, -3.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),
+        ...                   b=ivy.array([5.4, -3.2]))
         >>> y = x.expm1()
         >>> print(y)
         {
@@ -2910,8 +2910,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
-                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
         >>> y = x.floor()
         >>> print(y)
         {
@@ -3136,10 +3136,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_greater(y,x)
         >>> print(z)
         {
@@ -3205,10 +3205,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.greater(y)
         >>> print(z)
         {
@@ -3380,8 +3380,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
-                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
+        ...                   b=ivy.array([float('-0'), ivy.nan]))
         >>> y = ivy.Container.static_isfinite(x)
         >>> print(y)
         {
@@ -3440,8 +3440,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
-                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
+        ...                   b=ivy.array([float('-0'), ivy.nan]))
         >>> y = x.isfinite()
         >>> print(y)
         {
@@ -3707,10 +3707,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_less(y,x)
         >>> print(z)
         {
@@ -3775,10 +3775,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.less(y)
         >>> print(z)
         {
@@ -3976,9 +3976,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
-                              b=ivy.array([-0., -3.9, float('+inf')]),\
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = ivy.Container.static_log(x)
         >>> print(y)
         {
@@ -4041,9 +4041,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
-                              b=ivy.array([-0., -3.9, float('+inf')]), \
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = x.log()
         >>> print(y)
         {
@@ -4173,8 +4173,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),\
-                            b=ivy.array([4.5, 5.3, 2.3]))
+        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+        ...                   b=ivy.array([4.5, 5.3, 2.3]))
         >>> y = x.log1p()
         >>> print(y)
         {
@@ -4338,9 +4338,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
-                              b=ivy.array([-0., -3.9, float('+inf')]),\
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = ivy.Container.static_log10(x)
         >>> print(y)
         {
@@ -4403,9 +4403,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
-                              b=ivy.array([-0., -3.9, float('+inf')]), \
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = x.log10()
         >>> print(y)
         {
@@ -4473,10 +4473,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
-                              b=ivy.array([2., 3., 4.]))
-        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([5., 6., 7.]))
+        >>> x = ivy.Container(a=ivy.array([4., 5., .]),
+        ...                   b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([5., 6., 7.]))
         >>> z = ivy.Container.static_logaddexp(y,x)
         >>> print(z)
         {
@@ -4543,11 +4543,11 @@ class ContainerWithElementwise(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` input:
-        
-        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
-                              b=ivy.array([2., 3., 4.]))
-        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([5., 6., 7.]))
+
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),
+        ...                   b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([5., 6., 7.]))
         >>> z = ivy.logaddexp(y,x)
         >>> print(z)
         {
@@ -4616,10 +4616,10 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
-            b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
-            b=ivy.array([False, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
         >>> m = ivy.array([False, True, False, True])
         >>> n = ivy.array([True, False, True, False])
 
@@ -4707,10 +4707,10 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
-            b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
-            b=ivy.array([False, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
         >>> m = ivy.array([False, True, False, True])
         >>> n = ivy.array([True, False, True, False])
 
@@ -4887,10 +4887,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([False, False, True]), \
-                            b=ivy.array([True, False, True]))
-        >>> y = ivy.Container(a=ivy.array([False, True, False]), \
-                                b=ivy.array([True, True, False]))
+        >>> x = ivy.Container(a=ivy.array([False, False, True]),
+        ...                   b=ivy.array([True, False, True]))
+        >>> y = ivy.Container(a=ivy.array([False, True, False]),
+        ...                   b=ivy.array([True, True, False]))
         >>> z = ivy.Container.static_logical_or(x, y)
         >>> print(z)
         {
@@ -5890,8 +5890,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
-                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = ivy.Container.static_round(x)
         >>> print(y)
         {
@@ -5951,8 +5951,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
-                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = x.round()
         >>> print(y)
         {
@@ -6011,8 +6011,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
-                            b=ivy.array([-14.2, 8.3, 0.1, -0]))
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),
+        ...                   b=ivy.array([-14.2, 8.3, 0.1, -0]))
         >>> y = ivy.Container.static_sign(x)
         >>> print(y)
         {
@@ -6070,9 +6070,9 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
-                              b=ivy.array([1.5, -0.3, 0]),\
-                              c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
+        ...                   b=ivy.array([1.5, -0.3, 0]),
+        ...                   c=ivy.array([-4.7, -5.4, 7.5]))
         >>> y = x.sign()
         >>> print(y)
         {
@@ -6134,8 +6134,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
-                              b=ivy.array([4., 5., 6.]))
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),
+        ...                   b=ivy.array([4., 5., 6.]))
         >>> y = ivy.Container.static_sin(x)
         >>> print(y)
         {
@@ -6195,8 +6195,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([-4., -5., -6.]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([-4., -5., -6.]))
         >>> y = x.sin()
         >>> print(y)
         {
@@ -6265,8 +6265,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.18, -3.63, 0.835])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
         >>> ivy.Container.static_sinh(x, out=y)
         >>> print(y)
@@ -6335,8 +6335,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.18, -3.63, 0.835])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.sinh(out=y)
         >>> print(y)
@@ -6607,10 +6607,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                       b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
-                       b=ivy.array([1, -1, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]),
+        ...                   b=ivy.array([1, -1, 0]))
         >>> z = ivy.Container.static_subtract(x, y)
         >>> print(z)
         {
@@ -6685,10 +6685,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                       b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
-                       b=ivy.array([1, -1, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]),
+        ...                   b=ivy.array([1, -1, 0]))
         >>> z = x.subtract(y)
         >>> print(z)
         {
@@ -6940,8 +6940,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = x.tanh()
         >>> print(y)
         {
@@ -7528,15 +7528,15 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_deg2rad(x)
         >>> print(y)
         {
             a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
             b: ivy.array([0., -0.0262, -0.873, nan])
         }
-        
+
         """
         return ContainerBase.multi_map_in_static_method(
             "deg2rad",
@@ -7584,13 +7584,13 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with each element in ``x`` converted from degrees to radians.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:
 
-        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=x.deg2rad()
         >>> print(y)
         {
@@ -7649,15 +7649,15 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_rad2deg(x)
         >>> print(y)
         {
             a: ivy.array([0., 5160., 10300., 15500., 20600.]),
             b: ivy.array([0., -85.9, -2860., nan])
         }
-        
+
         """
         return ContainerBase.multi_map_in_static_method(
             "rad2deg",
@@ -7705,13 +7705,13 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with each element in ``x`` converted from radians to degrees.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:
 
-        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
-            b=ivy.native_array([0,-1.5,-50,7.2]))
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),
+        ...                 b=ivy.native_array([0,-1.5,-50,7.2]))
         >>> y=x.rad2deg()
         >>> print(y)
         {

@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Literal
 
 import tensorflow as tf
 
@@ -264,6 +264,31 @@ def tile(
     # TODO remove the unifying behaviour code if tensorflow handles this
     # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
+
+
+def pad(
+    x: tf.Tensor,
+    /,
+    pad_width: tf.Tensor,
+    *,
+    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+    stat_length: Optional[Union[tf.Tensor, int]] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    if mode == "constant":
+        return tf.pad(
+            x,
+            pad_width,
+            mode=mode,
+            constant_values=constant_values,
+        )
+    else:
+        return tf.pad(x, pad_width, mode=mode)
 
 
 def constant_pad(
