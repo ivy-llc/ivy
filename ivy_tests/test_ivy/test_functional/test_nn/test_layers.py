@@ -99,7 +99,7 @@ def test_linear(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
 )
@@ -150,7 +150,7 @@ def x_and_scaled_attention(draw, dtypes):
     num_queries = draw(helpers.ints(min_value=1, max_value=2))
     num_keys = draw(helpers.ints(min_value=1, max_value=2))
     feat_dim = draw(helpers.ints(min_value=1, max_value=2))
-    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1))
 
     q_shape = (1,) + (num_queries,) + (feat_dim,)
     k_shape = (1,) + (num_keys,) + (feat_dim,)
@@ -235,7 +235,7 @@ def x_and_mha(draw, dtypes):
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
     mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1))
     x_mha = draw(
         helpers.array_values(
             dtype=dtype[0],

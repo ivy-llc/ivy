@@ -124,7 +124,7 @@ def test_linear_layer(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
     num_positional_args_init=helpers.num_positional_args(fn_name="Dropout.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="Dropout._forward"),
