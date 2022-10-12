@@ -16,9 +16,17 @@ def linear(x):
     return x
 
 
+def relu(x):
+    return ivy.relu(x)
+
+
 def sigmoid(x):
     return ivy.sigmoid(x)
 
 
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
+
+
+def gelu(x, approximate=False):
+    return ivy.gelu(x, approximate=approximate)

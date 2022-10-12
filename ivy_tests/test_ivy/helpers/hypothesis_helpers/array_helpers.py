@@ -1,8 +1,8 @@
 # global
-import math
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st
+from hypothesis.internal.floats import float_of
 from functools import reduce
 from operator import mul
 
@@ -241,6 +241,7 @@ def dtype_values_axis(
     draw,
     *,
     available_dtypes,
+    num_arrays=1,
     abs_smallest_val=None,
     min_value=None,
     max_value=None,
@@ -266,8 +267,8 @@ def dtype_values_axis(
     force_int_axis=False,
     ret_shape=False,
 ):
-    """Draws an array with elements from the given data type, and a random axis of
-    the array.
+    """Draws a list of arrays with elements from the given data type,
+    and a random axis of the arrays.
 
     Parameters
     ----------
@@ -276,6 +277,8 @@ def dtype_values_axis(
         data-set (ex. list).
     available_dtypes
         if dtype is None, data type is drawn from this list randomly.
+    num_arrays
+        Number of arrays to be drawn.
     abs_smallest_val
         sets the absolute smallest value to be generated for float data types,
         this has no effect on integer data types. If none, the default data type
@@ -351,6 +354,7 @@ def dtype_values_axis(
     results = draw(
         dtype_and_values(
             available_dtypes=available_dtypes,
+            num_arrays=num_arrays,
             abs_smallest_val=abs_smallest_val,
             min_value=min_value,
             max_value=max_value,
@@ -387,7 +391,7 @@ def dtype_values_axis(
     else:
         axis = draw(number_helpers.ints(min_value=min_axis, max_value=max_axis))
     if ret_shape:
-        return dtype, values, axis, shape
+        return dtype, values, axis, arr_shape
     return dtype, values, axis
 
 
@@ -666,37 +670,22 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        if min_value is None:
-            min_value = dtype_info.min
-        else:
+        if min_value is not None:
             min_value = _clamp_value(min_value, dtype_info)
 
-        if max_value is None:
-            max_value = dtype_info.max
-        else:
+        if max_value is not None:
             max_value = _clamp_value(max_value, dtype_info)
 
+        min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
+            dtype,
+            min_value=min_value,
+            max_value=max_value,
+            abs_smallest_val=abs_smallest_val,
+            small_abs_safety_factor=small_abs_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
+        )
         assert max_value >= min_value
-
-        # Scale the values
-        if safety_factor_scale == "linear":
-            min_value = min_value / large_abs_safety_factor
-            max_value = max_value / large_abs_safety_factor
-            if kind_dtype == "float" and not abs_smallest_val:
-                abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
-        elif safety_factor_scale == "log":
-            min_sign = math.copysign(1, min_value)
-            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-            max_sign = math.copysign(1, max_value)
-            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
-            if kind_dtype == "float" and not abs_smallest_val:
-                m, e = math.frexp(dtype_info.smallest_normal)
-                abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
-        else:
-            raise ValueError(
-                f"{safety_factor_scale} is not a valid safety factor scale."
-                f" use 'log' or 'linear'."
-            )
 
         if kind_dtype == "int":
             if exclude_min:
@@ -704,9 +693,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_length(
-                    x=st.integers(int(min_value), int(max_value)), length=size
-                )
+                list_of_length(x=st.integers(min_value, max_value), length=size)
             )
         elif kind_dtype == "float":
             floats_info = {
@@ -718,14 +705,8 @@ def array_values(
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:
                 float_strategy = st.floats(
-                    # Using np.array to assert that value
-                    # can be represented of compatible width.
-                    min_value=np.array(
-                        min_value, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist(),
-                    max_value=np.array(
-                        max_value, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist(),
+                    min_value=float_of(min_value, floats_info[dtype]["width"]),
+                    max_value=float_of(max_value, floats_info[dtype]["width"]),
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
@@ -736,12 +717,10 @@ def array_values(
             else:
                 float_strategy = st.one_of(
                     st.floats(
-                        min_value=np.array(
-                            min_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        max_value=np.array(
-                            -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
+                        min_value=float_of(min_value, floats_info[dtype]["width"]),
+                        max_value=float_of(
+                            -abs_smallest_val, floats_info[dtype]["width"]
+                        ),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -750,12 +729,10 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                     st.floats(
-                        min_value=np.array(
-                            abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        max_value=np.array(
-                            max_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
+                        min_value=float_of(
+                            abs_smallest_val, floats_info[dtype]["width"]
+                        ),
+                        max_value=float_of(max_value, floats_info[dtype]["width"]),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -876,3 +853,37 @@ def array_and_broadcastable_shape(draw, dtype):
         label="shape",
     )
     return x, to_shape
+
+
+@st.composite
+def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
+    in_shape = draw(
+        nph.array_shapes(
+            min_dims=min_dims, max_dims=max_dims, min_side=min_side, max_side=max_side
+        )
+    )
+    dtype, x = draw(
+        dtype_and_values(
+            available_dtypes=dtype_helpers.get_dtypes("float"),
+            shape=in_shape,
+            num_arrays=1,
+        )
+    )
+    array_dim = x[0].ndim
+    if array_dim == 5:
+        kernel = draw(
+            st.tuples(
+                st.integers(1, in_shape[1]),
+                st.integers(1, in_shape[2]),
+                st.integers(1, in_shape[3]),
+            )
+        )
+    if array_dim == 4:
+        kernel = draw(
+            st.tuples(st.integers(1, in_shape[1]), st.integers(1, in_shape[2]))
+        )
+    if array_dim == 3:
+        kernel = draw(st.tuples(st.integers(1, in_shape[1])))
+    padding = draw(st.sampled_from(["VALID", "SAME"]))
+    strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    return dtype, x, kernel, strides, padding

@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
+from typing import Union, Optional, Literal, Tuple, List, Sequence
 
 # local
 import ivy
@@ -67,18 +67,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
-                       [1.0, 0.5, 0.0, 0.0, 0.0], \
-                       [2.0, 0.0, 3.0, 0.0, 0.0], \
-                       [0.5, 0.0, 0.0, 0.625, 0.0], \
-                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+        ...               [1.0, 0.5, 0.0, 0.0, 0.0],
+        ...               [2.0, 0.0, 3.0, 0.0, 0.0],
+        ...               [0.5, 0.0, 0.0, 0.625, 0.0],
+        ...               [2.0, 0.0, 0.0, 0.0, 16.0]])
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-                   [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-                   [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        ...        [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+        ...        [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
         """
         return ivy.cholesky(self._data, upper=upper, out=out)
 
@@ -147,7 +147,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array]:
         return ivy.eigh(self._data)
 
     def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -185,7 +185,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -285,20 +285,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        x = ivy.array([[1., 2.],\
-                  [3., 4.]])
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         y = pinv(x, None, None)
         print(y)
-        ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
-    
-        x = ivy.array([[1., 2.],\
-                      [3., 4.]])
+        ivy.array([[-2., 1.],
+        ...        [1.5, -0.5]])
+
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         out = ivy.array()
         pinv(x, 0, out)
         print(out)
-        ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
+        ivy.array([[0.0426, 0.0964],
+        ...       [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -306,12 +306,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         *,
         mode: str = "reduced",
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         return ivy.qr(self._data, mode=mode)
 
     def slogdet(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
         function, and so the docstring for ivy.slogdet also applies to this method with
@@ -337,8 +337,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[1.0, 2.0], \
-                           [3.0, 4.0]])
+        >>> x = ivy.array([[1.0, 2.0],
+        ...                [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
@@ -453,3 +453,64 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.vector_to_skew_symmetric_matrix(self._data, out=out)
+
+    def vander(
+        self: ivy.Array,
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.vander.
+        This method Returns the Vandermonde matrix of the input array.
+
+        Parameters
+        ----------
+        self
+            1-D input array.
+        N
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
+        increasing
+            Order of the powers of the columns. If True, the powers increase
+            from left to right, if False (the default) they are reversed.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            an array containing the Vandermonde matrix.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x)
+        ivy.array(
+        [[  1,   1,   1,   1],
+            [  8,   4,   2,   1],
+            [ 27,   9,   3,   1],
+            [125,  25,   5,   1]]
+            )
+
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x, N=3)
+        ivy.array(
+        [[ 1,  1,  1],
+            [ 4,  2,  1],
+            [ 9,  3,  1],
+            [25,  5,  1]]
+            )
+
+        >>> x = ivy.array([1, 2, 3, 5])
+        >>> ivy.vander(x, N=3, increasing=True)
+        ivy.array(
+        [[ 1,  1,  1],
+            [ 1,  2,  4],
+            [ 1,  3,  9],
+            [ 1,  5, 25]]
+            )
+        """
+        return ivy.vander(self._data, N=N, increasing=increasing, out=out)

@@ -1,9 +1,16 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+
+from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
+
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def add(
     x1,
     x2,
@@ -16,6 +23,7 @@ def add(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.add(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -23,6 +31,7 @@ def add(
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def subtract(
     x1,
     x2,
@@ -35,6 +44,7 @@ def subtract(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.subtract(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -42,6 +52,7 @@ def subtract(
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def divide(
     x1,
     x2,
@@ -54,6 +65,7 @@ def divide(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.divide(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -64,6 +76,7 @@ true_divide = divide
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def multiply(
     x1,
     x2,
@@ -76,21 +89,25 @@ def multiply(
     dtype=None,
     subok=True,
 ):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.multiply(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@to_ivy_arrays_and_back
 def vdot(
     a,
     b,
     /,
 ):
+    a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.multiply(a, b).sum()
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def positive(
     x,
     /,
@@ -109,6 +126,7 @@ def positive(
 
 
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def negative(
     x,
     /,

@@ -24,6 +24,10 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
     return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
 
+def argmax(a, axis=None, out=None, keepdims=None):
+    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+
+
 def _compute_allclose_with_tol(input, other, rtol, atol):
     return ivy.all(
         ivy.less_equal(
@@ -128,6 +132,10 @@ def mod(x1, x2):
 @inputs_to_ivy_arrays
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+
+def uint16(x):
+    return ivy.astype(x, ivy.uint16)
 
 
 @inputs_to_ivy_arrays
