@@ -2479,5 +2479,5 @@ def test_isreal(
         instance_method=instance_method,
         fw=fw,
         fn_name="isreal",
-        x=x,
+        x=x[0],
     )
