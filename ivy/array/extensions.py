@@ -263,9 +263,9 @@ class ArrayWithExtensions(abc.ABC):
         Examples
         --------
         >>> x = ivy.zeros((3, 4, 5))
-        >>> ivy.moveaxis(0, -1).shape
+        >>> x.moveaxis(0, -1).shape
         (4, 5, 3)
-        >>> ivy.moveaxis(-1, 0).shape
+        >>> x.moveaxis(-1, 0).shape
         (5, 3, 4)
         """
         return ivy.moveaxis(
