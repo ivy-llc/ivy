@@ -406,3 +406,42 @@ def test_torch_var(
         keepdim=keepdims,
         out=None,
     )
+
+
+# ToDo, fails for TensorFlow backend, tf.reduce_min doesn't support bool
+# ToDo, fails for torch backend, tf.argmin_cpu doesn't support bool
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.min"
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_min(
+    dtype_input_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdim,
+    with_out,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="min",
+        input=x[0],
+        dim=axis,
+        keepdim=keepdim,
+        out=None,
+    )

@@ -93,7 +93,7 @@ def std(
         return tf.cast(
             tf.math.multiply(
                 tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims),
-                size / (size - correction),
+                (size / (size - correction)) ** 0.5,
             ),
             x.dtype,
         )

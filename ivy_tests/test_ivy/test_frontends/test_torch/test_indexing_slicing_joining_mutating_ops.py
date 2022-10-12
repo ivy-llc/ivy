@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -234,19 +233,22 @@ def test_torch_swapdims(
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
     dtypes, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
-            shape=helpers.get_shape(
-                allow_none=False,
-                min_num_dims=1,
-                max_num_dims=5,
-                min_dim_size=1,
-                max_dim_size=10,
-            ),
+            shape=shape,
         )
     )
-    shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
+    shape = draw(helpers.reshape_shapes(shape=shape))
     return dtypes, x, shape
 
 
@@ -260,7 +262,6 @@ def dtypes_x_reshape(draw):
 def test_torch_reshape(
     dtypes_x_reshape,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
 ):
@@ -268,7 +269,7 @@ def test_torch_reshape(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -440,11 +441,11 @@ def test_torch_swapaxes(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=2,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
-    chunks=helpers.ints(min_value=2, max_value=5),
+    chunks=helpers.ints(min_value=1, max_value=3),
     dim=helpers.ints(min_value=0, max_value=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.chunk"
