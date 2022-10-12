@@ -15,8 +15,11 @@ def det(input, name=None):
     return ivy.det(input)
 
 
-def eigh(tensor, name=None):
-    return ivy.eigh(tensor)
+def eigh(tensor,name=None):
+    output_tensor = ivy.eigh(tensor)
+    e = output_tensor[0]
+    v = output_tensor[1]
+    return e,v
 
 
 def eigvalsh(tensor, name=None):
