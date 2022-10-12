@@ -15,7 +15,7 @@ def det(input, name=None):
     return ivy.det(input)
 
 
-def eigh(tensor,name=None):
+def eigh(tensor, name=None):
     output_tensor = ivy.eigh(tensor)
     e = output_tensor[0]
     v = output_tensor[1]
