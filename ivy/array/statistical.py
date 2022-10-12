@@ -177,22 +177,22 @@ class ArrayWithStatistical(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[0.0, 1.0, 2.0],
-        ...                   [3.0, 4.0, 5.0],
-        ...                   [6.0, 7.0, 8.0]])
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
         >>> x = ivy.array([[0.0, 1.0, 2.0],
-        ...                   [3.0, 4.0, 5.0],
-        ...                   [6.0, 7.0, .08]])
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
         ivy.array([6., 6., 4.1])
 
         >>> x = ivy.array([[0.0, 1.0, 2.0],
-        ...                   [3.0, 4.0, 5.0],
-        ...                   [6.0, 7.0, .08]])
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
@@ -296,8 +296,8 @@ class ArrayWithStatistical(abc.ABC):
                    [0, 8]])
 
         >>> x = ivy.array([[1, 5, 2],
-        ...                   [4, 3, 0],
-        ...                   [4, 8, 2]])
+        ...                [4, 3, 0],
+        ...                [4, 8, 2]])
         >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
         >>> print(y)
         ivy.array([[ 7,  2,  0],

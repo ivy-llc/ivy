@@ -75,10 +75,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-        ...           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-        ...           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-        ...           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-        ...           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        ...        [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+        ...        [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
         """
         return ivy.cholesky(self._data, upper=upper, out=out)
 
@@ -286,14 +286,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Examples
         --------
         x = ivy.array([[1., 2.],
-        ...          [3., 4.]])
+        ...            [3., 4.]])
         y = pinv(x, None, None)
         print(y)
         ivy.array([[-2., 1.],
-        ...       [1.5, -0.5]])
+        ...        [1.5, -0.5]])
 
         x = ivy.array([[1., 2.],
-        ...              [3., 4.]])
+        ...            [3., 4.]])
         out = ivy.array()
         pinv(x, 0, out)
         print(out)
@@ -338,7 +338,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[1.0, 2.0],
-        ...                   [3.0, 4.0]])
+        ...                [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))

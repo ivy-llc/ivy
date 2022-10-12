@@ -282,17 +282,17 @@ class ArrayWithGradients(abc.ABC):
         With :class:`ivy.Array` inputs:
 
         >>> w = ivy.array([[1., 2, 3],
-        ...               [4, 6, 1],
-        ...               [1, 0, 7]])
+        ...                [4, 6, 1],
+        ...                [1, 0, 7]])
         >>> dcdw = ivy.array([[0.5, 0.2, 0.1],
-        ...                    [0.3, 0.6, 0.4],
-        ...                    [0.4, 0.7, 0.2]])
+        ...                   [0.3, 0.6, 0.4],
+        ...                   [0.4, 0.7, 0.2]])
         >>> lr = ivy.array(0.1)
         >>> new_weights = w.gradient_descent_update(dcdw, lr, stop_gradients = True)
         >>> print(new_weights)
         ivy.array([[ 0.95,  1.98,  2.99],
-        ...           [ 3.97,  5.94,  0.96],
-        ...           [ 0.96, -0.07,  6.98]])
+        ...        [ 3.97,  5.94,  0.96],
+        ...        [ 0.96, -0.07,  6.98]])
 
         """
         return ivy.gradient_descent_update(

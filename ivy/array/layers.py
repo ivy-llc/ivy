@@ -138,9 +138,9 @@ class ArrayWithLayers(abc.ABC):
         >>> result = x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
         ivy.array([[[ 2.,  3.],
-        ...            [ 4.,  7.],
-        ...            [ 7., 13.],
-        ...            [11., 20.]]])
+        ...         [ 4.,  7.],
+        ...         [ 7., 13.],
+        ...         [11., 20.]]])
         """
         return ivy.conv1d(
             self._data,
@@ -276,11 +276,11 @@ class ArrayWithLayers(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[[[1.], [2.0],[3.]],
-        ...                    [[1.], [2.0],[3.]],
-        ...                    [[1.], [2.0],[3.]]]]) #NHWC
-        >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]],
-        ...                        [[[0.]],[[1.]], [[0.]]],
-        ...                        [[[0.]],[[1.]], [[0.]]]]) #HWIO
+        ...                 [[1.], [2.0],[3.]],
+        ...                 [[1.], [2.0],[3.]]]]) #NHWC
+        >>> filters = ivy.array([[[[0.]], [[1.]], [[0.]]],
+        ...                      [[[0.]], [[1.]], [[0.]]],
+        ...                      [[[0.]], [[1.]], [[0.]]]]) #HWIO
         >>> result = x.conv2d(filters, 1, 'SAME', data_format='NHWC',
         ...    dilations= 1)
         >>> print(result)
