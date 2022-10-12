@@ -198,6 +198,16 @@ try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video">
+    </iframe>
+
+
 MacOS
 ****
 
@@ -220,6 +230,16 @@ Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    </iframe>
+
 
 Ubuntu
 ****
@@ -277,8 +297,15 @@ Ubuntu
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    </iframe>
+
 
 Setting Up Testing
 ******************
@@ -360,6 +387,9 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
+
 GitHub Codespaces
 -----------------
 
@@ -438,25 +468,35 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 
 1. Under the flask Icon in the toolbar select "Configure Python Tests" and select PyTest as the test framework.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true
    :width: 420
 
 2. Select ivy_tests as the root directory for testing.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true
    :width: 420
 
 3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported frameworks.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
 4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite. This will cause the array_api_tests to fail and therefore they must be run via the terminal.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/vs_code_testing_setup/vs_testing_04.png?raw=true
    :width: 420
 
 5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video">
+    </iframe>
+
 
 Pre-Commit
 ----------

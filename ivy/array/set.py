@@ -1,13 +1,13 @@
 # global
 import abc
-from typing import Optional, NamedTuple
+from typing import Optional, Tuple
 
 
 import ivy
 
 
 class ArrayWithSet(abc.ABC):
-    def unique_counts(self: ivy.Array) -> NamedTuple:
+    def unique_counts(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_counts. This method simply
         wraps the function, and so the docstring for ivy.unique_counts also applies
@@ -37,7 +37,7 @@ class ArrayWithSet(abc.ABC):
         >>> x = ivy.array([0., 1., 2. , 1. , 0.])
         >>> y = x.unique_counts()
         >>> print(y)
-        uc(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))
+        Results(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))
         """
         return ivy.unique_counts(self._data)
 
@@ -48,10 +48,10 @@ class ArrayWithSet(abc.ABC):
 
     def unique_all(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
         return ivy.unique_all(self._data)
 
-    def unique_inverse(self: ivy.Array) -> NamedTuple:
+    def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_inverse. This method simply
         wraps the function, and so the docstring for ivy.unique_inverse also applies
@@ -82,7 +82,7 @@ class ArrayWithSet(abc.ABC):
         >>> x = ivy.array([0.3,0.4,0.7,0.4,0.2,0.8,0.5])
         >>> y = x.unique_inverse()
         >>> print(y)
-        unique_inverse(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),
+        Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),
         inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
 
         """

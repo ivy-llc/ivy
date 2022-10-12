@@ -62,7 +62,6 @@ def test_torch_full(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -70,13 +69,12 @@ def test_torch_full(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="full",
         size=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -97,7 +95,6 @@ def test_torch_ones_like(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -106,12 +103,11 @@ def test_torch_ones_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="ones_like",
         input=input[0],
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -138,7 +134,6 @@ def test_torch_ones(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -146,12 +141,11 @@ def test_torch_ones(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="ones",
         size=shape,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -178,7 +172,6 @@ def test_torch_zeros(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -186,12 +179,11 @@ def test_torch_zeros(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="zeros",
         size=shape,
         dtype=dtypes[0],
-        device=device,
         requires_grad=requires_grad,
     )
 
@@ -205,7 +197,7 @@ def test_torch_zeros(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=helpers.get_dtypes("float", full=False),
+    dtypes=helpers.get_dtypes("valid", full=False),
     requires_grad=_requires_grad(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.empty"
@@ -217,20 +209,175 @@ def test_torch_empty(
     requires_grad,
     device,
     num_positional_args,
-    fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[dtypes],
+        input_dtypes=dtypes,
         as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=[False],
-        fw=fw,
+        device=device,
         frontend="torch",
         fn_tree="empty",
-        test_values=False,
         size=shape,
         dtype=dtypes,
+        requires_grad=requires_grad,
+    )
+
+
+# arange
+
+
+@handle_cmd_line_args
+@given(
+    start=helpers.ints(min_value=0, max_value=50),
+    stop=helpers.ints(min_value=0, max_value=50),
+    step=helpers.ints(min_value=-50, max_value=50).filter(
+        lambda x: True if x != 0 else False
+    ),
+    dtypes=helpers.get_dtypes("float", full=False),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.arange"
+    ),
+)
+def test_torch_arange(
+    start,
+    stop,
+    step,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=3,
+        native_array_flags=[False],
         device=device,
+        frontend="torch",
+        fn_tree="arange",
+        end=stop,
+        start=start,
+        step=step,
+        dtype=dtypes,
+        requires_grad=requires_grad,
+    )
+
+
+# range
+
+
+@handle_cmd_line_args
+@given(
+    start=helpers.ints(min_value=0, max_value=50),
+    stop=helpers.ints(min_value=0, max_value=50),
+    step=helpers.ints(min_value=-50, max_value=50).filter(
+        lambda x: True if x != 0 else False
+    ),
+    dtypes=helpers.get_dtypes("float", full=False),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.range"
+    ),
+)
+def test_torch_range(
+    start,
+    stop,
+    step,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=3,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="range",
+        end=stop,
+        start=start,
+        step=step,
+        dtype=dtypes,
+        requires_grad=requires_grad,
+    )
+
+
+# linspace
+
+
+@handle_cmd_line_args
+@given(
+    start=st.floats(min_value=-10, max_value=10),
+    stop=st.floats(min_value=-10, max_value=10),
+    num=st.integers(min_value=1, max_value=10),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.linspace"
+    ),
+)
+def test_torch_linspace(
+    start,
+    stop,
+    num,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=3,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="linspace",
+        start=start,
+        end=stop,
+        num=num,
+        requires_grad=requires_grad,
+    )
+
+
+# logspace
+
+
+@handle_cmd_line_args
+@given(
+    start=st.floats(min_value=-10, max_value=10),
+    stop=st.floats(min_value=-10, max_value=10),
+    num=st.integers(min_value=1, max_value=10),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.logspace"
+    ),
+)
+def test_torch_logspace(
+    start,
+    stop,
+    num,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=3,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="logspace",
+        start=start,
+        end=stop,
+        num=num,
         requires_grad=requires_grad,
     )
