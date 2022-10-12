@@ -67,6 +67,7 @@ def test_numpy_mean(
         test_values=False,
     )
 
+
 # nanmean
 @handle_cmd_line_args
 @given(

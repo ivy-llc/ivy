@@ -164,13 +164,9 @@ def kaiser_window(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if periodic is False:
-        return jnp.array(
-            jnp.kaiser(M=window_length, beta=beta),
-            dtype=dtype) 
-    else: 
-        return jnp.array(
-            jnp.kaiser(M=window_length + 1, beta=beta)[:-1],
-            dtype=dtype)
+        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
 
 
 def moveaxis(
