@@ -196,6 +196,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if len(x.shape) < 2:
+        return np.asarray(0).astype(x.dtype)
     if type(atol) and type(rtol) == tuple:
         if atol.all() and rtol.all() is None:
             ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
