@@ -180,10 +180,10 @@ class ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(3)
         >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
-        (ivy.array([0.182, 0.182, 0.182]),\
-         ivy.array([0.9, 0.9, 0.9]),\
+        (ivy.array([0.182, 0.182, 0.182]),
+         ivy.array([0.9, 0.9, 0.9]),
          ivy.array([0.999, 0.999, 0.999]))
-        
+
         """
         return ivy.adam_step(
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
@@ -281,19 +281,19 @@ class ArrayWithGradients(abc.ABC):
         --------
         With :class:`ivy.Array` inputs:
 
-        >>> w = ivy.array([[1., 2, 3],\
-                       [4, 6, 1],\
-                       [1, 0, 7]])
-        >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
-                            [0.3, 0.6, 0.4],\
-                            [0.4, 0.7, 0.2]])
+        >>> w = ivy.array([[1., 2, 3],
+        ...                [4, 6, 1],
+        ...                [1, 0, 7]])
+        >>> dcdw = ivy.array([[0.5, 0.2, 0.1],
+        ...                   [0.3, 0.6, 0.4],
+        ...                   [0.4, 0.7, 0.2]])
         >>> lr = ivy.array(0.1)
         >>> new_weights = w.gradient_descent_update(dcdw, lr, stop_gradients = True)
         >>> print(new_weights)
-        ivy.array([[ 0.95,  1.98,  2.99],\
-                   [ 3.97,  5.94,  0.96],\
-                   [ 0.96, -0.07,  6.98]])
-        
+        ivy.array([[ 0.95,  1.98,  2.99],
+        ...        [ 3.97,  5.94,  0.96],
+        ...        [ 0.96, -0.07,  6.98]])
+
         """
         return ivy.gradient_descent_update(
             self, dcdw, lr, stop_gradients=stop_gradients, out=out
@@ -488,10 +488,10 @@ class ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(1)
         >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step)
         >>> print(new_weights)
-        (ivy.array([0.784, 1.78 , 2.78 ]),\
-         ivy.array([0.05, 0.02, 0.01]),\
-         ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
-        
+        (ivy.array([0.784, 1.78 , 2.78 ]),
+        ... ivy.array([0.05, 0.02, 0.01]),
+        ... ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
+
         """
         return ivy.lamb_update(
             self,
