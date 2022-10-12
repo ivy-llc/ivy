@@ -74,8 +74,8 @@ directories = [
 if __name__ == "__main__":
     num_tests = len(test_names)
     tests_per_run = num_tests // N
-    start = run_iter*tests_per_run
-    end = num_tests if run_iter == N-1 else (run_iter + 1)*tests_per_run
+    start = run_iter * tests_per_run
+    end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
         print(test_name)
         os.system(
