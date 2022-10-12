@@ -57,7 +57,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           docker run --rm --env REDIS_URL=${{REDIS_CONNECTION_URL}} --env REDIS_PASSWD=${{REDIS_PASSWORD}} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{matrix.backends}} ivy_tests/test_ivy/test_functional/test_extensions.py
+           docker run --rm --env REDIS_URL=${{secrets.REDIS_CONNECTION_URL}} --env REDIS_PASSWD=${{secrets.REDIS_PASSWORD}} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{matrix.backends}} ivy_tests/test_ivy/test_functional/test_extensions.py
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
