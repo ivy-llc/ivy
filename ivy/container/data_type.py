@@ -22,11 +22,11 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of 
+        """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
-        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
         is not specified and is implementation-dependent.
 
         .. note::
@@ -44,25 +44,25 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches 
-            the data type of the input array ``x``. If ``True``, a newly allocated 
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
             array must always be returned. If ``False`` and the specified ``dtype``
             matches the data type of the input array, the input array must be returned;
             otherwise, a newly allocated must be returned. Default: ``True``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have 
+            an array having the specified data type. The returned array must have
             the same shape as ``x``.
 
         Examples
         --------
-        >>> c = ivy.Container(a=ivy.array([False,True,True]), \
-                                 b=ivy.array([3.14, 2.718, 1.618]))
+        >>> c = ivy.Container(a=ivy.array([False,True,True]),
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> ivy.Container.static_astype(c, ivy.int32)
         {
             a: ivy.array([0, 1, 1]),
@@ -92,7 +92,7 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of 
+        """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -114,8 +114,8 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches 
-            the data type of the input array ``x``. If ``True``, a newly allocated 
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
             array must always be returned. If ``False`` and the specified ``dtype``
             matches the data type of the input array, the input array must be returned;
             otherwise, a newly allocated must be returned. Default: ``True``.
@@ -126,15 +126,15 @@ class ContainerWithDataTypes(ContainerBase):
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have 
+            an array having the specified data type. The returned array must have
             the same shape as ``x``.
 
         Examples
         --------
         Using :class:`ivy.Container` instance method:
-        
-        >>> x = ivy.Container(a=ivy.array([False,True,True]), \
-                                b=ivy.array([3.14, 2.718, 1.618]))
+
+        >>> x = ivy.Container(a=ivy.array([False,True,True]),
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> print(x.astype(ivy.int32))
         {
             a: ivy.array([0, 1, 1]),
@@ -338,8 +338,8 @@ class ContainerWithDataTypes(ContainerBase):
         --------
         With :class:`ivy.Container` static method:
 
-        >>> x = ivy.Container(a=ivy.array([1]),\
-            b=ivy.array([2]))
+        >>> x = ivy.Container(a=ivy.array([1]),
+        ...                   b=ivy.array([2]))
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
         >>> print(y)
         {
@@ -395,9 +395,9 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` instance method:
-        
-        >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
-            b=ivy.array([4, 5]))
+
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),
+        ...                   b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))
         >>> print(y)
         {
@@ -459,8 +459,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -518,8 +518,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -978,8 +978,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.array([0, 1, 2]), \
-                              b = ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a = ivy.array([0, 1, 2]),
+        ...                   b = ivy.array([3., 4., 5.]))
         >>> print(x.a.dtype, x.b.dtype)
         int32 float32
 
