@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -768,3 +768,96 @@ def max_pool2d(
     [[46, 47]]]])
     """
     return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Computes the Kaiser window with window length window_length and shape beta
+
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+        If True, returns a periodic window suitable for use in spectral analysis.
+        If False, returns a symmetric window suitable for use in filter design.
+    beta
+        a float used as shape parameter for the window.
+    dtype
+        data type of the returned array.        
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.kaiser_window(5)
+    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
+
+    >>> ivy.kaiser_window(5, True, 5)
+    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])
+
+    >>> ivy.kaiser_window(5, False, 5)
+    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
+    """
+    return ivy.current_backend().kaiser_window(
+        window_length, periodic, beta, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def moveaxis(
+    a: Union[ivy.Array, ivy.NativeArray],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Move axes of an array to new positions..
+
+    Parameters
+    ----------
+    a
+        The array whose axes should be reordered.
+    source
+        Original positions of the axes to move. These must be unique.
+    destination
+        Destination positions for each of the original axes.
+        These must also be unique.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with moved axes. This array is a view of the input array.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.zeros((3, 4, 5))
+    >>> ivy.moveaxis(x, 0, -1).shape
+    (4, 5, 3)
+    >>> ivy.moveaxis(x, -1, 0).shape
+    (5, 3, 4)
+    """
+    return ivy.current_backend().moveaxis(
+        a, source, destination, out=out
+    )
