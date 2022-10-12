@@ -270,8 +270,10 @@ def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
+
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
+
 
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
