@@ -670,14 +670,12 @@ def test_jax_numpy_arctan2(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.cos"
     ),
 )
 def test_jax_numpy_cos(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -700,14 +698,12 @@ def test_jax_numpy_cos(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.cosh"
     ),
 )
 def test_jax_numpy_cosh(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -730,14 +726,12 @@ def test_jax_numpy_cosh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.tanh"
     ),
 )
 def test_jax_numpy_tanh(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -760,14 +754,12 @@ def test_jax_numpy_tanh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.sinh"
     ),
 )
 def test_jax_numpy_sinh(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -790,14 +782,12 @@ def test_jax_numpy_sinh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.sin"
     ),
 )
 def test_jax_numpy_sin(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
