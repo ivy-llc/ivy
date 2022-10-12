@@ -156,8 +156,8 @@ def test_array__getitem__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -181,8 +181,8 @@ def test_array__setitem__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -205,8 +205,8 @@ def test_array__pos__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -229,8 +229,8 @@ def test_array__neg__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -261,8 +261,8 @@ def test_array__pow__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -294,8 +294,8 @@ def test_array__rpow__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -327,8 +327,8 @@ def test_array__ipow__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -342,6 +342,7 @@ def test_array__ipow__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__add__(
@@ -356,8 +357,8 @@ def test_array__add__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -371,6 +372,7 @@ def test_array__add__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__radd__(
@@ -385,8 +387,8 @@ def test_array__radd__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -400,6 +402,7 @@ def test_array__radd__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__iadd__(
@@ -414,8 +417,8 @@ def test_array__iadd__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -429,6 +432,7 @@ def test_array__iadd__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__sub__(
@@ -443,8 +447,8 @@ def test_array__sub__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -458,6 +462,7 @@ def test_array__sub__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__rsub__(
@@ -472,8 +477,8 @@ def test_array__rsub__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -487,6 +492,7 @@ def test_array__rsub__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__isub__(
@@ -501,8 +507,8 @@ def test_array__isub__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -516,6 +522,7 @@ def test_array__isub__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__mul__(
@@ -530,8 +537,8 @@ def test_array__mul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -545,6 +552,7 @@ def test_array__mul__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__rmul__(
@@ -559,8 +567,8 @@ def test_array__rmul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -574,6 +582,7 @@ def test_array__rmul__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__imul__(
@@ -588,8 +597,8 @@ def test_array__imul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -603,6 +612,7 @@ def test_array__imul__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__mod__(
@@ -617,8 +627,8 @@ def test_array__mod__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -632,6 +642,7 @@ def test_array__mod__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__rmod__(
@@ -646,8 +657,8 @@ def test_array__rmod__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -661,6 +672,7 @@ def test_array__rmod__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__imod__(
@@ -675,8 +687,8 @@ def test_array__imod__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -704,8 +716,8 @@ def test_array__divmod__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -733,8 +745,8 @@ def test_array__rdivmod__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -748,6 +760,7 @@ def test_array__rdivmod__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__truediv__(
@@ -763,8 +776,8 @@ def test_array__truediv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -778,6 +791,7 @@ def test_array__truediv__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__rtruediv__(
@@ -793,8 +807,8 @@ def test_array__rtruediv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -808,6 +822,7 @@ def test_array__rtruediv__(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        shared_dtype=True,
     ),
 )
 def test_array__itruediv__(
@@ -823,8 +838,8 @@ def test_array__itruediv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -854,8 +869,8 @@ def test_array__floordiv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -885,8 +900,8 @@ def test_array__rfloordiv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -916,8 +931,8 @@ def test_array__ifloordiv__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -942,8 +957,8 @@ def test_array__matmul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -968,8 +983,8 @@ def test_array__rmatmul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -994,8 +1009,8 @@ def test_array__imatmul__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1018,8 +1033,8 @@ def test_array__abs__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1043,8 +1058,8 @@ def test_array__float__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1068,8 +1083,8 @@ def test_array__int__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1095,8 +1110,8 @@ def test_array__bool__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1117,13 +1132,13 @@ def test_array__lt__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data < other
-    np_ret = x[1] < x[0]
+    np_ret = x[0] < x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1144,13 +1159,13 @@ def test_array__le__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data <= other
-    np_ret = x[1] <= x[0]
+    np_ret = x[0] <= x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1171,13 +1186,13 @@ def test_array__eq__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data == other
-    np_ret = x[1] == x[0]
+    np_ret = x[0] == x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1198,13 +1213,13 @@ def test_array__ne__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data != other
-    np_ret = x[1] != x[0]
+    np_ret = x[0] != x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1225,13 +1240,13 @@ def test_array__gt__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data > other
-    np_ret = x[1] > x[0]
+    np_ret = x[0] > x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1252,13 +1267,13 @@ def test_array__ge__(
     data = Array(x[0])
     other = Array(x[1])
     ret = data >= other
-    np_ret = x[1] >= x[0]
+    np_ret = x[0] >= x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1284,8 +1299,8 @@ def test_array__and__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1311,8 +1326,8 @@ def test_array__rand__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1338,8 +1353,8 @@ def test_array__iand__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1365,8 +1380,8 @@ def test_array__or__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1392,8 +1407,8 @@ def test_array__ror__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1419,8 +1434,8 @@ def test_array__ior__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1444,8 +1459,8 @@ def test_array__invert__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1471,8 +1486,8 @@ def test_array__xor__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1498,8 +1513,8 @@ def test_array__rxor__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1525,8 +1540,8 @@ def test_array__ixor__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1553,8 +1568,8 @@ def test_array__lshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1581,8 +1596,8 @@ def test_array__rlshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1609,8 +1624,8 @@ def test_array__ilshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1637,8 +1652,8 @@ def test_array__rshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1665,8 +1680,8 @@ def test_array__rrshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1693,8 +1708,8 @@ def test_array__irshift__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1717,8 +1732,8 @@ def test_array__deepcopy__(
     ret_gt = helpers.flatten_and_to_np(ret=py_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1743,8 +1758,8 @@ def test_array__len__(
     ret_gt = helpers.flatten_and_to_np(ret=py_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
 
@@ -1769,7 +1784,7 @@ def test_array__iter__(
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
         helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
         )
