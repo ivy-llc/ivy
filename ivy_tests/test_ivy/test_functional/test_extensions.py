@@ -357,10 +357,12 @@ def test_max_pool2d(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shape=(1, 1)
+        shape=(1, 1),
+        min_value=1,
+        max_value=10,
     ),
     periodic=st.booleans(),
-    beta=st.floats(),
+    beta=st.floats(min_value=0, max_value=5),
     dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="kaiser_window"),
 )
