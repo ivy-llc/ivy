@@ -1117,8 +1117,8 @@ def lamb_update(
     ...                               stop_gradients=stop_gradients)
     >>> print(out)
     ivy.array([[ 0.639,  1.64 ,  2.64 ],
-    ...           [ 3.64 ,  5.64 ,  0.639],
-    ...           [ 0.639, -0.361,  6.64 ]])
+    ...        [ 3.64 ,  5.64 ,  0.639],
+    ...        [ 0.639, -0.361,  6.64 ]])
 
     With one :class:`ivy.Container` inputs:
 
