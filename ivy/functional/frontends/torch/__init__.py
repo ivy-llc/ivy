@@ -28,7 +28,18 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 import ivy
-from ivy import uint8, int8, int16, int32, int64, float16, float32, float64, bfloat16
+from ivy import (
+    uint8,
+    int8,
+    int16,
+    int32,
+    int64,
+    float16,
+    float32,
+    float64,
+    bfloat16,
+    bool,
+)
 from ivy.exceptions import handle_exceptions
 
 # global

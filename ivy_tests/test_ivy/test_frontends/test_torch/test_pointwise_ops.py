@@ -388,7 +388,6 @@ def test_torch_subtract(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="subtract",
-        rtol=1e-04,
         input=x[0],
         other=x[1],
         alpha=alpha,
@@ -712,7 +711,6 @@ def test_torch_square(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.atan2"
@@ -744,7 +742,8 @@ def test_torch_atan2(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.negative"
@@ -775,9 +774,8 @@ def test_torch_negative(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_and"
@@ -799,7 +797,6 @@ def test_torch_bitwise_and(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="bitwise_and",
-        rtol=1e-04,
         input=x[0],
         other=x[1],
         out=None,
@@ -840,9 +837,8 @@ def test_torch_bitwise_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_xor"
@@ -873,9 +869,8 @@ def test_torch_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_or"
@@ -1074,7 +1069,7 @@ def test_torch_sqrt(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.sign"
