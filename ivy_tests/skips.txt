@@ -154,6 +154,7 @@ ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_mask
 # tolerance issue when asserting isequal()
 ivy_tests/test_array_api/array_api_tests/test_linalg.py::test_matrix_norm
 ivy_tests/test_array_api/array_api_tests/test_linalg.py::test_det
+#ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange
 
 ############################# Ivy only skips - torch #############################
 

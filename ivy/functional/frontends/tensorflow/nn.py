@@ -53,9 +53,6 @@ def conv2d(
     )
 
 
-conv2d.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv2d_transpose(
     input,
     filters,
@@ -77,18 +74,12 @@ def conv2d_transpose(
     )
 
 
-conv2d_transpose.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
     return ivy.conv3d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
-
-
-conv3d.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def conv3d_transpose(
@@ -112,9 +103,6 @@ def conv3d_transpose(
     )
 
 
-conv3d_transpose.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
@@ -129,6 +117,21 @@ def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
 
 
+def silu(features, beta: float = 1.0):
+    beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
+    return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
+
+
+silu.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+    "bfloat16",
+)
+
+
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     ivy.assertions.check_shape(labels, logits)
     zeros = ivy.zeros_like(logits)
@@ -140,6 +143,34 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 
 sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+)
+
+
+def weighted_cross_entropy_with_logits(
+    labels=None, logits=None, pos_weight=1.0, name=None
+):
+    ivy.assertions.check_shape(labels, logits)
+    ones = ivy.ones_like(labels)
+    zeros = ivy.zeros_like(logits)
+    log_weight = ivy.add(ones, ivy.multiply(pos_weight - 1, labels))
+    ones_minus_labels = ivy.subtract(ones, labels)
+    first_term = ivy.multiply(ones_minus_labels, logits)
+
+    max_neg_logits = ivy.where(
+        ivy.negative(logits) >= zeros, ivy.negative(logits), zeros
+    )
+    neg_abs_logits = ivy.negative(ivy.abs(logits))
+    log_neg_abs_logits = ivy.log1p(ivy.exp(neg_abs_logits))
+    second_term = ivy.multiply(log_weight, ivy.add(log_neg_abs_logits, max_neg_logits))
+    return ivy.add(first_term, second_term)
+
+
+weighted_cross_entropy_with_logits.unsupported_dtypes = (
     "int8",
     "int16",
     "int32",

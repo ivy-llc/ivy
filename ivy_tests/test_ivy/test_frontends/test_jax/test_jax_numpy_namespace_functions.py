@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 import numpy as np
 
 # local
@@ -63,6 +63,44 @@ def test_jax_numpy_absolute(
         frontend="jax",
         fn_tree="numpy.absolute",
         x=x[0],
+    )
+
+
+# argmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.argmax"
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_argmax(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdims,
+    fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.argmax",
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keepdims,
     )
 
 
@@ -449,6 +487,35 @@ def test_jax_numpy_mean(
     )
 
 
+# uint16
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.uint16"
+    ),
+)
+def test_jax_numpy_uint16(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.uint16",
+        x=x[0],
+    )
+
+
 # var
 @handle_cmd_line_args
 @given(
@@ -533,6 +600,37 @@ def _get_dtype_input_and_vectors(draw):
             )
         )
     return dtype, vec1, vec2
+
+
+# mod
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.mod"
+    ),
+)
+def test_jax_numpy_mod(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.mod",
+        x1=x[0],
+        x2=x[1],
+    )
 
 
 @handle_cmd_line_args
@@ -664,4 +762,35 @@ def test_jax_numpy_arctan2(
         fn_tree="numpy.arctan2",
         x1=x[0],
         x2=x[1],
+    )
+
+
+@handle_cmd_line_args
+@settings(max_examples=1000)
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.cos"
+    ),
+)
+def test_jax_numpy_cos(
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.cos",
+        x=x[0],
     )
