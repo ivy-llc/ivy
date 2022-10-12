@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 import ivy
@@ -216,3 +216,46 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
+
+    def moveaxis(
+        self: ivy.Array,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            The array whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with moved axes. This array is a view of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.zeros((3, 4, 5))
+        >>> x.moveaxis(0, -1).shape
+        (4, 5, 3)
+        >>> x.moveaxis(-1, 0).shape
+        (5, 3, 4)
+        """
+        return ivy.moveaxis(
+            self._data, 
+            source,
+            destination,
+            out=out)

@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -816,3 +816,48 @@ def kaiser_window(
     """
     return ivy.current_backend().kaiser_window(
         window_length, periodic, beta, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def moveaxis(
+    a: Union[ivy.Array, ivy.NativeArray],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Move axes of an array to new positions..
+
+    Parameters
+    ----------
+    a
+        The array whose axes should be reordered.
+    source
+        Original positions of the axes to move. These must be unique.
+    destination
+        Destination positions for each of the original axes.
+        These must also be unique.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with moved axes. This array is a view of the input array.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.zeros((3, 4, 5))
+    >>> ivy.moveaxis(x, 0, -1).shape
+    (4, 5, 3)
+    >>> ivy.moveaxis(x, -1, 0).shape
+    (5, 3, 4)
+    """
+    return ivy.current_backend().moveaxis(
+        a, source, destination, out=out
+    )
