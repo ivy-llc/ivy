@@ -67,7 +67,6 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         and return arrays are all converted to `ivy.Array` instances. This wrapper is
         specifically for the backend implementations of asarray.
         """
-
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
         # and the checks to see if we can avoid it are cheap
@@ -961,6 +960,10 @@ def linspace(
         Number of values to generate.
     axis
         Axis along which the operation is performed.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included.
+    dtype
+        output array data type.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out

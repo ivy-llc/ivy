@@ -689,15 +689,21 @@ def test_slogdet(
 @st.composite
 def _get_first_matrix(draw):
     # batch_shape, random_size, shared
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype,
             shape=tuple([shared_size, shared_size]),
@@ -710,15 +716,20 @@ def _get_first_matrix(draw):
 @st.composite
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
-        )
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
     )
+    input_dtype = draw(input_dtype_strategy)
+
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
@@ -757,8 +768,8 @@ def test_solve(
         fn_name="solve",
         rtol_=1e-1,
         atol_=1e-1,
-        x1=x1[0],
-        x2=x2[0],
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -859,9 +870,9 @@ def test_tensordot(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
-        large_abs_safety_factor=1.1,
-        small_abs_safety_factor=1.1,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     offset=st.integers(min_value=0, max_value=0),
     axis1=st.integers(min_value=0, max_value=0),
@@ -1414,7 +1425,7 @@ def test_diag(
     offset_dtype, offset = dtype_offset
     padding_value_dtype, padding_value = dtype_padding_value
     helpers.test_function(
-        input_dtypes=[dtype_x, offset_dtype, dtype_padding_value],
+        input_dtypes=x_dtype + offset_dtype + padding_value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -1422,9 +1433,10 @@ def test_diag(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="diagonal",
+        fn_name="diag",
         x=x,
         offset=offset,
+        padding_value=padding_value,
         align=align,
         num_rows=num_rows,
         num_cols=num_cols,
@@ -1475,4 +1487,46 @@ def test_diagonal(
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
+    )
+
+
+# vander
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=1),
+        shape=st.tuples(
+            helpers.ints(min_value=1, max_value=3),
+        ),
+    ),
+    N=st.integers(min_value=1, max_value=3),
+    increasing=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="vander"),
+)
+def test_vander(
+    dtype_and_x,
+    N,
+    increasing,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="vander",
+        x=x[0],
+        N=N,
+        increasing=increasing,
     )
