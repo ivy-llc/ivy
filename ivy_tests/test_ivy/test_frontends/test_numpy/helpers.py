@@ -31,7 +31,7 @@ def _get_safe_casting_dtype(draw, *, dtypes):
 
 
 @st.composite
-def dtype_x_casting_and_dtype(
+def dtypes_values_casting_dtype(
     draw,
     *,
     arr_func,
@@ -39,20 +39,21 @@ def dtype_x_casting_and_dtype(
     get_dtypes_index=0,
     get_dtypes_none=True,
     get_dtypes_key=None,
+    special=False,
 ):
     dtypes, values = [], []
     casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
     for idx, func in enumerate(arr_func):
         typ, val = draw(func())
-        typ = [typ] if not isinstance(typ, list) else typ
-        val = [val] if not isinstance(val, list) else val
         if casting in ["no", "equiv"] and idx > 0:
             dtypes.append(dtypes[0])
         else:
-            dtypes += typ
-        values += val
+            dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
 
-    if casting in ["no", "equiv"]:
+    if special:
+        dtype = draw(st.sampled_from(["bool", None]))
+    elif casting in ["no", "equiv"]:
         dtype = draw(st.just(None))
     elif casting in ["safe", "same_kind"]:
         dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
