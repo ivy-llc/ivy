@@ -208,4 +208,4 @@ def promote_types_of_torch_inputs(
     else:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+    return x1, x2
