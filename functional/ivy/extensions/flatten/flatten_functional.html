@@ -188,79 +188,59 @@ The order of elements in input is unchanged.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([1, 2, 3, 4])</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-<span class="go">    [[[[ 5,  5,  0,  6],</span>
-<span class="go">     [17, 15, 11, 16],</span>
-<span class="go">     [ 6,  3, 13, 12]],</span>
-</pre></div>
-</div>
-<blockquote>
-<div><blockquote>
-<div><dl class="simple">
-<dt>[[ 6, 18, 10,  4],</dt><dd><p>[ 5,  1, 17,  3],
-[14, 14, 18,  6]]],</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl>
-<dt>[[[12,  0,  1, 13],</dt><dd><blockquote>
-<div><p>[ 8,  7,  0,  3],
-[19, 12,  6, 17]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[ 4, 15,  6, 15],</dt><dd><p>[ 0,  5, 17,  9],
-[ 9,  3,  6, 19]]],</p>
-</dd>
-</dl>
-</dd>
-<dt>[[[17, 13, 11, 16],</dt><dd><blockquote>
-<div><p>[ 4, 18, 17,  4],
-[10, 10,  9,  1]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[19, 17, 13, 10],</dt><dd><p>[ 4, 19, 16, 17],
-[ 2, 12,  8, 14]]]]
-)</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end_dim</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="go">    [[[[5, 5, 0, 6],</span>
+<span class="go">        [17, 15, 11, 16],</span>
+<span class="go">        [6, 3, 13, 12]],</span>
+<span class="go">      [[6, 18, 10, 4],</span>
+<span class="go">        [5, 1, 17, 3],</span>
+<span class="go">        [14, 14, 18, 6]]],</span>
+<span class="go">    [[[12, 0, 1, 13],</span>
+<span class="go">       [8, 7, 0, 3],</span>
+<span class="go">       [19, 12, 6, 17]],</span>
+<span class="go">     [[4, 15,  6, 15],</span>
+<span class="go">       [0, 5, 17, 9],</span>
+<span class="go">       [9, 3, 6, 19]]],</span>
+<span class="go">    [[[17, 13, 11, 16],</span>
+<span class="go">       [4, 18, 17, 4],</span>
+<span class="go">       [10, 10, 9, 1]],</span>
+<span class="go">     [[19, 17, 13, 10],</span>
+<span class="go">       [ 4, 19, 16, 17],</span>
+<span class="go">       [ 2, 12, 8, 14]]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end_dim</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array(</span>
-<span class="go">    [[[ 5,  5,  0,  6],</span>
+<span class="go">    [[[ 5, 5, 0, 6],</span>
 <span class="go">      [17, 15, 11, 16],</span>
-<span class="go">      [ 6,  3, 13, 12],</span>
-<span class="go">      [ 6, 18, 10,  4],</span>
-<span class="go">      [ 5,  1, 17,  3],</span>
-<span class="go">      [14, 14, 18,  6]],</span>
+<span class="go">      [6, 3, 13, 12],</span>
+<span class="go">      [6, 18, 10, 4],</span>
+<span class="go">      [5, 1, 17, 3],</span>
+<span class="go">      [14, 14, 18, 6]],</span>
+<span class="go">     [[12, 0, 1, 13],</span>
+<span class="go">      [8, 7, 0, 3],</span>
+<span class="go">      [19, 12, 6, 17],</span>
+<span class="go">      [4, 15, 6, 15],</span>
+<span class="go">      [0, 5, 17, 9],</span>
+<span class="go">      [9, 3, 6, 19]],</span>
+<span class="go">     [[17, 13, 11, 16],</span>
+<span class="go">      [4, 18, 17, 4],</span>
+<span class="go">      [10, 10,  9, 1],</span>
+<span class="go">      [19, 17, 13, 10],</span>
+<span class="go">      [ 4, 19, 16, 17],</span>
+<span class="go">      [ 2, 12,  8, 14]]])</span>
 </pre></div>
 </div>
-<blockquote>
-<div><dl class="simple">
-<dt>[[12,  0,  1, 13],</dt><dd><p>[ 8,  7,  0,  3],
-[19, 12,  6, 17],
-[ 4, 15,  6, 15],
-[ 0,  5, 17,  9],
-[ 9,  3,  6, 19]],</p>
-</dd>
-<dt>[[17, 13, 11, 16],</dt><dd><p>[ 4, 18, 17,  4],
-[10, 10,  9,  1],
-[19, 17, 13, 10],
-[ 4, 19, 16, 17],
-[ 2, 12,  8, 14]]])</p>
-</dd>
-</dl>
-</div></blockquote>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
-<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">                      b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[{</span>
 <span class="go">    a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])</span>
 <span class="go">    b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</span>

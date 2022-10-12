@@ -551,7 +551,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.5, 1.5, 2.5, 3.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.sinc()</span>
@@ -564,14 +564,14 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-0.212,0.637,-0.212])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.5, 1.5, 2.5, 3.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sinc(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.637,-0.212,0.127,-0.0909])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\</span>
 <span class="sd">                          b=ivy.array([3.5, 4.5, 5.5]))</span>
@@ -629,56 +629,48 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array([1,2], [3,4])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.flatten(x)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2], [3,4])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flatten(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1, 2, 3, 4])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array(</span>
-<span class="sd">        [[[[ 5,  5,  0,  6],</span>
-<span class="sd">         [17, 15, 11, 16],</span>
-<span class="sd">         [ 6,  3, 13, 12]],</span>
-
-<span class="sd">        [[ 6, 18, 10,  4],</span>
-<span class="sd">         [ 5,  1, 17,  3],</span>
-<span class="sd">         [14, 14, 18,  6]]],</span>
-
-
-<span class="sd">       [[[12,  0,  1, 13],</span>
-<span class="sd">         [ 8,  7,  0,  3],</span>
-<span class="sd">         [19, 12,  6, 17]],</span>
-
-<span class="sd">        [[ 4, 15,  6, 15],</span>
-<span class="sd">         [ 0,  5, 17,  9],</span>
-<span class="sd">         [ 9,  3,  6, 19]]],</span>
-
-
-<span class="sd">       [[[17, 13, 11, 16],</span>
-<span class="sd">         [ 4, 18, 17,  4],</span>
-<span class="sd">         [10, 10,  9,  1]],</span>
-
-<span class="sd">        [[19, 17, 13, 10],</span>
-<span class="sd">         [ 4, 19, 16, 17],</span>
-<span class="sd">         [ 2, 12,  8, 14]]]]</span>
-<span class="sd">         )</span>
-<span class="sd">    &gt;&gt;&gt; ivy.flatten(x, start_dim = 1, end_dim = 2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array(</span>
+<span class="sd">        [[[[5, 5, 0, 6],</span>
+<span class="sd">            [17, 15, 11, 16],</span>
+<span class="sd">            [6, 3, 13, 12]],</span>
+<span class="sd">          [[6, 18, 10, 4],</span>
+<span class="sd">            [5, 1, 17, 3],</span>
+<span class="sd">            [14, 14, 18, 6]]],</span>
+<span class="sd">        [[[12, 0, 1, 13],</span>
+<span class="sd">           [8, 7, 0, 3],</span>
+<span class="sd">           [19, 12, 6, 17]],</span>
+<span class="sd">         [[4, 15,  6, 15],</span>
+<span class="sd">           [0, 5, 17, 9],</span>
+<span class="sd">           [9, 3, 6, 19]]],</span>
+<span class="sd">        [[[17, 13, 11, 16],</span>
+<span class="sd">           [4, 18, 17, 4],</span>
+<span class="sd">           [10, 10, 9, 1]],</span>
+<span class="sd">         [[19, 17, 13, 10],</span>
+<span class="sd">           [ 4, 19, 16, 17],</span>
+<span class="sd">           [ 2, 12, 8, 14]]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flatten(x, start_dim = 1, end_dim = 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(</span>
-<span class="sd">        [[[ 5,  5,  0,  6],</span>
+<span class="sd">        [[[ 5, 5, 0, 6],</span>
 <span class="sd">          [17, 15, 11, 16],</span>
-<span class="sd">          [ 6,  3, 13, 12],</span>
-<span class="sd">          [ 6, 18, 10,  4],</span>
-<span class="sd">          [ 5,  1, 17,  3],</span>
-<span class="sd">          [14, 14, 18,  6]],</span>
-
-<span class="sd">         [[12,  0,  1, 13],</span>
-<span class="sd">          [ 8,  7,  0,  3],</span>
-<span class="sd">          [19, 12,  6, 17],</span>
-<span class="sd">          [ 4, 15,  6, 15],</span>
-<span class="sd">          [ 0,  5, 17,  9],</span>
-<span class="sd">          [ 9,  3,  6, 19]],</span>
-
+<span class="sd">          [6, 3, 13, 12],</span>
+<span class="sd">          [6, 18, 10, 4],</span>
+<span class="sd">          [5, 1, 17, 3],</span>
+<span class="sd">          [14, 14, 18, 6]],</span>
+<span class="sd">         [[12, 0, 1, 13],</span>
+<span class="sd">          [8, 7, 0, 3],</span>
+<span class="sd">          [19, 12, 6, 17],</span>
+<span class="sd">          [4, 15, 6, 15],</span>
+<span class="sd">          [0, 5, 17, 9],</span>
+<span class="sd">          [9, 3, 6, 19]],</span>
 <span class="sd">         [[17, 13, 11, 16],</span>
-<span class="sd">          [ 4, 18, 17,  4],</span>
-<span class="sd">          [10, 10,  9,  1],</span>
+<span class="sd">          [4, 18, 17, 4],</span>
+<span class="sd">          [10, 10,  9, 1],</span>
 <span class="sd">          [19, 17, 13, 10],</span>
 <span class="sd">          [ 4, 19, 16, 17],</span>
 <span class="sd">          [ 2, 12,  8, 14]]])</span>
@@ -686,8 +678,9 @@
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),</span>
-<span class="sd">    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.flatten(x)</span>
+<span class="sd">                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flatten(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    [{</span>
 <span class="sd">        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])</span>
 <span class="sd">        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</span>
