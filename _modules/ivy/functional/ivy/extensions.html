@@ -898,6 +898,54 @@
 <span class="sd">    [[46, 47]]]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/ivy/extensions/kaiser_window/kaiser_window_functional.html#ivy.functional.ivy.extensions.kaiser_window">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kaiser window with window length window_length and shape beta</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
+<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
+<span class="sd">    beta</span>
+<span class="sd">        a float used as shape parameter for the window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array.        </span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5)</span>
+<span class="sd">    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, True, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, False, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.Container.static_flatten &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.kaiser_window &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="vorbis_window" href="../vorbis_window.html" />
-    <link rel="prev" title="ivy.Container.flatten" href="flatten_container.html" /> 
+    <link rel="next" title="ivy.Container.kaiser_window" href="kaiser_window_container.html" />
+    <link rel="prev" title="kaiser_window" href="../kaiser_window.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,18 +66,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../native_sparse_array.html">native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sinc.html">sinc</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../flatten.html">flatten</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="flatten_functional.html">ivy.flatten</a></li>
-<li class="toctree-l3"><a class="reference internal" href="flatten_array.html">ivy.Array.flatten</a></li>
-<li class="toctree-l3"><a class="reference internal" href="flatten_container.html">ivy.Container.flatten</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_flatten</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../flatten.html">flatten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../max_pool2d.html">max_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../kaiser_window.html">kaiser_window</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.kaiser_window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kaiser_window_container.html">ivy.Container.kaiser_window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_kaiser_window_container.html">ivy.Container.static_kaiser_window</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
@@ -140,10 +139,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../extensions.html">Extensions</a> &raquo;</li>
-          <li><a href="../flatten.html">flatten</a> &raquo;</li>
-      <li>ivy.Container.static_flatten</li>
+          <li><a href="../kaiser_window.html">kaiser_window</a> &raquo;</li>
+      <li>ivy.kaiser_window</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/functional/ivy/extensions/flatten/static_flatten_container.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/extensions/kaiser_window/kaiser_window_functional.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -151,38 +150,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ivy-container-static-flatten">
-<h1>ivy.Container.static_flatten<a class="headerlink" href="#ivy-container-static-flatten" title="Permalink to this heading"></a></h1>
+  <section id="ivy-kaiser-window">
+<h1>ivy.kaiser_window<a class="headerlink" href="#ivy-kaiser-window" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_flatten">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/extensions.html#ContainerWithExtensions.static_flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_flatten" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of <a href="../flatten/flatten_functional.html">ivy.flatten</a>. This method simply wraps the
-function, and so the docstring for <a href="../flatten/flatten_functional.html">ivy.flatten</a> also applies to this method
-with minimal changes.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.kaiser_window">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">kaiser_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/extensions.html#kaiser_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.kaiser_window" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the Kaiser window with window length window_length and shape beta</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – input container to flatten at leaves.</p></li>
-<li><p><strong>start_dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – first dim to flatten. If not set, defaults to 0.</p></li>
-<li><p><strong>end_dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – last dim to flatten. If not set, defaults to -1.</p></li>
+<li><p><strong>window_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – an int defining the length of the window.</p></li>
+<li><p><strong>periodic</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, returns a periodic window suitable for use in spectral analysis. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+If False, returns a symmetric window suitable for use in filter design.</p></li>
+<li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a float used as shape parameter for the window. (default: <code class="docutils literal notranslate"><span class="pre">12.0</span></code>)</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Container with arrays flattened at leaves.</p>
+<dd class="field-odd"><p><em>ret</em> – The array containing the window.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
-<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">[{</span>
-<span class="go">    a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])</span>
-<span class="go">    b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</span>
-<span class="go">}]</span>
+<p class="rubric">Functional Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -198,8 +200,8 @@ with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="flatten_container.html" class="btn btn-neutral float-left" title="ivy.Container.flatten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../vorbis_window.html" class="btn btn-neutral float-right" title="vorbis_window" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../kaiser_window.html" class="btn btn-neutral float-left" title="kaiser_window" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kaiser_window_container.html" class="btn btn-neutral float-right" title="ivy.Container.kaiser_window" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -23,6 +23,7 @@ Extensions
    extensions/lcm.rst
    extensions/hann_window.rst
    extensions/max_pool2d.rst
+   extensions/kaiser_window.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:
