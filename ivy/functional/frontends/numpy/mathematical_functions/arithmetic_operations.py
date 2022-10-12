@@ -1,7 +1,6 @@
 # global
 import ivy
 
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
 from ivy.functional.frontends.numpy.func_wrapper import (

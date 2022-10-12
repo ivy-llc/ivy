@@ -187,6 +187,15 @@ def promote_types_of_numpy_inputs(
     if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
         not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
     ):
+        """
+        Promotes the dtype of the given ivy array inputs to a common dtype
+        based on numpy type promotion rules. While passing float or integer values or any
+        other non-array input to this function, it should be noted that the return will
+        be an array-like object. Therefore, outputs from this function should be used
+        as inputs only for those functions that expect an array-like or tensor-like objects,
+        otherwise it might give unexpected results.
+
+        """
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
@@ -198,7 +207,7 @@ def promote_types_of_numpy_inputs(
     else:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+    return x1, x2
 
 
 from . import creation_routines
