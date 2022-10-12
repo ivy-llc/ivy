@@ -85,6 +85,26 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    if batch_dims > axis:
+        raise ivy.exceptions.IvyException(
+            "batch_dims ("
+            + str(batch_dims)
+            + ") must be less \
+            than or equal to axis ("
+            + str(axis)
+            + ")."
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "params.shape[0:batch_dims] "
+            + str(params.shape[0:batch_dims])
+            + " should \
+            be equal to indices.shape[0:batch_dims]"
+            + str(indices.shape[0:batch_dims])
+            + "."
+        )
     result = []
     if batch_dims == 0:
         result = jnp.take(params, indices, axis)
@@ -108,7 +128,10 @@ def gather(
 def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    num_index_dims = indices_shape[-1]
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
         reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -141,6 +164,40 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if batch_dims >= len(params.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = "
+            + str(batch_dims)
+            + " must be less than rank(`params`)"
+            + str(len(params.shape))
+            + "."
+        )
+    if batch_dims >= len(indices.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = "
+            + str(batch_dims)
+            + " must be less than rank(`indices`)"
+            + str(len(indices.shape))
+            + "."
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "`params.shape[0:batch_dims]` "
+            + str(params.shape[0:batch_dims])
+            + " must \
+            be equal to `indices.shape[0:batch_dims]`"
+            + str(indices.shape[0:batch_dims])
+            + "."
+        )
+    if indices[-1] >= (len(params.shape[batch_dims:])):
+        raise ivy.exceptions.IvyException(
+            "index innermost dimension length must be <= \
+            rank(`params[batch_dims:]`); saw: "
+            + str(indices[-1])
+            + " vs."
+            + str((len(params.shape[batch_dims:])))
+            + "."
+        )
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:
