@@ -33,7 +33,10 @@ class Tensor:
     def sinh_(self):
         self.data = self.sinh()
         return self.data
-
+        
+    def view(self, shape):
+        return torch_frontend.reshape(self.data, shape)
+        
 
 # Tensor (alias)
 tensor = Tensor

@@ -222,8 +222,8 @@ def max(
         b: ivy.array(5.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([2, 3, 4]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
     >>> z = x.max()
     >>> print(z)
     {
@@ -297,7 +297,7 @@ def mean(
     simplicity, but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
 
-    
+
     Functional Examples
     -------------------
     With :class:`ivy.Array` input:
@@ -348,8 +348,8 @@ def mean(
         b: ivy.array(0.90000004)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+    ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
     >>> ivy.mean(x, axis=0, out=x)
     >>> print(x)
     {
@@ -396,8 +396,8 @@ def mean(
         b: ivy.array(0.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
-                          b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
+    ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
     >>> x.mean(axis=1, out=x)
     >>> print(x)
     {
@@ -801,8 +801,8 @@ def var(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
-                          b=ivy.array([0.7, 0.1, 0.9]))
+    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
+    ...                   b=ivy.array([0.7, 0.1, 0.9]))
     >>> y = ivy.var(x)
     >>> print(y)
     {
@@ -939,24 +939,24 @@ def cumsum(
     >>> print(y)
     ivy.array([0, 1, 6, 8])
 
-    >>> x = ivy.array([[6, 4, 2], \
-                       [1, 3, 0]])
+    >>> x = ivy.array([[6, 4, 2],
+    ...                [1, 3, 0]])
     >>> y = ivy.zeros((2,3))
     >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
     >>> print(y)
     ivy.array([[7, 7, 2],
                [1, 3, 0]])
 
-    >>> x = ivy.array([[1, 5, 2], \
-                       [4, 3, 0]])
+    >>> x = ivy.array([[1, 5, 2],
+    ...                [4, 3, 0]])
     >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
     >>> print(y)
     ivy.array([[4, 3, 0],
                [0, 0, 0]])
 
-    >>> x = ivy.array([[2, 4, 5], \
-                       [3, 6, 5], \
-                       [1, 3, 10]])
+    >>> x = ivy.array([[2, 4, 5],
+    ...                [3, 6, 5],
+    ...                [1, 3, 10]])
     >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
     ivy.array([[11,  9,  5],
@@ -965,8 +965,8 @@ def cumsum(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                          b=ivy.array([[3, 5, 7]]))
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
+    ...                   b=ivy.array([[3, 5, 7]]))
     >>> y = ivy.cumsum(x, axis= 0)
     >>> print(y)
     {
@@ -974,15 +974,15 @@ def cumsum(
         b: ivy.array([[3, 5, 7]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                          b=ivy.array([[3, 5, 8], \
-                                       [5, 6, 5]]), \
-                          c=ivy.array([[2, 4, 1], \
-                                       [3, 6, 9], \
-                                       [0, 2, 3]]))
-    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                          b = ivy.zeros((2, 3)), \
-                          c = ivy.zeros((3,3)))
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+    ...                   b=ivy.array([[3, 5, 8],
+    ...                                [5, 6, 5]]),
+    ...                   c=ivy.array([[2, 4, 1],
+    ...                                [3, 6, 9],
+    ...                                [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+    ...                   b = ivy.zeros((2, 3)),
+    ...                   c = ivy.zeros((3,3)))
     >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
@@ -994,13 +994,13 @@ def cumsum(
                       [5, 5, 3]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+    >>> x = ivy.Container(a=ivy.array([[0],
+    ...                                [5]]),
+    ...                   b=ivy.array([[6, 8, 7],
+    ...                                [4, 2, 3]]),
+    ...                   c=ivy.array([[1, 2],
+    ...                                [3, 4],
+    ...                                [6, 4]]))
     >>> ivy.cumsum(x,axis=0,out=x)
     >>> print(x)
     {
@@ -1204,19 +1204,19 @@ def einsum(
     ivy.array([ 9, 12, 15])
 
     >>> A = ivy.array([0, 1, 2])
-    >>> B = ivy.array([[ 0,  1,  2,  3],\
-                       [ 4,  5,  6,  7],\
-                       [ 8,  9, 10, 11]])
+    >>> B = ivy.array([[ 0,  1,  2,  3],
+    ...                [ 4,  5,  6,  7],
+    ...                [ 8,  9, 10, 11]])
     >>> C = ivy.einsum('i,ij->i', A, B)
     >>> print(C)
     ivy.array([ 0, 22, 76])
 
-    >>> A = ivy.array([[1, 1, 1],\
-                       [2, 2, 2],\
-                       [5, 5, 5]])
-    >>> B = ivy.array([[0, 1, 0],\
-                       [1, 1, 0],\
-                       [1, 1, 1]])
+    >>> A = ivy.array([[1, 1, 1],
+    ...                [2, 2, 2],
+    ...                [5, 5, 5]])
+    >>> B = ivy.array([[0, 1, 0],
+    ...                [1, 1, 0],
+    ...                [1, 1, 1]])
     >>> C = ivy.einsum('ij,jk->ik', A, B)
     >>> print(C)
     ivy.array([[ 2,  3,  1],
@@ -1266,9 +1266,9 @@ def einsum(
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> A = ivy.array([0, 1, 2])
-    >>> B = ivy.native_array([[ 0, 1, 2, 3],\
-                              [ 4, 5, 6, 7],\
-                              [ 8, 9, 10, 11]])
+    >>> B = ivy.native_array([[ 0, 1, 2, 3],
+    ...                       [ 4, 5, 6, 7],
+    ...                       [ 8, 9, 10, 11]])
     >>> C = ivy.einsum('i,ij->i', A, B)
     >>> print(C)
     ivy.array([ 0, 22, 76])
@@ -1276,12 +1276,12 @@ def einsum(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([0, 1, 2])
-    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\
-                                       [ 4,  5,  6,  7],\
-                                       [ 8,  9, 10, 11]]),\
-                          b=ivy.array([[ 0,  1,  2],\
-                                       [ 4,  5,  6],\
-                                       [ 8,  9, 10]]))
+    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],
+    ...                                [ 4,  5,  6,  7],
+    ...                                [ 8,  9, 10, 11]]),
+    ...                   b=ivy.array([[ 0,  1,  2],
+    ...                                [ 4,  5,  6],
+    ...                                [ 8,  9, 10]]))
     >>> z = ivy.einsum('i,ij->i', x, y)
     >>> print(z)
     {
@@ -1291,8 +1291,8 @@ def einsum(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
-                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = ivy.einsum('ii', x)
     >>> print(y)
     {
@@ -1312,8 +1312,8 @@ def einsum(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
-                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = x.einsum('ii')
     >>> print(y)
     {

@@ -206,6 +206,37 @@ def test_torch_instance_sinh_(
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="sinh_",
+     )
+
+
+# view
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    shape=helpers.reshape_shapes(
+        shape=st.shared(helpers.get_shape(), key="value_shape")
+    ),
+)
+def test_torch_instance_view(
+    dtype_x,
+    shape,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    assume("bfloat16" not in input_dtype)
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=1,
         native_array_flags_init=native_array,
@@ -214,10 +245,12 @@ def test_torch_instance_sinh_(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
+        num_positional_args_method=1,
         native_array_flags_method=native_array,
-        all_as_kwargs_np_method={},
+        all_as_kwargs_np_method={
+            "shape": shape,
+        },
         frontend="torch",
         class_name="tensor",
-        method_name="sinh_",
+        method_name="view",
     )

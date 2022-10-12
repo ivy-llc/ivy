@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -153,3 +153,28 @@ def max_pool2d(
         return jnp.transpose(res, (0, 3, 1, 2))
 
     return res
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if periodic is False:
+        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+def moveaxis(
+    a: JaxArray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.moveaxis(a, source, destination)
