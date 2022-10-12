@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     var_shape=helpers.get_shape(),
-    constant=helpers.floats(min_value=0.0, max_value=100.0, width=64),
+    constant=helpers.floats(min_value=0.0, max_value=100.0),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -130,10 +130,10 @@ def test_ones(
 
 @handle_cmd_line_args
 @given(
-    numerator=helpers.floats(min_value=1.0, max_value=10.0, width=64),
+    numerator=helpers.floats(min_value=1.0, max_value=10.0),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
-    power=helpers.floats(min_value=0.1, max_value=3.0, width=64),
-    gain=helpers.floats(min_value=0.1, max_value=10.0, width=64),
+    power=helpers.floats(min_value=0.1, max_value=3.0),
+    gain=helpers.floats(min_value=0.1, max_value=10.0),
     var_shape=helpers.get_shape(),
     fan_in=st.integers(min_value=1),
     fan_out=st.integers(min_value=1),
@@ -299,7 +299,7 @@ def test_first_layer_siren(
 @handle_cmd_line_args
 @given(
     var_shape=helpers.get_shape(),
-    w0=helpers.floats(min_value=1.0, max_value=100.0, width=64),
+    w0=helpers.floats(min_value=1.0, max_value=100.0),
     fan_in=st.integers(min_value=1),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
@@ -352,7 +352,7 @@ def test_siren(
     var_shape=helpers.get_shape(),
     fan_in=st.integers(min_value=1),
     fan_out=st.integers(min_value=1),
-    negative_slope=helpers.floats(min_value=0.0, max_value=5.0, width=64),
+    negative_slope=helpers.floats(min_value=0.0, max_value=5.0),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),

@@ -18,7 +18,7 @@ import ivy_tests.test_ivy.helpers as helpers
         max_num_dims=1,
         min_dim_size=2,
     ),
-    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.dropout"
