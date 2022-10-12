@@ -19,7 +19,7 @@ def eigh(tensor,name=None):
     output_tensor = ivy.eigh(tensor)
     e = output_tensor[0]
     v = output_tensor[1]
-    return e,v
+    return e, v
 
 
 def eigvalsh(tensor, name=None):
