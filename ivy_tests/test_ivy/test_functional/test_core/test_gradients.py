@@ -22,7 +22,7 @@ def get_gradient_arguments_with_lr(
             min_value=min_value,
             max_value=max_value,
             large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
+            small_abs_safety_factor=6,
             safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
