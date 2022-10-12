@@ -80,6 +80,9 @@ class Tensor:
     def __rand__(self, x, name="rand"):
         return tf_frontend.logical_and(x, self.data, name=name)
 
+    def __rdiv__(self, x, name="rdiv"):
+        return tf_frontend.divide(x, self.data, name=name)
+
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.FloorDiv(x=x, y=self.data, name=name)
 
