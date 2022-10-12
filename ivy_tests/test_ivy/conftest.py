@@ -227,5 +227,6 @@ def pytest_addoption(parser):
 def pytest_collection_finish(session):
     if session.config.option.my_test_dump is not None:
         for item in session.items:
-            print("{}::{}".format(item.fspath, item.name))
+            item_path = os.path.relpath(item.path)
+            print("{}::{}".format(item_path, item.name))
         pytest.exit("Done!")

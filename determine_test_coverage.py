@@ -1,4 +1,5 @@
 import os
+import sys
 from pydriller import Repository
 import pickle
 from tqdm import tqdm
@@ -6,6 +7,12 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
+N = 100
+run_iter = int(sys.argv[1]) % N  # Splitting into 4 workflows
+if run_iter > 0:
+    with open("tests.pkl", "rb") as f:
+        tests = pickle.load(f)
+    os.system(f"git checkout {tests['commit']}")
 
 os.system(
     "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
@@ -65,11 +72,18 @@ directories = [
 ]
 
 if __name__ == "__main__":
-    for test_name in tqdm(test_names):
+    num_tests = len(test_names)
+    tests_per_run = num_tests // N
+    start = run_iter*tests_per_run
+    end = num_tests if run_iter == N-1 else (run_iter + 1)*tests_per_run
+    for test_name in tqdm(test_names[start:end]):
+        print(test_name)
         os.system(
             f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
+        print("Computed Coverage")
         os.system("coverage annotate > coverage_output")
+        print("Done Annotation")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
@@ -87,11 +101,11 @@ if __name__ == "__main__":
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
-
-commit_hash = ""
-for commit in Repository(".", order="reverse").traverse_commits():
-    commit_hash = commit.hash
-    break
-tests["commit"] = commit_hash
+if run_iter == 0:
+    commit_hash = ""
+    for commit in Repository(".", order="reverse").traverse_commits():
+        commit_hash = commit.hash
+        break
+    tests["commit"] = commit_hash
 with open("tests.pkl", "wb") as f:
     pickle.dump(tests, f)
