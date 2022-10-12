@@ -826,7 +826,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
         a scalar copying the element of the array ``x``.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples

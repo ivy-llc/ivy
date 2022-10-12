@@ -2231,5 +2231,11 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1j, 2+5j, 3.7-6j])
+        >>> x.isreal()
+        ivy.array([False, False, False])
         """
         return ivy.isreal(self._data, out=out)

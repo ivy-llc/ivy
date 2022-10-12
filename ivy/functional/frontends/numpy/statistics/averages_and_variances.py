@@ -49,9 +49,8 @@ def nanmean(
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
-
     else:
-        a = [i for i in a if ivy.isnan(i) == False]
+        a = [i for i in a if ivy.isnan(i) is False]
 
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))

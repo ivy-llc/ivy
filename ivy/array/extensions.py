@@ -254,8 +254,4 @@ class ArrayWithExtensions(abc.ABC):
         >>> x.moveaxis(-1, 0).shape
         (5, 3, 4)
         """
-        return ivy.moveaxis(
-            self._data, 
-            source,
-            destination,
-            out=out)
+        return ivy.moveaxis(self._data, source, destination, out=out)

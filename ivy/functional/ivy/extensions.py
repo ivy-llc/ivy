@@ -780,7 +780,7 @@ def kaiser_window(
     beta: float = 12.0,
     *,
     dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
 
@@ -794,7 +794,7 @@ def kaiser_window(
     beta
         a float used as shape parameter for the window.
     dtype
-        data type of the returned array.        
+        data type of the returned array.
     out
         optional output array, for writing the result to.
 
@@ -815,7 +815,8 @@ def kaiser_window(
     ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
     """
     return ivy.current_backend().kaiser_window(
-        window_length, periodic, beta, dtype=dtype, out=out)
+        window_length, periodic, beta, dtype=dtype, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -858,6 +859,4 @@ def moveaxis(
     >>> ivy.moveaxis(x, -1, 0).shape
     (5, 3, 4)
     """
-    return ivy.current_backend().moveaxis(
-        a, source, destination, out=out
-    )
+    return ivy.current_backend().moveaxis(a, source, destination, out=out)
