@@ -480,7 +480,7 @@ def asin(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),
-    ...                      b=ivy.array([0.3, 0.4, 0.5]))
+    ...                   b=ivy.array([0.3, 0.4, 0.5]))
     >>> y = ivy.asin(x)
     >>> print(y)
     {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
@@ -591,7 +591,7 @@ def asinh(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1, 2]),
-    ...                        b=ivy.array([4.2, -5.3, -0, -2.3]))
+    ...                   b=ivy.array([4.2, -5.3, -0, -2.3]))
     >>> y = ivy.asinh(x)
     >>> print(y)
     {
@@ -849,7 +849,7 @@ def atan2(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
-    ...                      b=ivy.array([4.5, -5.3, -0]))
+    ...                   b=ivy.array([4.5, -5.3, -0]))
     >>> y = ivy.array([3.0, 2.0, 1.0])
     >>> x.atan2(y)
     {
@@ -858,9 +858,9 @@ def atan2(
     }
 
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
-    ...                      b=ivy.array([4.5, -5.3, -0, -2.3]))
+    ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
     >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
-    ...                      b=ivy.array([2.45, 6.35, 0, 1.5]))
+    ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
     >>> z = x.atan2(y)
     >>> print(z)
     {
@@ -1339,7 +1339,7 @@ def bitwise_right_shift(
     With :class:`ivy.NativeArray` input:
 
     >>> a = ivy.native_array([[32, 40, 55],
-    ...                          [16, 33, 170]])
+    ...                       [16, 33, 170]])
     >>> b = ivy.native_array([5, 2, 1])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
@@ -1357,7 +1357,7 @@ def bitwise_right_shift(
     With one :class:`ivy.Container` input:
 
     >>> a = ivy.Container(a = ivy.array([100, 200]),
-    ...                      b = ivy.array([125, 243]))
+    ...                   b = ivy.array([125, 243]))
     >>> b = ivy.array([3, 6])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
@@ -1369,11 +1369,11 @@ def bitwise_right_shift(
     With multiple :class:`ivy.Container` inputs:
 
     >>> a = ivy.Container(a = ivy.array([10, 25, 42]),
-    ...                      b = ivy.array([64, 65]),
-    ...                      c = ivy.array([200, 225, 255]))
+    ...                   b = ivy.array([64, 65]),
+    ...                   c = ivy.array([200, 225, 255]))
     >>> b = ivy.Container(a = ivy.array([0, 1, 2]),
-    ...                      b = ivy.array([6]),
-    ...                      c = ivy.array([4, 5, 6]))
+    ...                   b = ivy.array([6]),
+    ...                   c = ivy.array([4, 5, 6]))
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
     {
@@ -1629,7 +1629,7 @@ def ceil(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
-    ...                      b=ivy.array([5.4, -3.2, -0, 5.2]))
+    ...                   b=ivy.array([5.4, -3.2, -0, 5.2]))
     >>> y = ivy.ceil(x)
     >>> print(y)
     {
@@ -1792,7 +1792,7 @@ def cosh(
     ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2],
-    ...                   [-4.4, -5.5, -6.6, -7.2]])
+    ...                [-4.4, -5.5, -6.6, -7.2]])
     >>> y = ivy.cosh(x)
     >>> print(y)
     ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])
@@ -2145,7 +2145,7 @@ def expm1(
     With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0,]),
-    ...                    b=ivy.array([10, 1]))
+    ...                   b=ivy.array([10, 1]))
     >>> ivy.expm1(x)
     {
         a: ivy.array([-0.632, 0.]),
@@ -2255,7 +2255,7 @@ def floor(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),
-    ...                      b=ivy.array([3.4, -4.2, -0, -1.2]))
+    ...                   b=ivy.array([3.4, -4.2, -0, -1.2]))
     >>> y = ivy.floor(x)
     >>> print(y)
     {
@@ -2436,7 +2436,7 @@ def greater(
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    ...                      b=ivy.array([[5.], [6.], [7.]]))
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.greater(x, y)
     >>> print(z)
     {
@@ -2451,9 +2451,9 @@ def greater(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
-    ...                      b=ivy.array([2, 3, 4]))
+    ...                   b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                      b=ivy.array([5, 6, 7]))
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = ivy.greater(x, y)
     >>> print(z)
     {
@@ -2582,9 +2582,9 @@ def greater_equal(
     Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
-    ...              b=ivy.array([2, 3, 4]))
+    ...                   b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                  b=ivy.array([5, 6, 7]))
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = x.greater_equal(y)
     >>> print(z)
     {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
@@ -2856,7 +2856,7 @@ def isfinite(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
-    ...                      b=ivy.array([float('-0'), ivy.nan]))
+    ...                   b=ivy.array([float('-0'), ivy.nan]))
     >>> y = ivy.isfinite(x)
     >>> print(y)
     {
@@ -2875,7 +2875,7 @@ def isfinite(
     With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
-    ...                      b=ivy.array([float('-0'), ivy.nan]))
+    ...                   b=ivy.array([float('-0'), ivy.nan]))
     >>> y = x.isfinite()
     >>> print(y)
     {
@@ -2961,7 +2961,7 @@ def isinf(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
-    ...                      b=ivy.array([float('inf'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> z = ivy.isinf(x)
     >>> print(z)
     {
@@ -3000,7 +3000,7 @@ def isinf(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
-    ...    b=ivy.array([float('inf'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> x.isinf()
     {
         a: ivy.array([False, True, False]),
@@ -3013,7 +3013,7 @@ def isinf(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
-    ...                      b=ivy.array([float('inf'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> z = ivy.Container.static_isinf(x)
     >>> print(z)
     {
@@ -3107,7 +3107,7 @@ def isnan(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                      b=ivy.array([float('nan'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> z = ivy.isnan(x)
     >>> print(z)
     {
@@ -3152,7 +3152,7 @@ def isnan(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...    b=ivy.array([float('nan'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> x.isnan()
     {
         a: ivy.array([False, True, False]),
@@ -3164,7 +3164,7 @@ def isnan(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                      b=ivy.array([float('nan'), 3.3, -4.2]))
+    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> z = ivy.Container.static_isnan(x)
     >>> print(z)
     {
@@ -3242,7 +3242,7 @@ def less(
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    ...                      b=ivy.array([[5.], [6.], [7.]]))
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.less(x, y)
     >>> print(z)
     {
@@ -3319,7 +3319,7 @@ def log(
     ivy.array([1.39, 0., -inf, nan])
 
     >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
-    ...                   [+0, -1.0, -5, float('-inf')]])
+    ...                [+0, -1.0, -5, float('-inf')]])
     >>> y = ivy.log(x)
     >>> print(y)
     ivy.array([[nan, 0., 1.61, inf],
@@ -3335,8 +3335,8 @@ def log(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
-    ...                      b=ivy.array([-0., -3.9, float('+inf')]),
-    ...                      c=ivy.array([7.9, 1.1, 1.]))
+    ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+    ...                   c=ivy.array([7.9, 1.1, 1.]))
     >>> y = ivy.log(x)
     >>> print(y)
     {
@@ -3408,7 +3408,7 @@ def log10(
     ivy.array([0.602, 0., -inf, nan])
 
     >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
-    ...                   [+0, -1.0, -5, float('-inf')]])
+    ...                [+0, -1.0, -5, float('-inf')]])
     >>> y = ivy.log10(x)
     >>> print(y)
     ivy.array([[nan, 0., 0.699, inf],
@@ -3424,8 +3424,8 @@ def log10(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
-    ...                      b=ivy.array([-0., -3.9, float('+inf')]),
-    ...                      c=ivy.array([7.9, 1.1, 1.]))
+    ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+    ...                   c=ivy.array([7.9, 1.1, 1.]))
     >>> y = ivy.log10(x)
     >>> print(y)
     {
@@ -3666,7 +3666,7 @@ def logaddexp(
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    ...                      b=ivy.array([[5.], [6.], [7.]]))
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.logaddexp(x, y)
     >>> print(z)
     {
@@ -3753,9 +3753,9 @@ def logical_and(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]),
-    ...    b=ivy.array([True, False, False]))
+    ...                   b=ivy.array([True, False, False]))
     >>> y = ivy.Container(a=ivy.array([True, True, False]),
-    ...    b=ivy.array([False, False, True]))
+    ...                   b=ivy.array([False, False, True]))
     >>> print(ivy.logical_and(y, x))
     {
         a: ivy.array([False, True, False]),
@@ -3778,7 +3778,7 @@ def logical_and(
 
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]),
-    ...    b=ivy.array([True, False, False]))
+    ...                   b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(y, x))
     {
@@ -3787,7 +3787,7 @@ def logical_and(
     }
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]),
-    ...    b=ivy.array([True, False, False]))
+    ...                   b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
     >>> ivy.logical_and(y, x, out=x)
     >>> print(x)
@@ -4011,9 +4011,9 @@ def logical_or(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([False, False, True]),
-    ...                        b=ivy.array([True, False, True]))
+    ...                   b=ivy.array([True, False, True]))
     >>> y = ivy.Container(a=ivy.array([False, True, False]),
-    ...                        b=ivy.array([True, True, False]))
+    ...                   b=ivy.array([True, True, False]))
     >>> z = ivy.logical_or(x, y)
     >>> print(z)
     {
@@ -4043,9 +4043,9 @@ def logical_or(
     With :class:`ivy.Container` static method:
 
     >>> x = ivy.Container(a=ivy.array([False, False, True]),
-    ...                    b=ivy.array([True, False, True]))
+    ...                   b=ivy.array([True, False, True]))
     >>> y = ivy.Container(a=ivy.array([False, True, False]),
-    ...                        b=ivy.array([True, True, False]))
+    ...                   b=ivy.array([True, True, False]))
     >>> z = ivy.Container.static_logical_or(x, y)
     >>> print(z)
     {
@@ -4204,7 +4204,7 @@ def negative(
     ivy.array([-0.,1.,0.5,-2.,-3.])
 
     >>> x = ivy.array([[1.1,2.2,3.3],
-    ...                   [-4.4,-5.5,-6.6]])
+    ...                [-4.4,-5.5,-6.6]])
     >>> ivy.negative(x,out=x)
     >>> print(x)
     ivy.array([[-1.1,-2.2,-3.3],[4.4,5.5,6.6]])
@@ -4219,7 +4219,7 @@ def negative(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),
-    ...                     b=ivy.array([3.,4.,-5.]))
+    ...                   b=ivy.array([3.,4.,-5.]))
     >>> y = ivy.negative(x)
     >>> print(y)
     {a:ivy.array([-0.,-1.,-2.]),b:ivy.array([-3.,-4.,5.])}
@@ -4237,7 +4237,7 @@ def negative(
     Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,2,3]),
-    ...                     b=ivy.array([-4.4,5,-6.6]))
+    ...                   b=ivy.array([-4.4,5,-6.6]))
     >>> y = x.negative()
     >>> print(y)
     {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
@@ -4255,7 +4255,7 @@ def negative(
     Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,2,3]),
-    ...                     b=ivy.array([-4.4,5,-6.6]))
+    ...                   b=ivy.array([-4.4,5,-6.6]))
     >>> y = -x
     >>> print(y)
     {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
@@ -4366,11 +4366,11 @@ def not_equal(
     With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 0, 3]),
-    ...                       b=ivy.array([1, 2, 3]),
-    ...                       c=ivy.native_array([1, 2, 4]))
+    ...                    b=ivy.array([1, 2, 3]),
+    ...                    c=ivy.native_array([1, 2, 4]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 2, 3]),
-    ...                       c=ivy.native_array([1, 2, 4]))
+    ...                    b=ivy.array([1, 2, 3]),
+    ...                    c=ivy.native_array([1, 2, 4]))
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
@@ -4380,11 +4380,11 @@ def not_equal(
     }
 
     >>> x1 = ivy.Container(a=ivy.native_array([0, 1, 0]),
-    ...                       b=ivy.array([1, 2, 3]),
-    ...                       c=ivy.native_array([1.0, 2.0, 4.0]))
+    ...                    b=ivy.array([1, 2, 3]),
+    ...                    c=ivy.native_array([1.0, 2.0, 4.0]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.native_array([1.1, 2.1, 3.1]),
-    ...                       c=ivy.native_array([1, 2, 4]))
+    ...                    b=ivy.native_array([1.1, 2.1, 3.1]),
+    ...                    c=ivy.native_array([1, 2, 4]))
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
@@ -4396,9 +4396,9 @@ def not_equal(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 3, 5]))
+    ...                    b=ivy.array([1, 3, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
@@ -4407,9 +4407,9 @@ def not_equal(
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
-    ...                       b=ivy.array([1.0, 4.0, 5.0]))
+    ...                    b=ivy.array([1.0, 4.0, 5.0]))
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
@@ -4437,9 +4437,9 @@ def not_equal(
     Using :class:`ivy.Container` instance method:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 3, 5]))
+    ...                    b=ivy.array([1, 3, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> y = x1.not_equal(x2, out=x2)
     >>> print(y)
     {
@@ -4448,9 +4448,9 @@ def not_equal(
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                       b=ivy.array([1.0, 4.0, 5.0]))
+    ...                    b=ivy.array([1.0, 4.0, 5.0]))
     >>> y = x1.not_equal(x2, out=x2)
     >>> print(y)
     {
@@ -4478,9 +4478,9 @@ def not_equal(
     With :class:`ivy.Container` instances:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 3, 5]))
+    ...                    b=ivy.array([1, 3, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> y = (x1 != x2)
     >>> print(y)
     {
@@ -4489,9 +4489,9 @@ def not_equal(
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                       b=ivy.array([1.0, 4.0, 5.0]))
+    ...                    b=ivy.array([1.0, 4.0, 5.0]))
     >>> y = (x1 != x2)
     >>> print(y)
     {
@@ -4502,9 +4502,9 @@ def not_equal(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 3, 5]))
+    ...                    b=ivy.array([1, 3, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> y = (x1 != x2)
     >>> print(y)
     {
@@ -4513,9 +4513,9 @@ def not_equal(
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                       b=ivy.array([1, 4, 5]))
+    ...                    b=ivy.array([1, 4, 5]))
     >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
-    ...                       b=ivy.array([1.0, 4.0, 5.0]))
+    ...                    b=ivy.array([1.0, 4.0, 5.0]))
     >>> y = (x1 != x2)
     >>> print(y)
     {
@@ -4579,7 +4579,7 @@ def positive(
     ivy.array([0., -1., -0.5,  2.,  3.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                   [-4.4, -5.5, -6.6]])
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.positive(x,out=x)
     >>> print(x)
     ivy.array([[ 1.1,  2.2,  3.3],
@@ -4595,7 +4595,7 @@ def positive(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    ...                     b=ivy.array([3., 4., -5.]))
+    ...                   b=ivy.array([3., 4., -5.]))
     >>> y = ivy.positive(x)
     >>> print(y)
     {
@@ -4920,7 +4920,7 @@ def round(
     ivy.array([2.,2.,15.,-5.])
 
     >>> x = ivy.array([[0, 5.433, -343.3, 1.5],
-    ...                  [-5.5, 44.2, 11.5, 12.01]])
+    ...                [-5.5, 44.2, 11.5, 12.01]])
     >>> ivy.round(x, out=x)
     >>> print(x)
     ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
@@ -4935,7 +4935,7 @@ def round(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
-    ...              b=ivy.array([-300.9, -527.3, 4.5]))
+    ...                   b=ivy.array([-300.9, -527.3, 4.5]))
     >>> y = ivy.round(x)
     >>> print(y)
     {
@@ -4999,7 +4999,7 @@ def sign(
     ivy.array([1., 0., 1., 1.])
 
     >>> x = ivy.array([[5.78, -4., -6.9, 0],
-    ...                   [-.4, 0.5, 8, -0.01]])
+    ...                [-.4, 0.5, 8, -0.01]])
     >>> y = ivy.sign(x)
     >>> print(y)
     ivy.array([[ 1., -1., -1.,  0.],
@@ -5015,8 +5015,8 @@ def sign(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -0.]),
-    ...                      b=ivy.array([1.46, 5.9, -0.0]),
-    ...                      c=ivy.array([-8.23, -4.9, -2.6, 7.4]))
+    ...                   b=ivy.array([1.46, 5.9, -0.0]),
+    ...                   c=ivy.array([-8.23, -4.9, -2.6, 7.4]))
     >>> y = ivy.sign(x)
     >>> print(y)
     {
@@ -5108,7 +5108,7 @@ def sin(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),
-    ...                      b=ivy.array([-4., -5., -6., -7.]))
+    ...                   b=ivy.array([-4., -5., -6., -7.]))
     >>> y = ivy.sin(x)
     >>> print(y)
     {
@@ -5551,7 +5551,7 @@ def tan(
     ivy.array([0.546, -0.842, -0.916])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                    [-4.4, -5.5, -6.6]])
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
     ivy.array([[1.96, -1.37, 0.16],
@@ -5636,7 +5636,7 @@ def tanh(
     ivy.array([0.462, -0.604, 0.984])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                  [-4.4, -5.5, -6.6]])
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.tanh(x, out=x)
     >>> print(x)
     ivy.array([[0.8, 0.976, 0.997],
@@ -5652,7 +5652,7 @@ def tanh(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    ...                      b=ivy.array([3., 4., 5.]))
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.tanh(x)
     >>> print(y)
     {
@@ -5810,7 +5810,7 @@ def maximum(
 
     >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
     >>> y = ivy.Container(a=ivy.array([1, 0,]),
-    ...                      b=ivy.array([-5, 9]))
+    ...                   b=ivy.array([-5, 9]))
     >>> z = ivy.maximum(x, y)
     >>> print(z)
     {
@@ -5912,9 +5912,9 @@ def minimum(
     With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([1, 3, 1]),
-    ...                    b=ivy.array([2, 8, 5]))
+    ...                   b=ivy.array([2, 8, 5]))
     >>> y = ivy.Container(a=ivy.array([1, 5, 6]),
-    ...                    b=ivy.array([5, 9, 7]))
+    ...                   b=ivy.array([5, 9, 7]))
     >>> z = ivy.minimum(x, y)
     >>> print(z)
     {
@@ -6024,7 +6024,7 @@ def deg2rad(
     }
 
     >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
-    ...     b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+    ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
@@ -6097,7 +6097,7 @@ def rad2deg(
     With :class:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                    b=ivy.array([0,1,2,3,4]))
+    ...                 b=ivy.array([0,1,2,3,4]))
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     {
@@ -6106,7 +6106,7 @@ def rad2deg(
     }
 
     >>> x=ivy.Container(a=ivy.array([0,10,180,8.5,6]),
-    ...     b=ivy.native_array([0,-1.5,0.5,ivy.nan]))
+    ...                 b=ivy.native_array([0,-1.5,0.5,ivy.nan]))
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     {
@@ -6249,7 +6249,7 @@ def isreal(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),
-    ...                      b=ivy.array([5j, 5-6j, 3]))
+    ...                   b=ivy.array([5j, 5-6j, 3]))
     >>> z = ivy.isreal(x)
     >>> print(z)
     {
@@ -6280,7 +6280,7 @@ def isreal(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),
-    ...    b=ivy.array([0.0, 3.3j, 1+0j]))
+    ...                   b=ivy.array([0.0, 3.3j, 1+0j]))
     >>> x.isreal()
     {
         a: ivy.array([False, True, False]),
@@ -6291,7 +6291,7 @@ def isreal(
     ------------------------
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
-    ...                      b=ivy.array([7.9, 3.3j, -4.2-5.9j]))
+    ...                   b=ivy.array([7.9, 3.3j, -4.2-5.9j]))
     >>> z = ivy.Container.static_isreal(x)
     >>> print(z)
     {
