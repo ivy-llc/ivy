@@ -674,3 +674,14 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
+
+
+def dropout3d(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.dropout3d(x, p=prob, training=training)

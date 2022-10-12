@@ -434,3 +434,19 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def dropout3d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        noise_shape = x.shape.as_list()
+        noise_shape[-2] = 1
+        return tf.nn.experimental.stateless_dropout(x, prob, noise_shape=noise_shape)
+    else:
+        return x

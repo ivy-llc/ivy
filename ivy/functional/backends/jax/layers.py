@@ -1,6 +1,7 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
+import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 
@@ -392,3 +393,21 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def dropout3d(
+    x: JaxArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    rng_key = jax.random.PRNGKey(42)
+    if training:
+        noise_shape = list(x.shape)
+        noise_shape[-1] = 1
+        mask = jax.random.bernoulli(rng_key, 1 - prob, noise_shape)
+        return jnp.where(mask, x / (1 - prob), 0)
+    else:
+        return x

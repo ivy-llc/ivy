@@ -138,6 +138,52 @@ def dropout(
     return x
 
 
+@handle_exceptions
+def dropout3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: ivy.Dtype = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zeroes some elements of the input tensor with probability p using
+    samples from a Bernoulli distribution.
+
+    Parameters
+    ----------
+    x
+        The input array x to perform dropout on.
+    prob
+        The probability of zeroing out each array element.
+    scale
+        Whether to scale the output by 1/(1-prob), default is True.
+    dtype
+
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Result array of the linear transformation. *[N,∗,out_features]*
+
+    """
+    x = ivy.where(
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        ivy.zeros_like(x, dtype=dtype),
+        x,
+    )
+
+    if scale:
+        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    return x
+
+
 # Attention #
 
 
