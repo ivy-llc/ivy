@@ -812,17 +812,23 @@ def test_torch_lcm(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(
             min_num_dims=1,
-            max_num_dims=5,
+            max_num_dims=3,
             min_dim_size=3,
             max_dim_size=3),
             key="shape"),
-        min_value=-1e3,
-        max_value=1e3,
+        min_value=-100,
+        max_value=100,
         num_arrays=2,
         shared_dtype=True,
     ),
     dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"),
+        shape=st.shared(helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=3,
+            max_dim_size=3),
+            key="shape"),
+        min_size=1,
         max_size=1,
         force_int=True,
         allow_neg=True,
@@ -838,7 +844,6 @@ def test_torch_cross(
     num_positional_args,
     native_array,
     with_out,
-    fw,
 ):
     (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
     input_dtype = [input_dtype_x, input_dtype_y]
@@ -848,10 +853,9 @@ def test_torch_cross(
         with_out=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cross",
         input=np.asarray(x, dtype=input_dtype[0]),
         other=np.asarray(y, dtype=input_dtype[1]),
         dim=dim,
-)
+    )
