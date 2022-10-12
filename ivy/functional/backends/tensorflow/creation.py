@@ -1,9 +1,18 @@
 # global
-import tensorflow as tf
+
+from numbers import Number
 from typing import Union, List, Optional, Sequence
+
+
+import tensorflow as tf
 
 # local
 import ivy
+
+
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
+
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -17,6 +26,15 @@ from ivy.functional.ivy.creation import (
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def arange(
     start: float,
     /,
@@ -53,12 +71,6 @@ def arange(
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
-
-
-arange.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
 
 
 @asarray_to_native_arrays_and_back
@@ -147,6 +159,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -195,9 +208,6 @@ def eye(
             return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
-
-eye.unsupported_dtypes = ("uint16",)
 
 
 # noinspection PyShadowingNames
@@ -268,9 +278,22 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable], sparse: bool = False, indexing: str = "xy"
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.meshgrid(*arrays, indexing=indexing)
+    if not sparse:
+        return tf.meshgrid(*arrays, indexing=indexing)
+
+    sd = (1,) * len(arrays)
+    res = [
+        tf.reshape(tf.convert_to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = tf.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = tf.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(
@@ -373,14 +396,29 @@ def logspace(
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,
+    /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[tf.DType] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     device = ivy.default_device(device)
-    dtype = indices.dtype
+
     if device is not None:
         indices = tf.cast(indices, tf.int64)
         with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth, dtype=dtype)
-    return tf.one_hot(indices, depth, dtype=dtype)
+            return tf.one_hot(
+                indices,
+                depth,
+                on_value=on_value,
+                off_value=off_value,
+                axis=axis,
+                dtype=dtype,
+            )
+
+    return tf.one_hot(
+        indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
+    )

@@ -1,5 +1,5 @@
-Array API Tests
-===============
+Array API Tests 🤝
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`test suite`: https://github.com/data-apis/array-api-tests
@@ -13,12 +13,32 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
+.. _`here`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing
+.. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 
-All functions which are present in the `Array API Standard`_ have a corresponding unit test in the
-`test suite`_ for the standard.
+In conjunction with our own ivy unit tests, we import the array-api `test suite`_. These tests check that all
+ivy backend libraries behave according to the `Array API Standard`_ which was established
+in May 2020 by a group of maintainers. It was intended to bring some consistency and completeness to the various python
+libraries that have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
+it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.
 
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_,
-which we keep updated with the upstream test suite.
+which we keep updated with the upstream test suite. The array-api tests repository is maintained by a group of developers
+unconnected to Ivy. We have made the decision to import the test suite directly from this repository rather than having
+our own fork. This means that the test suite you see in the ivy source code cannot be modified in the usual way of
+pushing to the ivy master branch. Instead, the change must be made to the array-api repository directly and then our
+submodule must be updated with the commands:
+
+.. code-block:: none
+
+        # to initialise local config file and fetch + checkout submodule (not needed everytime)
+        git submodule update --init --recursive
+
+        # pulls changes from upstream remote repo and merges them
+        git submodule update --recursive --remote --merge
+
+and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the
+source array-api repository. See the `git website`_ for further information on working with submodules.
 
 Running the tests
 -----------------
@@ -29,27 +49,36 @@ adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-'Details' -> 'Run [backend] Tests'.
+`Details -> Run [backend] Tests`.
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
-Using bash file
+Using the bash file (runs Docker)
 ****
 
-Using the terminal, you can run our bash file `test_array_api.sh`_ and specify which framework backend you want to use.
-You can use the following command as an example.
+Using the terminal, you can run all array-api tests for a certain backend using the bash file `test_array_api.sh`_:
 
 .. code-block:: none
 
-        /bin/bash -e ./test_array_api.sh  '<insert_chosen_backend>'
+        # /ivy
+        /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
 
-You can change the argument with any of our other supported frameworks like 'tensorflow' or 'numpy'.
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax. If you rather
+run a single test or test file with terminal, use the following commands:
 
-Using IDE
+.. code-block:: none
+
+        # run all tests in a file
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+
+        # run a single test
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_array_method_signature"
+
+Using the IDE
 ****
-If you prefer, you can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the '_array_module.py' file. You can find it on the 'array_api_tests' submodule. At the beginning
-of the file, you will see the following line of code :code:`array_module = None`. You need to comment that line and add
+You can also run a specific test or test file by using your IDE. To make this work, you should set the
+backend explicitly in the `_array_module.py` file. You can find it in the `array_api_tests` submodule. At the beginning
+of the file, you will see the following line of code :code:`array_module = None`. You need to comment out that line and add
 the following code:
 
 .. code-block:: none
@@ -57,34 +86,8 @@ the following code:
         import ivy as array_module
         array_module.set_backend("<insert_chosen_backend>")
 
-After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
-changes to your commit.
-
-Re-Running Failed Array API Tests
-****
-
-When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
-For example, in the :code:`test_trace` Array API Test, we find the following output on running the test:
-
-.. code-block::
-
-        Falsifying example: test_trace(
-            x=ivy.array([[1.e-05]]), kw={},
-        )
-
-It is always efficient to fix this particular example first, before running any other examples.
-In order to achieve this functionality, we can use the :code:`@example` Hypothesis decorator.
-The :code:`@example` decorator ensures that a specific example is always tested, on running a particular test.
-The decorator requires the test arguments as parameters.
-For the :code:`test_trace` Array API Test, we can add the decorator as follows:
-
-.. code-block::
-
-        @example(x=ivy.array([[3.5e-46]]), kw={})
-        def test_trace(x, kw):
-
-This ensures that the given example is always tested while running the test, allowing one to debug the failure
-efficiently.
+After that, you can run the API test files as you typically would with other tests. See `here`_  for instructions on how
+to run tests in ivy more generally. *NB*: make sure to not add any changes to the array-api files to your commit.
 
 Test Skipping
 -------------

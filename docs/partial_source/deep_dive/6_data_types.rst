@@ -1,5 +1,5 @@
-Data Types
-==========
+Data Types 💾
+=============
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
@@ -196,6 +196,13 @@ backend-specific promotion functions such as :func:`jax.numpy.promote_types`,
 :func:`numpy.promote_types`, :func:`tf.experimental.numpy.promote_types` and
 :func:`torch.promote_types`, as these will generally have promotion rules which will
 subtly differ from one another and from Ivy's unified promotion rules.
+
+On the other hand, each frontend framework has its own set of rules for how
+data types should be promoted, and their own type promoting functions
+:func:`promote_types_frontend_name` and :func:`promote_types_of_frontend_name_inputs`
+in :mod:`ivy/functional/frontends/frontend_name/__init__.py`.
+We should always use these functions in any frontend implementation,
+to ensure we follow exactly the same promotion rules as the frontend framework uses.
 
 Arguments in other Functions
 ----------------------------
@@ -478,7 +485,33 @@ to the backend implementations, and introduce the risk of forgetting about the p
 needlessly bloating the codebase with redundant code.
 In such cases, we can explicitly flag which versions support which data types like so:
 
-[ToDo add a code example]
+We use a decorator :code:`with_unsupported_dtypes` which takes two arguments, a dictionary with the unsupported
+dtypes mapped to the corresponding version of the backend framework  and the current version of the
+backend framework on the user's system. Based on that, the version specific unsupported dtypes and devices
+are set for the given function everytime the function is called.
+
+.. code-block:: python
+
+    @with_unsupported_dtypes(
+        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, version
+    )
+    def cumsum(
+        x: torch.Tensor,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        *,
+        dtype: Optional[torch.dtype] = None,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+
+In the above example the :code:`torch.cumsum` function undergoes changes in the unsupported dtypes
+from one version to another. Starting from version :code:`1.12.1` it doesn't have any unsupported
+dtypes. The decorator assigns the version specific unsupported dtypes to the function and if the current
+version is not found in the dictionary, then it defaults to the behaviour of the last known version.
+
+The same workflow has been implemented for :code:`supported_dtypes`, :code:`unsupported_devices` and
+:code:`supported_devices`.
 
 The slight downside of this approach is that there is less data type coverage for each
 version of each backend, but taking responsibility for patching this support for all
