@@ -1496,7 +1496,7 @@ def slogdet(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0],
     ...                [3.0, 4.0]])
@@ -1504,7 +1504,7 @@ def slogdet(
     >>> print(y)
     slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
     ...                                [3.0, 4.0]]),
@@ -1992,7 +1992,7 @@ def trace(
     ...        b = ivy.array([[4, 3, 2],
     ...                       [1, 9, 5],
     ...                       [7, 0, 6]])
-        )
+    ...    )
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
     {
