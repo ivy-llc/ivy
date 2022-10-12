@@ -215,30 +215,28 @@ def test_numpy_ndarray_transpose(
 # flatten
 @handle_cmd_line_args
 @given(
-    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.flatten"
     ),
 )
 def test_numpy_ndarray_flatten(
-    array_and_axes,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
 ):
-    array, dtype, axes = array_and_axes
+    dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": np.array(array),
+            "data": np.array(x[0]),
         },
         input_dtypes_method=dtype,
         as_variable_flags_method=as_variable,
