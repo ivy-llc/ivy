@@ -483,9 +483,7 @@ class ContainerWithExtensions(ContainerBase):
             a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
-
         """
-
         return ContainerBase.multi_map_in_static_method(
             "max_pool2d",
             x,
@@ -553,7 +551,6 @@ class ContainerWithExtensions(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
-
         return self.static_max_pool2d(
             self,
             kernel,
