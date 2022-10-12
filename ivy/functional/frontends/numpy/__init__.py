@@ -175,7 +175,10 @@ def promote_numpy_dtypes(
     /,
 ):
     type1, type2 = ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)
-    return ivy.as_native_dtype(numpy_promotion_table[(type1, type2)])
+    try:
+        return numpy_promotion_table[(type1, type2)]
+    except KeyError:
+        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
 
 
 @handle_exceptions
