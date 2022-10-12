@@ -15,4 +15,3 @@ torch-scatter==2.0.9 # mod_name=torch_scatter
 functorch==0.1.1
 scipy==1.8.1
 dm-haiku==0.0.6 # mod_name=haiku
-

@@ -566,8 +566,7 @@ class ContainerWithDataTypes(ContainerBase):
         """
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-        ...                   b=ivy.array([2, 3, 4]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
         >>> y = x.dtype()
         >>> print(y)
         {
@@ -699,6 +698,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_bool_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -715,6 +715,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_bool_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -731,6 +732,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_float_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -801,12 +803,11 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_float_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: ivy.Container = None,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_float_dtype`.
@@ -877,6 +878,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_int_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -893,6 +895,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_int_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

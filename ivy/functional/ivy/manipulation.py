@@ -407,9 +407,9 @@ def permute_dims(
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))
+    >>> y = x.permute_dims( axes=(1, 0))
     >>> print(y)
-    ivy.array([[3.],[4.],[5.]])
+    {a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}
 
 
     This function conforms to the `Array API Standard
@@ -1039,9 +1039,9 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: Optional[int] = 0,
-    with_remainder: bool = False,
+    with_remainder: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 

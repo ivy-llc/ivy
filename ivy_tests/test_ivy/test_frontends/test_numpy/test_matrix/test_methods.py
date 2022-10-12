@@ -23,7 +23,6 @@ def test_numpy_matrix_argmax(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -44,7 +43,6 @@ def test_numpy_matrix_argmax(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="argmax",
@@ -68,7 +66,6 @@ def test_numpy_matrix_any(
     dtype_x_axis,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -89,7 +86,6 @@ def test_numpy_matrix_any(
         all_as_kwargs_np_method={
             "axis": axis,
         },
-        fw=fw,
         frontend="numpy",
         class_name="matrix",
         method_name="any",

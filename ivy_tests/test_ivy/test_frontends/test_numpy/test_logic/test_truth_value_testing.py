@@ -36,7 +36,6 @@ def test_numpy_all(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -51,7 +50,6 @@ def test_numpy_all(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="all",
         a=x[0],
@@ -91,7 +89,6 @@ def test_numpy_any(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -106,7 +103,6 @@ def test_numpy_any(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="any",
         a=x[0],
@@ -125,14 +121,13 @@ def test_numpy_any(
         fn_name="ivy.functional.frontends.numpy.isscalar"
     ),
 )
-def test_numpy_isscalar(element, as_variable, native_array, num_positional_args, fw):
+def test_numpy_isscalar(element, as_variable, native_array, num_positional_args):
     helpers.test_frontend_function(
         input_dtypes=ivy.all_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=native_array,
         frontend="numpy",
         fn_tree="isscalar",
         element=element,
