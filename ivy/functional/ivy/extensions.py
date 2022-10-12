@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
+from numpy import prod
 
 
 # helpers
@@ -420,7 +421,7 @@ def sinc(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = x.sinc()
@@ -431,20 +432,19 @@ def sinc(
     >>> y = ivy.zeros(3)
     >>> ivy.sinc(x, out=y)
     >>> print(y)
-    ivy.array(([-0.212,0.637,-0.212])
+    ivy.array([-0.212,0.637,-0.212])
 
-
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = ivy.sinc(x)
     >>> print(y)
     ivy.array([0.637,-0.212,0.127,-0.0909])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
-                          b=ivy.array([3.5, 4.5, 5.5]))
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
+    ...                   b=ivy.array([3.5, 4.5, 5.5]))
     >>> y = x.sinc()
     >>> print(y)
     {
@@ -453,6 +453,137 @@ def sinc(
     }
     """
     return ivy.current_backend(x).sinc(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def flatten(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    start_dim: int = None,
+    end_dim: int = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Flattens input by reshaping it into a one-dimensional tensor.
+        If start_dim or end_dim are passed, only dimensions starting
+        with start_dim and ending with end_dim are flattened.
+        The order of elements in input is unchanged.
+
+    Parameters
+    ----------
+    x
+        input array to flatten.
+    start_dim
+        first dim to flatten. If not set, defaults to 0.
+    end_dim
+        last dim to flatten. If not set, defaults to -1.
+
+    Returns
+    -------
+    ret
+        the flattened array over the specified dimensions.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2], [3,4])
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    ivy.array([1, 2, 3, 4])
+
+    >>> x = ivy.array(
+        [[[[5, 5, 0, 6],
+            [17, 15, 11, 16],
+            [6, 3, 13, 12]],
+          [[6, 18, 10, 4],
+            [5, 1, 17, 3],
+            [14, 14, 18, 6]]],
+        [[[12, 0, 1, 13],
+           [8, 7, 0, 3],
+           [19, 12, 6, 17]],
+         [[4, 15,  6, 15],
+           [0, 5, 17, 9],
+           [9, 3, 6, 19]]],
+        [[[17, 13, 11, 16],
+           [4, 18, 17, 4],
+           [10, 10, 9, 1]],
+         [[19, 17, 13, 10],
+           [ 4, 19, 16, 17],
+           [ 2, 12, 8, 14]]]])
+    >>> y = ivy.flatten(x, start_dim = 1, end_dim = 2)
+    >>> print(y)
+    ivy.array(
+        [[[ 5, 5, 0, 6],
+          [17, 15, 11, 16],
+          [6, 3, 13, 12],
+          [6, 18, 10, 4],
+          [5, 1, 17, 3],
+          [14, 14, 18, 6]],
+         [[12, 0, 1, 13],
+          [8, 7, 0, 3],
+          [19, 12, 6, 17],
+          [4, 15, 6, 15],
+          [0, 5, 17, 9],
+          [9, 3, 6, 19]],
+         [[17, 13, 11, 16],
+          [4, 18, 17, 4],
+          [10, 10,  9, 1],
+          [19, 17, 13, 10],
+          [ 4, 19, 16, 17],
+          [ 2, 12,  8, 14]]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    [{
+        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
+    }]
+    """
+    if start_dim == end_dim and len(x.shape) != 0:
+        return x
+    if start_dim not in range(-len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+        )
+    if end_dim not in range(-len(x.shape), len(x.shape)):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of\
+            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+        )
+    if start_dim is None:
+        start_dim = 0
+    if end_dim is None:
+        end_dim = x.shape[-1]
+    if start_dim < 0:
+        start_dim = len(x.shape) + start_dim
+    if end_dim < 0:
+        end_dim = len(x.shape) + end_dim
+
+    x_shape = x.shape
+    new_shape = (
+        tuple(x_shape[:start_dim])
+        + (int(prod(x_shape[start_dim : end_dim + 1])),)
+        + tuple(x_shape[end_dim + 1 :])
+    )
+    return ivy.reshape(x, new_shape)
 
 
 @to_native_arrays_and_back
@@ -488,6 +619,244 @@ def vorbis_window(
     ivy.array([0.38268346, 1. , 0.38268352])
 
     >>> ivy.vorbis_window(5)
-    ivy.array(array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
     """
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def lcm(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the element-wise least common multiple (LCM) of x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        first input array.
+    x2
+        second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array that includes the element-wise least common multiples of x1 and x2
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1=ivy.array([2, 3, 4])
+    >>> x2=ivy.array([5, 8, 15])
+    >>> x1.lcm(x1, x2)
+    ivy.array([10, 21, 60])
+    """
+    return ivy.current_backend().lcm(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Hann window. The Hanning window
+    is a taper formed by using a weighted cosine.
+
+    Parameters
+    ----------
+    window_length
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.hann_window(4, True)
+    ivy.array([0. , 0.5, 1. , 0.5])
+
+    >>> ivy.hann_window(7, False)
+    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
+
+    """
+    return ivy.current_backend().hann_window(
+        window_length, periodic, dtype=dtype, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def max_pool2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 2-D max pool given 4-D input x.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,h,w,d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[h,w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimensio paddings.
+    data_format
+        NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+    >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
+    ivy.array([[[[ 2,  3],
+     [ 4,  5],
+     [ 4,  5]]],
+    [[[ 8,  9],
+     [10, 11],
+     [10, 11]]]])
+
+    >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+    >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
+    ivy.array([[[[16, 17]],
+    [[22, 23]]],
+    [[[40, 41]],
+    [[46, 47]]]])
+    """
+    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Kaiser window with window length window_length and shape beta
+
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+        If True, returns a periodic window suitable for use in spectral analysis.
+        If False, returns a symmetric window suitable for use in filter design.
+    beta
+        a float used as shape parameter for the window.
+    dtype
+        data type of the returned array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.kaiser_window(5)
+    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
+
+    >>> ivy.kaiser_window(5, True, 5)
+    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])
+
+    >>> ivy.kaiser_window(5, False, 5)
+    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
+    """
+    return ivy.current_backend().kaiser_window(
+        window_length, periodic, beta, dtype=dtype, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def moveaxis(
+    a: Union[ivy.Array, ivy.NativeArray],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Move axes of an array to new positions..
+
+    Parameters
+    ----------
+    a
+        The array whose axes should be reordered.
+    source
+        Original positions of the axes to move. These must be unique.
+    destination
+        Destination positions for each of the original axes.
+        These must also be unique.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with moved axes. This array is a view of the input array.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.zeros((3, 4, 5))
+    >>> ivy.moveaxis(x, 0, -1).shape
+    (4, 5, 3)
+    >>> ivy.moveaxis(x, -1, 0).shape
+    (5, 3, 4)
+    """
+    return ivy.current_backend().moveaxis(a, source, destination, out=out)

@@ -23,7 +23,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (a) :ref:`Setting Up`
 | Building the right environment 🏛️
 |
-| (b) `The Basics <https://lets-unify.ai/ivy/contributing/1_the_basics.html`_
+| (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
 | (c) :ref:`Building the Docs`
@@ -37,6 +37,9 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 |
 | (f) :ref:`Applied Libraries`
 | Getting started with our applied libraries! 📚
+| 
+| (g) :ref:`Helpful Resources`
+| Resources you would find useful when learning Ivy 📖
 
 .. toctree::
    :hidden:
@@ -49,6 +52,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    deep_dive.rst
    contributing/4_open_tasks.rst
    contributing/5_applied_libraries.rst
+   contributing/6_helpful_resources.rst
 
 **Video**
 

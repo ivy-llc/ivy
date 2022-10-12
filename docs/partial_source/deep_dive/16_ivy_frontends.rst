@@ -32,8 +32,18 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Basics
 ----------
 
-**NOTE:** Type hints, docstrings and examples are not required when working on
+**NOTE:** 
+
+Type hints, docstrings and examples are not required when working on
 frontend functions.
+
+When using functions and methods of Ivy Frontends, in addition to importing ivy itself 
+like :code:`import ivy` please also import the corrisponding Frontend module.
+For example, to use ivy's tensorflow frontend:
+
+    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+
+----
 
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
