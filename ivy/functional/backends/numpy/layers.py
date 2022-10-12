@@ -157,8 +157,8 @@ def conv2d(
     new_shape = [x_shape[0], new_h, new_w] + filter_shape + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[1],
-        x.strides[2] * strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
         x.strides[1],
         x.strides[2],
         x.strides[3],
@@ -529,7 +529,7 @@ def conv_general_dilated(
         sliced_filters = filters[..., j : j + output_dim // feature_group_count]
         normal_strides = [sliced_x.strides[i] for i in range(1, dims + 2)]
         changed_strides = [
-            sliced_x.strides[i] * strides[dims - i] for i in range(1, dims + 1)
+            sliced_x.strides[i] * strides[i - 1] for i in range(1, dims + 1)
         ]
         new_strides = (x.strides[0], *changed_strides, *normal_strides)
         # B x OH x OW x KH x KW x I
