@@ -271,7 +271,7 @@ class ArrayWithManipulation(abc.ABC):
                 [10, 12]]])
         >>>
         """
-        return ivy.stack(self._data.concat(arrays), axis=axis, out=out)
+        return ivy.stack(self.concat(arrays), axis=axis, out=out)
 
     def clip(
         self: ivy.Array,
