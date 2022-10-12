@@ -178,3 +178,13 @@ def moveaxis(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.moveaxis(a, source, destination)
+
+
+def heaviside(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.heaviside(x1, x2)
