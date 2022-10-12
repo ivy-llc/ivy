@@ -3596,3 +3596,155 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_get_num_dims(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        as_array: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.get_num_dims. This method
+        simply wraps the function, and so the docstring for ivy.get_num_dims
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            ivy.Container to infer the number of dimensions for
+        as_array
+            Whether to return the shape as a array, default False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        
+
+        Returns
+        -------
+        ret
+            Shape of the array
+
+        Examples
+        --------
+        >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> ivy.Container.static_get_num_dims(x)
+        {
+            b: 2
+        }
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> ivy.Container.static_get_num_dims(x)
+        {
+            b: 3
+        }
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
+                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> ivy.Container.static_get_num_dims(x)
+        {
+            b: 3,
+            c: 2
+        }
+        >>> ivy.Container.static_get_num_dims(x, as_array=True)
+        {
+            b: ivy.array(3),
+            c: ivy.array(2)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "get_num_dims",
+            x,
+            as_array=as_array,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def get_num_dims(
+        self: ivy.Container,
+        /,
+        *,
+        as_array: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.get_num_dims. This method
+        simply wraps the function, and so the docstring for ivy.get_num_dims
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            ivy.Container to infer the number of dimensions for
+        as_array
+            Whether to return the shape as a array, default False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        
+
+        Returns
+        -------
+        ret
+            Shape of the array
+
+        Examples
+        --------
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])) 
+        >>> a.get_num_dims()
+        {
+            b: 2
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> a.get_num_dims()
+        {
+            b: 3
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
+                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
+                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> a.get_num_dims()
+        {
+            b: 3,
+            c: 2
+        }
+        >>> a.get_num_dims(as_array=True)
+        {
+            b: ivy.array(3),
+            c: ivy.array(2)
+        }
+        """
+        return ContainerWithGeneral.static_supports_inplace_updates(
+            self,
+            as_array=as_array,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

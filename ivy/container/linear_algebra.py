@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict, Sequence
+from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -533,7 +533,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> NamedTuple:
+    ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.eigh(x_) if ivy.is_array(x_) else x_,
@@ -808,7 +808,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -870,7 +870,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1451,7 +1451,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    # Unsure
     def svd(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1462,7 +1461,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
+    ) -> ivy.Container:
         return self.static_svd(
             self,
             key_chains,
@@ -2007,5 +2006,139 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_vander(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.vander.
+        This method simply wraps the function, and so the docstring for
+        ivy.vander also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            ivy container that contains 1-D arrays.
+        N
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
+        increasing
+            Order of the powers of the columns. If True, the powers increase
+            from left to right, if False (the default) they are reversed.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container that contains the Vandermonde matrix of the arrays included
+            in the input container.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(
+                a = ivy.array([1, 2, 3, 5])
+                b = ivy.array([6, 7, 8, 9])
+            )
+        >>> ivy.Container.static_vander(x)
+        {
+            a: ivy.array(
+                    [[  1,   1,   1,   1],
+                    [  8,   4,   2,   1],
+                    [ 27,   9,   3,   1],
+                    [125,  25,   5,   1]]
+                    ),
+            b: ivy.array(
+                    [[216,  36,   6,   1],
+                    [343,  49,   7,   1],
+                    [512,  64,   8,   1],
+                    [729,  81,   9,   1]]
+                    )
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "vander",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            N=N,
+            increasing=increasing,
+            out=out,
+        )
+
+    def vander(
+        self: ivy.Container,
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.vander.
+        This method Returns the Vandermonde matrix of the input array.
+
+        Parameters
+        ----------
+        self
+            1-D input array.
+        N
+            Number of columns in the output. If N is not specified,
+            a square array is returned (N = len(x))
+        increasing
+            Order of the powers of the columns. If True, the powers increase
+            from left to right, if False (the default) they are reversed.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            an container containing the Vandermonde matrices of the arrays
+            included in the input container.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(
+                a = ivy.array([1, 2, 3, 5])
+                b = ivy.array([6, 7, 8, 9])
+            )
+        >>> x.vander()
+        {
+            a: ivy.array(
+                    [[  1,   1,   1,   1],
+                    [  8,   4,   2,   1],
+                    [ 27,   9,   3,   1],
+                    [125,  25,   5,   1]]
+                    ),
+            b: ivy.array(
+                    [[216,  36,   6,   1],
+                    [343,  49,   7,   1],
+                    [512,  64,   8,   1],
+                    [729,  81,   9,   1]]
+                    )
+        }
+        """
+        return self.static_vander(
+            self,
+            N=N,
+            increasing=increasing,
             out=out,
         )

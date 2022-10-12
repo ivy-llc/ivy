@@ -19,7 +19,7 @@ Array API Tests 🤝
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_. These tests check that all
 ivy backend libraries behave according to the `Array API Standard`_ which was established
 in May 2020 by a group of maintainers. It was intended to bring some consistency and completeness to the various python
-libraries which have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
+libraries that have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
 it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.
 
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_,
@@ -49,7 +49,7 @@ adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-'Details' -> 'Run [backend] Tests'.
+`Details -> 'Run [backend] Tests`.
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
@@ -63,8 +63,9 @@ Using the terminal, you can run all array-api tests for a certain backend using 
         # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
 
-You can change the argument with any of our supported frameworks - 'tensorflow', 'numpy', 'torch' or 'jax'. If you rather
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax. If you rather
 run a single test or test file with terminal, use the following commands:
+
 .. code-block:: none
 
         # run all tests in a file
