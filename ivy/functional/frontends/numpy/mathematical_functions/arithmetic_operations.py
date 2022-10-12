@@ -63,7 +63,6 @@ def divide(
 true_divide = divide
 
 
-@handle_numpy_casting
 def multiply(
     x1,
     x2,

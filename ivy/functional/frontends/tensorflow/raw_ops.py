@@ -78,12 +78,6 @@ def Div(*, x, y, name="Div"):
     return ivy.divide(x, y)
 
 
-def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
-
-
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
     if incompatible_shape_error:
         return ivy.equal(x, y)
@@ -130,14 +124,6 @@ def IdentityN(*, input, name="IdentityN"):
     return [ivy.copy_array(x) for x in input]
 
 
-def Inv(*, x, name="Inv"):
-    return ivy.astype(ivy.reciprocal(x), x.dtype)
-
-
-def LeftShift(*, x, y, name="LeftShift"):
-    return ivy.bitwise_left_shift(x, y)
-
-
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
@@ -170,10 +156,6 @@ def Maximum(*, x, y, name="Maximum"):
     return tf_frontend.maximum(x, y)
 
 
-def Min(*, input, axis, keep_dims=False, name="Min"):
-    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
-
-
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
@@ -194,10 +176,6 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(True)
-
-
-def OnesLike(*, x, name="OnesLike"):
-    return ivy.ones_like(x)
 
 
 def Relu(features, name="Relu"):

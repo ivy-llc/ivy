@@ -100,6 +100,30 @@ def diag(
     return ret
 
 
+def diag(
+    x: torch.Tensor,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = torch.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += torch.diag(x - padding_value, diagonal=offset)
+
+    return ret
+
+
 def diagonal(
     x: torch.Tensor,
     /,
@@ -167,6 +191,10 @@ def inv(
             return ret
 
 
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 inv.support_native_out = True
 
 
@@ -197,15 +225,14 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(ord, float):
-        ord = int(ord)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
+matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
 matrix_norm.support_native_out = True
 
 
@@ -348,6 +375,18 @@ def svd(
         D = svd[1]
         return results(D)
 
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+
+        U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        svd = torch.linalg.svd(x, full_matrices=full_matrices)
+        # torch.linalg.svd returns a tuple with U, S, and Vh
+        D = svd[1]
+        return results(D)
+
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -395,7 +434,7 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("float16", "bfloat16")
+trace.unsupported_dtypes = ("bfloat16",)
 
 
 def vecdot(

@@ -1522,7 +1522,7 @@ def test_lstm_layer(
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(vals[0], dtype=input_dtype[0])},
+        all_as_kwargs_np_method={"inputs": np.asarray(vals, dtype=input_dtype)},
         class_name="LSTM",
         init_with_v=init_with_v,
         method_with_v=method_with_v,

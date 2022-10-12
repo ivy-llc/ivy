@@ -8,8 +8,6 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
 
 # Array API Standard #
 # -------------------#
@@ -229,12 +227,12 @@ def cumprod(
     elif exclusive and reverse:
         x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
         x = torch.transpose(x, axis, -1)
-        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
         x = torch.transpose(x, axis, -1)
         return torch.flip(x, dims=(axis,))
     elif exclusive:
         x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
         x = torch.cumprod(x, -1, dtype=dtype)
         return torch.transpose(x, axis, -1)
     elif reverse:

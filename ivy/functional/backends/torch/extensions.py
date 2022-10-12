@@ -73,17 +73,6 @@ sinc.support_native_out = True
 sinc.unsupported_dtypes = ("float16",)
 
 
-def flatten(
-    x: torch.Tensor,
-    /,
-    *,
-    start_dim: int,
-    end_dim: int,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.flatten(x, start_dim, end_dim)
-
-
 def vorbis_window(
     window_length: torch.tensor,
     *,
@@ -105,19 +94,3 @@ def vorbis_window(
 
 
 vorbis_window.support_native_out = False
-
-
-def lcm(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.abs(
-        torch.lcm(x1, x2, out=out)
-    )
-
-
-lcm.support_native_out = True

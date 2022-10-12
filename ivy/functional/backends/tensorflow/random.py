@@ -93,6 +93,9 @@ def multinomial(
         return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
 
 
+multinomial.unsupported_dtypes = ("bfloat16",)
+
+
 def randint(
     low: Union[float, tf.Tensor, tf.Variable],
     high: Union[float, tf.Tensor, tf.Variable],

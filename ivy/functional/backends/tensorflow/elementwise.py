@@ -411,6 +411,9 @@ def logaddexp(
     return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
 
 
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def logical_and(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -708,6 +711,14 @@ def minimum(
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
+
+
+minimum.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 minimum.unsupported_dtypes = (

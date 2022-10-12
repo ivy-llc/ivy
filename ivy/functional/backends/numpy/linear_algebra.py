@@ -76,6 +76,31 @@ def diag(
     return ret
 
 
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+    ret = np.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    # On the diagonal there will be
+    # 1 * padding_value + x_i - padding_value == x_i
+    ret += np.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: np.ndarray,
     /,
@@ -159,13 +184,19 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+
+
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_power(
@@ -203,6 +234,12 @@ def matrix_rank(
     else:
         ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
     return ret
+
+
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -255,6 +292,9 @@ def slogdet(
     return results(sign, logabsdet)
 
 
+    return results(sign, logabsdet)
+
+
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
@@ -285,6 +325,9 @@ def svd(
         results = namedtuple("svd", "S")
         D = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
         return results(D)
+
+
+svd.unsupported_dtypes = ("float16",)
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)

@@ -25,21 +25,14 @@ def eigh(a, UPLO="L", symmetrize_input=True):
     return ivy.eigh(a, UPLO=UPLO)
 
 
-@inputs_to_ivy_arrays
+# eigvalsh
 def eigvalsh(a, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
 
 
-@inputs_to_ivy_arrays
 def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
 
 
-@inputs_to_ivy_arrays
 def eigvals(a):
     return ivy.eigh(a)
-
-
-@inputs_to_ivy_arrays
-def cholesky(a):
-    return ivy.cholesky(a)

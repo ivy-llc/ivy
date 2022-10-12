@@ -37,17 +37,9 @@ def argmin(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    # The returned array must have the default array index data type.
     if dtype is not None:
-        if dtype not in (tf.int32, tf.int64):
-            return tf.convert_to_tensor(ret, dtype=tf.int32)
-        else:
-            return tf.convert_to_tensor(ret, dtype=dtype)
-    else:
-        if ret.dtype not in (tf.int32, tf.int64):
-            return tf.convert_to_tensor(ret, dtype=tf.int32)
-        else:
-            return tf.convert_to_tensor(ret, dtype=ret.dtype)
+        return tf.convert_to_tensor(ret, dtype=dtype)
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def nonzero(

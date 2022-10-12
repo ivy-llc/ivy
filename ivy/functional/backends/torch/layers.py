@@ -374,15 +374,9 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    version,
-)
+conv3d.unsupported_dtypes = ("float16", "bfloat16")
+
+
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
     x: torch.Tensor,

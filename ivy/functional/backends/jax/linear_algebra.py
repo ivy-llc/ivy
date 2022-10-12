@@ -75,6 +75,30 @@ def diag(
     return ret
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = jnp.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += jnp.diag(x - padding_value, k=offset)
+
+    return ret
+
+
 def diagonal(
     x: JaxArray,
     /,
@@ -166,13 +190,19 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+
+
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -251,7 +281,12 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
+
 def slogdet(
     x: JaxArray,
     /,
@@ -306,6 +341,16 @@ def svd(
         return results(D)
 
 
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(U, D, VT)
+    else:
+        results = namedtuple("svd", "S")
+        D = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
+        return results(D)
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
@@ -334,6 +379,9 @@ def trace(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
+
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def vecdot(

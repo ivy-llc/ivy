@@ -72,6 +72,9 @@ def unique_counts(x: torch.Tensor, /) -> NamedTuple:
     return Results(v, c)
 
 
+unique_counts.unsupported_dtypes = ("float16",)
+
+
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": ("float16",),
@@ -86,6 +89,9 @@ def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
         inverse_indices[nan_idx] = torch.where(torch.isnan(values))[0][0]
     inverse_indices = inverse_indices.reshape(x.shape)
     return Results(values, inverse_indices)
+
+
+unique_inverse.unsupported_dtypes = ("float16",)
 
 
 @with_unsupported_dtypes(

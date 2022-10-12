@@ -289,7 +289,6 @@ def soft_sign(x):
     return ret.astype(dtype)
 
 
-@inputs_to_ivy_arrays
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
 
@@ -306,11 +305,9 @@ def swish(x):
     return ivy.asarray(ret, dtype=x.dtype)
 
 
-@inputs_to_ivy_arrays
 def hard_silu(x):
     return x * hard_sigmoid(x)
 
 
-@inputs_to_ivy_arrays
 def hard_sigmoid(x):
     return relu6(x + 3) / 6
