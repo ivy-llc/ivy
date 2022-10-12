@@ -268,7 +268,7 @@ class ArrayWithExtensions(abc.ABC):
         >>> ivy.moveaxis(-1, 0).shape
         (5, 3, 4)
         """
-        return ivy.flatten(
+        return ivy.moveaxis(
             self._data, 
             source,
             destination,
