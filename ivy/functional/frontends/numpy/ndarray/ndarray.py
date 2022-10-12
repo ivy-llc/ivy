@@ -37,6 +37,9 @@ class ndarray:
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
+    def flatten(self):
+        return np_frontend.flatten(self.data)
+
     def add(
         self,
         value,
