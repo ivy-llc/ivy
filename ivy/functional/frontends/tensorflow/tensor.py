@@ -17,6 +17,9 @@ class Tensor:
     def get_shape(self):
         return tf_frontend.Shape(input=self.data)
 
+    def __abs__(self, name="abs"):
+        return ivy.abs(x=self.data, name=name)
+
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
 
