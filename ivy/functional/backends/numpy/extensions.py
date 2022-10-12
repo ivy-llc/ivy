@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import logging
 import ivy
 import numpy as np
@@ -205,3 +205,17 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
+
+
+def moveaxis(
+    a: np.ndarray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False
