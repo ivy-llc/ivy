@@ -115,8 +115,12 @@ def diagonal(
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.linalg.eigh(x, UPLO=UPLO, out=out)
+) -> Tuple[torch.Tensor]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
+    )
+    eigenvalues, eigenvectors = torch.linalg.eigh(x, UPLO=UPLO, out=out)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 eigh.support_native_out = True
@@ -227,7 +231,10 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    if len(x.shape) < 2:
+        ret = torch.tensor(0)
+    else:
+        ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
 
 
@@ -269,7 +276,7 @@ pinv.support_native_out = True
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
-) -> NamedTuple:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = torch.qr(x, some=True, out=out)
@@ -288,7 +295,7 @@ def qr(
 def slogdet(
     x: torch.Tensor,
     /,
-) -> NamedTuple:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     results = NamedTuple(
         "slogdet", [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
     )
@@ -468,9 +475,7 @@ def vander(
     increasing: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.vander(
-        x, N=N, increasing=increasing
-    )
+    return torch.vander(x, N=N, increasing=increasing)
 
 
 vander.support_native_out = False
