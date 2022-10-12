@@ -90,6 +90,32 @@ class Dtype(str):
             )
         return str.__new__(cls, dtype_str)
 
+    def __ge__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+        assert isinstance(other, Dtype)
+        print("__ge__ ran")
+        return self == ivy.promote_types(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+        print("__gt__ ran")
+        return self >= other and self != other
+
+    def __lt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+        assert isinstance(other, Dtype)
+        print("__lt__ ran")
+        return self != ivy.promote_types(self, other)
+
+    def __le__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+        print("__le__ ran")
+        return self < other or self == other
+
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
