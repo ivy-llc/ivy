@@ -839,3 +839,59 @@ def test_torch_vander(
         N=N,
         increasing=increasing,
     )
+
+
+# cross
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=3,
+            max_dim_size=3),
+            key="shape"),
+        min_value=-100,
+        max_value=100,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=3,
+            max_dim_size=3),
+            key="shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+        allow_neg=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.cross"
+    ),
+)
+def test_torch_cross(
+    dtype_and_x,
+    dim,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+):
+    (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
+    input_dtype = [input_dtype_x, input_dtype_y]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="cross",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        other=np.asarray(y, dtype=input_dtype[1]),
+        dim=dim,
+    )

@@ -231,3 +231,7 @@ def vander(x, N=None, increasing=False):
         return ivy.array([], dtype=x.dtype)
     else:
         return ivy.vander(x, N=N, increasing=increasing, out=None)
+
+
+def cross(input, other, dim=-1, *, out=None):
+    return ivy.cross(input, other, axis=dim, out=out)
