@@ -310,10 +310,10 @@
 <span class="sd">        &gt;&gt;&gt; step = ivy.array(3)</span>
 <span class="sd">        &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step)</span>
 <span class="sd">        &gt;&gt;&gt; print(adam_step_delta)</span>
-<span class="sd">        (ivy.array([0.182, 0.182, 0.182]),\</span>
-<span class="sd">         ivy.array([0.9, 0.9, 0.9]),\</span>
+<span class="sd">        (ivy.array([0.182, 0.182, 0.182]),</span>
+<span class="sd">         ivy.array([0.9, 0.9, 0.9]),</span>
 <span class="sd">         ivy.array([0.999, 0.999, 0.999]))</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -411,19 +411,19 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Array` inputs:</span>
 
-<span class="sd">        &gt;&gt;&gt; w = ivy.array([[1., 2, 3],\</span>
-<span class="sd">                       [4, 6, 1],\</span>
-<span class="sd">                       [1, 0, 7]])</span>
-<span class="sd">        &gt;&gt;&gt; dcdw = ivy.array([[0.5, 0.2, 0.1],\</span>
-<span class="sd">                            [0.3, 0.6, 0.4],\</span>
-<span class="sd">                            [0.4, 0.7, 0.2]])</span>
+<span class="sd">        &gt;&gt;&gt; w = ivy.array([[1., 2, 3],</span>
+<span class="sd">        ...                [4, 6, 1],</span>
+<span class="sd">        ...                [1, 0, 7]])</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.array([[0.5, 0.2, 0.1],</span>
+<span class="sd">        ...                   [0.3, 0.6, 0.4],</span>
+<span class="sd">        ...                   [0.4, 0.7, 0.2]])</span>
 <span class="sd">        &gt;&gt;&gt; lr = ivy.array(0.1)</span>
 <span class="sd">        &gt;&gt;&gt; new_weights = w.gradient_descent_update(dcdw, lr, stop_gradients = True)</span>
 <span class="sd">        &gt;&gt;&gt; print(new_weights)</span>
-<span class="sd">        ivy.array([[ 0.95,  1.98,  2.99],\</span>
-<span class="sd">                   [ 3.97,  5.94,  0.96],\</span>
-<span class="sd">                   [ 0.96, -0.07,  6.98]])</span>
-<span class="sd">        </span>
+<span class="sd">        ivy.array([[ 0.95,  1.98,  2.99],</span>
+<span class="sd">        ...        [ 3.97,  5.94,  0.96],</span>
+<span class="sd">        ...        [ 0.96, -0.07,  6.98]])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -618,10 +618,10 @@
 <span class="sd">        &gt;&gt;&gt; step = ivy.array(1)</span>
 <span class="sd">        &gt;&gt;&gt; new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step)</span>
 <span class="sd">        &gt;&gt;&gt; print(new_weights)</span>
-<span class="sd">        (ivy.array([0.784, 1.78 , 2.78 ]),\</span>
-<span class="sd">         ivy.array([0.05, 0.02, 0.01]),\</span>
-<span class="sd">         ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))</span>
-<span class="sd">        </span>
+<span class="sd">        (ivy.array([0.784, 1.78 , 2.78 ]),</span>
+<span class="sd">        ... ivy.array([0.05, 0.02, 0.01]),</span>
+<span class="sd">        ... ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

@@ -208,8 +208,8 @@
 <span class="sd">    the activations module as instance methods to our toy `ArrayExample` class:</span>
 
 <span class="sd">    &gt;&gt;&gt; from ivy.functional.ivy import activations</span>
-<span class="sd">    &gt;&gt;&gt; class ArrayExample: \</span>
-<span class="sd">            pass</span>
+<span class="sd">    &gt;&gt;&gt; class ArrayExample:</span>
+<span class="sd">    ...     pass</span>
 <span class="sd">    &gt;&gt;&gt; ivy.add_ivy_array_instance_methods(ArrayExample, [activations])</span>
 <span class="sd">    &gt;&gt;&gt; print(hasattr(ArrayExample, &quot;relu&quot;), hasattr(ArrayExample, &quot;softmax&quot;))</span>
 <span class="sd">    True True</span>

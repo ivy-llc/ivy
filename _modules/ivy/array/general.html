@@ -492,20 +492,20 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[5,4],\</span>
-<span class="sd">                       [11, 2]],\</span>
-<span class="sd">                      [[3, 5],\</span>
-<span class="sd">                       [9, 7]]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[5, 4],</span>
+<span class="sd">        ...                 [11, 2]],</span>
+<span class="sd">        ...                [[3, 5],</span>
+<span class="sd">        ...                 [9, 7]]])</span>
 
 <span class="sd">        &gt;&gt;&gt; y = x.einops_reduce(&#39;a b c -&gt; b c&#39;, &#39;max&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([[ 5,  5],</span>
 <span class="sd">                   [11,  7]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[5, 4, 3],\</span>
-<span class="sd">                        [11, 2, 9]],\</span>
-<span class="sd">                       [[3, 5, 7],\</span>
-<span class="sd">                        [9, 7, 1]]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[5, 4, 3],</span>
+<span class="sd">        ...                 [11, 2, 9]],</span>
+<span class="sd">        ...                [[3, 5, 7],</span>
+<span class="sd">        ...                 [9, 7, 1]]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.einops_reduce(&#39;a b c -&gt; a () c&#39;, &#39;min&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([[[5, 2, 3]],</span>
@@ -552,8 +552,8 @@
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([[5,5,5],[4,4,4]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[5,4],\</span>
-<span class="sd">                    [2, 3]])\</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[5,4],</span>
+<span class="sd">        ...                [2, 3]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.einops_repeat(&#39;a b -&gt;  a b c&#39;, c=3)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([[5,5,5],[4,4,4]])</span>

@@ -196,14 +196,18 @@ Rules and must have the same shape as self.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="s1">&#39;false&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
-<span class="go">           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+<span class="gp">... </span>       <span class="p">[</span> <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.5</span> <span class="p">,</span> <span class="o">-</span><span class="mf">1.</span>  <span class="p">,</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span>  <span class="p">],</span>
+<span class="gp">... </span>       <span class="p">[</span> <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">1.</span>  <span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="p">,</span> <span class="o">-</span><span class="mf">2.</span>  <span class="p">],</span>
+<span class="gp">... </span>       <span class="p">[</span> <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.5</span> <span class="p">,</span> <span class="o">-</span><span class="mf">3.</span>  <span class="p">],</span>
+<span class="gp">... </span>       <span class="p">[</span> <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">0.</span>  <span class="p">,</span>  <span class="mf">1.</span>  <span class="p">]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -428,15 +432,19 @@ ivy.array(1.)</p>
 <dt class="sig sig-object py" id="ivy.array.linear_algebra.ArrayWithLinearAlgebra.pinv">
 <span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/linear_algebra.html#ArrayWithLinearAlgebra.pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.linear_algebra.ArrayWithLinearAlgebra.pinv" title="Permalink to this definition"></a></dt>
 <dd><p class="rubric">Examples</p>
-<p>x = ivy.array([[1., 2.],                  [3., 4.]])
+<p>x = ivy.array([[1., 2.],
+…            [3., 4.]])
 y = pinv(x, None, None)
 print(y)
-ivy.array([[-2., 1.],               [1.5, -0.5]])</p>
-<p>x = ivy.array([[1., 2.],                      [3., 4.]])
+ivy.array([[-2., 1.],
+…        [1.5, -0.5]])</p>
+<p>x = ivy.array([[1., 2.],
+…            [3., 4.]])
 out = ivy.array()
 pinv(x, 0, out)
 print(out)
-ivy.array([[0.0426, 0.0964],               [0.0605, 0.1368]])</p>
+ivy.array([[0.0426, 0.0964],
+…       [0.0605, 0.1368]])</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
@@ -483,7 +491,8 @@ square matrix.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                            <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">slogdet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))</span>

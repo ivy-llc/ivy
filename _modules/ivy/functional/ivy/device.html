@@ -375,23 +375,23 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    1</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                        x2=ivy.array([-1, 0, 5.2, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    2</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\</span>
-<span class="sd">                      x3=ivy.array([2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),</span>
+<span class="sd">    ...                   x3=ivy.array([2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    3</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\</span>
-<span class="sd">                      x3=ivy.array([2]),\</span>
-<span class="sd">                      x4=ivy.array([-1, 0, 5.2, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),</span>
+<span class="sd">    ...                   x3=ivy.array([2]),</span>
+<span class="sd">    ...                   x4=ivy.array([-1, 0, 5.2, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    4</span>
@@ -404,23 +404,23 @@
 <span class="sd">    0</span>
 
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                        x2=ivy.native_array([-1, 0, 5.2, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                    x2=ivy.native_array([-1, 0, 5.2, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    0</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\</span>
-<span class="sd">                      x3=ivy.native_array([2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),</span>
+<span class="sd">    ...                   x3=ivy.native_array([2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    0</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\</span>
-<span class="sd">                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\</span>
-<span class="sd">                      x3=ivy.native_array([2]),\</span>
-<span class="sd">                      x4=ivy.native_array([-1, 0, 5.2, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),</span>
+<span class="sd">    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),</span>
+<span class="sd">    ...                   x3=ivy.native_array([2]),</span>
+<span class="sd">    ...                   x4=ivy.native_array([-1, 0, 5.2, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    0</span>
@@ -525,8 +525,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\</span>
-<span class="sd">                          b=ivy.native_array([1, 2, 4, 5, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),</span>
+<span class="sd">    ...                   b=ivy.native_array([1, 2, 4, 5, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=True, b=False)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_dev(x, as_native=as_native)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -540,8 +540,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\</span>
-<span class="sd">                          b=ivy.native_array([[1, 2], [4, 5]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),</span>
+<span class="sd">    ...                   b=ivy.native_array([[1, 2], [4, 5]]))</span>
 <span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=False, b=True)</span>
 <span class="sd">    &gt;&gt;&gt; y = x.dev(as_native=as_native)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>

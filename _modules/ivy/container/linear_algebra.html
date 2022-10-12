@@ -300,8 +300,8 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \</span>
-<span class="sd">                              b=ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]),</span>
+<span class="sd">        ...                      b=ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cholesky(x, upper=&#39;false&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -311,8 +311,8 @@
 <span class="sd">                            [0., 0.707]])</span>
 <span class="sd">         }</span>
 <span class="sd">        With multiple :class:`ivy.Container` inputs:</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \</span>
-<span class="sd">                              b=ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]),</span>
+<span class="sd">        ...                      b=ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_roll(x, upper=False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -385,8 +385,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \</span>
-<span class="sd">                              b=ivy.array([[2., 1.],[1., 1.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),</span>
+<span class="sd">        ...                      b=ivy.array([[2., 1.],[1., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.cholesky(upper=&#39;false&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -790,8 +790,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\</span>
-<span class="sd">                              b=ivy.array([[4., 4.], [2., 1.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),</span>
+<span class="sd">        ...                      b=ivy.array([[4., 4.], [2., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.inv(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -830,38 +830,38 @@
 <span class="sd">        ``MxN`` matrices. Should have a floating-point data type.</span>
 <span class="sd">        rtol</span>
 <span class="sd">            relative tolerance for small singular values approximately less</span>
-<span class="sd">            than or equal to ``rtol * largest_singular_value`` are set to zero. </span>
+<span class="sd">            than or equal to ``rtol * largest_singular_value`` are set to zero.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. </span>
+<span class="sd">            optional output array, for writing the result to.</span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the pseudo-inverses. The returned array must have a</span>
-<span class="sd">            floating-point data type determined by :ref:`type-promotion` and </span>
-<span class="sd">            must have shape ``(..., N, M)`` (i.e., must have the same shape as </span>
+<span class="sd">            floating-point data type determined by :ref:`type-promotion` and</span>
+<span class="sd">            must have shape ``(..., N, M)`` (i.e., must have the same shape as</span>
 <span class="sd">            ``x``, except the innermost two dimensions must be transposed).</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],\</span>
-<span class="sd">                  [3., 4.]]))</span>
+<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],</span>
+<span class="sd">        ...                             [3., 4.]]))</span>
 <span class="sd">        y = pinv(x, None, None)</span>
 <span class="sd">        print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[-2., 1.],\</span>
-<span class="sd">               [1.5, -0.5]])</span>
+<span class="sd">            a: ivy.array([[-2., 1.],</span>
+<span class="sd">        ...               [1.5, -0.5]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],\</span>
-<span class="sd">                  [3., 4.]]))</span>
+<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],</span>
+<span class="sd">        ...                            [3., 4.]]))</span>
 <span class="sd">        out = ivy.Container(a=ivy.array())</span>
 <span class="sd">        pinv(x, 0, out)</span>
 <span class="sd">        print(out)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[0.0426, 0.0964],\</span>
-<span class="sd">               [0.0605, 0.1368]])</span>
+<span class="sd">            a: ivy.array([[0.0426, 0.0964],</span>
+<span class="sd">        ...               [0.0605, 0.1368]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -889,40 +889,40 @@
 <span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
 <span class="sd">            ``MxN`` matrices. Should have a floating-point data type.</span>
 <span class="sd">        rtol</span>
-<span class="sd">        relative tolerance for small singular values approximately less than or equal to </span>
-<span class="sd">            ``rtol * largest_singular_value`` are set to zero. </span>
+<span class="sd">        relative tolerance for small singular values approximately less than or equal to</span>
+<span class="sd">            ``rtol * largest_singular_value`` are set to zero.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. </span>
+<span class="sd">            optional output array, for writing the result to.</span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the pseudo-inverses. The returned array must have a</span>
-<span class="sd">            floating-point data type determined by :ref:`type-promotion` and </span>
-<span class="sd">            must have shape ``(..., N, M)`` (i.e., must have the same shape as </span>
+<span class="sd">            floating-point data type determined by :ref:`type-promotion` and</span>
+<span class="sd">            must have shape ``(..., N, M)`` (i.e., must have the same shape as</span>
 <span class="sd">            ``x``, except the innermost two dimensions must be transposed).</span>
 
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],\</span>
-<span class="sd">                  [3., 4.]]))</span>
+<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],</span>
+<span class="sd">        ...                             [3., 4.]]))</span>
 <span class="sd">        y = pinv(x, None, None)</span>
 <span class="sd">        print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[-2., 1.],\</span>
-<span class="sd">               [1.5, -0.5]])</span>
+<span class="sd">            a: ivy.array([[-2., 1.],</span>
+<span class="sd">        ...               [1.5, -0.5]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],\</span>
-<span class="sd">                  [3., 4.]]))</span>
+<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],</span>
+<span class="sd">        ...                            [3., 4.]]))</span>
 <span class="sd">        out = ivy.Container(a=ivy.array())</span>
 <span class="sd">        pinv(x, 0, out)</span>
 <span class="sd">        print(out)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[0.0426, 0.0964],\</span>
-<span class="sd">               [0.0605, 0.1368]])</span>
+<span class="sd">            a: ivy.array([[0.0426, 0.0964],</span>
+<span class="sd">        ...               [0.0605, 0.1368]])</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1164,8 +1164,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \</span>
-<span class="sd">                              b=ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[1., 0.], [0., 0.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_matrix_rank(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -1245,8 +1245,8 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \</span>
-<span class="sd">                                b=ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[1., 0.], [0., 0.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.matrix_rank()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -1433,10 +1433,10 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],   \</span>
-<span class="sd">                                           [3.0, 4.0]]), \</span>
-<span class="sd">                              b=ivy.array([[1.0, 2.0],   \</span>
-<span class="sd">                                           [2.0, 1.0]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],</span>
+<span class="sd">        ...                                [3.0, 4.0]]),</span>
+<span class="sd">        ...                   b=ivy.array([[1.0, 2.0],</span>
+<span class="sd">        ...                                [2.0, 1.0]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_slogdet(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -1496,10 +1496,10 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],   \</span>
-<span class="sd">                                           [3.0, 4.0]]), \</span>
-<span class="sd">                              b=ivy.array([[1.0, 2.0],   \</span>
-<span class="sd">                                           [2.0, 1.0]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],</span>
+<span class="sd">        ...                                [3.0, 4.0]]),</span>
+<span class="sd">        ...                   b=ivy.array([[1.0, 2.0],</span>
+<span class="sd">        ...                                [2.0, 1.0]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.slogdet()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -1745,13 +1745,13 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(\</span>
-<span class="sd">            a = ivy.array([[7, 1, 2],\</span>
-<span class="sd">                           [1, 3, 5],\</span>
-<span class="sd">                           [0, 7, 4]]),\</span>
-<span class="sd">            b = ivy.array([[4, 3, 2],\</span>
-<span class="sd">                           [1, 9, 5],\</span>
-<span class="sd">                           [7, 0, 6]])\</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(</span>
+<span class="sd">        ...    a = ivy.array([[7, 1, 2],</span>
+<span class="sd">        ...                   [1, 3, 5],</span>
+<span class="sd">        ...                   [0, 7, 4]]),</span>
+<span class="sd">        ...    b = ivy.array([[4, 3, 2],</span>
+<span class="sd">        ...                   [1, 9, 5],</span>
+<span class="sd">        ...                   [7, 0, 6]])</span>
 <span class="sd">        )</span>
 <span class="sd">        &gt;&gt;&gt; y = x.Container.static_trace(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -1830,13 +1830,13 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(\</span>
-<span class="sd">            a = ivy.array([[7, 1, 2],\</span>
-<span class="sd">                           [1, 3, 5],\</span>
-<span class="sd">                           [0, 7, 4]]),\</span>
-<span class="sd">            b = ivy.array([[4, 3, 2],\</span>
-<span class="sd">                           [1, 9, 5],\</span>
-<span class="sd">                           [7, 0, 6]])\</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(</span>
+<span class="sd">        ...    a = ivy.array([[7, 1, 2],</span>
+<span class="sd">        ...                   [1, 3, 5],</span>
+<span class="sd">        ...                   [0, 7, 4]]),</span>
+<span class="sd">        ...    b = ivy.array([[4, 3, 2],</span>
+<span class="sd">        ...                   [1, 9, 5],</span>
+<span class="sd">        ...                   [7, 0, 6]])</span>
 <span class="sd">        )</span>
 <span class="sd">        &gt;&gt;&gt; y = x.trace()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>

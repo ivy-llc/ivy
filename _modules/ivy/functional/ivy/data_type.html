@@ -389,8 +389,8 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]),\</span>
-<span class="sd">        b=ivy.array([3.14, 2.718, 1.618]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]),</span>
+<span class="sd">    ...                   b=ivy.array([3.14, 2.718, 1.618]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x.astype(ivy.int32))</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0, 1, 1]),</span>
@@ -530,8 +530,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">        b=ivy.array([4, 5, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                   b=ivy.array([4, 5, 6]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_to(x, (3, 3))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -598,16 +598,16 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1],\</span>
-<span class="sd">                              [1, 1, 1]],\</span>
-<span class="sd">                            dtype=&#39;int16&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1],</span>
+<span class="sd">    ...                       [1, 1, 1]],</span>
+<span class="sd">    ...                       dtype=&#39;int16&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.can_cast(x, &#39;uint8&#39;))</span>
 <span class="sd">    False</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
-<span class="sd">                          b=ivy.array([3, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">    ...                   b=ivy.array([3, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.can_cast(x, &#39;int64&#39;))</span>
 <span class="sd">    {</span>
 <span class="sd">        a: false,</span>
@@ -795,16 +795,16 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \</span>
-<span class="sd">                          y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),</span>
+<span class="sd">    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(c)</span>
 <span class="sd">    {</span>
 <span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
 <span class="sd">        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16), \</span>
-<span class="sd">                          y=ivy.array([76,81,16], dtype=ivy.uint32))</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16),</span>
+<span class="sd">    ...                   y=ivy.array([76,81,16], dtype=ivy.uint32))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(c)</span>
 <span class="sd">    {</span>
 <span class="sd">        x: iinfo(min=0, max=65535, dtype=uint16),</span>
@@ -823,8 +823,8 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \</span>
-<span class="sd">                          y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),</span>
+<span class="sd">    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
 <span class="sd">    &gt;&gt;&gt; c.iinfo()</span>
 <span class="sd">    {</span>
 <span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
@@ -1485,8 +1485,8 @@
 
 <span class="sd">    With :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),\</span>
-<span class="sd">                          b=ivy.native_array([1, 0, 0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),</span>
+<span class="sd">    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.dtype(x.a)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    float32</span>

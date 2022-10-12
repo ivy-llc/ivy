@@ -282,8 +282,8 @@
 <span class="sd">            b: ivy.array(1.)</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \</span>
-<span class="sd">                              b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
 <span class="sd">        &gt;&gt;&gt; x.mean(axis=0, out=x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
@@ -291,8 +291,8 @@
 <span class="sd">            b: ivy.array([4.5, 5.5, 6.5])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \</span>
-<span class="sd">                              b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.mean(x, axis=1)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -388,8 +388,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \</span>
-<span class="sd">        b=ivy.array([3.0, 4.0, 5.0]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),</span>
+<span class="sd">        ...                   b=ivy.array([3.0, 4.0, 5.0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -397,8 +397,8 @@
 <span class="sd">            b: ivy.array(0.6666667)</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \</span>
-<span class="sd">        b=ivy.array([3.0, 4.0, 5.0]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),</span>
+<span class="sd">        ...                   b=ivy.array([3.0, 4.0, 5.0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))</span>
 <span class="sd">        &gt;&gt;&gt; x.var(out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -407,8 +407,8 @@
 <span class="sd">            b: ivy.array(0.6666667)</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \</span>
-<span class="sd">                              b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]),</span>
+<span class="sd">        ...                   b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 0., 0.]), b=ivy.array([0., 0., 0.]))</span>
 <span class="sd">        &gt;&gt;&gt; x.var(axis=0, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -484,8 +484,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \</span>
-<span class="sd">                              b=ivy.array([0.7, 0.1, 0.9]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),</span>
+<span class="sd">        ...                   b=ivy.array([0.7, 0.1, 0.9]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_var(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -671,8 +671,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \</span>
-<span class="sd">                              b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cumsum(x, axis=0)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -682,25 +682,25 @@
 <span class="sd">                          [6, 8, 7]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 5]]), \</span>
-<span class="sd">                              b=ivy.array([[3, 5, 7]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cumsum(x, axis=0,  \</span>
-<span class="sd">                              exclusive=False, reverse=True, dtype=&#39;float32&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 5]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3, 5, 7]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cumsum(x, axis=0,</span>
+<span class="sd">        ...                      exclusive=False, reverse=True, dtype=&#39;float32&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[1., 3., 5.]]),</span>
 <span class="sd">            b: ivy.array([[3., 5., 7.]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]), \</span>
-<span class="sd">                              b=ivy.array([[3, 5, 8], \</span>
-<span class="sd">                                           [5, 6, 5]]), \</span>
-<span class="sd">                              c=ivy.array([[2, 4, 1], \</span>
-<span class="sd">                                           [3, 6, 9], \</span>
-<span class="sd">                                           [0, 2, 3]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)), \</span>
-<span class="sd">                              b = ivy.zeros((2, 3)), \</span>
-<span class="sd">                              c = ivy.zeros((3,3)))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3, 5, 8],</span>
+<span class="sd">        ...                                [5, 6, 5]]),</span>
+<span class="sd">        ...                   c=ivy.array([[2, 4, 1],</span>
+<span class="sd">        ...                                [3, 6, 9],</span>
+<span class="sd">        ...                                [0, 2, 3]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)),</span>
+<span class="sd">        ...                   b = ivy.zeros((2, 3)),</span>
+<span class="sd">        ...                   c = ivy.zeros((3,3)))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.cumsum(x,axis=1,exclusive=True, reverse=False, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -712,8 +712,8 @@
 <span class="sd">                          [0, 0, 2]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \</span>
-<span class="sd">                              b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_cumsum(x, axis=1, exclusive=True, reverse=True, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -725,13 +725,13 @@
 <span class="sd">                          [11, 6, 0],</span>
 <span class="sd">                          [13, 7, 0]])</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1], \</span>
-<span class="sd">                                           [1]]), \</span>
-<span class="sd">                          b=ivy.array([[6, 8, 7], \</span>
-<span class="sd">                                       [2, 0, 1]]), \</span>
-<span class="sd">                          c=ivy.array([[1, 2], \</span>
-<span class="sd">                                       [3, 4], \</span>
-<span class="sd">                                       [6, 4]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1],</span>
+<span class="sd">        ...                                [1]]),</span>
+<span class="sd">        ...                   b=ivy.array([[6, 8, 7],</span>
+<span class="sd">        ...                                [2, 0, 1]]),</span>
+<span class="sd">        ...                   c=ivy.array([[1, 2],</span>
+<span class="sd">        ...                                [3, 4],</span>
+<span class="sd">        ...                                [6, 4]]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_cumsum(x, axis=0, out=x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
@@ -812,10 +812,10 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 2, 3], \</span>
-<span class="sd">                                          [2, 4, 5]]), \</span>
-<span class="sd">                              b=ivy.array([[4, 5, 6], \</span>
-<span class="sd">                                          [2, 3, 1 ]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 2, 3],</span>
+<span class="sd">        ...                                [2, 4, 5]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4, 5, 6],</span>
+<span class="sd">        ...                                [2, 3, 1 ]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.cumsum(axis=0, dtype=&#39;float64&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -825,12 +825,12 @@
 <span class="sd">                          [6., 8., 7.]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4], \</span>
-<span class="sd">                                           [5, 7, 8], \</span>
-<span class="sd">                                           [9, 10, 11]]), \</span>
-<span class="sd">                              b=ivy.array([[3, 4, 5], \</span>
-<span class="sd">                                           [4, 5, 6], \</span>
-<span class="sd">                                            [5, 6, 7]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4],</span>
+<span class="sd">        ...                                [5, 7, 8],</span>
+<span class="sd">        ...                                [9, 10, 11]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3, 4, 5],</span>
+<span class="sd">        ...                                [4, 5, 6],</span>
+<span class="sd">        ...                                [5, 6, 7]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))</span>
 <span class="sd">        &gt;&gt;&gt; x.cumsum(axis=1, exclusive=False, reverse=True, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -843,15 +843,15 @@
 <span class="sd">                          [18, 13, 7]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]), \</span>
-<span class="sd">                              b=ivy.array([[3, 5, 8], \</span>
-<span class="sd">                                           [5, 6, 5]]), \</span>
-<span class="sd">                              c=ivy.array([[2, 4, 1], \</span>
-<span class="sd">                                           [3, 6, 9], \</span>
-<span class="sd">                                           [0, 2, 3]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)), \</span>
-<span class="sd">                              b = ivy.zeros((2, 3)), \</span>
-<span class="sd">                              c = ivy.zeros((3,3)))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3, 5, 8],</span>
+<span class="sd">        ...                                [5, 6, 5]]),</span>
+<span class="sd">        ...                   c=ivy.array([[2, 4, 1],</span>
+<span class="sd">        ...                                [3, 6, 9],</span>
+<span class="sd">        ...                                [0, 2, 3]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)),</span>
+<span class="sd">        ...                   b = ivy.zeros((2, 3)),</span>
+<span class="sd">        ...                   c = ivy.zeros((3,3)))</span>
 <span class="sd">        &gt;&gt;&gt; x.cumsum(axis=1,exclusive=True, reverse=False, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -863,12 +863,12 @@
 <span class="sd">                          [0, 0, 2]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 3, 2], \</span>
-<span class="sd">                                           [5, 10, 2], \</span>
-<span class="sd">                                           [1, 10, 1]]), \</span>
-<span class="sd">                              b=ivy.array([[2, 4, 5], \</span>
-<span class="sd">                                           [4, 5, 5], \</span>
-<span class="sd">                                           [0, 1, 3]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 3, 2],</span>
+<span class="sd">        ...                                [5, 10, 2],</span>
+<span class="sd">        ...                                [1, 10, 1]]),</span>
+<span class="sd">        ...                   b=ivy.array([[2, 4, 5],</span>
+<span class="sd">        ...                                [4, 5, 5],</span>
+<span class="sd">        ...                                [0, 1, 3]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.cumsum(axis=1,exclusive=True, reverse=True, dtype=&#39;int64&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -880,13 +880,13 @@
 <span class="sd">                          [4, 3, 0]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0], \</span>
-<span class="sd">                                       [5]]), \</span>
-<span class="sd">                          b=ivy.array([[6, 8, 7], \</span>
-<span class="sd">                                       [4, 2, 3]]), \</span>
-<span class="sd">                          c=ivy.array([[1, 2], \</span>
-<span class="sd">                                       [3, 4], \</span>
-<span class="sd">                                       [6, 4]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0],</span>
+<span class="sd">        ...                                [5]]),</span>
+<span class="sd">        ...                   b=ivy.array([[6, 8, 7],</span>
+<span class="sd">        ...                                [4, 2, 3]]),</span>
+<span class="sd">        ...                   c=ivy.array([[1, 2],</span>
+<span class="sd">        ...                                [3, 4],</span>
+<span class="sd">        ...                                [6, 4]]))</span>
 <span class="sd">        &gt;&gt;&gt; x.cumsum(axis=0, out=x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>

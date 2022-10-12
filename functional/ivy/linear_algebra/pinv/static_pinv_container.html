@@ -200,23 +200,27 @@ must have shape <code class="docutils literal notranslate"><span class="pre">(..
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>x = ivy.Container(a= ivy.array([[1., 2.],              [3., 4.]]))
+<p>x = ivy.Container(a= ivy.array([[1., 2.],
+…                             [3., 4.]]))
 y = pinv(x, None, None)
 print(y)
 {</p>
 <blockquote>
-<div><p>a: ivy.array([[-2., 1.],           [1.5, -0.5]])</p>
+<div><p>a: ivy.array([[-2., 1.],</p>
 </div></blockquote>
-<p>}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],              [3., 4.]]))
+<p>…               [1.5, -0.5]])
+}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],
+…                            [3., 4.]]))
 out = ivy.Container(a=ivy.array())
 pinv(x, 0, out)
 print(out)
 {</p>
 <blockquote>
-<div><p>a: ivy.array([[0.0426, 0.0964],           [0.0605, 0.1368]])</p>
+<div><p>a: ivy.array([[0.0426, 0.0964],</p>
 </div></blockquote>
-<p>}</p>
+<p>…               [0.0605, 0.1368]])
+}</p>
 </dd></dl>
 
 <div class="line-block">

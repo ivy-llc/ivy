@@ -185,21 +185,21 @@
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                               &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]),</span>
+<span class="sd">        ...                    &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
 <span class="sd">        &gt;&gt;&gt; normalized_idxs = [0]</span>
 <span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, epsilon=1.25, weight=0.3)</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([-0.342, 0.0427, 0.299]),</span>
-<span class="sd">            b: ivy.array([[-0.241, -0.241, -0.241, </span>
+<span class="sd">            b: ivy.array([[-0.241, -0.241, -0.241,</span>
 <span class="sd">                          [0.241, 0.241, 0.241]])</span>
 <span class="sd">        }</span>
 
 <span class="sd">        With multiple :class:`ivy.Container` inputs:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                               &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]),</span>
+<span class="sd">        ...                    &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
 <span class="sd">        &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">        &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">        &gt;&gt;&gt; bias = ivy.Container({&#39;a&#39;: [0.2, 0.5, 0.7], &#39;b&#39;: 0.3})</span>
@@ -207,7 +207,7 @@
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([-1.62, 0.203, 1.42]),</span>
-<span class="sd">            b: ivy.array([[-1.84, 0., 1.84], </span>
+<span class="sd">            b: ivy.array([[-1.84, 0., 1.84],</span>
 <span class="sd">                          [-1.84, 0., 1.84]])</span>
 <span class="sd">        }</span>
 

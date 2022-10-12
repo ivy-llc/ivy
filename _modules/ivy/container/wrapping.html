@@ -231,8 +231,8 @@
 <span class="sd">    from the statistical module as instance methods to our toy `ContainerExample` class:</span>
 
 <span class="sd">    &gt;&gt;&gt; from ivy.functional.ivy import statistical</span>
-<span class="sd">    &gt;&gt;&gt; class ContainerExample: \</span>
-<span class="sd">            pass</span>
+<span class="sd">    &gt;&gt;&gt; class ContainerExample:</span>
+<span class="sd">    ...     pass</span>
 <span class="sd">    &gt;&gt;&gt; ivy.add_ivy_container_instance_methods(ContainerExample, [statistical])</span>
 <span class="sd">    &gt;&gt;&gt; print(hasattr(ContainerExample, &quot;mean&quot;), hasattr(ContainerExample, &quot;var&quot;))</span>
 <span class="sd">    True True</span>

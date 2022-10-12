@@ -609,8 +609,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \</span>
-<span class="sd">                          b=ivy.array([0.3, 0.4, 0.5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),</span>
+<span class="sd">    ...                   b=ivy.array([0.3, 0.4, 0.5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.asin(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}</span>
@@ -720,8 +720,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1, 2]),\</span>
-<span class="sd">                            b=ivy.array([4.2, -5.3, -0, -2.3]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1, 2]),</span>
+<span class="sd">    ...                   b=ivy.array([4.2, -5.3, -0, -2.3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.asinh(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -978,8 +978,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
-<span class="sd">                          b=ivy.array([4.5, -5.3, -0]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),</span>
+<span class="sd">    ...                   b=ivy.array([4.5, -5.3, -0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([3.0, 2.0, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; x.atan2(y)</span>
 <span class="sd">    {</span>
@@ -987,10 +987,10 @@
 <span class="sd">        b: ivy.array([0.983, -1.21, 0.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
-<span class="sd">                          b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\</span>
-<span class="sd">                          b=ivy.array([2.45, 6.35, 0, 1.5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),</span>
+<span class="sd">    ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),</span>
+<span class="sd">    ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))</span>
 <span class="sd">    &gt;&gt;&gt; z = x.atan2(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -1468,8 +1468,8 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; a = ivy.native_array([[32, 40, 55], \</span>
-<span class="sd">                              [16, 33, 170]])</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.native_array([[32, 40, 55],</span>
+<span class="sd">    ...                       [16, 33, 170]])</span>
 <span class="sd">    &gt;&gt;&gt; b = ivy.native_array([5, 2, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1486,8 +1486,8 @@
 
 <span class="sd">    With one :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([100, 200]), \</span>
-<span class="sd">                          b = ivy.array([125, 243]))</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([100, 200]),</span>
+<span class="sd">    ...                   b = ivy.array([125, 243]))</span>
 <span class="sd">    &gt;&gt;&gt; b = ivy.array([3, 6])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1498,12 +1498,12 @@
 
 <span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([10, 25, 42]), \</span>
-<span class="sd">                          b = ivy.array([64, 65]), \</span>
-<span class="sd">                          c = ivy.array([200, 225, 255]))</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]), \</span>
-<span class="sd">                          b = ivy.array([6]), \</span>
-<span class="sd">                          c = ivy.array([4, 5, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([10, 25, 42]),</span>
+<span class="sd">    ...                   b = ivy.array([64, 65]),</span>
+<span class="sd">    ...                   c = ivy.array([200, 225, 255]))</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]),</span>
+<span class="sd">    ...                   b = ivy.array([6]),</span>
+<span class="sd">    ...                   c = ivy.array([4, 5, 6]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1758,8 +1758,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\</span>
-<span class="sd">                          b=ivy.array([5.4, -3.2, -0, 5.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),</span>
+<span class="sd">    ...                   b=ivy.array([5.4, -3.2, -0, 5.2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ceil(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1921,8 +1921,8 @@
 <span class="sd">    &gt;&gt;&gt; ivy.cosh(x, out=y)</span>
 <span class="sd">    ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3, 3.2], \</span>
-<span class="sd">                       [-4.4, -5.5, -6.6, -7.2]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3, 3.2],</span>
+<span class="sd">    ...                [-4.4, -5.5, -6.6, -7.2]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.cosh(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])</span>
@@ -2274,8 +2274,8 @@
 
 <span class="sd">    With :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0,]), \</span>
-<span class="sd">                        b=ivy.array([10, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0,]),</span>
+<span class="sd">    ...                   b=ivy.array([10, 1]))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.expm1(x)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([-0.632, 0.]),</span>
@@ -2384,8 +2384,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\</span>
-<span class="sd">                          b=ivy.array([3.4, -4.2, -0, -1.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),</span>
+<span class="sd">    ...                   b=ivy.array([3.4, -4.2, -0, -1.2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.floor(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -2565,8 +2565,8 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.greater(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -2580,10 +2580,10 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                          b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                          b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),</span>
+<span class="sd">    ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                   b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.greater(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -2711,10 +2711,10 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                  b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                      b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),</span>
+<span class="sd">    ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                   b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = x.greater_equal(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}</span>
@@ -2985,8 +2985,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 999999999999]),\</span>
-<span class="sd">                          b=ivy.array([float(&#39;-0&#39;), ivy.nan]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 999999999999]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;-0&#39;), ivy.nan]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.isfinite(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -3004,8 +3004,8 @@
 
 <span class="sd">    With :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 999999999999]),\</span>
-<span class="sd">                          b=ivy.array([float(&#39;-0&#39;), ivy.nan]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 999999999999]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;-0&#39;), ivy.nan]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.isfinite()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -3090,8 +3090,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]), \</span>
-<span class="sd">                          b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isinf(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3129,8 +3129,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]), \</span>
-<span class="sd">        b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; x.isinf()</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, True, False]),</span>
@@ -3142,8 +3142,8 @@
 <span class="sd">    ------------------------</span>
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]), \</span>
-<span class="sd">                          b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_isinf(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3236,8 +3236,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]), \</span>
-<span class="sd">                          b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isnan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3281,8 +3281,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]), \</span>
-<span class="sd">        b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; x.isnan()</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, True, False]),</span>
@@ -3293,8 +3293,8 @@
 <span class="sd">    ------------------------</span>
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]), \</span>
-<span class="sd">                          b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_isnan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3371,8 +3371,8 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.less(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3448,8 +3448,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1.39, 0., -inf, nan])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],\</span>
-<span class="sd">                       [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],</span>
+<span class="sd">    ...                [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[nan, 0., 1.61, inf],</span>
@@ -3464,9 +3464,9 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]),\</span>
-<span class="sd">                          b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]),\</span>
-<span class="sd">                          c=ivy.array([7.9, 1.1, 1.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]),</span>
+<span class="sd">    ...                   b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]),</span>
+<span class="sd">    ...                   c=ivy.array([7.9, 1.1, 1.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -3537,8 +3537,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.602, 0., -inf, nan])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],\</span>
-<span class="sd">                       [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],</span>
+<span class="sd">    ...                [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log10(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[nan, 0., 0.699, inf],</span>
@@ -3553,9 +3553,9 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]),\</span>
-<span class="sd">                          b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]),\</span>
-<span class="sd">                          c=ivy.array([7.9, 1.1, 1.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]),</span>
+<span class="sd">    ...                   b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]),</span>
+<span class="sd">    ...                   c=ivy.array([7.9, 1.1, 1.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log10(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -3795,8 +3795,8 @@
 <span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.logaddexp(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3882,10 +3882,10 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]), \</span>
-<span class="sd">        b=ivy.array([False, False, True]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]),</span>
+<span class="sd">    ...                   b=ivy.array([True, False, False]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]),</span>
+<span class="sd">    ...                   b=ivy.array([False, False, True]))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(y, x))</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, True, False]),</span>
@@ -3907,8 +3907,8 @@
 <span class="sd">    ivy.array([True,False,False])</span>
 
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]),</span>
+<span class="sd">    ...                   b=ivy.array([True, False, False]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(y, x))</span>
 <span class="sd">    {</span>
@@ -3916,8 +3916,8 @@
 <span class="sd">        b: ivy.array([True, False, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]),</span>
+<span class="sd">    ...                   b=ivy.array([True, False, False]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -4140,10 +4140,10 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]), \</span>
-<span class="sd">                            b=ivy.array([True, False, True]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]), \</span>
-<span class="sd">                            b=ivy.array([True, True, False]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]),</span>
+<span class="sd">    ...                   b=ivy.array([True, False, True]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]),</span>
+<span class="sd">    ...                   b=ivy.array([True, True, False]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.logical_or(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -4172,10 +4172,10 @@
 
 <span class="sd">    With :class:`ivy.Container` static method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]), \</span>
-<span class="sd">                        b=ivy.array([True, False, True]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]), \</span>
-<span class="sd">                            b=ivy.array([True, True, False]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]),</span>
+<span class="sd">    ...                   b=ivy.array([True, False, True]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]),</span>
+<span class="sd">    ...                   b=ivy.array([True, True, False]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_logical_or(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -4333,8 +4333,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-0.,1.,0.5,-2.,-3.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1,2.2,3.3], \</span>
-<span class="sd">                       [-4.4,-5.5,-6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1,2.2,3.3],</span>
+<span class="sd">    ...                [-4.4,-5.5,-6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.negative(x,out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[-1.1,-2.2,-3.3],[4.4,5.5,6.6]])</span>
@@ -4348,8 +4348,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.,1.,2.]),\</span>
-<span class="sd">                         b=ivy.array([3.,4.,-5.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.,1.,2.]),</span>
+<span class="sd">    ...                   b=ivy.array([3.,4.,-5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.negative(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {a:ivy.array([-0.,-1.,-2.]),b:ivy.array([-3.,-4.,5.])}</span>
@@ -4366,8 +4366,8 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2,3]),\</span>
-<span class="sd">                         b=ivy.array([-4.4,5,-6.6]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2,3]),</span>
+<span class="sd">    ...                   b=ivy.array([-4.4,5,-6.6]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.negative()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}</span>
@@ -4384,8 +4384,8 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2,3]),\</span>
-<span class="sd">                         b=ivy.array([-4.4,5,-6.6]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2,3]),</span>
+<span class="sd">    ...                   b=ivy.array([-4.4,5,-6.6]))</span>
 <span class="sd">    &gt;&gt;&gt; y = -x</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}</span>
@@ -4495,12 +4495,12 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 0, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           c=ivy.native_array([1, 2, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           c=ivy.native_array([1, 2, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 0, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    c=ivy.native_array([1, 2, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    c=ivy.native_array([1, 2, 4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.not_equal(x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4509,12 +4509,12 @@
 <span class="sd">        c: ivy.array([False, False, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.native_array([0, 1, 0]), \</span>
-<span class="sd">                           b=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           c=ivy.native_array([1.0, 2.0, 4.0]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.native_array([1.1, 2.1, 3.1]), \</span>
-<span class="sd">                           c=ivy.native_array([1, 2, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.native_array([0, 1, 0]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    c=ivy.native_array([1.0, 2.0, 4.0]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.native_array([1.1, 2.1, 3.1]),</span>
+<span class="sd">    ...                    c=ivy.native_array([1, 2, 4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.not_equal(x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4525,10 +4525,10 @@
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.not_equal(x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4536,10 +4536,10 @@
 <span class="sd">        b: ivy.array([False, True, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.not_equal(x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4566,10 +4566,10 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4577,10 +4577,10 @@
 <span class="sd">        b: ivy.array([False, True, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4607,10 +4607,10 @@
 
 <span class="sd">    With :class:`ivy.Container` instances:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4618,10 +4618,10 @@
 <span class="sd">        b: ivy.array([False, True, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4631,10 +4631,10 @@
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4642,10 +4642,10 @@
 <span class="sd">        b: ivy.array([False, True, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \</span>
-<span class="sd">                           b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),</span>
+<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -4708,8 +4708,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0., -1., -0.5,  2.,  3.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], \</span>
-<span class="sd">                       [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
+<span class="sd">    ...                [-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.positive(x,out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 1.1,  2.2,  3.3],</span>
@@ -4724,8 +4724,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
-<span class="sd">                         b=ivy.array([3., 4., -5.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">    ...                   b=ivy.array([3., 4., -5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.positive(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -5049,8 +5049,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2.,2.,15.,-5.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 5.433, -343.3, 1.5], \</span>
-<span class="sd">                      [-5.5, 44.2, 11.5, 12.01]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 5.433, -343.3, 1.5],</span>
+<span class="sd">    ...                [-5.5, 44.2, 11.5, 12.01]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.round(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])</span>
@@ -5064,8 +5064,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\</span>
-<span class="sd">                  b=ivy.array([-300.9, -527.3, 4.5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),</span>
+<span class="sd">    ...                   b=ivy.array([-300.9, -527.3, 4.5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.round(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -5128,8 +5128,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1., 0., 1., 1.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.78, -4., -6.9, 0],\</span>
-<span class="sd">                       [-.4, 0.5, 8, -0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.78, -4., -6.9, 0],</span>
+<span class="sd">    ...                [-.4, 0.5, 8, -0.01]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 1., -1., -1.,  0.],</span>
@@ -5144,9 +5144,9 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -0.]),\</span>
-<span class="sd">                          b=ivy.array([1.46, 5.9, -0.0]),\</span>
-<span class="sd">                          c=ivy.array([-8.23, -4.9, -2.6, 7.4]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -0.]),</span>
+<span class="sd">    ...                   b=ivy.array([1.46, 5.9, -0.0]),</span>
+<span class="sd">    ...                   c=ivy.array([-8.23, -4.9, -2.6, 7.4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -5237,8 +5237,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\</span>
-<span class="sd">                          b=ivy.array([-4., -5., -6., -7.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),</span>
+<span class="sd">    ...                   b=ivy.array([-4., -5., -6., -7.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sin(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -5680,8 +5680,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.546, -0.842, -0.916])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],\</span>
-<span class="sd">                        [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
+<span class="sd">    ...                [-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.tan(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[1.96, -1.37, 0.16],</span>
@@ -5765,8 +5765,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.462, -0.604, 0.984])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],\</span>
-<span class="sd">                      [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
+<span class="sd">    ...                [-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.tanh(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.8, 0.976, 0.997],</span>
@@ -5781,8 +5781,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
-<span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">    ...                   b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tanh(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -5939,8 +5939,8 @@
 <span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 3], [2, 4], [3, 7]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]), \</span>
-<span class="sd">                          b=ivy.array([-5, 9]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]),</span>
+<span class="sd">    ...                   b=ivy.array([-5, 9]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.maximum(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -6041,10 +6041,10 @@
 
 <span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 3, 1]),\</span>
-<span class="sd">                        b=ivy.array([2, 8, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 5, 6]),\</span>
-<span class="sd">                        b=ivy.array([5, 9, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 3, 1]),</span>
+<span class="sd">    ...                   b=ivy.array([2, 8, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 5, 6]),</span>
+<span class="sd">    ...                   b=ivy.array([5, 9, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -6144,7 +6144,7 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\</span>
+<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),</span>
 <span class="sd">                        b=ivy.array([0,90,180,270,360]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.deg2rad(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -6152,9 +6152,9 @@
 <span class="sd">        a: ivy.array([0., 0.351, -0.881, nan]),</span>
 <span class="sd">        b: ivy.array([0., 1.57, 3.14, 4.71, 6.28])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([0,90,180,270,360]),\</span>
-<span class="sd">         b=ivy.native_array([0,-1.5,-50,ivy.nan]))</span>
+
+<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([0,90,180,270,360]),</span>
+<span class="sd">    ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.deg2rad(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -6188,7 +6188,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array with each element in ``x`` converted from radians to degrees. </span>
+<span class="sd">        an array with each element in ``x`` converted from radians to degrees.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -6225,9 +6225,9 @@
 <span class="sd">    ivy.array([   0., 1150.,   nan])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\</span>
-<span class="sd">                        b=ivy.array([0,1,2,3,4]))</span>
+
+<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),</span>
+<span class="sd">    ...                 b=ivy.array([0,1,2,3,4]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.rad2deg(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -6235,8 +6235,8 @@
 <span class="sd">        b: ivy.array([0., 57.3, 115., 172., 229.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([0,10,180,8.5,6]),\</span>
-<span class="sd">         b=ivy.native_array([0,-1.5,0.5,ivy.nan]))</span>
+<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([0,10,180,8.5,6]),</span>
+<span class="sd">    ...                 b=ivy.native_array([0,-1.5,0.5,ivy.nan]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.rad2deg(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -6336,9 +6336,9 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([True, True, True])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.1,2.3,-3.6]) </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.1,2.3,-3.6])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isreal(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)               </span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([True, True, True])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [float(&#39;inf&#39;)], [-6.3]]])</span>
@@ -6348,12 +6348,12 @@
 <span class="sd">                [True],</span>
 <span class="sd">                [True]]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1-0j,3j,7+5j])    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1-0j,3j,7+5j])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isreal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([ True, False, False])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [1.15 + 6.78j], [-6.3j]]]) </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [1.15 + 6.78j], [-6.3j]]])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isreal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([[[ True],</span>
@@ -6378,8 +6378,8 @@
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]), \</span>
-<span class="sd">                          b=ivy.array([5j, 5-6j, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),</span>
+<span class="sd">    ...                   b=ivy.array([5j, 5-6j, 3]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isreal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -6409,8 +6409,8 @@
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]), \</span>
-<span class="sd">        b=ivy.array([0.0, 3.3j, 1+0j]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),</span>
+<span class="sd">    ...                   b=ivy.array([0.0, 3.3j, 1+0j]))</span>
 <span class="sd">    &gt;&gt;&gt; x.isreal()</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, True, False]),</span>
@@ -6420,8 +6420,8 @@
 <span class="sd">    Container Static Method Examples</span>
 <span class="sd">    ------------------------</span>
 <span class="sd">    With :code:`ivy.Container` input:</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]), \</span>
-<span class="sd">                          b=ivy.array([7.9, 3.3j, -4.2-5.9j]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),</span>
+<span class="sd">    ...                   b=ivy.array([7.9, 3.3j, -4.2-5.9j]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_isreal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>

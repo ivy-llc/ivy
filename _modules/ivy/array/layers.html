@@ -267,10 +267,10 @@
 <span class="sd">        &gt;&gt;&gt; filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)</span>
 <span class="sd">        &gt;&gt;&gt; result = x.conv1d(filters, (1,), &#39;VALID&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
-<span class="sd">        ivy.array([[[ 2.,  3.], \</span>
-<span class="sd">                    [ 4.,  7.], \</span>
-<span class="sd">                    [ 7., 13.], \</span>
-<span class="sd">                    [11., 20.]]])</span>
+<span class="sd">        ivy.array([[[ 2.,  3.],</span>
+<span class="sd">        ...         [ 4.,  7.],</span>
+<span class="sd">        ...         [ 7., 13.],</span>
+<span class="sd">        ...         [11., 20.]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conv1d</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
@@ -405,14 +405,14 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[[1.], [2.0],[3.]], \</span>
-<span class="sd">                            [[1.], [2.0],[3.]], \</span>
-<span class="sd">                            [[1.], [2.0],[3.]]]]) #NHWC</span>
-<span class="sd">        &gt;&gt;&gt; filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \</span>
-<span class="sd">                                [[[0.]],[[1.]], [[0.]]], \</span>
-<span class="sd">                                [[[0.]],[[1.]], [[0.]]]]) #HWIO</span>
-<span class="sd">        &gt;&gt;&gt; result = x.conv2d(filters, 1, &#39;SAME&#39;, data_format=&#39;NHWC&#39;,\</span>
-<span class="sd">            dilations= 1)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[[1.], [2.0],[3.]],</span>
+<span class="sd">        ...                 [[1.], [2.0],[3.]],</span>
+<span class="sd">        ...                 [[1.], [2.0],[3.]]]]) #NHWC</span>
+<span class="sd">        &gt;&gt;&gt; filters = ivy.array([[[[0.]], [[1.]], [[0.]]],</span>
+<span class="sd">        ...                      [[[0.]], [[1.]], [[0.]]],</span>
+<span class="sd">        ...                      [[[0.]], [[1.]], [[0.]]]]) #HWIO</span>
+<span class="sd">        &gt;&gt;&gt; result = x.conv2d(filters, 1, &#39;SAME&#39;, data_format=&#39;NHWC&#39;,</span>
+<span class="sd">        ...    dilations= 1)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        ivy.array([[</span>
 <span class="sd">                  [[2.],[4.],[6.]],</span>

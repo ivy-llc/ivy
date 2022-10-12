@@ -152,11 +152,11 @@
         <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of </span>
+        <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of</span>
 <span class="sd">        :ref:`type-promotion` rules.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">        Casting floating-point ``NaN`` and ``infinity`` values to integral data types </span>
+<span class="sd">        Casting floating-point ``NaN`` and ``infinity`` values to integral data types</span>
 <span class="sd">        is not specified and is implementation-dependent.</span>
 
 <span class="sd">        .. note::</span>
@@ -174,25 +174,25 @@
 <span class="sd">        dtype</span>
 <span class="sd">            desired data type.</span>
 <span class="sd">        copy</span>
-<span class="sd">            specifies whether to copy an array when the specified ``dtype`` matches </span>
-<span class="sd">            the data type of the input array ``x``. If ``True``, a newly allocated </span>
+<span class="sd">            specifies whether to copy an array when the specified ``dtype`` matches</span>
+<span class="sd">            the data type of the input array ``x``. If ``True``, a newly allocated</span>
 <span class="sd">            array must always be returned. If ``False`` and the specified ``dtype``</span>
 <span class="sd">            matches the data type of the input array, the input array must be returned;</span>
 <span class="sd">            otherwise, a newly allocated must be returned. Default: ``True``.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape </span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array having the specified data type. The returned array must have </span>
+<span class="sd">            an array having the specified data type. The returned array must have</span>
 <span class="sd">            the same shape as ``x``.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; c = ivy.Container(a=ivy.array([False,True,True]), \</span>
-<span class="sd">                                 b=ivy.array([3.14, 2.718, 1.618]))</span>
+<span class="sd">        &gt;&gt;&gt; c = ivy.Container(a=ivy.array([False,True,True]),</span>
+<span class="sd">        ...                   b=ivy.array([3.14, 2.718, 1.618]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_astype(c, ivy.int32)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0, 1, 1]),</span>
@@ -222,7 +222,7 @@
         <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of </span>
+        <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of</span>
 <span class="sd">        :ref:`type-promotion` rules.</span>
 
 <span class="sd">        .. note::</span>
@@ -244,8 +244,8 @@
 <span class="sd">        dtype</span>
 <span class="sd">            desired data type.</span>
 <span class="sd">        copy</span>
-<span class="sd">            specifies whether to copy an array when the specified ``dtype`` matches </span>
-<span class="sd">            the data type of the input array ``x``. If ``True``, a newly allocated </span>
+<span class="sd">            specifies whether to copy an array when the specified ``dtype`` matches</span>
+<span class="sd">            the data type of the input array ``x``. If ``True``, a newly allocated</span>
 <span class="sd">            array must always be returned. If ``False`` and the specified ``dtype``</span>
 <span class="sd">            matches the data type of the input array, the input array must be returned;</span>
 <span class="sd">            otherwise, a newly allocated must be returned. Default: ``True``.</span>
@@ -256,15 +256,15 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array having the specified data type. The returned array must have </span>
+<span class="sd">            an array having the specified data type. The returned array must have</span>
 <span class="sd">            the same shape as ``x``.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        Using :class:`ivy.Container` instance method:</span>
-<span class="sd">        </span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]), \</span>
-<span class="sd">                                b=ivy.array([3.14, 2.718, 1.618]))</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]),</span>
+<span class="sd">        ...                   b=ivy.array([3.14, 2.718, 1.618]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.astype(ivy.int32))</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0, 1, 1]),</span>
@@ -468,8 +468,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` static method:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]),\</span>
-<span class="sd">            b=ivy.array([2]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]),</span>
+<span class="sd">        ...                   b=ivy.array([2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_broadcast_to(x,(3, 1))</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -525,9 +525,9 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` instance method:</span>
-<span class="sd">        </span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0.5]),\</span>
-<span class="sd">            b=ivy.array([4, 5]))</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0.5]),</span>
+<span class="sd">        ...                   b=ivy.array([4, 5]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.broadcast_to((3,2))</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -589,8 +589,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
-<span class="sd">            b=ivy.array([3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">        ...                   b=ivy.array([3, 4, 5]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
 <span class="sd">        float32 int32</span>
 
@@ -648,8 +648,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
-<span class="sd">            b=ivy.array([3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">        ...                   b=ivy.array([3, 4, 5]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
 <span class="sd">        float32 int32</span>
 
@@ -1108,8 +1108,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([0, 1, 2]), \</span>
-<span class="sd">                              b = ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([0, 1, 2]),</span>
+<span class="sd">        ...                   b = ivy.array([3., 4., 5.]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
 <span class="sd">        int32 float32</span>
 

@@ -275,9 +275,10 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],\</span>
-<span class="sd">    [-1.2119, -0.3519, -0.6252,  0.4033],[ 0.7443,  0.2577, -0.3707, -0.0545],\</span>
-<span class="sd">    [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
+<span class="sd">    ...                       [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="sd">    ...                       [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="sd">    ...                       [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
 <span class="sd">               [-1.2119, -0.3519, -0.6252,  0.4033],</span>
@@ -313,10 +314,10 @@
 
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],\</span>
-<span class="sd">    [-1.2119, -0.3519, -0.6252,  0.4033],\</span>
-<span class="sd">    [ 0.7443,  0.2577, -0.3707, -0.0545],\</span>
-<span class="sd">    [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
+<span class="sd">    ...                [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="sd">    ...                [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="sd">    ...                [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
 <span class="sd">               [-1.2119, -0.3519, -0.6252,  0.4033],</span>
@@ -349,9 +350,10 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],\</span>
-<span class="sd">    [-0.071,  1.262, -0.456, -2.114],[-0.349,  0.615, -0.594, -1.335],\</span>
-<span class="sd">    [ 0.212,  0.457, -0.827,  0.209]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],</span>
+<span class="sd">    ...                       [-0.071,  1.262, -0.456, -2.114],</span>
+<span class="sd">    ...                       [-0.349,  0.615, -0.594, -1.335],</span>
+<span class="sd">    ...                       [ 0.212,  0.457, -0.827,  0.209]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[-2.176,  0.889,  1.175, -0.763],</span>
 <span class="sd">               [-0.071,  1.262, -0.456, -2.114],</span>
@@ -476,8 +478,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]), \</span>
-<span class="sd">                          b=ivy.array([3,2,6,3,7,4,9]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]),</span>
+<span class="sd">    ...                   b=ivy.array([3, 2, 6, 3, 7, 4, 9]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ivy.unique_inverse(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -644,8 +646,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \</span>
-<span class="sd">                          b=ivy.array([1,2,1,3,4,1,3]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),</span>
+<span class="sd">    ...                   b=ivy.array([1, 2, 1, 3, 4, 1, 3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.unique_counts(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>

@@ -256,8 +256,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.var. This method simply </span>
-<span class="sd">        wraps the function, and so the docstring for ivy.var also applies </span>
+<span class="sd">        ivy.Array instance method variant of ivy.var. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.var also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
 
 <span class="sd">        **Special Cases**</span>
@@ -277,14 +277,14 @@
 <span class="sd">            variance must be computed over the entire array. If a tuple of integers,</span>
 <span class="sd">            variances must be computed over multiple axes. Default: None.</span>
 <span class="sd">        correction</span>
-<span class="sd">            degrees of freedom adjustment. Setting this parameter to a value other </span>
+<span class="sd">            degrees of freedom adjustment. Setting this parameter to a value other</span>
 <span class="sd">            than 0 has the effect of adjusting the divisor during the calculation</span>
-<span class="sd">            of the variance according to N-c where N corresponds to the total </span>
+<span class="sd">            of the variance according to N-c where N corresponds to the total</span>
 <span class="sd">            number of elements over which the variance is computed and c corresponds</span>
 <span class="sd">            to the provided degrees of freedom adjustment. When computing the variance</span>
 <span class="sd">            of a population, setting this parameter to 0 is the standard choice</span>
 <span class="sd">            (i.e., the provided array contains data constituting an entire population).</span>
-<span class="sd">            When computing the unbiased sample variance, setting this parameter to 1 </span>
+<span class="sd">            When computing the unbiased sample variance, setting this parameter to 1</span>
 <span class="sd">            is the standard choice (i.e., the provided array contains data sampled</span>
 <span class="sd">            from a larger population; this is commonly referred to as Bessel&#39;s</span>
 <span class="sd">            correction). Default: 0.</span>
@@ -306,23 +306,23 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, 8.0]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0],</span>
+<span class="sd">        ...                [3.0, 4.0, 5.0],</span>
+<span class="sd">        ...                [6.0, 7.0, 8.0]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array(6.6666665)</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, .08]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0],</span>
+<span class="sd">        ...                [3.0, 4.0, 5.0],</span>
+<span class="sd">        ...                [6.0, 7.0, .08]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var(axis=0)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([6., 6., 4.1])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, .08]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0],</span>
+<span class="sd">        ...                [3.0, 4.0, 5.0],</span>
+<span class="sd">        ...                [6.0, 7.0, .08]])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([0., 0., 0.])</span>
 <span class="sd">        &gt;&gt;&gt; x.var(axis=1, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -425,9 +425,9 @@
 <span class="sd">                   [0, 4],</span>
 <span class="sd">                   [0, 8]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 5, 2], \</span>
-<span class="sd">                           [4, 3, 0], \</span>
-<span class="sd">                           [4, 8, 2]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 5, 2],</span>
+<span class="sd">        ...                [4, 3, 0],</span>
+<span class="sd">        ...                [4, 8, 2]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.cumsum(axis=1, exclusive=True, reverse=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([[ 7,  2,  0],</span>

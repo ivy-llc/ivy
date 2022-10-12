@@ -263,7 +263,8 @@ by default.</p></li>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">40.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">],</span>
+<span class="gp">... </span>                 <span class="p">[</span><span class="mf">40.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">10.</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([[1., 2., 3.],</span>

@@ -199,12 +199,12 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` inputs:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \</span>
-<span class="sd">                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \</span>
-<span class="sd">                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_random_uniform(low=x, high=y, device=&#39;cpu&#39;, \</span>
-<span class="sd">                                                dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_random_uniform(low=x, high=y, device=&#39;cpu&#39;,</span>
+<span class="sd">        ...                                     dtype=&#39;float64&#39;)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[10.8, 23.7],</span>
 <span class="sd">                          [17., 16.6]]),</span>
@@ -359,10 +359,10 @@
 <span class="sd">            b: ivy.array([9.29, 11.2, 9.84])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \</span>
-<span class="sd">                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \</span>
-<span class="sd">                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
 <span class="sd">        &gt;&gt;&gt; x.random_uniform(high=y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[10.4, 17.],</span>
@@ -479,12 +479,12 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` inputs:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \</span>
-<span class="sd">                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \</span>
-<span class="sd">                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_random_normal(mean=x, std=y, device=&#39;cpu&#39;, \</span>
-<span class="sd">                                               dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_random_normal(mean=x, std=y, device=&#39;cpu&#39;,</span>
+<span class="sd">        ...                                       dtype=&#39;float64&#39;)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[-4.11, 0.651],</span>
 <span class="sd">                          [19.3, -30.4]]),</span>
@@ -575,8 +575,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), \</span>
-<span class="sd">                              b=ivy.array([8.7,9.8,4.5]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7.5,6.7,0.9]),</span>
+<span class="sd">        ...                   b=ivy.array([8.7,9.8,4.5]))</span>
 <span class="sd">        &gt;&gt;&gt; x.random_normal(std=17.4)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([11.9, -22.9, -24.8]),</span>
@@ -640,10 +640,10 @@
 <span class="sd">            b: ivy.array([22.9, -5.97, -1.28])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \</span>
-<span class="sd">                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \</span>
-<span class="sd">                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),</span>
+<span class="sd">        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))</span>
 <span class="sd">        &gt;&gt;&gt; x.random_normal(std=y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[10.6, 7.89],</span>
@@ -908,10 +908,10 @@
 <span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` inputs:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \</span>
-<span class="sd">                              b=ivy.array([[0,2],[10,6]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \</span>
-<span class="sd">                              b=ivy.array([[44,5],[23,54]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9,7],[6,2]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0,2],[10,6]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10,32],[18,19]]),</span>
+<span class="sd">        ...                   b=ivy.array([[44,5],[23,54]]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_randint(x, y, device=&#39;cpu&#39;, dtype=&#39;int32&#39;)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[9, 27],</span>
@@ -1005,8 +1005,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7,6,0]), \</span>
-<span class="sd">                              b=ivy.array([8,9,4]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7,6,0]),</span>
+<span class="sd">        ...                   b=ivy.array([8,9,4]))</span>
 <span class="sd">        &gt;&gt;&gt; x.randint(30)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([23, 15, 20]),</span>
@@ -1070,10 +1070,10 @@
 <span class="sd">            b: ivy.array([8, 9, 4])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \</span>
-<span class="sd">                              b=ivy.array([[0,2],[10,6]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \</span>
-<span class="sd">                              b=ivy.array([[44,5],[23,54]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[9,7],[6,2]]),</span>
+<span class="sd">        ...                   b=ivy.array([[0,2],[10,6]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[10,32],[18,19]]),</span>
+<span class="sd">        ...                   b=ivy.array([[44,5],[23,54]]))</span>
 <span class="sd">        &gt;&gt;&gt; x.randint(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[9, 7],</span>
