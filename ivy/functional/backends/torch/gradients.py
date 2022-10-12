@@ -12,6 +12,7 @@ from ivy.functional.ivy.gradients import (
     _get_native_arrays_and_indices,
     _forward_fn,
     _zero_gradients_to_none_and_to_ivy,
+    _stop_grad_and_index,
 )
 
 
@@ -21,7 +22,7 @@ def variable(x):
     return x.clone().requires_grad_()
 
 
-def is_variable(x, exclusive: bool = False):
+def is_variable(x, /, *, exclusive: bool = False):
     return isinstance(x, torch.Tensor) and x.requires_grad
 
 
@@ -30,7 +31,7 @@ def variable_data(x):
 
 
 # noinspection PyShadowingNames
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     func_ret = func(xs)
     xs = ivy.to_native(xs)
     arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
@@ -73,11 +74,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
             grads[arr_idxs[i]] = grad
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    y = ivy.to_ivy(y, nested=True, include_derived=True)
-    if not retain_grads:
-        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
-    if not isinstance(grads, ivy.Array):
-        grads = ivy.Container(grads)
+    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 
@@ -114,7 +111,7 @@ def stop_gradient(
     x: Optional[torch.Tensor],
     preserve_type: bool = True,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     if is_variable(x) and preserve_type:
         with warnings.catch_warnings():

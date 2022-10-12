@@ -53,6 +53,19 @@ def _forward_fn(xs, func):
     return array_values
 
 
+def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+    if not retain_grads:
+        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+    if grad_idxs is not None:
+        for i in range(len(grad_idxs)):
+            grad_idxs[i] = [str(x) for x in grad_idxs[i]]
+            grad_idxs[i] = "_".join(grad_idxs[i])
+        grads = {idx: grads[idx] for idx in grad_idxs}
+    if not isinstance(grads, ivy.Array):
+        grads = ivy.Container(grads)
+    return grads
+
+
 # Extra #
 # ------#
 
@@ -425,7 +438,7 @@ def stop_gradient(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-def execute_with_gradients(func, xs, /, *, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
     y value.
@@ -439,6 +452,9 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False):
         Variables for which to compute the function gradients with respective to.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
+    grad_idxs
+        Indices of the returned arrays for which to return computed gradients If None,
+        all gradients are returned. (Default value = None)
 
     Returns
     -------
@@ -447,7 +463,9 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False):
         extra function outputs.
 
     """
-    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(None).execute_with_gradients(
+        func, xs, retain_grads=retain_grads, grad_idxs=grad_idxs
+    )
 
 
 execute_with_gradients.computes_gradients = True

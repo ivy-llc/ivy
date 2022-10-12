@@ -11,6 +11,7 @@ import ivy
 from ivy.functional.ivy.gradients import (
     _get_native_arrays_and_indices,
     _zero_gradients_to_none_and_to_ivy,
+    _stop_grad_and_index,
 )
 
 
@@ -27,7 +28,7 @@ def variable_data(x):
     return x.value()
 
 
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         xs = ivy.to_native(xs)
         tape.watch(xs)
@@ -51,10 +52,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
             grads[arr_idxs[i]] = grad
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    if not retain_grads:
-        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
-    if not isinstance(grads, ivy.Array):
-        grads = ivy.Container(grads)
+    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 
@@ -90,7 +88,7 @@ def stop_gradient(
     x: Union[tf.Tensor, tf.Variable],
     preserve_type: bool = True,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
     x = tf.stop_gradient(x)
