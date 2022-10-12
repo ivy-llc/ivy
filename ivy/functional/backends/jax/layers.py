@@ -8,11 +8,11 @@ import jax.numpy as jnp
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
+from ivy.functional.backends.jax.random import RNG
 
 # Extra #
 # ------#
 
-RNG = jax.random.PRNGKey(0)
 
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
