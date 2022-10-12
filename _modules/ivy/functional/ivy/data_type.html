@@ -1924,7 +1924,7 @@
 <div class="viewcode-block" id="set_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_dtype.html#ivy.functional.ivy.data_type.set_default_dtype">[docs]</a><span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">set_default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets the datatype dtype as default data type</span>
+<span class="sd">    Sets the datatype `dtype` as default data type.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1934,48 +1934,20 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Dtype` input:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.bool)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
+<span class="sd">    [&#39;bool&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&quot;float64&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;float64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.bool)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;bool&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.int32)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;uint8&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;uint8&#39;]</span>
+<span class="sd">    [&#39;float64&#39;]</span>
 <span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 
 <span class="sd">    With :class:`ivy.NativeDtype` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.native_int32)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;native_bool&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;native_bool&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.native_uint64)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;uint64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;native_float64&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;native_float64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
+<span class="sd">    [&#39;uint64&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
@@ -2063,31 +2035,22 @@
 <div class="viewcode-block" id="unset_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_dtype.html#ivy.functional.ivy.data_type.unset_default_dtype">[docs]</a><span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unset_default_dtype</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unsets the datatype dtype from default data type.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    None</span>
+<span class="sd">    Reset the current default dtype to the previous state.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;float64&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;float64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        []</span>
-
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.int32)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.bool)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;, &#39;bool&#39;]</span>
+<span class="sd">    [&#39;int32&#39;, &#39;bool&#39;]</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;]</span>
+<span class="sd">    [&#39;int32&#39;]</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        []</span>
+<span class="sd">    []</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_dtype_stack</span><span class="p">:</span>
