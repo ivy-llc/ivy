@@ -507,29 +507,26 @@ def std(
 
     Let ``N`` equal the number of elements over which to compute the standard deviation.
 
-    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
-        deviation).
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
-        propagate).
+    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
     x
-        input array. Should have a floating-point data type
-
+        input array. Should have a real-valued floating-point data type.
     axis
         axis or axes along which standard deviations must be computed. By default, the
         standard deviation must be computed over the entire array. If a tuple of
         integers, standard deviations must be computed over multiple axes.
-        Default: None.
+        Default: ``None``.
     correction
-        degrees of freedom adjustment. Setting this parameter to a value other than 0
+        degrees of freedom adjustment. Setting this parameter to a value other than ``0``
         has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to N-c where N corresponds to the total number of elements
-        over which the standard deviation is computed and c corresponds to the provided
-        degrees of freedom adjustment. When computing the standard deviation of a
-        population, setting this parameter to ``0`` is the standard choice (i.e., the
-        provided array contains data constituting an entire population). When computing
+        deviation according to ``N-c`` where ``N`` corresponds to the total number of
+        elements over which the standard deviation is computed and ``c`` corresponds to
+        the provided degrees of freedom adjustment. When computing the standard deviation
+        of a population, setting this parameter to ``0`` is the standard choice (i.e.,
+        the provided array contains data constituting an entire population). When computing
         the corrected sample standard deviation, setting this parameter to ``1`` is the
         standard choice (i.e., the provided array contains data sampled from a larger
         population; this is commonly referred to as Bessel's correction).
@@ -537,7 +534,7 @@ def std(
     keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
+        input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
     out
         optional output array, for writing the result to.
@@ -545,13 +542,20 @@ def std(
     Returns
     -------
     ret
-        if the sum was computed over the entire array, a zero-dimensional array
-        containing the standard deviation; otherwise, an array containing the standard
-        deviations. The returned array must have a data type as described by the
-        ``dtype`` parameter above.
+        if the standard deviation was computed over the entire array, a zero-dimensional
+        array containing the standard deviation; otherwise, a non-zero-dimensional array
+        containing the standard deviations. The returned array must have the same data
+        type as ``x``.
 
+        .. note::
+           While this specification recommends that this function only accept input
+           arrays having a real-valued floating-point data type, specification-compliant
+           array libraries may choose to accept input arrays having an integer data type.
+           While mixed data type promotion is implementation-defined, if the input array
+           ``x`` has an integer data type, the returned array must have the default
+           real-valued floating-point data type.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
     in the standard.
