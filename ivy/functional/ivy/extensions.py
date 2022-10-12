@@ -787,7 +787,7 @@ def max_pool2d(
 
 @to_native_arrays_and_back
 @handle_out_argument
-# @handle_nestable
+@handle_nestable
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
