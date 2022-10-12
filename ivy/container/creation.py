@@ -186,8 +186,8 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                               b=ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.2324, 3.234]),
+        ...                   b=ivy.array([4.123, 5.23, 6.23]))
         >>> fill_value = 15.0
         >>> y = ivy.Container.static_full_like(fill_value)
         >>> print(y)
@@ -271,8 +271,8 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                               b=ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),
+        ...                   b=ivy.array([4.123,5.23,6.23]))
         >>> fill_value = 15.0
         >>> y = x.full_like(fill_value)
         >>> print(y)

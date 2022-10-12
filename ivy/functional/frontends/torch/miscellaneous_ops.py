@@ -230,6 +230,4 @@ def vander(x, N=None, increasing=False):
     if N == 0:
         return ivy.array([], dtype=x.dtype)
     else:
-        return ivy.vander(
-            x, N=N, increasing=increasing, out=None
-        )
+        return ivy.vander(x, N=N, increasing=increasing, out=None)

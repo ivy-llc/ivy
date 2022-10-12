@@ -94,8 +94,16 @@ def lcm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.abs(
-        np.lcm(x1, x2, out=out, where=True, casting='same_kind',
-               order='K', dtype=None, subok=True)
+        np.lcm(
+            x1,
+            x2,
+            out=out,
+            where=True,
+            casting="same_kind",
+            order="K",
+            dtype=None,
+            subok=True,
+        )
     )
 
 
@@ -176,6 +184,27 @@ def max_pool2d(
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if periodic is False:
+        return np.array(
+            np.kaiser(M=window_length, beta=beta),
+            dtype=dtype) 
+    else: 
+        return np.array(
+            np.kaiser(M=window_length + 1, beta=beta)[:-1],
+            dtype=dtype)
+
+
+kaiser_window.support_native_out = False
 
 
 def moveaxis(

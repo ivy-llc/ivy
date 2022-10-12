@@ -93,21 +93,12 @@ def lcm(
         dtype = tf.int8
         x1 = tf.cast(x1, dtype=tf.int16)
         x2 = tf.cast(x2, dtype=tf.int16)
-    else: 
-        dtype = x1.dtype 
-    return tf.math.abs(
-        tf.cast(
-            tf.experimental.numpy.lcm(x1, x2),
-            dtype=dtype
-        )
-    )
+    else:
+        dtype = x1.dtype
+    return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
 
 
-lcm.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64")
+lcm.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def hann_window(
@@ -138,6 +129,22 @@ def max_pool2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if periodic is False:
+        return tf.signal.kaiser_window(
+            window_length, beta, dtype=tf.dtypes.float32, name=None) 
+    else: 
+        return tf.signal.kaiser_window(
+            window_length + 1, beta, dtype=dtype, name=None)[:-1] 
 
 
 def moveaxis(
