@@ -543,8 +543,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = x.clip_vector_norm(2.0, p=1.0)
         >>> print(y)
         {
@@ -794,9 +794,9 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` instance method:
-        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
-                               b=ivy.array([1.5, -0.3, 0]),\
-                               c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
+        ...                   b=ivy.array([1.5, -0.3, 0]),
+        ...                   c=ivy.array([-4.7, -5.4, 7.5]))
         >>> y = x.inplace_decrement(2)
         >>> print(y)
         {
@@ -934,9 +934,9 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` instance method:
-        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
-                               b=ivy.array([1.5, -0.3, 0]),\
-                               c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
+        ...                   b=ivy.array([1.5, -0.3, 0]),
+        ...                   c=ivy.array([-4.7, -5.4, 7.5]))
         >>> y = x.inplace_increment(2)
         >>> print(y)
         {
@@ -1100,10 +1100,10 @@ class ContainerWithGeneral(ContainerBase):
 
         With multiple :class:`ivy.Container` input:
 
-        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
-                                b=ivy.native_array([1, 0, 0, 1]))
-        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \
-                                b=ivy.array([1, 0, -1, -1]))
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]),
+        ...                    b=ivy.native_array([1, 0, 0, 1]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]),
+        ...                    b=ivy.array([1, 0, -1, -1]))
         >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
@@ -1189,10 +1189,10 @@ class ContainerWithGeneral(ContainerBase):
 
         With multiple :class:`ivy.Container` instances:
 
-        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
-                                b=ivy.array([1, 2, 3]))
-        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),\
-                                b=ivy.array([1, 2, 3]))
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
+        ...                    b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
+        ...                    b=ivy.array([1, 2, 3]))
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
@@ -1200,10 +1200,10 @@ class ContainerWithGeneral(ContainerBase):
             b: true
         }
 
-        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
-                                b=ivy.array([1, 2, 3]))
-        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),\
-                                b=ivy.array([1, 2, 3]))
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
+        ...                    b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
+        ...                    b=ivy.array([1, 2, 3]))
         >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
@@ -1392,7 +1392,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional array, for writing the result to. It must have a shape 
+            optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
 
@@ -1406,10 +1406,10 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-                            b = ivy.array([4., 5., 6.]))
-        >>> y = ivy.Container(a = ivy.array([0, 1]), \
-                            b = ivy.array([1, 2]))
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
+        ...                   b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]),
+        ...                   b = ivy.array([1, 2]))
         >>> print(ivy.Container.static_gather(x, y))
         {
             a: ivy.array([0., 1.]),
@@ -1417,9 +1417,9 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-        
-        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-                            b = ivy.array([4., 5., 6.]))
+
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
+        ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.array([0, 1])
         >>> print(ivy.Container.static_gather(x, y))
         {
@@ -1482,7 +1482,7 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            optional array, for writing the result to. It must have a shape 
+            optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -1493,16 +1493,16 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-                          b = ivy.array([4., 5., 6.]))
-        >>> y = ivy.Container(a = ivy.array([0, 1]), \
-                            b = ivy.array([1, 2]))
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
+        ...                   b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]),
+        ...                   b = ivy.array([1, 2]))
         >>> print(x.gather(y))
         {
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
-        
+
         """
         return self.static_gather(
             self,
@@ -1688,12 +1688,12 @@ class ContainerWithGeneral(ContainerBase):
         --------
         scatter into an empty array
 
-        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
-                                    b=ivy.array([[2],[3],[4]]))
-        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
-                                    b=ivy.array([20, 30, 40]))
-        >>> shape = ivy.Container(a=ivy.array([10]),\
-                                b = ivy.array([10]))
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        ...                         b=ivy.array([[2],[3],[4]]))
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        ...                         b=ivy.array([20, 30, 40]))
+        >>> shape = ivy.Container(a=ivy.array([10]),
+        ...                       b=ivy.array([10]))
         >>> z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
         >>> print(z)
         {
@@ -1703,14 +1703,14 @@ class ContainerWithGeneral(ContainerBase):
 
         scatter into a container
 
-        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
-                  b=ivy.array([[2],[3],[4]]))
-        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
-                        b=ivy.array([20, 30, 40]))
-        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-        >>> ivy.Container.static_scatter_nd(indices, updates,\
-                                            reduction='replace', out = z)
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        ...          b=ivy.array([[2],[3],[4]]))
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        ...                         b=ivy.array([20, 30, 40]))
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        ...                   b=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+        >>> ivy.Container.static_scatter_nd(indices, updates,
+        ...                                    reduction='replace', out = z)
         >>> print(z)
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
@@ -1785,12 +1785,12 @@ class ContainerWithGeneral(ContainerBase):
         --------
         scatter into an empty container
 
-        >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
-                        b=ivy.array([[5],[1],[2]]))
-        >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),\
-                        b=ivy.array([20, 30, 40]))
-        >>> shape = ivy.Container(a=ivy.array([10]),\
-                        b = ivy.array([10]))
+        >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+        ...                         b=ivy.array([[5],[1],[2]]))
+        >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+        ...                         b=ivy.array([20, 30, 40]))
+        >>> shape = ivy.Container(a=ivy.array([10]),
+        ...                       b=ivy.array([10]))
         >>> z = indices.scatter_nd(updates, shape=shape)
         >>> print(z)
         {
@@ -1800,12 +1800,12 @@ class ContainerWithGeneral(ContainerBase):
 
         scatter into a container.
 
-        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
-                                    b=ivy.array([[2],[3],[4]]))
-        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
-                                    b=ivy.array([20, 30, 40]))
-        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+        >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+        ...                         b=ivy.array([[2],[3],[4]]))
+        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+        ...                         b=ivy.array([20, 30, 40]))
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        ...                   b=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
         >>> indices.scatter_nd(updates,reduction='replace', out = z)
         >>> print(z)
         {
@@ -1981,13 +1981,13 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Container object with all sub-array dimensions gathered.
-        
+
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),\
-                              b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
-        >>> y = ivy.Container(a=ivy.array([1,0]),\
-                                b=ivy.array([0]))
+        >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),
+        ...                   b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),
+        ...                   b=ivy.array([0]))
         >>> print(ivy.Container.static_gather_nd(x, y))
         {
             a: ivy.array(30.),
@@ -2053,17 +2053,17 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],\
-                                            [[40.,50.],[60.,70.]]]),\
-                              b=ivy.array([[[0., 100.], [200.,300.]],\
-                                            [[400.,500.],[600.,700.]]]))
-        >>> y = ivy.Container(a=ivy.array([1,0]),\
-                                b=ivy.array([0]))
+        >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],
+        ...                                [[40.,50.], [60.,70.]]]),
+        ...                   b=ivy.array([[[0., 100.], [200.,300.]],
+        ...                                [[400.,500.],[600.,700.]]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),
+        ...                   b=ivy.array([0]))
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
             a: ivy.array([40., 50.]),
-            b: ivy.array([[0., 100.], 
+            b: ivy.array([[0., 100.],
                         [200., 300.]])
         }
         """
@@ -2119,10 +2119,10 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],\
-                                      [3.66, 24.29, 3.64]]),\
-                        b=ivy.array([[4.96, 1.52, -10.67],\
-                                     [4.36, 13.96, 0.3]]))
+        >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+        ...                                [3.66, 24.29, 3.64]]),
+        ...                   b=ivy.array([[4.96, 1.52, -10.67],
+        ...                                [4.36, 13.96, 0.3]]))
         >>> reduced = ivy.Container.static_einops_reduce(x, 'a b -> a', 'mean')
         >>> print(reduced)
         {
@@ -2194,16 +2194,16 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[5, 4, 3],\
-                                           [11, 2, 9]],\
-                                          [[3, 5, 7],\
-                                           [9, 7, 1]]]),\
-                            b=ivy.array([[[9,7,6],\
-                                          [5,2,1]],\
-                                        [[4,1,2],\
-                                         [2,3,6]],\
-                                        [[1, 9, 6],\
-                                         [0, 2, 1]]]))
+        >>> x = ivy.Container(a=ivy.array([[[5, 4, 3],
+        ...                                 [11, 2, 9]],
+        ...                                [[3, 5, 7],
+        ...                                 [9, 7, 1]]]),
+        ...                    b=ivy.array([[[9,7,6],
+        ...                                  [5,2,1]],
+        ...                                 [[4,1,2],
+        ...                                  [2,3,6]],
+        ...                                 [[1, 9, 6],
+        ...                                  [0, 2, 1]]]))
         >>> reduced = x.einops_reduce('a b c -> a b', 'sum')
         >>> print(reduced)
         {
@@ -2266,10 +2266,10 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),\
-                            b=ivy.array([[1, 2], [4, 5]]))
-        >>> repeated = ivy.Container.static_einops_repeat(\
-            x, 'h w -> (tile h) w', tile=2)
+        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+        ...                   b=ivy.array([[1, 2], [4, 5]]))
+        >>> repeated = ivy.Container.static_einops_repeat(
+        ...    x, 'h w -> (tile h) w', tile=2)
         >>> print(repeated)
         {
             a: ivy.array([[30, 40],
@@ -2341,8 +2341,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),\
-                             b=ivy.array([[1, 2], [4, 5]]))
+        >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+        ...                   b=ivy.array([[1, 2], [4, 5]]))
         >>> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
         >>> print(repeated)
         {
@@ -2558,8 +2558,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                            b=ivy.array([1, -1, 0, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),
+        ...                   b=ivy.array([1, -1, 0, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
@@ -2567,8 +2567,8 @@ class ContainerWithGeneral(ContainerBase):
             b: array([1, -1, 0, 0])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
-                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),
+        ...                   b=ivy.native_array([1, 1, -1, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
@@ -2579,9 +2579,9 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` static method:
-        
-        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                            b=ivy.array([-1, 0, 1, 1, 1, 0]))
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([-1, 0, 1, 1, 1, 0]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
         {
@@ -2638,8 +2638,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :class:`ivy.Container` instances:
 
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
-                    b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
+        ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
         >>> y = x.to_numpy()
         >>> print(y)
         {
@@ -2651,8 +2651,8 @@ class ContainerWithGeneral(ContainerBase):
                       [1, 1, 1]]), dtype=int32
         }
 
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
-                            b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
+        ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
@@ -2668,8 +2668,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                            b=ivy.array([-1, 0, 1, 1]))
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),
+        ...                   b=ivy.array([-1, 0, 1, 1]))
         >>> y = x.has_nans()
         >>> print(y)
         {
@@ -2783,15 +2783,15 @@ class ContainerWithGeneral(ContainerBase):
         With one :class:`ivy.Container` instance:
 
 
-        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
-                            c=ivy.array([-1]))
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),
+        ...                   c=ivy.array([-1]))
         >>> y = x.to_scalar()
         >>> print(y)
         {
             a: 1,
             b: 0,
             c: -1
-        }      
+        }
         """
         return self.static_to_scalar(
             self,
@@ -2992,8 +2992,8 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0.857, 10.])
         }
 
-        >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),\
-                              b=ivy.asarray([5., 6.], [7., 8.]))
+        >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),
+        ...                   b=ivy.asarray([5., 6.], [7., 8.]))
         >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
         >>> z = ivy.Container.stable_divide(x, y, min_denominator=2)
         >>> print(z)
@@ -3069,8 +3069,8 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([1.8, 2.4])
         }
 
-        >>> x = ivy.Container(a=ivy.asarray([[2., 4.], [6., 8.]]),\
-                              b=ivy.asarray([[10., 12.], [14., 16.]]))
+        >>> x = ivy.Container(a=ivy.asarray([[2., 4.], [6., 8.]]),
+        ...                   b=ivy.asarray([[10., 12.], [14., 16.]]))
         >>> z = x.stable_divide(2, min_denominator=2)
         >>> print(z)
         {
@@ -3362,8 +3362,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
-                              b=ivy.array([[3., 4., 5.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]),
+        ...                   b=ivy.array([[3., 4., 5.]]))
         >>> y = ivy.Container.static_clip_matrix_norm(x, 2.0)
         >>> print(y)
         {
@@ -3432,8 +3432,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
-                              b=ivy.array([[3., 4., 5.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]),
+        ...                   b=ivy.array([[3., 4., 5.]]))
         >>> y = x.clip_matrix_norm(2.0, p=1.0)
         >>> print(y)
         {
@@ -3512,8 +3512,8 @@ class ContainerWithGeneral(ContainerBase):
 
         With `ivy.Container` input and backend set as 'tensorflow':
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
-                              b=ivy.array([0., 5.5, -8]))
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
+        ...                   b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
         {
@@ -3580,8 +3580,8 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         With an `ivy.Container` instance and backend set as 'tensorflow':
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
-                              b=ivy.array([0., 5.5, -8]))
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
+        ...                   b=ivy.array([0., 5.5, -8]))
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
