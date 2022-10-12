@@ -132,9 +132,9 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1.]), \
-                              b=ivy.array([3., 4.]), \
-                              c=ivy.array([6., 7.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1.]),
+        ...                   b=ivy.array([3., 4.]),
+        ...                   c=ivy.array([6., 7.]))
         >>> y = ivy.Container.static_expand_dims(x, axis=1)
         >>> print(y)
         {
@@ -148,9 +148,9 @@ class ContainerWithManipulation(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]), \
-                              c=ivy.array([6., 7., 8.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]),
+        ...                   c=ivy.array([6., 7., 8.]))
         >>> container_axis = ivy.Container(a=0, b=-1, c=(0,1))
         >>> y = ivy.Container.static_expand_dims(x, axis=container_axis)
         >>> print(y)
@@ -209,10 +209,10 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0., 1.], \
-                                           [2., 3.]]), \
-                              b=ivy.array([[4., 5.], \
-                                           [6., 7.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1.],
+        ...                                [2., 3.]]),
+        ...                   b=ivy.array([[4., 5.],
+        ...                                [6., 7.]]))
         >>> y = x.expand_dims(axis=1)
         >>> print(y)
         {
@@ -522,8 +522,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                              b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
         >>> y = ivy.Container.static_reshape(x, (3,2))
         >>> print(y)
         {
@@ -603,8 +603,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                              b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
         >>> y = x.reshape((2,3))
         >>> print(y)
         {
@@ -684,8 +684,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_roll(x, 1)
         >>> print(y)
         {
@@ -695,8 +695,8 @@ class ContainerWithManipulation(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> shift = ivy.Container(a=1, b=-1)
         >>> y = ivy.Container.static_roll(x, shift)
         >>> print(y)
@@ -838,8 +838,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                              b=ivy.array([[[11.], [12.]]]))
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(2)
         >>> print(y)
         {
@@ -847,8 +847,8 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[11., 12.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                              b=ivy.array([[[11.], [12.]]]))
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(0)
         >>> print(y)
         {
@@ -1573,8 +1573,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip(x, 1., 5.)
         >>> print(y)
         {
@@ -1583,9 +1583,9 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         With multiple :class:`ivy.Container` inputs:
-        
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> x_min = ivy.Container(a=0, b=0)
         >>> x_max = ivy.Container(a=1, b=1)
         >>> y = ivy.Container.static_clip(x, x_min, x_max)
