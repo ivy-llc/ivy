@@ -89,6 +89,9 @@ class Tensor:
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.FloorDiv(x=x, y=self.data, name=name)
 
+    def __rmod__(self, name="rmod"):
+        return ivy.abs(x=self.data, name=name)
+
     def __ror__(self, x, name="ror"):
         return tf_frontend.LogicalOr(x=x, y=self.data, name=name)
 
