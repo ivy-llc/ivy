@@ -14,9 +14,49 @@ class ArrayWithLayers(abc.ABC):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Union[ivy.Array, ivy.NativeArray] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.linear. This method simply
+        wraps the function, and so the docstring for ivy.linear also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array to compute linear transformation on.
+            *[outer_batch_shape,inner_batch_shape,in_features]*
+        weight
+            The weight matrix. *[outer_batch_shape,out_features,in_features]*
+        bias
+            The bias vector, default is None. *[outer_batch_shape,out_features]*
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the linear transformation.
+            *[outer_batch_shape,inner_batch_shape,out_features]*
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                           [4.4, 5.5, 6.6], \
+                           [7.7, 8.8, 9.9]])
+        >>> w = ivy.array([[1., 2., 3.], \
+                           [4., 5., 6.], \
+                           [7., 8., 9.]])
+        >>> b = ivy.array([1., 0., -1.])
+        >>> y = x.linear(w, bias=b)
+        >>> print(y)
+        ivy.array([[ 16.4,  35.2,  54. ],
+                   [ 36.2,  84.7, 133. ],
+                   [ 56. , 134. , 212. ]])
+
+        """
         return ivy.linear(
             self._data,
             weight,
