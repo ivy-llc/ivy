@@ -23,6 +23,8 @@ jobs:
            pip3 install -r ivy/requirements/requirements.txt
            pip3 install -r ivy/requirements/optional.txt
            pip3 install pydriller tqdm coverage
+           git clone https://github.com/unifyai/Mapping.git
+           cp Mapping/tests.pkl ivy/
            cd ivy
            python3 determine_test_coverage.py
            cd ..
