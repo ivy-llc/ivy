@@ -1912,5 +1912,5 @@ def test_tensorflow_Ceil(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Ceil",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
