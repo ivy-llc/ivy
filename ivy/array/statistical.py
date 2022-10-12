@@ -126,8 +126,8 @@ class ArrayWithStatistical(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.var. This method simply 
-        wraps the function, and so the docstring for ivy.var also applies 
+        ivy.Array instance method variant of ivy.var. This method simply
+        wraps the function, and so the docstring for ivy.var also applies
         to this method with minimal changes.
 
         **Special Cases**
@@ -147,14 +147,14 @@ class ArrayWithStatistical(abc.ABC):
             variance must be computed over the entire array. If a tuple of integers,
             variances must be computed over multiple axes. Default: None.
         correction
-            degrees of freedom adjustment. Setting this parameter to a value other 
+            degrees of freedom adjustment. Setting this parameter to a value other
             than 0 has the effect of adjusting the divisor during the calculation
-            of the variance according to N-c where N corresponds to the total 
+            of the variance according to N-c where N corresponds to the total
             number of elements over which the variance is computed and c corresponds
             to the provided degrees of freedom adjustment. When computing the variance
             of a population, setting this parameter to 0 is the standard choice
             (i.e., the provided array contains data constituting an entire population).
-            When computing the unbiased sample variance, setting this parameter to 1 
+            When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled
             from a larger population; this is commonly referred to as Bessel's
             correction). Default: 0.
@@ -176,23 +176,23 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, 8.0]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
         ivy.array([6., 6., 4.1])
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
@@ -295,9 +295,9 @@ class ArrayWithStatistical(abc.ABC):
                    [0, 4],
                    [0, 8]])
 
-        >>> x = ivy.array([[1, 5, 2], \
-                           [4, 3, 0], \
-                           [4, 8, 2]])
+        >>> x = ivy.array([[1, 5, 2],
+        ...                [4, 3, 0],
+        ...                [4, 8, 2]])
         >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
         >>> print(y)
         ivy.array([[ 7,  2,  0],

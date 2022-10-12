@@ -67,18 +67,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
-                       [1.0, 0.5, 0.0, 0.0, 0.0], \
-                       [2.0, 0.0, 3.0, 0.0, 0.0], \
-                       [0.5, 0.0, 0.0, 0.625, 0.0], \
-                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+        ...               [1.0, 0.5, 0.0, 0.0, 0.0],
+        ...               [2.0, 0.0, 3.0, 0.0, 0.0],
+        ...               [0.5, 0.0, 0.0, 0.625, 0.0],
+        ...               [2.0, 0.0, 0.0, 0.0, 16.0]])
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-                   [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-                   [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        ...        [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+        ...        [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
         """
         return ivy.cholesky(self._data, upper=upper, out=out)
 
@@ -285,20 +285,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        x = ivy.array([[1., 2.],\
-                  [3., 4.]])
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         y = pinv(x, None, None)
         print(y)
-        ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
-    
-        x = ivy.array([[1., 2.],\
-                      [3., 4.]])
+        ivy.array([[-2., 1.],
+        ...        [1.5, -0.5]])
+
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         out = ivy.array()
         pinv(x, 0, out)
         print(out)
-        ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
+        ivy.array([[0.0426, 0.0964],
+        ...       [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -337,8 +337,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[1.0, 2.0], \
-                           [3.0, 4.0]])
+        >>> x = ivy.array([[1.0, 2.0],
+        ...                [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))

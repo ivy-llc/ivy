@@ -259,8 +259,8 @@ def astype(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([False,True,True]),\
-        b=ivy.array([3.14, 2.718, 1.618]))
+    >>> x = ivy.Container(a=ivy.array([False,True,True]),
+    ...                   b=ivy.array([3.14, 2.718, 1.618]))
     >>> print(x.astype(ivy.int32))
     {
         a: ivy.array([0, 1, 1]),
@@ -400,8 +400,8 @@ def broadcast_to(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-        b=ivy.array([4, 5, 6]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([4, 5, 6]))
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
     {
@@ -468,16 +468,16 @@ def can_cast(
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[-1, -1, -1],\
-                              [1, 1, 1]],\
-                            dtype='int16')
+    >>> x = ivy.native_array([[-1, -1, -1],
+    ...                       [1, 1, 1]],
+    ...                       dtype='int16')
     >>> print(ivy.can_cast(x, 'uint8'))
     False
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
         a: false,
@@ -665,16 +665,16 @@ def iinfo(
 
     With :class:`ivy.Container` input:
 
-    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
-                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
+    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
     >>> ivy.iinfo(c)
     {
         x: iinfo(min=-32768, max=32767, dtype=int16),
         y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
     }
 
-    >>> c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16), \
-                          y=ivy.array([76,81,16], dtype=ivy.uint32))
+    >>> c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16),
+    ...                   y=ivy.array([76,81,16], dtype=ivy.uint32))
     >>> ivy.iinfo(c)
     {
         x: iinfo(min=0, max=65535, dtype=uint16),
@@ -693,8 +693,8 @@ def iinfo(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
-                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
+    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
     >>> c.iinfo()
     {
         x: iinfo(min=-32768, max=32767, dtype=int16),
@@ -1355,8 +1355,8 @@ def dtype(
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),\
-                          b=ivy.native_array([1, 0, 0, 0, 1]))
+    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),
+    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))
     >>> y = ivy.dtype(x.a)
     >>> print(y)
     float32

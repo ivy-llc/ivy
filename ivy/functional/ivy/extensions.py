@@ -443,8 +443,8 @@ def sinc(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
-                          b=ivy.array([3.5, 4.5, 5.5]))
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
+    ...                   b=ivy.array([3.5, 4.5, 5.5]))
     >>> y = x.sinc()
     >>> print(y)
     {
