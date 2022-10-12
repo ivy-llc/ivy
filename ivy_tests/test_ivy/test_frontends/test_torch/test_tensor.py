@@ -213,7 +213,7 @@ def test_torch_instance_sinh_(
         frontend="torch",
         class_name="tensor",
         method_name="sinh_",
-     )
+    )
 
 
 # view
