@@ -52,25 +52,50 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
             weight.shape[0],
             message="out_channels must be consistent"
         )
+
+
+def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+    _valid_shapes(input, weight, bias, stride, padding, groups)
+
+    if type(padding) == str:
+        padding = padding.upper()
+    else:
+        _pad_w = padding if isinstance(padding, int) else padding[0]
+        input = ivy.zero_pad(
+                  input,
+                  pad_width=[(0, 0), (0, 0), (_pad_w, _pad_w)],
+              )
+        padding = "VALID"
     
+    weight = ivy.permute_dims(weight, axes=(2, 1, 0))
+
+    ret = ivy.conv(
+        input,
+        weight,
+        stride,
+        padding,
+        data_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
+        dims=1)
+
+    if bias is not None:
+        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2)))
+    return ret
+
 
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-
     _valid_shapes(input, weight, bias, stride, padding, groups)
     
     if isinstance(padding, str):
         padding = padding.upper()
     else:
-        if type(padding) == int:
-            input = ivy.zero_pad(
-                input,
-                pad_width=[(0, 0), (0, 0), (padding, padding), (padding, padding)],
-            )
-        else:
-            h_pad, w_pad = padding
-            input = ivy.zero_pad(
-                input, pad_width=[(0, 0), (0, 0), (h_pad, h_pad), (w_pad, w_pad)]
-            )
+        _pad_h, _pad_w = (padding, padding)\
+                         if isinstance(padding, int)\
+                         else (padding[0], padding[1])
+        input = ivy.zero_pad(
+                    input, pad_width=[(0, 0), (0, 0), (_pad_h, _pad_h), (_pad_w, _pad_w)]
+                )
         padding = "VALID"
 
     weight = ivy.permute_dims(weight, axes=(2, 3, 1, 0))
@@ -85,6 +110,36 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
     if bias is not None:
         return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2, 3)))
+    return ret
+
+
+def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+    _valid_shapes(input, weight, bias, stride, padding, groups)
+    
+    if isinstance(padding, str):
+        padding = padding.upper()
+    else:
+        _pad_t, _pad_h, _pad_w = (padding, padding, padding)\
+                                 if isinstance(padding, int)\
+                                 else (padding[0], padding[1], padding[2])
+        input = ivy.zero_pad(
+                  input, pad_width=[(0, 0), (0, 0), (_pad_t, _pad_t), (_pad_h, _pad_h), (_pad_w, _pad_w)]
+            )
+        padding = "VALID"
+
+    weight = ivy.permute_dims(weight, axes=(2, 3, 4, 1, 0))
+    ret = ivy.conv(
+        input,
+        weight,
+        stride,
+        padding,
+        data_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
+        dims=3
+    )
+    if bias is not None:
+        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2, 3, 4)))
     return ret
 
 
