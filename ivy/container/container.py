@@ -144,9 +144,9 @@ class Container(
         With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-        ...                      b=ivy.array([2, 3, 4]))
+        ...                   b=ivy.array([2, 3, 4]))
         >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-        ...                      b=ivy.array([5, 6, 7]))
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x + y
         >>> print(z)
         {
@@ -157,7 +157,7 @@ class Container(
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-        ...                      b=ivy.array([[5.], [6.], [7.]]))
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> y = ivy.array([[1.1, 2.3, -3.6]])
         >>> z = x + y
         >>> print(z)
@@ -243,9 +243,9 @@ class Container(
         With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-        ...                      b=ivy.array([4, 3, 2]))
+        ...                   b=ivy.array([4, 3, 2]))
         >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-        ...                      b=ivy.array([6, 5, 4]))
+        ...                   b=ivy.array([6, 5, 4]))
         >>> z = x - y
         >>> print(z)
         {
@@ -256,7 +256,7 @@ class Container(
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-        ...                      b=ivy.array([[5.], [6.], [7.]]))
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> y = ivy.array([[1.1, 2.3, -3.6]])
         >>> z = x - y
         >>> print(z)
@@ -454,9 +454,9 @@ class Container(
         With :class:`ivy.Array` instances at the leaves:
 
         >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
-        ...                      b=ivy.array([15, 45, 143]))
+        ...                   b=ivy.array([15, 45, 143]))
         >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-        ...                      b=ivy.array([0, 3, 4]))
+        ...                   b=ivy.array([0, 3, 4]))
         >>> z = x >> y
         >>> print(z)
         {
@@ -467,7 +467,7 @@ class Container(
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
         >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
-        ...                      b=ivy.array([15, 45, 143]))
+        ...                   b=ivy.array([15, 45, 143]))
         >>> y = ivy.array([1, 2, 3])
         >>> z = x >> y
         >>> print(z)
@@ -509,7 +509,7 @@ class Container(
         --------
         >>> a = 64
         >>> b = ivy.Container(a = ivy.array([0, 1, 2]),
-        ...                      b = ivy.array([3, 4, 5]))
+        ...                   b = ivy.array([3, 4, 5]))
         >>> y = a >> b
         >>> print(y)
         {

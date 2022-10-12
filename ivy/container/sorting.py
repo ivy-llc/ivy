@@ -74,7 +74,7 @@ class ContainerWithSorting(ContainerBase):
         With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),
-        ...                      b=ivy.array([3, 2]))
+        ...                   b=ivy.array([3, 2]))
         >>> y = x.static_argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         {
@@ -83,7 +83,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),
-        ...                      b=ivy.array([[3, 2], [7, 0.2]]))
+        ...                   b=ivy.array([[3, 2], [7, 0.2]]))
         >>> y = x.static_argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         {
@@ -94,7 +94,7 @@ class ContainerWithSorting(ContainerBase):
         With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([2, 5, 1]),
-        ...                      b=ivy.array([1, 5], [.2,.1]))
+        ...                   b=ivy.array([1, 5], [.2,.1]))
         >>> y = x.static_argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         {
@@ -103,7 +103,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.native_array([2, 5, 1]),
-        ...                      b=ivy.array([1, 5], [.2,.1]))
+        ...                   b=ivy.array([1, 5], [.2,.1]))
         >>> y = x.static_argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         {
@@ -189,7 +189,7 @@ class ContainerWithSorting(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),
-        ...                      b=ivy.array([3, 2]))
+        ...                   b=ivy.array([3, 2]))
         >>> y = x.argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         {
@@ -233,7 +233,7 @@ class ContainerWithSorting(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),
-        ...                      b=ivy.array([[8, 1], [5, 0.8]]))
+        ...                   b=ivy.array([[8, 1], [5, 0.8]]))
         >>> y = ivy.Container.static_sort(x)
         >>> print(y)
         {
@@ -242,7 +242,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),
-        ...                      b=ivy.array([[9, 0.7], [0.4, 0]]))
+        ...                   b=ivy.array([[9, 0.7], [0.4, 0]]))
         >>> y = ivy.Container.static_sort(x)
         >>> print(y)
         {
@@ -284,7 +284,7 @@ class ContainerWithSorting(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),
-        ...                      b=ivy.array([8, 1]))
+        ...                   b=ivy.array([8, 1]))
         >>> y = x.sort()
         >>> print(y)
         {
@@ -293,7 +293,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),
-        ...                      b=ivy.array([[8, 1], [5, 0.8]]))
+        ...                   b=ivy.array([[8, 1], [5, 0.8]]))
         >>> y = x.sort()
         >>> print(y)
         {
@@ -302,7 +302,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),
-        ...                      b=ivy.array([[9, 0.7], [0.4, 0]]))
+        ...                   b=ivy.array([[9, 0.7], [0.4, 0]]))
         >>> y = ivy.sort(x)
         >>> print(y)
         {
@@ -311,7 +311,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]),
-        ...                      b=ivy.array([[9, 0.7], [0.4, 0]]))
+        ...                   b=ivy.array([[9, 0.7], [0.4, 0]]))
         >>> y = ivy.sort(x)
         >>> print(y)
         {

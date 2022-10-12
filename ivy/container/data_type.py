@@ -62,7 +62,7 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         >>> c = ivy.Container(a=ivy.array([False,True,True]),
-        ...                         b=ivy.array([3.14, 2.718, 1.618]))
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> ivy.Container.static_astype(c, ivy.int32)
         {
             a: ivy.array([0, 1, 1]),
@@ -134,7 +134,7 @@ class ContainerWithDataTypes(ContainerBase):
         Using :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([False,True,True]),
-        ...                        b=ivy.array([3.14, 2.718, 1.618]))
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> print(x.astype(ivy.int32))
         {
             a: ivy.array([0, 1, 1]),
@@ -339,7 +339,7 @@ class ContainerWithDataTypes(ContainerBase):
         With :class:`ivy.Container` static method:
 
         >>> x = ivy.Container(a=ivy.array([1]),
-        ...    b=ivy.array([2]))
+        ...                   b=ivy.array([2]))
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
         >>> print(y)
         {
@@ -397,7 +397,7 @@ class ContainerWithDataTypes(ContainerBase):
         With :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0, 0.5]),
-        ...    b=ivy.array([4, 5]))
+        ...                   b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))
         >>> print(y)
         {
@@ -460,7 +460,7 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-        ...    b=ivy.array([3, 4, 5]))
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -519,7 +519,7 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-        ...    b=ivy.array([3, 4, 5]))
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -979,7 +979,7 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([0, 1, 2]),
-        ...                      b = ivy.array([3., 4., 5.]))
+        ...                   b = ivy.array([3., 4., 5.]))
         >>> print(x.a.dtype, x.b.dtype)
         int32 float32
 

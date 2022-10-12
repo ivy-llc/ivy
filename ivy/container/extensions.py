@@ -52,7 +52,7 @@ class ContainerWithExtensions(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
-        ...                      b=ivy.array([3.5, 4.5, 5.5]))
+        ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = ivy.Container.static_sinc(x)
         >>> print(y)
         {
@@ -113,7 +113,7 @@ class ContainerWithExtensions(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
-        ...                      b=ivy.array([3.5, 4.5, 5.5]))
+        ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = x.sinc()
         >>> print(y)
         {
@@ -260,9 +260,9 @@ class ContainerWithExtensions(ContainerBase):
         Examples
         --------
         >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
-        ...                    b=ivy.array([6, 54, 62, 10]))
+        ...                  b=ivy.array([6, 54, 62, 10]))
         >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
-        ...                    b=ivy.array([32, 40, 25, 13]))
+        ...                  b=ivy.array([32, 40, 25, 13]))
         >>> ivy.Container.lcm(x1, x2)
         {
             a: ivy.array([10, 21, 60]),
@@ -314,9 +314,9 @@ class ContainerWithExtensions(ContainerBase):
         Examples
         --------
         >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
-        ...                    b=ivy.array([6, 54, 62, 10]))
+        ...                  b=ivy.array([6, 54, 62, 10]))
         >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
-        ...                    b=ivy.array([32, 40, 25, 13]))
+        ...                  b=ivy.array([32, 40, 25, 13]))
         >>> x1.lcm(x2)
         {
             a: ivy.array([10, 21, 60]),

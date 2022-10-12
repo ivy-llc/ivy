@@ -102,7 +102,7 @@ def add_ivy_container_instance_methods(
 
     >>> from ivy.functional.ivy import statistical
     >>> class ContainerExample:
-    ...        pass
+    ...     pass
     >>> ivy.add_ivy_container_instance_methods(ContainerExample, [statistical])
     >>> print(hasattr(ContainerExample, "mean"), hasattr(ContainerExample, "var"))
     True True
