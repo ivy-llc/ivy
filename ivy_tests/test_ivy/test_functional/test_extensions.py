@@ -393,11 +393,11 @@ def test_kaiser_window(
         window_length=x[0],
         periodic=periodic,
         beta=beta,
-        dtype=dtype
+        dtype=dtype,
     )
 
 
-# moveaxis    
+# moveaxis
 @handle_cmd_line_args
 @given(
     dtype_and_a=helpers.dtype_and_values(
@@ -409,9 +409,9 @@ def test_kaiser_window(
                 min_num_dims=1,
                 max_num_dims=3,
                 min_dim_size=1,
-                max_dim_size=3,        
+                max_dim_size=3,
             ),
-            key="a_s_d"
+            key="a_s_d",
         ),
     ),
     source=helpers.get_axis(
@@ -422,9 +422,9 @@ def test_kaiser_window(
                 min_num_dims=1,
                 max_num_dims=3,
                 min_dim_size=1,
-                max_dim_size=3,        
+                max_dim_size=3,
             ),
-            key="a_s_d"
+            key="a_s_d",
         ),
         min_size=1,
         force_int=True,
@@ -437,9 +437,9 @@ def test_kaiser_window(
                 min_num_dims=1,
                 max_num_dims=3,
                 min_dim_size=1,
-                max_dim_size=3,        
+                max_dim_size=3,
             ),
-            key="a_s_d"
+            key="a_s_d",
         ),
         min_size=1,
         force_int=True,
