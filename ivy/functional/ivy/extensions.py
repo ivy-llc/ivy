@@ -1054,8 +1054,8 @@ def heaviside(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Computes the Heaviside step function for each element in x1.
 
     Parameters

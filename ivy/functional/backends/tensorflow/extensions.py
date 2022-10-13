@@ -194,3 +194,6 @@ def heaviside(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.heaviside(x1, x2)
+
+
+heaviside.unsupported_dtypes = ("bfloat16",)

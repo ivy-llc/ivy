@@ -607,7 +607,8 @@ def test_pad(
         max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
-        num_arrays=2, 
+        num_arrays=2,
+        shared_dtype=True, 
     ),
     num_positional_args=helpers.num_positional_args(fn_name="heaviside"),
 )
