@@ -788,8 +788,48 @@ def stack(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4.])
+    >>> y = ivy.array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.Array` input and different `axis` :
+
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
+
+    With :code: `ivy.native_array` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.native_array` input and different `axis` :
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
     """
-    return current_backend(arrays).stack(arrays, axis=axis, out=out)
+    res = current_backend(arrays).stack(arrays, axis=axis, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 # Extra #
