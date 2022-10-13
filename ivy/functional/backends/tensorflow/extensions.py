@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 import tensorflow as tf
+import tensorflow_probability as tfp
 import logging
 
 
@@ -184,3 +185,15 @@ def moveaxis(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.moveaxis(a, source, destination)
+
+
+def trapz(
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    x: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)

@@ -248,3 +248,15 @@ def moveaxis(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.moveaxis(a, source, destination)
+
+
+def trapz(
+    y: JaxArray,
+    /,
+    *,
+    x: Optional[JaxArray] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.trapz(y, x=x, dx=dx, axis=axis)

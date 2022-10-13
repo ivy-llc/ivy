@@ -285,3 +285,18 @@ def moveaxis(
 
 
 moveaxis.support_native_out = False
+
+
+def trapz(
+    y: np.ndarray,
+    /,
+    *,
+    x: Optional[np.ndarray] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.trapz(y, x=x, dx=dx, axis=axis)
+
+
+trapz.support_native_out = False

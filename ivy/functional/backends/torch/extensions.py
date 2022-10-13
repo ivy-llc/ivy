@@ -251,3 +251,18 @@ def moveaxis(
 
 
 moveaxis.support_native_out = False
+
+
+def trapz(
+    y: torch.Tensor,
+    /,
+    *,
+    x: Optional[torch.Tensor] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.trapezoid(y, x=x, dx=dx, dim=axis)
+
+
+trapz.support_native_out = False
