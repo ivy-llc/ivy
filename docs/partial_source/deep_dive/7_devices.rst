@@ -11,10 +11,10 @@ Devices 💽
 .. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L600
 .. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659
 .. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720
-.. _`devices discussion`: https://github.com/unifyai/ivy/discussions/1317
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
+.. _`devices forum`: https://discord.com/channels/799879767196958751/1028297346662015057
 
 The devices currently supported by Ivy are as follows:
 
@@ -170,9 +170,8 @@ by calling :func:`ivy.default_device` internally.
 
 This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `devices discussion`_,
-or reach out on `discord`_ in the `devices channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_
+or in the `devices forum`_!
 
 
 **Video**
