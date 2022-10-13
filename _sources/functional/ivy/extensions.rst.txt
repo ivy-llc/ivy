@@ -26,6 +26,7 @@ Extensions
    extensions/kaiser_window.rst
    extensions/moveaxis.rst
    extensions/pad.rst
+   extensions/heaviside.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:

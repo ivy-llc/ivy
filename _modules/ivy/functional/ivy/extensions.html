@@ -1180,6 +1180,50 @@
         <span class="n">reflect_type</span><span class="o">=</span><span class="n">reflect_type</span><span class="p">,</span>
         <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
     <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="heaviside"><a class="viewcode-back" href="../../../../functional/ivy/extensions/heaviside/heaviside_functional.html#ivy.functional.ivy.extensions.heaviside">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Heaviside step function for each element in x1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        input array.</span>
+<span class="sd">    x2</span>
+<span class="sd">        values to use where x1 is zero.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        output array with element-wise Heaviside step function of x1.</span>
+<span class="sd">        This is a scalar if both x1 and x2 are scalars.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([-1.5, 0, 2.0])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0.5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.heaviside(x1, x2)</span>
+<span class="sd">    ivy.array([0.0000, 0.5000, 1.0000])</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([-1.5, 0, 2.0])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.2, -2.0, 3.5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.heaviside(x1, x2)</span>
+<span class="sd">    ivy.array([0., -2., 1.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
