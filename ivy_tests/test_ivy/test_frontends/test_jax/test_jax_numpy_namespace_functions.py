@@ -903,8 +903,9 @@ def test_jax_numpy_sin(
         fn_tree="numpy.sin",
         x=x[0],
     )
+
     
-    # arccos
+# arccos
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
@@ -934,6 +935,7 @@ def test_jax_numpy_arccos(
         x=x[0],
     )
 
+    
 # arccosh
 @handle_cmd_line_args
 @given(
@@ -964,6 +966,7 @@ def test_jax_numpy_arccosh(
         x=x[0],
     )
 
+    
 # arcsin
 @handle_cmd_line_args
 @given(
@@ -994,6 +997,7 @@ def test_jax_numpy_arcsin(
         x=x[0],
     )
 
+    
 # arcsinh
 @handle_cmd_line_args
 @given(
