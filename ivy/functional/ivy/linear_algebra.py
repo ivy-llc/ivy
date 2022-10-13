@@ -1395,12 +1395,12 @@ def slogdet(
 
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0],
     ...                [3.0, 4.0]])
@@ -1408,7 +1408,7 @@ def slogdet(
     >>> print(y)
     slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
     ...                                [3.0, 4.0]]),
