@@ -147,3 +147,52 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
                 fill_value, dtype
             )
         )
+
+
+# General #
+# ------- #
+
+
+def check_gather_input_valid(params, indices, axis, batch_dims):
+    if batch_dims > axis:
+        raise ivy.exceptions.IvyException(
+            "batch_dims ({}) must be less than or equal to axis ({}).".format(
+                batch_dims, axis
+            )
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "batch dimensions must match in `params` and `indices`;"
+            + " saw {} vs. {}".format(
+                params.shape[0:batch_dims], indices.shape[0:batch_dims]
+            )
+        )
+
+
+def check_gather_nd_input_valid(params, indices, batch_dims):
+    if batch_dims >= len(params.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = {} must be less than rank(`params`) = {}.".format(
+                batch_dims, len(params.shape)
+            )
+        )
+    if batch_dims >= len(indices.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = {}  must be less than rank(`indices`) = {}.".format(
+                batch_dims, len(indices.shape)
+            )
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "batch dimensions must match in `params` and `indices`;"
+            + " saw {} vs. {}".format(
+                params.shape[0:batch_dims], indices.shape[0:batch_dims]
+            )
+        )
+    if indices.shape[-1] > (len(params.shape[batch_dims:])):
+        raise ivy.exceptions.IvyException(
+            "index innermost dimension length must be <= "
+            + "rank(`params[batch_dims:]`); saw: {} vs. {} .".format(
+                indices.shape[-1], len(params.shape[batch_dims:])
+            )
+        )
