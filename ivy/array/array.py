@@ -31,6 +31,11 @@ from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
 from .wrapping import add_ivy_array_instance_methods
 
+import numpy as np
+import tensorflow as tf
+import torch
+import jax
+
 
 def _native_wrapper(f):
     @functools.wraps(f)
@@ -539,8 +544,19 @@ class Array(
     def __bool__(self):
         return self._data.__bool__()
 
+    # @_native_wrapper
+    # def __dlpack__(self, stream=None):
+    #     return self._data.__dlpack__()
     @_native_wrapper
-    def __dlpack__(self, stream=None):
+    def __dlpack__(self):
+        if ivy.current_backend_str() == "numpy":
+            return np.array(self._data).__dlpack__()
+        if ivy.current_backend_str() == "tensorflow":
+            return tf.experimental.dlpack.to_dlpack(tf.Tensor(self._data))
+        if ivy.current_backend_str() == "torch":
+            return torch.utils.dlpack.to_dlpack(torch.Tensor(self._data))
+        if ivy.current_backend_str() == "jax":
+            return jax.dlpack.to_dlpack(jax.numpy.array(self._data))
         return self._data.__dlpack__()
 
     @_native_wrapper
