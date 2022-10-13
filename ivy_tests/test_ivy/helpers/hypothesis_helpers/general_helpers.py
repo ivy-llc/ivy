@@ -19,6 +19,7 @@ def apply_safety_factor(
 ):
     """
     Applies safety factor scaling to numeric data type.
+
     Parameters
     ----------
     dtype

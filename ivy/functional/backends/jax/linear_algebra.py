@@ -99,8 +99,12 @@ def diagonal(
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
@@ -188,6 +192,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x.shape[-3] == 0:
+        return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -245,7 +251,7 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
+def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -255,7 +261,7 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray]:
     results = NamedTuple("slogdet", [("sign", JaxArray), ("logabsdet", JaxArray)])
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)

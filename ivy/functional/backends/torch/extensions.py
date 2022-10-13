@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -115,9 +115,7 @@ def lcm(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.abs(
-        torch.lcm(x1, x2, out=out)
-    )
+    return torch.abs(torch.lcm(x1, x2, out=out))
 
 
 lcm.support_native_out = True
@@ -131,12 +129,12 @@ def hann_window(
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.hann_window(
-        window_length, 
-        periodic=periodic, 
-        dtype=dtype, 
+        window_length,
+        periodic=periodic,
+        dtype=dtype,
         layout=torch.strided,
         device=None,
-        requires_grad=None
+        requires_grad=None,
     )
 
 
@@ -165,11 +163,9 @@ def max_pool2d(
     pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
     pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = torch.nn.functional.pad(
-        x, [pad_w // 2,
-            pad_w - pad_w // 2,
-            pad_h // 2,
-            pad_h - pad_h // 2],
-        value=float("-inf")
+        x,
+        [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
+        value=float("-inf"),
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.exceptions.IvyException(
@@ -183,3 +179,36 @@ def max_pool2d(
 
 
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.kaiser_window(
+        window_length,
+        periodic,
+        beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False,
+    )
+
+
+def moveaxis(
+    a: torch.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False
