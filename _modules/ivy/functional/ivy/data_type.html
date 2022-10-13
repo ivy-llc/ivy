@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -762,22 +762,12 @@
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(ivy.int32)</span>
 <span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.iinfo(ivy.uint64)</span>
-<span class="sd">    iinfo(min=0, max=18446744073709551615, dtype=uint64)</span>
-
 <span class="sd">    With :code:`str` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(&#39;int32&#39;)</span>
 <span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.iinfo(&#39;int64&#39;)</span>
-<span class="sd">    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)</span>
-
 <span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([13,21,34])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
-<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([13,21,34], dtype=ivy.int8)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
@@ -785,23 +775,11 @@
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7,84,314], dtype=ivy.int16)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
-<span class="sd">    iinfo(min=-32768, max=32767, dtype=int16)</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7,84,314], dtype=ivy.int64)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
 <span class="sd">    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),</span>
-<span class="sd">    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.iinfo(c)</span>
-<span class="sd">    {</span>
-<span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
-<span class="sd">        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
-<span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16),</span>
 <span class="sd">    ...                   y=ivy.array([76,81,16], dtype=ivy.uint32))</span>
@@ -810,27 +788,6 @@
 <span class="sd">        x: iinfo(min=0, max=65535, dtype=uint16),</span>
 <span class="sd">        y: iinfo(min=0, max=4294967295, dtype=uint32)</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([109,8400,14], dtype=ivy.int32)</span>
-<span class="sd">    &gt;&gt;&gt; x.iinfo()</span>
-<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-119,122,14], dtype=ivy.int8))</span>
-<span class="sd">    &gt;&gt;&gt; x.iinfo()</span>
-<span class="sd">    iinfo(min=-128, max=127, dtype=int8)</span>
-
-<span class="sd">    Using :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),</span>
-<span class="sd">    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
-<span class="sd">    &gt;&gt;&gt; c.iinfo()</span>
-<span class="sd">    {</span>
-<span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
-<span class="sd">        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
@@ -912,7 +869,6 @@
 <div class="viewcode-block" id="DefaultDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultDtype</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span></div>
 
@@ -928,7 +884,6 @@
 <div class="viewcode-block" id="DefaultFloatDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultFloatDtype</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultFloatDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
 
@@ -944,7 +899,6 @@
 <div class="viewcode-block" id="DefaultIntDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultIntDtype</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
 
@@ -998,15 +952,7 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    64</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.uint16)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    16</span>
-
 <span class="sd">    With :class:`ivy.NativeDtype` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.native_int8)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    8</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.native_bool)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1028,7 +974,6 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        data type string &#39;float32&#39;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
@@ -1046,12 +991,10 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        data type e.g. ivy.float32.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
 <span class="k">def</span> <span class="nf">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">frexp</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -1059,7 +1002,6 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="closest_valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/closest_valid_dtype.html#ivy.functional.ivy.data_type.closest_valid_dtype">[docs]</a><span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Determines the closest valid datatype to the datatype passed as input.</span>
@@ -1074,35 +1016,25 @@
 <span class="sd">    ret</span>
 <span class="sd">        The closest valid data type as a native ivy.Dtype</span>
 
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Dtype` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; xType = ivy.float16</span>
 <span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
 <span class="sd">    &gt;&gt;&gt; print(yType)</span>
 <span class="sd">    float16</span>
 
-<span class="sd">    &gt;&gt;&gt; xType = ivy.int8</span>
-<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
-<span class="sd">    &gt;&gt;&gt; print(yType)</span>
-<span class="sd">    int8</span>
-
 <span class="sd">    With :class:`ivy.NativeDtype` inputs:</span>
-
 <span class="sd">    &gt;&gt;&gt; xType = ivy.native_uint16</span>
 <span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
 <span class="sd">    &gt;&gt;&gt; print(yType)</span>
 <span class="sd">    &lt;dtype:&#39;uint16&#39;&gt;</span>
 
 <span class="sd">    With :code:`str` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; xType = &#39;int32&#39;</span>
 <span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
 <span class="sd">    &gt;&gt;&gt; print(yType)</span>
 <span class="sd">    int32</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
@@ -1130,7 +1062,6 @@
 <span class="sd">    -------</span>
 <span class="sd">        Return the input float dtype if provided, otherwise return the global default</span>
 <span class="sd">        float dtype.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -1208,7 +1139,6 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0], dtype=&quot;uint64&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.infer_default_dtype(x.dtype)</span>
 <span class="sd">    &#39;uint32&#39;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="n">default_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
@@ -1237,7 +1167,6 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        Return the input dtype if provided, otherwise return the global default dtype.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -1308,7 +1237,6 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([9,8], dtype=&quot;int32&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype(input=x)</span>
 <span class="sd">    &#39;int32&#39;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>

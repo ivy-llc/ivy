@@ -5,9 +5,9 @@ erf
 
 .. autofunction:: ivy.array.array_methods.erf
 
-.. autofunction:: ivy.container.container_methods.static_erf
-
 .. autofunction:: ivy.container.container_methods.erf
+
+.. autofunction:: ivy.container.container_methods.static_erf
 |
 | **Supported Frameworks:**
 

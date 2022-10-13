@@ -53,17 +53,14 @@ Data type
    data_type/DefaultDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__.rst
    data_type/DefaultFloatDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__.rst
    data_type/DefaultIntDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__.rst
    data_type/DefaultUintDtype:
     """"""
