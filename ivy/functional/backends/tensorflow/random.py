@@ -152,3 +152,6 @@ def dirichlet(
             name='Dirichlet'
         ).sample(size),
         dtype=dtype)
+
+
+dirichlet.unsupported_dtypes = ("bfloat16", "float16")

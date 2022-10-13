@@ -7,7 +7,7 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
+import numpy as np
 
 # random_uniform
 @handle_cmd_line_args
@@ -334,12 +334,9 @@ def test_shuffle(
 @handle_cmd_line_args
 @given(
     dtype_and_alpha=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(
-            st.tuples(
-                st.integers(min_value=1, max_value=5),
-            ),
-            key="dirichlet_shape"
+        available_dtypes=helpers.get_dtypes("float", index=1),
+        shape=st.tuples(
+            st.integers(min_value=2, max_value=5),
         ),
         min_value=0,
         max_value=100,
@@ -347,7 +344,7 @@ def test_shuffle(
     ),
     size=st.tuples(
         st.integers(min_value=1, max_value=5),
-        st.integers(min_value=0, max_value=5)
+        st.integers(min_value=1, max_value=5)
     ),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
@@ -373,6 +370,6 @@ def test_dirichlet(
         instance_method=instance_method,
         fw=fw,
         fn_name="dirichlet",
-        alpha=alpha,
+        alpha=np.asarray(alpha[0], dtype=dtype[0]),
         size=size,
     )
