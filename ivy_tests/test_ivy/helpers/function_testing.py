@@ -1821,8 +1821,7 @@ def flatten(*, ret):
         ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
         ret_flat = [
-            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(ret_flat).dtype)))
-            for x in ret_flat
+            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat
         ]
     else:
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
