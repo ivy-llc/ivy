@@ -119,6 +119,11 @@ def cos(x):
 
 
 @inputs_to_ivy_arrays
+def cosh(x):
+    return ivy.cosh(x)
+
+
+@inputs_to_ivy_arrays
 def dot(a, b, *, precision=None):
     a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
@@ -153,6 +158,26 @@ def mod(x1, x2):
 @inputs_to_ivy_arrays
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+
+@inputs_to_ivy_arrays
+def sinh(x):
+    return ivy.sinh(x)
+
+
+@inputs_to_ivy_arrays
+def sin(x):
+    return ivy.sin(x)
+
+
+@inputs_to_ivy_arrays
+def tan(x):
+    return ivy.tan(x)
+
+
+@inputs_to_ivy_arrays
+def tanh(x):
+    return ivy.tanh(x)
 
 
 def uint16(x):

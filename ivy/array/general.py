@@ -260,6 +260,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -290,7 +291,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array(2)
         """
-        return ivy.gather_nd(self, indices, out=out)
+        return ivy.gather_nd(self, indices, batch_dims=batch_dims, out=out)
 
     def einops_rearrange(
         self: ivy.Array,
