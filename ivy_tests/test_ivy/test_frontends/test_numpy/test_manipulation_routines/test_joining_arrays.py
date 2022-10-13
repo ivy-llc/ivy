@@ -140,7 +140,7 @@ def test_numpy_vstack(
     for i in range(factor):
         xs += [x[0]]
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]] * (factor+1),
+        input_dtypes=[dtype[0]] * (factor + 1),
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
