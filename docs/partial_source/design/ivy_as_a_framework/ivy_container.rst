@@ -629,4 +629,4 @@ Finally, the Ivy Containers can also be used for storing network weights. In fac
 
 That should hopefully be enough to get you started with the :class:`ivy.Container` class 😊
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
