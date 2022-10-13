@@ -137,7 +137,7 @@ def gather(
         for z in zip_list:
             p, i = z
             r = p[
-                (slice(None),) * (axis - batch_dims % p.ndim) + (i.type(torch.int64),)
+                (slice(None),) * ((axis - batch_dims) % p.ndim) + (i.type(torch.int64),)
             ]
             result.append(r)
         result = torch.stack(result)
