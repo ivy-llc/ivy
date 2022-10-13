@@ -17,3 +17,4 @@ scipy==1.8.1
 dm-haiku==0.0.6 # mod_name=haiku
 pydriller
 tqdm
+coverage
