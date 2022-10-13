@@ -22,7 +22,6 @@ Manipulation
    manipulation/squeeze.rst
    manipulation/stack.rst
    manipulation/clip.rst
-   manipulation/pad.rst
    manipulation/constant_pad.rst
    manipulation/repeat.rst
    manipulation/split.rst
