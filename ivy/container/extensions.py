@@ -1,5 +1,16 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple
+from typing import (
+    Optional,
+    Union,
+    List,
+    Dict,
+    Tuple,
+    Callable,
+    Literal,
+    Iterable,
+    Sequence,
+)
+from numbers import Number
 
 # local
 import ivy
@@ -578,10 +589,9 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.kaiser_window. This method 
-        simply wraps the function, and so the docstring for ivy.kaiser_window 
+        ivy.Container static method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
-
         Parameters
         ----------
         window_length
@@ -592,15 +602,13 @@ class ContainerWithExtensions(ContainerBase):
         beta
             a float used as shape parameter for the window.
         dtype
-            data type of the returned array.        
+            data type of the returned array.
         out
             optional output container, for writing the result to.
-
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
-
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -636,10 +644,9 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.kaiser_window. This method 
-        simply wraps the function, and so the docstring for ivy.kaiser_window 
+        ivy.Container instance method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
-
         Parameters
         ----------
         self
@@ -650,15 +657,13 @@ class ContainerWithExtensions(ContainerBase):
         beta
             a float used as shape parameter for the window.
         dtype
-            data type of the returned array.        
+            data type of the returned array.
         out
             optional output container, for writing the result to.
-
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
-
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -677,5 +682,205 @@ class ContainerWithExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             dtype=dtype,
+            out=out,
+        )
+
+    @staticmethod
+    def static_moveaxis(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.moveaxis. This method simply wraps
+        the function, and so the docstring for ivy.moveaxis also applies to this method
+        with minimal changes.
+        Parameters
+        ----------
+        a
+            The container with the arrays whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with moved axes.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> ivy.Container.static_moveaxis(x, 0, -1).shape
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "moveaxis",
+            a,
+            source,
+            destination,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def moveaxis(
+        self: ivy.Container,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.flatten also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            The container with the arrays whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with moved axes.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> x.moveaxis(, 0, -1).shape
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return self.static_moveaxis(self, source, destination, out=out)
+
+    @staticmethod
+    def static_pad(
+        x: ivy.Container,
+        /,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies to
+        this method with minimal changes.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "pad",
+            x,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def pad(
+        self: ivy.Container,
+        /,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies to
+        this method with minimal changes.
+        """
+        return self.static_pad(
+            self,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

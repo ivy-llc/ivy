@@ -1,4 +1,5 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Literal, List, Sequence
+from numbers import Number
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -181,19 +182,72 @@ def max_pool2d(
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
 
 
+def pad(
+    x: torch.Tensor,
+    /,
+    pad_width: Tuple[int],
+    *,
+    mode: Optional[Literal["constant", "reflect", "edge", "wrap"]] = "constant",
+    stat_length: Optional[Union[torch.Tensor, int]] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if x.shape == ():
+        x = x.unsqueeze(0)
+    if isinstance(pad_width, torch.Tensor):
+        pad_width = pad_width.detach().cpu().numpy().tolist()
+    pad_width.reverse()
+    pad_width_flat: List[int] = list()
+    for pad_width_sec in pad_width:
+        for item in pad_width_sec:
+            pad_width_flat.append(item)
+    if mode == "constant":
+        return torch.nn.functional.pad(
+            x,
+            pad_width_flat,
+            mode=mode,
+            value=constant_values,
+        )
+    else:
+        x = x.unsqueeze(dim=0)
+        if mode == "edge":
+            mode = "replicate"
+        elif mode == "wrap":
+            mode = "circular"
+            x = x.unsqueeze(dim=0)
+        return torch.nn.functional.pad(x, pad_width_flat, mode=mode).squeeze()
+
+
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.kaiser_window(
-        window_length, 
-        periodic, 
-        beta, 
-        dtype=dtype, 
-        layout=torch.strided, 
-        device=None, 
-        requires_grad=False)
+        window_length,
+        periodic,
+        beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False,
+    )
+
+
+def moveaxis(
+    a: torch.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False

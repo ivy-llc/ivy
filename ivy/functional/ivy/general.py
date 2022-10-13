@@ -826,7 +826,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
         a scalar copying the element of the array ``x``.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
@@ -3270,12 +3270,12 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
+        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.values())[0], dict):
+        if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     ivy.assertions.check_false(
@@ -3368,7 +3368,9 @@ def _get_devices_and_dtypes(fn, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
+        ivy.assertions.check_isinstance(
+            list(fn_supported_dnd.__get__().values())[0], tuple
+        )
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3378,7 +3380,9 @@ def _get_devices_and_dtypes(fn, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
+        ivy.assertions.check_isinstance(
+            list(fn_unsupported_dnd.__get__().values())[0], tuple
+        )
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
