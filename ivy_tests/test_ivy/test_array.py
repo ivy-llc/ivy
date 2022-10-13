@@ -1073,13 +1073,15 @@ def test_array__float__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         max_num_dims=0,
+        min_value=-1e15,
+        max_value=1e15,
     )
 )
 def test_array__int__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = ivy.array(x[0])
     ret = int(data)
     np_ret = int(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)

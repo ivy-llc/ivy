@@ -1,4 +1,5 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, Literal, Sequence
+from numbers import Number
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -131,6 +132,31 @@ def max_pool2d(
     return res
 
 
+def pad(
+    x: tf.Tensor,
+    /,
+    pad_width: tf.Tensor,
+    *,
+    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+    stat_length: Optional[Union[tf.Tensor, int]] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    if mode == "constant":
+        return tf.pad(
+            x,
+            pad_width,
+            mode=mode,
+            constant_values=constant_values,
+        )
+    else:
+        return tf.pad(x, pad_width, mode=mode)
+
+
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -141,7 +167,20 @@ def kaiser_window(
 ) -> Union[tf.Tensor, tf.Variable]:
     if periodic is False:
         return tf.signal.kaiser_window(
-            window_length, beta, dtype=tf.dtypes.float32, name=None) 
-    else: 
-        return tf.signal.kaiser_window(
-            window_length + 1, beta, dtype=dtype, name=None)[:-1] 
+            window_length, beta, dtype=tf.dtypes.float32, name=None
+        )
+    else:
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
+            :-1
+        ]
+
+
+def moveaxis(
+    a: Union[tf.Tensor, tf.Variable],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.moveaxis(a, source, destination)
