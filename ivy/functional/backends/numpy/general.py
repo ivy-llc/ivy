@@ -55,24 +55,7 @@ def gather(
 ) -> np.ndarray:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    if batch_dims > axis:
-        raise ivy.exceptions.IvyException(
-            "batch_dims ("
-            + str(batch_dims)
-            + ") must be less \
-            than or equal to axis ("
-            + str(axis)
-            + ")."
-        )
-    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
-        raise ivy.exceptions.IvyException(
-            "params.shape[0:batch_dims] "
-            + str(params.shape[0:batch_dims])
-            + " should \
-            be equal to indices.shape[0:batch_dims]"
-            + str(indices.shape[0:batch_dims])
-            + "."
-        )
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = np.take(params, indices, axis)
@@ -132,40 +115,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if batch_dims >= len(params.shape):
-        raise ivy.exceptions.IvyException(
-            "batch_dims = "
-            + str(batch_dims)
-            + " must be less than rank(`params`)"
-            + str(len(params.shape))
-            + "."
-        )
-    if batch_dims >= len(indices.shape):
-        raise ivy.exceptions.IvyException(
-            "batch_dims = "
-            + str(batch_dims)
-            + " must be less than rank(`indices`)"
-            + str(len(indices.shape))
-            + "."
-        )
-    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
-        raise ivy.exceptions.IvyException(
-            "`params.shape[0:batch_dims]` "
-            + str(params.shape[0:batch_dims])
-            + " must \
-            be equal to `indices.shape[0:batch_dims]`"
-            + str(indices.shape[0:batch_dims])
-            + "."
-        )
-    if indices[-1] >= (len(params.shape[batch_dims:])):
-        raise ivy.exceptions.IvyException(
-            "index innermost dimension length must be <= \
-            rank(`params[batch_dims:]`); saw: "
-            + str(indices[-1])
-            + " vs."
-            + str((len(params.shape[batch_dims:])))
-            + "."
-        )
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:

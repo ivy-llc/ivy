@@ -729,8 +729,6 @@ def array_and_ndindices_batch_dims(
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
-    min_num_ndindices=1,
-    max_num_ndindices=10,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -749,50 +747,62 @@ def array_and_ndindices_batch_dims(
         )
     )
 
-    # num_ndindices defines the number of elements to generate.
-    num_ndindices = draw(
+    batch_dims = draw(
         helpers.ints(
-            min_value=min_num_ndindices,
-            max_value=max_num_ndindices,
+            min_value=0,
+            max_value=len(x_shape) - 1,
         )
     )
     # indices_dims defines how far into the array to index.
     indices_dims = draw(
         helpers.ints(
             min_value=1,
-            max_value=len(x_shape),
+            max_value=max(1, len(x_shape) - batch_dims),
         )
     )
-    batch_dims = draw(
-        helpers.ints(
-            min_value=0,
-            max_value=indices_dims - 1,
+
+    batch_shape = x_shape[0:batch_dims]
+    shape_var = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims - batch_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
-    ndindices = []
-    ndindices_dtype = draw(st.sampled_from(indices_dtypes))
-    if num_ndindices == 1:
-        index = draw(
-            helpers.ints(
-                min_value=0,
-                max_value=max(0, x_shape[0] - 1),
-            )
-        )
-        ndindices.append(index)
+    ndindices_shape = list(batch_shape) + list(shape_var) + [indices_dims]
+    ndindices = np.zeros(ndindices_shape, dtype="int32")
+    if len(ndindices_shape) <= 1:
+        enumerator = ndindices
     else:
-        for _ in range(num_ndindices):
-            nd_index = []
-            for j in range(batch_dims, indices_dims):
-                axis_index = draw(
-                    helpers.ints(
-                        min_value=0,
-                        max_value=max(0, x_shape[j] - 1),
-                    )
-                )
-                nd_index.append(axis_index)
-            ndindices.append(nd_index)
+        enumerator = np.zeros(ndindices_shape[0:-1], dtype="int32")
+    ndindices_dtype = draw(st.sampled_from(indices_dtypes))
+    for idx, _ in np.ndenumerate(enumerator):
+        bounds = []
+        for j in range(0, indices_dims):
+            bounds.append(x_shape[j + batch_dims] - 1)
+        ndindices[idx] = draw(ndindices_with_bounds(bounds=bounds))
     ndindices = np.asarray(ndindices, ndindices_dtype)
     return [x_dtype[0], ndindices_dtype], x[0], ndindices, batch_dims
+
+
+@st.composite
+def ndindices_with_bounds(
+    draw,
+    *,
+    bounds,
+):
+    arr = []
+    for i in bounds:
+        x = draw(
+            helpers.ints(
+                min_value=0,
+                max_value=max(0, i),
+            )
+        )
+        arr.append(x)
+    return arr
 
 
 # gather_nd
@@ -801,8 +811,6 @@ def array_and_ndindices_batch_dims(
     params_n_ndindices_batch_dims=array_and_ndindices_batch_dims(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
-        min_num_ndindices=1,
-        max_num_ndindices=10,
         allow_inf=False,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
