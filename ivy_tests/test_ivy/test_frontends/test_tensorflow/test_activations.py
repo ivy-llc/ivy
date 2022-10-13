@@ -77,6 +77,7 @@ def test_tensorflow_sigmoid(
         x=x[0],
     )
 
+
 # tanh
 @handle_cmd_line_args
 @given(
