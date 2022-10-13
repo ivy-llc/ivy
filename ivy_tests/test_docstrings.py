@@ -107,6 +107,7 @@ def check_docstring_examples_run(
             end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
+            p_output = p_output.replace("...", "")
             if parsed_output != "":
                 parsed_output += ","
             parsed_output += p_output
@@ -114,9 +115,16 @@ def check_docstring_examples_run(
     if end_index == -1:
         return True
 
-    executable_lines = [
-        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
-    ]
+    docstring_split = docstring.split("\n")
+    executable_lines = []
+
+    for index, line in enumerate(docstring_split):
+        if ">>>" in line:
+            executable_lines.append(line.split(">>>")[1][1:])
+        if " ... " in line:
+            executable_lines[-1] += line.split("...")[1][1:] 
+        if ">>> print(" in line:
+            break
 
     # noinspection PyBroadException
     f = StringIO()
