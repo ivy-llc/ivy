@@ -757,7 +757,7 @@ def test_solve(
     input_dtype1, x1 = x
     input_dtype2, x2 = y
     helpers.test_function(
-        input_dtypes=input_dtype1 + input_dtype2,
+        input_dtypes=[input_dtype1, input_dtype2],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
