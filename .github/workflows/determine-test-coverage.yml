@@ -19,7 +19,7 @@ jobs:
            git clone https://github.com/unifyai/Mapping.git
            cp Mapping/tests.pkl ivy/
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 1
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 0
            cd ..
            mkdir tests
            cp ivy/tests.pkl tests/
