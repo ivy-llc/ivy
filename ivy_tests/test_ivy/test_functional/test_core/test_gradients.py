@@ -12,13 +12,15 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
-def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
+def get_gradient_arguments_with_lr(
+    draw, *, min_value=-1e20, max_value=1e20, num_arrays=1, no_lr=False
+):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            min_value=-1e20,
-            max_value=1e20,
+            min_value=min_value,
+            max_value=max_value,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
             safety_factor_scale="log",
@@ -545,7 +547,11 @@ def test_adam_update(
 # lamb_update
 @handle_cmd_line_args
 @given(
-    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(
+        min_value=-1e5,
+        max_value=1e5,
+        num_arrays=4,
+    ),
     step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
         arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),

@@ -1,11 +1,14 @@
 # global
 import numpy as np
-from typing import NamedTuple, Optional
+from typing import Tuple, Optional
 from collections import namedtuple
 from packaging import version
 
 
-def unique_all(x: np.ndarray, /) -> NamedTuple:
+def unique_all(
+    x: np.ndarray,
+    /,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     Results = namedtuple(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
@@ -41,7 +44,7 @@ def unique_all(x: np.ndarray, /) -> NamedTuple:
 def unique_counts(
     x: np.ndarray,
     /,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     v, c = np.unique(x, return_counts=True)
     nan_count = np.count_nonzero(np.isnan(x))
     if nan_count > 1:
@@ -56,7 +59,7 @@ def unique_counts(
 def unique_inverse(
     x: np.ndarray,
     /,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
     values, inverse_indices = np.unique(x, return_inverse=True)
     nan_count = np.count_nonzero(np.isnan(x))

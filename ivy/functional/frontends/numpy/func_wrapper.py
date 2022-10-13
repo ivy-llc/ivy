@@ -163,11 +163,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         arguments into `ivy.Array` instances, and then calls the function with the
         updated arguments.
 
-       Parameters
+        Parameters
         ----------
         args
             The arguments to be passed to the function.
-
         kwargs
             The keyword arguments to be passed to the function.
 
@@ -180,15 +179,14 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             out = kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args,
-                                  _numpy_to_ivy,
-                                  include_derived={tuple: True})
-        ivy_kwargs = ivy.nested_map(kwargs,
-                                    _numpy_to_ivy,
-                                    include_derived={tuple: True})
+        ivy_args = ivy.nested_map(args, _numpy_to_ivy, include_derived={tuple: True})
+        ivy_kwargs = ivy.nested_map(
+            kwargs, _numpy_to_ivy, include_derived={tuple: True}
+        )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
+
     new_fn.inputs_to_ivy_arrays = True
     return new_fn
 
@@ -207,6 +205,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
             return ret
         # convert all returned arrays to `ndarray` instances
         return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
+
     new_fn.outputs_to_numpy_arrays = True
     return new_fn
 

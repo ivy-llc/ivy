@@ -1156,8 +1156,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 1.61, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log()
         >>> print(y)
         ivy.array([[nan, 0., 1.61, inf],
@@ -1259,8 +1259,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 0.699, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log10()
         >>> print(y)
         ivy.array([[nan, 0., 0.699, inf],

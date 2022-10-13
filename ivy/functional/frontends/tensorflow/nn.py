@@ -117,6 +117,21 @@ def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
 
 
+def silu(features, beta: float = 1.0):
+    beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
+    return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
+
+
+silu.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+    "bfloat16",
+)
+
+
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     ivy.assertions.check_shape(labels, logits)
     zeros = ivy.zeros_like(logits)
