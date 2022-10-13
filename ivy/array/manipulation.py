@@ -254,22 +254,17 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[2,3],[1,4]])
-        >>> y = ivy.array([[4,5],[6,7]])
-        >>> x.stack([y])
-        ivy.array([[[ 6,  8],
-                [ 7, 11]]])
-        >>>
-
-        >>> x = ivy.array([[1,2],[3,4]])
-        >>> y = ivy.array([[5,6],[7,8]])
+        >>> x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])
+        >>> y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])
         >>> x.stack([y],axis=1)
-        ivy.array([[[ 6,  8]],
-            [[10, 12]]])
+        ivy.array([[1, 3, 5, 7],
+            [2, 4, 6, 8]])
         >>> x.stack([y],axis=0)
-        ivy.array([[[ 6,  8],
-                [10, 12]]])
-        >>>
+        >>> x.stack([y],axis=0)
+        ivy.array([[1, 2],
+            [3, 4],
+            [5, 6],
+            [7, 8]])
         """
         return ivy.stack(self.concat(arrays), axis=axis, out=out)
 
