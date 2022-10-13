@@ -1,5 +1,15 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Callable, Literal, Iterable, Sequence
+from typing import (
+    Optional,
+    Union,
+    List,
+    Dict,
+    Tuple,
+    Callable,
+    Literal,
+    Iterable,
+    Sequence,
+)
 from numbers import Number
 
 # local
