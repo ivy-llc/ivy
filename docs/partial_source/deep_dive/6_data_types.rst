@@ -22,10 +22,10 @@ Data Types 💾
 .. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
-.. _`data types discussion`: https://github.com/unifyai/ivy/discussions/1307
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
+.. _`data types forum`: https://discord.com/channels/799879767196958751/1028297299799060490
 
 
 The data types supported by Ivy are as follows:
@@ -536,9 +536,8 @@ integer array inputs for the frameworks which support it natively.
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `data types discussion`_,
-or reach out on `discord`_ in the `data types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_
+or in the `data types forum`_!
 
 
 **Video**
