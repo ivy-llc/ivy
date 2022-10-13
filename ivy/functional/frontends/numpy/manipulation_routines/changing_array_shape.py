@@ -12,5 +12,5 @@ def broadcast_to(array, shape, subok=False):
     return ivy.broadcast_to(array, shape)
 
 
-def ravel(a, order='C'):
+def ravel(a, order="C"):
     return ivy.reshape(a, (-1,))

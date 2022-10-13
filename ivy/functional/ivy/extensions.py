@@ -784,6 +784,7 @@ def kaiser_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
+
     Parameters
     ----------
     window_length
@@ -797,12 +798,14 @@ def kaiser_window(
         data type of the returned array.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.kaiser_window(5)
     ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
     >>> ivy.kaiser_window(5, True, 5)
@@ -827,6 +830,7 @@ def moveaxis(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move axes of an array to new positions..
+
     Parameters
     ----------
     a
@@ -838,10 +842,12 @@ def moveaxis(
         These must also be unique.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Array with moved axes. This array is a view of the input array.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -852,8 +858,8 @@ def moveaxis(
     (5, 3, 4)
     """
     return ivy.current_backend().moveaxis(a, source, destination, out=out)
-    
-    
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1044,3 +1050,47 @@ def pad(
         reflect_type=reflect_type,
         out=out,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def heaviside(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Heaviside step function for each element in x1.
+
+    Parameters
+    ----------
+    x1
+        input array.
+    x2
+        values to use where x1 is zero.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        output array with element-wise Heaviside step function of x1.
+        This is a scalar if both x1 and x2 are scalars.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([-1.5, 0, 2.0])
+    >>> x2 = ivy.array([0.5])
+    >>> ivy.heaviside(x1, x2)
+    ivy.array([0.0000, 0.5000, 1.0000])
+
+    >>> x1 = ivy.array([-1.5, 0, 2.0])
+    >>> x2 = ivy.array([1.2, -2.0, 3.5])
+    >>> ivy.heaviside(x1, x2)
+    ivy.array([0., -2., 1.])
+    """
+    return ivy.current_backend().heaviside(x1, x2, out=out)

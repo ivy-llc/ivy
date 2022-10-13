@@ -147,7 +147,7 @@ def test_numpy_vstack(
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="vstack",
-        tup=xs
+        tup=xs,
     )
 
 
@@ -171,9 +171,13 @@ def test_numpy_hstack(
     num_positional_args,
 ):
     dtype, x = dtype_and_x
-    xs = [x[0], ]
+    xs = [
+        x[0],
+    ]
     for i in range(factor):
-        xs += [x[0], ]
+        xs += [
+            x[0],
+        ]
     helpers.test_frontend_function(
         input_dtypes=[dtype[0]] * (factor + 1),
         as_variable_flags=as_variable,
@@ -182,5 +186,5 @@ def test_numpy_hstack(
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="hstack",
-        tup=xs
+        tup=xs,
     )
