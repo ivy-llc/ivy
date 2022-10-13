@@ -260,7 +260,6 @@ class ArrayWithManipulation(abc.ABC):
         ivy.array([[1, 3, 5, 7],
             [2, 4, 6, 8]])
         >>> x.stack([y],axis=0)
-        >>> x.stack([y],axis=0)
         ivy.array([[1, 2],
             [3, 4],
             [5, 6],
