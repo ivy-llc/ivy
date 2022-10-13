@@ -1013,6 +1013,38 @@
 <span class="sd">        ivy.Container static method variant of ivy.stack. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.stack also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack(x,axis = 1)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0, 2],</span>
+<span class="sd">                        [1, 3]]),</span>
+<span class="sd">            b: ivy.array([[4],</span>
+<span class="sd">                        [5]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y])</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[0, 1],</span>
+<span class="sd">                        [2, 3]],</span>
+<span class="sd">                        [[3, 2],</span>
+<span class="sd">                        [1, 0]]]),</span>
+<span class="sd">            b: ivy.array([[[4, 5]],</span>
+<span class="sd">                        [[1, 0]]])</span>
+<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y],axis=1)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[0, 1],</span>
+<span class="sd">                        [3, 2]],</span>
+<span class="sd">                        [[2, 3],</span>
+<span class="sd">                        [1, 0]]]),</span>
+<span class="sd">            b: ivy.array([[[4, 5],</span>
+<span class="sd">                        [1, 0]]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;stack&quot;</span><span class="p">,</span>
@@ -1044,6 +1076,29 @@
 <span class="sd">        ivy.Container instance method variant of ivy.stack. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.stack</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))</span>
+<span class="sd">        &gt;&gt;&gt; x.stack([y])</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[0, 1],</span>
+<span class="sd">                        [2, 3]],</span>
+<span class="sd">                        [[3, 2],</span>
+<span class="sd">                        [1, 0]]]),</span>
+<span class="sd">            b: ivy.array([[[4, 5]],</span>
+<span class="sd">                        [[1, 0]]])</span>
+<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y],axis=1)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[0, 1],</span>
+<span class="sd">                        [3, 2]],</span>
+<span class="sd">                        [[2, 3],</span>
+<span class="sd">                        [1, 0]]]),</span>
+<span class="sd">            b: ivy.array([[[4, 5],</span>
+<span class="sd">                        [1, 0]]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_xs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
@@ -1116,7 +1171,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">            b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.repeat(2)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
