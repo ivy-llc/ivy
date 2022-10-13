@@ -631,7 +631,7 @@ def test_heaviside(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="kaiser_window",
+        fn_name="heaviside",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
