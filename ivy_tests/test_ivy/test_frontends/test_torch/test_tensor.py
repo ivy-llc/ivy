@@ -227,4 +227,3 @@ def test_torch_instance_tan(
         method_name="tan",
     )
     
-    
