@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Tuple, Sequence
 
 # local
 import ivy
@@ -51,8 +51,8 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
-                              b=ivy.array([3.5, 4.5, 5.5]))
+        >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
+        ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = ivy.Container.static_sinc(x)
         >>> print(y)
         {
@@ -112,8 +112,8 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
-                              b=ivy.array([3.5, 4.5, 5.5]))
+        >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
+        ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = x.sinc()
         >>> print(y)
         {
@@ -259,10 +259,10 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
-                            b=ivy.array([6, 54, 62, 10]))
-        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
-                            b=ivy.array([32, 40, 25, 13]))
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
+        ...                  b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
+        ...                  b=ivy.array([32, 40, 25, 13]))
         >>> ivy.Container.lcm(x1, x2)
         {
             a: ivy.array([10, 21, 60]),
@@ -313,10 +313,10 @@ class ContainerWithExtensions(ContainerBase):
 
         Examples
         --------
-        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),\
-                            b=ivy.array([6, 54, 62, 10]))
-        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),\
-                            b=ivy.array([32, 40, 25, 13]))
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
+        ...                  b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
+        ...                  b=ivy.array([32, 40, 25, 13]))
         >>> x1.lcm(x2)
         {
             a: ivy.array([10, 21, 60]),
@@ -333,3 +333,451 @@ class ContainerWithExtensions(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_hann_window(
+        window_length: Union[int, ivy.Container],
+        periodic: Optional[bool] = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hann_window. This method simply wraps
+        the function, and so the docstring for ivy.hann_window also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        window_length
+            container including multiple window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that contains the Hann windows.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_hann(x)
+        {
+            a: ivy.array([0.0000, 0.7500, 0.7500])
+            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hann_window",
+            window_length,
+            periodic,
+            dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hann_window(
+        self: ivy.Container,
+        periodic: Optional[bool] = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.hann_window. This method simply
+        wraps the function, and so the docstring for ivy.hann_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container containing the Hann windows.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.hann_window(x)
+        {
+            a: ivy.array([0.0000, 0.7500, 0.7500])
+            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
+        }
+        """
+        return self.static_hann_window(self, periodic, dtype, out=out)
+
+    @staticmethod
+    def static_max_pool2d(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.max_pool2dd. This method simply
+        wraps the function, and so the docstring for ivy.max_pool2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(ivy.Container.static_max_pool2d(x, (2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "max_pool2d",
+            x,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def max_pool2d(
+        self: ivy.Container,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+        """
+        return self.static_max_pool2d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_kaiser_window(
+        window_length: Union[int, ivy.Container],
+        periodic: bool = True,
+        beta: float = 12.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        window_length
+            input container including window lenghts.
+        periodic
+            If True, returns a periodic window suitable for use in spectral analysis.
+            If False, returns a symmetric window suitable for use in filter design.
+        beta
+            a float used as shape parameter for the window.
+        dtype
+            data type of the returned array.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Kaiser windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_kaiser_window(x, True, 5)
+        {
+            a: ivy.array([0.2049, 0.8712, 0.8712]),
+            a: ivy.array([0.0367, 0.7753, 0.7753]),
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "kaiser_window",
+            window_length,
+            periodic,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    def kaiser_window(
+        self: ivy.Container,
+        periodic: bool = True,
+        beta: float = 12.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.kaiser_window. This method
+        simply wraps the function, and so the docstring for ivy.kaiser_window
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including window lenghts.
+        periodic
+            If True, returns a periodic window suitable for use in spectral analysis.
+            If False, returns a symmetric window suitable for use in filter design.
+        beta
+            a float used as shape parameter for the window.
+        dtype
+            data type of the returned array.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Kaiser windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_kaiser_window(x, True, 5)
+        {
+            a: ivy.array([0.2049, 0.8712, 0.8712]),
+            a: ivy.array([0.0367, 0.7753, 0.7753]),
+        }
+        """
+        return self.static_kaiser_window(
+            self,
+            periodic,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    @staticmethod
+    def static_moveaxis(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.moveaxis. This method simply wraps
+        the function, and so the docstring for ivy.moveaxis also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        a
+            The container with the arrays whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with moved axes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> ivy.Container.static_moveaxis(x, 0, -1).shape
+
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "moveaxis",
+            a,
+            source,
+            destination,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def moveaxis(
+        self: ivy.Container,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.flatten also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container with the arrays whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with moved axes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> x.moveaxis(, 0, -1).shape
+
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return self.static_moveaxis(self, source, destination, out=out)
