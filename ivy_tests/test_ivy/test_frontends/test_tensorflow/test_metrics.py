@@ -270,6 +270,7 @@ def test_binary_crossentropy(
         label_smoothing=label_smoothing,
     )
 
+
 # sparse_categorical_accuracy
 @handle_cmd_line_args
 @given(
@@ -299,6 +300,7 @@ def test_sparse_categorical_accuracy(
         y_true=y_true,
         y_pred=y_pred,
     )
+
 
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
