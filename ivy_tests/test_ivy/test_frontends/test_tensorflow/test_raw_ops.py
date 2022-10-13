@@ -1964,7 +1964,7 @@ def test_tensorflow_RightShift(
     dtype_and_x, as_variable, num_positional_args, native_array
 ):
     dtype, xs = dtype_and_x
-        helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -1974,4 +1974,4 @@ def test_tensorflow_RightShift(
         fn_tree="raw_ops.RightShift",
         x=xs[0],
         y=xs[1],
-        )
+    )
