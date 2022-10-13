@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict, Sequence
+from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -170,8 +170,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \
-                              b=ivy.array([[2., 1.], [1., 1.]]))
+        >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]),
+        ...                      b=ivy.array([[2., 1.], [1., 1.]]))
         >>> y = ivy.Container.static_cholesky(x, upper='false')
         >>> print(y)
         {
@@ -181,8 +181,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
                             [0., 0.707]])
          }
         With multiple :class:`ivy.Container` inputs:
-        >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \
-                              b=ivy.array([[2., 1.], [1., 1.]]))
+        >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]),
+        ...                      b=ivy.array([[2., 1.], [1., 1.]]))
         >>> upper = ivy.Container(a=1, b=-1)
         >>> y = ivy.Container.static_roll(x, upper=False)
         >>> print(y)
@@ -255,8 +255,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
-                              b=ivy.array([[2., 1.],[1., 1.]]))
+        >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),
+        ...                      b=ivy.array([[2., 1.],[1., 1.]]))
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         {
@@ -533,7 +533,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> NamedTuple:
+    ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.eigh(x_) if ivy.is_array(x_) else x_,
@@ -660,8 +660,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
-                              b=ivy.array([[4., 4.], [2., 1.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),
+        ...                      b=ivy.array([[4., 4.], [2., 1.]]))
         >>> y = ivy.inv(x)
         >>> print(y)
         {
@@ -700,38 +700,38 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ``MxN`` matrices. Should have a floating-point data type.
         rtol
             relative tolerance for small singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. 
+            than or equal to ``rtol * largest_singular_value`` are set to zero.
         out
-            optional output array, for writing the result to. 
+            optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
             an array containing the pseudo-inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and 
-            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            floating-point data type determined by :ref:`type-promotion` and
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as
             ``x``, except the innermost two dimensions must be transposed).
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],\
-                  [3., 4.]]))
+        x = ivy.Container(a= ivy.array([[1., 2.],
+        ...                             [3., 4.]]))
         y = pinv(x, None, None)
         print(y)
         {
-            a: ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
+            a: ivy.array([[-2., 1.],
+        ...               [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],\
-                  [3., 4.]]))
+        x = ivy.Container(a=ivy.array([[1., 2.],
+        ...                            [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
         {
-            a: ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
+            a: ivy.array([[0.0426, 0.0964],
+        ...               [0.0605, 0.1368]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -759,40 +759,40 @@ class ContainerWithLinearAlgebra(ContainerBase):
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
             ``MxN`` matrices. Should have a floating-point data type.
         rtol
-        relative tolerance for small singular values approximately less than or equal to 
-            ``rtol * largest_singular_value`` are set to zero. 
+        relative tolerance for small singular values approximately less than or equal to
+            ``rtol * largest_singular_value`` are set to zero.
         out
-            optional output array, for writing the result to. 
+            optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
             an array containing the pseudo-inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and 
-            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            floating-point data type determined by :ref:`type-promotion` and
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as
             ``x``, except the innermost two dimensions must be transposed).
 
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],\
-                  [3., 4.]]))
+        x = ivy.Container(a= ivy.array([[1., 2.],
+        ...                             [3., 4.]]))
         y = pinv(x, None, None)
         print(y)
         {
-            a: ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
+            a: ivy.array([[-2., 1.],
+        ...               [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],\
-                  [3., 4.]]))
+        x = ivy.Container(a=ivy.array([[1., 2.],
+        ...                            [3., 4.]]))
         out = ivy.Container(a=ivy.array())
         pinv(x, 0, out)
         print(out)
         {
-            a: ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
+            a: ivy.array([[0.0426, 0.0964],
+        ...               [0.0605, 0.1368]])
         }
 
         """
@@ -808,7 +808,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -870,7 +870,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Tuple[int, int]] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1034,8 +1034,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
-                              b=ivy.array([[1., 0.], [0., 0.]]))
+        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),
+        ...                   b=ivy.array([[1., 0.], [0., 0.]]))
         >>> y = ivy.Container.static_matrix_rank(x)
         >>> print(y)
         {
@@ -1115,8 +1115,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
-                                b=ivy.array([[1., 0.], [0., 0.]]))
+        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),
+        ...                   b=ivy.array([[1., 0.], [0., 0.]]))
         >>> y = x.matrix_rank()
         >>> print(y)
         {
@@ -1303,10 +1303,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
-                                           [3.0, 4.0]]), \
-                              b=ivy.array([[1.0, 2.0],   \
-                                           [2.0, 1.0]]))
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
+        ...                                [3.0, 4.0]]),
+        ...                   b=ivy.array([[1.0, 2.0],
+        ...                                [2.0, 1.0]]))
         >>> y = ivy.Container.static_slogdet(x)
         >>> print(y)
         {
@@ -1366,10 +1366,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],   \
-                                           [3.0, 4.0]]), \
-                              b=ivy.array([[1.0, 2.0],   \
-                                           [2.0, 1.0]]))
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
+        ...                                [3.0, 4.0]]),
+        ...                   b=ivy.array([[1.0, 2.0],
+        ...                                [2.0, 1.0]]))
         >>> y = x.slogdet()
         >>> print(y)
         {
@@ -1451,7 +1451,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    # Unsure
     def svd(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1462,7 +1461,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         compute_uv: bool = True,
         full_matrices: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
+    ) -> ivy.Container:
         return self.static_svd(
             self,
             key_chains,
@@ -1616,13 +1615,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        >>> x = ivy.Container(\
-            a = ivy.array([[7, 1, 2],\
-                           [1, 3, 5],\
-                           [0, 7, 4]]),\
-            b = ivy.array([[4, 3, 2],\
-                           [1, 9, 5],\
-                           [7, 0, 6]])\
+        >>> x = ivy.Container(
+        ...    a = ivy.array([[7, 1, 2],
+        ...                   [1, 3, 5],
+        ...                   [0, 7, 4]]),
+        ...    b = ivy.array([[4, 3, 2],
+        ...                   [1, 9, 5],
+        ...                   [7, 0, 6]])
         )
         >>> y = x.Container.static_trace(x)
         >>> print(y)
@@ -1701,13 +1700,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        >>> x = ivy.Container(\
-            a = ivy.array([[7, 1, 2],\
-                           [1, 3, 5],\
-                           [0, 7, 4]]),\
-            b = ivy.array([[4, 3, 2],\
-                           [1, 9, 5],\
-                           [7, 0, 6]])\
+        >>> x = ivy.Container(
+        ...    a = ivy.array([[7, 1, 2],
+        ...                   [1, 3, 5],
+        ...                   [0, 7, 4]]),
+        ...    b = ivy.array([[4, 3, 2],
+        ...                   [1, 9, 5],
+        ...                   [7, 0, 6]])
         )
         >>> y = x.trace()
         >>> print(y)
@@ -2034,7 +2033,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         N
             Number of columns in the output. If N is not specified,
             a square array is returned (N = len(x))
-        increasing 
+        increasing
             Order of the powers of the columns. If True, the powers increase
             from left to right, if False (the default) they are reversed.
         out
@@ -2048,7 +2047,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-
         With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(
@@ -2102,7 +2100,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         N
             Number of columns in the output. If N is not specified,
             a square array is returned (N = len(x))
-        increasing 
+        increasing
             Order of the powers of the columns. If True, the powers increase
             from left to right, if False (the default) they are reversed.
         out

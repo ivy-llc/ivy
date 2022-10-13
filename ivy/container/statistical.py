@@ -152,8 +152,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(1.)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                              b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+        ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
         >>> x.mean(axis=0, out=x)
         >>> print(x)
         {
@@ -161,8 +161,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array([4.5, 5.5, 6.5])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
-                              b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
+        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
         >>> y = ivy.mean(x, axis=1)
         >>> print(y)
         {
@@ -258,8 +258,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
-        b=ivy.array([3.0, 4.0, 5.0]))
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),
+        ...                   b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = x.var()
         >>> print(y)
         {
@@ -267,8 +267,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(0.6666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
-        b=ivy.array([3.0, 4.0, 5.0]))
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),
+        ...                   b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
         >>> x.var(out=y)
         >>> print(y)
@@ -277,8 +277,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(0.6666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \
-                              b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))
+        >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]),
+        ...                   b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))
         >>> y = ivy.Container(a=ivy.array([0., 0., 0.]), b=ivy.array([0., 0., 0.]))
         >>> x.var(axis=0, out=y)
         >>> print(y)
@@ -354,8 +354,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
-                              b=ivy.array([0.7, 0.1, 0.9]))
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
+        ...                   b=ivy.array([0.7, 0.1, 0.9]))
         >>> y = ivy.Container.static_var(x)
         >>> print(y)
         {
@@ -541,8 +541,8 @@ class ContainerWithStatistical(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]),
+        ...                   b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
         >>> y = ivy.Container.static_cumsum(x, axis=0)
         >>> print(y)
         {
@@ -552,25 +552,25 @@ class ContainerWithStatistical(ContainerBase):
                           [6, 8, 7]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                              b=ivy.array([[3, 5, 7]]))
-        >>> y = ivy.Container.static_cumsum(x, axis=0,  \
-                              exclusive=False, reverse=True, dtype='float32')
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
+        ...                   b=ivy.array([[3, 5, 7]]))
+        >>> y = ivy.Container.static_cumsum(x, axis=0,
+        ...                      exclusive=False, reverse=True, dtype='float32')
         >>> print(y)
         {
             a: ivy.array([[1., 3., 5.]]),
             b: ivy.array([[3., 5., 7.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+        ...                   b=ivy.array([[3, 5, 8],
+        ...                                [5, 6, 5]]),
+        ...                   c=ivy.array([[2, 4, 1],
+        ...                                [3, 6, 9],
+        ...                                [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+        ...                   b = ivy.zeros((2, 3)),
+        ...                   c = ivy.zeros((3,3)))
         >>> ivy.cumsum(x,axis=1,exclusive=True, reverse=False, out=y)
         >>> print(y)
         {
@@ -582,8 +582,8 @@ class ContainerWithStatistical(ContainerBase):
                           [0, 0, 2]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]),
+        ...                   b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
         >>> ivy.Container.static_cumsum(x, axis=1, exclusive=True, reverse=True, out=y)
         >>> print(y)
@@ -595,13 +595,13 @@ class ContainerWithStatistical(ContainerBase):
                           [11, 6, 0],
                           [13, 7, 0]])
         }
-        >>> x = ivy.Container(a=ivy.array([[1], \
-                                           [1]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [2, 0, 1]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+        >>> x = ivy.Container(a=ivy.array([[1],
+        ...                                [1]]),
+        ...                   b=ivy.array([[6, 8, 7],
+        ...                                [2, 0, 1]]),
+        ...                   c=ivy.array([[1, 2],
+        ...                                [3, 4],
+        ...                                [6, 4]]))
         >>> ivy.Container.static_cumsum(x, axis=0, out=x)
         >>> print(x)
         {
@@ -682,10 +682,10 @@ class ContainerWithStatistical(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
-                                          [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], \
-                                          [2, 3, 1 ]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [2, 4, 5]]),
+        ...                   b=ivy.array([[4, 5, 6],
+        ...                                [2, 3, 1 ]]))
         >>> y = x.cumsum(axis=0, dtype='float64')
         >>> print(y)
         {
@@ -695,12 +695,12 @@ class ContainerWithStatistical(ContainerBase):
                           [6., 8., 7.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], \
-                                           [5, 7, 8], \
-                                           [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], \
-                                           [4, 5, 6], \
-                                            [5, 6, 7]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4],
+        ...                                [5, 7, 8],
+        ...                                [9, 10, 11]]),
+        ...                   b=ivy.array([[3, 4, 5],
+        ...                                [4, 5, 6],
+        ...                                [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
         >>> x.cumsum(axis=1, exclusive=False, reverse=True, out=y)
         >>> print(y)
@@ -713,15 +713,15 @@ class ContainerWithStatistical(ContainerBase):
                           [18, 13, 7]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+        ...                   b=ivy.array([[3, 5, 8],
+        ...                                [5, 6, 5]]),
+        ...                   c=ivy.array([[2, 4, 1],
+        ...                                [3, 6, 9],
+        ...                                [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+        ...                   b = ivy.zeros((2, 3)),
+        ...                   c = ivy.zeros((3,3)))
         >>> x.cumsum(axis=1,exclusive=True, reverse=False, out=y)
         >>> print(y)
         {
@@ -733,12 +733,12 @@ class ContainerWithStatistical(ContainerBase):
                           [0, 0, 2]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0, 3, 2], \
-                                           [5, 10, 2], \
-                                           [1, 10, 1]]), \
-                              b=ivy.array([[2, 4, 5], \
-                                           [4, 5, 5], \
-                                           [0, 1, 3]]))
+        >>> x = ivy.Container(a=ivy.array([[0, 3, 2],
+        ...                                [5, 10, 2],
+        ...                                [1, 10, 1]]),
+        ...                   b=ivy.array([[2, 4, 5],
+        ...                                [4, 5, 5],
+        ...                                [0, 1, 3]]))
         >>> y = x.cumsum(axis=1,exclusive=True, reverse=True, dtype='int64')
         >>> print(y)
         {
@@ -750,13 +750,13 @@ class ContainerWithStatistical(ContainerBase):
                           [4, 3, 0]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+        >>> x = ivy.Container(a=ivy.array([[0],
+        ...                                [5]]),
+        ...                   b=ivy.array([[6, 8, 7],
+        ...                                [4, 2, 3]]),
+        ...                   c=ivy.array([[1, 2],
+        ...                                [3, 4],
+        ...                                [6, 4]]))
         >>> x.cumsum(axis=0, out=x)
         >>> print(x)
         {
