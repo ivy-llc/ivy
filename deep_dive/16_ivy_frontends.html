@@ -74,6 +74,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#classes-and-instance-methods">Classes and Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#frontend-data-type-promotion-rules">Frontend Data Type Promotion Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numpy-special-argument-casting">NumPy Special Argument - Casting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests 🧪</a></li>
@@ -529,6 +530,7 @@ code transpilations, it’s necessary for us to also implement these instance me
 and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>,
 <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
 <p><strong>Instance Method</strong></p>
+<p><strong>numpy.ndarray</strong></p>
 <p>For an example of how these are implemented, we first show the instance method for
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.add()</span></code>, which is implemented in the frontend
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23">ndarray class</a>:</p>
@@ -591,6 +593,41 @@ is shown as follows:</p>
 <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>numpy.matrix</strong></p>
+<p>To support special classes and their instance methods,
+the equivalent classes are created in their respective frontend so that the useful
+instance methods are supported for transpilation.</p>
+<p>For instance, the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> class is supported in the Ivy NumPy frontend.
+Part of the code is shown below as an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/matrix/methods.py</span>
+<span class="k">class</span> <span class="nc">matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_str_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;data must be a 2D array, list, or str&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">dtype</span>
+</pre></div>
+</div>
+<p>With this class available, the supported instance methods can now be included in the class.
+For example, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> has an instance method of <code class="code docutils literal notranslate"><span class="pre">any</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/matrix/methods.py</span>
+<span class="k">def</span> <span class="nf">any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>We need to create these frontend array classes and all of their instance methods and
 also their special methods such that we are able to transpile code which makes use
 of these methods. As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling
@@ -619,6 +656,85 @@ supporting as frontends. The function can be accessed through calling
 <p>Although under most cases, array operands being passed into an arithmetic operation function
 should be the same data type, using the data type promotion rules can add a layer of sanity
 check to prevent data precision losses or exceptions from further arithmetic operations.</p>
+</section>
+<section id="numpy-special-argument-casting">
+<h2>NumPy Special Argument - Casting<a class="headerlink" href="#numpy-special-argument-casting" title="Permalink to this heading"></a></h2>
+<p>NumPy supports an additional, special argument - <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, which allows
+user to determine the kind of dtype casting that fits their objectives.
+The <code class="code docutils literal notranslate"><span class="pre">casting</span></code> rules are explained in the
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html">numpy.can_cast documentation</a>.
+While handling this argument, the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is used to state the
+desired return dtype.</p>
+<p>To handle this, a decorator - <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting</span></code> is used to simplify
+the handling logic and reduce code redundancy. It is located in the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39">ivy/functional/frontends/numpy/func_wrapper.py</a></p>
+<p>This decorator is then added to the numpy frontend functions with the
+<code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument. An example of the <code class="code docutils literal notranslate"><span class="pre">add</span></code> function is shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
+<span class="nd">handle_numpy_casting</span>
+<span class="nd">to_ivy_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">where</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
+    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
+<p>There is a special case for the <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument, where the allowed
+dtype must be <code class="code docutils literal notranslate"><span class="pre">bool</span></code>, therefore a <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting_special</span></code> is included
+to handle this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/func_wrapper.py</span>
+<span class="k">def</span> <span class="nf">handle_numpy_casting_special</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="nd">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+            <span class="n">casting</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="s2">&quot;equiv&quot;</span><span class="p">,</span> <span class="s2">&quot;safe&quot;</span><span class="p">,</span> <span class="s2">&quot;same_kind&quot;</span><span class="p">,</span> <span class="s2">&quot;unsafe&quot;</span><span class="p">],</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;casting must be one of [no, equiv, safe, same_kind, unsafe]&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span>
+                <span class="s2">&quot;bool&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;output is compatible with bool only&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_numpy_casting_special</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">new_fn</span>
+</pre></div>
+</div>
+<p>An example function using this is the <code class="code docutils literal notranslate"><span class="pre">numpy.isfinite</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/logic/array_type_testing.py</span>
+<span class="nd">handle_numpy_casting_special</span>
+<span class="nd">to_ivy_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">where</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
+    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
 <p><strong>Round Up</strong></p>
 <p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
 are for, how they should be implemented, and the things to watch out for!
