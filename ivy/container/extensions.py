@@ -720,10 +720,12 @@ class ContainerWithExtensions(ContainerBase):
             These must also be unique.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with moved axes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
