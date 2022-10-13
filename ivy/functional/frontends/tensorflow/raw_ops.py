@@ -62,7 +62,7 @@ def Cholesky(*, input, name="Cholesky"):
     return ivy.astype(ivy.cholesky(input), input.dtype)
 
 
-def Ceil(x, name=None):
+def Ceil(*, x, name=None):
     return ivy.ceil(x)
 
 
