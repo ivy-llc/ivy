@@ -665,7 +665,6 @@ def test_tensorflow_silu(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, features = dtype_features
     helpers.test_frontend_function(
@@ -705,7 +704,6 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values
@@ -753,7 +751,6 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values

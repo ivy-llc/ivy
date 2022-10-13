@@ -577,7 +577,7 @@ def test_tensorflow_cosine_similarity(
     as_variable,
     num_positional_args,
     native_array,
-    with_out,  # noqa: E501
+    with_out,
 ):
     dtype = d_type
     y_true = y_true
