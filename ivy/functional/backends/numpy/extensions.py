@@ -285,3 +285,25 @@ def moveaxis(
 
 
 moveaxis.support_native_out = False
+
+
+def heaviside(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.heaviside(
+        x1,
+        x2,
+        out=out,
+        where=True,
+        casting='same_kind',
+        order='K',
+        dtype=None,
+        subok=True,
+    )
+
+
+heaviside.support_native_out = True
