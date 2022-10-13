@@ -304,7 +304,7 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.constant_pad. This method simply
-        wraps the function, and so the docstring for ivy.split also applies
+        wraps the function, and so the docstring for ivy.constant_pad also applies
         to this method with minimal changes.
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
