@@ -1,6 +1,7 @@
 # global
 
 # local
+from pickle import TRUE
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 
@@ -13,6 +14,17 @@ class ndarray:
 
     # Instance Methoods #
     # -------------------#
+
+
+    # max
+    def max(self, axis=None, out=None, keepdims=False, where=True):
+        return np_frontend.max(
+            self.data, 
+            axis=axis, 
+            out=out,
+            keepdims=keepdims,
+            where=where
+        )
 
     # Add argmax #
     def argmax(

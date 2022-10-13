@@ -8,6 +8,49 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
+# max
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        where=np_frontend_helpers.where()
+    ),
+)
+def test_numpy_ndarray_argmax(
+    dtype_and_x,
+    as_variable,
+    where,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    helpers.test_frontend_method(
+        input_dtype_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=0,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "value": x[1],
+        },
+        fw=fw,
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="max",
+    )
+
 # argmax
 @handle_cmd_line_args
 @given(
