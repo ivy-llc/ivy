@@ -309,7 +309,7 @@ def test_jax_numpy_cholesky(
         min_value=-100,
         shape=st.tuples(
             st.shared(st.integers(1, 5), key="sq"),
-            st.shared(st.integers(1, 5), key="sq")
+            st.shared(st.integers(1, 5), key="sq"),
         ),
         num_arrays=1,
     ),

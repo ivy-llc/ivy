@@ -878,8 +878,22 @@ def test_function_supported_dtypes(func, expected):
 @pytest.mark.parametrize(
     "func, expected",
     [
-        (_composition_1, []),
-        (_composition_2, []),
+        (
+            _composition_1,
+            [
+                "complex64",
+                "complex128",
+                "complex256",
+            ],
+        ),
+        (
+            _composition_2,
+            [
+                "complex64",
+                "complex128",
+                "complex256",
+            ],
+        ),
     ],
 )
 def test_function_unsupported_dtypes(func, expected):

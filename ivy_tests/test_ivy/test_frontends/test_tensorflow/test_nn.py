@@ -680,7 +680,7 @@ def test_tensorflow_silu(
         features=features[0],
         beta=beta,
     )
-    
+
 
 # sigmoid_cross_entropy_with_logits
 @handle_cmd_line_args
