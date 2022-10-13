@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.hard_sigmoid"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.hard_sigmoid"
     ),
 )
 def test_tensorflow_hard_sigmoid(
@@ -35,7 +35,7 @@ def test_tensorflow_hard_sigmoid(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.linear"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.linear"
     ),
 )
 def test_tensorflow_linear(dtype_and_x, as_variable, num_positional_args, native_array):
@@ -57,7 +57,7 @@ def test_tensorflow_linear(dtype_and_x, as_variable, num_positional_args, native
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sigmoid"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.sigmoid"
     ),
 )
 def test_tensorflow_sigmoid(
@@ -89,7 +89,7 @@ def test_tensorflow_sigmoid(
         valid_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.softmax"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softmax"
     ),
 )
 def test_tensorflow_softmax(
