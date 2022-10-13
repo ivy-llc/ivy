@@ -62,6 +62,10 @@ def Cholesky(*, input, name="Cholesky"):
     return ivy.astype(ivy.cholesky(input), input.dtype)
 
 
+def Ceil(*, x, name=None):
+    return ivy.ceil(x)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -222,6 +226,10 @@ def Relu(features, name="Relu"):
 
 def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def RightShift(*, x, y, name="RightShift"):
+    return ivy.bitwise_right_shift(x, y)
 
 
 def Shape(*, input, output_type=ivy.int32, name="Shape"):

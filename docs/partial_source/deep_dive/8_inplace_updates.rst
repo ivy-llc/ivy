@@ -20,10 +20,10 @@ Inplace Updates 🎯
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
 .. _`wrapping`:
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
-.. _`inplace updates discussion`: https://github.com/unifyai/ivy/discussions/1319
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
+.. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
@@ -386,9 +386,8 @@ As with the :code:`out` argument, the :code:`copy` argument is also handled `by 
 This should have hopefully given you a good feel for inplace updates,
 and how these are handled in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `inplace updates discussion`_,
-or reach out on `discord`_ in the `inplace updates channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_
+or in the `inplace updates forum`_!
 
 
 **Video**

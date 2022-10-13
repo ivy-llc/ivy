@@ -1,7 +1,6 @@
 The Basics
 ==========
 
-.. _`contributing discussion`: https://github.com/unifyai/ivy/discussions/1309
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
@@ -9,7 +8,6 @@ The Basics
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
-.. _`other channel`: https://discord.com/channels/799879767196958751/933380219832762430
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
 
@@ -19,7 +17,6 @@ Getting Help
 There are a few different communication channels that you can make use of in order to ask for help:
 
 #. `discord server <https://discord.gg/ZVQdvbzNQJ>`_
-#. `discussions <https://github.com/unifyai/ivy/discussions>`_
 #. `issues <https://github.com/unifyai/ivy/issues>`_
 
 We'll quickly outline how each of these should be used, and also which question is most appropriate for which context.
@@ -35,28 +32,14 @@ and it makes it less likely that you will receive a response.
 For example, if you are applying for an internship, then you should make use of the **internship** channels,
 and **not** the general channel for your questions.
 
-**Discussions**
 
-Almost all questions are best asked in the
-`discussions <https://github.com/unifyai/ivy/discussions>`_ section on GitHub.
-Even for very simple questions, there are benefits in starting a discussion for this.
-This means that the question can be asked once and then easily found by others in future,
-avoiding the case where different people ask the same question multiple times on the discord server.
-
-For discussions that have already been created,
-all new comments will trigger the "Unanswered" label to be applied to the discussion.
-This makes it easy for members in the Ivy team to keep track of where attention is needed.
-Once the new comment has been responded to, we will manually remove the "Unanswered" label.
-
-I or someone else in the team will strive to respond to your comments, replies and newly created discussions as quickly as possible!
 
 **Issues**
 
 As the name suggests, the `issues <https://github.com/unifyai/ivy/issues>`_ section on GitHub is the best place to
 raise issues or general bugs that you find with the project.
 It can also serve as a useful place to ask questions, but only if you suspect that the behaviour you are observing
-*might* be a bug. If you are confident there is nothing wrong with the code, but you just don't understand something,
-then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is your best bet.
+*might* be a bug.
 
 **Video**
 
@@ -68,7 +51,6 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
 
 |
 
-For questions, please reach out on the `contributing discussion`_!
 
 ToDo List Issues
 ----------------
@@ -147,8 +129,7 @@ this :code:`- [ ] #Issue_number #Issue_number #Issue_number` etc. will not.
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `todo list issues channel`_!
+For questions, please reach out on `discord`_ in the `todo list issues channel`_!
 
 Extensions
 ----------
@@ -213,13 +194,12 @@ check out this `Atlassian tutorial`_.
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `fork management channel`_!
+For questions, please reach out on `discord`_ in the `fork management channel`_!
 
 Who To Ask
 ----------
 
-When raising issues or starting discussions on the Ivy repo,
+When raising issues on the Ivy repo,
 it can be useful to know who in the team wrote which piece of code.
 Armed with this information, you can then for example directly tag (using @)
 the member of the team who worked on a particular piece of code,
@@ -331,8 +311,7 @@ The code review process is explained in more detail in the following video.
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `pull requests channel`_!
+For questions, please reach out on `discord`_ in the `pull requests channel`_!
 
 Small Commits Often
 -------------------
@@ -383,8 +362,7 @@ and that all developers are able to work efficiently.
 If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
 so don't stress about this too much 🙂
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `commit frequency channel`_!
+For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
 
 Interactive Ivy Docker Container
 --------------------------------
@@ -708,8 +686,5 @@ with PyCharm
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `contributing discussion`_,
-or reach out on `discord`_ in the `todo list issues channel`_,
-`fork management channel`_, `pull requests channel`_, `commit frequency channel`_
-or `other channel`_, depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_,
+`fork management channel`_, `pull requests channel`_, `commit frequency channel`_ depending on the question!

@@ -1,6 +1,10 @@
 Continuous Integration 🔁
 =========================
 
+.. _`continuous integration channel`: https://discord.com/channels/799879767196958751/982737993028755496
+.. _`continuous integration forum`: https://discord.com/channels/799879767196958751/982737993028755496
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+
 We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository. This makes sure that:
 
 #. The commit doesn't introduce any new errors, in the code base. ✅
@@ -164,3 +168,10 @@ In order to view the status of the tests, at any point in time, we maintain a da
 #. `Ivy Stateful Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md>`_
 
 The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+
+If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
+or in the `continuous integration forum`_!

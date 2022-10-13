@@ -1,4 +1,3 @@
-import math
 from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 
@@ -52,16 +51,33 @@ def floats(
         if True, exclude the minimum limit.
     exclude_max
         if True, exclude the maximum limit.
-    safety_factor
-        default = 0.99. Only values which are 99% or less than the edge of
-        the limit for a given dtype are generated.
-    small_value_safety_factor
-        default = 1.1.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
 
     Returns
     -------
     ret
-        list of floats.
+        Float.
     """
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False))
@@ -137,13 +153,21 @@ def ints(
     max_value
         maximum value of integers generated.
     safety_factor
-        default = 0.95. Only values which are 95% or less than the edge of
-        the limit for a given dtype are generated.
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
     safety_factor_scale
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
     Returns
     -------
     ret
-        list of integers.
+        Integer.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False))
     if min_value is None and max_value is None:
@@ -160,7 +184,15 @@ def ints(
 
 
 @st.composite
-def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+def number(
+    draw,
+    *,
+    min_value=None,
+    max_value=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+):
     """Draws integers or floats with a safety factor
     applied to values.
 
@@ -173,24 +205,46 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
         minimum value of integers generated.
     max_value
         maximum value of integers generated.
-    safety_factor
-        default = 0.95. Only values which are 95% or less than the edge of
-        the limit for a given dtype are generated.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
 
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
     Returns
     -------
     ret
-        integer or float.
+        An integer or float.
     """
     return draw(
         ints(
-            min_value=int(math.ceil(min_value)),
-            max_value=int(math.ceil(max_value)),
-            safety_factor=safety_factor,
+            min_value=min_value,
+            max_value=max_value,
+            safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
         | floats(
             min_value=min_value,
             max_value=max_value,
-            safety_factor=safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
