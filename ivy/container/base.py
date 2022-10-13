@@ -3685,6 +3685,7 @@ class ContainerBase(dict, abc.ABC):
                     and (self._ivy.is_native_array(v[0]) or isinstance(v[0], ivy.Array))
                 ):
                     rep = (
+                        v,
                         "list[{}]".format(len(v)),
                         type(v[0]),
                         "shape=",
