@@ -1695,7 +1695,7 @@ def test_function_supported_device_and_dtype(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # function_unsupported_devices_and_dtypes
@@ -1720,7 +1720,7 @@ def test_function_unsupported_devices(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # Still to Add #
