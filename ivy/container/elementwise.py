@@ -7909,6 +7909,16 @@ class ContainerWithElementwise(ContainerBase):
             if ``x_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
+        ...                   b=ivy.array([7.9, 3.3j, -4.2-5.9j]))
+        >>> z = ivy.Container.static_isreal(x)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "isreal",
@@ -7959,6 +7969,15 @@ class ContainerWithElementwise(ContainerBase):
             if ``self_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),\
+                          b=ivy.array([0.0, 3.3j, 1+0j]))
+        >>> x.isreal()
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, True])
+        }
         """
         return self.static_isreal(
             self,

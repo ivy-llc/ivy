@@ -1,4 +1,3 @@
-import math
 from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 
@@ -160,7 +159,15 @@ def ints(
 
 
 @st.composite
-def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+def number(
+    draw,
+    *,
+    min_value=None,
+    max_value=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+):
     """Draws integers or floats with a safety factor
     applied to values.
 
@@ -184,13 +191,16 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """
     return draw(
         ints(
-            min_value=int(math.ceil(min_value)),
-            max_value=int(math.ceil(max_value)),
-            safety_factor=safety_factor,
+            min_value=min_value,
+            max_value=max_value,
+            safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
         | floats(
             min_value=min_value,
             max_value=max_value,
-            safety_factor=safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )

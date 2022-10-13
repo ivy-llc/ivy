@@ -409,14 +409,14 @@ def test_get_num_dims(
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         min_num_dims=1,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
     ),
     max_norm_n_p=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         num_arrays=2,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
         shape=(),
     ),
@@ -449,8 +449,8 @@ def test_clip_vector_norm(
         rtol_=1e-1,
         atol_=1e-1,
         x=x[0],
-        max_norm=max_norm,
-        p=p,
+        max_norm=float(max_norm),
+        p=float(p),
     )
 
 
@@ -1695,7 +1695,7 @@ def test_function_supported_device_and_dtype(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # function_unsupported_devices_and_dtypes
@@ -1720,7 +1720,7 @@ def test_function_unsupported_devices(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # Still to Add #
@@ -1904,6 +1904,7 @@ def test_supports_inplace_updates(
         instance_method=True,
         fw=fw,
         fn_name="supports_inplace_updates",
+        test_values=False,
         x=x[0],
     )
 
