@@ -115,7 +115,7 @@ def test_tensorflow_softmax(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.gelu"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.gelu"
     ),
 )
 def test_tensorflow_gelu(
@@ -128,8 +128,6 @@ def test_tensorflow_gelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        atol_=1e-2,
-        rtol_=1e-2,
         frontend="tensorflow",
         fn_tree="keras.activations.gelu",
         x=x[0],
@@ -143,7 +141,7 @@ def test_tensorflow_gelu(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.relu"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.relu"
     ),
 )
 def test_tensorflow_relu(
@@ -167,7 +165,7 @@ def test_tensorflow_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.softplus"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softplus"
     ),
 )
 def test_tensorflow_softplus(
@@ -195,7 +193,7 @@ def test_tensorflow_softplus(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.softsign"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softsign"
     ),
 )
 def test_tensorflow_softsign(
@@ -224,7 +222,7 @@ def test_tensorflow_softsign(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.swish"
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.swish"
     ),
 )
 def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_array):
