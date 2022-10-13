@@ -1,5 +1,4 @@
 # local
-import numpy as np
 
 import ivy
 
