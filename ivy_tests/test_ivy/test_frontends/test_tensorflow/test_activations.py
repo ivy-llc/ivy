@@ -77,6 +77,30 @@ def test_tensorflow_sigmoid(
         x=x[0],
     )
 
+# tanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    approximate=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.tanh"
+    ),
+)
+def test_tensorflow_tanh(
+    dtype_x_and_axis, as_variable, num_positional_args, native_array
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="tanh",
+        x=x[0],
+    )    
+
 
 # softmax
 @handle_cmd_line_args
