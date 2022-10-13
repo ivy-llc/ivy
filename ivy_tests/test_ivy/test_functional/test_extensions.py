@@ -473,7 +473,7 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
-    
+
 
 @st.composite
 def _pad_helper(draw):
@@ -593,4 +593,4 @@ def test_pad(
         end_values=end_values,
         reflect_type=reflect_type,
         out=None,
-    )    
+    )
