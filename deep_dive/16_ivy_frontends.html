@@ -516,35 +516,88 @@ function does not support <code class="code docutils literal notranslate"><span 
 </section>
 <section id="classes-and-instance-methods">
 <h2>Classes and Instance Methods<a class="headerlink" href="#classes-and-instance-methods" title="Permalink to this heading"></a></h2>
-<p>Most frameworks include instance methods on their array class for common array
-processing functions, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">expand_dims()</span></code> etc.
-This simple design choice comes with many advantages,
-some of which are explained in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
+<p>Most frameworks include instance methods and special methods on their array class
+for common array processing functions, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">expand_dims()</span></code>
+and <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
+This simple design choice comes with many advantages, some of which are explained
+in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
+<p><strong>Important Note</strong>
+Before implementing the instance method or special method, make sure that the regular function in the specific
+frontend is already implemented.</p>
 <p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary
-code transpilations, it’s necessary for us to also implement these instance methods of
-the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
+code transpilations, it’s necessary for us to also implement these instance methods
+and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
+<p><strong>Instance Method</strong></p>
 <p>For an example of how these are implemented, we first show the instance method for
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.reshape()</span></code>, which is implemented in the frontend
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/db9a22d96efd3820fb289e9997eb41dda6570868/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8">ndarray class</a>:</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.add()</span></code>, which is implemented in the frontend
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23">ndarray class</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/ndarray/ndarray.py</span>
-<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
-<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.reshape()</span></code> function,
+<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.add()</span></code> function,
 which itself is implemented as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py</span>
-<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">newshape</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+<span class="n">x1</span><span class="p">,</span>
+<span class="n">x2</span><span class="p">,</span>
+<span class="o">/</span><span class="p">,</span>
+<span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="o">*</span><span class="p">,</span>
+<span class="n">where</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
+<span class="n">order</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+<span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>We need to create these frontend array classes and all of their instance methods such
-that we are able to transpile code which makes use of instance methods.
-As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling code we first extract the
-computation graph in the source framework. In the case of instance methods, we then
-replace each of the original instance methods in the extracted computation graph with
-these new instance methods defined in the Ivy frontend class.</p>
+<p><strong>Special Method</strong></p>
+<p>Some examples referring to the special methods would make things more clear. For
+example lets take a look at how <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf.tensor.__add__()</span></code> is implemented and how
+it’s reverse <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf.tensor.__radd__()</span></code> is implemented.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
+<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the reverse operator of <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
+<span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;radd&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here also, both of them simply call the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.add()</span></code> under the
+hood. The functions with reverse operators should call the same frontend function
+as shown in the examples above. The implementation for the <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.add()</span></code>
+is shown as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We need to create these frontend array classes and all of their instance methods and
+also their special methods such that we are able to transpile code which makes use
+of these methods. As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling
+code we first extract the computation graph in the source framework. In the case of
+instance methods, we then replace each of the original instance methods in the
+extracted computation graph with these new instance methods defined in the Ivy
+frontend class.</p>
 </section>
 <section id="frontend-data-type-promotion-rules">
 <h2>Frontend Data Type Promotion Rules<a class="headerlink" href="#frontend-data-type-promotion-rules" title="Permalink to this heading"></a></h2>
@@ -571,9 +624,8 @@ check to prevent data precision losses or exceptions from further arithmetic ope
 are for, how they should be implemented, and the things to watch out for!
 We also have a short <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
 as well if you prefer a video explanation!</p>
-<p>If you’re ever unsure of how best to proceed,
-please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/2051">ivy frontends discussion</a>,
-or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>!</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297849735229540">ivy frontends forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">

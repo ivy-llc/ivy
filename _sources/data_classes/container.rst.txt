@@ -48,6 +48,6 @@ Container
    container/wrapping.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Container discussion`: https://github.com/unifyai/ivy/discussions/2205
+.. _`Container discussion`: https://github.com/unifyai/ivy/discussions/1028297229980668015
 .. _`Container channel`: https://discord.com/channels/799879767196958751/1000042831928381591
 This should have hopefully given you an overview of the Container submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Container discussion`_,or reach out on `discord`_ in the `Container channel`_!

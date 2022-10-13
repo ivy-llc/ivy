@@ -77,6 +77,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#ivy-add">ivy.add()</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-special-method-tests">Frontend Special Method Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-special-method-test-examples">Frontend Special Method Test Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">ivy.add()</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#hypothesis-helpers">Hypothesis Helpers</a></li>
 </ul>
 </li>
@@ -803,6 +808,53 @@ which is the frontend class to test. This is the relevant Ivy frontend class and
 </ul>
 </section>
 </section>
+<section id="frontend-special-method-tests">
+<h2>Frontend Special Method Tests<a class="headerlink" href="#frontend-special-method-tests" title="Permalink to this heading"></a></h2>
+<p>The implementation for the frontend special method tests are somewhat a little different from how the instance methods
+are being tested.</p>
+<p><strong>Important Helper Function</strong></p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code> is being used to test frontend special methods.</p>
+</section>
+<section id="frontend-special-method-test-examples">
+<h2>Frontend Special Method Test Examples<a class="headerlink" href="#frontend-special-method-test-examples" title="Permalink to this heading"></a></h2>
+<section id="id1">
+<h3>ivy.add()<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<p><strong>Jax</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py</span>
+<span class="nd">handle_cmd_line_args</span>
+<span class="nd">given</span><span class="p">(</span>
+    <span class="n">dtype_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_jax_special_add</span><span class="p">(</span>
+    <span class="n">dtype_x</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_x</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">DeviceArray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">DeviceArray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ret_gt</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
+    <span class="n">ret_gt</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret_gt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ret_gt</span><span class="p">):</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">value_test</span><span class="p">(</span>
+            <span class="n">ret</span><span class="o">=</span><span class="n">ret</span><span class="p">,</span>
+            <span class="n">ret_from_gt</span><span class="o">=</span><span class="n">ret_gt</span><span class="p">,</span>
+            <span class="n">ground_truth_backend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code> to test the special method.</p></li>
+<li><p>We use the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code> to calculate jax frontend special method’s result, which is then compared</p></li>
+</ul>
+<p>to the regular frontend function’s result, when passed into the <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code>.
+* We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code>,which takes an argument <code class="code docutils literal notranslate"><span class="pre">ground_truth_backend</span></code> which is the frontend that is
+to be tested.</p>
+</section>
+</section>
 <section id="hypothesis-helpers">
 <h2>Hypothesis Helpers<a class="headerlink" href="#hypothesis-helpers" title="Permalink to this heading"></a></h2>
 <p>Naturally, many of the functions in the various frontend APIs are very similar to many
@@ -835,9 +887,8 @@ the Ivy API tests and the frontend tests,
 and we should strive for as much sharing as possible to minimize the amount of code.</p>
 <p><strong>Round Up</strong></p>
 <p>These examples have hopefully given you a good understanding of Ivy Frontend Tests!</p>
-<p>If you’re ever unsure of how best to proceed,
-please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/2051">ivy frontends discussion</a>,
-or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>!</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028267758028337193">ivy frontends tests channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297887605587998">ivy frontends tests forum</a>!</p>
 </section>
 </section>
 
