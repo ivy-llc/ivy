@@ -353,9 +353,9 @@ def conv3d(
     new_shape = [x_shape[0], new_d, new_h, new_w] + filter_shape + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[2],
+        x.strides[1] * strides[0],
         x.strides[2] * strides[1],
-        x.strides[3] * strides[0],
+        x.strides[3] * strides[2],
         x.strides[1],
         x.strides[2],
         x.strides[3],
