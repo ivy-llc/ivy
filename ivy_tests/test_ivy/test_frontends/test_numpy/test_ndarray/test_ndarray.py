@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         where=np_frontend_helpers.where()
     ),
 )
-def test_numpy_ndarray_argmax(
+def test_numpy_ndarray_max(
     dtype_and_x,
     as_variable,
     where,
