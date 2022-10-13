@@ -1,4 +1,5 @@
 # global
+import torch
 from hypothesis import assume, given, strategies as st
 
 # local
@@ -191,4 +192,37 @@ def test_torch_instance_view(
         frontend="torch",
         class_name="tensor",
         method_name="view",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+    ),
+)
+def test_torch_instance_float(
+    dtype_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "memory_format": torch.preserve_format,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="float",
     )
