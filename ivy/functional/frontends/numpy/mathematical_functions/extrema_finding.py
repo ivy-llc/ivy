@@ -93,3 +93,22 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
+
+
+@handle_numpy_casting
+def maximum(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.maximum(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
