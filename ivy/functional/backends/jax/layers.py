@@ -14,7 +14,6 @@ from ivy.functional.backends.jax.random import RNG
 # ------#
 
 
-
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     k = (k - 1) * dilation + 1
     if padding == "SAME":
@@ -412,7 +411,6 @@ def dropout1d(
         if data_format == "NWC":
             perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
             x = jnp.transpose(x, perm)
-        global RNG
         noise_shape = list(x.shape)
         noise_shape[-1] = 1
         mask = jax.random.bernoulli(RNG, 1 - prob, noise_shape)
