@@ -15,7 +15,7 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes"
+    "with_unsupported_dtypes",
 ]
 
 
@@ -465,7 +465,7 @@ def _dtype_from_version(dic, version):
     if version in dic:
         return dic[version]
 
-    version_tuple = tuple(map(int, version.split('.')))
+    version_tuple = tuple(map(int, version.split(".")))
 
     # If key is not in the dictionary, check if it's in any range
     # three formats are supported:
@@ -474,13 +474,13 @@ def _dtype_from_version(dic, version):
     # 3. x.y.z to x.y.z
     for key in dic.keys():
         kl = key.split(" ")
-        k1 = tuple(map(int, kl[0].split('.')))
+        k1 = tuple(map(int, kl[0].split(".")))
 
         if "above" in key and k1 <= version_tuple:
             return dic[key]
         if "below" in key and k1 >= version_tuple:
             return dic[key]
-        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split('.'))):
+        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
     # if no version is found, return the last version
@@ -516,6 +516,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
     Creates a wrapper for a dtype or device attribute, which returns the correct
     dtype or device for the current version of the backend.
+
     Parameters
     ----------
     attrib
@@ -548,8 +549,9 @@ with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tu
 with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
 with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
 with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
-with_unsupported_device_and_dtypes = (
-    _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict))
-with_supported_device_and_dtypes = (
-    _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
+    "unsupported_device_and_dtype", dict
+)
+with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
+    "supported_device_and_dtype", dict
 )

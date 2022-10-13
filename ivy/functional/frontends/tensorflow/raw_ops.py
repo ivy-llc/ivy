@@ -62,6 +62,10 @@ def Cholesky(*, input, name="Cholesky"):
     return ivy.astype(ivy.cholesky(input), input.dtype)
 
 
+def Ceil(*, x, name=None):
+    return ivy.ceil(x)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -134,6 +138,14 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def Invert(*, x, name="Invert"):
+    return ivy.bitwise_invert(x)
+
+
+def InvGrad(*, y, dy, name="InvGrad"):
+    return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
+
+
 def LeftShift(*, x, y, name="LeftShift"):
     return ivy.bitwise_left_shift(x, y)
 
@@ -160,6 +172,10 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
+def MatrixDeterminant(*, input, name="MatrixDeterminant"):
+    return ivy.det(input)
 
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
@@ -196,6 +212,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         return ivy.array(True)
 
 
+def NthElement(*, input, n, reverse=False, name="NthElement"):
+    return ivy.astype(ivy.sort(input, descending=reverse)[..., n], input.dtype)
+
+
 def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
 
@@ -206,6 +226,10 @@ def Relu(features, name="Relu"):
 
 def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def RightShift(*, x, y, name="RightShift"):
+    return ivy.bitwise_right_shift(x, y)
 
 
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
