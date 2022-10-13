@@ -85,7 +85,7 @@ def _generate_data_layer_norm(
 @handle_cmd_line_args
 @given(
     values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("float")
     ),
     epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
