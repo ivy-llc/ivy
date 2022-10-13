@@ -24,6 +24,10 @@ def sigmoid(x):
     return ivy.sigmoid(x)
 
 
+def tanh(x):
+    return ivy.tanh(x)
+
+
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
 
