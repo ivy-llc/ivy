@@ -1,5 +1,6 @@
 # global
 from hypothesis import given
+from hypothesis.control import reject
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -11,9 +12,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_input_axis=array_helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
         min_num_dims=1,
+        min_value=-1e15,
+        max_value=1e15,
+        abs_smallest_val=1e-15,
         valid_axis=True,
         force_int_axis=True,
     ),
@@ -30,8 +34,11 @@ def test_torch_cosine_similarity(
     native_array,
 ):
     dtype, values, axis = dtype_input_axis
-    print()
-    print(dtype_input_axis)
+    try:
+        pow(values[0], 2).sum(axis)
+        pow(values[1], 2).sum(axis)
+    except OverflowError:
+        reject()
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
