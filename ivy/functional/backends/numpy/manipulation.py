@@ -2,7 +2,6 @@
 import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
-
 import numpy as np
 
 # local
