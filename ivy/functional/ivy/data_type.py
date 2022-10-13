@@ -632,22 +632,12 @@ def iinfo(
     >>> ivy.iinfo(ivy.int32)
     iinfo(min=-2147483648, max=2147483647, dtype=int32)
 
-    >>> ivy.iinfo(ivy.uint64)
-    iinfo(min=0, max=18446744073709551615, dtype=uint64)
-
     With :code:`str` input:
 
     >>> ivy.iinfo('int32')
     iinfo(min=-2147483648, max=2147483647, dtype=int32)
 
-    >>> ivy.iinfo('int64')
-    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
-
     With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([13,21,34])
-    >>> ivy.iinfo(x)
-    iinfo(min=-2147483648, max=2147483647, dtype=int32)
 
     >>> x = ivy.array([13,21,34], dtype=ivy.int8)
     >>> ivy.iinfo(x)
@@ -655,23 +645,11 @@ def iinfo(
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([7,84,314], dtype=ivy.int16)
-    >>> ivy.iinfo(x)
-    iinfo(min=-32768, max=32767, dtype=int16)
-
     >>> x = ivy.native_array([7,84,314], dtype=ivy.int64)
     >>> ivy.iinfo(x)
     iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
 
     With :class:`ivy.Container` input:
-
-    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
-    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
-    >>> ivy.iinfo(c)
-    {
-        x: iinfo(min=-32768, max=32767, dtype=int16),
-        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
-    }
 
     >>> c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16),
     ...                   y=ivy.array([76,81,16], dtype=ivy.uint32))
@@ -680,27 +658,6 @@ def iinfo(
         x: iinfo(min=0, max=65535, dtype=uint16),
         y: iinfo(min=0, max=4294967295, dtype=uint32)
     }
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([109,8400,14], dtype=ivy.int32)
-    >>> x.iinfo()
-    iinfo(min=-2147483648, max=2147483647, dtype=int32)
-
-    >>> x = ivy.array([-119,122,14], dtype=ivy.int8))
-    >>> x.iinfo()
-    iinfo(min=-128, max=127, dtype=int8)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
-    ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
-    >>> c.iinfo()
-    {
-        x: iinfo(min=-32768, max=32767, dtype=int16),
-        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
-    }
-
     """
     return current_backend(None).iinfo(type)
 
@@ -782,7 +739,6 @@ default_uint_dtype_stack = list()
 class DefaultDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
 
@@ -798,7 +754,6 @@ class DefaultDtype:
 class DefaultFloatDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
@@ -814,7 +769,6 @@ class DefaultFloatDtype:
 class DefaultIntDtype:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
@@ -868,15 +822,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     >>> print(x)
     64
 
-    >>> x = ivy.dtype_bits(ivy.uint16)
-    >>> print(x)
-    16
-
     With :class:`ivy.NativeDtype` inputs:
-
-    >>> x = ivy.dtype_bits(ivy.native_int8)
-    >>> print(x)
-    8
 
     >>> x = ivy.dtype_bits(ivy.native_bool)
     >>> print(x)
@@ -898,7 +844,6 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
     -------
     ret
         data type string 'float32'
-
     """
     return current_backend(None).as_ivy_dtype(dtype_in)
 
@@ -916,12 +861,10 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
     -------
     ret
         data type e.g. ivy.float32.
-
     """
     return current_backend(None).as_native_dtype(dtype_in)
 
 
-# noinspection PyShadowingBuiltins
 def _check_float64(input) -> bool:
     if math.isfinite(input):
         m, e = math.frexp(input)
@@ -929,7 +872,6 @@ def _check_float64(input) -> bool:
     return False
 
 
-# noinspection PyShadowingBuiltins
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
     """Determines the closest valid datatype to the datatype passed as input.
@@ -944,35 +886,25 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     ret
         The closest valid data type as a native ivy.Dtype
 
-
     Examples
     --------
     With :class:`ivy.Dtype` input:
-
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     float16
 
-    >>> xType = ivy.int8
-    >>> yType = ivy.closest_valid_dtype(xType)
-    >>> print(yType)
-    int8
-
     With :class:`ivy.NativeDtype` inputs:
-
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     <dtype:'uint16'>
 
     With :code:`str` input:
-
     >>> xType = 'int32'
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     int32
-
     """
     return current_backend(type).closest_valid_dtype(type)
 
@@ -1000,7 +932,6 @@ def default_float_dtype(
     -------
         Return the input float dtype if provided, otherwise return the global default
         float dtype.
-
     """
     if ivy.exists(float_dtype):
         if as_native is True:
@@ -1078,7 +1009,6 @@ def infer_default_dtype(
     >>> x = ivy.array([0], dtype="uint64")
     >>> ivy.infer_default_dtype(x.dtype)
     'uint32'
-
     """
     if ivy.is_float_dtype(dtype):
         default_dtype = ivy.default_float_dtype(as_native=as_native)
@@ -1107,7 +1037,6 @@ def default_dtype(
     Returns
     -------
         Return the input dtype if provided, otherwise return the global default dtype.
-
     """
     if ivy.exists(dtype):
         if as_native is True:
@@ -1178,7 +1107,6 @@ def default_int_dtype(
     >>> x = ivy.array([9,8], dtype="int32")
     >>> ivy.default_int_dtype(input=x)
     'int32'
-
     """
     if ivy.exists(int_dtype):
         if as_native is True:
