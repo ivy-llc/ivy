@@ -4,7 +4,7 @@
 # global
 
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -525,128 +525,6 @@ def _constant_pad_helper(draw):
         )
     )
     return dtype, value, pad_width
-
-
-@st.composite
-def _pad_helper(draw):
-    dtype, value, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            ret_shape=True,
-            min_num_dims=1,
-        )
-    )
-    ndim = len(shape)
-    pad_width = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype="int8", min_value=1, max_value=4, shape=(ndim, 2)
-            ),
-            helpers.ints(min_value=1, max_value=4),
-        )
-    )
-    stat_length = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype="int8", min_value=1, max_value=4, shape=(ndim, 2)
-            ),
-            helpers.ints(min_value=1, max_value=4),
-        )
-    )
-    constant_values = draw(
-        st.one_of(
-            helpers.array_values(dtype=dtype[0], shape=(ndim, 2)),
-            helpers.array_values(dtype=dtype[0], shape=(1,)),
-        )
-    )
-    if len(constant_values.shape) == 1:
-        constant_values = constant_values[0]
-    end_values = draw(
-        st.one_of(
-            helpers.array_values(dtype=dtype[0], shape=(ndim, 2)),
-            helpers.array_values(dtype=dtype[0], shape=(1,)),
-        )
-    )
-    if len(end_values.shape) == 1:
-        end_values = end_values[0]
-    dtype = dtype + 2 * ["int8"] + 2 * dtype
-    return dtype, value, pad_width, stat_length, constant_values, end_values
-
-
-# pad
-@handle_cmd_line_args
-@given(
-    dtype_and_input_and_other=_pad_helper(),
-    mode=st.sampled_from(
-        [
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-        ]
-    ),
-    reflect_type=st.sampled_from(["even", "odd"]),
-    num_positional_args=helpers.num_positional_args(fn_name="pad"),
-)
-def test_pad(
-    *,
-    dtype_and_input_and_other,
-    mode,
-    reflect_type,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    (
-        dtype,
-        value,
-        pad_width,
-        stat_length,
-        constant_values,
-        end_values,
-    ) = dtype_and_input_and_other
-    if fw == "torch":
-        assume(
-            mode in ["constant", "reflect", "edge", "wrap"]
-            and not np.isscalar(pad_width)
-            and np.isscalar(constant_values)
-        )
-    elif fw == "tensorflow":
-        assume(
-            mode in ["constant", "reflect", "symmetric"]
-            and not np.isscalar(pad_width)
-            and np.isscalar(constant_values)
-        )
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="pad",
-        ground_truth_backend="numpy",
-        x=value[0],
-        pad_width=pad_width,
-        mode=mode,
-        stat_length=stat_length,
-        constant_values=constant_values,
-        end_values=end_values,
-        reflect_type=reflect_type,
-        out=None,
-    )
 
 
 # constant_pad
