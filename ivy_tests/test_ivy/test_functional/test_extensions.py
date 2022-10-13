@@ -600,7 +600,7 @@ def test_pad(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=(1, 1),
         min_value=1,
         max_value=10,
