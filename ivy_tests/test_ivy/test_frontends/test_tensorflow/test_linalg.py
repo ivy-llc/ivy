@@ -30,7 +30,7 @@ def _get_dtype_and_matrix(draw):
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.det"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.det"
     ),
 )
 def test_tensorflow_det(
@@ -53,7 +53,7 @@ def test_tensorflow_det(
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.eigh"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.eigh"
     ),
 )
 def test_tensorflow_eigh(
@@ -76,7 +76,7 @@ def test_tensorflow_eigh(
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.eigvalsh"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.eigvalsh"
     ),
 )
 def test_tensorflow_eigvalsh(
@@ -104,7 +104,7 @@ def test_tensorflow_eigvalsh(
         max_value=1e05,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.matrix_rank"
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
@@ -165,7 +165,7 @@ def _solve_get_dtype_and_data(draw):
 @given(
     dtype_and_x=_solve_get_dtype_and_data(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.solve"
+        fn_name="ivy.functional.frontends.tensorflow.lianlg.solve"
     ),
 )
 def test_tensorflow_solve(
@@ -193,7 +193,7 @@ def test_tensorflow_solve(
 @given(
     dtype_and_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.logdet"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.logdet"
     ),
 )
 def test_tensorflow_logdet(
@@ -221,7 +221,7 @@ def test_tensorflow_logdet(
 @given(
     dtype_and_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.slogdet"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.slogdet"
     ),
 )
 def test_tensorflow_slogdet(
@@ -292,7 +292,7 @@ def _get_second_matrix(draw):
     x=_get_cholesky_matrix(),
     y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cholesky_solve"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.cholesky_solve"
     ),
 )
 def test_tensorflow_cholesky_solve(
@@ -325,7 +325,7 @@ def test_tensorflow_cholesky_solve(
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.pinv"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.pinv"
     ),
 )
 def test_tensorflow_pinv(
@@ -353,7 +353,7 @@ def test_tensorflow_pinv(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tensordot"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.tensordot"
     ),
 )
 def test_tensorflow_tensordot(
@@ -392,7 +392,7 @@ def test_tensorflow_tensordot(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.eye"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.eye"
     ),
 )
 def test_tensorflow_eye(
@@ -434,7 +434,7 @@ def test_tensorflow_eye(
     ord=st.sampled_from([1, 2, np.inf]),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.norm"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.norm"
     ),
 )
 def test_tensorflow_norm(
@@ -477,7 +477,7 @@ def test_tensorflow_norm(
     ),
     ord=st.sampled_from([1, 2, np.inf]),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.normalize"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.normalize"
     ),
 )
 def test_tensorflow_normalize(
