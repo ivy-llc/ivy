@@ -15,4 +15,9 @@ jobs:
           python -m pip install flake8
       - name: Analysing the code with Flake8
         run: |
-          flake8 $(git ls-files '*.py')
+          export files=$(git diff  --name-only $(git_main_branch)...HEAD | grep -E '\.py$')
+          echo $files
+          if [[ $files != "" ]]
+          then
+              flake8 $files
+          fi
