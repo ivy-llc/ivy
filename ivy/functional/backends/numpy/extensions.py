@@ -99,11 +99,6 @@ def lcm(
             x1,
             x2,
             out=out,
-            where=True,
-            casting="same_kind",
-            order="K",
-            dtype=None,
-            subok=True,
         )
     )
 
@@ -298,11 +293,6 @@ def heaviside(
         x1,
         x2,
         out=out,
-        where=True,
-        casting='same_kind',
-        order='K',
-        dtype=None,
-        subok=True,
     )
 
 
