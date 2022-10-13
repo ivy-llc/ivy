@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 from numbers import Number
 import ivy
 from ivy.functional.ivy.extensions import (
@@ -155,3 +155,32 @@ def pad(
         )
     else:
         return tf.pad(x, pad_width, mode=mode)
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if periodic is False:
+        return tf.signal.kaiser_window(
+            window_length, beta, dtype=tf.dtypes.float32, name=None
+        )
+    else:
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
+            :-1
+        ]
+
+
+def moveaxis(
+    a: Union[tf.Tensor, tf.Variable],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.moveaxis(a, source, destination)

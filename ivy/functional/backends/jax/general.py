@@ -267,22 +267,22 @@ def scatter_nd(
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
-    expected_shape = (
-        indices.shape[:-1] + out.shape[indices.shape[-1] :]
-        if ivy.exists(out)
-        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
-    )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(
-            indices, updates.shape[:1] + (indices.shape[-1],)
-        )._data
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:
         indices_tuple = indices
     else:
+        expected_shape = (
+            indices.shape[:-1] + out.shape[indices.shape[-1] :]
+            if ivy.exists(out)
+            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        )
+        if sum(updates.shape) < sum(expected_shape):
+            updates = ivy.broadcast_to(updates, expected_shape)._data
+        elif sum(updates.shape) > sum(expected_shape):
+            indices = ivy.broadcast_to(
+                indices, updates.shape[:1] + (indices.shape[-1],)
+            )._data
         indices_flat = indices.reshape(-1, indices.shape[-1]).T
         indices_tuple = tuple(indices_flat) + (Ellipsis,)
 

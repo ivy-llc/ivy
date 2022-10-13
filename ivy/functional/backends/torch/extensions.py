@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, Literal, List
+from typing import Optional, Union, Tuple, Literal, List, Sequence
 from numbers import Number
 import ivy
 from ivy.functional.ivy.extensions import (
@@ -218,3 +218,36 @@ def pad(
             mode = "circular"
             x = x.unsqueeze(dim=0)
         return torch.nn.functional.pad(x, pad_width_flat, mode=mode).squeeze()
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.kaiser_window(
+        window_length,
+        periodic,
+        beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False,
+    )
+
+
+def moveaxis(
+    a: torch.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False

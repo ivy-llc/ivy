@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Iterable, Callable, Literal
+from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Sequence
 from numbers import Number
 
 # local
@@ -165,56 +165,49 @@ class ArrayWithExtensions(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-         ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
-         wraps the function, and so the docstring for `ivy.max_pool2d` also applies
-         to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
 
-         Parameters
-         ----------
-         x
-             Input image *[batch_size,h,w,d_in]*.
-         kernel
-             The size of the window for each dimension of the input tensor.
-         strides
-             The stride of the sliding window for each dimension of input.
-         padding
-             "SAME" or "VALID" indicating the algorithm, or list indicating
-             the per-dimension paddings.
-         data_format
-             "NHWC" or "NCHW". Defaults to "NHWC".
-         out
-             optional output array, for writing the result to. It must have a shape that
-             the inputs broadcast to.
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window for each dimension of the input tensor.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
-         Returns
-         -------
-         ret
-             The result of the max pooling operation.
+        Returns
+        -------
+        ret
+            The result of the max pooling operation.
 
-         Examples
-         --------
-         >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
-         >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
-         ivy.array([[[[ 2,  3],
-          [ 4,  5],
-          [ 4,  5]]],
-
-
+        Examples
+        --------
+        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
+        ivy.array([[[[ 2,  3],
+        [ 4,  5],
+        [ 4,  5]]],
         [[[ 8,  9],
-          [10, 11],
-          [10, 11]]]])
+        [10, 11],
+        [10, 11]]]])
 
-         >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
-         >>> print(x.max_pool2d(3, 1, 'VALID'))
-         ivy.array([[[[16, 17]],
-
-         [[22, 23]]],
-
-
+        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> print(x.max_pool2d(3, 1, 'VALID'))
+        ivy.array([[[[16, 17]],
+        [[22, 23]]],
         [[[40, 41]],
-
-         [[46, 47]]]])
-
+        [[46, 47]]]])
         """
         return ivy.max_pool2d(
             self,
@@ -224,7 +217,7 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
-
+        
     def pad(
         self: ivy.Array,
         /,
@@ -269,3 +262,42 @@ class ArrayWithExtensions(abc.ABC):
             reflect_type=reflect_type,
             out=out,
         )
+
+    def moveaxis(
+        self: ivy.Array,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            The array whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with moved axes. This array is a view of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.zeros((3, 4, 5))
+        >>> x.moveaxis(0, -1).shape
+        (4, 5, 3)
+        >>> x.moveaxis(-1, 0).shape
+        (5, 3, 4)
+        """
+        return ivy.moveaxis(self._data, source, destination, out=out)

@@ -27,6 +27,9 @@ class Tensor:
         self.data = self.sin()
         return self.data
 
+    def view(self, shape):
+        return torch_frontend.reshape(self.data, shape)
+
 
 # Tensor (alias)
 tensor = Tensor
