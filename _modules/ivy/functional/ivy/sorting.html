@@ -403,7 +403,7 @@
 <span class="sd">        &#39;right&#39;, return the last such index.</span>
 <span class="sd">    ret_dtype</span>
 <span class="sd">        the data type for the return value, Default: ivy.int64,</span>
-<span class="sd">        only ivy.int32 or ivy.int64 is allowed.</span>
+<span class="sd">        only integer data types is allowed.</span>
 <span class="sd">    sorter</span>
 <span class="sd">        optional array of integer indices that sort array x into ascending order,</span>
 <span class="sd">        typically the result of argsort.</span>
@@ -419,23 +419,25 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2,1,0])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1])</span>
-<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x1,x2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([2])</span>
+<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x, v)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0])</span>
+<span class="sd">    ivy.array([1])</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1,0,3,2])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([3])</span>
-<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x1, x2, side=&#39;right&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([3])</span>
+<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x, v, side=&#39;right&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([4])</span>
 
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2,0,1,3])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([3,1,9])</span>
-<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x1, x2, side=&#39;left&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2, 3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[3, 1], [10, 3], [-2, -1]])</span>
+<span class="sd">    &gt;&gt;&gt; y  = ivy.searchsorted(x, v)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([3,2,4])</span>
+<span class="sd">    ivy.array([[3, 1],</span>
+<span class="sd">       [6, 3],</span>
+<span class="sd">       [0, 0]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span>
