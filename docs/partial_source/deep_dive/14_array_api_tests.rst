@@ -5,10 +5,10 @@ Array API Tests 🤝
 .. _`test suite`: https://github.com/data-apis/array-api-tests
 .. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
 .. _`for each backend`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows
-.. _`array api tests discussion`: https://github.com/unifyai/ivy/discussions/1306
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
+.. _`array api tests forum`: https://discord.com/channels/799879767196958751/1028297759738040440
 .. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
@@ -134,6 +134,5 @@ itself contains the exact input conditions that are failing.
 
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `array api tests discussion`_,
-or reach out on `discord`_ in the `array api tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_
+or in the `array api tests forum`_ !

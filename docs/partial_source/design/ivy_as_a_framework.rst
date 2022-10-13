@@ -32,3 +32,9 @@ You may choose from the following upcoming discussions or click next.
    ivy_as_a_framework/ivy_container.rst
    ivy_as_a_framework/ivy_stateful_api.rst
    ivy_as_a_framework/ivy_array.rst
+
+**Round Up**
+
+Hopefully this has given you a good idea of how Ivy can be used as a fully-fledged ML framework.
+
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

@@ -2,10 +2,10 @@ Ivy Frontend Tests 🧪
 =====================
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
-.. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
+.. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
-.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`Function Wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
 .. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
@@ -774,6 +774,5 @@ and we should strive for as much sharing as possible to minimize the amount of c
 
 These examples have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `ivy frontends discussion`_,
-or reach out on `discord`_ in the `ivy frontends channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_
+or in the `ivy frontends tests forum`_!

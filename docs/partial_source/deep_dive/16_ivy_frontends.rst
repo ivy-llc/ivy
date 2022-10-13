@@ -15,9 +15,9 @@ Ivy Frontends ➡
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
@@ -28,6 +28,7 @@ framework-specific frontend functional APIs, which play an important role in cod
 transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
+
 
 The Frontend Basics
 -------------------
@@ -567,9 +568,8 @@ are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this
 as well if you prefer a video explanation!
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `ivy frontends discussion`_,
-or reach out on `discord`_ in the `ivy frontends channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_
+or in the `ivy frontends forum`_!
 
 
 **Video**
