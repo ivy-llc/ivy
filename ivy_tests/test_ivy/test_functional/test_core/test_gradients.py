@@ -35,13 +35,13 @@ def get_gradient_arguments_with_lr(
     lr = draw(
         st.one_of(
             helpers.floats(
-                min_value=0.01,
+                min_value=1e-5,
                 max_value=1.0,
             ),
             helpers.array_values(
                 dtype=dtype,
                 shape=shape,
-                min_value=0.01,
+                min_value=1e-5,
                 max_value=1.0,
             ),
         )
@@ -329,7 +329,7 @@ def test_grad(x, dtype, func, fw):
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
     step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+        arg=helpers.floats(min_value=1e-5, max_value=1, exclude_min=True),
         min_size=3,
         max_size=3,
     ),
@@ -457,7 +457,7 @@ def test_gradient_descent_update(
 @handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+    decay_lambda=helpers.floats(min_value=1e-5, max_value=1),
     stop_gradients=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lars_update"),
 )
@@ -501,7 +501,7 @@ def test_lars_update(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+        arg=helpers.floats(min_value=1e-5, max_value=1),
         min_size=3,
         max_size=3,
     ),
@@ -561,7 +561,7 @@ def test_adam_update(
     step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
         arg=helpers.floats(
-            min_value=0.01,
+            min_value=1e-5,
             max_value=1.0,
         ),
         min_size=4,
