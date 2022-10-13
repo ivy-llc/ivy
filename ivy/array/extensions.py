@@ -217,7 +217,7 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
-        
+
     def pad(
         self: ivy.Array,
         /,
