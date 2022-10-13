@@ -2960,27 +2960,6 @@ def gather(
     }
 
     """
-    axis = axis % len(indices.shape)
-    batch_dims = batch_dims % len(indices.shape)
-
-    if batch_dims > axis:
-        raise ivy.exceptions.IvyException(
-            "batch_dims ("
-            + str(batch_dims)
-            + ") must be less \
-            than or equal to axis ("
-            + str(axis)
-            + ")."
-        )
-    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
-        raise ivy.exceptions.IvyException(
-            "params.shape[0:batch_dims] "
-            + str(params.shape[0:batch_dims])
-            + " should \
-            be equal to indices.shape[0:batch_dims]"
-            + str(indices.shape[0:batch_dims])
-            + "."
-        )
     return current_backend(params, indices).gather(
         params, indices, axis=axis, batch_dims=batch_dims, out=out
     )
@@ -2995,6 +2974,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gather slices from params into a array with shape specified by indices.
@@ -3045,7 +3025,9 @@ def gather_nd(
         b: ivy.array([0., 100., 200.])
     }
     """
-    res = current_backend(params, indices).gather_nd(params, indices)
+    res = current_backend(params, indices).gather_nd(
+        params, indices, batch_dims=batch_dims
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res
