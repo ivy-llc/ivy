@@ -5,9 +5,9 @@ finfo
 
 .. autofunction:: ivy.array.array_methods.finfo
 
-.. autofunction:: ivy.container.container_methods.static_finfo
-
 .. autofunction:: ivy.container.container_methods.finfo
+
+.. autofunction:: ivy.container.container_methods.static_finfo
 |
 | **Supported Frameworks:**
 
