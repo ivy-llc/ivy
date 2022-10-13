@@ -1039,6 +1039,24 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([7,6,0]), \
+                              b=ivy.array([8,9,4]))
+        >>> ivy.Container.static_shuffle(x)
+        {
+            a: ivy.array([7, 0, 6]),
+            b: ivy.array([8, 4, 9])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0,0,0]), \
+                              b=ivy.array([0,0,0]))
+        >>> ivy.Container.static_shuffle(x)
+        {
+            a: ivy.array([0, 0, 0]),
+            b: ivy.array([0s, 0, 0])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
@@ -1090,6 +1108,24 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5,2,9]), \
+                              b=ivy.array([7,1,6]))
+        >>> x.shuffle()
+        {
+            a: ivy.array([9, 5, 2]),
+            b: ivy.array([6, 7, 1])
+        }
+
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([0,1,0])
+        >>> ivy.shuffle(x)
+        ivy.array([0, 0, 1])
         """
         return self.static_shuffle(
             self,

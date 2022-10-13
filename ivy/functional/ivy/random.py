@@ -536,12 +536,17 @@ def shuffle(
     ret
         An array object, shuffled along the first dimension.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
     >>> x = ivy.array([1, 2, 3, 4, 5])
     >>> y = ivy.shuffle(x)
     >>> print(y)
     ivy.array([2, 1, 4, 3, 5])
 
+    >>> x = ivy.array([1,0,5])
+    >>> y = ivy.array(ivy.zeros((3,)))
+    >>> z = ivy.shuffle(x, out=y)
+    >>> print(y)
+    ivy.array([0, 5, 1])
     """
     return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
