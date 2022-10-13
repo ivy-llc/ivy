@@ -101,6 +101,15 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
             "signed_integer": tuple(
                 set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
             ),
+            "complex": framework.valid_complex_dtypes,
+            "real_and_complex": tuple(
+                set(framework.valid_numeric_dtypes).union(
+                    framework.valid_complex_dtypes
+                )
+            ),
+            "bool": tuple(
+                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
+            ),
         }
 
     backend_dtypes = _get_type_dict(ivy)[kind]

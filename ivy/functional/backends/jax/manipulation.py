@@ -1,12 +1,14 @@
 # global
 import math
-import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence, Iterable, Callable, Literal
+import jax.numpy as jnp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -43,7 +45,7 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except ValueError as error:
+    except IndexError as error:
         raise ivy.exceptions.IvyException(repr(error))
 
 
@@ -160,7 +162,6 @@ def repeat(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     return jnp.repeat(x, repeats, axis)
 
 
@@ -212,6 +213,72 @@ def clip(
     return jnp.clip(x, x_min, x_max)
 
 
+def pad(
+    x: JaxArray,
+    /,
+    pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    *,
+    mode: Optional[
+        Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
+        ]
+    ] = "constant",
+    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
+    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
+    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+        )
+    elif mode == "constant":
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            constant_values=constant_values,
+        )
+    elif mode == "linear_ramp":
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            end_values=end_values,
+        )
+    elif mode in ["reflect", "symmetric"]:
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            reflect_type=reflect_type,
+        )
+    else:
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+        )
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
@@ -221,9 +288,6 @@ def constant_pad(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-
-
-constant_pad.unsupported_dtypes = ("uint64",)
 
 
 def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:

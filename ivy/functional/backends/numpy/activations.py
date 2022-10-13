@@ -85,8 +85,8 @@ def softplus(
             out=out,
         )
     if threshold is not None:
-        return np.where(x_beta > threshold, x, res)
-    return res
+        return np.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
 
 
 softplus.support_native_out = True

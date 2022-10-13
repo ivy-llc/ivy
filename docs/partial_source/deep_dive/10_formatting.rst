@@ -1,5 +1,5 @@
-Formatting
-==========
+Formatting 📋
+=============
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit

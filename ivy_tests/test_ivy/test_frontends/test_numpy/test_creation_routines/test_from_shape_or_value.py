@@ -38,7 +38,6 @@ def test_numpy_empty(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -47,7 +46,6 @@ def test_numpy_empty(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="empty",
         test_values=False,
@@ -79,7 +77,6 @@ def test_numpy_empty_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -88,7 +85,6 @@ def test_numpy_empty_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="empty_like",
         test_values=False,
@@ -117,7 +113,6 @@ def test_numpy_eye(
     k,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -126,7 +121,6 @@ def test_numpy_eye(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="eye",
         N=rows,
@@ -149,7 +143,6 @@ def test_numpy_identity(
     n,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -158,7 +151,6 @@ def test_numpy_identity(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="identity",
         n=n,
@@ -185,7 +177,6 @@ def test_numpy_ones(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -194,7 +185,6 @@ def test_numpy_ones(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="ones",
         shape=shape,
@@ -225,7 +215,6 @@ def test_numpy_ones_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -234,7 +223,6 @@ def test_numpy_ones_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="ones_like",
         a=x[0],
@@ -264,7 +252,6 @@ def test_numpy_zeros(
     shape,
     dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     helpers.test_frontend_function(
@@ -273,7 +260,6 @@ def test_numpy_zeros(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="zeros",
         shape=shape,
@@ -304,7 +290,6 @@ def test_numpy_zeros_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -313,7 +298,6 @@ def test_numpy_zeros_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="zeros_like",
         a=x[0],
@@ -356,7 +340,6 @@ def test_numpy_full(
     dtype_and_fill_value,
     # dtypes,
     num_positional_args,
-    fw,
     native_array,
 ):
     dtype, fill_value = dtype_and_fill_value
@@ -366,7 +349,6 @@ def test_numpy_full(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="full",
         shape=shape,
@@ -402,7 +384,6 @@ def test_numpy_full_like(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     dtype, fill_value = dtype_and_fill_value
@@ -412,7 +393,6 @@ def test_numpy_full_like(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="full_like",
         a=x[0],
