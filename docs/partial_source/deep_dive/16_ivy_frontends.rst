@@ -29,8 +29,8 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-The Basics
-----------
+The Frontend Basics
+-------------------
 
 **NOTE:** 
 
