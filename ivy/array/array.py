@@ -552,7 +552,7 @@ class Array(
         if ivy.current_backend_str() == "numpy":
             return np.array(self._data).__dlpack__()
         if ivy.current_backend_str() == "tensorflow":
-            return tf.experimental.dlpack.to_dlpack(tf.Tensor(self._data))
+            return tf.experimental.dlpack.to_dlpack(tf.convert_to_tensor(self._data))
         if ivy.current_backend_str() == "torch":
             return torch.utils.dlpack.to_dlpack(torch.Tensor(self._data))
         if ivy.current_backend_str() == "jax":
