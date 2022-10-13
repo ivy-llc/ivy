@@ -1,7 +1,6 @@
 # global
 
 # local
-from pickle import TRUE
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 
