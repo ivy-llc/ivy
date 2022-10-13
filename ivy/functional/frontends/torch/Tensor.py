@@ -30,6 +30,9 @@ class Tensor:
     def view(self, shape):
         return torch_frontend.reshape(self.data, shape)
 
+    def tan(self, *, out=None):
+        return torch_frontend.tan(self.data, out=out)
+
 
 # Tensor (alias)
 tensor = Tensor
