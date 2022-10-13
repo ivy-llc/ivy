@@ -108,7 +108,7 @@ def test_tensorflow_eigvalsh(
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
-def test_matrix_rank(*, dtype_x, as_variable, num_positional_args, native_array, tolr):
+def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, tolr):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -165,7 +165,7 @@ def _solve_get_dtype_and_data(draw):
 @given(
     dtype_and_x=_solve_get_dtype_and_data(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.lianlg.solve"
+        fn_name="ivy.functional.frontends.tensorflow.linalg.solve"
     ),
 )
 def test_tensorflow_solve(
@@ -225,7 +225,6 @@ def test_tensorflow_logdet(
     ),
 )
 def test_tensorflow_slogdet(
-    *,
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -296,7 +295,6 @@ def _get_second_matrix(draw):
     ),
 )
 def test_tensorflow_cholesky_solve(
-    *,
     x,
     y,
     as_variable,
@@ -357,7 +355,6 @@ def test_tensorflow_pinv(
     ),
 )
 def test_tensorflow_tensordot(
-    *,
     dtype_x_y_axes,
     as_variable,
     num_positional_args,
@@ -376,7 +373,7 @@ def test_tensorflow_tensordot(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="tensordot",
+        fn_tree="linalg.tensordot",
         a=x,
         b=y,
         axes=axes,
