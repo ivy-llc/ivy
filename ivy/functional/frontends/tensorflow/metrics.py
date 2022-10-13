@@ -191,6 +191,10 @@ def poisson(y_true, y_pred):
     return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
 
 
+def sparse_categorical_accuracy(y_true, y_pred):
+    return _sparse_categorical_matches(y_true, y_pred)
+
+
 def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1):
     if from_logits:
         y_pred = ivy.softmax(y_pred)

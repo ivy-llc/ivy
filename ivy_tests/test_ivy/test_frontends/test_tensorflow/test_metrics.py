@@ -270,6 +270,35 @@ def test_binary_crossentropy(
         label_smoothing=label_smoothing,
     )
 
+# sparse_categorical_accuracy
+@handle_cmd_line_args
+@given(
+    dtype_pred_and_labels=_dtype_pred_and_labels(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_pred_val=1e-6,
+        max_label_val=5,
+        sparse_label=True,
+        shape=(5, 10),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sparse_categorical_accuracy"
+    ),
+)
+def test_sparse_categorical_accuracy(
+    dtype_pred_and_labels, as_variable, num_positional_args, native_array
+):
+    input_dtype, y_pred, y_true = dtype_pred_and_labels
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.sparse_categorical_accuracy",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
 
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
