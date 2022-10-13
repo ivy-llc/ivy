@@ -592,6 +592,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container static method variant of ivy.kaiser_window. This method
         simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
+
         Parameters
         ----------
         window_length
@@ -605,10 +606,12 @@ class ContainerWithExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
+
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -647,6 +650,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container instance method variant of ivy.kaiser_window. This method
         simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -660,10 +664,12 @@ class ContainerWithExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
+
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -702,6 +708,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container static method variant of ivy.moveaxis. This method simply wraps
         the function, and so the docstring for ivy.moveaxis also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         a
@@ -750,6 +757,7 @@ class ContainerWithExtensions(ContainerBase):
         """ivy.Container instance method variant of ivy.moveaxis. This method simply
         wraps the function, and so the docstring for ivy.flatten also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -761,10 +769,12 @@ class ContainerWithExtensions(ContainerBase):
             These must also be unique.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with moved axes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:

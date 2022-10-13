@@ -120,7 +120,7 @@ def _dtype_pred_and_labels(
         min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.binary_accuracy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.binary_accuracy"
     ),
     threshold=st.floats(min_value=0.0, max_value=1.0),
 )
@@ -158,7 +158,7 @@ def test_tensorflow_binary_accuracy(
     ),
     from_logits=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sparse_categorical_crossentropy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.sparse_categorical_crossentropy"  # noqa
     ),
 )
 def test_sparse_categorical_crossentropy(
@@ -202,7 +202,7 @@ def test_sparse_categorical_crossentropy(
         small_abs_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.mean_absolute_error"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.mean_absolute_error"
     ),
 )
 def test_tensorflow_mean_absolute_error(
@@ -237,7 +237,7 @@ def test_tensorflow_mean_absolute_error(
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.binary_crossentropy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.binary_crossentropy"
     ),
 )
 def test_binary_crossentropy(
@@ -283,7 +283,7 @@ def test_binary_crossentropy(
     ),
     k=st.integers(min_value=3, max_value=10),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.sparse_top_k_categorical_accuracy"  # noqa
     ),
 )
 def test_sparse_top_k_categorical_accuracy(
@@ -317,7 +317,7 @@ def test_sparse_top_k_categorical_accuracy(
         ),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.categorical_accuracy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.categorical_accuracy"
     ),
 )
 def test_categorical_accuracy(
@@ -347,7 +347,7 @@ def test_categorical_accuracy(
         min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.kl_divergence"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.kl_divergence"
     ),
 )
 def test_tensorflow_kl_divergence(
@@ -377,7 +377,7 @@ def test_tensorflow_kl_divergence(
         min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.poisson"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.poisson"
     ),
 )
 def test_tensorflow_poisson(
@@ -409,7 +409,7 @@ def test_tensorflow_poisson(
         small_abs_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.mean_squared_error"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.mean_squared_error"
     ),
 )
 def test_tensorflow_mean_squared_error(
@@ -441,7 +441,7 @@ def test_tensorflow_mean_squared_error(
         small_abs_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.mean_absolute_percentage_error"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.mean_absolute_percentage_error"  # noqa
     ),
 )
 def test_tensorflow_mean_absolute_percentage_error(
@@ -471,7 +471,7 @@ def test_tensorflow_mean_absolute_percentage_error(
         min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.hinge"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.hinge"
     ),
 )
 def test_tensorflow_hinge(
@@ -501,7 +501,7 @@ def test_tensorflow_hinge(
         min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.squared_hinge"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.squared_hinge"
     ),
 )
 def test_tensorflow_squared_hinge(
@@ -531,7 +531,7 @@ def test_tensorflow_squared_hinge(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.mean_squared_logarithmic_error"  # noqa: E501
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.mean_squared_logarithmic_error"  # noqa: E501
     ),
 )
 def test_tensorflow_metrics_mean_squared_logarithmic_error(
@@ -567,7 +567,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.cosine_similarity"
     ),
 )
 def test_tensorflow_cosine_similarity(

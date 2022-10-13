@@ -7,12 +7,13 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
-N = 100
+os.system("git config --global --add safe.directory /ivy")
+N = 2000
 run_iter = int(sys.argv[1]) % N  # Splitting into 4 workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
         tests = pickle.load(f)
-    os.system(f"git checkout {tests['commit']}")
+    os.system(f"git checkout -f {tests['commit']}")
 
 os.system(
     "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
@@ -77,13 +78,10 @@ if __name__ == "__main__":
     start = run_iter * tests_per_run
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
-        print(test_name)
         os.system(
             f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
-        print("Computed Coverage")
         os.system("coverage annotate > coverage_output")
-        print("Done Annotation")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
