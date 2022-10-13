@@ -2,7 +2,6 @@ Deep Dive
 =========
 
 .. _`issues`: https://github.com/unifyai/ivy/issues
-.. _`discussions`: https://github.com/unifyai/ivy/discussions
 .. _`pull-requests`: https://github.com/unifyai/ivy/pulls
 
 For general users of the framework, who are mainly concerned with learning how to *use* Ivy,
