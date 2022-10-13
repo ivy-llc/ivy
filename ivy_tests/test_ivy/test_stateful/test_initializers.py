@@ -21,9 +21,7 @@ def test_constant(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -31,7 +29,7 @@ def test_constant(
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={"constant": constant},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -50,7 +48,6 @@ def test_constant(
 
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    print(ret_ivy, constant, ret_gt)
     assert ivy.all(ivy.equal(ret_ivy, ivy.array(constant)))
 
 
@@ -60,16 +57,14 @@ def test_constant(
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_zeros(
-    var_shape, init_with_v, method_with_v, as_variable, with_out, native_array, fw
-):
+def test_zeros(var_shape, init_with_v, method_with_v, as_variable, native_array):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
         as_variable_flags_init=[],
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -97,16 +92,14 @@ def test_zeros(
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_ones(
-    var_shape, init_with_v, method_with_v, as_variable, with_out, native_array, fw
-):
+def test_ones(var_shape, init_with_v, method_with_v, as_variable, native_array):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
         as_variable_flags_init=[],
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -151,9 +144,7 @@ def test_uniform(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -166,7 +157,7 @@ def test_uniform(
             "power": power,
             "gain": gain,
         },
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -214,9 +205,7 @@ def test_glorot_uniform(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -224,7 +213,7 @@ def test_glorot_uniform(
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -262,9 +251,7 @@ def test_first_layer_siren(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -272,7 +259,7 @@ def test_first_layer_siren(
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -311,9 +298,7 @@ def test_siren(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -321,7 +306,7 @@ def test_siren(
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={"w0": w0},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -347,7 +332,7 @@ def test_siren(
 
 @handle_cmd_line_args
 @given(
-    mean=helpers.floats(width=64),
+    mean=helpers.floats(),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
     var_shape=helpers.get_shape(),
     fan_in=st.integers(min_value=1),
@@ -368,9 +353,7 @@ def test_kaiming_normal(
     init_with_v,
     method_with_v,
     as_variable,
-    with_out,
     native_array,
-    fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         input_dtypes_init=[],
@@ -378,7 +361,7 @@ def test_kaiming_normal(
         num_positional_args_init=0,
         native_array_flags_init=[],
         all_as_kwargs_np_init={},
-        input_dtypes_method=[ivy.uint32],
+        input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,

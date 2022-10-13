@@ -44,10 +44,10 @@ Ivy Tests 🧪
 .. _`test_gelu`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104
 .. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
-.. _`ivy tests discussion`: https://github.com/unifyai/ivy/discussions/1304
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
+.. _`ivy tests forum`: https://discord.com/channels/799879767196958751/1028297802826121326
 .. _`test helpers`:  https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers
 .. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
@@ -767,9 +767,8 @@ efficiently.
 
 This should have hopefully given you a good feel for how the tests are implemented in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `ivy tests discussion`_,
-or reach out on `discord`_ in the `ivy tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests channel`_
+or in the `ivy tests forum`_!
 
 
 **Video**
