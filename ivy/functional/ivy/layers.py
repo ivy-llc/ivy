@@ -242,7 +242,8 @@ def dropout1d(
     Returns
     -------
     ret
-        an array with some channels zero-ed and the rest of channels are scaled by (1/1-prob).
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
     """
     return current_backend(x).dropout1d(x,
                                         prob,
