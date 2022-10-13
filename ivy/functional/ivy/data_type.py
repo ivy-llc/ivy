@@ -3,7 +3,7 @@ import ast
 import inspect
 import math
 from numbers import Number
-from typing import Union, Tuple, List, Optional, Callable, Iterable
+from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
 
 # local
@@ -1546,27 +1546,11 @@ def is_int_dtype(
     Examples
     --------
      With :class:`ivy.Dtype` input:
-
-    >>> x = ivy.is_int_dtype(ivy.int8)
-    >>> print(x)
-    True
-
-    >>> x = ivy.is_int_dtype(ivy.int32)
-    >>> print(x)
-    True
-
     >>> x = ivy.is_int_dtype(ivy.float64)
     >>> print(x)
     False
 
-    >>> x = ivy.is_int_dtype(ivy.bool)
-    >>> print(x)
-    False
-
-
-
     With :class:`ivy.Array` input:
-
     >>> x = ivy.array([1., 2., 3.])
     >>> x.dtype
     float32
@@ -1575,22 +1559,16 @@ def is_int_dtype(
     False
 
     With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]],dtype = ivy.int16)
-    >>> x.dtype
-    torch.int16
-
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :code:`Number` input:
-
     >>> x = 1
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :class:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
@@ -1627,18 +1605,18 @@ def is_int_dtype(
 
 
 @handle_exceptions
-def check_float(x):
+def check_float(x: Any) -> bool:
     """
     Helper function to check if the input is a float or a float-like object.
 
     Parameters
     ----------
-    x : any
+    x
         Input to check.
 
     Returns
     -------
-    ret : bool
+    ret
         "True" if the input is a float or a float-like object, otherwise "False".
     """
     return isinstance(x, (int, np.float)) and not type(x) == bool
@@ -1656,41 +1634,23 @@ def is_float_dtype(
 
     Parameters
     ----------
-    dtype_in : Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+    dtype_in
         The array or data type to check
 
     Returns
     -------
-    ret : bool
+    ret
         Whether or not the array or data type is of a floating point dtype
 
     Examples
     --------
-    With :class:`ivy.Dtype` input:
-
     >>> x = ivy.is_float_dtype(ivy.float32)
     >>> print(x)
     True
 
-    >>> x = ivy.is_float_dtype(ivy.int64)
-    >>> print(x)
-    False
-
-    >>> x = ivy.is_float_dtype(ivy.int32)
-    >>> print(x)
-    False
-
-    >>> x = ivy.is_float_dtype(ivy.bool)
-    >>> print(x)
-    False
-
     >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
-    >>> print(arr.is_float_dtype())
+    >>> print(ivy.is_float_dtype(arr))
     True
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
-    >>> print(x.a.dtype, x.b.dtype)
-    float32 int32
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)

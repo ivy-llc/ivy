@@ -784,6 +784,7 @@ def kaiser_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
+
     Parameters
     ----------
     window_length
@@ -797,12 +798,14 @@ def kaiser_window(
         data type of the returned array.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.kaiser_window(5)
     ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
     >>> ivy.kaiser_window(5, True, 5)
@@ -827,6 +830,7 @@ def moveaxis(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move axes of an array to new positions..
+
     Parameters
     ----------
     a
@@ -838,10 +842,12 @@ def moveaxis(
         These must also be unique.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Array with moved axes. This array is a view of the input array.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -852,8 +858,8 @@ def moveaxis(
     (5, 3, 4)
     """
     return ivy.current_backend().moveaxis(a, source, destination, out=out)
-    
-    
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

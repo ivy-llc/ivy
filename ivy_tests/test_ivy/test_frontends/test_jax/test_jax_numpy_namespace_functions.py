@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
