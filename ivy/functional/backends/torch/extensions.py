@@ -251,3 +251,20 @@ def moveaxis(
 
 
 moveaxis.support_native_out = False
+
+
+def heaviside(
+    x1: torch.tensor,
+    x2: torch.tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.heaviside(
+        x1,
+        x2,
+        out=out,
+    )
+
+
+heaviside.support_native_out = True
