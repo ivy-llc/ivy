@@ -48,7 +48,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = int(deadline) if deadline else 80000
+    deadline = int(deadline) if deadline else 500000
     profile_settings = {}
     os.getenv("REDIS_URL")
     if num_examples is not None:
@@ -216,3 +216,17 @@ def pytest_addoption(parser):
         default=None,
         help="set deadline for testing one example",
     )
+    parser.addoption(
+        "--my_test_dump",
+        action="store",
+        default=None,
+        help="Print test items in my custom format",
+    )
+
+
+def pytest_collection_finish(session):
+    if session.config.option.my_test_dump is not None:
+        for item in session.items:
+            item_path = os.path.relpath(item.path)
+            print("{}::{}".format(item_path, item.name))
+        pytest.exit("Done!")

@@ -211,7 +211,7 @@ The functions in this returned module are populated by iterating through the glo
 .. code-block:: python
 
    # ivy/backend_handler.py
-   def set_backend(backend):
+   def set_backend(backend: str):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
@@ -219,17 +219,17 @@ The functions in this returned module are populated by iterating through the glo
            ivy_original_dict = ivy.__dict__.copy()
 
        # add the input backend to global stack
-       backend_stack.append(f)
+       backend_stack.append(backend)
 
        # iterate through original ivy.__dict__
        for k, v in ivy_original_dict.items():
 
            # if method doesn't exist in the backend
-           if k not in f.__dict__:
+           if k not in backend.__dict__:
                # add the original ivy method to backend
-               f.__dict__[k] = v
+               backend.__dict__[k] = v
            # update global ivy.__dict__ with this method
-           ivy.__dict__[k] = f.__dict__[k]
+           ivy.__dict__[k] = backend.__dict__[k]
 
        # maybe log to terminal
        if verbosity.level > 0:

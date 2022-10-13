@@ -3,6 +3,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -43,19 +44,10 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-@st.composite
-def _dtype_n_with_out(draw):
-    dtype = draw(helpers.get_dtypes("float", none=True))
-    if dtype is None:
-        return dtype, draw(st.booleans())
-    return dtype, False
-
-
 # concat
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype_n_with_out=_dtype_n_with_out(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.concatenate"
     ),
@@ -63,12 +55,15 @@ def _dtype_n_with_out(draw):
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
-    dtype_n_with_out,
+    with_out,
     num_positional_args,
     native_array,
 ):
-    dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtypes,
+        get_dtypes_kind="valid",
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -81,4 +76,111 @@ def test_numpy_concatenate(
         axis=unique_idx,
         out=None,
         dtype=dtype,
+        casting=casting,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    factor=helpers.ints(min_value=2, max_value=6),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.stack"
+    ),
+)
+def test_numpy_stack(
+    dtype_and_x,
+    factor,
+    as_variable,
+    native_array,
+    with_out,
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    xs = [x[0]]
+    for i in range(factor):
+        xs += [x[0]]
+    helpers.test_frontend_function(
+        input_dtypes=[dtype[0]] * (factor + 1),
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="stack",
+        arrays=xs,
+        axis=0,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    factor=helpers.ints(min_value=2, max_value=6),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.vstack"
+    ),
+)
+def test_numpy_vstack(
+    dtype_and_x,
+    factor,
+    as_variable,
+    native_array,
+    with_out,
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    xs = [x[0]]
+    for i in range(factor):
+        xs += [x[0]]
+    helpers.test_frontend_function(
+        input_dtypes=[dtype[0]] * (factor + 1),
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="vstack",
+        tup=xs
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    factor=helpers.ints(min_value=2, max_value=6),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.hstack"
+    ),
+)
+def test_numpy_hstack(
+    dtype_and_x,
+    factor,
+    as_variable,
+    native_array,
+    with_out,
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    xs = [x[0], ]
+    for i in range(factor):
+        xs += [x[0], ]
+    helpers.test_frontend_function(
+        input_dtypes=[dtype[0]] * (factor + 1),
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="hstack",
+        tup=xs
     )

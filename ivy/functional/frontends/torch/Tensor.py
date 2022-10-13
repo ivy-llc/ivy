@@ -1,4 +1,5 @@
 # global
+import torch
 
 # local
 import ivy
@@ -19,3 +20,21 @@ class Tensor:
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
+
+    def sin(self, *, out=None):
+        return torch_frontend.sin(self.data, out=out)
+
+    def sin_(self):
+        self.data = self.sin()
+        return self.data
+
+    def view(self, shape):
+        self.data = torch_frontend.reshape(self.data, shape)
+        return self.data
+
+    def float(self, memory_format=torch.preserve_format):
+        return ivy.astype(self.data, ivy.float32)
+
+
+# Tensor (alias)
+tensor = Tensor
