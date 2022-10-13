@@ -289,23 +289,23 @@ def searchsorted(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([2,1,0])
-    >>> x2 = ivy.array([1])
-    >>> y  = ivy.searchsorted(x1,x2)
+    >>> x = ivy.array([1, 2, 3])
+    >>> v = ivy.array([2)
+    >>> y  = ivy.searchsorted(x,v)
     >>> print(y)
-    ivy.array([0])
+    ivy.array([1])
 
-    >>> x1 = ivy.array([1,0,3,2])
-    >>> x2 = ivy.array([3])
-    >>> y  = ivy.searchsorted(x1, x2, side='right')
+    >>> x = ivy.array([0, 1, 2, 3])
+    >>> v = ivy.array([3])
+    >>> y  = ivy.searchsorted(x, v, side='right')
     >>> print(y)
     ivy.array([4])
 
-    >>> x1 = ivy.array([2,0,1,3])
-    >>> x2 = ivy.array([3,1,9])
-    >>> y  = ivy.searchsorted(x1, x2, side='left')
+    >>> x = ivy.array([0, 1, 2, 3, 4, 5])
+    >>> v = ivy.array([[3, 1], [10, 3], [-2, -1]])
+    >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
-    ivy.array([3,2,4])
+    ivy.array([[3, 1], [6, 3], [0, 0]])
 
     """
     return ivy.current_backend(x, v).searchsorted(
