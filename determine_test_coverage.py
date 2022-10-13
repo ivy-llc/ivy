@@ -7,7 +7,7 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
-N = 100
+N = 2000
 run_iter = int(sys.argv[1]) % N  # Splitting into 4 workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
@@ -101,6 +101,7 @@ if __name__ == "__main__":
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
+os.system("git config --global --add safe.directory /ivy")
 if run_iter == 0:
     commit_hash = ""
     for commit in Repository(".", order="reverse").traverse_commits():
