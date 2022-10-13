@@ -305,7 +305,9 @@ def searchsorted(
     >>> v = ivy.array([[3, 1], [10, 3], [-2, -1]])
     >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
-    ivy.array([[3, 1], [6, 3], [0, 0]])
+    ivy.array([[3, 1],
+       [6, 3],
+       [0, 0]])
 
     """
     return ivy.current_backend(x, v).searchsorted(
