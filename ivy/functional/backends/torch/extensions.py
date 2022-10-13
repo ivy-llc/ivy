@@ -262,7 +262,7 @@ def trapz(
     axis: Optional[int] = - 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.trapezoid(y, x=x, dx=dx, dim=axis)
+    return torch.trapezoid(y, x, dx=dx, dim=axis)
 
 
 trapz.support_native_out = False

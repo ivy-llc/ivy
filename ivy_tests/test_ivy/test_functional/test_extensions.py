@@ -597,58 +597,57 @@ def test_pad(
 
 
 # trapz
+@st.composite
+def _either_x_dx(draw):
+    rand = draw(
+        st.integers(min_value=0, max_value=1)
+    ),
+    if rand == 0:
+        either_x_dx = draw(
+            helpers.dtype_and_x(
+                avaliable_dtypes=st.shared(
+                    helpers.get_dtypes("float"),
+                    key="trapz_dtype"
+                ),
+                min_value=-100,
+                max_value=100,
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            )
+        )
+        return rand, either_x_dx
+    else:
+        either_x_dx = draw(
+            st.floats(min_value=-10, max_value=10),
+        )
+        return rand, either_x_dx
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_y=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(
+            helpers.get_dtypes("float"),
+            key="trapz_dtype"
+        ),
         min_value=-100,
         max_value=100,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_neg_axes=True,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    source=helpers.get_axis(
-        allow_none=False,
-        unique=True,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
-        min_size=1,
-        force_int=True,
-    ),
-    destination=helpers.get_axis(
-        allow_none=False,
-        unique=True,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
-        min_size=1,
-        force_int=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="moveaxis"),
+    rand_either=_either_x_dx(),
+    num_positional_args=helpers.num_positional_args(fn_name="trapz"),
 )
-def test_moveaxis(
-    dtype_and_a,
-    source,
-    destination,
+def test_trapz(
+    dtype_values_axis,
+    rand_either,
     as_variable,
     with_out,
     num_positional_args,
@@ -657,7 +656,15 @@ def test_moveaxis(
     instance_method,
     fw,
 ):
-    input_dtype, a = dtype_and_a
+    input_dtype, y, axis = dtype_values_axis
+    rand, either_x_dx = rand_either
+    if rand == 0:
+        dtype_x, x = either_x_dx
+        x = np.asarray(x, dtype=dtype_x)
+        dx = None
+    else:
+        x = None
+        dx = either_x_dx
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -667,8 +674,9 @@ def test_moveaxis(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="moveaxis",
-        a=np.asarray(a[0], dtype=input_dtype[0]),
-        source=source,
-        destination=destination,
+        fn_name="trapz",
+        y=np.asarray(y[0], dtype=input_dtype[0]),
+        x=x,
+        dx=dx,
+        axis=axis,
     )
