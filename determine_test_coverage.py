@@ -8,12 +8,12 @@ from tqdm import tqdm
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 4
+N = 1000
 run_iter = int(sys.argv[1]) % N  # Splitting into 4 workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
         tests = pickle.load(f)
-    os.system(f"git checkout {tests['commit']}")
+    os.system(f"git checkout -f {tests['commit']}")
 
 os.system(
     "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
