@@ -1,6 +1,5 @@
 # global
 from hypothesis import given, strategies as st
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -105,7 +104,7 @@ def test_numpy_stack(
     for i in range(factor):
         xs += [x[0]]
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]]*(factor+1),
+        input_dtypes=[dtype[0]]*(factor + 1),
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -172,11 +171,11 @@ def test_numpy_hstack(
     num_positional_args,
 ):
     dtype, x = dtype_and_x
-    xs = [x[0],]
+    xs = [x[0], ]
     for i in range(factor):
-        xs += [x[0],]
+        xs += [x[0], ]
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]]*(factor+1),
+        input_dtypes=[dtype[0]]*(factor + 1),
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
