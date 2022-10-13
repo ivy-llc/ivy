@@ -290,8 +290,8 @@ def searchsorted(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
-    >>> v = ivy.array([2)
-    >>> y  = ivy.searchsorted(x,v)
+    >>> v = ivy.array([2])
+    >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
     ivy.array([1])
 
