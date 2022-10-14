@@ -7,32 +7,36 @@ jobs:
    run_tests:
      runs-on: ubuntu-latest
      steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
-
-       - name: Determine Test Coverage
+       - name: Temp
          run: |
-           git clone https://github.com/unifyai/Mapping.git
-           cp Mapping/tests.pkl ivy/
-           cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 1
-           cd ..
-           mkdir tests
-           cp ivy/tests.pkl tests/
+           echo ${{ github.run_number }}
 
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master
+#       - name: Checkout Ivy 🛎
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
+#           fetch-depth: 150
+#
+#       - name: Determine Test Coverage
+#         run: |
+#           git clone https://github.com/unifyai/Mapping.git
+#           cp Mapping/tests.pkl ivy/
+#           cd ivy
+#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
+#           cd ..
+#           mkdir tests
+#           cp ivy/tests.pkl tests/
+#
+#       - name: Push Mapping
+#         uses: cpina/github-action-push-to-another-repository@main
+#         env:
+#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+#         with:
+#           source-directory: tests/
+#           destination-github-username: 'unifyai'
+#           destination-repository-name: 'Mapping'
+#           user-email: rashul.chutani@gmail.com
+#           commit-message: Update Mapping
+#           target-branch: master
