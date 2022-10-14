@@ -5,9 +5,9 @@ nonzero
 
 .. autofunction:: ivy.array.array_methods.nonzero
 
-.. autofunction:: ivy.container.container_methods.static_nonzero
-
 .. autofunction:: ivy.container.container_methods.nonzero
+
+.. autofunction:: ivy.container.container_methods.static_nonzero
 |
 | **Supported Frameworks:**
 
