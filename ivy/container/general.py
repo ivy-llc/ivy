@@ -3633,7 +3633,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        
+
 
         Returns
         -------
@@ -3647,16 +3647,16 @@ class ContainerWithGeneral(ContainerBase):
         {
             b: 2
         }
-        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]]
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
         >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3
         }
-        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3,
@@ -3709,7 +3709,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        
+
 
         Returns
         -------
@@ -3718,21 +3718,21 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])) 
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> a.get_num_dims()
         {
             b: 2
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
         >>> a.get_num_dims()
         {
             b: 3
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> a.get_num_dims()
         {
             b: 3,
@@ -3744,7 +3744,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerWithGeneral.static_supports_inplace_updates(
+        return ContainerWithGeneral.static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
