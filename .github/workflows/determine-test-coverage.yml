@@ -1,8 +1,8 @@
 name: determine-test-coverage
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '30 10,16,22 14 * *'
+#  schedule:
+#    - cron: '30 10,16,22 14 * *'
 permissions:
   actions: read
 jobs:
@@ -28,13 +28,27 @@ jobs:
            cp ivy/tests.pkl tests/
 
        - name: Push Mapping
+         if: ${{ github.run_number }} % 10 != 9
          uses: cpina/github-action-push-to-another-repository@main
          env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
          with:
            source-directory: tests/
            destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
+           destination-repository-name: 'Backend_Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
+
+       - name: Push Mapping
+         if: ${{ github.run_number }} % 10 == 9
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Backend_Mapping'
            user-email: rashul.chutani@gmail.com
            commit-message: Update Mapping
            target-branch: master
