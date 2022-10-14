@@ -34,7 +34,7 @@ class Tensor:
     def sinh_(self):
         self.data = self.sinh()
         return self.data
-        
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data

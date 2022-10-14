@@ -3,8 +3,7 @@
 from functools import reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable
-
+from typing import Optional, Union, Sequence, Callable, List
 import functorch
 import numpy as np
 import torch
@@ -12,27 +11,10 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.general import _parse_ellipsis
 from . import version
 
 torch_scatter = None
-
-
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
 
 
 def _parse_index(indices, ndims):
@@ -91,7 +73,9 @@ def get_item(
     return x.__getitem__(query)
 
 
-def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
+def to_numpy(
+    x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
+) -> Union[np.ndarray, List[np.ndarray]]:
     if isinstance(x, (float, int, bool)):
         return x
     elif isinstance(x, np.ndarray):

@@ -279,4 +279,3 @@ def ZerosLike(*, x, name="ZerosLike"):
 
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
-    
