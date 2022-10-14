@@ -9,7 +9,7 @@ tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
 N = 2000
-run_iter = int(sys.argv[1]) % N  # Splitting into 4 workflows
+run_iter = int(sys.argv[1]) % 10  # Splitting into N workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
         tests = pickle.load(f)
