@@ -127,7 +127,7 @@ def test_tensorflow_softmax(
         )
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.elu"
+        fn_name="ivy.functional.frontends.tensorflow.keras.elu"
     ),
 )
 def test_tensorflow_elu(
@@ -166,7 +166,7 @@ def test_tensorflow_elu(
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.selu"
+        fn_name="ivy.functional.frontends.tensorflow.keras.selu"
     ),
 )
 def test_tensorflow_selu(
