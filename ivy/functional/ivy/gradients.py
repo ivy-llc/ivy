@@ -21,14 +21,49 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _unused_variables_to_zero_gradients(grads, xs):
-    if isinstance(grads, ivy.Container):
-        arrays = {
-            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
-        }
-        return ivy.Container(**arrays)
+def _zero_gradients_to_none_and_to_ivy(grads):
+    if isinstance(grads, ivy.Array):
+        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
-        return ivy.zeros_like(xs) if grads is None else grads
+        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
+        if not isinstance(zero_idxs, list) or len(zero_idxs[0]) == 0:
+            return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+        zero_idxs.reverse()
+        ivy.prune_nest_at_indices(grads, zero_idxs)
+        return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+
+
+def _get_native_arrays_and_indices(func_ret):
+    func_ret = ivy.nested_map(func_ret, ivy.to_native, include_derived=True)
+    arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
+    arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
+    for i in range(len(arr_idxs)):
+        arr_idxs[i] = [str(x) for x in arr_idxs[i]]
+        arr_idxs[i] = "_".join(arr_idxs[i])
+    return arr_idxs, arr_values
+
+
+def _forward_fn(xs, func):
+    if isinstance(xs, dict):
+        xs = ivy.Container(**xs)
+    ret = func(xs)
+    ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
+    array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
+    array_values = ivy.multi_index_nest(ret, array_idxs)
+    return array_values
+
+
+def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+    if not retain_grads:
+        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+    if grad_idxs is not None:
+        for i in range(len(grad_idxs)):
+            grad_idxs[i] = [str(x) for x in grad_idxs[i]]
+            grad_idxs[i] = "_".join(grad_idxs[i])
+        grads = {idx: grads[idx] for idx in grad_idxs}
+    if not isinstance(grads, ivy.Array):
+        grads = ivy.Container(grads)
+    return grads
 
 
 # Extra #
@@ -403,7 +438,7 @@ def stop_gradient(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-def execute_with_gradients(func, xs, /, *, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
     y value.
@@ -417,6 +452,9 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False):
         Variables for which to compute the function gradients with respective to.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
+    grad_idxs
+        Indices of the returned arrays for which to return computed gradients If None,
+        all gradients are returned. (Default value = None)
 
     Returns
     -------
@@ -425,7 +463,9 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False):
         extra function outputs.
 
     """
-    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(None).execute_with_gradients(
+        func, xs, retain_grads=retain_grads, grad_idxs=grad_idxs
+    )
 
 
 execute_with_gradients.computes_gradients = True

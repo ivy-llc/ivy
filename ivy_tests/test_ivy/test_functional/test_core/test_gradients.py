@@ -210,9 +210,12 @@ def test_execute_with_gradients(
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
-        array_vals = ivy.multi_index_nest(xs, array_idxs)
-        final_array = ivy.stack(array_vals)
+        if isinstance(xs, ivy.Container):
+            array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
+            array_vals = ivy.multi_index_nest(xs, array_idxs)
+            final_array = ivy.stack(array_vals)
+        else:
+            final_array = xs
         ret = ivy.mean(final_array)
         return ret
 
