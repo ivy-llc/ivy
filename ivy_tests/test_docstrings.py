@@ -115,14 +115,13 @@ def check_docstring_examples_run(
     if end_index == -1:
         return True
 
-    docstring_split = docstring.split("\n")
     executable_lines = []
 
-    for index, line in enumerate(docstring_split):
-        if ">>>" in line:
+    for line in trimmed_docstring:
+        if line.startswith(">>>"):
             executable_lines.append(line.split(">>>")[1][1:])
-        if " ... " in line:
-            executable_lines[-1] += line.split("...")[1][1:] 
+        if line.startswith("..."):
+            executable_lines[-1] += line.split("...")[1][1:]
         if ">>> print(" in line:
             break
 
