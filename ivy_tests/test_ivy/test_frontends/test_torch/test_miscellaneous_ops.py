@@ -846,24 +846,24 @@ def test_torch_vander(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=3,
-            max_dim_size=3),
-            key="shape"),
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=3, min_dim_size=3, max_dim_size=3
+            ),
+            key="cross_shape",
+        ),
         min_value=-100,
         max_value=100,
         num_arrays=2,
         shared_dtype=True,
     ),
     dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=3,
-            max_dim_size=3),
-            key="shape"),
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=3, min_dim_size=3, max_dim_size=3
+            ),
+            key="cross_shape",
+        ),
         min_size=1,
         max_size=1,
         force_int=True,
