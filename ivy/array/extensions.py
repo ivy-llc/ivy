@@ -1,6 +1,7 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Sequence
+from numbers import Number
 
 # local
 import ivy
@@ -52,7 +53,7 @@ class ArrayWithExtensions(abc.ABC):
         Parameters
         ----------
         self
-            input array to flatten. 
+            input array to flatten.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -61,7 +62,7 @@ class ArrayWithExtensions(abc.ABC):
         Returns
         -------
         ret
-            the flattened array over the specified dimensions. 
+            the flattened array over the specified dimensions.
 
         Examples
         --------
@@ -119,17 +120,10 @@ class ArrayWithExtensions(abc.ABC):
             [ 4, 19, 16, 17],
             [ 2, 12,  8, 14]]]))
         """
-        return ivy.flatten(
-            self._data, 
-            start_dim=start_dim, 
-            end_dim=end_dim, 
-            out=out)
-        
+        return ivy.flatten(self._data, start_dim=start_dim, end_dim=end_dim, out=out)
+
     def lcm(
-        self: ivy.Array,
-        x2: ivy.Array,
-        *,
-        out: Optional[ivy.Array] = None
+        self: ivy.Array, x2: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.lcm. This method simply wraps the
@@ -143,7 +137,7 @@ class ArrayWithExtensions(abc.ABC):
         x2
             second input array
         out
-            optional output array, for writing the result to. 
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -159,3 +153,191 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([10, 21, 60])
         """
         return ivy.lcm(self, x2, out=out)
+
+    def max_pool2d(
+        self: ivy.Array,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window for each dimension of the input tensor.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the max pooling operation.
+
+        Examples
+        --------
+        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
+        ivy.array([[[[ 2,  3],
+        [ 4,  5],
+        [ 4,  5]]],
+        [[[ 8,  9],
+        [10, 11],
+        [10, 11]]]])
+
+        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> print(x.max_pool2d(3, 1, 'VALID'))
+        ivy.array([[[[16, 17]],
+        [[22, 23]]],
+        [[[40, 41]],
+        [[46, 47]]]])
+        """
+        return ivy.max_pool2d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )
+
+    def pad(
+        self: ivy.Array,
+        /,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies
+        to this method with minimal changes.
+        """
+        return ivy.pad(
+            self._data,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            out=out,
+        )
+
+    def moveaxis(
+        self: ivy.Array,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            The array whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with moved axes. This array is a view of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.zeros((3, 4, 5))
+        >>> x.moveaxis(0, -1).shape
+        (4, 5, 3)
+        >>> x.moveaxis(-1, 0).shape
+        (5, 3, 4)
+        """
+        return ivy.moveaxis(self._data, source, destination, out=out)
+
+    def heaviside(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.heaviside. This method simply
+        wraps the function, and so the docstring for ivy.heaviside also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        x2
+            values to use where x1 is zero.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            output array with element-wise Heaviside step function of x1.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([0.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0.0000, 0.5000, 1.0000])
+
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([1.2, -2.0, 3.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0., -2., 1.])
+        """
+        return ivy.heaviside(self._data, x2, out=out)

@@ -66,9 +66,7 @@ def test_tensorflow_Acosh(dtype_and_x, as_variable, num_positional_args, native_
         fn_name="ivy.functional.frontends.tensorflow.Add"
     ),
 )
-def test_tensorflow_Add(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_Add(dtype_and_x, as_variable, num_positional_args, native_array):
     dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -254,9 +252,7 @@ def _dtypes(draw):
         fn_name="ivy.functional.frontends.tensorflow.Div"
     ),
 )
-def test_tensorflow_Div(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_Div(dtype_and_x, as_variable, num_positional_args, native_array):
     dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1011,7 +1007,7 @@ def test_tensorflow_Reshape(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.Reshape",
-        tensor=x[0],
+        tensor=x,
         shape=shape,
     )
 
@@ -1264,7 +1260,7 @@ def test_tensorflow_Cumsum(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
@@ -1305,11 +1301,9 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, native_array):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "bfloat16",
+            "float16",
             "float32",
             "float64",
-            "int8",
-            "int16",
             "int32",
             "int64",
         ],
@@ -1328,7 +1322,6 @@ def test_tensroflow_MatMul(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1627,7 +1620,7 @@ def test_tensorflow_Cholesky(
 
 
 @handle_cmd_line_args
-@given(    
+@given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1756,8 +1749,39 @@ def test_tensorflow_LeftShift(
         x=xs[0],
         y=xs[1],
     )
-   
-   
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        min_value=-5,
+        max_value=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.MatrixDeterminant"
+    ),
+)
+def test_tensorflow_MatrixDeterminant(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatrixDeterminant",
+        input=x[0],
+    )
+
+
 @handle_cmd_line_args
 @given(
     array_indices_axis=helpers.array_indices_axis(
@@ -1791,4 +1815,123 @@ def test_tensorflow_NthElement(
         input=x,
         n=n.flatten()[0],
         reverse=reverse,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer", full=True),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Invert"
+    ),
+)
+def test_tensorflow_Invert(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Invert",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.InvGrad"
+    ),
+)
+def test_tensorflow_InvGrad(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.InvGrad",
+        y=x[0],
+        dy=x[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Ceil"
+    ),
+)
+def test_tensorflow_Ceil(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Ceil",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=0,
+        max_value=8,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.RightShift"
+    ),
+)
+def test_tensorflow_RightShift(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.RightShift",
+        x=xs[0],
+        y=xs[1],
     )

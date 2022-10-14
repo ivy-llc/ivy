@@ -36,6 +36,29 @@ def _parse_ellipsis(so, ndims):
     )
 
 
+def _parse_index(indices, ndims):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
+    return ind
+
+
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
         if exclusive and isinstance(x, tf.Variable):
@@ -115,6 +138,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -123,9 +149,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -311,7 +339,13 @@ def scatter_nd(
         )
 
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.stack(
             [
@@ -333,7 +367,27 @@ def scatter_nd(
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
             indices = tf.expand_dims(indices, 0)
-
+        if tf.reduce_any(indices == -1):
+            indices = _parse_index(indices, len(shape))
+            indices = [
+                tf.stack(
+                    [
+                        tf.reshape(value, (-1,))
+                        for value in tf.meshgrid(
+                            *[
+                                tf.range(s)
+                                if idx == slice(None, None, None)
+                                else tf.constant([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    axis=-1,
+                )
+                for index in indices
+            ]
+            indices = tf.concat(indices, axis=0)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
