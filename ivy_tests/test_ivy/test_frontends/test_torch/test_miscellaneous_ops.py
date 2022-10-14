@@ -845,18 +845,18 @@ def test_torch_vander(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("unsigned"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
         max_value=100,
-        allow_nan=False
+        allow_nan=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.lcm"
-    )
+    ),
 )
 def test_torch_lcm(
     dtype_and_x,
