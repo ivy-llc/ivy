@@ -3,6 +3,7 @@ from hypothesis import given, assume, strategies as st
 
 # local
 import numpy as np
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -473,6 +474,21 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+)
+def test_ndenumerate(dtype_and_x):
+    values = dtype_and_x[1][0]
+    for (index1, x1), (index2, x2) in zip(
+        np.ndenumerate(values), ivy.ndenumerate(values)
+    ):
+        assert index1 == index2 and x1 == x2
 
 
 @st.composite
