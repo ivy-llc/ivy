@@ -28,6 +28,7 @@ Extensions
    extensions/ndenumerate.rst
    extensions/pad.rst
    extensions/heaviside.rst
+   extensions/median.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:

@@ -401,8 +401,8 @@ ivy.array([0., 1.5574077, -2.1850398])
 &gt;&gt;&gt; print(y)
 ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-&gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], \
-                   [-4.4, -5.5, -6.6]])
+&gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],
+...                [-4.4, -5.5, -6.6]])
 &gt;&gt;&gt; ivy.tan(x, out=x)
 &gt;&gt;&gt; print(x)
 ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
@@ -411,7 +411,7 @@ ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
+to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
 <p>Point 1 is simple to satisfy. Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by
 points 6 and 7, and ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
 then as far as point 1 is concerned, the input <code class="code docutils literal notranslate"><span class="pre">x</span></code> only has one possible variation. It must be an array.</p>
@@ -513,16 +513,16 @@ With :class:`ivy.Array` input:
 &gt;&gt;&gt; print(y)
 ivy.array([2., 0., 1.])
 
-&gt;&gt;&gt; x = ivy.array([[0., 1., 2.], \
-                   [3., 4., 5.]])
+&gt;&gt;&gt; x = ivy.array([[0., 1., 2.],
+...                [3., 4., 5.]])
 &gt;&gt;&gt; y = ivy.zeros((2, 3))
 &gt;&gt;&gt; ivy.roll(x, 2, -1, out=y)
 &gt;&gt;&gt; print(y)
 ivy.array([[1., 2., 0.],
            [4., 5., 3.]])
 
-&gt;&gt;&gt; x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
-                   [[3., 9.], [4., 12.], [5., 15.]]])
+&gt;&gt;&gt; x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
+...                 [[3., 9.], [4., 12.], [5., 15.]]])
 &gt;&gt;&gt; ivy.roll(x, (1, -1), (0, 2), out=x)
 &gt;&gt;&gt; print(x)
 ivy.array([[[ 9., 3.],
@@ -535,7 +535,7 @@ ivy.array([[[ 9., 3.],
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
+to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
 <p>Point 1 is a bit less trivial to satisfy than it was for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> above. While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one
 variation (for the same reason as explained in the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations
 (<code class="code docutils literal notranslate"><span class="pre">int</span></code> or sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations
@@ -554,8 +554,8 @@ making all three examples possible.</p>
 <p>We then also add an example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 6.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With one :class:`ivy.Container` input:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
+...                   b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = ivy.roll(x, 1)
 &gt;&gt;&gt; print(y)
 {
@@ -570,8 +570,8 @@ We can therefore add an example with multiple <code class="xref py py-class docu
 in order to satisfy point 7.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
+...                   b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; shift = ivy.Container(a=1, b=-1)
 &gt;&gt;&gt; y = ivy.roll(x, shift)
 &gt;&gt;&gt; print(y)
@@ -590,8 +590,8 @@ in order to satisfy point 8.</p>
 
 With one :class:`ivy.Container` input:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
+...                   b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = ivy.Container.static_roll(x, 1)
 &gt;&gt;&gt; print(y)
 {
@@ -605,8 +605,8 @@ With one :class:`ivy.Container` input:
 in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
+...                   b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; shift = ivy.Container(a=1, b=-1)
 &gt;&gt;&gt; y = ivy.Container.static_roll(x, shift)
 &gt;&gt;&gt; print(y)
@@ -696,7 +696,7 @@ ivy.array([[[9.5],
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
+to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
 <p>Point 1 is again trivial to satisfy, as was the case for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>.
 Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7,
 and also ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
@@ -715,8 +715,8 @@ the broadcasting rules to apply, which dictates how the operation is performed a
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With one :class:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                      b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+...                   b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; z = ivy.add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -735,10 +735,10 @@ We can therefore add an example with multiple <code class="xref py py-class docu
 in order to satisfy point 7.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                      b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                      b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
+...                   b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
+...                   b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = ivy.add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -757,8 +757,8 @@ in order to satisfy point 8.</p>
 With one :class:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                      b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+...                   b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; z = ivy.Container.static_add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -776,10 +776,10 @@ With one :class:`ivy.Container` input:
 in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                    b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                    b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
+...                   b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
+...                   b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = ivy.Container.static_add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -807,10 +807,10 @@ point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>\
-                      <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]),</span>\
-                      <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+<span class="o">...</span>                   <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]),</span>
+<span class="o">...</span>                   <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]))</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="p">{</span>
@@ -840,8 +840,8 @@ docstring, with the operator called with an <code class="xref py py-class docuti
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                    b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+...                   b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; z = x + y
 &gt;&gt;&gt; print(z)
 {
@@ -892,10 +892,10 @@ docstring, with the operator called on two <code class="xref py py-class docutil
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :class:`ivy.Array` instances at the leaves:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                      b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                      b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
+...                   b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
+...                   b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = x + y
 &gt;&gt;&gt; print(z)
 {
@@ -909,8 +909,8 @@ docstring, with the operator called with an <code class="xref py py-class docuti
 and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                      b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+...                   b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; y = ivy.array([[1.1, 2.3, -3.6]])
 &gt;&gt;&gt; z = x + y
 &gt;&gt;&gt; print(z)
