@@ -5,9 +5,9 @@ cholesky
 
 .. autofunction:: ivy.array.array_methods.cholesky
 
-.. autofunction:: ivy.container.container_methods.cholesky
-
 .. autofunction:: ivy.container.container_methods.static_cholesky
+
+.. autofunction:: ivy.container.container_methods.cholesky
 |
 | **Supported Frameworks:**
 
