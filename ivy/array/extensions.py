@@ -1,6 +1,7 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Sequence
+from numbers import Number
 
 # local
 import ivy
@@ -216,3 +217,127 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
+
+    def pad(
+        self: ivy.Array,
+        /,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies
+        to this method with minimal changes.
+        """
+        return ivy.pad(
+            self._data,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            out=out,
+        )
+
+    def moveaxis(
+        self: ivy.Array,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.moveaxis. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            The array whose axes should be reordered.
+        source
+            Original positions of the axes to move. These must be unique.
+        destination
+            Destination positions for each of the original axes.
+            These must also be unique.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with moved axes. This array is a view of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.zeros((3, 4, 5))
+        >>> x.moveaxis(0, -1).shape
+        (4, 5, 3)
+        >>> x.moveaxis(-1, 0).shape
+        (5, 3, 4)
+        """
+        return ivy.moveaxis(self._data, source, destination, out=out)
+
+    def heaviside(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.heaviside. This method simply
+        wraps the function, and so the docstring for ivy.heaviside also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        x2
+            values to use where x1 is zero.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            output array with element-wise Heaviside step function of x1.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([0.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0.0000, 0.5000, 1.0000])
+
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([1.2, -2.0, 3.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0., -2., 1.])
+        """
+        return ivy.heaviside(self._data, x2, out=out)

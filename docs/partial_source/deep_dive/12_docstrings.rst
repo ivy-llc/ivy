@@ -3,10 +3,11 @@ Docstrings 📄
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
-.. _`docstrings discussion`: https://github.com/unifyai/ivy/discussions/1321
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
+.. _`docstrings forum`: https://discord.com/channels/799879767196958751/1028297612408913982
+
 
 All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
@@ -232,9 +233,8 @@ including cases where these also directly wrap functions in the functional API.
 
 These examples should hopefully give you a good understanding of what is required when adding docstings.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `docstrings discussion`_,
-or reach out on `discord`_ in the `docstrings channel`_!
+If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_
+or in the `docstrings forum`_!
 
 
 **Video**

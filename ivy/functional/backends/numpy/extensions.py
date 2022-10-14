@@ -1,4 +1,5 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence, Callable, Literal
+from numbers import Number
 import logging
 import ivy
 import numpy as np
@@ -98,11 +99,6 @@ def lcm(
             x1,
             x2,
             out=out,
-            where=True,
-            casting="same_kind",
-            order="K",
-            dtype=None,
-            subok=True,
         )
     )
 
@@ -184,3 +180,120 @@ def max_pool2d(
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
+
+
+def _flat_array_to_1_dim_array(x):
+    return x.reshape((1,)) if x.shape == () else x
+
+
+def pad(
+    x: np.ndarray,
+    /,
+    pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
+    *,
+    mode: Optional[
+        Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
+        ]
+    ] = "constant",
+    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
+    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
+    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+        )
+    elif mode == "constant":
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            constant_values=constant_values,
+        )
+    elif mode == "linear_ramp":
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            end_values=end_values,
+        )
+    elif mode in ["reflect", "symmetric"]:
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            reflect_type=reflect_type,
+        )
+    else:
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+        )
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if periodic is False:
+        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+kaiser_window.support_native_out = False
+
+
+def moveaxis(
+    a: np.ndarray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.moveaxis(a, source, destination)
+
+
+moveaxis.support_native_out = False
+
+
+def heaviside(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.heaviside(
+        x1,
+        x2,
+        out=out,
+    )
+
+
+heaviside.support_native_out = True
