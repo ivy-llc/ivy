@@ -722,7 +722,7 @@ def hann_window(
 @handle_nestable
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     /,
