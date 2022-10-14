@@ -25,7 +25,7 @@ def min(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array ``x``.
