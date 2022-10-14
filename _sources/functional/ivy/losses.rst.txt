@@ -18,6 +18,6 @@ Losses
    losses/sparse_cross_entropy.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`losses forum`: https://discord.com/channels/799879767196958751/2195
+.. _`losses forum`: https://discord.com/channels/799879767196958751/1028299153148739646
 .. _`losses channel`: https://discord.com/channels/799879767196958751/1000044049333485648
 This should have hopefully given you an overview of the losses submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `losses channel`_ or in the `losses forum`_!

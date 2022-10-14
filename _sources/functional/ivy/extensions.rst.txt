@@ -18,7 +18,16 @@ Extensions
    extensions/native_sparse_array.rst
    extensions/native_sparse_array_to_indices_values_and_shape.rst
    extensions/sinc.rst
+   extensions/flatten.rst
    extensions/vorbis_window.rst
+   extensions/lcm.rst
+   extensions/hann_window.rst
+   extensions/max_pool2d.rst
+   extensions/kaiser_window.rst
+   extensions/moveaxis.rst
+   extensions/ndenumerate.rst
+   extensions/pad.rst
+   extensions/heaviside.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:
@@ -27,3 +36,7 @@ Extensions
 
 def is_ivy_sparse_array.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+This should have hopefully given you an overview of the extensions submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `extensions channel`_ or in the `extensions forum`_!

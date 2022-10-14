@@ -4,6 +4,10 @@ get_num_dims
 .. autofunction:: ivy.functional.ivy.general.get_num_dims
 
 .. autofunction:: ivy.array.array_methods.get_num_dims
+
+.. autofunction:: ivy.container.container_methods.get_num_dims
+
+.. autofunction:: ivy.container.container_methods.static_get_num_dims
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ get_num_dims
 
    get_num_dims/get_num_dims_functional.rst
    get_num_dims/get_num_dims_array.rst
+   get_num_dims/get_num_dims_container.rst
+   get_num_dims/static_get_num_dims_container.rst
 

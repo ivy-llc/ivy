@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -223,12 +223,6 @@
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
-<span class="c1"># lshift, rshift array-api type_promotion tests need an OverflowError to be raised</span>
-<div class="viewcode-block" id="check_all_bitshifts"><a class="viewcode-back" href="../../assertions/check_all_bitshifts.html#ivy.assertions.check_all_bitshifts">[docs]</a><span class="k">def</span> <span class="nf">check_all_bitshifts</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">OverflowError</span></div>
-
-
 <div class="viewcode-block" id="check_any"><a class="viewcode-back" href="../../assertions/check_any.html#ivy.assertions.check_any">[docs]</a><span class="k">def</span> <span class="nf">check_any</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;all of the args are False&quot;</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
@@ -253,6 +247,18 @@
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;type must be all or any&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="check_shape"><a class="viewcode-back" href="../../assertions/check_shape.html#ivy.assertions.check_shape">[docs]</a><span class="k">def</span> <span class="nf">check_shape</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">message</span>
+        <span class="k">if</span> <span class="n">message</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> must have the same shape (</span><span class="si">{}</span><span class="s2"> vs </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
 <span class="c1"># Creation #</span>
 <span class="c1"># -------- #</span>
 
@@ -269,6 +275,55 @@
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s2">&quot;the fill_value: </span><span class="si">{}</span><span class="s2"> and data type: </span><span class="si">{}</span><span class="s2"> are not compatible&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<span class="c1"># General #</span>
+<span class="c1"># ------- #</span>
+
+
+<div class="viewcode-block" id="check_gather_input_valid"><a class="viewcode-back" href="../../assertions/check_gather_input_valid.html#ivy.assertions.check_gather_input_valid">[docs]</a><span class="k">def</span> <span class="nf">check_gather_input_valid</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">batch_dims</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">batch_dims</span> <span class="o">&gt;</span> <span class="n">axis</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;batch_dims (</span><span class="si">{}</span><span class="s2">) must be less than or equal to axis (</span><span class="si">{}</span><span class="s2">).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">batch_dims</span><span class="p">,</span> <span class="n">axis</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]</span> <span class="o">!=</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;batch dimensions must match in `params` and `indices`;&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot; saw </span><span class="si">{}</span><span class="s2"> vs. </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">],</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_gather_nd_input_valid"><a class="viewcode-back" href="../../assertions/check_gather_nd_input_valid.html#ivy.assertions.check_gather_nd_input_valid">[docs]</a><span class="k">def</span> <span class="nf">check_gather_nd_input_valid</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">batch_dims</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">batch_dims</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;batch_dims = </span><span class="si">{}</span><span class="s2"> must be less than rank(`params`) = </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">batch_dims</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">batch_dims</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;batch_dims = </span><span class="si">{}</span><span class="s2">  must be less than rank(`indices`) = </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">batch_dims</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]</span> <span class="o">!=</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;batch dimensions must match in `params` and `indices`;&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot; saw </span><span class="si">{}</span><span class="s2"> vs. </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">],</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">batch_dims</span><span class="p">:])):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;index innermost dimension length must be &lt;= &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;rank(`params[batch_dims:]`); saw: </span><span class="si">{}</span><span class="s2"> vs. </span><span class="si">{}</span><span class="s2"> .&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">batch_dims</span><span class="p">:])</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
 </pre></div>

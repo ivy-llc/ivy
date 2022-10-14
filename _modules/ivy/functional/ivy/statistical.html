@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -138,6 +138,7 @@
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">integer_arrays_to_float</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -351,8 +352,8 @@
 <span class="sd">        b: ivy.array(5.)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                          b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    ...                   b=ivy.array([2, 3, 4]))</span>
 <span class="sd">    &gt;&gt;&gt; z = x.max()</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -363,7 +364,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean/mean_functional.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean/mean_functional.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">integer_arrays_to_float</span>
+<span class="nd">to_native_arrays_and_back</span>
 <span class="nd">handle_out_argument</span>
 <span class="nd">handle_nestable</span>
 <span class="nd">handle_exceptions</span>
@@ -425,7 +427,7 @@
 <span class="sd">    simplicity, but this function is *nestable*, and therefore also accepts</span>
 <span class="sd">    :class:`ivy.Container` instances in place of any of the arguments.</span>
 
-<span class="sd">    </span>
+
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
@@ -462,9 +464,9 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.mean(x, axis=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [1., 4.]</span>
+<span class="sd">    ivy.array([1., 4.])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
@@ -476,8 +478,8 @@
 <span class="sd">        b: ivy.array(0.90000004)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \</span>
-<span class="sd">                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=0, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
@@ -520,12 +522,12 @@
 <span class="sd">    &gt;&gt;&gt; x.mean(out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array(0.),</span>
-<span class="sd">        b: ivy.array(1.)</span>
+<span class="sd">        a: ivy.array(1.),</span>
+<span class="sd">        b: ivy.array(0.)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \</span>
-<span class="sd">                          b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
 <span class="sd">    &gt;&gt;&gt; x.mean(axis=1, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
@@ -635,29 +637,26 @@
 
 <span class="sd">    Let ``N`` equal the number of elements over which to compute the standard deviation.</span>
 
-<span class="sd">    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard</span>
-<span class="sd">        deviation).</span>
-<span class="sd">    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values</span>
-<span class="sd">        propagate).</span>
+<span class="sd">    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.</span>
+<span class="sd">    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. Should have a floating-point data type</span>
-
+<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
 <span class="sd">    axis</span>
 <span class="sd">        axis or axes along which standard deviations must be computed. By default, the</span>
 <span class="sd">        standard deviation must be computed over the entire array. If a tuple of</span>
 <span class="sd">        integers, standard deviations must be computed over multiple axes.</span>
-<span class="sd">        Default: None.</span>
+<span class="sd">        Default: ``None``.</span>
 <span class="sd">    correction</span>
-<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than 0</span>
+<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than ``0``</span>
 <span class="sd">        has the effect of adjusting the divisor during the calculation of the standard</span>
-<span class="sd">        deviation according to N-c where N corresponds to the total number of elements</span>
-<span class="sd">        over which the standard deviation is computed and c corresponds to the provided</span>
-<span class="sd">        degrees of freedom adjustment. When computing the standard deviation of a</span>
-<span class="sd">        population, setting this parameter to ``0`` is the standard choice (i.e., the</span>
-<span class="sd">        provided array contains data constituting an entire population). When computing</span>
+<span class="sd">        deviation according to ``N-c`` where ``N`` corresponds to the total number of</span>
+<span class="sd">        elements over which the standard deviation is computed and ``c`` corresponds to</span>
+<span class="sd">        the provided degrees of freedom adjustment. When computing the standard deviation</span>
+<span class="sd">        of a population, setting this parameter to ``0`` is the standard choice (i.e.,</span>
+<span class="sd">        the provided array contains data constituting an entire population). When computing</span>
 <span class="sd">        the corrected sample standard deviation, setting this parameter to ``1`` is the</span>
 <span class="sd">        standard choice (i.e., the provided array contains data sampled from a larger</span>
 <span class="sd">        population; this is commonly referred to as Bessel&#39;s correction).</span>
@@ -665,7 +664,7 @@
 <span class="sd">    keepdims</span>
 <span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as</span>
 <span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with the</span>
-<span class="sd">        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes</span>
+<span class="sd">        input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes</span>
 <span class="sd">        (dimensions) must not be included in the result. Default: ``False``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
@@ -673,13 +672,20 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        if the sum was computed over the entire array, a zero-dimensional array</span>
-<span class="sd">        containing the standard deviation; otherwise, an array containing the standard</span>
-<span class="sd">        deviations. The returned array must have a data type as described by the</span>
-<span class="sd">        ``dtype`` parameter above.</span>
+<span class="sd">        if the standard deviation was computed over the entire array, a zero-dimensional</span>
+<span class="sd">        array containing the standard deviation; otherwise, a non-zero-dimensional array</span>
+<span class="sd">        containing the standard deviations. The returned array must have the same data</span>
+<span class="sd">        type as ``x``.</span>
 
+<span class="sd">        .. note::</span>
+<span class="sd">           While this specification recommends that this function only accept input</span>
+<span class="sd">           arrays having a real-valued floating-point data type, specification-compliant</span>
+<span class="sd">           array libraries may choose to accept input arrays having an integer data type.</span>
+<span class="sd">           While mixed data type promotion is implementation-defined, if the input array</span>
+<span class="sd">           ``x`` has an integer data type, the returned array must have the default</span>
+<span class="sd">           real-valued floating-point data type.</span>
 
-<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html&gt;`_  </span>
 <span class="sd">    in the standard.</span>
@@ -929,8 +935,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \</span>
-<span class="sd">                          b=ivy.array([0.7, 0.1, 0.9]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),</span>
+<span class="sd">    ...                   b=ivy.array([0.7, 0.1, 0.9]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.var(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1067,24 +1073,24 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0, 1, 6, 8])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[6, 4, 2], \</span>
-<span class="sd">                       [1, 3, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[6, 4, 2],</span>
+<span class="sd">    ...                [1, 3, 0]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros((2,3))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[7, 7, 2],</span>
 <span class="sd">               [1, 3, 0]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 5, 2], \</span>
-<span class="sd">                       [4, 3, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 5, 2],</span>
+<span class="sd">    ...                [4, 3, 0]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[4, 3, 0],</span>
 <span class="sd">               [0, 0, 0]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2, 4, 5], \</span>
-<span class="sd">                       [3, 6, 5], \</span>
-<span class="sd">                       [1, 3, 10]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2, 4, 5],</span>
+<span class="sd">    ...                [3, 6, 5],</span>
+<span class="sd">    ...                [1, 3, 10]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.cumsum(x,axis=1,reverse=True, dtype=&#39;int64&#39;, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[11,  9,  5],</span>
@@ -1093,8 +1099,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 5]]), \</span>
-<span class="sd">                          b=ivy.array([[3, 5, 7]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 5]]),</span>
+<span class="sd">    ...                   b=ivy.array([[3, 5, 7]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.cumsum(x, axis= 0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1102,15 +1108,15 @@
 <span class="sd">        b: ivy.array([[3, 5, 7]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]), \</span>
-<span class="sd">                          b=ivy.array([[3, 5, 8], \</span>
-<span class="sd">                                       [5, 6, 5]]), \</span>
-<span class="sd">                          c=ivy.array([[2, 4, 1], \</span>
-<span class="sd">                                       [3, 6, 9], \</span>
-<span class="sd">                                       [0, 2, 3]]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)), \</span>
-<span class="sd">                          b = ivy.zeros((2, 3)), \</span>
-<span class="sd">                          c = ivy.zeros((3,3)))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1, 3, 4]]),</span>
+<span class="sd">    ...                   b=ivy.array([[3, 5, 8],</span>
+<span class="sd">    ...                                [5, 6, 5]]),</span>
+<span class="sd">    ...                   c=ivy.array([[2, 4, 1],</span>
+<span class="sd">    ...                                [3, 6, 9],</span>
+<span class="sd">    ...                                [0, 2, 3]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a = ivy.zeros((1, 3)),</span>
+<span class="sd">    ...                   b = ivy.zeros((2, 3)),</span>
+<span class="sd">    ...                   c = ivy.zeros((3,3)))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.cumsum(x,axis=1,reverse=True, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1122,13 +1128,13 @@
 <span class="sd">                      [5, 5, 3]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0], \</span>
-<span class="sd">                                       [5]]), \</span>
-<span class="sd">                          b=ivy.array([[6, 8, 7], \</span>
-<span class="sd">                                       [4, 2, 3]]), \</span>
-<span class="sd">                          c=ivy.array([[1, 2], \</span>
-<span class="sd">                                       [3, 4], \</span>
-<span class="sd">                                       [6, 4]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0],</span>
+<span class="sd">    ...                                [5]]),</span>
+<span class="sd">    ...                   b=ivy.array([[6, 8, 7],</span>
+<span class="sd">    ...                                [4, 2, 3]]),</span>
+<span class="sd">    ...                   c=ivy.array([[1, 2],</span>
+<span class="sd">    ...                                [3, 4],</span>
+<span class="sd">    ...                                [6, 4]]))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.cumsum(x,axis=0,out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
@@ -1332,19 +1338,19 @@
 <span class="sd">    ivy.array([ 9, 12, 15])</span>
 
 <span class="sd">    &gt;&gt;&gt; A = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; B = ivy.array([[ 0,  1,  2,  3],\</span>
-<span class="sd">                       [ 4,  5,  6,  7],\</span>
-<span class="sd">                       [ 8,  9, 10, 11]])</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.array([[ 0,  1,  2,  3],</span>
+<span class="sd">    ...                [ 4,  5,  6,  7],</span>
+<span class="sd">    ...                [ 8,  9, 10, 11]])</span>
 <span class="sd">    &gt;&gt;&gt; C = ivy.einsum(&#39;i,ij-&gt;i&#39;, A, B)</span>
 <span class="sd">    &gt;&gt;&gt; print(C)</span>
 <span class="sd">    ivy.array([ 0, 22, 76])</span>
 
-<span class="sd">    &gt;&gt;&gt; A = ivy.array([[1, 1, 1],\</span>
-<span class="sd">                       [2, 2, 2],\</span>
-<span class="sd">                       [5, 5, 5]])</span>
-<span class="sd">    &gt;&gt;&gt; B = ivy.array([[0, 1, 0],\</span>
-<span class="sd">                       [1, 1, 0],\</span>
-<span class="sd">                       [1, 1, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; A = ivy.array([[1, 1, 1],</span>
+<span class="sd">    ...                [2, 2, 2],</span>
+<span class="sd">    ...                [5, 5, 5]])</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.array([[0, 1, 0],</span>
+<span class="sd">    ...                [1, 1, 0],</span>
+<span class="sd">    ...                [1, 1, 1]])</span>
 <span class="sd">    &gt;&gt;&gt; C = ivy.einsum(&#39;ij,jk-&gt;ik&#39;, A, B)</span>
 <span class="sd">    &gt;&gt;&gt; print(C)</span>
 <span class="sd">    ivy.array([[ 2,  3,  1],</span>
@@ -1394,9 +1400,9 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; A = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; B = ivy.native_array([[ 0, 1, 2, 3],\</span>
-<span class="sd">                              [ 4, 5, 6, 7],\</span>
-<span class="sd">                              [ 8, 9, 10, 11]])</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.native_array([[ 0, 1, 2, 3],</span>
+<span class="sd">    ...                       [ 4, 5, 6, 7],</span>
+<span class="sd">    ...                       [ 8, 9, 10, 11]])</span>
 <span class="sd">    &gt;&gt;&gt; C = ivy.einsum(&#39;i,ij-&gt;i&#39;, A, B)</span>
 <span class="sd">    &gt;&gt;&gt; print(C)</span>
 <span class="sd">    ivy.array([ 0, 22, 76])</span>
@@ -1404,12 +1410,12 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\</span>
-<span class="sd">                                       [ 4,  5,  6,  7],\</span>
-<span class="sd">                                       [ 8,  9, 10, 11]]),\</span>
-<span class="sd">                          b=ivy.array([[ 0,  1,  2],\</span>
-<span class="sd">                                       [ 4,  5,  6],\</span>
-<span class="sd">                                       [ 8,  9, 10]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],</span>
+<span class="sd">    ...                                [ 4,  5,  6,  7],</span>
+<span class="sd">    ...                                [ 8,  9, 10, 11]]),</span>
+<span class="sd">    ...                   b=ivy.array([[ 0,  1,  2],</span>
+<span class="sd">    ...                                [ 4,  5,  6],</span>
+<span class="sd">    ...                                [ 8,  9, 10]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.einsum(&#39;i,ij-&gt;i&#39;, x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -1419,8 +1425,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\</span>
-<span class="sd">                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),</span>
+<span class="sd">    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.einsum(&#39;ii&#39;, x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1440,8 +1446,8 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\</span>
-<span class="sd">                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),</span>
+<span class="sd">    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.einsum(&#39;ii&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>

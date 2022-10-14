@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -381,8 +381,21 @@
 <span class="sd">        ivy.Array instance method variant of ivy.stack. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.stack also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])</span>
+<span class="sd">        &gt;&gt;&gt; x.stack([y],axis=1)</span>
+<span class="sd">        ivy.array([[1, 3, 5, 7],</span>
+<span class="sd">            [2, 4, 6, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; x.stack([y],axis=0)</span>
+<span class="sd">        ivy.array([[1, 2],</span>
+<span class="sd">            [3, 4],</span>
+<span class="sd">            [5, 6],</span>
+<span class="sd">            [7, 8]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.clip"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.clip">[docs]</a>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -434,7 +447,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.constant_pad. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.split also applies</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.constant_pad also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>

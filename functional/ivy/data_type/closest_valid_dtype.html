@@ -123,14 +123,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -188,33 +188,21 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float16</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
-<span class="go">float16</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int8</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
-<span class="go">int8</span>
-</pre></div>
-</div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_uint16</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
-<span class="go">&lt;dtype:&#39;uint16&#39;&gt;</span>
-</pre></div>
-</div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="s1">&#39;int32&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
-<span class="go">int32</span>
-</pre></div>
-</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:
+&gt;&gt;&gt; xType = ivy.float16
+&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
+&gt;&gt;&gt; print(yType)
+float16</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:
+&gt;&gt;&gt; xType = ivy.native_uint16
+&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
+&gt;&gt;&gt; print(yType)
+&lt;dtype:’uint16’&gt;</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> input:
+&gt;&gt;&gt; xType = ‘int32’
+&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
+&gt;&gt;&gt; print(yType)
+int32</p>
 </dd></dl>
 
 <div class="line-block">

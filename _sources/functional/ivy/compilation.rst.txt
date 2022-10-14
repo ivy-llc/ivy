@@ -16,6 +16,6 @@ Compilation
    compilation/compile.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`compilation forum`: https://discord.com/channels/799879767196958751/2184
+.. _`compilation forum`: https://discord.com/channels/799879767196958751/1028298745726648371
 .. _`compilation channel`: https://discord.com/channels/799879767196958751/1000043526849056808
 This should have hopefully given you an overview of the compilation submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `compilation channel`_ or in the `compilation forum`_!

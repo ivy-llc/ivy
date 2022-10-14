@@ -3,11 +3,9 @@ dtype
 
 .. autofunction:: ivy.functional.ivy.data_type.dtype
 
-.. autofunction:: ivy.array.array_methods.dtype
+.. autofunction:: ivy.container.container_methods.dtype
 
 .. autofunction:: ivy.container.container_methods.static_dtype
-
-.. autofunction:: ivy.container.container_methods.dtype
 |
 | **Supported Frameworks:**
 
@@ -35,7 +33,6 @@ dtype
    :caption: dtype
 
    dtype/dtype_functional.rst
-   dtype/dtype_array.rst
    dtype/dtype_container.rst
    dtype/static_dtype_container.rst
 
