@@ -30,7 +30,7 @@ jobs:
 
 
        - name: Push Mapping
-         if: (${{ github.run_number }} % 10) != 9
+         if: ${{ github.run_number % 10 != 9 }}
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
@@ -44,7 +44,7 @@ jobs:
 
 
        - name: Push Mapping - Final
-         if: (${{ github.run_number }} % 10) == 9
+         if: ${{ github.run_number % 10 == 9 }}
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
