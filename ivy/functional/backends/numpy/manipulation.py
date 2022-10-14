@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Literal
+from typing import Union, Tuple, Optional, List, Sequence
 import numpy as np
 
 # local
@@ -181,71 +181,6 @@ def tile(
     x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.tile(x, reps)
-
-
-def pad(
-    x: np.ndarray,
-    /,
-    pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
-    *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
-    ] = "constant",
-    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
-    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if mode in ["maximum", "mean", "median", "minimum"]:
-        return np.pad(
-            _flat_array_to_1_dim_array(x),
-            pad_width,
-            mode=mode,
-            stat_length=stat_length,
-        )
-    elif mode == "constant":
-        return np.pad(
-            _flat_array_to_1_dim_array(x),
-            pad_width,
-            mode=mode,
-            constant_values=constant_values,
-        )
-    elif mode == "linear_ramp":
-        return np.pad(
-            _flat_array_to_1_dim_array(x),
-            pad_width,
-            mode=mode,
-            end_values=end_values,
-        )
-    elif mode in ["reflect", "symmetric"]:
-        return np.pad(
-            _flat_array_to_1_dim_array(x),
-            pad_width,
-            mode=mode,
-            reflect_type=reflect_type,
-        )
-    else:
-        return np.pad(
-            _flat_array_to_1_dim_array(x),
-            pad_width,
-            mode=mode,
-        )
 
 
 def constant_pad(

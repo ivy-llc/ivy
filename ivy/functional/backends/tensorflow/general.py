@@ -138,6 +138,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -146,9 +149,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):

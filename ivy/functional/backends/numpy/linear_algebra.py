@@ -167,7 +167,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -196,6 +196,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if len(x.shape) < 2:
+        return np.asarray(0).astype(x.dtype)
     if type(atol) and type(rtol) == tuple:
         if atol.all() and rtol.all() is None:
             ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)

@@ -55,21 +55,21 @@ class ContainerWithNorms(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                               'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+        ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = [0]
         >>> norm = x.layer_norm(normalized_idxs, epsilon=1.25, weight=0.3)
         >>> print(norm)
         {
             a: ivy.array([-0.342, 0.0427, 0.299]),
-            b: ivy.array([[-0.241, -0.241, -0.241, 
+            b: ivy.array([[-0.241, -0.241, -0.241,
                           [0.241, 0.241, 0.241]])
         }
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                               'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+        ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
         >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
         >>> bias = ivy.Container({'a': [0.2, 0.5, 0.7], 'b': 0.3})
@@ -77,7 +77,7 @@ class ContainerWithNorms(ContainerBase):
         >>> print(norm)
         {
             a: ivy.array([-1.62, 0.203, 1.42]),
-            b: ivy.array([[-1.84, 0., 1.84], 
+            b: ivy.array([[-1.84, 0., 1.84],
                           [-1.84, 0., 1.84]])
         }
 

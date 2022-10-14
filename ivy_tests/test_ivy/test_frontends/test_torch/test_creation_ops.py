@@ -197,7 +197,7 @@ def test_torch_zeros(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=helpers.get_dtypes("float", full=False),
+    dtypes=helpers.get_dtypes("valid", full=False),
     requires_grad=_requires_grad(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.empty"
@@ -211,7 +211,7 @@ def test_torch_empty(
     num_positional_args,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[dtypes],
+        input_dtypes=dtypes,
         as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
@@ -219,7 +219,6 @@ def test_torch_empty(
         device=device,
         frontend="torch",
         fn_tree="empty",
-        test_values=False,
         size=shape,
         dtype=dtypes,
         requires_grad=requires_grad,
