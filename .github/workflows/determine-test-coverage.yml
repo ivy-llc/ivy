@@ -13,6 +13,7 @@ jobs:
            path: ivy
            persist-credentials: false
            submodules: "recursive"
+           fetch-depth: 100
 
        - name: Determine Test Coverage
          run: |
