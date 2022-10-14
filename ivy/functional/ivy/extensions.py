@@ -1106,7 +1106,9 @@ def fmax(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the element-wise maximums of two arrays
+    """Computes the element-wise maximums of two arrays. Differs from ivy.maximum
+    in the case where one of the elements is NaN. ivy.maximum returns the NaN element
+    while ivy.fmax returns the non-NaN element.
 
     Parameters
     ----------

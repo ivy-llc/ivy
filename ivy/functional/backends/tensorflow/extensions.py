@@ -206,4 +206,7 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.maximum(x1, x2, name=None)
+    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
+    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
+    ret = tf.math.maximum(x1, x2, name=None)
+    return tf.where(tf.math.is_inf(ret), float("nan"))
