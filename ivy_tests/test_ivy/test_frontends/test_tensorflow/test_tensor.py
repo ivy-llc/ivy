@@ -769,3 +769,145 @@ def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
         class_name="Tensor",
         method_name="__neg__",
     )
+
+
+# __rxor__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_rxor(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "x": x[1],
+        },
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__rxor__",
+    )
+
+
+# __xor__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_xor(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "y": x[1],
+        },
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__xor__",
+    )
+
+
+# __matmul__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_matmul(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "y": x[1],
+        },
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__matmul__",
+    )
+
+
+# __rmatmul__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_rmatmul(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "x": x[1],
+        },
+        frontend="tensorflow",
+        class_name="Tensor",
+        method_name="__rmatmul__",
+    )

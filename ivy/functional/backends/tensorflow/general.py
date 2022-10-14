@@ -4,10 +4,6 @@ signature.
 
 # global
 from typing import Optional, Union, Sequence, Callable
-
-from ivy.func_wrapper import with_unsupported_dtypes
-
-_round = round
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -15,25 +11,12 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.functional.ivy.general import _parse_ellipsis
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
+_round = round
 
 
 def _parse_index(indices, ndims):
@@ -138,6 +121,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -146,9 +132,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):
