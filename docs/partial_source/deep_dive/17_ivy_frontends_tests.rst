@@ -730,8 +730,7 @@ ivy.add()
 
 * We use :func:`helpers.value_test` to test the special method.
 * We use the frontend class :class:`DeviceArray` to calculate jax frontend special method's result, which is then compared to the regular frontend function's result, when passed into the :func:`helpers.value_test`.
-* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is
-to be tested.
+* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is to be tested.
 
 
 Hypothesis Helpers
