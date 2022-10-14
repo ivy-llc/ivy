@@ -58,6 +58,9 @@ class Tensor:
     def __lt__(self, y, name="lt"):
         return tf_frontend.Less(x=self.data, y=y.data, name=name)
 
+    def __matmul__(self, y, name="matmul"):
+        return y.__rmatmul__(self.data)
+
     def __mul__(self, x, name="mul"):
         return tf_frontend.multiply(x, self.data, name=name)
 
@@ -83,6 +86,9 @@ class Tensor:
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.FloorDiv(x=x, y=self.data, name=name)
 
+    def __rmatmul__(self, x, name="rmatmul"):
+        return tf_frontend.MatMul(a=x, b=self.data, name=name)
+
     def __ror__(self, x, name="ror"):
         return tf_frontend.LogicalOr(x=x, y=self.data, name=name)
 
@@ -92,8 +98,14 @@ class Tensor:
     def __rtruediv__(self, x, name="rtruediv"):
         return tf_frontend.truediv(x, self.data, name=name)
 
+    def __rxor__(self, x, name="rxor"):
+        return tf_frontend.logical_xor(x, self.data, name=name)
+
     def __sub__(self, y, name="sub"):
         return y.__rsub__(self.data)
 
     def __truediv__(self, y, name="truediv"):
         return y.__rtruediv__(self.data)
+
+    def __xor__(self, y, name="xor"):
+        return y.__rxor__(self.data)
