@@ -1052,12 +1052,12 @@ def pad(
         Input array to pad.
     pad_width
         Number of values padded to the edges of each axis.
-         - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
-           for each axis.
-         - ((before, after),) yields same before and after pad for each axis.
-         - (pad,) or int is a shortcut for before = after = pad width for all axes.
+             - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
+               for each axis.
+             - ((before, after),) yields same before and after pad for each axis.
+             - (pad,) or int is shortcut for before = after = pad width for all axes.
     mode
-        One of the following string values or a user supplied function.
+        One of the following string values or a user-supplied function.
              - "constant": Pads with a constant value.
              - "edge": Pads with the edge values of array.
              - "linear_ramp": Pads with the linear ramp between end_value
@@ -1078,47 +1078,43 @@ def pad(
                The first values are used to pad the end and the end values are used
                to pad the beginning.
              - "empty": Pads with undefined values.
-             - <function>: Pads with a user-defined padding function.
-                 The padding function should modify a rank 1 array in-place.
-                 It has the following signature:
-                 padding_func(vector, iaxis_pad_width, iaxis, kwargs), where:
-                     - vector is
-                       A rank 1 array already padded with zeros. Padded values are
-                       vector[:iaxis_pad_width[0]] and vector[-iaxis_pad_width[1]:].
-                     - iaxis_pad_width is
-                       A 2-tuple of ints, where iaxis_pad_width[0] represents the
-                       number of values padded at the beginning of vector and
-                       iaxis_pad_width[1] represents the number of values padded
-                       at the end of vector.
-                     - iaxis is
-                       The axis currently being calculated.
-                     - kwargs is
-                       A dict of any keyword arguments the function requires.
+             - <function>: Pads with a user-defined padding function. The padding
+               function should modify a rank 1 array in-place following a signature
+               like `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:
+                    - `vector` is a rank 1 array already padded with zeros. Padded
+                      values are `vector[:iaxis_pad_width[0]]` and
+                      `vector[-iaxis_pad_width[1]:]`.
+                    - `iaxis_pad_width` is a 2-tuple of ints, where
+                      `iaxis_pad_width[0]` represents the number of values padded at
+                      the beginning of `vector` and `iaxis_pad_width[1]` represents
+                      the number of values padded at the end of `vector`.
+                    - `iaxis` is the axis currently being calculated.
+                    - `kwargs` is a dict of keyword arguments the function requires.
     stat_length
-        Used in "maximum", "mean", "median", and "minimum".
-        Number of values at edge of each axis used to calculate the statistic value.
-         - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
-           lengths for each axis.
-         - ((before, after),) yields same before and after statistic lengths for
-           each axis.
-         - (stat_length,) or int is a shortcut for before = after = statistic length
-           for all axes.
-         - None uses the entire axis.
+        Used in "maximum", "mean", "median", and "minimum". Number of values at edge
+        of each axis used to calculate the statistic value.
+             - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
+               lengths for each axis.
+             - ((before, after),) yields same before and after statistic lengths for
+               each axis.
+             - (stat_length,) or int is a shortcut for before = after = statistic
+               length for all axes.
+             - None uses the entire axis.
     constant_values
         Used in "constant". The values to set the padded values for each axis.
-         - ((before_1, after_1), ... (before_N, after_N)) yields unique pad constants
-           for each axis.
-         - ((before, after),) yields same before and after constants for each axis.
-         - (constant,) or constant is a shortcut for before = after = constant for
-           all axes.
+             - ((before_1, after_1), ... (before_N, after_N)) yields unique pad
+               constants for each axis.
+             - ((before, after),) yields same before and after constants for each axis.
+             - (constant,) or constant is a shortcut for before = after = constant for
+               all axes.
     end_values
         Used in "linear_ramp". The values used for the ending value of the linear_ramp
         and that will form the edge of the padded array.
-         - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
-           for each axis.
-         - ((before, after),) yields same before and after end values for each axis.
-         - (constant,) or constant is a shortcut for before = after = constant for
-           all axes.
+             - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
+               for each axis.
+             - ((before, after),) yields same before and after end values for each axis
+             - (constant,) or constant is a shortcut for before = after = constant for
+               all axes.
     reflect_type
         Used in "reflect", and "symmetric". The "even" style is the default with an
         unaltered reflection around the edge value. For the "odd" style, the extended
