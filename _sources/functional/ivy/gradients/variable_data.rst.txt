@@ -5,9 +5,9 @@ variable_data
 
 .. autofunction:: ivy.array.array_methods.variable_data
 
-.. autofunction:: ivy.container.container_methods.static_variable_data
-
 .. autofunction:: ivy.container.container_methods.variable_data
+
+.. autofunction:: ivy.container.container_methods.static_variable_data
 |
 | **Supported Frameworks:**
 
