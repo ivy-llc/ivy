@@ -193,3 +193,12 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
+
+@inputs_to_ivy_arrays
+def fmax(x1, x2):
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
