@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -3763,7 +3763,7 @@
 <span class="sd">            Default is False.</span>
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3777,16 +3777,16 @@
 <span class="sd">        {</span>
 <span class="sd">            b: 2</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]]</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]],</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_get_num_dims(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            b: 3</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]]]),\</span>
-<span class="sd">                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),</span>
+<span class="sd">        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_get_num_dims(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            b: 3,</span>
@@ -3839,7 +3839,7 @@
 <span class="sd">            Default is False.</span>
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3848,21 +3848,21 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])) </span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))</span>
 <span class="sd">        &gt;&gt;&gt; a.get_num_dims()</span>
 <span class="sd">        {</span>
 <span class="sd">            b: 2</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]]]))</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]],</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))</span>
 <span class="sd">        &gt;&gt;&gt; a.get_num_dims()</span>
 <span class="sd">        {</span>
 <span class="sd">            b: 3</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\</span>
-<span class="sd">                                            [[0,0,0],[0,0,0],[0,0,0]]]),\</span>
-<span class="sd">                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],</span>
+<span class="sd">        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),</span>
+<span class="sd">        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))</span>
 <span class="sd">        &gt;&gt;&gt; a.get_num_dims()</span>
 <span class="sd">        {</span>
 <span class="sd">            b: 3,</span>
@@ -3874,7 +3874,7 @@
 <span class="sd">            c: ivy.array(2)</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="n">static_supports_inplace_updates</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="n">static_get_num_dims</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">as_array</span><span class="o">=</span><span class="n">as_array</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>

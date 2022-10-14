@@ -5,9 +5,9 @@ scatter_nd
 
 .. autofunction:: ivy.array.array_methods.scatter_nd
 
-.. autofunction:: ivy.container.container_methods.scatter_nd
-
 .. autofunction:: ivy.container.container_methods.static_scatter_nd
+
+.. autofunction:: ivy.container.container_methods.scatter_nd
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ native_array
 
 .. autofunction:: ivy.array.array_methods.native_array
 
-.. autofunction:: ivy.container.container_methods.static_native_array
-
 .. autofunction:: ivy.container.container_methods.native_array
+
+.. autofunction:: ivy.container.container_methods.static_native_array
 |
 | **Supported Frameworks:**
 
