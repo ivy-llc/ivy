@@ -261,16 +261,12 @@ def Square(*, x, name="Square"):
 Sub = tf_frontend.subtract
 
 
-
 def Sum(*, input, axis, keep_dims=False, name="Sum"):
     return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
 def Tan(*, x, name="Tan"):
     return tf_frontend.tan(x)
-
-Tan = tf_frontend.tan
-
 
 
 def Tanh(*, x, name="Tanh"):
