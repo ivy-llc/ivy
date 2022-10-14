@@ -226,7 +226,6 @@ def matmul(
         or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
         or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
         or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
-        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
         raise ivy.exceptions.IvyException("Error,shapes not compatible")
 
