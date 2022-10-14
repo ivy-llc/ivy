@@ -2,7 +2,6 @@
 import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
-
 import jax.numpy as jnp
 
 # local
@@ -46,7 +45,7 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except ValueError as error:
+    except IndexError as error:
         raise ivy.exceptions.IvyException(repr(error))
 
 

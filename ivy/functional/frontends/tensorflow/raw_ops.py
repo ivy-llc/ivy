@@ -1,6 +1,7 @@
 # global
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 def AddN(*, inputs, name="AddN"):
@@ -41,14 +42,17 @@ def Atanh(*, x, name="Atanh"):
 
 
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_and(x, y)
 
 
 def BitwiseOr(*, x, y, name="BitwiseOr"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_or(x, y)
 
 
 def BitwiseXor(*, x, y, name="BitwiseXor"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_xor(x, y)
 
 
@@ -58,6 +62,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
 
 def Cholesky(*, input, name="Cholesky"):
     return ivy.astype(ivy.cholesky(input), input.dtype)
+
+
+def Ceil(*, x, name=None):
+    return ivy.ceil(x)
 
 
 def Concat(*, concat_dim, values, name="Concat"):
@@ -82,6 +90,7 @@ Cumsum = tf_frontend.cumsum
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     if incompatible_shape_error:
         return ivy.equal(x, y)
 
@@ -108,14 +117,17 @@ def Floor(*, x, name="Floor"):
 
 
 def FloorDiv(*, x, y, name="FloorDiv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.floor_divide(x, y)
 
 
 def Greater(*, x, y, name="Greater"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater(x, y)
 
 
 def GreaterEqual(*, x, y, name="GreaterEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater_equal(x, y)
 
 
@@ -131,6 +143,10 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
+def Invert(*, x, name="Invert"):
+    return ivy.bitwise_invert(x)
+
+
 def InvGrad(*, y, dy, name="InvGrad"):
     return ivy.multiply(ivy.negative(dy), ivy.multiply(y, y))
 
@@ -140,10 +156,12 @@ def LeftShift(*, x, y, name="LeftShift"):
 
 
 def Less(*, x, y, name="Less"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.less(x, y)
 
 
 def LessEqual(*, x, y, name="LessEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.less_equal(x, y)
 
 
@@ -152,6 +170,7 @@ def Log(*, x, name="Log"):
 
 
 def LogicalOr(*, x, y, name="LogicalOr"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.logical_or(x, y)
 
 
@@ -160,6 +179,7 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
+    a, b = promote_types_of_tensorflow_inputs(a, b)
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
@@ -188,6 +208,7 @@ Mul = tf_frontend.multiply
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     if incompatible_shape_error:
         return ivy.not_equal(x, y)
 
@@ -211,6 +232,10 @@ def Relu(features, name="Relu"):
 
 def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def RightShift(*, x, y, name="RightShift"):
+    return ivy.bitwise_right_shift(x, y)
 
 
 def Shape(*, input, output_type=ivy.int32, name="Shape"):

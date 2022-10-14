@@ -35,6 +35,29 @@ def _parse_ellipsis(so, ndims):
     )
 
 
+def _parse_index(indices, ndims):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                break
+            pre.append(s.item())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.item())
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
+    return ind
+
+
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
@@ -118,6 +141,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = params[
@@ -134,7 +160,7 @@ def gather(
         for z in zip_list:
             p, i = z
             r = p[
-                (slice(None),) * (axis - batch_dims % p.ndim) + (i.type(torch.int64),)
+                (slice(None),) * ((axis - batch_dims) % p.ndim) + (i.type(torch.int64),)
             ]
             result.append(r)
         result = torch.stack(result)
@@ -142,16 +168,13 @@ def gather(
     return result
 
 
-def gather_nd(
-    params: torch.Tensor,
-    indices: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    num_index_dims = indices_shape[-1]
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
         reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -173,6 +196,36 @@ def gather_nd(
         flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     )
     return res
+
+
+def gather_nd(
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    batch_dims: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, i)
+            result.append(r)
+        result = torch.stack(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 
 def get_num_dims(
@@ -368,7 +421,13 @@ def scatter_nd(
             dim=-1,
         )
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = torch.stack(
             [
@@ -392,6 +451,34 @@ def scatter_nd(
         )
         if len(indices.shape) < 2:
             indices = torch.unsqueeze(indices, 0)
+        if torch.any(indices == -1):
+            shape = (
+                shape
+                if ivy.exists(shape)
+                else out.shape
+                if ivy.exists(out)
+                else updates.shape
+            )
+            indices = _parse_index(indices, len(shape))
+            indices = [
+                torch.stack(
+                    [
+                        torch.reshape(value, (-1,))
+                        for value in torch.meshgrid(
+                            *[
+                                torch.range(0, s - 1)
+                                if idx == slice(None, None, None)
+                                else torch.Tensor([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    dim=-1,
+                )
+                for index in indices
+            ]
+            indices = torch.concat(indices, axis=0)
 
     # broadcast updates to indices
     expected_shape = (

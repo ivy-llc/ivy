@@ -1,7 +1,6 @@
 Open Tasks
 ==========
 
-.. _`open tasks discussion`: https://github.com/unifyai/ivy/discussions/1403
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
@@ -35,8 +34,7 @@ The tasks currently open are:
 #. Ivy API Extensions
 
 We try to explain these tasks as clearly as possible, but in cases where things are not
-clear, then please feel free to engage with the `open tasks discussion`_,
-or reach out on `discord`_ in the `open tasks channel`_!
+clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
 
 Please always use the latest commit on GitHub when working on any of these tasks,
 **DO NOT** develop your code using the latest PyPI release of :code:`ivy-core`.
@@ -315,6 +313,4 @@ If you’re stuck on a function which requires complex compositions, feel free t
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `open tasks discussion`_,
-or reach out on `discord`_ in the `open tasks channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `open tasks channel`_!
