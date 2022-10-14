@@ -258,3 +258,16 @@ def heaviside(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.heaviside(x1, x2)
+
+
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements,
+                    assume_unique = assume_unique,
+                    invert = invert)

@@ -1094,3 +1094,14 @@ def heaviside(
     ivy.array([0., -2., 1.])
     """
     return ivy.current_backend().heaviside(x1, x2, out=out)
+
+
+def isin(
+    elements: Union[ivy.Array, ivy.NativeArray],
+    test_elements: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> ivy.Array:
+    return ivy.current_backend().isin(elements, test_elements, assume_unique=assume_unique, invert = invert)

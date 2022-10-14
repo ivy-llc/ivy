@@ -197,3 +197,19 @@ def heaviside(
 
 
 heaviside.unsupported_dtypes = ("bfloat16",)
+
+def isin(
+    elements: tf.Tensor,
+    test_elements: tf.Tensor,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> tf.Tensor:
+    if invert is True:
+        return tf.math.logical_not(tf.math.equal(elements, test_elements))
+    else:
+        return tf.math.equal(elements, test_elements)
+
+
+isin.support_native_out = True
