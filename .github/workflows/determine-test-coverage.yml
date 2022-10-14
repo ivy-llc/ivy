@@ -18,40 +18,40 @@ jobs:
            fetch-depth: 150
 
 
-#       - name: Determine Test Coverage
-#         run: |
-#           git clone https://github.com/unifyai/Backend_Mapping.git
-#           cp Backend_Mapping/tests.pkl ivy/
-#           cd ivy
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
-#           cd ..
-#           mkdir tests
-#           cp ivy/tests.pkl tests/
-#
-#
-#       - name: Push Mapping
-#         if: (${{ github.run_number }} % 10) != 9
-#         uses: cpina/github-action-push-to-another-repository@main
-#         env:
-#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
-#         with:
-#           source-directory: tests/
-#           destination-github-username: 'unifyai'
-#           destination-repository-name: 'Backend_Mapping'
-#           user-email: rashul.chutani@gmail.com
-#           commit-message: Update Mapping
-#           target-branch: master
-#
-#
-#       - name: Push Mapping - Final
-#         if: (${{ github.run_number }} % 10) == 9
-#         uses: cpina/github-action-push-to-another-repository@main
-#         env:
-#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-#         with:
-#           source-directory: tests/
-#           destination-github-username: 'unifyai'
-#           destination-repository-name: 'Mapping'
-#           user-email: rashul.chutani@gmail.com
-#           commit-message: Update Mapping
-#           target-branch: master
+       - name: Determine Test Coverage
+         run: |
+           git clone https://github.com/unifyai/Backend_Mapping.git
+           cp Backend_Mapping/tests.pkl ivy/
+           cd ivy
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
+           cd ..
+           mkdir tests
+           cp ivy/tests.pkl tests/
+
+
+       - name: Push Mapping
+         if: (${{ github.run_number }} % 10) != 9
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Backend_Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
+
+
+       - name: Push Mapping - Final
+         if: (${{ github.run_number }} % 10) == 9
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
