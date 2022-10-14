@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extensions/max_pool2d.html">max_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions/kaiser_window.html">kaiser_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions/moveaxis.html">moveaxis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/ndenumerate.html">ndenumerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions/pad.html">pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions/heaviside.html">heaviside</a></li>
 </ul>
@@ -529,6 +530,33 @@ These must also be unique.</p></li>
 <dt class="sig sig-object py" id="ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">native_sparse_array_to_indices_values_and_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#native_sparse_array_to_indices_values_and_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.ndenumerate">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">ndenumerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#ndenumerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.ndenumerate" title="Permalink to this definition"></a></dt>
+<dd><p>Multidimensional index iterator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – Input array to iterate over.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – An iterator yielding pairs of array coordinates and values.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="go">(0, 0) 1</span>
+<span class="go">(0, 1) 2</span>
+<span class="go">(1, 0) 3</span>
+<span class="go">(1, 1) 4</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.extensions.pad">

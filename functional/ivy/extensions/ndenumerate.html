@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>native_sparse_array_to_indices_values_and_shape &mdash; Ivy 1.0 documentation</title>
+  <title>ndenumerate &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="sinc" href="sinc.html" />
-    <link rel="prev" title="native_sparse_array" href="native_sparse_array.html" /> 
+    <link rel="next" title="pad" href="pad.html" />
+    <link rel="prev" title="ivy.Container.static_moveaxis" href="moveaxis/static_moveaxis_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -64,7 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flatten.html">flatten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
@@ -73,7 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="moveaxis.html">moveaxis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ndenumerate.html">ndenumerate</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ndenumerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pad.html">pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="heaviside.html">heaviside</a></li>
 </ul>
@@ -138,9 +138,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../extensions.html">Extensions</a> &raquo;</li>
-      <li>native_sparse_array_to_indices_values_and_shape</li>
+      <li>ndenumerate</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/extensions/native_sparse_array_to_indices_values_and_shape.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/extensions/ndenumerate.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -148,12 +148,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="native-sparse-array-to-indices-values-and-shape">
-<h1>native_sparse_array_to_indices_values_and_shape<a class="headerlink" href="#native-sparse-array-to-indices-values-and-shape" title="Permalink to this heading"></a></h1>
+  <section id="ndenumerate">
+<h1>ndenumerate<a class="headerlink" href="#ndenumerate" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">native_sparse_array_to_indices_values_and_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/extensions.html#native_sparse_array_to_indices_values_and_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.ndenumerate">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">ndenumerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/extensions.html#ndenumerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.ndenumerate" title="Permalink to this definition"></a></dt>
+<dd><p>Multidimensional index iterator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – Input array to iterate over.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – An iterator yielding pairs of array coordinates and values.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="go">(0, 0) 1</span>
+<span class="go">(0, 1) 2</span>
+<span class="go">(1, 0) 3</span>
+<span class="go">(1, 1) 4</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -166,8 +188,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="native_sparse_array.html" class="btn btn-neutral float-left" title="native_sparse_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sinc.html" class="btn btn-neutral float-right" title="sinc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="moveaxis/static_moveaxis_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_moveaxis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pad.html" class="btn btn-neutral float-right" title="pad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

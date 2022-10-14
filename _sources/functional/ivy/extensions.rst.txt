@@ -25,6 +25,7 @@ Extensions
    extensions/max_pool2d.rst
    extensions/kaiser_window.rst
    extensions/moveaxis.rst
+   extensions/ndenumerate.rst
    extensions/pad.rst
    extensions/heaviside.rst
    extensions/SparseArray:
