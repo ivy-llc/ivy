@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal
+from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
 from numbers import Number
 import logging
 import ivy
@@ -219,7 +219,15 @@ def pad(
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     out: Optional[np.ndarray] = None,
+    **kwargs: Optional[Any],
 ) -> np.ndarray:
+    if callable(mode):
+        return np.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            **kwargs,
+        )
     if mode in ["maximum", "mean", "median", "minimum"]:
         return np.pad(
             _flat_array_to_1_dim_array(x),

@@ -9,6 +9,7 @@ from typing import (
     Literal,
     Iterable,
     Sequence,
+    Any,
 )
 from numbers import Number
 
@@ -810,6 +811,7 @@ class ContainerWithExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.pad. This method simply
@@ -830,6 +832,7 @@ class ContainerWithExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
         )
 
     def pad(
@@ -864,6 +867,7 @@ class ContainerWithExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.pad. This method simply
@@ -883,4 +887,5 @@ class ContainerWithExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
         )

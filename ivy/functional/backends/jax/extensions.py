@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Union, Tuple, Callable, Literal, Sequence
+from typing import Optional, Union, Tuple, Callable, Literal, Sequence, Any
 from numbers import Number
 import ivy
 from ivy.functional.ivy.extensions import (
@@ -188,7 +188,15 @@ def pad(
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     out: Optional[JaxArray] = None,
+    **kwargs: Optional[Any],
 ) -> JaxArray:
+    if callable(mode):
+        return jnp.pad(
+            _flat_array_to_1_dim_array(x),
+            pad_width,
+            mode=mode,
+            **kwargs,
+        )
     if mode in ["maximum", "mean", "median", "minimum"]:
         return jnp.pad(
             _flat_array_to_1_dim_array(x),

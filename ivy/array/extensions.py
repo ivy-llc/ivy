@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Sequence
+from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Sequence, Any
 from numbers import Number
 
 # local
@@ -217,7 +217,7 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
-        
+
     def pad(
         self: ivy.Array,
         /,
@@ -246,6 +246,7 @@ class ArrayWithExtensions(abc.ABC):
         end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
         reflect_type: Optional[Literal["even", "odd"]] = "even",
         out: Optional[ivy.Array] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.pad. This method simply
@@ -261,6 +262,7 @@ class ArrayWithExtensions(abc.ABC):
             end_values=end_values,
             reflect_type=reflect_type,
             out=out,
+            **kwargs,
         )
 
     def moveaxis(

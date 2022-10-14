@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import numpy as np
@@ -473,7 +473,7 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
-    
+
 
 @st.composite
 def _pad_helper(draw):
@@ -562,18 +562,6 @@ def test_pad(
         constant_values,
         end_values,
     ) = dtype_and_input_and_other
-    if fw == "torch":
-        assume(
-            mode in ["constant", "reflect", "edge", "wrap"]
-            and not np.isscalar(pad_width)
-            and np.isscalar(constant_values)
-        )
-    elif fw == "tensorflow":
-        assume(
-            mode in ["constant", "reflect", "symmetric"]
-            and not np.isscalar(pad_width)
-            and np.isscalar(constant_values)
-        )
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -593,4 +581,4 @@ def test_pad(
         end_values=end_values,
         reflect_type=reflect_type,
         out=None,
-    )    
+    )
