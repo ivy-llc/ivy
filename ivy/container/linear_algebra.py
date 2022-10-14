@@ -1706,8 +1706,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ...                   [0, 7, 4]]),
         ...    b = ivy.array([[4, 3, 2],
         ...                   [1, 9, 5],
-        ...                   [7, 0, 6]])
-        )
+        ...                   [7, 0, 6]]))
         >>> y = x.trace()
         >>> print(y)
         {
