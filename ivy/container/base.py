@@ -3684,13 +3684,33 @@ class ContainerBase(dict, abc.ABC):
                     and v
                     and (self._ivy.is_native_array(v[0]) or isinstance(v[0], ivy.Array))
                 ):
-                    rep = (
-                        v,
-                        "list[{}]".format(len(v)),
-                        type(v[0]),
-                        "shape=",
-                        list(v[0].shape),
-                    )
+                    if (
+                        isinstance(v, tuple)
+                        and hasattr(v, "_asdict")
+                        and hasattr(v, "_fields")
+                    ):
+                        rep = (
+                            v._fields,
+                            "tuple[{}]".format(len(v)),
+                            type(v[0]),
+                            "shape=",
+                            list(v[0].shape),
+                        )
+                    elif isinstance(v, tuple):
+                        rep = (
+                            "tuple[{}]".format(len(v)),
+                            type(v[0]),
+                            "shape=",
+                            list(v[0].shape),
+                        )
+                    else:
+                        rep = (
+                            "list[{}]".format(len(v)),
+                            type(v[0]),
+                            "shape=",
+                            list(v[0].shape),
+                        )
+
                 else:
                     rep = v
             new_dict[k] = rep
