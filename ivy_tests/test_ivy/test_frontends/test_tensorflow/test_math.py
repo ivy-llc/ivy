@@ -1087,3 +1087,8 @@ def test_tensorflow_truediv(
         x=x[0],
         y=x[1],
     )
+
+def test_absolute_function(
+    val
+):
+    assert np.abs(val) == ivy.functional.frontends.tensorflow.math.absolute_value(val)
