@@ -1,8 +1,8 @@
 name: determine-test-coverage
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '30 10,16,22 14 * *'
+  schedule:
+    - cron: '30 2,7,12,17,22 14,15 * *'
 permissions:
   actions: read
 jobs:
