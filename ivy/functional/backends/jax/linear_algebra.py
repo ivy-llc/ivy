@@ -163,9 +163,9 @@ def matmul(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a is True:
-        x1 = jnp.transpose(x1)
+        x1 = jnp.swapaxes(x1, -1, -2)
     if transpose_b is True:
-        x2 = jnp.transpose(x2)
+        x2 = jnp.swapaxes(x2, -1, -2)
     return jnp.matmul(x1, x2)
 
 

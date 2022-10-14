@@ -188,9 +188,9 @@ def matmul(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if transpose_a is True:
-        x1 = torch.t(x1)
+        x1 = torch.swapaxes(x1, -1, -2)
     if transpose_b is True:
-        x2 = torch.t(x2)
+        x2 = torch.swapaxes(x2, -1, -2)
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
