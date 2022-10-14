@@ -18,15 +18,15 @@ jobs:
            fetch-depth: 150
 
 
-       - name: Determine Test Coverage
-         run: |
-           git clone https://github.com/unifyai/Backend_Mapping.git
-           cp Backend_Mapping/tests.pkl ivy/
-           cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
-           cd ..
-           mkdir tests
-           cp ivy/tests.pkl tests/
+#       - name: Determine Test Coverage
+#         run: |
+#           git clone https://github.com/unifyai/Backend_Mapping.git
+#           cp Backend_Mapping/tests.pkl ivy/
+#           cd ivy
+#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
+#           cd ..
+#           mkdir tests
+#           cp ivy/tests.pkl tests/
 
 
        - name: Push Mapping
