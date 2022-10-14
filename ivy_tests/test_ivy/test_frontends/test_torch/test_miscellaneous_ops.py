@@ -751,7 +751,6 @@ def test_torch_ravel(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -760,7 +759,6 @@ def test_torch_ravel(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="ravel",
         input=np.asarray(x[0], dtype=input_dtype[0]),
@@ -788,7 +786,7 @@ def test_torch_ravel(
     ),
 )
 def test_torch_rot90(
-    dtype_and_x, dims, k, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, dims, k, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -802,4 +800,42 @@ def test_torch_rot90(
         input=x[0],
         k=k,
         dims=dims,
+    )
+
+
+# vander
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
+    ),
+    N=st.integers(min_value=0, max_value=5),
+    increasing=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.vander"
+    ),
+)
+def test_torch_vander(
+    dtype_and_x,
+    N,
+    increasing,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="vander",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        N=N,
+        increasing=increasing,
     )
