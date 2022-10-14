@@ -25,6 +25,6 @@ Statistical
    statistical/einsum.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Statistical discussion`: https://github.com/unifyai/ivy/discussions/1028299556955361351
-.. _`Statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
-This should have hopefully given you an overview of the Statistical submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Statistical discussion`_,or reach out on `discord`_ in the `Statistical channel`_!
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+This should have hopefully given you an overview of the statistical submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `statistical channel`_ or in the `statistical forum`_!

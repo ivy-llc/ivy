@@ -36,6 +36,6 @@ Extensions
 def is_ivy_sparse_array.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Extensions discussion`: https://github.com/unifyai/ivy/discussions/1028298957870354542
-.. _`Extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
-This should have hopefully given you an overview of the Extensions submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Extensions discussion`_,or reach out on `discord`_ in the `Extensions channel`_!
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+This should have hopefully given you an overview of the extensions submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `extensions channel`_ or in the `extensions forum`_!

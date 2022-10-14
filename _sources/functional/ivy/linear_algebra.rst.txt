@@ -42,6 +42,6 @@ Linear algebra
    linear_algebra/vander.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Linear Algebra discussion`: https://github.com/unifyai/ivy/discussions/1028299123046240366
-.. _`Linear Algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
-This should have hopefully given you an overview of the Linear Algebra submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Linear Algebra discussion`_,or reach out on `discord`_ in the `Linear Algebra channel`_!
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+This should have hopefully given you an overview of the linear algebra submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `linear algebra channel`_ or in the `linear algebra forum`_!

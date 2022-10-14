@@ -15,6 +15,6 @@ Constants
 
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Constants discussion`: https://github.com/unifyai/ivy/discussions/1028298780715536454
-.. _`Constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
-This should have hopefully given you an overview of the Constants submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Constants discussion`_,or reach out on `discord`_ in the `Constants channel`_!
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+This should have hopefully given you an overview of the constants submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `constants channel`_ or in the `constants forum`_!

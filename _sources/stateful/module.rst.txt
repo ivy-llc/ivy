@@ -16,6 +16,6 @@ Module
    module/Module.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Module discussion`: https://github.com/unifyai/ivy/discussions/1028300829905653780
-.. _`Module channel`: https://discord.com/channels/799879767196958751/1000043315267387502
-This should have hopefully given you an overview of the Module submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Module discussion`_,or reach out on `discord`_ in the `Module channel`_!
+.. _`module forum`: https://discord.com/channels/799879767196958751/1028300829905653780
+.. _`module channel`: https://discord.com/channels/799879767196958751/1000043315267387502
+This should have hopefully given you an overview of the module submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `module channel`_ or in the `module forum`_!

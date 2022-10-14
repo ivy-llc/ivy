@@ -18,6 +18,6 @@ Losses
    losses/sparse_cross_entropy.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Losses discussion`: https://github.com/unifyai/ivy/discussions/1028299153148739646
-.. _`Losses channel`: https://discord.com/channels/799879767196958751/1000044049333485648
-This should have hopefully given you an overview of the Losses submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Losses discussion`_,or reach out on `discord`_ in the `Losses channel`_!
+.. _`losses forum`: https://discord.com/channels/799879767196958751/1028299153148739646
+.. _`losses channel`: https://discord.com/channels/799879767196958751/1000044049333485648
+This should have hopefully given you an overview of the losses submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `losses channel`_ or in the `losses forum`_!

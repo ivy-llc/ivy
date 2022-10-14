@@ -17,6 +17,6 @@ Activations
    activations/GEGLU.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Activations discussion`: https://github.com/unifyai/ivy/discussions/1028300670505336893
-.. _`Activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
-This should have hopefully given you an overview of the Activations submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Activations discussion`_,or reach out on `discord`_ in the `Activations channel`_!
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+This should have hopefully given you an overview of the activations submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `activations channel`_ or in the `activations forum`_!

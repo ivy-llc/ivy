@@ -17,6 +17,6 @@ Utility
    utility/any.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Utility discussion`: https://github.com/unifyai/ivy/discussions/1028299594733457428
-.. _`Utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
-This should have hopefully given you an overview of the Utility submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Utility discussion`_,or reach out on `discord`_ in the `Utility channel`_!
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+This should have hopefully given you an overview of the utility submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `utility channel`_ or in the `utility forum`_!

@@ -20,6 +20,6 @@ Searching
    searching/argwhere.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Searching discussion`: https://github.com/unifyai/ivy/discussions/1028299387258019950
-.. _`Searching channel`: https://discord.com/channels/799879767196958751/1000044227247484980
-This should have hopefully given you an overview of the Searching submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Searching discussion`_,or reach out on `discord`_ in the `Searching channel`_!
+.. _`searching forum`: https://discord.com/channels/799879767196958751/1028299387258019950
+.. _`searching channel`: https://discord.com/channels/799879767196958751/1000044227247484980
+This should have hopefully given you an overview of the searching submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `searching channel`_ or in the `searching forum`_!

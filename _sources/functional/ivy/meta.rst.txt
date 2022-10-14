@@ -18,6 +18,6 @@ Meta
    meta/maml_step.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Meta discussion`: https://github.com/unifyai/ivy/discussions/1028299213701914674
-.. _`Meta channel`: https://discord.com/channels/799879767196958751/1000044106959044659
-This should have hopefully given you an overview of the Meta submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Meta discussion`_,or reach out on `discord`_ in the `Meta channel`_!
+.. _`meta forum`: https://discord.com/channels/799879767196958751/1028299213701914674
+.. _`meta channel`: https://discord.com/channels/799879767196958751/1000044106959044659
+This should have hopefully given you an overview of the meta submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `meta channel`_ or in the `meta forum`_!

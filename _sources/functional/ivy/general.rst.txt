@@ -90,6 +90,6 @@ General
    general/vmap.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`General discussion`: https://github.com/unifyai/ivy/discussions/1028298984806170634
-.. _`General channel`: https://discord.com/channels/799879767196958751/1000043859973247006
-This should have hopefully given you an overview of the General submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `General discussion`_,or reach out on `discord`_ in the `General channel`_!
+.. _`general forum`: https://discord.com/channels/799879767196958751/1028298984806170634
+.. _`general channel`: https://discord.com/channels/799879767196958751/1000043859973247006
+This should have hopefully given you an overview of the general submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `general channel`_ or in the `general forum`_!

@@ -32,6 +32,6 @@ Nest
    nest/nested_multi_map.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
-.. _`Nest discussion`: https://github.com/unifyai/ivy/discussions/1028299238964219924
-.. _`Nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
-This should have hopefully given you an overview of the Nest submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Nest discussion`_,or reach out on `discord`_ in the `Nest channel`_!
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+This should have hopefully given you an overview of the nest submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `nest channel`_ or in the `nest forum`_!
