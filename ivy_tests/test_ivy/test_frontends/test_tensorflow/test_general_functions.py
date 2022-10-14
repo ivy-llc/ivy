@@ -55,3 +55,40 @@ def test_tensorflow_clip_by_value(
         clip_value_min=min,
         clip_value_max=max,
     )
+
+
+# eye
+@handle_cmd_line_args
+@given(
+    n_rows=helpers.ints(min_value=0, max_value=10),
+    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    batch_shape=st.lists(
+        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.eye"
+    ),
+)
+def test_tensorflow_eye(
+    n_rows,
+    n_cols,
+    batch_shape,
+    dtype,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="eye",
+        num_rows=n_rows,
+        num_columns=n_cols,
+        batch_shape=batch_shape,
+        dtype=dtype,
+    )

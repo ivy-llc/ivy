@@ -39,7 +39,7 @@ def test_tensorflow_Acos(dtype_and_x, as_variable, num_positional_args, native_a
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Acosh"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Acosh"
     ),
 )
 def test_tensorflow_Acosh(dtype_and_x, as_variable, num_positional_args, native_array):
