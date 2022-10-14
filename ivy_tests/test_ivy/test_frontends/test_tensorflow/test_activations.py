@@ -131,7 +131,7 @@ def test_tensorflow_gelu(
         frontend="tensorflow",
         fn_tree="keras.activations.gelu",
         x=x[0],
-        approximate=False,
+        approximate=approximate,
     )
 
 
