@@ -17,6 +17,11 @@ jobs:
            submodules: "recursive"
            fetch-depth: 150
 
+       - name: Determine Mapping
+         id: det
+         run: |
+           expr ${{ github.run_number }} % 10
+           echo "::set-output name=run::$(expr ${{ github.run_number }} % 10)"
 
 #       - name: Determine Test Coverage
 #         run: |
@@ -30,7 +35,7 @@ jobs:
 
 
        - name: Push Mapping
-         if: github.run_number % 10 != 9
+         if: steps.det.outputs.num != 9
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
@@ -44,7 +49,7 @@ jobs:
 
 
        - name: Push Mapping - Final
-         if: github.run_number % 10 == 9
+         if: steps.det.outputs.num == 9
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
