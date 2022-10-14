@@ -670,7 +670,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 These examples cover points 1, 2, 3, 4 and 5.
 
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
-to be seperated by a `...\` so that they can be parsed by the script that tests the examples in the docstrings.
+to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7,
