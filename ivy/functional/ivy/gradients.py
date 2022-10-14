@@ -2,6 +2,7 @@
 
 # global
 from typing import Union, Optional, Tuple
+import numpy as np
 
 # local
 import ivy
@@ -26,7 +27,7 @@ def _zero_gradients_to_none_and_to_ivy(grads):
         return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
         zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
-        if not isinstance(zero_idxs, list) or len(zero_idxs[0]) == 0:
+        if not isinstance(zero_idxs, list) or np.asarray(zero_idxs).size == 0:
             return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
         zero_idxs.reverse()
         ivy.prune_nest_at_indices(grads, zero_idxs)
