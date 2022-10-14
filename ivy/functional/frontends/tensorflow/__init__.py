@@ -247,21 +247,16 @@ def promote_types_of_tensorflow_inputs(
     else:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+    return x1, x2
 
 
 from . import tensor
 from .tensor import Tensor
-from . import activations
-from .activations import *
-from . import layers
-from .layers import *
+from . import keras
 from . import linalg
 from .linalg import *
 from . import math
 from .math import *
-from . import metrics
-from .metrics import *
 from . import nest
 from .nest import *
 from . import nn
@@ -272,8 +267,6 @@ from . import random
 from .random import *
 from . import raw_ops
 from .raw_ops import *
-from . import regularizers
-from .regularizers import *
 from . import sets
 from .sets import *
 from . import signal

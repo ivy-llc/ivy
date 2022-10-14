@@ -1,6 +1,6 @@
 # For Review
 # global
-from typing import Union, Optional, Tuple, List, Iterable, Sequence, Callable, Literal
+from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
 from numpy.core.numeric import normalize_axis_tuple
 
@@ -143,23 +143,23 @@ def expand_dims(
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-    >>> x = ivy.array([[0.5, -0.7, 2.4], \
-                       [  1,    2,   3]]) #x.shape->(2, 3)
+    >>> x = ivy.array([[0.5, -0.7, 2.4],
+    ...                [  1,    2,   3]]) #x.shape->(2, 3)
     >>> y = ivy.zeros((2, 1, 3))
     >>> ivy.expand_dims(x, axis=1, out=y) #y.shape->(2, 1, 3)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
                [[ 1.,   2.,  3.]]])
 
-    >>> x = ivy.array([[-1, -2], \
-                       [ 3,  4]]) #x.shape->(2, 2)
+    >>> x = ivy.array([[-1, -2],
+    ...                [ 3,  4]]) #x.shape->(2, 2)
     >>> ivy.expand_dims(x, axis=0, out=x) #x.shape->(1, 2, 2)
     >>> print(x)
     ivy.array([[[-1, -2],
                 [3,  4]]])
 
-    >>> x = ivy.array([[-1.1, -2.2, 3.3], \
-                       [ 4.4,  5.5, 6.6]]) #x.shape->(2, 3)
+    >>> x = ivy.array([[-1.1, -2.2, 3.3],
+    ...                [ 4.4,  5.5, 6.6]]) #x.shape->(2, 3)
     >>> y = ivy.expand_dims(x, axis=(0, -1)) #y.shape->(1, 2, 3, 1)
     >>> print(y)
     ivy.array([[[[-1.1],
@@ -169,8 +169,8 @@ def expand_dims(
                  [ 5.5],
                  [ 6.6]]]])
 
-    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
-                       [ 6.3,  1.4, 5.7]]) #x.shape->(2, 3)
+    >>> x = ivy.array([[-1.7, -3.2, 2.3],
+    ...                [ 6.3,  1.4, 5.7]]) #x.shape->(2, 3)
     >>> y = ivy.expand_dims(x, axis=[0, 1, -1]) ##y.shape->(1, 1, 2, 3, 1)
     >>> print(y)
     ivy.array([[[[[-1.7],
@@ -182,8 +182,8 @@ def expand_dims(
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.expand_dims(x, axis=-1)
     >>> print(y)
     {
@@ -197,8 +197,8 @@ def expand_dims(
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> container_axis = ivy.Container(a=0, b=1)
     >>> y = ivy.expand_dims(x, axis=container_axis)
     >>> print(y)
@@ -300,8 +300,8 @@ def flip(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.flip(x)
     >>> print(y)
     {
@@ -494,8 +494,8 @@ def reshape(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                          b=ivy.array([0, 1, 2, 3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+    ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
     >>> y = ivy.reshape(x,(2,3))
     >>> print(y)
     {
@@ -588,16 +588,16 @@ def roll(
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.],
+    ...                [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, axis=-1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
-                [4., 5., 3.]])
+               [4., 5., 3.]])
 
-    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
-                       [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
+    ...                [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, shift=(1, -1), axis=(0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -609,8 +609,8 @@ def roll(
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -620,8 +620,8 @@ def roll(
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> shift = ivy.Container(a=1, b=-1)
     >>> y = ivy.roll(x, shift)
     >>> print(y)
@@ -632,15 +632,15 @@ def roll(
 
     Instance Method Examples
     ------------------------
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.],
+    ...                [3., 4., 5.]])
     >>> y = x.roll(2, axis=-1)
     >>> print(y)
     ivy.array([[1., 2., 0.],
                 [4., 5., 3.]])
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = x.roll(1)
     >>> print(y)
     {
@@ -720,8 +720,8 @@ def squeeze(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.squeeze(x, axis=None)
     >>> print(y)
     {
@@ -788,8 +788,48 @@ def stack(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4.])
+    >>> y = ivy.array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.Array` input and different `axis` :
+
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
+
+    With :code: `ivy.native_array` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.native_array` input and different `axis` :
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
     """
-    return current_backend(arrays).stack(arrays, axis=axis, out=out)
+    res = current_backend(arrays).stack(arrays, axis=axis, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 # Extra #
@@ -880,8 +920,8 @@ def clip(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.clip(x, 1., 5.)
     >>> print(y)
     {
@@ -891,8 +931,8 @@ def clip(
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> x_min = ivy.Container(a=0, b=-3)
     >>> x_max = ivy.Container(a=1, b=-1)
     >>> y = ivy.clip(x, x_min,x_max)
@@ -907,8 +947,8 @@ def clip(
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.array([3., 0., 1])
     >>> x_max = ivy.array([5., 4., 3.])
-    >>> y = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> z = ivy.clip(y, x_min, x_max)
     >>> print(z)
     {
@@ -918,198 +958,6 @@ def clip(
 
     """
     return current_backend(x).clip(x, x_min, x_max)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def pad(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    pad_width: Union[Iterable[Tuple[int]], int],
-    *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
-    ] = "constant",
-    stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Pads an array.
-
-    Parameters
-    ----------
-    x
-        Input array to pad.
-    pad_width
-        Number of values padded to the edges of each axis.
-         - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
-           for each axis.
-         - ((before, after),) yields same before and after pad for each axis.
-         - (pad,) or int is a shortcut for before = after = pad width for all axes.
-    mode
-        One of the following string values or a user supplied function.
-             - "constant": Pads with a constant value.
-             - "edge": Pads with the edge values of array.
-             - "linear_ramp": Pads with the linear ramp between end_value
-               and the array edge value.
-             - "maximum": Pads with the maximum value of all or part of the vector
-               along each axis.
-             - "mean": Pads with the mean value of all or part of the vector along
-               each axis.
-             - "median": Pads with the median value of all or part of the vector
-               along each axis.
-             - "minimum": Pads with the minimum value of all or part of the vector
-               along each axis.
-             - "reflect": Pads with the reflection mirrored on the first and last
-               values of the vector along each axis.
-             - "symmetric": Pads with the reflection of the vector mirrored along
-               the edge of the array.
-             - "wrap": Pads with the wrap of the vector along the axis.
-               The first values are used to pad the end and the end values are used
-               to pad the beginning.
-             - "empty": Pads with undefined values.
-             - <function>: Pads with a user-defined padding function.
-                 The padding function should modify a rank 1 array in-place.
-                 It has the following signature:
-                 padding_func(vector, iaxis_pad_width, iaxis, kwargs), where:
-                     - vector is
-                       A rank 1 array already padded with zeros. Padded values are
-                       vector[:iaxis_pad_width[0]] and vector[-iaxis_pad_width[1]:].
-                     - iaxis_pad_width is
-                       A 2-tuple of ints, where iaxis_pad_width[0] represents the
-                       number of values padded at the beginning of vector and
-                       iaxis_pad_width[1] represents the number of values padded
-                       at the end of vector.
-                     - iaxis is
-                       The axis currently being calculated.
-                     - kwargs is
-                       A dict of any keyword arguments the function requires.
-    stat_length
-        Used in "maximum", "mean", "median", and "minimum".
-        Number of values at edge of each axis used to calculate the statistic value.
-         - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
-           lengths for each axis.
-         - ((before, after),) yields same before and after statistic lengths for
-           each axis.
-         - (stat_length,) or int is a shortcut for before = after = statistic length
-           for all axes.
-         - None uses the entire axis.
-    constant_values
-        Used in "constant". The values to set the padded values for each axis.
-         - ((before_1, after_1), ... (before_N, after_N)) yields unique pad constants
-           for each axis.
-         - ((before, after),) yields same before and after constants for each axis.
-         - (constant,) or constant is a shortcut for before = after = constant for
-           all axes.
-    end_values
-        Used in "linear_ramp". The values used for the ending value of the linear_ramp
-        and that will form the edge of the padded array.
-         - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
-           for each axis.
-         - ((before, after),) yields same before and after end values for each axis.
-         - (constant,) or constant is a shortcut for before = after = constant for
-           all axes.
-    reflect_type
-        Used in "reflect", and "symmetric". The "even" style is the default with an
-        unaltered reflection around the edge value. For the "odd" style, the extended
-        part of the array is created by subtracting the reflected values from two
-        times the edge value.
-    out
-        optional output array, for writing the result to. It must have a shape that
-        the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Padded array of rank equal to x with shape increased according to pad_width.
-
-
-    Both the description and the type hints above assume an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="constant")
-    >>> print(y)
-    ivy.array([[0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 1, 2, 3, 0, 0],
-               [0, 0, 4, 5, 6, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0]])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="reflect")
-    >>> print(y)
-    ivy.array([[6, 5, 4, 5, 6, 5, 4],
-               [3, 2, 1, 2, 3, 2, 1],
-               [6, 5, 4, 5, 6, 5, 4],
-               [3, 2, 1, 2, 3, 2, 1]])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="symmetric")
-    >>> print(y)
-    ivy.array([[2, 1, 1, 2, 3, 3, 2],
-               [2, 1, 1, 2, 3, 3, 2],
-               [5, 4, 4, 5, 6, 6, 5],
-               [5, 4, 4, 5, 6, 6, 5]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
-    >>> y = ivy.pad(x, padding, mode="constant", constant_values=7)
-    >>> print(y)
-    ivy.array([[7, 7, 7, 7, 7, 7, 7],
-               [7, 7, 1, 2, 3, 7, 7],
-               [7, 7, 4, 5, 6, 7, 7],
-               [7, 7, 7, 7, 7, 7, 7]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([0., 1., 2.]))
-    >>> padding = ivy.array([(1, 1)])
-    >>> y = ivy.pad(x, padding, mode="constant")
-    >>> print(y)
-    {
-        a: ivy.array([0., 0., 1., 2., 0.]),
-        b: ivy.array([0., 0., 1., 2., 0.])
-    }
-    """
-    return current_backend(x).pad(
-        x,
-        pad_width,
-        mode=mode,
-        stat_length=stat_length,
-        constant_values=constant_values,
-        end_values=end_values,
-        reflect_type=reflect_type,
-        out=out,
-    )
 
 
 @to_native_arrays_and_back
@@ -1212,8 +1060,8 @@ def repeat(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([0., 1., 2.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([0., 1., 2.]))
     >>> y = ivy.repeat(x, 2, axis=0)
     >>> print(y)
     {
@@ -1467,8 +1315,8 @@ def tile(
     >>> print(y)
     ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
 
-    >>> x = ivy.array([[1,2,3], \
-                       [4,5,6]])
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
     >>> y = ivy.tile(x, (2,3))
     >>> print(y)
     ivy.array([[1,2,3,1,2,3,1,2,3],
