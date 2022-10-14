@@ -186,7 +186,7 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 Maximum = tf_frontend.math.maximum
 
 
-MatrixDeterminant = tf_frontend.math.det
+MatrixDeterminant = tf_frontend.linalg.det
 
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
