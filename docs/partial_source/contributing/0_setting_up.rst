@@ -1,14 +1,12 @@
 Setting Up
 ==========
 
-.. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
-.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
@@ -47,8 +45,7 @@ you should make sure to check whether you are eligible for a
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
 -------------------------------
@@ -231,6 +228,16 @@ If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    </iframe>
+
+
 Ubuntu
 ****
 
@@ -287,8 +294,17 @@ Ubuntu
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    </iframe>
+
 
 Setting Up Testing
 ******************
@@ -369,6 +385,9 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
+
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
 
 GitHub Codespaces
 -----------------
@@ -504,15 +523,12 @@ In order to install and properly set up pre-commit, these steps should be follow
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly,
 as explained above.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit channel`_!
 
 **Round Up**
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `setting up discussion`_,
-or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
-depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ 
+in the `pycharm channel`_, `docker channel`_,
+`pre-commit channel`_, `pip packages channel`_ depending on the question!

@@ -170,8 +170,8 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
-                              b=ivy.array([0., -0.4, 8]))
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),
+        ...                      b=ivy.array([0., -0.4, 8]))
         >>> exclusive = ivy.Container(a=False, b=True)
         >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
         >>> print(is_var)
@@ -247,8 +247,8 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
-                              b=ivy.array([0., -0.4, 8]))
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),
+        ...                      b=ivy.array([0., -0.4, 8]))
         >>> exclusive = ivy.Container(a=False, b=True)
         >>> is_var = x.is_variable(exclusive=exclusive)
         >>> print(is_var)
@@ -399,13 +399,13 @@ class ContainerWithGradients(ContainerBase):
         -------
         ret
             The same array x, but with no gradient information.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                      b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_stop_gradient(x, preserve_type=False)
         >>> print(y)
         {
@@ -415,8 +415,8 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                      b=ivy.array([3., 4., 5.]))
         >>> ivy.Container.static_stop_gradient(x, preserve_type=True, out=x)
         >>> print(x)
         {
@@ -477,13 +477,13 @@ class ContainerWithGradients(ContainerBase):
         -------
         ret
             The same array x, but with no gradient information.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                      b=ivy.array([3., 4., 5.]))
         >>> y = x.stop_gradient(preserve_type=False)
         >>> print(y)
         {
@@ -493,8 +493,8 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                      b=ivy.array([3., 4., 5.]))
         >>> x.stop_gradient(preserve_type=True, out=x)
         >>> print(x)
         {
@@ -560,16 +560,16 @@ class ContainerWithGradients(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                                 b=ivy.array([3., 4., 5.]))
+        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                         b=ivy.array([3., 4., 5.]))
         >>> mw = ivy.array([1., 4., 9.])
         >>> vw = ivy.array([0.,])
         >>> step = ivy.array([3.4])
         >>> beta1 = 0.87
         >>> beta2 = 0.976
         >>> epsilon = 1e-5
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,\
-                                             epsilon=epsilon)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,
+        ...                                     epsilon=epsilon)
         >>> print(adam_step_delta)
         ({
             a: ivy.array([6.49e+04, 1.74e+01, 1.95e+01]),
@@ -581,21 +581,21 @@ class ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 0.024, 0.096]),
             b: ivy.array([0.216, 0.384, 0.6])
         })
-        
+
         With multiple :class:`ivy.Container` inputs:
 
-        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                                b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                            b=ivy.array([0., 0., 0.]))
-        >>> vw = ivy.Container(a=ivy.array([0.,]),\
-                            b=ivy.array([0.,]))
+        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                        b=ivy.array([3., 4., 5.]))
+        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),
+        ...                    b=ivy.array([0., 0., 0.]))
+        >>> vw = ivy.Container(a=ivy.array([0.,]),
+        ...                    b=ivy.array([0.,]))
         >>> step = ivy.array([3.4])
         >>> beta1 = 0.87
         >>> beta2 = 0.976
         >>> epsilon = 1e-5
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,\
-                                             epsilon=epsilon)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,
+        ...                                     epsilon=epsilon)
         >>> print(adam_step_delta)
         ({
             a: ivy.array([0., 0.626, 0.626]),
@@ -650,9 +650,9 @@ class ContainerWithGradients(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        
-        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                            b=ivy.array([3., 4., 5.]))
+
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                    b=ivy.array([3., 4., 5.]))
         >>> effective_grad = ivy.array([0., 0., 0.])
         >>> lr = 3e-4
         >>> ws_new = w.optimizer_update(effective_grad, lr)
@@ -663,11 +663,11 @@ class ContainerWithGradients(ContainerBase):
         }
 
         With multiple :class:`ivy.Container` inputs:
-        
-        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
-        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                                           b=ivy.array([0., 0., 0.]))
+
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                      b=ivy.array([3., 4., 5.]))
+        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),
+        ...                                   b=ivy.array([0., 0., 0.]))
         >>> lr = 3e-4
         >>> ws_new = w.optimizer_update(effective_grad, lr, out=w)
         >>> print(w)
@@ -675,11 +675,11 @@ class ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
         }
-        
-        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                            b=ivy.array([3., 4., 5.]))
-        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                                        b=ivy.array([0., 0., 0.]))
+
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                    b=ivy.array([3., 4., 5.]))
+        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),
+        ...                                b=ivy.array([0., 0., 0.]))
         >>> lr = ivy.array([3e-4])
         >>> ws_new = w.optimizer_update(effective_grad, lr, stop_gradients=False)
         >>> print(ws_new)
@@ -743,8 +743,8 @@ class ContainerWithGradients(ContainerBase):
         --------
         With one :class:`ivy.Container` inputs:
 
-        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                      b=ivy.array([3.48, 5.72, 1.98]))
         >>> dcdw = ivy.array([0.5, 0.2, 0.1])
         >>> lr = ivy.array(0.3)
         >>> w_new = w.gradient_descent_update(dcdw, lr)
@@ -753,13 +753,13 @@ class ContainerWithGradients(ContainerBase):
             a: ivy.array([0.85, 1.94, 2.97]),
             b: ivy.array([3.33, 5.66, 1.95])
         }
-        
+
         With multiple :class:`ivy.Container` inputs:
 
-        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([3.48, 5.72, 1.98]))
-        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
-                                 b=ivy.array([2., 3.42, 1.69]))
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                      b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),
+        ...                         b=ivy.array([2., 3.42, 1.69]))
         >>> lr = ivy.array(0.3)
         >>> w_new = w.gradient_descent_update(dcdw, lr)
         >>> print(w_new)
@@ -972,16 +972,16 @@ class ContainerWithGradients(ContainerBase):
         }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
         With multiple :class:`ivy.Container` inputs:
-        
-        >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
-                              b=ivy.array([3.,4.,2.]))
-        >>> dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),\
-                                 b=ivy.array([0.6,0.4,0.7]))
-        >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),\
-                                   b=ivy.array([0.,0.,0.]))
 
-        >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),\
-                                   b=ivy.array([0.,]))
+        >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),
+        ...                      b=ivy.array([3.,4.,2.]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),
+        ...                         b=ivy.array([0.6,0.4,0.7]))
+        >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),
+        ...                           b=ivy.array([0.,0.,0.]))
+
+        >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),
+        ...                           b=ivy.array([0.,]))
         >>> step = ivy.array([3.4])
         >>> beta1 = 0.9
         >>> beta2 = 0.999
@@ -990,11 +990,11 @@ class ContainerWithGradients(ContainerBase):
         >>> decay_lambda = 0
         >>> stop_gradients = True
         >>> lr = ivy.array(0.5)
-        >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,\
-                                        beta2=beta2, epsilon=epsilon,\
-                                        max_trust_ratio=max_trust_ratio,\
-                                        decay_lambda=decay_lambda,\
-                                        stop_gradients=stop_gradients)
+        >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,
+        ...                                beta2=beta2, epsilon=epsilon,
+        ...                                max_trust_ratio=max_trust_ratio,
+        ...                                decay_lambda=decay_lambda,
+        ...                                stop_gradients=stop_gradients)
         >>> print(new_weights)
         ({
             a: ivy.array([-0.708, 1.29, 3.29]),
