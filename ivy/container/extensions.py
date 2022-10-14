@@ -592,6 +592,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container static method variant of ivy.kaiser_window. This method
         simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
+
         Parameters
         ----------
         window_length
@@ -605,10 +606,12 @@ class ContainerWithExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
+
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -647,6 +650,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container instance method variant of ivy.kaiser_window. This method
         simply wraps the function, and so the docstring for ivy.kaiser_window
         also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -660,10 +664,12 @@ class ContainerWithExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that includes the Kaiser windows.
+
         Examples
         --------
         >>> x = ivy.Container(a=3, b=5)
@@ -702,6 +708,7 @@ class ContainerWithExtensions(ContainerBase):
         ivy.Container static method variant of ivy.moveaxis. This method simply wraps
         the function, and so the docstring for ivy.moveaxis also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         a
@@ -713,10 +720,12 @@ class ContainerWithExtensions(ContainerBase):
             These must also be unique.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with moved axes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -750,6 +759,7 @@ class ContainerWithExtensions(ContainerBase):
         """ivy.Container instance method variant of ivy.moveaxis. This method simply
         wraps the function, and so the docstring for ivy.flatten also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -761,10 +771,12 @@ class ContainerWithExtensions(ContainerBase):
             These must also be unique.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with moved axes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -781,8 +793,8 @@ class ContainerWithExtensions(ContainerBase):
     def static_pad(
         x: ivy.Container,
         /,
-        pad_width: Union[Iterable[Tuple[int]], int],
         *,
+        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -835,8 +847,8 @@ class ContainerWithExtensions(ContainerBase):
     def pad(
         self: ivy.Container,
         /,
-        pad_width: Union[Iterable[Tuple[int]], int],
         *,
+        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -884,3 +896,197 @@ class ContainerWithExtensions(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_heaviside(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.heaviside. This method simply wraps
+        the function, and so the docstring for ivy.heaviside also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            input container including the arrays.
+        x2
+            values to use where the array is zero.
+        out
+            optional output container array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            output container with element-wise Heaviside step function of each array.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x1 = ivy.Container(a=ivy.array([-1.5, 0, 2.0]), b=ivy.array([3.0, 5.0])
+        >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
+        >>> ivy.Container.static_heaviside(x1, x2)
+        {
+            a: ivy.array([ 0. ,  0.5,  1. ])
+            b: ivy.array([1.0, 1.0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "heaviside",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def heaviside(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.heaviside. This method simply
+        wraps the function, and so the docstring for ivy.heaviside also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including the arrays.
+        x2
+            values to use where the array is zero.
+        out
+            optional output container array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            output container with element-wise Heaviside step function of each array.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x1 = ivy.Container(a=ivy.array([-1.5, 0, 2.0]), b=ivy.array([3.0, 5.0])
+        >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
+        >>> x1.heaviside(x2)
+        {
+            a: ivy.array([ 0. ,  0.5,  1. ])
+            b: ivy.array([1.0, 1.0])
+        }
+        """
+        return self.static_heaviside(self, x2, out=out)
+
+    @staticmethod
+    def static_median(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.median. This method simply wraps
+        the function, and so the docstring for ivy.median also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> ivy.Container.static_moveaxis(x, 0, -1).shape
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "median",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def median(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(
+        >>>     a=ivy.array([[10, 7, 4], [3, 2, 1]]),
+        >>>     b=ivy.array([[1, 4, 2], [8, 7, 0]])
+        >>> )
+        >>> x.median(axis=0)
+        {
+            a: ivy.array([6.5, 4.5, 2.5]),
+            b: ivy.array([4.5, 5.5, 1.])
+        }
+        """
+        return self.static_median(self, axis=axis, keepdims=keepdims, out=out)

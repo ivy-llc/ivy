@@ -56,13 +56,12 @@ def test_numpy_reshape(
 @handle_cmd_line_args
 @given(
     dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        ret_shape=True
+        available_dtypes=helpers.get_dtypes("float"), ret_shape=True
     ),
     factor=helpers.ints(min_value=1, max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.broadcast_to"
-    )
+    ),
 )
 def test_numpy_broadcast_to(
     dtype_x_shape,
@@ -82,18 +81,16 @@ def test_numpy_broadcast_to(
         frontend="numpy",
         fn_tree="broadcast_to",
         array=x[0],
-        shape=broadcast_shape
+        shape=broadcast_shape,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ravel"
-    )
+    ),
 )
 def test_numpy_ravel(
     dtype_and_x,

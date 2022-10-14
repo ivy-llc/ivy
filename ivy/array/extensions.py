@@ -217,7 +217,7 @@ class ArrayWithExtensions(abc.ABC):
             data_format=data_format,
             out=out,
         )
-        
+
     def pad(
         self: ivy.Array,
         /,
@@ -301,3 +301,83 @@ class ArrayWithExtensions(abc.ABC):
         (5, 3, 4)
         """
         return ivy.moveaxis(self._data, source, destination, out=out)
+
+    def heaviside(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.heaviside. This method simply
+        wraps the function, and so the docstring for ivy.heaviside also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        x2
+            values to use where x1 is zero.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            output array with element-wise Heaviside step function of x1.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([0.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0.0000, 0.5000, 1.0000])
+
+        >>> x1 = ivy.array([-1.5, 0, 2.0])
+        >>> x2 = ivy.array([1.2, -2.0, 3.5])
+        >>> ivy.heaviside(x1, x2)
+        ivy.array([0., -2., 1.])
+        """
+        return ivy.heaviside(self._data, x2, out=out)
+
+    def median(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
+        >>> a.median()
+        3.5
+        >>> a.median(axis=0)
+        ivy.array([6.5, 4.5, 2.5])
+        """
+        return ivy.median(self._data, axis=axis, keepdims=keepdims, out=out)

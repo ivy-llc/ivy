@@ -99,11 +99,6 @@ def lcm(
             x1,
             x2,
             out=out,
-            where=True,
-            casting="same_kind",
-            order="K",
-            dtype=None,
-            subok=True,
         )
     )
 
@@ -285,3 +280,36 @@ def moveaxis(
 
 
 moveaxis.support_native_out = False
+
+
+def heaviside(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.heaviside(
+        x1,
+        x2,
+        out=out,
+    )
+
+
+heaviside.support_native_out = True
+
+
+def median(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )

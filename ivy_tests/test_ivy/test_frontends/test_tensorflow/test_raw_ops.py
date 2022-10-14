@@ -1301,11 +1301,9 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, native_array):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "bfloat16",
+            "float16",
             "float32",
             "float64",
-            "int8",
-            "int16",
             "int32",
             "int64",
         ],
@@ -1324,7 +1322,6 @@ def test_tensroflow_MatMul(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1945,8 +1942,8 @@ def test_tensorflow_Diag(
         fn_tree="raw_ops.Diag",
         diagonal=x[0],
     )
-   
-   
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1974,4 +1971,37 @@ def test_tensorflow_RightShift(
         fn_tree="raw_ops.RightShift",
         x=xs[0],
         y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Sum"
+    ),
+)
+def test_tensorflow_Sum(
+    dtype_x_axis, as_variable, num_positional_args, native_array, keep_dims
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Sum",
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
     )
