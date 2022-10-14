@@ -8,8 +8,8 @@ from tqdm import tqdm
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 2000
-run_iter = int(sys.argv[1]) % 10  # Splitting into N workflows
+N = 10
+run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
         tests = pickle.load(f)
