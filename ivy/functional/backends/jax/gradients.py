@@ -40,7 +40,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     func_ret = func(xs)
     xs = ivy.to_native(xs)
     arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
-    grads = {}
+
     if len(arr_values) == 1:
         y = arr_values[0]
     else:
@@ -52,8 +52,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     else:
         grad_fn = jax.jacrev(lambda x: _forward_fn(x, func))
         grads_ = grad_fn(xs)
-        for i, grad in enumerate(grads_):
-            grads[arr_idxs[i]] = grad
+        grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
     grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
