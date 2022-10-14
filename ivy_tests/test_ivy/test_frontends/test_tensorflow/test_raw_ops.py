@@ -1301,11 +1301,9 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, native_array):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "bfloat16",
+            "float16",
             "float32",
             "float64",
-            "int8",
-            "int16",
             "int32",
             "int64",
         ],
@@ -1324,7 +1322,6 @@ def test_tensroflow_MatMul(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
