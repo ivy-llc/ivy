@@ -42,12 +42,12 @@ class ArrayWithExtensions(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
-        start_dim: int,
-        end_dim: int,
+        start_dim: Optional[int] = 0,
+        end_dim: Optional[int] = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.unstack also applies to
+        wraps the function, and so the docstring for ivy.flatten also applies to
         this method with minimal changes.
 
         Parameters
