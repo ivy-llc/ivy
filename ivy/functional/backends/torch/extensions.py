@@ -268,3 +268,16 @@ def heaviside(
 
 
 heaviside.support_native_out = True
+
+
+def fmax(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmax(x1, x2, out=None)
+
+
+fmax.support_native_out = True

@@ -197,3 +197,13 @@ def heaviside(
 
 
 heaviside.unsupported_dtypes = ("bfloat16",)
+
+
+def fmax(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.maximum(x1, x2, name=None)

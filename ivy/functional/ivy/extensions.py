@@ -1094,3 +1094,44 @@ def heaviside(
     ivy.array([0., -2., 1.])
     """
     return ivy.current_backend().heaviside(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmax(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise maximums of two arrays
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise maximums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 2.,  5.,  4.])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 0,  0,  nan])
+    """
+    return ivy.current_backend().fmax(x1, x2, out=out)

@@ -258,3 +258,13 @@ def heaviside(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.heaviside(x1, x2)
+
+
+def fmax(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmax(x1, x2)
