@@ -28,7 +28,3 @@ with_time_logs/
 internal_automation_tools/
 .vscode/*
 .idea/*
-.idea/runConfigurations/_template__of_py_test.xml
-.idea/runConfigurations/_template__of_py_test.xml
-.idea/runConfigurations/_template__of_Python.xml
-.idea/vcs.xml

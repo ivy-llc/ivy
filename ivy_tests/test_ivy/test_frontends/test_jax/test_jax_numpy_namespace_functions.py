@@ -966,8 +966,6 @@ def test_jax_numpy_fmax(
 )
 def test_jax_numpy_zeros(
     input_dtypes,
-    as_variable,
-    with_out,
     shape,
     dtypes,
     num_positional_args,
@@ -975,8 +973,8 @@ def test_jax_numpy_zeros(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
+        as_variable_flags=[False],
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
