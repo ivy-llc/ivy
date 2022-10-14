@@ -197,6 +197,7 @@
 <span class="sd">        and return arrays are all converted to `ivy.Array` instances. This wrapper is</span>
 <span class="sd">        specifically for the backend implementations of asarray.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># When possible we want to not nest this</span>
         <span class="c1"># because nested calls introduce massive overhead</span>
         <span class="c1"># and the checks to see if we can avoid it are cheap</span>
@@ -1090,10 +1091,6 @@
 <span class="sd">        Number of values to generate.</span>
 <span class="sd">    axis</span>
 <span class="sd">        Axis along which the operation is performed.</span>
-<span class="sd">    endpoint</span>
-<span class="sd">        If True, stop is the last sample. Otherwise, it is not included.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        output array data type.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">    out</span>

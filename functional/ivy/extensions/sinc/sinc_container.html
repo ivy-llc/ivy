@@ -72,16 +72,7 @@
 <li class="toctree-l3"><a class="reference internal" href="static_sinc_container.html">ivy.Container.static_sinc</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../flatten.html">flatten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lcm.html">lcm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../max_pool2d.html">max_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kaiser_window.html">kaiser_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../moveaxis.html">moveaxis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../ndenumerate.html">ndenumerate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pad.html">pad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../heaviside.html">heaviside</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
@@ -188,8 +179,7 @@ determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">]),</span>
-<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">]))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sinc</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>

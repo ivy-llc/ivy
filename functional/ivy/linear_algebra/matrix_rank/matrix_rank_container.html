@@ -97,7 +97,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../vecdot.html">vecdot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../vander.html">vander</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
@@ -212,8 +211,7 @@ shape <code class="docutils literal notranslate"><span class="pre">(...)</span><
 </dl>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),
-…                   b=ivy.array([[1., 0.], [0., 0.]]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),                             b=ivy.array([[1., 0.], [0., 0.]]))
 &gt;&gt;&gt; y = x.matrix_rank()
 &gt;&gt;&gt; print(y)
 {</p>

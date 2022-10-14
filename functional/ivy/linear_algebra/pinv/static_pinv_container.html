@@ -97,7 +97,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../vecdot.html">vecdot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../vander.html">vander</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
@@ -200,27 +199,23 @@ must have shape <code class="docutils literal notranslate"><span class="pre">(..
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>x = ivy.Container(a= ivy.array([[1., 2.],
-…                             [3., 4.]]))
+<p>x = ivy.Container(a= ivy.array([[1., 2.],              [3., 4.]]))
 y = pinv(x, None, None)
 print(y)
 {</p>
 <blockquote>
-<div><p>a: ivy.array([[-2., 1.],</p>
+<div><p>a: ivy.array([[-2., 1.],           [1.5, -0.5]])</p>
 </div></blockquote>
-<p>…               [1.5, -0.5]])
-}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],
-…                            [3., 4.]]))
+<p>}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],              [3., 4.]]))
 out = ivy.Container(a=ivy.array())
 pinv(x, 0, out)
 print(out)
 {</p>
 <blockquote>
-<div><p>a: ivy.array([[0.0426, 0.0964],</p>
+<div><p>a: ivy.array([[0.0426, 0.0964],           [0.0605, 0.1368]])</p>
 </div></blockquote>
-<p>…               [0.0605, 0.1368]])
-}</p>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">
