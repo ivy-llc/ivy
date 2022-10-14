@@ -11,7 +11,12 @@ from typing import Optional, Callable
 
 # local
 import ivy
-from ivy.container import Container
+from ivy.functional.ivy.gradients import (
+    _get_native_arrays_and_indices,
+    _forward_fn,
+    _zero_gradients_to_none_and_to_ivy,
+    _stop_grad_and_index,
+)
 
 
 # ToDo: modify these functions to track whether variable() has been called
@@ -31,28 +36,27 @@ def variable_data(x):
     return x
 
 
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     func_ret = func(xs)
-    if isinstance(func_ret, tuple):
-        y = func_ret[0]
-        rest = func_ret[1:]
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(ivy.to_ivy(x_in))[0], []))
-    else:
-        y = func_ret
-        rest = tuple()
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(ivy.to_ivy(x_in)), []))
-    grad_func = jax.grad(grad_fn)
     xs = ivy.to_native(xs)
-    if isinstance(xs, ivy.Container):
-        grads = grad_func(xs)
-        grads = ivy.to_ivy(grads)
-        grads = Container(grads)
+    arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
+
+    if len(arr_values) == 1:
+        y = arr_values[0]
     else:
-        grads = grad_func(xs)
-        grads = ivy.to_ivy(grads)
-    if not retain_grads:
-        y = ivy.stop_gradient(y)
-    return (y, grads, *rest)
+        y = arr_values
+
+    if isinstance(y, ivy.NativeArray):
+        grad_fn = jax.grad(lambda x: ivy.to_native(func(x)))
+        grads = grad_fn(xs)
+    else:
+        grad_fn = jax.jacrev(lambda x: _forward_fn(x, func))
+        grads_ = grad_fn(xs)
+        grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
+
+    grads = _zero_gradients_to_none_and_to_ivy(grads)
+    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    return func_ret, grads
 
 
 def value_and_grad(func):
