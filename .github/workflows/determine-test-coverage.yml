@@ -34,7 +34,7 @@ jobs:
 
 
        - name: Push Mapping
-         if: steps.det.outputs.num != 9
+         if: steps.det.outputs.run != 9
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
@@ -48,7 +48,7 @@ jobs:
 
 
        - name: Push Mapping - Final
-         if: steps.det.outputs.num == 9
+         if: steps.det.outputs.run == 9
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
