@@ -210,3 +210,6 @@ def fmax(
     x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
     ret = tf.math.maximum(x1, x2, name=None)
     return tf.where(tf.math.is_inf(ret), float("nan"))
+
+
+fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
