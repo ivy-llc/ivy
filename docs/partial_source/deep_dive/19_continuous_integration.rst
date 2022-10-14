@@ -1,5 +1,5 @@
-Continuous Integration 🔁
-=========================
+Continuous Integration
+======================
 
 .. _`continuous integration channel`: https://discord.com/channels/799879767196958751/982737993028755496
 .. _`continuous integration forum`: https://discord.com/channels/799879767196958751/982737993028755496
