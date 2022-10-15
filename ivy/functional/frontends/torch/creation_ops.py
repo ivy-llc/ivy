@@ -147,3 +147,18 @@ def eye(
     if requires_grad:
         return ivy.variable(ret)
     return ret
+
+
+def empty_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None
+):
+    ret = ivy.empty_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
