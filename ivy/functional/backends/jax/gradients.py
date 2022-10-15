@@ -101,7 +101,7 @@ def value_and_grad(func):
     def callback_fn(xs):
         xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
         ret = jax.value_and_grad(grad_fn)(xs)
-        ret = ivy.nested_map(ret, lambda x: ivy.to_ivy(x), include_derived=True)
+        ret = _zero_gradients_to_none_and_to_ivy(ret)
         return ret
 
     return callback_fn
