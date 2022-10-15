@@ -5,9 +5,9 @@ astype
 
 .. autofunction:: ivy.array.array_methods.astype
 
-.. autofunction:: ivy.container.container_methods.static_astype
-
 .. autofunction:: ivy.container.container_methods.astype
+
+.. autofunction:: ivy.container.container_methods.static_astype
 |
 | **Supported Frameworks:**
 
