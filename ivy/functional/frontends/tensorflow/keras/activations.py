@@ -13,7 +13,7 @@ def hard_sigmoid(x):
 
 
 def linear(x):
-    return x
+    return ivy.array(x)
 
 
 def relu(x):
@@ -30,3 +30,15 @@ def softmax(x, axis=-1):
 
 def gelu(x, approximate=False):
     return ivy.gelu(x, approximate=approximate)
+
+
+def softplus(x):
+    return ivy.softplus(x)
+
+
+def softsign(x):
+    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+
+def swish(x):
+    return ivy.multiply(x, ivy.sigmoid(x))

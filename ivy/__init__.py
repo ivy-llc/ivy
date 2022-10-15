@@ -282,9 +282,6 @@ all_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
-    complex256,
     bool,
 )
 all_numeric_dtypes = (
