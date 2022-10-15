@@ -42,6 +42,9 @@ class Tensor:
     def float(self, memory_format=torch.preserve_format):
         return ivy.astype(self.data, ivy.float32)
 
+    def tan(self, *, out=None):
+        return torch_frontend.tan(self.data, out=out)
+
 
 # Tensor (alias)
 tensor = Tensor
