@@ -10,8 +10,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.exceptions import handle_exceptions
-
-inf = float("inf")
+from ivy import inf
 
 
 # Array API Standard #
@@ -26,7 +25,7 @@ def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    upper: Optional[bool] = False,
+    upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
@@ -170,7 +169,7 @@ def cross(
     axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+    """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
 
@@ -341,9 +340,9 @@ def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
     out: Optional[ivy.Array] = None,
@@ -355,6 +354,7 @@ def diag(
         align=align,
         num_rows=num_rows,
         num_cols=num_cols,
+        out=out,
     )
 
 
