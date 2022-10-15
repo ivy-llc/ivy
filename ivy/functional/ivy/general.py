@@ -37,6 +37,24 @@ nestable_mode_stack = list()
 exception_trace_mode_stack = list()
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre
+        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+        + list(reversed(post))
+    )
+
+
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
@@ -3177,9 +3195,9 @@ def get_num_dims(
     --------
     With :class:`ivy.Array` input:
 
-    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
-                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
-                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
     >>> b = ivy.get_num_dims(a, as_array=False)
     >>> print(b)
     3
