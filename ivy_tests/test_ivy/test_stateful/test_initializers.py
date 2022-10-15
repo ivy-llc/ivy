@@ -4,14 +4,15 @@ import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @handle_cmd_line_args
 @given(
     var_shape=helpers.get_shape(),
-    constant=helpers.floats(min_value=0.0, max_value=100.0),
+    constant=helpers.floats(
+        large_abs_safety_factor=4, small_abs_safety_factor=4, safety_factor_scale="log"
+    ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -128,8 +129,8 @@ def test_ones(var_shape, init_with_v, method_with_v, as_variable, native_array):
     power=helpers.floats(min_value=0.1, max_value=3.0),
     gain=helpers.floats(min_value=0.1, max_value=10.0),
     var_shape=helpers.get_shape(),
-    fan_in=st.integers(min_value=1),
-    fan_out=st.integers(min_value=1),
+    fan_in=helpers.ints(min_value=1, safety_factor=4),
+    fan_out=helpers.ints(min_value=1, safety_factor=4),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -193,8 +194,8 @@ def test_uniform(
 @handle_cmd_line_args
 @given(
     var_shape=helpers.get_shape(),
-    fan_in=st.integers(min_value=1),
-    fan_out=st.integers(min_value=1),
+    fan_in=helpers.ints(min_value=1),
+    fan_out=helpers.ints(min_value=1),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -241,7 +242,9 @@ def test_glorot_uniform(
 @handle_cmd_line_args
 @given(
     var_shape=helpers.get_shape(),
-    fan_in=st.integers(min_value=1),
+    fan_in=helpers.ints(
+        min_value=1,
+    ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -332,13 +335,14 @@ def test_siren(
 
 @handle_cmd_line_args
 @given(
-    mean=helpers.floats(),
+    mean=helpers.floats(large_abs_safety_factor=4, small_abs_safety_factor=4),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
     var_shape=helpers.get_shape(),
-    fan_in=st.integers(min_value=1),
-    fan_out=st.integers(min_value=1),
+    fan_in=helpers.ints(min_value=1, safety_factor=4),
+    fan_out=helpers.ints(min_value=1, safety_factor=4),
     negative_slope=helpers.floats(min_value=0.0, max_value=5.0),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    # should be replaced with helpers.get_dtypes() but somehow it causes inconsistent data generation # noqa
+    dtype=st.sampled_from([None, "float64", "float32", "float16"]),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -360,7 +364,10 @@ def test_kaiming_normal(
         as_variable_flags_init=[],
         num_positional_args_init=0,
         native_array_flags_init=[],
-        all_as_kwargs_np_init={},
+        all_as_kwargs_np_init={
+            "mean": mean,
+            "fan_mode": fan_mode,
+        },
         input_dtypes_method=[],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,

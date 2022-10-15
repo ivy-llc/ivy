@@ -903,3 +903,84 @@ def test_jax_numpy_sin(
         fn_tree="numpy.sin",
         x=x[0],
     )
+
+
+# fmax
+@handle_cmd_line_args
+@given(
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.fmax"
+    ),
+)
+def test_jax_numpy_fmax(
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.fmax",
+        x1=inputs[0],
+        x2=inputs[1],
+    )
+
+
+# zeros
+@handle_cmd_line_args
+@given(
+    input_dtypes=helpers.get_dtypes(
+        "integer",
+        full=True,
+        none=False,
+    ),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes(
+        "numeric",
+        full=False,
+        none=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.zeros",
+    ),
+)
+def test_jax_numpy_zeros(
+    input_dtypes,
+    as_variable,
+    with_out,
+    shape,
+    dtypes,
+    num_positional_args,
+    native_array,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.zeros",
+        shape=shape,
+        dtype=dtypes[0],
+    )

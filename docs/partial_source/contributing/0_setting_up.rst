@@ -181,7 +181,7 @@ Windows
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_ , make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.

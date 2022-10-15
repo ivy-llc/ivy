@@ -297,3 +297,19 @@ def heaviside(
 
 
 heaviside.support_native_out = True
+
+
+def median(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )
