@@ -19,7 +19,11 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[np.ndarray], /, *, axis: int = 0, out: Optional[np.ndarray] = None
+    xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:

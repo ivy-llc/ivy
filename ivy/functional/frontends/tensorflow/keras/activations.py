@@ -13,7 +13,7 @@ def hard_sigmoid(x):
 
 
 def linear(x):
-    return x
+    return ivy.array(x)
 
 
 def relu(x):
