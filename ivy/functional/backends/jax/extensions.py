@@ -260,11 +260,11 @@ def heaviside(
     return jnp.heaviside(x1, x2)
 
 
-def fmax(
+def fmod(
     x1: JaxArray,
     x2: JaxArray,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.fmax(x1, x2)
+    return jnp.fmod(x1, x2)

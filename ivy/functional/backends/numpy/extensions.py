@@ -299,14 +299,14 @@ def heaviside(
 heaviside.support_native_out = True
 
 
-def fmax(
+def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.fmax(
+    return np.fmod(
         x1,
         x2,
         out=None,
@@ -318,4 +318,4 @@ def fmax(
     )
 
 
-fmax.support_native_out = True
+fmod.support_native_out = True

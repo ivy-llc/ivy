@@ -342,15 +342,15 @@ class ArrayWithExtensions(abc.ABC):
         """
         return ivy.heaviside(self._data, x2, out=out)
 
-    def fmax(
+    def fmod(
         self: ivy.Array,
         x2: ivy.Array,
         /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fmax. This method simply
-        wraps the function, and so the docstring for ivy.fmax also applies to
+        """ivy.Array instance method variant of ivy.fmod. This method simply
+        wraps the function, and so the docstring for ivy.fmod also applies to
         this method with minimal changes.
 
         Parameters
@@ -366,18 +366,18 @@ class ArrayWithExtensions(abc.ABC):
         Returns
         -------
         ret
-            Array with element-wise maximums.
+            Array with element-wise remainder of divisions.
 
         Examples
         --------
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
-        >>> ivy.fmax(x1, x2)
-        ivy.array([ 2.,  5.,  4.])
+        >>> ivy.fmod(x1, x2)
+        ivy.array([ 0,  3,  0])
 
         >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
         >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
-        >>> x1.fmax(x2)
-        ivy.array([ 0,  0,  nan])
+        >>> x1.fmod(x2)
+        ivy.array([ nan,  nan,  nan])
         """
         return ivy.moveaxis(self._data, x2, out=out)

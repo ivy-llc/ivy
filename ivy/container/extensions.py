@@ -989,7 +989,7 @@ class ContainerWithExtensions(ContainerBase):
         return self.static_heaviside(self, x2, out=out)
 
     @staticmethod
-    def static_fmax(
+    def static_fmod(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1001,8 +1001,8 @@ class ContainerWithExtensions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fmax. This method simply wraps
-        the function, and so the docstring for ivy.fmax also applies to this method
+        ivy.Container static method variant of ivy.fmod. This method simply wraps
+        the function, and so the docstring for ivy.fmod also applies to this method
         with minimal changes.
 
         Parameters
@@ -1017,7 +1017,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container including arrays with element-wise maximums.
+            Container including arrays with element-wise remainder of divisions.
 
         Examples
         --------
@@ -1025,14 +1025,14 @@ class ContainerWithExtensions(ContainerBase):
                                b=ivy.array([ivy.nan, 0, ivy.nan]))
         >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
                                b=ivy.array([0, ivy.nan, ivy.nan]))
-        >>> ivy.Container.static_fmax(x1, x2)
+        >>> ivy.Container.static_fmod(x1, x2)
         {
-            a: ivy.array([ 2.,  5.,  4.])
-            b: ivy.array([ 0,  0,  nan])
+            a: ivy.array([ 0,  3,  0])
+            b: ivy.array([ nan,  nan,  nan])
         }
         """
         return ContainerBase.multi_map_in_static_method(
-            "fmax",
+            "fmod",
             x1,
             x2,
             key_chains=key_chains,
@@ -1042,15 +1042,15 @@ class ContainerWithExtensions(ContainerBase):
             out=out,
         )
 
-    def fmax(
+    def fmod(
         self: ivy.Container,
         x2: ivy.Container,
         /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fmax. This method simply
-        wraps the function, and so the docstring for ivy.fmax also applies to this
+        """ivy.Container instance method variant of ivy.fmod. This method simply
+        wraps the function, and so the docstring for ivy.fmod also applies to this
         method with minimal changes.
 
         Parameters
@@ -1065,7 +1065,7 @@ class ContainerWithExtensions(ContainerBase):
         Returns
         -------
         ret
-            Container including arrays with element-wise maximums.
+            Container including arrays with element-wise remainder of divisions.
 
         Examples
         --------
@@ -1073,10 +1073,10 @@ class ContainerWithExtensions(ContainerBase):
                                b=ivy.array([ivy.nan, 0, ivy.nan]))
         >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
                                b=ivy.array([0, ivy.nan, ivy.nan]))
-        >>> x1.fmax(x2)
+        >>> x1.fmod(x2)
         {
-            a: ivy.array([ 2.,  5.,  4.])
-            b: ivy.array([ 0,  0,  nan])
+            a: ivy.array([ 0,  3,  0])
+            b: ivy.array([ nan,  nan,  nan])
         }
         """
-        return self.static_fmax(self, x2, out=out)
+        return self.static_fmod(self, x2, out=out)

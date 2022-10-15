@@ -638,11 +638,11 @@ def test_heaviside(
     )
 
 
-# fmax
+# fmod
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -651,11 +651,10 @@ def test_heaviside(
         max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
-        allow_nan=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fmax"),
+    num_positional_args=helpers.num_positional_args(fn_name="fmod"),
 )
-def test_fmax(
+def test_fmod(
     dtype_and_x,
     with_out,
     as_variable,
@@ -675,7 +674,7 @@ def test_fmax(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="fmax",
+        fn_name="fmod",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[0], dtype=input_dtype[0]),
     )
