@@ -1,7 +1,6 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
-import ivy.functional.frontends.tensorflow.raw_ops as tf_raw_ops
 
 
 def add(x, y, name=None):
@@ -18,18 +17,6 @@ def argmax(input, axis, output_type=None, name=None):
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
-
-
-def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.assertions.check_all_or_any_fn(
-        clip_value_min,
-        clip_value_max,
-        fn=ivy.exists,
-        type="all",
-        message="clip_value_min and clip_value_max must exist",
-    )
-    t = ivy.array(t)
-    return ivy.clip(t, clip_value_min, clip_value_max)
 
 
 def confusion_matrix(
@@ -97,9 +84,16 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-cumprod = tf_raw_ops.Cumprod
+def cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
 
-cumsum = tf_raw_ops.Cumsum
+
+def cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
 
 
 def divide(x, y, name=None):
@@ -186,11 +180,11 @@ def polyval(coeffs, x, name=None):
     return p
 
 
-def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
-        input_tensor == 0,
-        ivy.array(0.0, dtype=input_tensor.dtype),
-        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+        x == 0,
+        ivy.array(0.0, dtype=x.dtype),
+        ivy.ones_like(x, dtype=x.dtype) / x,
     )
 
 

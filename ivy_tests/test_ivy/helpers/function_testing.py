@@ -38,7 +38,7 @@ from .assertions import (
 # into helpers.get_dtypes
 def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
     for dtype in input_dtypes:
-        if dtype not in ivy.valid_dtypes:
+        if dtype not in ivy.valid_dtypes + ivy.valid_complex_dtypes:
             raise Exception(f"{dtype} is not a valid data type.")
 
 
@@ -357,7 +357,6 @@ def test_function(
         test_gradients
         and not fw == "numpy"
         and all(as_variable_flags)
-        and not any(container_flags)
         and not instance_method
     ):
         gradient_test(
@@ -477,10 +476,21 @@ def test_frontend_function(
     ]
 
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_tree = fn_tree.split(".")
+    *frontend_submods, fn_name = fn_tree.split(".")
+    function_dict = ivy.functional.frontends.__dict__[frontend]
+
+    # Getting function attributes when we have function tree such as
+    # nn.functional etc
+    len_frontend_submods = len(frontend_submods)
+    if len_frontend_submods > 0:
+        len_tracker = 0
+        while len_tracker < len_frontend_submods:
+            sub_tree = frontend_submods[len_tracker]
+            function_dict = function_dict.__dict__[sub_tree]
+            len_tracker += 1
 
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
+    function = getattr(function_dict, fn_name)
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -527,7 +537,7 @@ def test_frontend_function(
         )  # ToDo, probably redundant?
 
     # frontend function
-    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
+    frontend_fn = getattr(function_dict, fn_name)
 
     # check and replace NativeClass object in arguments with ivy counterparts
     convs = {
@@ -617,7 +627,7 @@ def test_frontend_function(
     backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
-        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
+        function = getattr(function_dict, fn_name)
         test_unsupported = check_unsupported_dtype(
             fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
         )
@@ -652,12 +662,12 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
             test_unsupported_function(
-                fn=frontend_fw.__dict__[fn_tree],
+                fn=frontend_fw.__dict__[fn_name],
                 args=args_frontend,
                 kwargs=kwargs_frontend,
             )
             return
-        frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
+        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
@@ -743,9 +753,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_flat = get_ret_and_flattened_np_array(
-        ivy.execute_with_gradients, grad_fn, xs
-    )
+    _, grads = ivy.execute_with_gradients(grad_fn, xs)
+    grads_np_flat = flatten_and_to_np(ret=grads)
+    print("grads", grads)
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
@@ -770,42 +780,29 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ivy.execute_with_gradients, grad_fn, xs
-    )
+    _, grads_from_gt = ivy.execute_with_gradients(grad_fn, xs)
+    grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
 
-    assert len(ret_np_flat) == len(
-        ret_np_from_gt_flat
+    assert len(grads_np_flat) == len(
+        grads_np_from_gt_flat
     ), "result length mismatch: {} ({}) != {} ({})".format(
-        ret_np_flat, len(ret_np_flat), ret_np_from_gt_flat, len(ret_np_from_gt_flat)
+        grads_np_flat,
+        len(grads_np_flat),
+        grads_np_from_gt_flat,
+        len(grads_np_from_gt_flat),
     )
 
-    if len(ret_np_flat) < 2:
+    if len(grads_np_flat) < 2:
         return
 
-    grad_list_np_flat = ret_np_flat[1:]
-    grad_list_np_from_gt_flat = ret_np_from_gt_flat[1:]
-
-    for grads_np_flat, grads_np_from_gt_flat in zip(
-        grad_list_np_flat, grad_list_np_from_gt_flat
-    ):
-        condition_np_flat = np.isfinite(grads_np_flat)
-        grads_np_flat = np.where(
-            condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
-        )
-        condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
-        grads_np_from_gt_flat = np.where(
-            condition_np_from_gt_flat,
-            grads_np_from_gt_flat,
-            np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
-        )
-
+    for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
-            ret_np_flat=grads_np_flat,
-            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            ret_np_flat=grad_np_flat,
+            ret_np_from_gt_flat=grad_np_from_gt_flat,
             rtol=rtol_,
             atol=atol_,
+            ground_truth_backend=ground_truth_backend,
         )
 
 
@@ -896,7 +893,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
     _assert_dtypes_are_valid(input_dtypes_method)
     # split the arguments into their positional and keyword components
 
@@ -906,6 +902,7 @@ def test_method(
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+    _assert_dtypes_are_valid(input_dtypes_init)
 
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
@@ -1809,7 +1806,9 @@ def flatten(*, ret):
     if len(ret_idxs) == 0:
         ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-        ret_flat = [ivy.asarray(x) for x in ret_flat]
+        ret_flat = [
+            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat
+        ]
     else:
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     return ret_flat

@@ -81,7 +81,6 @@ def bitwise_left_shift(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.left_shift(x1, x2)
 
 
@@ -454,3 +453,7 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
+
+
+def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.isreal(x)
