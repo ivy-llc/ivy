@@ -21,7 +21,7 @@ from . import backend_version
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cholesky(
-    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -55,9 +55,9 @@ def diag(
     x: np.ndarray,
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
     out: Optional[np.ndarray] = None,
