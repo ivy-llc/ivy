@@ -245,6 +245,7 @@ def test_glorot_uniform(
     fan_in=helpers.ints(
         min_value=1,
         safety_factor=4,
+        safety_factor_scale="log",
     ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
