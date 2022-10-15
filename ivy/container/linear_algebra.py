@@ -464,6 +464,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,
+        ...                   b = ivy.array([[2., 1.], [1., 1.]]))
+        >>> y = x.det()
+        >>> print(y)
+        {a:ivy.array(8.),b:ivy.array(1.)}
+        """
         return self.static_det(
             self,
             key_chains=key_chains,
