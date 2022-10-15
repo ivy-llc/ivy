@@ -321,31 +321,6 @@ def median(
 
 
 def rfft(
-    input: np.ndarray,
-    n: Optional[int] = None,
-    norm: Optional[str] = None,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.fft.rfft(input, n, norm=norm)
-
-
-def rfft(
-    x: np.ndarray,
-    n: Optional[int] = None,
-    norm: Optional[str] = None,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.fft.rfft(x, n, norm=norm)
-
-
-rfft.support_native_out = False
-
-
-def rfft(
     x: np.ndarray,
     n: Optional[int] = None,
     norm: Optional[str] = None,
