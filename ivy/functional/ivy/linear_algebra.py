@@ -10,7 +10,9 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.exceptions import handle_exceptions
-from ivy import inf
+
+
+inf = float("inf")
 
 
 # Array API Standard #
