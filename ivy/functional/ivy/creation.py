@@ -2,7 +2,17 @@
 from __future__ import annotations
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
+from typing import (
+    Any,
+    Union,
+    Tuple,
+    Optional,
+    List,
+    Sequence,
+    Callable,
+    Protocol,
+    TypeVar,
+)
 import numpy as np
 
 # local
@@ -1218,6 +1228,51 @@ def full(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def to_dlpack(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[Any] = None
+) -> Any:
+    """Returns a PyCapsule object pointing to the data in the input array.
+
+    Parameters
+    ----------
+    x object
+        input (array) object.
+    out
+        optional output parameter to return the Pycapsule object to.
+
+    Returns
+    -------
+    ret
+        Returns a Pycapsule object that contains a reference to the data in x.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(x).to_dlpack(x, out=out)
+
+
+# class _Add_dlpack_attribute_to_tensor_object():
+#     def __init__(self, input):
+#         self.jax = __import__('jax.dlpack')
+#         self.jaxlib = __import__('jaxlib')
+#         self.tf = __import__('tensorflow')
+#         self.input = input
+
+#     def __dlpack__(self):
+#         if isinstance(self.input, self.jaxlib.xla_extension.DeviceArray):
+#             return self.jax.to_dlpack(self.input)
+#         if isinstance(self.input, self.tf.Tensor):
+#             return self.tf.experimental.dlpack.to_dlpack(self.input)
+#         return self.input.__dlpack__()
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1254,6 +1309,10 @@ def from_dlpack(
     instances in place of any of the arguments.
 
     """
+    # if ivy.current_backend_str() == 'numpy':
+    #     x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x)
+    #     return current_backend(x).from_dlpack(x_with_dlpack, out=out)
+
     return current_backend(x).from_dlpack(x, out=out)
 
 

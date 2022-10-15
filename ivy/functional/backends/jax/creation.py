@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Any, Union, Optional, List, Sequence
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -117,8 +117,12 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
+def to_dlpack(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Any:
+    return jax.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    capsule = jax.dlpack.to_dlpack(x)
+    capsule = to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)
 
 

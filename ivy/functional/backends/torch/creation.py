@@ -1,6 +1,6 @@
 # global
 
-from typing import Union, List, Optional, Sequence
+from typing import Any, Union, List, Optional, Sequence
 
 
 import numpy as np
@@ -25,7 +25,6 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
-
 
 # Array API Standard #
 # -------------------#
@@ -238,7 +237,11 @@ eye.support_native_out = True
 eye.unsupported_dtypes = ("bfloat16",)
 
 
-def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+def to_dlpack(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> Any:
+    return x.__dlpack__()
+
+
+def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
 

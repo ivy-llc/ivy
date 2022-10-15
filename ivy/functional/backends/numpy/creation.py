@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Any, Union, Optional, List, Sequence
 
 import numpy as np
 
@@ -110,8 +110,29 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
+def to_dlpack(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Any:
+    return x.__dlpack__()
+
+
+class _Add_dlpack_attribute_to_tensor_object:
+    def __init__(self, input):
+        self.jax = __import__("jax")
+        self.tf = __import__("tensorflow")
+        self.input = input
+
+    def __dlpack__(self):
+        if isinstance(self.input, self.jax.numpy.ndarray):
+            import jax.dlpack
+
+            return jax.dlpack.to_dlpack(self.input)
+        if isinstance(self.input, self.tf.Tensor):
+            return self.tf.experimental.dlpack.to_dlpack(self.input)
+        return self.input.__dlpack__()
+
+
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    return np.from_dlpack(x)
+    x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x)
+    return np.from_dlpack(x_with_dlpack)
 
 
 def full(
