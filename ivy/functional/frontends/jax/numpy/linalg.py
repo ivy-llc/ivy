@@ -48,3 +48,17 @@ def cholesky(a):
 @inputs_to_ivy_arrays
 def slogdet(a, method=None):
     return ivy.slogdet(a)
+
+
+@inputs_to_ivy_arrays
+def norm(x, ord=None, axis=None, keepdims=False):
+    ord = 2 if ord is None else ord
+    if type(axis) in [tuple, list] and len(axis) == 2:
+        return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+    return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
