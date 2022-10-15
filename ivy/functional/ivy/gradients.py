@@ -433,9 +433,8 @@ def stop_gradient(
 @inputs_to_ivy_arrays
 @handle_exceptions
 def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
-    """Call function func with input of xs variables, and return func first output y,
-    the gradients [dy/dx for x in xs], and any other function outputs after the returned
-    y value.
+    """Call function func with input of xs variables, and return the function result
+    func_ret and the gradients of each output variable w.r.t each input variable,
 
     Parameters
     ----------
@@ -453,8 +452,8 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     Returns
     -------
     ret
-        the function first output y, the gradients [dy/dx for x in xs], and any other
-        extra function outputs.
+        the function result func_ret and a dictionary of gradients of each output
+        variable w.r.t each input variable.
 
     """
     return current_backend(None).execute_with_gradients(
