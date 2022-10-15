@@ -19,18 +19,6 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
-def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.assertions.check_all_or_any_fn(
-        clip_value_min,
-        clip_value_max,
-        fn=ivy.exists,
-        type="all",
-        message="clip_value_min and clip_value_max must exist",
-    )
-    t = ivy.array(t)
-    return ivy.clip(t, clip_value_min, clip_value_max)
-
-
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
@@ -192,11 +180,11 @@ def polyval(coeffs, x, name=None):
     return p
 
 
-def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
-        input_tensor == 0,
-        ivy.array(0.0, dtype=input_tensor.dtype),
-        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+        x == 0,
+        ivy.array(0.0, dtype=x.dtype),
+        ivy.ones_like(x, dtype=x.dtype) / x,
     )
 
 

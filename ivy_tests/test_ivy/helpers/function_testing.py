@@ -357,7 +357,6 @@ def test_function(
         test_gradients
         and not fw == "numpy"
         and all(as_variable_flags)
-        and not any(container_flags)
         and not instance_method
     ):
         gradient_test(
@@ -754,9 +753,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_flat = get_ret_and_flattened_np_array(
-        ivy.execute_with_gradients, grad_fn, xs
-    )
+    _, grads = ivy.execute_with_gradients(grad_fn, xs)
+    grads_np_flat = flatten_and_to_np(ret=grads)
+    print("grads", grads)
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
@@ -781,42 +780,29 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ivy.execute_with_gradients, grad_fn, xs
-    )
+    _, grads_from_gt = ivy.execute_with_gradients(grad_fn, xs)
+    grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
 
-    assert len(ret_np_flat) == len(
-        ret_np_from_gt_flat
+    assert len(grads_np_flat) == len(
+        grads_np_from_gt_flat
     ), "result length mismatch: {} ({}) != {} ({})".format(
-        ret_np_flat, len(ret_np_flat), ret_np_from_gt_flat, len(ret_np_from_gt_flat)
+        grads_np_flat,
+        len(grads_np_flat),
+        grads_np_from_gt_flat,
+        len(grads_np_from_gt_flat),
     )
 
-    if len(ret_np_flat) < 2:
+    if len(grads_np_flat) < 2:
         return
 
-    grad_list_np_flat = ret_np_flat[1:]
-    grad_list_np_from_gt_flat = ret_np_from_gt_flat[1:]
-
-    for grads_np_flat, grads_np_from_gt_flat in zip(
-        grad_list_np_flat, grad_list_np_from_gt_flat
-    ):
-        condition_np_flat = np.isfinite(grads_np_flat)
-        grads_np_flat = np.where(
-            condition_np_flat, grads_np_flat, np.asarray(0.0, dtype=grads_np_flat.dtype)
-        )
-        condition_np_from_gt_flat = np.isfinite(grads_np_from_gt_flat)
-        grads_np_from_gt_flat = np.where(
-            condition_np_from_gt_flat,
-            grads_np_from_gt_flat,
-            np.asarray(0.0, dtype=grads_np_from_gt_flat.dtype),
-        )
-
+    for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
-            ret_np_flat=grads_np_flat,
-            ret_np_from_gt_flat=grads_np_from_gt_flat,
+            ret_np_flat=grad_np_flat,
+            ret_np_from_gt_flat=grad_np_from_gt_flat,
             rtol=rtol_,
             atol=atol_,
+            ground_truth_backend=ground_truth_backend,
         )
 
 
