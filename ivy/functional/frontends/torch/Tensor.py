@@ -12,7 +12,7 @@ class Tensor:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -35,6 +35,9 @@ class Tensor:
     def float(self, memory_format=torch.preserve_format):
         return ivy.astype(self.data, ivy.float32)
 
+    def new_zeros(self, shape, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.zeros(shape, dtype=dtype, device=device,
+                                   requires_grad=requires_grad)
 
 # Tensor (alias)
 tensor = Tensor
