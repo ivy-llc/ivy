@@ -1213,5 +1213,3 @@ def eigvals(
 
     """
     return ivy.current_backend().eigvals(x, out=out)
-
-
