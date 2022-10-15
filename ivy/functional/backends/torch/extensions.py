@@ -296,7 +296,7 @@ def median(
         )
 
 
-def median(
+def eigvals(
     x: torch.Tensor,
     /,
     *,

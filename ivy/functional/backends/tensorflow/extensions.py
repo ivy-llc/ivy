@@ -217,7 +217,7 @@ def median(
     )
 
 
-def median(
+def eigvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,

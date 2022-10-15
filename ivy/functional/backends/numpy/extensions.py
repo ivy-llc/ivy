@@ -315,7 +315,7 @@ def median(
     )
 
 
-def median(
+def eigvals(
     x: np.ndarray,
     /,
     *,
