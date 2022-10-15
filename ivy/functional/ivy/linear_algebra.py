@@ -308,54 +308,8 @@ def det(
     >>> y = ivy.det(x)
     >>> print(y)
     {a:ivy.array(8.),b:ivy.array(1.)}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[2.,4.],[6.,7.]])
-    >>> y = x.det()
-    >>> print(y)
-    ivy.array(-10.)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,
-    ...                   b = ivy.array([[2., 1.], [1., 1.]]))
-    >>> y = x.det()
-    >>> print(y)
-    {a:ivy.array(8.),b:ivy.array(1.)}
-
-
     """
     return current_backend(x).det(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def diag(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
-):
-    return current_backend(x).diag(
-        x,
-        offset=offset,
-        padding_value=padding_value,
-        align=align,
-        num_rows=num_rows,
-        num_cols=num_cols,
-        out=out,
-    )
 
 
 @to_native_arrays_and_back
@@ -2073,32 +2027,26 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Given vector, return the associated skew-symmetric matrix
-    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
-
-    Parameters
-    ----------
-    vector
-        Vector to convert *[batch_shape,3]*.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Skew-symmetric matrix *[batch_shape,3,3]*.
-
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    """
-    return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+def diag(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+):
+    return current_backend(x).diag(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -2110,7 +2058,7 @@ def vander(
     /,
     *,
     N: Optional[int] = None,
-    increasing: Optional[bool] = False,
+    increasing: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a Vandermonde matrix.
@@ -2170,3 +2118,35 @@ def vander(
         )
     """
     return current_backend().vander(x, N=N, increasing=increasing, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vector_to_skew_symmetric_matrix(
+    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Given vector, return the associated skew-symmetric matrix
+    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+
+    Parameters
+    ----------
+    vector
+        Vector to convert *[batch_shape,3]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Skew-symmetric matrix *[batch_shape,3,3]*.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
