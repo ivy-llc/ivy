@@ -5,9 +5,9 @@ swapaxes
 
 .. autofunction:: ivy.array.array_methods.swapaxes
 
-.. autofunction:: ivy.container.container_methods.swapaxes
-
 .. autofunction:: ivy.container.container_methods.static_swapaxes
+
+.. autofunction:: ivy.container.container_methods.swapaxes
 |
 | **Supported Frameworks:**
 
