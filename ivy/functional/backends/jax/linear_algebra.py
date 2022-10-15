@@ -21,7 +21,7 @@ from ivy import promote_types_of_inputs
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
-    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -55,9 +55,9 @@ def diag(
     x: JaxArray,
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
     out: Optional[JaxArray] = None,
