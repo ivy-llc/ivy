@@ -95,7 +95,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         input = ivy.zero_pad(input, pad_width=[(0, 0), (0, 0),
                                                (_pad_h, _pad_h), 
                                                (_pad_w, _pad_w)]
-        )
+                            )
         padding = "VALID"
 
     weight = ivy.permute_dims(weight, axes=(2, 3, 1, 0))
@@ -120,13 +120,13 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         padding = padding.upper()
     else:
         _pad_t, _pad_h, _pad_w = (padding, padding, padding)\
-                            if isinstance(padding, int)\
-                            else (padding[0], padding[1], padding[2])
+            if isinstance(padding, int)\
+                else (padding[0], padding[1], padding[2])
         input = ivy.zero_pad(input, pad_width=[(0, 0), (0, 0),
                                                (_pad_t, _pad_t),
                                                (_pad_h, _pad_h),
                                                (_pad_w, _pad_w)]
-                )
+                            ) 
         padding = "VALID"
 
     weight = ivy.permute_dims(weight, axes=(2, 3, 4, 1, 0))
