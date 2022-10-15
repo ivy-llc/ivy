@@ -938,3 +938,49 @@ def test_jax_numpy_fmax(
         x1=inputs[0],
         x2=inputs[1],
     )
+
+
+# zeros
+@handle_cmd_line_args
+@given(
+    input_dtypes=helpers.get_dtypes(
+        "integer",
+        full=True,
+        none=False,
+    ),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes(
+        "numeric",
+        full=False,
+        none=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.zeros",
+    ),
+)
+def test_jax_numpy_zeros(
+    input_dtypes,
+    as_variable,
+    with_out,
+    shape,
+    dtypes,
+    num_positional_args,
+    native_array,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.zeros",
+        shape=shape,
+        dtype=dtypes[0],
+    )
