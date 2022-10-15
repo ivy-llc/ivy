@@ -26,33 +26,3 @@ def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_arr
     )
 
 
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=list(
-            set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
-        )
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.custom_linear_solve"
-    ),
-)
-def test_custom_linear_solve(dtype_and_x, as_variable, num_positional_args, 
-                             native_array, fw):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        with_out=False,
-        as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="jax",
-        fn_tree="lax.custom_linear_solve",
-        matvec,
-        b,
-        solve,
-        transpose_solve=None,
-        symmetric=False,
-        has_aux=False
-    )
