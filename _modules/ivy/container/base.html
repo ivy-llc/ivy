@@ -140,6 +140,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">IvyBackendException</span><span class="p">,</span> <span class="n">IvyException</span>
+
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># noinspection PyPackageRequirements</span>
@@ -449,7 +451,7 @@
     <span class="nd">staticmethod</span>
     <span class="k">def</span> <span class="nf">_concat_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span>
+            <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span>
         <span class="p">)</span>
 
     <span class="nd">staticmethod</span>
@@ -1414,12 +1416,14 @@
 <div class="viewcode-block" id="ContainerBase.trim_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.trim_key">[docs]</a>    <span class="nd">staticmethod</span>
     <span class="k">def</span> <span class="nf">trim_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
+<span class="sd">        Returns a trimmed key with a maximum length of max_length.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        key</span>
-<span class="sd">            param max_length:</span>
+<span class="sd">            key to trim</span>
 <span class="sd">        max_length</span>
+<span class="sd">            maximum length of key</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -1691,18 +1695,6 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="ContainerBase.set_framework"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_framework">[docs]</a>    <span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the framework to use for the container.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        ivyh</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivyh</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
 <div class="viewcode-block" id="ContainerBase.all_true"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.all_true">[docs]</a>    <span class="k">def</span> <span class="nf">all_true</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assert_is_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1946,7 +1938,12 @@
         <span class="p">)</span>
         <span class="c1"># noinspection PyTypeChecker</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">,</span>
+                <span class="n">num_or_size_splits</span><span class="o">=</span><span class="n">num_or_size_splits</span><span class="p">,</span>
+                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+                <span class="n">with_remainder</span><span class="o">=</span><span class="n">with_remainder</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
             <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="p">,</span>
@@ -2495,30 +2492,6 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>
-
-<div class="viewcode-block" id="ContainerBase.has_nans"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.has_nans">[docs]</a>    <span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_infs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leafwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Determine whether arrays in the container contain any nans, as well as infs</span>
-<span class="sd">        or -infs if specified.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        include_infs</span>
-<span class="sd">            Whether to include infs and -infs in the check. Default is True.</span>
-<span class="sd">        leafwise</span>
-<span class="sd">            Whether to apply the check leaf-wise, and return a container of booleans.</span>
-<span class="sd">            Default is False, in which case the check is applied across the entire</span>
-<span class="sd">            container, returning a single boolean.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            Whether the container has any nans, applied either leafwise or across the</span>
-<span class="sd">            entire container.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">leafwise_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">include_infs</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">leafwise</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">leafwise_res</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">leafwise_res</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span></div>
 
 <div class="viewcode-block" id="ContainerBase.at_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">at_keys</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span>
@@ -3313,7 +3286,7 @@
         <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">IvyBackendException</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">x</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">to_list</span><span class="p">)</span></div>
@@ -3389,7 +3362,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">IvyException</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cutoff_at_depth"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cutoff_at_depth">[docs]</a>    <span class="k">def</span> <span class="nf">cutoff_at_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth_cutoff</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -3618,25 +3591,24 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_ivy_backend"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">with_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.with_ivy_backend"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">with_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input Container</span>
 <span class="sd">        ivy_backend</span>
-
+<span class="sd">            backend to use</span>
+<span class="sd">        inplace</span>
+<span class="sd">            whether to modify the container or return a copy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy_backend</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ContainerBase.set_ivy_backend"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">set_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Summary.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        ivy_backend</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span></div>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy_backend</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy_backend</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.show"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 

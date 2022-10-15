@@ -874,30 +874,6 @@ structure.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.has_nans">
-<span class="sig-name descname"><span class="pre">has_nans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_infs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leafwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.has_nans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.has_nans" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether arrays in the container contain any nans, as well as infs
-or -infs if specified.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>include_infs</strong> – Whether to include infs and -infs in the check. Default is True.</p></li>
-<li><p><strong>leafwise</strong> – Whether to apply the check leaf-wise, and return a container of booleans.
-Default is False, in which case the check is applied across the entire
-container, returning a single boolean.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Whether the container has any nans, applied either leafwise or across the</em></p></li>
-<li><p><em>entire container.</em></p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.identical">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">same_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrays_equal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.identical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.identical" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a single boolean as to whether the input containers have identical
@@ -1449,28 +1425,6 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.set_framework">
-<span class="sig-name descname"><span class="pre">set_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivyh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.set_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.set_framework" title="Permalink to this definition"></a></dt>
-<dd><p>Update the framework to use for the container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ivyh</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.set_ivy_backend">
-<span class="sig-name descname"><span class="pre">set_ivy_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.set_ivy_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.set_ivy_backend" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ivy_backend</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.shape">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.shape" title="Permalink to this definition"></a></dt>
@@ -1759,12 +1713,13 @@ appending to file. (Default value = None)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.trim_key">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">trim_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.trim_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.trim_key" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
+<dd><p>Summary.
+Returns a trimmed key with a maximum length of max_length.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> – param max_length:</p></li>
-<li><p><strong>max_length</strong> – </p></li>
+<li><p><strong>key</strong> – key to trim</p></li>
+<li><p><strong>max_length</strong> – maximum length of key</p></li>
 </ul>
 </dd>
 </dl>
@@ -1846,11 +1801,15 @@ Default is 0.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.with_ivy_backend">
-<span class="sig-name descname"><span class="pre">with_ivy_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.with_ivy_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.with_ivy_backend" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">with_ivy_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.with_ivy_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.with_ivy_backend" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ivy_backend</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – input Container</p></li>
+<li><p><strong>ivy_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – backend to use</p></li>
+<li><p><strong>inplace</strong> – whether to modify the container or return a copy</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

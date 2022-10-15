@@ -388,7 +388,9 @@
         <span class="c1"># just by re-creating the ivy.Array using the native array</span>
 
         <span class="c1"># get the required backend</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">])</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">state</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
         <span class="n">ivy_array</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
 
