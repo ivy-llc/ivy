@@ -2,7 +2,7 @@ name: determine-test-coverage
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 2,7,12,17,22 14,15 * *'
+    - cron: '30 3,11,19 15,16,17,18,19 * *'
 permissions:
   actions: read
 jobs:
@@ -30,11 +30,11 @@ jobs:
        - name: Determine Mapping
          id: det
          run: |
-           echo "::set-output name=run::$(expr ${{ github.run_number }} % 10)"
+           echo "::set-output name=run::$(expr ${{ github.run_number }} % 15)"
 
 
        - name: Push Mapping
-         if: steps.det.outputs.run != 9
+         if: steps.det.outputs.run != 14
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
@@ -48,7 +48,7 @@ jobs:
 
 
        - name: Push Mapping - Final
-         if: steps.det.outputs.run == 9
+         if: steps.det.outputs.run == 14
          uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
