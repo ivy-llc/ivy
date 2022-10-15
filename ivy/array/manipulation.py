@@ -14,7 +14,7 @@ class ArrayWithManipulation(abc.ABC):
     def concat(
         self: ivy.Array,
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            Tuple[Union[ivy.Array, ivy.NativeArray], ...],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
         /,

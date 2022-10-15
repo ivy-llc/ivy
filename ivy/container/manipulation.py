@@ -16,12 +16,11 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-# noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_concat(
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container], ...],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         /,
@@ -53,7 +52,7 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         /,
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container], ...],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
