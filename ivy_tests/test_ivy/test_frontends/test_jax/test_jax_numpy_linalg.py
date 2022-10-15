@@ -47,9 +47,9 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.eigh"
@@ -58,12 +58,12 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
     symmetrize_input=st.booleans(),
 )
 def test_jax_numpy_eigh(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    UPLO,
-    symmetrize_input,
+        dtype_and_x,
+        as_variable,
+        native_array,
+        num_positional_args,
+        UPLO,
+        symmetrize_input,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -106,9 +106,9 @@ def test_jax_numpy_eigh(
         shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.inv"
@@ -140,9 +140,9 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.eigvalsh"
@@ -150,11 +150,11 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_jax_numpy_eigvalsh(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    UPLO,
+        dtype_and_x,
+        as_variable,
+        native_array,
+        num_positional_args,
+        UPLO,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -193,11 +193,11 @@ def test_jax_numpy_eigvalsh(
     mode=st.sampled_from(("reduced", "complete")),
 )
 def test_jax_numpy_qr(
-    dtype_and_x,
-    mode,
-    as_variable,
-    native_array,
-    num_positional_args,
+        dtype_and_x,
+        mode,
+        as_variable,
+        native_array,
+        num_positional_args,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -225,19 +225,19 @@ def test_jax_numpy_qr(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.eigvals"
     ),
 )
 def test_jax_numpy_eigvals(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
+        dtype_and_x,
+        as_variable,
+        native_array,
+        num_positional_args,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -267,20 +267,20 @@ def test_jax_numpy_eigvals(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0]) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(x[1][0]) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.cholesky"
     ),
 )
 def test_jax_numpy_cholesky(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw,
+        dtype_and_x,
+        as_variable,
+        native_array,
+        num_positional_args,
+        fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -318,10 +318,10 @@ def test_jax_numpy_cholesky(
     ),
 )
 def test_jax_slogdet(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -334,6 +334,7 @@ def test_jax_slogdet(
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
 
 # norm
 @handle_cmd_line_args
@@ -348,11 +349,13 @@ def test_jax_slogdet(
         max_axis=2,
     ).filter(lambda x: 'float16' not in x[0]
                        and 'bfloat16' not in x[0]),
+
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.norm"),
-    keepdims=st.booleans(),
-    ord=st.sampled_from([0, -1, 1, 2, np.inf]),
 
+    keepdims=st.booleans(),
+
+    ord=st.sampled_from([0, -1, 1, 2, np.inf]),
 )
 def test_jax_norm(
         dtype_values_axis,
@@ -360,7 +363,8 @@ def test_jax_norm(
         keepdims,
         as_variable,
         num_positional_args,
-        native_array, fw
+        native_array,
+        fw
 ):
     dtype, inputs, axis = dtype_values_axis
     helpers.test_frontend_function(
