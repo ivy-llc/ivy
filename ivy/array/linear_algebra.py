@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -130,6 +130,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
     def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        Examples
+        --------
+        >>> x = ivy.array([[2.,4.],[6.,7.]])
+        >>> y = x.det()
+        >>> print(y)
+        ivy.array(-10.)
+        """
         return ivy.det(self._data, out=out)
 
     def diagonal(
