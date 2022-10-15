@@ -22,7 +22,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: Optional[bool] = False,
+    upper: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -74,9 +74,9 @@ def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
