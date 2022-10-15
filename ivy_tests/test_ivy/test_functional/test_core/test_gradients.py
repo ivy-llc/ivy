@@ -207,13 +207,17 @@ def test_execute_with_gradients(
     retain_grads,
     num_positional_args,
     native_array,
+    container,
     fw,
 ):
     def func(xs):
         if isinstance(xs, ivy.Container):
-            array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
+            array_idxs = ivy.nested_argwhere(xs, ivy.is_array)
             array_vals = ivy.multi_index_nest(xs, array_idxs)
-            final_array = ivy.stack(array_vals)
+            if len(array_vals) == 0:
+                final_array = None
+            else:
+                final_array = ivy.stack(array_vals)
         else:
             final_array = xs
         ret = ivy.mean(final_array)
@@ -226,7 +230,7 @@ def test_execute_with_gradients(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
+        container_flags=container,
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
