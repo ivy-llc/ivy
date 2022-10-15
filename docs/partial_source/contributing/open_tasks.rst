@@ -21,7 +21,7 @@ distributed across task-specific
 `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
 Please read about
-`ToDo List Issues <https://lets-unify.ai/ivy/contributing/1_the_basics.html#todo-list-issues>`_
+`ToDo List Issues <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_
 in detail before continuing.
 ALl tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which

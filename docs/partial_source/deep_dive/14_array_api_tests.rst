@@ -13,7 +13,7 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
-.. _`here`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing
+.. _`here`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_. These tests check that all

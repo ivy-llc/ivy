@@ -18,7 +18,7 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
+.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -382,7 +382,7 @@ Ivy.
 
 The entire workflow for extending the Ivy Frontends as an external contributor is
 explained in more detail in the
-`Open Tasks <https://lets-unify.ai/ivy/contributing/4_open_tasks.html#frontend-apis>`_
+`Open Tasks <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_
 section.
 
 

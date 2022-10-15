@@ -62,7 +62,7 @@
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
-.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
 Contents
 --------
