@@ -163,3 +163,45 @@ def arctan2(x1, x2):
 @inputs_to_ivy_arrays
 def cos(x):
     return ivy.cos(x)
+
+
+@inputs_to_ivy_arrays
+def cosh(x):
+    return ivy.cosh(x)
+
+
+@inputs_to_ivy_arrays
+def tan(x):
+    return ivy.tan(x)
+
+
+@inputs_to_ivy_arrays
+def tanh(x):
+    return ivy.tanh(x)
+
+
+@inputs_to_ivy_arrays
+def sinh(x):
+    return ivy.sinh(x)
+
+
+@inputs_to_ivy_arrays
+def sin(x):
+    return ivy.sin(x)
+
+
+@inputs_to_ivy_arrays
+def fmax(x1, x2):
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
+
+
+@inputs_to_ivy_arrays
+def zeros(shape, dtype=None):
+    if dtype is None:
+        dtype = ivy.float64
+    return ivy.zeros(shape, dtype=dtype)

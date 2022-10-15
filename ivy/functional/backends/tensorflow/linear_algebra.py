@@ -22,7 +22,7 @@ def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: Optional[bool] = False,
+    upper: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -70,33 +70,6 @@ def det(
     return tf.linalg.det(x)
 
 
-def diag(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    if num_rows is None:
-        num_rows = -1
-    if num_cols is None:
-        num_cols = -1
-
-    return tf.linalg.diag(
-        x,
-        name="diag",
-        k=offset,
-        num_rows=num_rows,
-        num_cols=num_rows,
-        padding_value=padding_value,
-        align=align,
-    )
-
-
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -109,7 +82,7 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -352,6 +325,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if len(x.shape) < 2:
+        return tf.constant(0, dtype=x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -615,7 +590,45 @@ def vector_norm(
 
 
 # Extra #
-# ------#
+# ----- #
+
+
+def diag(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if num_rows is None:
+        num_rows = -1
+    if num_cols is None:
+        num_cols = -1
+
+    return tf.linalg.diag(
+        x,
+        name="diag",
+        k=offset,
+        num_rows=num_rows,
+        num_cols=num_rows,
+        padding_value=padding_value,
+        align=align,
+    )
+
+
+def vander(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.vander(x, N=N, increasing=increasing)
 
 
 @with_unsupported_dtypes(
@@ -670,14 +683,3 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "float16",
     "float64",
 )
-
-
-def vander(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.vander(x, N=N, increasing=increasing)

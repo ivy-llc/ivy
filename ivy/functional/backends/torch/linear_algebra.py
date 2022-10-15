@@ -76,30 +76,6 @@ def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 det.support_native_out = True
 
 
-def diag(
-    x: torch.Tensor,
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = torch.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += torch.diag(x - padding_value, diagonal=offset)
-
-    return ret
-
-
 def diagonal(
     x: torch.Tensor,
     /,
@@ -205,8 +181,6 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(ord, float):
-        ord = int(ord)
     return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
 
 
@@ -231,7 +205,10 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    if len(x.shape) < 2:
+        ret = torch.tensor(0)
+    else:
+        ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
 
 
@@ -438,7 +415,45 @@ vector_norm.support_native_out = True
 
 
 # Extra #
-# ------#
+# ----- #
+
+
+def diag(
+    x: torch.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = torch.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += torch.diag(x - padding_value, diagonal=offset)
+
+    return ret
+
+
+def vander(
+    x: torch.tensor,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.vander(x, N=N, increasing=increasing)
+
+
+vander.unsupported_dtypes = ("bfloat16", "float16")
 
 
 def vector_to_skew_symmetric_matrix(
@@ -462,18 +477,3 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
-
-
-def vander(
-    x: torch.tensor,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: Optional[bool] = False,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.vander(x, N=N, increasing=increasing)
-
-
-vander.support_native_out = False
-vander.unsupported_dtypes = ("bfloat16", "float16")
