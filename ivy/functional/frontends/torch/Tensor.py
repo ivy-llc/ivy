@@ -45,6 +45,10 @@ class Tensor:
     def asinh(self, *, out=None):
         return torch_frontend.asinh(self.data, out=out)
 
+    def asinh_(self):
+        self.data = self.asinh()
+        return self.data
+
 
 # Tensor (alias)
 tensor = Tensor
