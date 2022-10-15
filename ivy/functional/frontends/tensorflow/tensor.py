@@ -26,6 +26,9 @@ class Tensor:
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
 
+    def __array__(self, dtype=None, name="array"):
+        return ivy.asarray(self.data, dtype=dtype)
+
     def __bool__(self, name="bool"):
         if isinstance(self.data, int):
             return self.data != 0
@@ -51,6 +54,9 @@ class Tensor:
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.Greater(x=self.data, y=y.data, name=name)
+
+    def __invert__(self, name="invert"):
+        return tf_frontend.Invert(x=self.data, name=name)
 
     def __le__(self, y, name="le"):
         return tf_frontend.LessEqual(x=self.data, y=y.data, name=name)
