@@ -1947,7 +1947,7 @@ def test_tensorflow_RightShift(
         max_value=8,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Pow"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
 )
 def test_tensorflow_Pow(dtype_and_x, as_variable, num_positional_args, native_array):
