@@ -1518,121 +1518,56 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-        x: ivy.Container,
-        /,
-        *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        x: ivy.Container, include_infs=True, leafwise=False
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.has_nans. This method simply wraps
-        the function, and so the docstring for ivy.has_nans also applies to this method
-        with minimal changes.
+        Determine whether arrays in the container contain any nans, as well as infs
+        or -infs if specified.
 
         Parameters
         ----------
         x
-            Input container.
+            The container to check for nans.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to include infs and -infs in the check. Default is True.
+        leafwise
+            Whether to apply the check leaf-wise, and return a container of booleans.
+            Default is False, in which case the check is applied across the entire
+            container, returning a single boolean.
 
         Returns
         -------
-        ret
-            container of booleans, whether there is a nans at indices.
+            Whether the container has any nans, applied either leafwise or across the
+            entire container.
 
-        Examples
-        --------
-        With :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
-        >>> y = ivy.Container.static_has_nans(x)
-        >>> print(y)
-        {
-            a: false,
-            b: true
-        }
         """
-        return ContainerBase.multi_map_in_static_method(
-            "has_nans",
-            x,
-            include_infs=include_infs,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
+        leafwise_res = x.map(lambda x, kc: ivy.has_nans(x, include_infs))
+        if leafwise:
+            return leafwise_res
+        return max([v for k, v in leafwise_res.to_iterator()])
 
     def has_nans(
-        self: ivy.Container,
-        /,
-        *,
-        include_infs=True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        self: ivy.Container, /, *, include_infs=True, leafwise=False
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.has_nans.
-        This method simply wraps the function, and so the docstring
-        for ivy.has_nans also applies to this method
-        with minimal changes.
+        Determine whether arrays in the container contain any nans, as well as infs
+        or -infs if specified.
 
         Parameters
         ----------
-        self
-            The container from which to check nans.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to include infs and -infs in the check. Default is True.
+        leafwise
+            Whether to apply the check leaf-wise, and return a container of booleans.
+            Default is False, in which case the check is applied across the entire
+            container, returning a single boolean.
 
         Returns
         -------
-        ret
-            Boolean, true if container has a nans, false otherwise.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
-        >>> y = x.has_nans()
-        >>> print(y)
-        {
-            a: false,
-            b: true
-        }
+            Whether the container has any nans, applied either leafwise or across the
+            entire container.
         """
-        return self.static_has_nans(
-            self,
-            include_infs=include_infs,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
+        return self.static_has_nans(self, include_infs=include_infs, leafwise=leafwise)
 
     @staticmethod
     def static_scatter_nd(

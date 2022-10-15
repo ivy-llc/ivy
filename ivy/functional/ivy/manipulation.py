@@ -38,7 +38,7 @@ def _calculate_out_shape(axis, array_shape):
 @handle_exceptions
 def concat(
     xs: Union[
-        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
         List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
