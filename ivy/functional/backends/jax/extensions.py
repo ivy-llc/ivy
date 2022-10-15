@@ -296,3 +296,14 @@ def rfft(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.fft.rfft(x, n, norm=norm)
+
+
+def rfft(
+    x: JaxArray,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.fft.rfft(x, n, norm=norm)

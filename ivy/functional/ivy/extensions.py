@@ -1306,3 +1306,64 @@ def rfft(
     }
     """
     return ivy.current_backend().rfft(x, n, norm, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def rfft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Compute the one-dimensional discrete Fourier Transform for real input.
+
+    Parameters
+    ----------
+    input
+        The real input array.
+    n
+        Signal length. If given, the input will either be zero-padded or trimmed
+        to this length before computing the real FFT.
+    norm
+        Normalization mode.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The output array
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2, 3])
+    >>> ivy.rfft(x)
+    ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
+    >>> ivy.rfft(x, norm='ortho')
+    ivy.array([ 3.+0.j, -1.+1.j, -1.+0.j])
+    >>> ivy.rfft(x, norm='forward')
+    ivy.array([ 1.5000+0.0000j, -0.5000+0.5000j, -0.5000+0.0000j])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),
+    ...                   b=ivy.array([0, 1, 2, 3]))
+    >>> ivy.rfft(x)
+    {
+        a: ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j])
+        b: ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
+    }
+    """
+    return ivy.current_backend().rfft(x, n, norm, out=out)

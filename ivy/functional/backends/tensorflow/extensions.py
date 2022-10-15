@@ -94,8 +94,8 @@ def lcm(
         dtype = tf.int8
         x1 = tf.cast(x1, dtype=tf.int16)
         x2 = tf.cast(x2, dtype=tf.int16)
-    else: 
-        dtype = x1.dtype 
+    else:
+        dtype = x1.dtype
     return tf.math.abs(
         tf.cast(
             tf.experimental.numpy.lcm(x1, x2),
@@ -109,6 +109,27 @@ lcm.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64")
+
+
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if n is None:
+        n = len(x)
+    if norm == 'forward':
+        return tf.signal.rfft(x, n, norm) / n
+    elif norm == 'ortho':
+        return tf.signal.rfft(x, n, norm) / sqrt(n)
+    elif norm is None or norm == 'backward':
+        return tf.signal.rfft(x, n, norm)
+    else:
+        raise ValueError(f'Invalid norm value {norm}; should be "backward",'
+                         '"ortho" or "forward".')
 
 
 def rfft(
