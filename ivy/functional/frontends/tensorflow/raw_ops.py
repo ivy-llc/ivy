@@ -17,10 +17,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-Add = tf_frontend.add
+Add = tf_frontend.math.add
 
 
-ArgMax = tf_frontend.argmax
+ArgMax = tf_frontend.math.argmax
 
 
 def ArgMin(*, input, dimension, output_type=None, name=None):
@@ -80,13 +80,13 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-Div = tf_frontend.divide
+Div = tf_frontend.math.divide
 
 
-Cumprod = tf_frontend.cumprod
+Cumprod = tf_frontend.math.cumprod
 
 
-Cumsum = tf_frontend.cumsum
+Cumsum = tf_frontend.math.cumsum
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
@@ -183,10 +183,10 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
-Maximum = tf_frontend.maximum
+Maximum = tf_frontend.math.maximum
 
 
-MatrixDeterminant = tf_frontend.det
+MatrixDeterminant = tf_frontend.linalg.det
 
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
@@ -201,10 +201,10 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-Neg = tf_frontend.negative
+Neg = tf_frontend.math.negative
 
 
-Mul = tf_frontend.multiply
+Mul = tf_frontend.math.multiply
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
@@ -258,8 +258,7 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-Sub = tf_frontend.subtract
-
+Sub = tf_frontend.math.subtract
 
 
 def Sum(*, input, axis, keep_dims=False, name="Sum"):
@@ -267,10 +266,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 
 
 def Tan(*, x, name="Tan"):
-    return tf_frontend.tan(x)
-
-Tan = tf_frontend.tan
-
+    return tf_frontend.math.tan(x)
 
 
 def Tanh(*, x, name="Tanh"):
