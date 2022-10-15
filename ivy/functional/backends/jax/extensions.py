@@ -274,3 +274,12 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def eigvals(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvals(x)

@@ -215,3 +215,12 @@ def median(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def median(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.eigvals(x)

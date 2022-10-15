@@ -1185,3 +1185,33 @@ def median(
     ivy.array([6.5, 4.5, 2.5])
     """
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
+
+
+def eigvals(
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+
+    Parameters
+    ----------
+    x
+        input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Must have a floating-point data type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array containing the computed eigenvalues. The returned array must have shape (..., M) and have the same data type as x.
+
+    Examples
+    --------
+
+    """
+    return ivy.current_backend().eigvals(x, out=out)
+
+

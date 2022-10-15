@@ -313,3 +313,12 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def median(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.linalg.eigvals(x)

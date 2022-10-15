@@ -294,3 +294,12 @@ def median(
             keepdim=keepdims,
             out=out,
         )
+
+
+def median(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.tensor:
+    return torch.linalg.eigvals(x, out=out)
