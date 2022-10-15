@@ -27,7 +27,10 @@ def _zero_gradients_to_none_and_to_ivy(grads):
         return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
         zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
-        if not isinstance(zero_idxs, list) or np.asarray(zero_idxs).size == 0:
+        if (
+            not isinstance(zero_idxs, list)
+            or np.asarray(zero_idxs, dtype="object").size == 0
+        ):
             return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
         zero_idxs.reverse()
         ivy.prune_nest_at_indices(grads, zero_idxs)
@@ -42,16 +45,6 @@ def _get_native_arrays_and_indices(func_ret):
         arr_idxs[i] = [str(x) for x in arr_idxs[i]]
         arr_idxs[i] = "_".join(arr_idxs[i])
     return arr_idxs, arr_values
-
-
-def _forward_fn(xs, func):
-    if isinstance(xs, dict):
-        xs = ivy.Container(**xs)
-    ret = func(xs)
-    ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
-    array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
-    array_values = ivy.multi_index_nest(ret, array_idxs)
-    return array_values
 
 
 def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
