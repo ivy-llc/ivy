@@ -351,7 +351,7 @@ def test_jax_slogdet(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.norm"),
     keepdims=st.booleans(),
-    ord=st.sampled_from([1, 2, np.inf]),
+    ord=st.sampled_from([0, -1, 1, 2, np.inf]),
 
 )
 def test_jax_norm(
