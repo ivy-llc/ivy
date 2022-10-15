@@ -3701,6 +3701,7 @@ class ContainerBase(dict, abc.ABC):
                             )
                         else:
                             rep = (
+                                v._fields,
                                 "NamedTuple[{}]".format(len(v)),
                                 type(v[0]),
                                 "shape=",
