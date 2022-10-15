@@ -1100,7 +1100,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def static_dirichlet(
         alpha: ivy.Container,
@@ -1110,7 +1110,7 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        size: Optional[ivy.Container],
+        size: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1173,7 +1173,7 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        size: Optional[ivy.Container],
+        size: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:

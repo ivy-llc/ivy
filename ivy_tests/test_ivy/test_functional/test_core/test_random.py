@@ -9,6 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import numpy as np
 
+
 # random_uniform
 @handle_cmd_line_args
 @given(
@@ -343,8 +344,7 @@ def test_shuffle(
         exclude_min=True,
     ),
     size=st.tuples(
-        st.integers(min_value=1, max_value=5),
-        st.integers(min_value=1, max_value=5)
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
@@ -360,7 +360,7 @@ def test_dirichlet(
     fw,
 ):
     dtype, alpha = dtype_and_alpha
-    helpers.test_function(
+    ret, ret_gt = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -368,8 +368,15 @@ def test_dirichlet(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        test_values=False,
         fw=fw,
         fn_name="dirichlet",
         alpha=np.asarray(alpha[0], dtype=dtype[0]),
         size=size,
     )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
+        assert ivy.all(u >= 0) and ivy.all(u <= 1)
+        assert ivy.all(v >= 0) and ivy.all(v <= 1)

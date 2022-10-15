@@ -5,7 +5,6 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_dtype,
     infer_device,
@@ -559,15 +558,15 @@ def dirichlet(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draw size samples of dimension k from a Dirichlet distribution. 
+    """Draw size samples of dimension k from a Dirichlet distribution.
     A Dirichlet-distributed random variable can be seen as a multivariate
     generalization of a Beta distribution. The Dirichlet distribution is
     a conjugate prior of a multinomial distribution in Bayesian inference.
-    
+
     Parameters
     ----------
     alpha
-        Sequence of floats of length k 
+        Sequence of floats of length k
     size
         optional int or tuple of ints, Output shape. If the given shape is,
         e.g., (m, n), then m * n * k samples are drawn. Default is None,
@@ -600,8 +599,4 @@ def dirichlet(
         [0.15564976, 0.50542368, 0.33892656],
         [0.1325352 , 0.44439589, 0.42306891]]])
     """
-    return current_backend().dirichlet(
-        alpha,
-        size=size,
-        out=out,
-        dtype=dtype)
+    return ivy.current_backend().dirichlet(alpha, size=size, out=out, dtype=dtype)

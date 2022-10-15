@@ -379,7 +379,7 @@ class ArrayWithRandom(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        size: Optional[Union[int, Sequence[int]]],
+        size: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -390,7 +390,7 @@ class ArrayWithRandom(abc.ABC):
         Parameters
         ----------
         alpha
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
             optional int or tuple of ints, Output shape. If the given shape is,
             e.g., (m, n), then m * n * k samples are drawn. Default is None,
