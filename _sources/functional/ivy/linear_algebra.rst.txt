@@ -16,7 +16,6 @@ Linear algebra
    linear_algebra/cholesky.rst
    linear_algebra/cross.rst
    linear_algebra/det.rst
-   linear_algebra/diag.rst
    linear_algebra/diagonal.rst
    linear_algebra/eigh.rst
    linear_algebra/eigvalsh.rst
@@ -38,8 +37,9 @@ Linear algebra
    linear_algebra/trace.rst
    linear_algebra/vecdot.rst
    linear_algebra/vector_norm.rst
-   linear_algebra/vector_to_skew_symmetric_matrix.rst
+   linear_algebra/diag.rst
    linear_algebra/vander.rst
+   linear_algebra/vector_to_skew_symmetric_matrix.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
