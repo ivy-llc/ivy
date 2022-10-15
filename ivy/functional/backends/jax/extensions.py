@@ -248,3 +248,29 @@ def moveaxis(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.moveaxis(a, source, destination)
+
+
+def heaviside(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.heaviside(x1, x2)
+
+
+def median(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )

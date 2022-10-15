@@ -1,6 +1,5 @@
 # global
 import ivy
-from typing import Union, Optional, Literal
 
 
 def _get_reduction_func(reduction):
@@ -109,7 +108,7 @@ def smooth_l1_loss(
     target,
     size_average=None,
     reduce=None,
-    reduction='mean',
+    reduction="mean",
     beta=1.0,
 ):
     beta = ivy.array(beta, device=input.device)
@@ -125,7 +124,7 @@ def smooth_l1_loss(
         loss = ivy.abs(input - target)
     else:
         _diff_abs = ivy.abs(input - target)
-        
+
         loss = ivy.where(
             _diff_abs < beta,
             0.5 * _diff_abs**2 / beta,

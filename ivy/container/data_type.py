@@ -691,6 +691,17 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
+        ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
+        >>> c.iinfo()
+        {
+            x: iinfo(min=-32768, max=32767, dtype=int16),
+            y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+        }
+        """
         return self.static_iinfo(
             self, key_chains, to_apply, prune_unapplied, map_sequences
         )

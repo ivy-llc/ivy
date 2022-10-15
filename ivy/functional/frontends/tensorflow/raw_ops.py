@@ -1,6 +1,7 @@
 # global
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 def AddN(*, inputs, name="AddN"):
@@ -16,12 +17,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-def Add(*, x, y, name="Add"):
-    return ivy.add(x, y)
+Add = tf_frontend.math.add
 
 
-def ArgMax(*, input, dimension, output_type=None, name=None):
-    return tf_frontend.argmax(input, dimension, output_type)
+ArgMax = tf_frontend.math.argmax
 
 
 def ArgMin(*, input, dimension, output_type=None, name=None):
@@ -43,14 +42,17 @@ def Atanh(*, x, name="Atanh"):
 
 
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_and(x, y)
 
 
 def BitwiseOr(*, x, y, name="BitwiseOr"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_or(x, y)
 
 
 def BitwiseXor(*, x, y, name="BitwiseXor"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.bitwise_xor(x, y)
 
 
@@ -78,17 +80,17 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-def Div(*, x, y, name="Div"):
-    return ivy.divide(x, y)
+Div = tf_frontend.math.divide
 
 
-def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
+Cumprod = tf_frontend.math.cumprod
+
+
+Cumsum = tf_frontend.math.cumsum
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     if incompatible_shape_error:
         return ivy.equal(x, y)
 
@@ -115,14 +117,17 @@ def Floor(*, x, name="Floor"):
 
 
 def FloorDiv(*, x, y, name="FloorDiv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.floor_divide(x, y)
 
 
 def Greater(*, x, y, name="Greater"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater(x, y)
 
 
 def GreaterEqual(*, x, y, name="GreaterEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater_equal(x, y)
 
 
@@ -151,10 +156,12 @@ def LeftShift(*, x, y, name="LeftShift"):
 
 
 def Less(*, x, y, name="Less"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.less(x, y)
 
 
 def LessEqual(*, x, y, name="LessEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.less_equal(x, y)
 
 
@@ -163,6 +170,7 @@ def Log(*, x, name="Log"):
 
 
 def LogicalOr(*, x, y, name="LogicalOr"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.logical_or(x, y)
 
 
@@ -171,19 +179,18 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
+    a, b = promote_types_of_tensorflow_inputs(a, b)
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
-def MatrixDeterminant(*, input, name="MatrixDeterminant"):
-    return ivy.det(input)
+Maximum = tf_frontend.math.maximum
+
+
+MatrixDeterminant = tf_frontend.linalg.det
 
 
 def Max(*, input, axis, keep_dims=False, name="Max"):
     return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
-
-
-def Maximum(*, x, y, name="Maximum"):
-    return tf_frontend.maximum(x, y)
 
 
 def Min(*, input, axis, keep_dims=False, name="Min"):
@@ -194,15 +201,14 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Mul(*, x, y, name="Mul"):
-    return ivy.multiply(x, y)
+Neg = tf_frontend.math.negative
 
 
-def Neg(*, x, name="Neg"):
-    return tf_frontend.negative(x)
+Mul = tf_frontend.math.multiply
 
 
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     if incompatible_shape_error:
         return ivy.not_equal(x, y)
 
@@ -252,12 +258,15 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-def Sub(*, x, y, name="Sub"):
-    return tf_frontend.subtract(x, y)
+Sub = tf_frontend.math.subtract
+
+
+def Sum(*, input, axis, keep_dims=False, name="Sum"):
+    return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
 def Tan(*, x, name="Tan"):
-    return tf_frontend.tan(x)
+    return tf_frontend.math.tan(x)
 
 
 def Tanh(*, x, name="Tanh"):
@@ -271,12 +280,6 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
-
-
-def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
 
 
 def Mean(*, input, axis, keep_dims=False, name="Mean"):

@@ -37,6 +37,24 @@ nestable_mode_stack = list()
 exception_trace_mode_stack = list()
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre
+        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+        + list(reversed(post))
+    )
+
+
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
@@ -2960,27 +2978,6 @@ def gather(
     }
 
     """
-    axis = axis % len(indices.shape)
-    batch_dims = batch_dims % len(indices.shape)
-
-    if batch_dims > axis:
-        raise ivy.exceptions.IvyException(
-            "batch_dims ("
-            + str(batch_dims)
-            + ") must be less \
-            than or equal to axis ("
-            + str(axis)
-            + ")."
-        )
-    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
-        raise ivy.exceptions.IvyException(
-            "params.shape[0:batch_dims] "
-            + str(params.shape[0:batch_dims])
-            + " should \
-            be equal to indices.shape[0:batch_dims]"
-            + str(indices.shape[0:batch_dims])
-            + "."
-        )
     return current_backend(params, indices).gather(
         params, indices, axis=axis, batch_dims=batch_dims, out=out
     )
@@ -2995,6 +2992,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gather slices from params into a array with shape specified by indices.
@@ -3045,7 +3043,9 @@ def gather_nd(
         b: ivy.array([0., 100., 200.])
     }
     """
-    res = current_backend(params, indices).gather_nd(params, indices)
+    res = current_backend(params, indices).gather_nd(
+        params, indices, batch_dims=batch_dims
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res
@@ -3195,9 +3195,9 @@ def get_num_dims(
     --------
     With :class:`ivy.Array` input:
 
-    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
-                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
-                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
     >>> b = ivy.get_num_dims(a, as_array=False)
     >>> print(b)
     3

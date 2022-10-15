@@ -474,19 +474,21 @@ def test_torch_chunk(
     )
 
 
-# tile	
-@handle_cmd_line_args	
-@given(	
-    dtype_value=helpers.dtype_and_values(	
-        available_dtypes=helpers.get_dtypes("valid"),	
-        shape=st.shared(helpers.get_shape(), key="shape"),	
-    ),	
-    dim=helpers.get_axis(	
-        shape=st.shared(helpers.get_shape(), key="shape"),	
-        allow_neg=False, force_tuple=True),	
-    num_positional_args=helpers.num_positional_args(	
-        fn_name="ivy.functional.frontends.torch.tile"	
-    ),	
+# tile
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False,
+        force_tuple=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tile"
+    ),
 )
 def test_torch_tile(
     dtype_value,
