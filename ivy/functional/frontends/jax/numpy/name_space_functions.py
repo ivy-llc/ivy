@@ -27,9 +27,11 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 def argmax(a, axis=None, out=None, keepdims=None):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
+
 def argmin(a, axis=None, out=None, keepdims=None):
     return ivy.argmin(a, axis=axis, keepdims=keepdims, out=out)
 
+    
 def _compute_allclose_with_tol(input, other, rtol, atol):
     return ivy.all(
         ivy.less_equal(
