@@ -23,20 +23,14 @@ def variable_data(x):
     return x
 
 
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     logging.warning(
         "NumPy does not support autograd, "
         "'execute_with_gradients' returns None in place of function gradients."
     )
     xs = ivy.to_ivy(xs)
     func_ret = func(xs)
-    if isinstance(func_ret, tuple):
-        y = func_ret[0]
-        rest = func_ret[1:]
-    else:
-        y = func_ret
-        rest = tuple()
-    return (y, None, *rest)
+    return func_ret, None
 
 
 def value_and_grad(func):
