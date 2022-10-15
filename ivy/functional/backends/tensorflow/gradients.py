@@ -41,7 +41,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
         y = arr_values
 
     def grad_func(y):
-        ret = tape.gradient(y, ivy.to_native(xs))
+        ret = tape.gradient(y, xs)
         return ret
 
     if isinstance(y, ivy.NativeArray):
