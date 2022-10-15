@@ -930,7 +930,7 @@ def to_device(
     >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return ivy.current_backend(x).to_device(x, device, out=out)
+    return ivy.current_backend(x).to_device(x, device)
 
 
 # Function Splitting #
