@@ -380,4 +380,4 @@ class ArrayWithExtensions(abc.ABC):
         >>> x1.fmax(x2)
         ivy.array([ 0,  0,  nan])
         """
-        return ivy.moveaxis(self._data, x2, out=out)
+        return ivy.fmax(self._data, x2, out=out)
