@@ -339,7 +339,7 @@ def test_jax_slogdet(
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=1,
