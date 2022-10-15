@@ -260,6 +260,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -290,7 +291,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array(2)
         """
-        return ivy.gather_nd(self, indices, out=out)
+        return ivy.gather_nd(self, indices, batch_dims=batch_dims, out=out)
 
     def einops_rearrange(
         self: ivy.Array,
@@ -362,19 +363,20 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[[5,4],
-                       [11, 2]],
-                      [[3, 5],
-                       [9, 7]]])
+        >>> x = ivy.array([[[5, 4],
+        ...                 [11, 2]],
+        ...                [[3, 5],
+        ...                 [9, 7]]])
+
         >>> y = x.einops_reduce('a b c -> b c', 'max')
         >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
         >>> x = ivy.array([[[5, 4, 3],
-                        [11, 2, 9]],
-                       [[3, 5, 7],
-                        [9, 7, 1]]])
+        ...                 [11, 2, 9]],
+        ...                [[3, 5, 7],
+        ...                 [9, 7, 1]]])
         >>> y = x.einops_reduce('a b c -> a () c', 'min')
         >>> print(y)
         ivy.array([[[5, 2, 3]],
@@ -419,18 +421,13 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
         >>> print(y)
-        ivy.array([[5, 4],
-                   [5, 4],
-                  [5, 4]])
+        ivy.array([[5,5,5],[4,4,4]])
 
         >>> x = ivy.array([[5,4],
-                    [2, 3]])
+        ...                [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
-        ivy.array([[[5, 5, 5],
-                    [4, 4, 4]],
-                   [[2, 2, 2],
-                    [3, 3, 3]]])
+        ivy.array([[5,5,5],[4,4,4]])
 
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
@@ -503,7 +500,7 @@ class ArrayWithGeneral(abc.ABC):
         With `ivy.Array` input and backend set as "tensorflow":
 
         >>> x = ivy.array([1., 4.2, 2.2])
-        >>> ret = x.supports_inplace()
+        >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         False
         """
@@ -721,14 +718,6 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         With :class:`ivy.Array` instance method:
-
-        >>> x = ivy.array([-1])
-        >>> y = x.to_scalar()
-        >>> print(y)
-        -1
-
-        >>> print(ivy.is_int_dtype(y))
-        True
 
         >>> x = ivy.array([3])
         >>> y = x.to_scalar()
@@ -1082,5 +1071,22 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Shape of the array
 
+        Examples
+        --------
+        >>> x = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])
+        >>> b = x.get_num_dims()
+        >>> print(b)
+        2
+
+        >>> x = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+        >>> b = x.get_num_dims(as_array=False)
+        >>> print(b)
+        3
+        
+        >>> b = x.get_num_dims(as_array=True)
+        >>> print(b)
+        ivy.array(3)
         """
         return ivy.get_num_dims(self, as_array=as_array)

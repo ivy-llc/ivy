@@ -107,6 +107,7 @@ def check_docstring_examples_run(
             end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
+            p_output = p_output.replace("...", "")
             if parsed_output != "":
                 parsed_output += ","
             parsed_output += p_output
@@ -114,9 +115,15 @@ def check_docstring_examples_run(
     if end_index == -1:
         return True
 
-    executable_lines = [
-        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
-    ]
+    executable_lines = []
+
+    for line in trimmed_docstring:
+        if line.startswith(">>>"):
+            executable_lines.append(line.split(">>>")[1][1:])
+        if line.startswith("..."):
+            executable_lines[-1] += line.split("...")[1][1:]
+        if ">>> print(" in line:
+            break
 
     # noinspection PyBroadException
     f = StringIO()
@@ -243,6 +250,7 @@ def test_docstrings(backend):
         "unique_counts",
         "unique_all",
         "total_mem_on_dev",
+        "supports_inplace_updates",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
@@ -253,10 +261,12 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
+        "sinc",
+        "grad",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = []
+    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet"]
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list

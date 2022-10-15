@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sinh"
@@ -21,7 +20,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_numpy_sinh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -29,6 +27,10 @@ def test_numpy_sinh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -46,7 +48,10 @@ def test_numpy_sinh(
         x=x[0],
         out=None,
         where=where,
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -56,7 +61,6 @@ def test_numpy_sinh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cosh"
@@ -64,7 +68,6 @@ def test_numpy_sinh(
 )
 def test_numpy_cosh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -72,6 +75,10 @@ def test_numpy_cosh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -89,7 +96,10 @@ def test_numpy_cosh(
         x=x[0],
         out=None,
         where=where,
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -99,7 +109,6 @@ def test_numpy_cosh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.tanh"
@@ -107,7 +116,6 @@ def test_numpy_cosh(
 )
 def test_numpy_tanh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -115,6 +123,10 @@ def test_numpy_tanh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -132,8 +144,10 @@ def test_numpy_tanh(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -143,7 +157,6 @@ def test_numpy_tanh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arcsinh"
@@ -151,7 +164,6 @@ def test_numpy_tanh(
 )
 def test_numpy_arcsinh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -159,6 +171,10 @@ def test_numpy_arcsinh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -176,7 +192,10 @@ def test_numpy_arcsinh(
         x=x[0],
         out=None,
         where=where,
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -186,7 +205,6 @@ def test_numpy_arcsinh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arccosh"
@@ -194,7 +212,6 @@ def test_numpy_arcsinh(
 )
 def test_numpy_arccosh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -202,6 +219,10 @@ def test_numpy_arccosh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -219,7 +240,10 @@ def test_numpy_arccosh(
         x=x[0],
         out=None,
         where=where,
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -229,7 +253,6 @@ def test_numpy_arccosh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arctanh"
@@ -237,7 +260,6 @@ def test_numpy_arccosh(
 )
 def test_numpy_arctanh(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
@@ -245,6 +267,10 @@ def test_numpy_arctanh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="numeric",
+    )
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -262,6 +288,8 @@ def test_numpy_arctanh(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        dtype=dtype[0],
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )

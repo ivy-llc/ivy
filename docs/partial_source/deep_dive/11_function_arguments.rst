@@ -1,12 +1,12 @@
-Function Arguments 📑
-=====================
+Function Arguments
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
-.. _`function arguments discussion`: https://github.com/unifyai/ivy/discussions/1320
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
+.. _`function arguments forum`: https://discord.com/channels/799879767196958751/1028297557178331187
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at
@@ -129,9 +129,9 @@ In both signatures, we follow the `Array API Standard convention`_ about positio
 
 Nearly all the functions in the `Array API Standard convention`_ have strictly positional-only and keyword-only arguments, with an exception of
 few :code:`creation` functions such as :code:`ones(shape, *, dtype=None, device=None)` , :code:`linspace(start, stop, /, num, *, dtype=None, device=None, endpoint=True)` etc.
-The rationale behind this is purely a convention. The :code:`shape` argument is often passed as a keyword, while the :code:`nums` argument in :code:`linspace` is often
+The rationale behind this is purely a convention. The :code:`shape` argument is often passed as a keyword, while the :code:`num` argument in :code:`linspace` is often
 passed as a keyword for improved understandability of the code. Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adopts these same exceptions to the
-general rule for the :code:shape and :code:num arguments in these functions.
+general rule for the :code:`shape` and :code:`num` arguments in these functions.
 
 
 Arrays
@@ -218,9 +218,8 @@ and instead mention in the docstring whether the function is *nestable* or not.
 
 These examples should hopefully give you a good understanding of what is required when adding function arguments.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `function arguments discussion`_,
-or reach out on `discord`_ in the `function arguments channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function arguments channel`_
+or in the `function arguments forum`_!
 
 
 **Video**

@@ -4,8 +4,6 @@ signature.
 
 # global
 from typing import Optional, Union, Sequence, Callable
-
-_round = round
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -13,24 +11,35 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.functional.ivy.general import _parse_ellipsis
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
+_round = round
+
+
+def _parse_index(indices, ndims):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
+    return ind
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -57,6 +66,10 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
+# tensorflow does not support uint indexing
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query):
         return x.__getitem__(query)
@@ -68,10 +81,6 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if dtype in [tf.int8, tf.int16]:
         query = tf.cast(query, tf.int32)
     return tf.gather(x, query)
-
-
-# tensorflow does not support uint indexing
-get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -112,6 +121,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -120,9 +132,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -166,10 +180,11 @@ def inplace_increment(
         else:
             x = ivy.Array(x_native)
     else:
+        x_native += val_native
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x._data = x_native
         else:
-            x = ivy.Array(val_native)
+            x = ivy.Array(x_native)
     return x
 
 
@@ -307,7 +322,13 @@ def scatter_nd(
         )
 
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.stack(
             [
@@ -329,7 +350,27 @@ def scatter_nd(
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
             indices = tf.expand_dims(indices, 0)
-
+        if tf.reduce_any(indices == -1):
+            indices = _parse_index(indices, len(shape))
+            indices = [
+                tf.stack(
+                    [
+                        tf.reshape(value, (-1,))
+                        for value in tf.meshgrid(
+                            *[
+                                tf.range(s)
+                                if idx == slice(None, None, None)
+                                else tf.constant([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    axis=-1,
+                )
+                for index in indices
+            ]
+            indices = tf.concat(indices, axis=0)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
