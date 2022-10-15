@@ -69,7 +69,7 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grads = _zero_gradients_to_none_and_to_ivy(xs, grads_)
+        grads = _zero_gradients_to_none_and_to_ivy(grads_)
         grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
         xs = ivy.to_ivy(xs)
