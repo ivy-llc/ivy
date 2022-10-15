@@ -723,8 +723,8 @@ ivy.add()
         ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
         for (u, v) in zip(ret, ret_gt):
             helpers.value_test(
-                ret=ret,
-                ret_from_gt=ret_gt,
+                ret=u,
+                ret_from_gt=v,
                 ground_truth_backend="jax",
             )
 

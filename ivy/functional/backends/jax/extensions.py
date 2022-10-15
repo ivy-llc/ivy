@@ -260,6 +260,7 @@ def heaviside(
     return jnp.heaviside(x1, x2)
 
 
+
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -271,3 +272,18 @@ def isin(
     return jnp.isin(elements, test_elements,
                     assume_unique = assume_unique,
                     invert = invert)
+
+def median(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )

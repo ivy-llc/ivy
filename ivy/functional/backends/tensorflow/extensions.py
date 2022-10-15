@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 import tensorflow as tf
+import tensorflow_probability as tfp
 import logging
 
 
@@ -212,3 +213,19 @@ def isin(
         return tf.math.equal(elements, test_elements)
 
 isin.support_native_out = True
+
+def median(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.stats.percentile(
+        input,
+        50.0,
+        axis=axis,
+        interpolation="midpoint",
+        keepdims=keepdims,
+    )
