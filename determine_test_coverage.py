@@ -8,7 +8,7 @@ from tqdm import tqdm
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 10
+N = 15
 run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
     with open("tests.pkl", "rb") as f:
