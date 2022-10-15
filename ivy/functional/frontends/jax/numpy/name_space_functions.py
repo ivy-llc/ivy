@@ -156,6 +156,11 @@ def arctan(x):
 
 
 @inputs_to_ivy_arrays
+def arccos(x):
+    return ivy.acos(x)
+    
+
+@inputs_to_ivy_arrays
 def arctan2(x1, x2):
     return ivy.atan2(x1, x2)
 
