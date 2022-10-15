@@ -139,3 +139,6 @@ def dirichlet(
     return torch.Tensor(
         torch.distributions.dirichlet.Dirichlet(alpha).sample(size), dtype=dtype
     )
+
+
+dirichlet.unsupported_dtypes = ("float16",)
