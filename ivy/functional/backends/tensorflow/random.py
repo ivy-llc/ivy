@@ -2,12 +2,11 @@
 signature.
 """
 
-from typing import Optional, Union, Sequence
-
 # global
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 from tensorflow_probability import distributions as tfd
+from typing import Optional, Union, Sequence
 
 
 # local
