@@ -206,11 +206,9 @@ def isin(
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
 ) -> tf.Tensor:
-
     if invert is True:
         return tf.math.logical_not(tf.math.equal(elements, test_elements))
     else:
         return tf.math.equal(elements, test_elements)
-
 
 isin.support_native_out = True
