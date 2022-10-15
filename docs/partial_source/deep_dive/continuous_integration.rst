@@ -38,7 +38,7 @@ Array API Tests
 ---------------
 The `test-array-api.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml>`_ workflow runs the Array API Tests. Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab.
 
-The Workflow runs the Array API Tests for each backend and submodule pair. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/14_array_api_tests.html>`_.
+The Workflow runs the Array API Tests for each backend and submodule pair. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/array_api_tests.rst.html>`_.
 
 Ivy Core Tests
 --------------
@@ -56,7 +56,7 @@ Individual Tests in the Workflow are triggered only on changes to specific files
 
 In case you want to run all the Ivy Core Tests, a manually-triggered workflow is available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-manual.yml>`_ that can be dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ tab.
 
-More details about Ivy Tests are available `here <https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html>`_.
+More details about Ivy Tests are available `here <https://lets-unify.ai/ivy/deep_dive/ivy_tests.html>`_.
 
 Ivy NN Tests
 ------------
@@ -100,7 +100,7 @@ The following workflows run the Frontend tests for the corresponding backend:
 #. **TensorFlow**: `test-frontend-tensorflow.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-tensorflow.yml>`_
 #. **PyTorch**: `test-frontend-torch.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-torch.yml>`_
 
-Each of these workflows can also be Manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html>`_.
+Each of these workflows can also be Manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab. More details about the Array API Tests are available `here <https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html>`_.
 
 
 CI Pipeline ➡️
