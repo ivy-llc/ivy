@@ -1,10 +1,10 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy.functional.backends.torch as ivy_torch
+
 
 @handle_cmd_line_args
 @given(
@@ -33,8 +33,8 @@ def test_torch_multinomial(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="multinomial",
-        input = population_size,
+        input=population_size,
         num_samples=num_samples,
-        replacement = replace,
+        replacement=replace,
         dtype=dtypes,
     )
