@@ -195,7 +195,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.matrix_norm also applies to this method with minimal changes.
         Parameters
         ----------
-        x
+        self
             Input array having shape (..., M, N) and whose innermost two dimensions
             form MxN matrices. Should have a floating-point data type.
         ord
@@ -209,16 +209,24 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
             Matrix norm of the array at specified axes.
+
         Examples
         --------
         >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
         >>> y = x.matrix_norm(ord=1)
         >>> print(y)
         ivy.array(6.3)
+
+        >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
+        >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
+        >>> print(y)
+        ivy.array([[[ 4.24]],
+                [[11.4 ]]])
         """
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out

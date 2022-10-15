@@ -953,6 +953,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array(6.)
         }
 
+        >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
+        >>> ord = ivy.Container(a="nuc", b=ivy.inf)
+        >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+        >>> k = ivy.Container(a=True, b=False)
+        >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
+        >>> print(y)
+        {
+            a: ivy.array([[[4.24]], 
+                         [[11.4]], 
+                         [[19.2]]]),
+            b: ivy.array([4., 12.])
+        }
         """
         return self.static_matrix_norm(
             self,
