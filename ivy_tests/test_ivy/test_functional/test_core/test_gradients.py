@@ -207,6 +207,7 @@ def test_execute_with_gradients(
     retain_grads,
     num_positional_args,
     native_array,
+    container,
     fw,
 ):
     def func(xs):
@@ -229,7 +230,7 @@ def test_execute_with_gradients(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[True],
+        container_flags=container,
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
