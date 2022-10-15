@@ -11,6 +11,7 @@ from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
+from .extensions import ContainerWithExtensions
 from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
@@ -34,6 +35,7 @@ class Container(
     ContainerWithDataTypes,
     ContainerWithDevice,
     ContainerWithElementwise,
+    ContainerWithExtensions,
     ContainerWithGeneral,
     ContainerWithGradients,
     ContainerWithImage,
@@ -119,7 +121,7 @@ class Container(
         other
             second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
-        
+
         Returns
         -------
         ret
@@ -141,10 +143,10 @@ class Container(
 
         With :class:`ivy.Array` instances at the leaves:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x + y
         >>> print(z)
         {
@@ -154,8 +156,8 @@ class Container(
 
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> y = ivy.array([[1.1, 2.3, -3.6]])
         >>> z = x + y
         >>> print(z)
@@ -208,7 +210,7 @@ class Container(
 
     def __sub__(self, other):
         """
-        ivy.Container special method for the subtract operator, calling 
+        ivy.Container special method for the subtract operator, calling
         :code:`operator.sub` for each of the corresponding leaves of the two containers.
 
         Parameters
@@ -218,11 +220,11 @@ class Container(
         other
             second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
-        
+
         Returns
         -------
         ret
-            a container containing the element-wise differences. The returned array must 
+            a container containing the element-wise differences. The returned array must
             have a data type determined by :ref:`type-promotion`.
 
         Examples
@@ -240,10 +242,10 @@ class Container(
 
         With :class:`ivy.Array` instances at the leaves:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([4, 3, 2]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                              b=ivy.array([6, 5, 4]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([6, 5, 4]))
         >>> z = x - y
         >>> print(z)
         {
@@ -253,17 +255,17 @@ class Container(
 
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> y = ivy.array([[1.1, 2.3, -3.6]])
         >>> z = x - y
         >>> print(z)
         {
-            a: ivy.array([[2.9, 1.7, 7.6], 
-                          [3.9, 2.7, 8.6], 
+            a: ivy.array([[2.9, 1.7, 7.6],
+                          [3.9, 2.7, 8.6],
                           [4.9, 3.7, 9.6]]),
-            b: ivy.array([[3.9, 2.7, 8.6], 
-                          [4.9, 3.7, 9.6], 
+            b: ivy.array([[3.9, 2.7, 8.6],
+                          [4.9, 3.7, 9.6],
                           [5.9, 4.7, 10.6]])
         }
         """
@@ -417,7 +419,7 @@ class Container(
 
     def __rshift__(self, other):
         """
-        ivy.Container special method for the right shift operator, calling 
+        ivy.Container special method for the right shift operator, calling
         :code:`operator.rshift` for each of the corresponding leaves of the
         two containers.
 
@@ -426,14 +428,14 @@ class Container(
         self
             first input container. Should have an integer data type.
         other
-            second input array or container. Must be compatible with ``self`` 
-            (see :ref:`broadcasting`). Should have an integer data type. 
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer data type.
             Each element must be greater than or equal to ``0``.
 
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned array 
+            a container containing the element-wise results. The returned array
             must have a data type determined by :ref:`type-promotion`.
 
         Examples
@@ -451,10 +453,10 @@ class Container(
 
         With :class:`ivy.Array` instances at the leaves:
 
-        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
-                              b=ivy.array([15, 45, 143]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]), \
-                              b=ivy.array([0, 3, 4]))
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
+        ...                   b=ivy.array([15, 45, 143]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([0, 3, 4]))
         >>> z = x >> y
         >>> print(z)
         {
@@ -464,8 +466,8 @@ class Container(
 
         With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
-                              b=ivy.array([15, 45, 143]))
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
+        ...                   b=ivy.array([15, 45, 143]))
         >>> y = ivy.array([1, 2, 3])
         >>> z = x >> y
         >>> print(z)
@@ -506,8 +508,8 @@ class Container(
         Examples
         --------
         >>> a = 64
-        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), \
-                              b = ivy.array([3, 4, 5]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]),
+        ...                   b = ivy.array([3, 4, 5]))
         >>> y = a >> b
         >>> print(y)
         {

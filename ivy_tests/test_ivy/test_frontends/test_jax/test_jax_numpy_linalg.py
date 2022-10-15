@@ -31,6 +31,8 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.det",
+        rtol=1e-04,
+        atol=1e-04,
         a=np.asarray(x[0], dtype=dtype[0]),
     )
 
@@ -120,6 +122,8 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
         frontend="jax",
         fn_tree="numpy.linalg.inv",
         a=np.asarray(x[0], dtype=dtype[0]),
@@ -164,7 +168,8 @@ def test_jax_numpy_eigvalsh(
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.eigvalsh",
-        rtol=1e-2,
+        rtol=1e-02,
+        atol=1e-02,
         a=x,
         UPLO=UPLO,
     )
@@ -201,6 +206,8 @@ def test_jax_numpy_qr(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
         frontend="jax",
         fn_tree="numpy.linalg.qr",
         a=np.asarray(x[0], dtype[0]),
@@ -286,9 +293,44 @@ def test_jax_numpy_cholesky(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.linalg.cholesky",
         rtol=1e-02,
         a=x,
+    )
+
+
+# slogdet
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        max_value=100,
+        min_value=-100,
+        shape=st.tuples(
+            st.shared(st.integers(1, 5), key="sq"),
+            st.shared(st.integers(1, 5), key="sq"),
+        ),
+        num_arrays=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.slogdet"
+    ),
+)
+def test_jax_slogdet(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.slogdet",
+        a=np.asarray(x[0], dtype=input_dtype[0]),
     )

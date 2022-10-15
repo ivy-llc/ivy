@@ -86,7 +86,7 @@ def test_linspace(
         fw=fw,
         fn_name="linspace",
         rtol_=1e-1,
-        atol_=1e-1,
+        atol_=0.8,
         start=start_stop[0],
         stop=start_stop[1],
         num=num,
@@ -141,7 +141,7 @@ def test_logspace(
         fw=fw,
         fn_name="logspace",
         rtol_=1,  # if It's less than one it'll test for inf
-        atol_=1e-06,
+        atol_=0.8,
         test_values=True,
         start=start_stop[0],
         stop=start_stop[1],

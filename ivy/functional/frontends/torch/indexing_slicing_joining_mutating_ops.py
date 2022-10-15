@@ -63,3 +63,21 @@ def swapdims(input, dim0, dim1):
 
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
+
+
+def tile(input, dims):
+    try:
+        tup = tuple(dims)
+    except TypeError:
+        tup = (dims,)
+    d = len(tup)
+    res = 0
+    if len(input.shape) > len([dims]) - 1:
+        res = input
+    if d < input.ndim:
+        tup = (1,) * (input.ndim - d) + tup
+        res = ivy.tile(input, tup)
+
+    else:
+        res = ivy.tile(input, reps=dims, out=None)
+    return res

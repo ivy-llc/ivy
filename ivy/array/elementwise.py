@@ -1156,8 +1156,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 1.61, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log()
         >>> print(y)
         ivy.array([[nan, 0., 1.61, inf],
@@ -1259,8 +1259,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 0.699, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log10()
         >>> print(y)
         ivy.array([[nan, 0., 0.699, inf],
@@ -2210,3 +2210,32 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([ 1., -3.,  4.])
         """
         return ivy.trunc_divide(self._data, x2, out=out)
+
+    def isreal(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isreal. This method simply wraps
+        the function, and so the docstring for ivy.isreal also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing test results. An element ``out_i`` is ``True``
+            if ``self_i`` is real number and ``False`` otherwise.
+            The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1j, 2+5j, 3.7-6j])
+        >>> x.isreal()
+        ivy.array([False, False, False])
+        """
+        return ivy.isreal(self._data, out=out)

@@ -122,14 +122,14 @@ def var(
     if x.size == 0:
         return jnp.asarray(float("nan"))
     size = 1
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
     for a in axis:
         size *= x.shape[a]
+    if size == correction:
+        size += 0.0001  # to avoid division by zero in return
     return jnp.asarray(
         jnp.multiply(
             jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-            size / (size - correction),
+            size / jnp.abs(size - correction),
         )
     ).astype(x.dtype)
 

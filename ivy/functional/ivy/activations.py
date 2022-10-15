@@ -57,8 +57,8 @@ def relu(
     >>> print(y)
     ivy.array([1.5, 0.7, 0.])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                       [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.relu(x, out = x)
     >>> print(x)
     ivy.array([[1.1, 2.2, 3.3],
@@ -129,8 +129,8 @@ def leaky_relu(
     >>> print(y)
     ivy.array([ 1.5 ,  0.7 , -0.48])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                       [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.leaky_relu(x, out = x)
     >>> print(x)
     ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
@@ -310,8 +310,8 @@ def softmax(
     >>> print(y)
     ivy.array([0.422, 0.155, 0.422])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                       [4.4, 5.5, 6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [4.4, 5.5, 6.6]])
     >>> y = ivy.softmax(x, axis = 1)
     >>> print(y)
     ivy.array([[0.0768, 0.231 , 0.693 ],
