@@ -51,30 +51,6 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-def diag(
-    x: JaxArray,
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = jnp.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += jnp.diag(x - padding_value, k=offset)
-
-    return ret
-
-
 def diagonal(
     x: JaxArray,
     /,
@@ -374,6 +350,41 @@ def vector_norm(
 # ------#
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = jnp.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += jnp.diag(x - padding_value, k=offset)
+
+    return ret
+
+
+def vander(
+    x: JaxArray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vander(x, N=N, increasing=increasing)
+
+
 def vector_to_skew_symmetric_matrix(
     vector: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -392,14 +403,3 @@ def vector_to_skew_symmetric_matrix(
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return jnp.concatenate((row1, row2, row3), -2)
-
-
-def vander(
-    x: JaxArray,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.vander(x, N=N, increasing=increasing)
