@@ -349,7 +349,7 @@ def test_torch_instance_new_zeros(
         frontend="torch",
         class_name="tensor",
         method_name="new_zeros",
-        )
+    )
 
 
 # tan
@@ -371,6 +371,10 @@ def test_torch_instance_tan(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
         input_dtypes_method=["float64"] + input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
@@ -379,6 +383,5 @@ def test_torch_instance_tan(
         frontend="torch",
         class_name="tensor",
         method_name="tan",
-        )
-
+    )
     
