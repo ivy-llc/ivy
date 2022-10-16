@@ -415,6 +415,7 @@ class ArrayWithExtensions(abc.ABC):
         """
         return ivy.flipud(self._data, out=out)
 
+
     def fmod(
         self: ivy.Array,
         x2: ivy.Array,
@@ -454,3 +455,4 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([ nan,  nan,  nan])
         """
         return ivy.fmod(self._data, x2, out=out)
+

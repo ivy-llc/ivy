@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -51,7 +51,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -106,7 +106,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -130,6 +130,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
     def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        Examples
+        --------
+        >>> x = ivy.array([[2.,4.],[6.,7.]])
+        >>> y = x.det()
+        >>> print(y)
+        ivy.array(-10.)
+        """
         return ivy.det(self._data, out=out)
 
     def diagonal(
