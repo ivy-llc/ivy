@@ -4,6 +4,7 @@ from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.torch.Tensor import Tensor
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -268,33 +269,24 @@ def test_torch_instance_view(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
+        max_num_dims=0,
     ),
 )
 def test_torch_instance_float(
     dtype_x,
-    as_variable,
-    native_array,
 ):
-    input_dtype, x = dtype_x
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "memory_format": torch.preserve_format,
-        },
-        frontend="torch",
-        class_name="tensor",
-        method_name="float",
-    )
+    _, x = dtype_x
+    data = Tensor(x[0])
+    ret = data.float()
+    ret_gt = torch.from_numpy(x[0]).float()
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (_, _) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            ground_truth_backend="torch",
+        )
 
 
 # tan
