@@ -1,17 +1,18 @@
 # global
 import ivy
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
-
+@to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
     return ivy.conv2d(value, filters, 1, padding, dilations=rate)
 
-
+@to_ivy_arrays_and_back
 def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
     return ivy.conv2d_transpose(
         value, filters, rate, padding, output_shape=output_shape, dilations=rate
     )
 
-
+@to_ivy_arrays_and_back
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
@@ -19,7 +20,7 @@ def conv1d(
         input, filters, stride, padding, data_format=data_format, dilations=dilations
     )
 
-
+@to_ivy_arrays_and_back
 def conv1d_transpose(
     input,
     filters,
@@ -40,11 +41,11 @@ def conv1d_transpose(
         dilations=dilations,
     )
 
-
+@to_ivy_arrays_and_back
 def gelu(features, approximate=False, name=None):
     return ivy.gelu(features, approximate=approximate)
 
-
+@to_ivy_arrays_and_back
 def conv2d(
     input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
 ):
@@ -52,7 +53,7 @@ def conv2d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
 
-
+@to_ivy_arrays_and_back
 def conv2d_transpose(
     input,
     filters,
@@ -73,7 +74,7 @@ def conv2d_transpose(
         dilations=dilations,
     )
 
-
+@to_ivy_arrays_and_back
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
@@ -81,7 +82,7 @@ def conv3d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
 
-
+@to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
     filters,
@@ -102,7 +103,7 @@ def conv3d_transpose(
         dilations=dilations,
     )
 
-
+@to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
@@ -112,11 +113,11 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         offset - mean * inv if offset is not None else -mean * inv, x.dtype
     )
 
-
+@to_ivy_arrays_and_back
 def dropout(x, prob, scale, dtype, name=None):
     return ivy.dropout(x, prob, scale, dtype)
 
-
+@to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
     beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
     return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
@@ -131,7 +132,7 @@ silu.unsupported_dtypes = (
     "bfloat16",
 )
 
-
+@to_ivy_arrays_and_back
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     ivy.assertions.check_shape(labels, logits)
     zeros = ivy.zeros_like(logits)
@@ -150,7 +151,7 @@ sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
     "bool",
 )
 
-
+@to_ivy_arrays_and_back
 def weighted_cross_entropy_with_logits(
     labels=None, logits=None, pos_weight=1.0, name=None
 ):

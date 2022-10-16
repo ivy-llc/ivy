@@ -1,6 +1,7 @@
 import ivy
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
-
+@to_ivy_arrays_and_back
 def hard_sigmoid(x):
     dtype_in = x.dtype
     point_two = ivy.full(x.shape, 0.2)
@@ -11,18 +12,18 @@ def hard_sigmoid(x):
     x = ivy.asarray(x, dtype=dtype_in)
     return x
 
-
+@to_ivy_arrays_and_back
 def linear(x):
     return x
 
-
+@to_ivy_arrays_and_back
 def relu(x):
     return ivy.relu(x)
 
-
+@to_ivy_arrays_and_back
 def sigmoid(x):
     return ivy.sigmoid(x)
 
-
+@to_ivy_arrays_and_back
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
