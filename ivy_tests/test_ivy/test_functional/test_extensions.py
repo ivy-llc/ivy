@@ -232,7 +232,17 @@ def test_flatten(
     fw,
 ):
     input_dtypes, x = dtype_and_x
-    start_dim, end_dim = axes[0], axes[1]
+    x = np.asarray(x[0], dtype=input_dtypes[0])
+
+    if axes[1] == 0:
+        start_dim, end_dim = axes[1], axes[0]
+    elif axes[0] * axes[1] < 0:
+        if x.ndim + axes[0] < axes[1]:
+            start_dim, end_dim = axes[1], axes[0]
+        else:
+            start_dim, end_dim = axes[0], axes[1]
+    else:
+        start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -243,7 +253,7 @@ def test_flatten(
         instance_method=instance_method,
         fw=fw,
         fn_name="flatten",
-        x=np.asarray(x[0], dtype=input_dtypes[0]),
+        x=x,
         start_dim=start_dim,
         end_dim=end_dim,
     )
