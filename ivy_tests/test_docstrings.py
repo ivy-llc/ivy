@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import numpy as np
 import sys
+import doctest
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
@@ -91,39 +92,26 @@ def check_docstring_examples_run(
 
     # removing extra new lines and trailing white spaces from the docstrings
     trimmed_docstring = trim(docstring=docstring)
-    trimmed_docstring = trimmed_docstring.split("\n")
 
-    # end_index: -1, if print statement is not found in the docstring
-    end_index = -1
+    # doctest parser
+    doctest_parser = doctest.DocTestParser()
+
+    docs_examples = doctest_parser.get_examples(trimmed_docstring)
 
     # parsed_output is set as an empty string to manage functions with multiple inputs
     parsed_output = ""
-
-    # parsing through the docstrings to find lines with print statement
-    # following which is our parsed output
-    sub = ">>> print("
-    for index, line in enumerate(trimmed_docstring):
-        if sub in line:
-            end_index = trimmed_docstring.index("", index)
-            p_output = trimmed_docstring[index + 1 : end_index]
-            p_output = ("").join(p_output).replace(" ", "")
-            p_output = p_output.replace("...", "")
-            if parsed_output != "":
-                parsed_output += ","
-            parsed_output += p_output
-
-    if end_index == -1:
-        return True
-
     executable_lines = []
 
-    for line in trimmed_docstring:
-        if line.startswith(">>>"):
-            executable_lines.append(line.split(">>>")[1][1:])
-        if line.startswith("..."):
-            executable_lines[-1] += line.split("...")[1][1:]
-        if ">>> print(" in line:
-            break
+    for example in docs_examples:
+        if example.want != "":
+            if parsed_output != "":
+                parsed_output += ","
+            parsed_output += example.want.replace("...", "")    
+        if "print(" not in example.source: 
+            executable_lines.append(example.source)
+
+    if parsed_output == "":
+        return True
 
     # noinspection PyBroadException
     f = StringIO()
