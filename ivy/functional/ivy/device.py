@@ -356,7 +356,7 @@ def dev(
           array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is False.
+          Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
@@ -1053,15 +1053,15 @@ def split_func_call(
         The maximum size of each of the chunks to be fed into the function.
     chunk_size
         The size of each of the chunks to be fed into the function. Specifying this arg
-        overwrites the global split factor. Default is None.
+        overwrites the global split factor. Default is ``None``.
     input_axes
         The axes along which to split each of the inputs, before passing to the
-        function. Default is 0.
+        function. Default is ``0``.
     output_axes
         The axes along which to concat each of the returned outputs. Default is same as
         fist input axis.
     stop_gradients
-        Whether to stop the gradients for each computed return. Default is False.
+        Whether to stop the gradients for each computed return. Default is ``False``.
     device
         The device to set the split factor for. Sets the default device by default.
 
@@ -1217,7 +1217,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the supported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1249,7 +1249,7 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the unsupported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------

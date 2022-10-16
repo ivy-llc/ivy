@@ -273,7 +273,7 @@ def is_variable(
         Whether to check if the data type is exclusively a variable, rather than an
         array. For frameworks like JAX that do not have exclusive variable types, the
         function will always return False if this flag is set, otherwise the check is
-        the same for general arrays. Default is False.
+        the same for general arrays. Default is ``False``.
 
     Returns
     -------
@@ -748,7 +748,7 @@ def optimizer_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -868,7 +868,7 @@ def gradient_descent_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -963,7 +963,7 @@ def lars_update(
         The factor used for weight decay. Default is zero.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1028,7 +1028,7 @@ def adam_update(
         divisor during adam update, preventing division by zero (Default value = 1e-7).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
@@ -1104,7 +1104,7 @@ def lamb_update(
         The factor used for weight decay. (Default value = 0).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
