@@ -408,7 +408,7 @@ class ArrayWithExtensions(abc.ABC):
         Examples
         --------
         >>> m = ivy.diag([1, 2, 3])
-        >>> ivy.flipud(m)
+        >>> m.flipud()
         ivy.array([[ 0.,  0.,  3.],
             [ 0.,  2.,  0.],
             [ 1.,  0.,  0.]])
