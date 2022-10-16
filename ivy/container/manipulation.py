@@ -1357,7 +1357,7 @@ class ContainerWithManipulation(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> y = ivy.Container.static_unstack(x, axis=0)
         >>> print(y)
         [{
@@ -1373,7 +1373,7 @@ class ContainerWithManipulation(ContainerBase):
         }]
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
         >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
         >>> print(y)
         [{

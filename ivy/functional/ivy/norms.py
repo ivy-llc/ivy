@@ -98,7 +98,7 @@ def layer_norm(
 
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
     ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
-    >> normalized_idxs = [0]
+    >>> normalized_idxs = [0]
     >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, weight=0.3)
     >>> print(y)
     {

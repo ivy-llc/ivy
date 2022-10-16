@@ -1400,7 +1400,7 @@ def unstack(
     With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
     >>> ivy.unstack(x, axis=0)
     [{
         a: ivy.array([[1, 2],
