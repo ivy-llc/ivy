@@ -313,3 +313,15 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def flipud(
+    m: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.flipud(m)
+
+
+flipud.support_native_out = False
