@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     x=_get_first_matrix(),
     y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.solve"
+        fn_name="ivy.functional.frontends.numpy.linalg.solve"
     ),
 )
 def test_numpy_solve(x, y, as_variable, native_array, num_positional_args):
@@ -91,6 +91,5 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="linalg.pinv",
-        rtol=1e-15,
         a=x[0],
     )

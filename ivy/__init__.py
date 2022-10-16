@@ -1,14 +1,4 @@
 # global
-from typing import Union
-import jax.numpy as jnp
-import jax
-import jaxlib
-from jaxlib.xla_extension import Buffer
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.types.core import Tensor
-from tensorflow.python.framework.tensor_shape import TensorShape
-import torch
 import warnings
 from ivy._version import __version__ as __version__
 
@@ -30,28 +20,24 @@ class Framework:
     pass
 
 
-NativeArray = Union[
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-    np.ndarray,
-    Tensor,
-    torch.Tensor,
-]
+class NativeArray:
+    pass
 
 
-NativeVariable = Union[
-    jax.interpreters.xla._DeviceArray, np.ndarray, Tensor, torch.Tensor
-]
+class NativeVariable:
+    pass
 
 
-NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
+class NativeDevice:
+    pass
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
+class NativeDtype:
+    pass
 
 
-NativeShape = Union[tuple, TensorShape, torch.Size]
+class NativeShape:
+    pass
 
 
 class Container:
@@ -89,6 +75,54 @@ class Dtype(str):
                 "dtype must be string and starts with int, float, complex, or bool"
             )
         return str.__new__(cls, dtype_str)
+
+    def __ge__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self == ivy.promote_types(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self >= other and self != other
+
+    def __lt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self != ivy.promote_types(self, other)
+
+    def __le__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self < other or self == other
 
 
 class Shape(tuple):
@@ -234,9 +268,6 @@ all_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
-    complex256,
     bool,
 )
 all_numeric_dtypes = (

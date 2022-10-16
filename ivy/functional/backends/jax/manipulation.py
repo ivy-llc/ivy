@@ -2,7 +2,6 @@
 import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
-
 import jax.numpy as jnp
 
 # local
@@ -21,10 +20,13 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[JaxArray], /, *, axis: int = 0, out: Optional[JaxArray] = None
+    xs: Union[Tuple[JaxArray, ...], List[JaxArray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
-
     if axis is None:
         if is_tuple:
             xs = list(xs)
@@ -46,7 +48,7 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except ValueError as error:
+    except IndexError as error:
         raise ivy.exceptions.IvyException(repr(error))
 
 
