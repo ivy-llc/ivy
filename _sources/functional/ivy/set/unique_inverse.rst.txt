@@ -5,9 +5,9 @@ unique_inverse
 
 .. autofunction:: ivy.array.array_methods.unique_inverse
 
-.. autofunction:: ivy.container.container_methods.unique_inverse
-
 .. autofunction:: ivy.container.container_methods.static_unique_inverse
+
+.. autofunction:: ivy.container.container_methods.unique_inverse
 |
 | **Supported Frameworks:**
 

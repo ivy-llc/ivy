@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -969,9 +969,12 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
-<span class="sd">            Input array.</span>
+<span class="sd">            Input array having shape (..., M, N) and whose innermost two deimensions </span>
+<span class="sd">            form MxN matrices. Should have a floating-point data type.</span>
 <span class="sd">        ord</span>
-<span class="sd">            Order of the norm. Default is 2.</span>
+<span class="sd">            Order of the norm. Default is &quot;fro&quot;.</span>
+<span class="sd">        axis</span>
+<span class="sd">            specifies the axes that hold 2-D matrices. Default: (-2, -1).</span>
 <span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
 <span class="sd">            result as dimensions with size one. With this option the result will</span>
@@ -995,6 +998,30 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            Matrix norm of the array at specified axes.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \</span>
+<span class="sd">                              b=ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_matrix_norm(x, ord=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(4.2),</span>
+<span class="sd">            b: ivy.array(6.)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \</span>
+<span class="sd">                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))</span>
+<span class="sd">        &gt;&gt;&gt; ord = ivy.Container(a=1, b=float(&#39;inf&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; axis = ivy.Container(a=(1, 2), b=(2, 1))</span>
+<span class="sd">        &gt;&gt;&gt; k = ivy.Container(a=False, b=True)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_matrix_norm(x, ord=ord, axis=axis, keepdims=k)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([4.24, 11.4, 19.2]),</span>
+<span class="sd">            b: ivy.array([[[3.7]], </span>
+<span class="sd">                          [[11.2]]])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -1031,9 +1058,12 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
-<span class="sd">            Input array.</span>
+<span class="sd">            Container having shape (..., M, N) and whose innermost two dimensions </span>
+<span class="sd">            form MxN matrices. Should have a floating-point data type.</span>
 <span class="sd">        ord</span>
-<span class="sd">            Order of the norm. Default is 2.</span>
+<span class="sd">            Order of the norm. Default is &quot;fro&quot;.</span>
+<span class="sd">        axis</span>
+<span class="sd">            specifies the axes that hold 2-D matrices. Default: (-2, -1).</span>
 <span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
 <span class="sd">            result as dimensions with size one. With this option the result will</span>
@@ -1058,6 +1088,30 @@
 <span class="sd">        ret</span>
 <span class="sd">            Matrix norm of the array at specified axes.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \</span>
+<span class="sd">                              b=ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.matrix_norm(ord=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(4.2),</span>
+<span class="sd">            b: ivy.array(6.)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \</span>
+<span class="sd">                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))</span>
+<span class="sd">        &gt;&gt;&gt; ord = ivy.Container(a=&quot;nuc&quot;, b=ivy.inf)</span>
+<span class="sd">        &gt;&gt;&gt; axis = ivy.Container(a=(1, 2), b=(2, 1))</span>
+<span class="sd">        &gt;&gt;&gt; k = ivy.Container(a=True, b=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[4.24]], </span>
+<span class="sd">                         [[11.4]], </span>
+<span class="sd">                         [[19.2]]]),</span>
+<span class="sd">            b: ivy.array([4., 12.])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_norm</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

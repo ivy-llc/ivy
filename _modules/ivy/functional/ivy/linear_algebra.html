@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -1028,9 +1028,49 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input array.</span>
+<span class="sd">        Input array having shape (..., M, N) and whose innermost two dimensions</span>
+<span class="sd">        form MxN matrices. Should have a floating-point data type.</span>
 <span class="sd">    ord</span>
-<span class="sd">        Order of the norm. Default is &quot;fro&quot;.</span>
+<span class="sd">        order of the norm. The following mathematical norms must be supported:</span>
+
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | ord              | description                     |</span>
+<span class="sd">        +==================+=================================+</span>
+<span class="sd">        | &#39;fro&#39;            | Frobenius norm                  |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | &#39;nuc&#39;            | nuclear norm                    |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | 1                | max(sum(abs(x), axis=0))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | 2                | largest singular value          |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | inf              | max(sum(abs(x), axis=1))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+
+<span class="sd">        The following non-mathematical &quot;norms&quot; must be supported:</span>
+
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | ord              | description                     |</span>
+<span class="sd">        +==================+=================================+</span>
+<span class="sd">        | -1               | min(sum(abs(x), axis=0))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | -2               | smallest singular value         |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | -inf             | min(sum(abs(x), axis=1))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+
+<span class="sd">        If ``ord=1``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=1`` (i.e., the maximum absolute value column sum).</span>
+
+<span class="sd">        If ``ord=2``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=inf`` (i.e., the maximum absolute value row sum).</span>
+
+<span class="sd">        If ``ord=inf``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=2`` (i.e., the largest singular value).</span>
+
+<span class="sd">        Default: &quot;fro&quot;.</span>
+<span class="sd">    axis</span>
+<span class="sd">        specifies the axes that hold 2-D matrices. Default: (-2, -1).</span>
 <span class="sd">    keepdims</span>
 <span class="sd">        If this is set to True, the axes which are normed over are left in the result as</span>
 <span class="sd">        dimensions with size one. With this option the result will broadcast correctly</span>
@@ -1053,6 +1093,62 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:&#39;ivy.Array&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(5.47722558)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(8, dtype=float).reshape((2, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(2)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 4., 12.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12, dtype=float).reshape((3, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([ 4., 12., 20.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=&#39;nuc&#39;, keepdims=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[11.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \</span>
+<span class="sd">                        [[1., 0., 1.1], [1., 1., 0.]]])   </span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=&#39;fro&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([10.5 ,  2.05])</span>
+
+<span class="sd">    With :class:&#39;ivy.Container&#39; input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.666, 9.11], \</span>
+<span class="sd">                                       [42.69, 9.23]]), \</span>
+<span class="sd">                          b=ivy.array([[1.1, 2.2, 3.3], \</span>
+<span class="sd">                                       [4.4, 5.5, 6.6]]))   </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=-ivy.inf)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(9.776),</span>
+<span class="sd">        b: ivy.array(6.6000004)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:&#39;ivy:Container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \</span>
+<span class="sd">                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) </span>
+<span class="sd">    &gt;&gt;&gt; ord = ivy.Container(a=1, b=float(&#39;inf&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; axis = ivy.Container(a=(1, 2), b=(2, 1))</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=False, b=True)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=k)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([4., 12., 20.]),</span>
+<span class="sd">        b: ivy.array([[[4.]], </span>
+<span class="sd">                      [[12.]]])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span>
