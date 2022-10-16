@@ -50,7 +50,7 @@ def all(
         integer, the function must determine the axis along which to perform a reduction
         by counting backward from the last dimension (where ``-1`` refers to the last
         dimension). If provided an invalid ``axis``, the function must raise an
-        exception. Default  ``None``.
+        exception. Default ``None``.
     keepdims
         If ``True``, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
