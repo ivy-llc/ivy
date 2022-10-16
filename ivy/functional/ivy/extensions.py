@@ -1187,6 +1187,11 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def eigvals(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -1210,6 +1215,10 @@ def eigvals(
 
     Examples
     --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.random_normal(shape=(2, 2, 2))
+    >>> ivy.eigvals(x)
 
     """
     return ivy.current_backend().eigvals(x, out=out)
