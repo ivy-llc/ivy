@@ -20,12 +20,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.add"
+        fn_name="ivy.functional.frontends.tensorflow.math.add"
     ),
 )
-def test_tensorflow_add(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_add(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -34,61 +32,9 @@ def test_tensorflow_add(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="add",
+        fn_tree="math.add",
         x=x[0],
         y=x[1],
-    )
-
-
-@st.composite
-def _get_clip_inputs(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
-        )
-    )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=shape,
-        )
-    )
-    min = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5)
-    )
-    max = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
-    )
-    return x_dtype, x, min, max
-
-
-# clip_by_value
-@handle_cmd_line_args
-@given(
-    input_and_ranges=_get_clip_inputs(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.clip_by_value"
-    ),
-)
-def test_tensorflow_clip_by_value(
-    input_and_ranges,
-    num_positional_args,
-    as_variable,
-    native_array,
-    fw,
-):
-    x_dtype, x, min, max = input_and_ranges
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="clip_by_value",
-        t=x[0],
-        clip_value_min=min,
-        clip_value_max=max,
     )
 
 
@@ -97,12 +43,10 @@ def test_tensorflow_clip_by_value(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tan"
+        fn_name="ivy.functional.frontends.tensorflow.math.tan"
     ),
 )
-def test_tensorflow_tan(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_tan(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -111,7 +55,7 @@ def test_tensorflow_tan(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="tan",
+        fn_tree="math.tan",
         x=x[0],
     )
 
@@ -125,11 +69,11 @@ def test_tensorflow_tan(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.multiply"
+        fn_name="ivy.functional.frontends.tensorflow.math.multiply"
     ),
 )
 def test_tensorflow_multiply(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -139,7 +83,7 @@ def test_tensorflow_multiply(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="multiply",
+        fn_tree="math.multiply",
         x=x[0],
         y=x[1],
     )
@@ -154,7 +98,7 @@ def test_tensorflow_multiply(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_maximum(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -163,7 +107,7 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
         num_positional_args=2,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="maximum",
+        fn_tree="math.maximum",
         a=x[0],
         b=x[1],
     )
@@ -178,11 +122,11 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.subtract"
+        fn_name="ivy.functional.frontends.tensorflow.math.subtract"
     ),
 )
 def test_tensorflow_subtract(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -192,7 +136,7 @@ def test_tensorflow_subtract(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="subtract",
+        fn_tree="math.subtract",
         x=x[0],
         y=x[1],
     )
@@ -207,11 +151,11 @@ def test_tensorflow_subtract(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.logical_xor"
+        fn_name="ivy.functional.frontends.tensorflow.math.logical_xor"
     ),
 )
 def test_tensorflow_logical_xor(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -236,12 +180,10 @@ def test_tensorflow_logical_xor(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.divide"
+        fn_name="ivy.functional.frontends.tensorflow.math.divide"
     ),
 )
-def test_tensorflow_divide(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_divide(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -250,7 +192,7 @@ def test_tensorflow_divide(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="divide",
+        fn_tree="math.divide",
         x=x[0],
         y=x[1],
     )
@@ -263,11 +205,11 @@ def test_tensorflow_divide(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.negative"
+        fn_name="ivy.functional.frontends.tensorflow.math.negative"
     ),
 )
 def test_tensorflow_negative(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -277,7 +219,7 @@ def test_tensorflow_negative(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="negative",
+        fn_tree="math.negative",
         x=x[0],
     )
 
@@ -291,11 +233,11 @@ def test_tensorflow_negative(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.logical_and"
+        fn_name="ivy.functional.frontends.tensorflow.math.logical_and"
     ),
 )
 def test_tensorflow_logical_and(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -321,11 +263,11 @@ def test_tensorflow_logical_and(
         safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.log_sigmoid"
+        fn_name="ivy.functional.frontends.tensorflow.math.log_sigmoid"
     ),
 )
 def test_tensorflow_log_sigmoid(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -347,22 +289,22 @@ def test_tensorflow_log_sigmoid(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reciprocal_no_nan"
+        fn_name="ivy.functional.frontends.tensorflow.math.reciprocal_no_nan"
     ),
 )
 def test_tensorflow_reciprocal_no_nan(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="math.reciprocal_no_nan",
-        input_tensor=x[0],
+        x=x[0],
     )
 
 
@@ -373,11 +315,11 @@ def test_tensorflow_reciprocal_no_nan(
         available_dtypes=tuple([ivy.bool]),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_all"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_all"
     ),
 )
 def test_tensorflow_reduce_all(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -390,7 +332,7 @@ def test_tensorflow_reduce_all(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_all",
+        fn_tree="math.reduce_all",
         input_tensor=x[0],
     )
 
@@ -402,11 +344,11 @@ def test_tensorflow_reduce_all(
         available_dtypes=tuple([ivy.bool]),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_any"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_any"
     ),
 )
 def test_tensorflow_reduce_any(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -419,7 +361,7 @@ def test_tensorflow_reduce_any(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_any",
+        fn_tree="math.reduce_any",
         input_tensor=x[0],
     )
 
@@ -435,7 +377,7 @@ def test_tensorflow_reduce_any(
     ),
 )
 def test_tensorflow_reduce_euclidean_norm(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     (
         input_dtype,
@@ -460,11 +402,11 @@ def test_tensorflow_reduce_euclidean_norm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_logsumexp"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_logsumexp"
     ),
 )
 def test_tensorflow_reduce_logsumexp(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -474,7 +416,7 @@ def test_tensorflow_reduce_logsumexp(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_logsumexp",
+        fn_tree="math.reduce_logsumexp",
         input_tensor=x[0],
     )
 
@@ -484,7 +426,7 @@ def test_tensorflow_reduce_logsumexp(
 @given(
     dtype_and_x=statistical_dtype_values(function="argmax"),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.argmax"
+        fn_name="ivy.functional.frontends.tensorflow.math.argmax"
     ),
 )
 def test_tensorflow_argmax(
@@ -492,7 +434,6 @@ def test_tensorflow_argmax(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -518,11 +459,11 @@ def test_tensorflow_argmax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_max"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_max"
     ),
 )
 def test_tensorflow_reduce_max(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -532,7 +473,7 @@ def test_tensorflow_reduce_max(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_max",
+        fn_tree="math.reduce_max",
         input_tensor=x[0],
     )
 
@@ -544,11 +485,11 @@ def test_tensorflow_reduce_max(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_min"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_min"
     ),
 )
 def test_tensorflow_reduce_min(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -558,7 +499,7 @@ def test_tensorflow_reduce_min(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_min",
+        fn_tree="math.reduce_min",
         input_tensor=x[0],
     )
 
@@ -570,11 +511,11 @@ def test_tensorflow_reduce_min(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_prod"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_prod"
     ),
 )
 def test_tensorflow_reduce_prod(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -584,7 +525,7 @@ def test_tensorflow_reduce_prod(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_prod",
+        fn_tree="math.reduce_prod",
         input_tensor=x[0],
     )
 
@@ -596,11 +537,11 @@ def test_tensorflow_reduce_prod(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_std"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_std"
     ),
 )
 def test_tensorflow_reduce_std(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -622,12 +563,10 @@ def test_tensorflow_reduce_std(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.asinh"
+        fn_name="ivy.functional.frontends.tensorflow.math.asinh"
     ),
 )
-def test_tensorflow_asinh(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
+def test_tensorflow_asinh(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -636,7 +575,7 @@ def test_tensorflow_asinh(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="asinh",
+        fn_tree="math.asinh",
         x=x[0],
     )
 
@@ -648,11 +587,11 @@ def test_tensorflow_asinh(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_sum"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_sum"
     ),
 )
 def test_tensorflow_reduce_sum(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -662,7 +601,7 @@ def test_tensorflow_reduce_sum(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_sum",
+        fn_tree="math.reduce_sum",
         input_tensor=x[0],
     )
 
@@ -674,11 +613,11 @@ def test_tensorflow_reduce_sum(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_mean"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_mean"
     ),
 )
 def test_tensorflow_reduce_mean(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -688,7 +627,7 @@ def test_tensorflow_reduce_mean(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="reduce_mean",
+        fn_tree="math.reduce_mean",
         input_tensor=x[0],
     )
 
@@ -700,11 +639,11 @@ def test_tensorflow_reduce_mean(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.reduce_variance"
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_variance"
     ),
 )
 def test_tensorflow_reduce_variance(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -729,11 +668,11 @@ def test_tensorflow_reduce_variance(
     ),
     scalar_val=helpers.list_of_length(x=st.floats(), length=1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.scalar_mul"
+        fn_name="ivy.functional.frontends.tensorflow.math.scalar_mul"
     ),
 )
 def test_tensorflow_scalar_mul(
-    dtype_and_x, scalar_val, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, scalar_val, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -743,7 +682,7 @@ def test_tensorflow_scalar_mul(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="scalar_mul",
+        fn_tree="math.scalar_mul",
         scalar=scalar_val[0],
         x=x[0],
     )
@@ -762,7 +701,7 @@ def test_tensorflow_scalar_mul(
     ),
 )
 def test_tensorflow_divide_no_nan(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -791,7 +730,7 @@ def test_tensorflow_divide_no_nan(
     ),
 )
 def test_tensorflow_multiply_no_nan(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -818,7 +757,7 @@ def test_tensorflow_multiply_no_nan(
     ),
 )
 def test_tensorflow_erfcinv(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -844,7 +783,7 @@ def test_tensorflow_erfcinv(
     ),
 )
 def test_tensorflow_is_non_decreasing(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -870,7 +809,7 @@ def test_tensorflow_is_non_decreasing(
     ),
 )
 def test_tensorflow_is_strictly_increasing(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -893,12 +832,12 @@ def test_tensorflow_is_strictly_increasing(
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.count_nonzero"
+        fn_name="ivy.functional.frontends.tensorflow.math.count_nonzero"
     ),
     dtype=helpers.get_dtypes("numeric"),
 )
 def test_tensorflow_count_nonzero(
-    dtype_x_axis, dtype, keepdims, as_variable, num_positional_args, native_array, fw
+    dtype_x_axis, dtype, keepdims, as_variable, num_positional_args, native_array
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -930,11 +869,11 @@ def test_tensorflow_count_nonzero(
     ),
     num_classes=st.integers(min_value=5, max_value=10),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.confusion_matrix"
+        fn_name="ivy.functional.frontends.tensorflow.math.confusion_matrix"
     ),
 )
 def test_tensorflow_confusion_matrix(
-    dtype_and_x, num_classes, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, num_classes, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -966,11 +905,11 @@ def test_tensorflow_confusion_matrix(
         max_num_dims=0,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.polyval"
+        fn_name="ivy.functional.frontends.tensorflow.math.polyval"
     ),
 )
 def test_tensorflow_polyval(
-    dtype_and_coeffs, dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_coeffs, dtype_and_x, as_variable, num_positional_args, native_array
 ):
     dtype_x, x = dtype_and_x
     dtype_coeffs, coeffs = dtype_and_coeffs
@@ -999,7 +938,7 @@ def test_tensorflow_polyval(
     ),
 )
 def test_tensorflow_unsorted_segment_mean(
-    data, segment_ids, as_variable, num_positional_args, native_array, fw
+    data, segment_ids, as_variable, num_positional_args, native_array
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1027,7 +966,7 @@ def test_tensorflow_unsorted_segment_mean(
     ),
 )
 def test_tensorflow_unsorted_segment_sqrt_n(
-    data, segment_ids, as_variable, num_positional_args, native_array, fw
+    data, segment_ids, as_variable, num_positional_args, native_array
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1055,7 +994,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     ),
 )
 def test_tensorflow_zero_fraction(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1067,4 +1006,33 @@ def test_tensorflow_zero_fraction(
         frontend="tensorflow",
         fn_tree="math.zero_fraction",
         value=x[0],
+    )
+
+
+# truediv
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.truediv"
+    ),
+)
+def test_tensorflow_truediv(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="math.truediv",
+        x=x[0],
+        y=x[1],
     )

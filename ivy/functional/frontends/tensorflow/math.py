@@ -1,29 +1,22 @@
 # global
 import ivy
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 def add(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(input, axis, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
-
-
-def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.assertions.check_all_or_any_fn(
-        clip_value_min,
-        clip_value_max,
-        fn=ivy.exists,
-        type="all",
-        message="clip_value_min and clip_value_max must exist",
-    )
-    t = ivy.array(t)
-    return ivy.clip(t, clip_value_min, clip_value_max)
 
 
 def confusion_matrix(
@@ -91,18 +84,25 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
-    ret = ivy.cumprod(x, axis, exclusive)
-    if reverse:
-        return ivy.flip(ret, axis)
-    return ret
+def cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
+
+
+def cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
 
 
 def divide(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.divide(x, y)
 
 
 def divide_no_nan(x, y, name="divide_no_nan"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -110,7 +110,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
-def maximum(a, b):
+def maximum(a, b, name=None):
+    a, b = promote_types_of_tensorflow_inputs(a, b)
     # Cast inputs to ivy array
     a = ivy.array(a)
     b = ivy.array(b)
@@ -150,10 +151,12 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 def multiply(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.multiply(x, y)
 
 
 def multiply_no_nan(x, y, name="multiply_no_nan"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -177,11 +180,11 @@ def polyval(coeffs, x, name=None):
     return p
 
 
-def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
-        input_tensor == 0,
-        ivy.array(0.0, dtype=input_tensor.dtype),
-        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+        x == 0,
+        ivy.array(0.0, dtype=x.dtype),
+        ivy.ones_like(x, dtype=x.dtype) / x,
     )
 
 
@@ -249,10 +252,12 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 
 def scalar_mul(scalar, x, name="scalar_mul"):
+    scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
     return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
 
 
 def subtract(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.subtract(x, y)
 
 
@@ -294,6 +299,17 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+def truediv(x, y, name="truediv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x_dtype = ivy.dtype(x)
+    assert x_dtype == ivy.dtype(y)
+    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    return ivy.divide(x, y)
 
 
 # TODO: Ibeta for Future Release

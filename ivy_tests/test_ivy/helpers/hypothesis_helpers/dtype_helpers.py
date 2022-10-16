@@ -54,6 +54,8 @@ def array_dtypes(
             pairs = ivy.array_api_promotion_table.keys()
         else:
             pairs = ivy.promotion_table.keys()
+        # added to avoid complex dtypes from being sampled if they are not available.
+        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
         available_dtypes = [
             pair for pair in pairs if not any([d in pair for d in unwanted_types])
         ]
@@ -100,6 +102,15 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
             "unsigned": framework.valid_uint_dtypes,
             "signed_integer": tuple(
                 set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+            ),
+            "complex": framework.valid_complex_dtypes,
+            "real_and_complex": tuple(
+                set(framework.valid_numeric_dtypes).union(
+                    framework.valid_complex_dtypes
+                )
+            ),
+            "bool": tuple(
+                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
             ),
         }
 

@@ -14,6 +14,11 @@ def where(draw):
 
 
 @st.composite
+def get_casting(draw):
+    return draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+
+
+@st.composite
 def dtype_x_bounded_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
@@ -28,6 +33,7 @@ def _array_and_axes_permute_helper(
     max_num_dims,
     min_dim_size,
     max_dim_size,
+    allow_none=False,
 ):
     """Returns array, its dtype and either the random permutation of its axes or None.
 
@@ -51,7 +57,7 @@ def _array_and_axes_permute_helper(
     """
     shape = draw(
         helpers.get_shape(
-            allow_none=False,
+            allow_none=allow_none,
             min_num_dims=min_num_dims,
             max_num_dims=max_num_dims,
             min_dim_size=min_dim_size,
@@ -147,3 +153,35 @@ def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
         input_dtype += ["bool"]
         return where, as_variable + [False], native_array + [False]
     return where, as_variable, native_array
+
+
+def handle_dtype_and_casting(
+    *,
+    dtypes,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+):
+    casting = get_casting()
+    if casting in ["no", "equiv"]:
+        dtype = dtypes[0]
+        dtypes = [dtype for x in dtypes]
+        return dtype, dtypes, casting
+    dtype = helpers.get_dtypes(
+        get_dtypes_kind,
+        index=get_dtypes_index,
+        full=False,
+        none=get_dtypes_none,
+        key=get_dtypes_key,
+    )
+    if casting in ["safe", "same_kind"]:
+        while not ivy.all([ivy.can_cast(x, dtype) for x in dtypes]):
+            dtype = helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+    return dtype, dtypes, casting

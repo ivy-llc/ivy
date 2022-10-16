@@ -179,7 +179,7 @@ def test_multinomial(
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
     ret = helpers.test_function(
-        input_dtypes=[prob_dtype],
+        input_dtypes=prob_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
