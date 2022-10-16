@@ -55,9 +55,9 @@ def norm(x, ord=2, axis=None, keepdims=False):
 
     # checking if the axis has 2 dims
     if (type(axis) in [tuple, list]) and len(axis) == 2:
-        return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+        return ivy.matrix_norm(x=x, ord=ord, axis=axis, keepdims=keepdims)
     # else we take the vector norm
-    return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+    return ivy.vector_norm(x=x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 norm.supported_dtypes = (

@@ -347,6 +347,9 @@ def test_jax_slogdet(
         max_dim_size=4,
         min_axis=-3,
         max_axis=2,
+        force_int_axis=True,
+        max_axes_size=2, safety_factor_scale="log",
+        valid_axis=True, large_abs_safety_factor=2
     ).filter(lambda x: 'float16' not in x[0]
              and 'bfloat16' not in x[0]),
     num_positional_args=helpers.num_positional_args(
