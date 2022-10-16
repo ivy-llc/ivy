@@ -33,9 +33,9 @@ class ArrayWithNorms(abc.ABC):
             Indices to apply the normalization to.
         weight
             Learnable gamma variables for elementwise post-multiplication,
-            default is None.
+            default is ``None``.
         bias
-            Learnable beta variables for elementwise post-addition, default is None.
+            Learnable beta variables for elementwise post-addition, default is ``None``.
         epsilon
             small constant to add to the denominator, use global ivy._MIN_BASE by
             default.
