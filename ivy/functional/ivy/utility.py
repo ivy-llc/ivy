@@ -128,36 +128,6 @@ def all(
         a: ivy.array(False),
         b: ivy.array(True)
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.all()
-    >>> print(y)
-    ivy.array(True)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.all()
-    >>> print(y)
-    {
-        a: ivy.array(False),
-        b: ivy.array(True)
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.all()
-    >>> print(y)
-    {
-        a: ivy.array(False),
-        b: ivy.array(True)
-    }
-
-
     """
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -269,34 +239,6 @@ def any(
     }
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = x.any()
-    >>> print(y)
-    ivy.array(True)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.any()
     >>> print(y)
     {
