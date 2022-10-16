@@ -121,8 +121,9 @@ def random_uniform(
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
     dtype
-         output array data type. If ``dtype`` is ``None``, the output array data
-         type will be the default floating-point data type. Default ``None``
+        output array float data type: ``float16``,``float32``,``float64``. 
+        If ``dtype`` is ``None``, the output array data type will be the default floating-point 
+        data type: ``float32``. Default ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
