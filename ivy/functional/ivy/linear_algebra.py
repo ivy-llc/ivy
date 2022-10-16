@@ -40,7 +40,7 @@ def cholesky(
         type.
     upper
         If True, the result must be the upper-triangular Cholesky factor U. If False,
-        the result must be the lower-triangular Cholesky factor L. Default: False.
+        the result must be the lower-triangular Cholesky factor L. Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -185,7 +185,7 @@ def cross(
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
         the cross product.vIf set to -1, the function computes the cross product for
-        vectors defined by the last axis (dimension). Default: -1.
+        vectors defined by the last axis (dimension). Default: ``-1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -904,7 +904,7 @@ def matrix_norm(
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
-        against the original x. Default is False.
+        against the original x. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
