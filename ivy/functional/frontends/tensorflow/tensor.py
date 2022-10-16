@@ -17,6 +17,7 @@ class Tensor:
             + str(ivy.to_list(self.data))
             + ")"
         )
+
     # Instance Methods #
     # -------------------#
 
