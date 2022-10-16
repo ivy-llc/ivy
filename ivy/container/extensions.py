@@ -40,15 +40,16 @@ class ContainerWithExtensions(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -101,15 +102,16 @@ class ContainerWithExtensions(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1090,3 +1092,95 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_median(self, axis=axis, keepdims=keepdims, out=out)
+
+    @staticmethod
+    def static_flipud(
+        m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.flipud. This method simply wraps
+        the function, and so the docstring for ivy.flipud also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        m
+            the container with arrays to be flipped.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the input container's array
+            with elements order reversed along axis 0.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> ivy.Container.static_flipud(m)
+        {
+            a: ivy.array(
+                [[ 0.,  0.,  3.],
+                 [ 0.,  2.,  0.],
+                 [ 1.,  0.,  0.]]
+            )
+            b: ivy.array([3, 2, 1, 0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "flipud",
+            m,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def flipud(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.flipud. This method simply
+        wraps the function, and so the docstring for ivy.flipud also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with arrays to be flipped.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the input container's array
+            with elements order reversed along axis 0.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> m.flipud()
+        {
+            a: ivy.array(
+                [[ 0.,  0.,  3.],
+                 [ 0.,  2.,  0.],
+                 [ 1.,  0.,  0.]]
+            )
+            b: ivy.array([3, 2, 1, 0])
+        }
+        """
+        return self.static_flipud(self, out=out)
