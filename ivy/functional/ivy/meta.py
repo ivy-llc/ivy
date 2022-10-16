@@ -420,37 +420,37 @@ def fomaml_step(
         Default is ivy.gradient_descent_update.
     inner_batch_fn
         Function to apply to the task sub-batch, before passing to the inner_cost_fn.
-        Default is None.
+        Default is ``None``.
     outer_batch_fn
         Function to apply to the task sub-batch, before passing to the outer_cost_fn.
-        Default is None.
+        Default is ``None``.
     average_across_steps
         Whether to average the inner loop steps for the outer loop update.
-        Default is False.
+        Default is ``False``.
     batched
         Whether to batch along the time dimension, and run the meta steps in batch.
-        Default is True.
+        Default is ``True``.
     inner_v
         Nested variable keys to be optimized during the inner loop, with same keys and
         boolean values. (Default value = None)
     keep_inner_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is True.
+        Default is ``True``.
     outer_v
         Nested variable keys to be optimized during the inner loop, with same keys and
         boolean values. (Default value = None)
     keep_outer_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is True.
+        Default is ``True``.
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is False.
+        'all'. Default is ``False``.
     num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. Default is True.
+        Whether to stop the gradients of the cost. Default is ``True``.
 
     Returns
     -------
@@ -528,16 +528,16 @@ def reptile_step(
         Default is ivy.gradient_descent_update.
     batched
         Whether to batch along the time dimension, and run the meta steps in batch.
-        Default is True.
+        Default is ``True``.
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is False.
+        'all'. Default is ``False``.
     num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. Default is True.
+        Whether to stop the gradients of the cost. Default is ``True``.
 
     Returns
     -------
@@ -631,37 +631,37 @@ def maml_step(
         Default is ivy.gradient_descent_update.
     inner_batch_fn
         Function to apply to the task sub-batch, before passing to the inner_cost_fn.
-        Default is None.
+        Default is ``None``.
     outer_batch_fn
         Function to apply to the task sub-batch, before passing to the outer_cost_fn.
-        Default is None.
+        Default is ``None``.
     average_across_steps
         Whether to average the inner loop steps for the outer loop update.
-        Default is False.
+        Default is ``False``.
     batched
         Whether to batch along the time dimension, and run the meta steps in batch.
-        Default is True.
+        Default is ``True``.
     inner_v
         Nested variable keys to be optimized during the inner loop, with same keys and
         boolean values. (Default value = None)
     keep_inner_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is True.
+        Default is ``True``.
     outer_v
         Nested variable keys to be optimized during the inner loop, with same keys and
         boolean values. (Default value = None)
     keep_outer_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is True.
+        Default is ``True``.
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is False.
+        'all'. Default is ``False``.
     num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. Default is True.
+        Whether to stop the gradients of the cost. Default is ``True``.
 
     Returns
     -------

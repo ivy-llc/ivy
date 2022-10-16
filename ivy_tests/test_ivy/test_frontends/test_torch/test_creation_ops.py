@@ -197,7 +197,7 @@ def test_torch_zeros(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=helpers.get_dtypes("float", full=False),
+    dtypes=helpers.get_dtypes("valid", full=False),
     requires_grad=_requires_grad(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.empty"
@@ -211,7 +211,7 @@ def test_torch_empty(
     num_positional_args,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[dtypes],
+        input_dtypes=dtypes,
         as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
@@ -219,7 +219,6 @@ def test_torch_empty(
         device=device,
         frontend="torch",
         fn_tree="empty",
-        test_values=False,
         size=shape,
         dtype=dtypes,
         requires_grad=requires_grad,
@@ -381,4 +380,91 @@ def test_torch_logspace(
         end=stop,
         num=num,
         requires_grad=requires_grad,
+    )
+
+
+# empty_like
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.empty_like"
+    ),
+)
+def test_torch_empty_like(
+    dtype_and_x,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="empty_like",
+        input=input[0],
+        dtype=dtype,
+        requires_grad=requires_grad,
+    )
+
+
+# full_like
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.full_like"
+    ),
+)
+def test_torch_full_like(
+    dtype_and_x,
+    fill_value,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="full_like",
+        input=input[0],
+        fill_value=fill_value,
+        dtype=dtypes[0],
+        requires_grad=requires_grad,
+    )
+
+
+# as_tensor and tensor by proxy
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_as_tensor(dtype_and_x):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=[False],
+        device="cpu",
+        frontend="torch",
+        fn_tree="as_tensor",
+        input=input[0],
     )

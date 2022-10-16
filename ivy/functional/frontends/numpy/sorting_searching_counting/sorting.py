@@ -13,3 +13,11 @@ def argsort(
     order=None,
 ):
     return ivy.argsort(x, axis=axis)
+
+
+def sort(a, axis=-1, kind=None, order=None):
+    return ivy.sort(a, axis=axis)
+
+
+def msort(a):
+    return ivy.sort(a, axis=0)
