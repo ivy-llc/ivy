@@ -68,11 +68,8 @@ def mean(
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
+    if keepdims is False:
+        return torch.unsqueeze(torch.mean(x, dim=axis, keepdim=keepdims, out=out), 0)
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
 
 
