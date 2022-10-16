@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -168,7 +168,6 @@
 <div class="viewcode-block" id="DefaultDevice"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice">[docs]</a><span class="k">class</span> <span class="nc">DefaultDevice</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
@@ -183,7 +182,6 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.DefaultDevice(&quot;cpu&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.DefaultDevice(&quot;tpu&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">device</span></div>
@@ -204,7 +202,6 @@
 <span class="sd">        &gt;&gt;&gt;     # with block calls device.__enter__()</span>
 <span class="sd">        &gt;&gt;&gt;     print(device._dev)</span>
 <span class="sd">        &quot;cpu&quot;</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -227,15 +224,6 @@
 <span class="sd">        &gt;&gt;&gt; # after with block device.__exit__() is called</span>
 <span class="sd">        &gt;&gt;&gt; print(device._dev)</span>
 <span class="sd">        &quot;cpu&quot;</span>
-
-<span class="sd">        A &quot;tpu&quot; as device:</span>
-
-<span class="sd">        &gt;&gt;&gt; with ivy.DefaultDevice(&quot;tpu&quot;) as device:</span>
-<span class="sd">        &gt;&gt;&gt;     pass</span>
-<span class="sd">        &gt;&gt;&gt; # after with block device.__exit__() is called</span>
-<span class="sd">        &gt;&gt;&gt; print(device._dev)</span>
-<span class="sd">        &quot;cpu&quot;</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
@@ -243,7 +231,7 @@
 
 <span class="c1"># Helpers #</span>
 
-<span class="c1"># noinspection PyShadowingNames</span>
+
 <span class="k">def</span> <span class="nf">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">dev_handles</span>
     <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">dev_handles</span><span class="p">:</span>
@@ -509,48 +497,6 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.dev(x, as_native=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    cpu</span>
-
-<span class="sd">    Array Instance Method Examples</span>
-<span class="sd">    ------------------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.dev(as_native=True)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    cpu</span>
-
-<span class="sd">    Container Static Method Examples</span>
-<span class="sd">    ---------------------------------</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),</span>
-<span class="sd">    ...                   b=ivy.native_array([1, 2, 4, 5, 7]))</span>
-<span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=True, b=False)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_dev(x, as_native=as_native)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: device(type=cpu),</span>
-<span class="sd">        b: cpu</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Container Instance Method Examples</span>
-<span class="sd">    ----------------------------</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),</span>
-<span class="sd">    ...                   b=ivy.native_array([[1, 2], [4, 5]]))</span>
-<span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=False, b=True)</span>
-<span class="sd">    &gt;&gt;&gt; y = x.dev(as_native=as_native)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: cpu,</span>
-<span class="sd">        b: device(type=cpu)</span>
-<span class="sd">    }</span>
-
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span></div>
 
@@ -589,7 +535,6 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Native device handle.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 

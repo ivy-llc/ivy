@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -173,7 +173,6 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1., 0., 1.])</span>
@@ -187,30 +186,12 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1.5, 0.7, 0.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
-<span class="sd">    ...                [-4.4, -5.5, -6.6]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.relu(x, out = x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[1.1, 2.2, 3.3],</span>
-<span class="sd">               [0., 0., 0.]])</span>
-
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., -1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.relu(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0., 0., 2.])</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.5, 1., -2.5])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.relu()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 1., 0.])</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -273,18 +254,6 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.leaky_relu(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 0. , -0.2,  2. ])</span>
-
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.5, 1., -2.5])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.leaky_relu()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([-0.1,  1. , -0.5])</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

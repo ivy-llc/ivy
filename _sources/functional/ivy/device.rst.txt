@@ -40,7 +40,6 @@ Device
    device/DefaultDevice:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__.rst
    device/Profiler.rst
 
