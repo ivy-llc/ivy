@@ -399,7 +399,6 @@ def multinomial(
     ...                     replace=False)
     >>> print(y)
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
-
     """
     return ivy.current_backend().multinomial(
         population_size,
