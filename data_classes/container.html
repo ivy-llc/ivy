@@ -109,14 +109,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -227,35 +227,35 @@ data type determined by <span class="xref std std-ref">type-promotion</span>.</p
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dict_in</strong> – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>dict_in</strong> – the dictionary the container should wrap around. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>queues</strong> – Sequence of multiprocessing queues, each of which returns containers.
 This enables the current container to be passed around asynchronously while
-waiting for data. Default is None.</p></li>
+waiting for data. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>queue_load_sizes</strong> – Size of leading dimension of the containers returned by each queue.
-Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>container_combine_method</strong> – The method to use for combining containers arriving from different queues.
 Default is ivy.Container.list_join</p></li>
 <li><p><strong>queue_timeout</strong> – The timeout when waiting for containers to arrive from the queues.
 Default is global.</p></li>
 <li><p><strong>print_limit</strong> – The total array size limit when printing the container. Default is 10.</p></li>
-<li><p><strong>key_length_limit</strong> – The maximum key length when printing the container. Default is None.</p></li>
+<li><p><strong>key_length_limit</strong> – The maximum key length when printing the container. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>print_indent</strong> – The number of whitespaces to use for indenting when printing the container.
 Default is 4.</p></li>
 <li><p><strong>print_line_spacing</strong> – The number of extra newlines to use between keys when printing the
-container. Default is 0.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is None, which
+container. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
 results in the global ivy.</p></li>
 <li><p><strong>default_key_color</strong> – The default key color for printing the container to the terminal.
 Default is ‘green’.</p></li>
 <li><p><strong>keyword_color_dict</strong> – A dict mapping keywords to their termcolor color codes for printing the
 container. (Default value = None)</p></li>
 <li><p><strong>rebuild_child_containers</strong> – Whether to rebuild container found in dict_in with these constructor params.
-Default is False, in which case the original container are kept as are.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>, in which case the original container are kept as are.</p></li>
 <li><p><strong>types_to_iteratively_nest</strong> – The data types to nest iteratively in the dict structure, each type must be
-iterable. Default is None.</p></li>
+iterable. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>alphabetical_keys</strong> – Whether to sort the container keys alphabetically, or preserve the dict
-order. Default is True.</p></li>
-<li><p><strong>kwargs</strong> – keyword arguments for dict creation. Default is None.</p></li>
+order. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments for dict creation. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 </dl>

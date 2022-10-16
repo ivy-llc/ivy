@@ -112,14 +112,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -187,35 +187,35 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dict_in</strong> – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>dict_in</strong> – the dictionary the container should wrap around. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>queues</strong> – Sequence of multiprocessing queues, each of which returns containers.
 This enables the current container to be passed around asynchronously while
-waiting for data. Default is None.</p></li>
+waiting for data. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>queue_load_sizes</strong> – Size of leading dimension of the containers returned by each queue.
-Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>container_combine_method</strong> – The method to use for combining containers arriving from different queues.
 Default is ivy.Container.list_join</p></li>
 <li><p><strong>queue_timeout</strong> – The timeout when waiting for containers to arrive from the queues.
 Default is global.</p></li>
 <li><p><strong>print_limit</strong> – The total array size limit when printing the container. Default is 10.</p></li>
-<li><p><strong>key_length_limit</strong> – The maximum key length when printing the container. Default is None.</p></li>
+<li><p><strong>key_length_limit</strong> – The maximum key length when printing the container. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>print_indent</strong> – The number of whitespaces to use for indenting when printing the container.
 Default is 4.</p></li>
 <li><p><strong>print_line_spacing</strong> – The number of extra newlines to use between keys when printing the
-container. Default is 0.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is None, which
+container. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
 results in the global ivy.</p></li>
 <li><p><strong>default_key_color</strong> – The default key color for printing the container to the terminal.
 Default is ‘green’.</p></li>
 <li><p><strong>keyword_color_dict</strong> – A dict mapping keywords to their termcolor color codes for printing the
 container. (Default value = None)</p></li>
 <li><p><strong>rebuild_child_containers</strong> – Whether to rebuild container found in dict_in with these constructor params.
-Default is False, in which case the original container are kept as are.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>, in which case the original container are kept as are.</p></li>
 <li><p><strong>types_to_iteratively_nest</strong> – The data types to nest iteratively in the dict structure, each type must be
-iterable. Default is None.</p></li>
+iterable. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>alphabetical_keys</strong> – Whether to sort the container keys alphabetically, or preserve the dict
-order. Default is True.</p></li>
-<li><p><strong>kwargs</strong> – keyword arguments for dict creation. Default is None.</p></li>
+order. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments for dict creation. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -249,12 +249,13 @@ order. Default is True.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>assert_is_bool</strong> – Whether or not to assert each entry is of type Boolean.
 (Default value = False)</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -282,12 +283,13 @@ Default is False.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>assert_is_bool</strong> – Whether or not to assert each entry is of type Boolean.
 (Default value = False)</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -305,12 +307,13 @@ Default is False.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>assert_is_bool</strong> – Whether or not to assert the entry is of type Boolean.
 (Default value = False)</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -329,7 +332,7 @@ exception raised with the diff printed to screen.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -344,9 +347,9 @@ otherwise exception raised with the diff printed to screen.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is True.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -362,17 +365,17 @@ shown in an exception.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> – containers to check.</p></li>
 <li><p><strong>check_types</strong> – Whether to check if the datatypes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>check_shapes</strong> – Whether to check if the shapes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>same_arrays</strong> – Whether to check if the arrays are the exact same instances.
-Default is True.</p></li>
-<li><p><strong>arrays_equal</strong> – Whether to check if the arrays have equal values. Default is True.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>arrays_equal</strong> – Whether to check if the arrays have equal values. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -388,14 +391,14 @@ diff is shown in an exception.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> – containers to check.</p></li>
 <li><p><strong>check_types</strong> – Whether to also check whether the datatypes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>check_shapes</strong> – Whether to also check whether the shapes of the leaf nodes are the same.
-Default is True.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -445,11 +448,11 @@ dict.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>queries</strong> – The keys to query.</p></li>
-<li><p><strong>ignore_none</strong> – Whether to ignore None input. Default is True.</p></li>
+<li><p><strong>ignore_none</strong> – Whether to ignore None input. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>containing</strong> – Whether to include keys which only contain the query substrings.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>ignore_key_errors</strong> – Whether to ignore Key-errors when trying to access the dict.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -524,7 +527,7 @@ matching structure and array values.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -541,9 +544,9 @@ Default is False.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is True.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -639,13 +642,14 @@ where they are different.</p>
 only those that are consist across the containers, or only the differences.
 Default is all.</p></li>
 <li><p><strong>diff_keys</strong> – The key/keys to add to the returned container when differences are found.
-Default is “diff”.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">&quot;diff&quot;</span></code>.</p></li>
 <li><p><strong>detect_key_diffs</strong> – Whether to treat different keys as detected differences. If not, the keys
 among the input containers are simply combined without flagging differences.
-Default is True.</p></li>
-<li><p><strong>detect_value_diffs</strong> – Whether to treat different values as detected differences. Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>detect_value_diffs</strong> – Whether to treat different values as detected differences.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>detect_shape_diffs</strong> – Whether to treat different array shapes as detected differences.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
 <li><p><strong>*containers</strong> – </p></li>
 </ul>
@@ -670,7 +674,7 @@ Default is True.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont_to_find</strong> – The sub-container to find.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -684,9 +688,9 @@ Default is False.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_struc_to_find</strong> – The sub-container to find.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is True.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -748,8 +752,8 @@ filepath.</p>
 <li><p><strong>h5_obj_or_filepath</strong> – Filepath where the container object is saved to disk, or h5 object.</p></li>
 <li><p><strong>slice_obj</strong> – slice object to slice all h5 elements. (Default value = slice(None))</p></li>
 <li><p><strong>alphabetical_keys</strong> – Whether to sort the container keys alphabetically, or preserve the dict
-order. Default is True.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is None, which
+order. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
 results in the global ivy.</p></li>
 </ul>
 </dd>
@@ -768,7 +772,7 @@ objects were not json-able during saving, then they will be loaded as strings.</
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>json_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is None, which
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
 results in the global ivy.</p></li>
 </ul>
 </dd>
@@ -786,7 +790,7 @@ results in the global ivy.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pickle_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is None, which
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
 results in the global ivy.</p></li>
 </ul>
 </dd>
@@ -883,17 +887,17 @@ key-chains and data types.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> – containers to check.</p></li>
 <li><p><strong>check_types</strong> – Whether to check if the datatypes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>check_shapes</strong> – Whether to check if the shapes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>same_arrays</strong> – Whether to check if the arrays are the exact same instances.
-Default is True.</p></li>
-<li><p><strong>arrays_equal</strong> – Whether to check if the arrays have equal values. Default is True.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>arrays_equal</strong> – Whether to check if the arrays have equal values. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
+be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
 </ul>
 </dd>
@@ -944,14 +948,14 @@ structure.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> – containers to check.</p></li>
 <li><p><strong>check_types</strong> – Whether to also check whether the datatypes of the leaf nodes are the same.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>check_shapes</strong> – Whether to also check whether the shapes of the leaf nodes are the same.
-Default is True.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
 </ul>
 </dd>
@@ -1033,15 +1037,16 @@ Default is False.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> – Function to apply to each container entry</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>inplace</strong> – Whether to apply the mapping inplace, or return a new container.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map to sequences (lists and tuples). Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map to sequences (lists and tuples). Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
 </ul>
 </dd>
@@ -1059,16 +1064,16 @@ Default is False.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> – Function to apply to each sub-container</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>inplace</strong> – Whether to apply the mapping inplace, or return a new container.
-Default is False.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
 <li><p><strong>include_self</strong> – Whether to also apply the (possiby in-place) function to this container.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1092,14 +1097,15 @@ structured containers.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> – Function to apply to each container entry.</p></li>
 <li><p><strong>containers</strong> – containers to map.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
+be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied,
-otherwise the leftmost container value is used. Default is False.</p></li>
+otherwise the leftmost container value is used. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
 <li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>assert_identical</strong> – Whether to assert that the input containers are identical or not.</p></li>
 </ul>
 </dd>
@@ -1351,8 +1357,8 @@ key-chains and values as new key-chains.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
 <li><p><strong>keep_orig</strong> – Whether to keep the original keys, are start from a new container.
-Default is True.</p></li>
-<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1368,8 +1374,8 @@ Given by the mapping with keys as old key-chains and values as new key-chains.</
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>keychain_mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
 <li><p><strong>keep_orig</strong> – Whether to keep the original keys, or start from a new empty container.
-Default is True.</p></li>
-<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1527,15 +1533,16 @@ constituent arrays.</p>
 <li><p><strong>num_or_size_splits</strong> – Number of equal arrays to divide the array into along the given axis if an
 integer. The size of each split element if a sequence of integers. Default
 is to divide into as many 1-dimensional arrays as the axis dimension.</p></li>
-<li><p><strong>axis</strong> – The axis along which to split, default is 0.</p></li>
+<li><p><strong>axis</strong> – The axis along which to split, default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><strong>with_remainder</strong> – If the tensor does not split evenly, then store the last remainder entry.
-Default is False.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
+be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied. Default
 is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1561,9 +1568,9 @@ Default is all.</p></li>
 Default is “diff”.</p></li>
 <li><p><strong>detect_key_diffs</strong> – Whether to treat different keys as detected differences.
 If not, the keys among the input containers are simply combined without
-flagging differences. Default is True.</p></li>
+flagging differences. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>detect_shape_diffs</strong> – Whether to treat different array shapes as detected differences.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
 <li><p><strong>*containers</strong> – </p></li>
 </ul>
@@ -1748,7 +1755,7 @@ the specified device.</p>
 <li><p><strong>dev</strong> – The device to unify the containers to.</p></li>
 <li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> – The axis along which to concattenate the container, if concat mode is set.
-Default is 0.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1765,7 +1772,7 @@ Default is 0.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>axis</strong> – Dimensions along which to unstack.</p></li>
-<li><p><strong>keepdims</strong> – Whether to keep dimension 1 in the unstack dimensions. Default is False.</p></li>
+<li><p><strong>keepdims</strong> – Whether to keep dimension 1 in the unstack dimensions. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>dim_size</strong> – Size of the dimension to unstack. Determined from inputs by default.</p></li>
 </ul>
 </dd>

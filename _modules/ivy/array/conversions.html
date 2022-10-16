@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -179,7 +179,7 @@
 <span class="sd">    nested</span>
 <span class="sd">        Whether to apply the conversion on arguments in a nested manner. If so, all</span>
 <span class="sd">        dicts, lists and tuples will be traversed to their lowest leaves in search of</span>
-<span class="sd">        ivy.Array instances. Default is False.</span>
+<span class="sd">        ivy.Array instances. Default is ``False``.</span>
 <span class="sd">    include_derived</span>
 <span class="sd">        Whether to also recursive for classes derived from tuple, list and dict. Default</span>
 <span class="sd">        is False.</span>
@@ -208,7 +208,7 @@
 <span class="sd">        The positional arguments to check</span>
 <span class="sd">    include_derived</span>
 <span class="sd">        Whether to also recursive for classes derived from tuple, list and dict.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 <span class="sd">    kwargs</span>
 <span class="sd">        The key-word arguments to check</span>
 
@@ -242,12 +242,12 @@
 <span class="sd">    nested</span>
 <span class="sd">        Whether to apply the conversion on arguments in a nested manner. If so, all</span>
 <span class="sd">        dicts, lists and tuples will be traversed to their lowest leaves in search of</span>
-<span class="sd">        ivy.Array instances. Default is False.</span>
+<span class="sd">        ivy.Array instances. Default is ``False``.</span>
 <span class="sd">    include_derived</span>
 <span class="sd">        Whether to also recursive for classes derived from tuple, list and dict.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 <span class="sd">    cont_inplace</span>
-<span class="sd">        Whether to update containers in place. Default is False</span>
+<span class="sd">        Whether to update containers in place. Default is ``False``</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -276,10 +276,10 @@
 <span class="sd">        The positional arguments to check</span>
 <span class="sd">    include_derived</span>
 <span class="sd">        Whether to also recursive for classes derived from tuple, list and dict.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 <span class="sd">    cont_inplace</span>
 <span class="sd">        Whether to update containers in place.</span>
-<span class="sd">        Default is False</span>
+<span class="sd">        Default is ``False``</span>
 <span class="sd">    kwargs</span>
 <span class="sd">        The key-word arguments to check</span>
 

@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -165,17 +165,18 @@
 <span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
 <span class="sd">            PyTorch.</span>
-<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        init_on_first_step</span>
-<span class="sd">            Whether the optimizer is initialized on the first step. Default is False.</span>
+<span class="sd">            Whether the optimizer is initialized on the first step.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        compile_on_next_step</span>
-<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is ``False``.</span>
 <span class="sd">        fallback_to_non_compiled</span>
 <span class="sd">            Whether to fall back to non-compiled forward call in the case that an error</span>
-<span class="sd">            is raised during the compiled forward pass. Default is True.</span>
+<span class="sd">            is raised during the compiled forward pass. Default is ``True``.</span>
 <span class="sd">        device</span>
 <span class="sd">            Device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. (Default value = None)</span>
@@ -236,7 +237,7 @@
 <span class="sd">        ignore_missing</span>
 <span class="sd">            Whether to ignore keys missing from the gradients which exist in</span>
 <span class="sd">            the variables.</span>
-<span class="sd">            Default is False</span>
+<span class="sd">            Default is ``False``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
@@ -276,7 +277,7 @@
 <span class="sd">        ignore_missing</span>
 <span class="sd">            Whether to ignore keys missing from the gradients which exist in</span>
 <span class="sd">            the variables.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -307,17 +308,17 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        lr</span>
-<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">            Learning rate, default is ``1e-4``.</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
 <span class="sd">            PyTorch.</span>
-<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        compile_on_next_step</span>
-<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is ``False``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="n">compile_on_next_step</span>
@@ -382,19 +383,19 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        lr</span>
-<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">            Learning rate, default is ``1e-4``.</span>
 <span class="sd">        decay_lambda</span>
-<span class="sd">            The factor used for weight decay. Default is zero.</span>
+<span class="sd">            The factor used for weight decay. Default is ``0``.</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
 <span class="sd">            PyTorch.</span>
-<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        compile_on_next_step</span>
-<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is ``False``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span> <span class="o">=</span> <span class="n">decay_lambda</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -464,23 +465,24 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        lr</span>
-<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">            Learning rate, default is ``1e-4``.</span>
 <span class="sd">        beta1</span>
-<span class="sd">            gradient forgetting factor, default is 0.9</span>
+<span class="sd">            gradient forgetting factor, default is ``0.9``</span>
 <span class="sd">        beta2</span>
-<span class="sd">            second moment of gradient forgetting factor, default is 0.999</span>
+<span class="sd">            second moment of gradient forgetting factor, default is ``0.999``</span>
 <span class="sd">        epsilon</span>
-<span class="sd">            divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">            divisor during adam update, preventing division by zero,</span>
+<span class="sd">            default is ``1e-07``</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
 <span class="sd">            PyTorch.</span>
-<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        compile_on_next_step</span>
-<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is ``False``.</span>
 <span class="sd">        device</span>
 <span class="sd">            Device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. (Default value = None)</span>
@@ -574,28 +576,29 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        lr</span>
-<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">            Learning rate, default is ``1e-4``.</span>
 <span class="sd">        beta1</span>
-<span class="sd">            gradient forgetting factor, default is 0.9</span>
+<span class="sd">            gradient forgetting factor, default is ``0.9``</span>
 <span class="sd">        beta2</span>
-<span class="sd">            second moment of gradient forgetting factor, default is 0.999</span>
+<span class="sd">            second moment of gradient forgetting factor, default is ``0.999``</span>
 <span class="sd">        epsilon</span>
-<span class="sd">            divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">            divisor during adam update, preventing division by zero,</span>
+<span class="sd">            default is ``1e-07``</span>
 <span class="sd">        max_trust_ratio</span>
 <span class="sd">            The max value of the trust ratio; the ratio between the norm of the layer</span>
-<span class="sd">            weights and norm of gradients update. Default is 10.</span>
+<span class="sd">            weights and norm of gradients update. Default is ``10``.</span>
 <span class="sd">        decay_lambda</span>
-<span class="sd">            The factor used for weight decay. Default is zero.</span>
+<span class="sd">            The factor used for weight decay. Default is ``0``.</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
 <span class="sd">            PyTorch.</span>
-<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        compile_on_next_step</span>
-<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is ``False``.</span>
 <span class="sd">        device</span>
 <span class="sd">            Device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. (Default value = None)</span>

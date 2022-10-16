@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -244,7 +244,7 @@
 <span class="sd">            input iterable to compare to ``self``</span>
 <span class="sd">        equality_matrix</span>
 <span class="sd">            Whether to return a matrix of equalities comparing each input with every</span>
-<span class="sd">            other. Default is False.</span>
+<span class="sd">            other. Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -267,7 +267,7 @@
 <span class="sd">            input array</span>
 <span class="sd">        include_infs</span>
 <span class="sd">            Whether to include ``+infinity`` and ``-infinity`` in the check.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -305,7 +305,7 @@
 <span class="sd">            The array which indicates the indices that will be gathered along</span>
 <span class="sd">            the specified axis.</span>
 <span class="sd">        axis</span>
-<span class="sd">            The axis from which the indices will be gathered. Default is -1.</span>
+<span class="sd">            The axis from which the indices will be gathered. Default is ``-1``.</span>
 <span class="sd">        batch_dims</span>
 <span class="sd">            optional int, lets you gather different items from each element of a batch.</span>
 <span class="sd">        out</span>
@@ -349,7 +349,7 @@
 <span class="sd">        updates</span>
 <span class="sd">            values to update input tensor with</span>
 <span class="sd">        shape</span>
-<span class="sd">            The shape of the result. Default is None, in which case tensor</span>
+<span class="sd">            The shape of the result. Default is ``None``, in which case tensor</span>
 <span class="sd">            argument must be provided.</span>
 <span class="sd">        reduction</span>
 <span class="sd">            The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;</span>
@@ -882,13 +882,13 @@
 <span class="sd">            The number of frequency bands for the encoding. Default is 4.</span>
 <span class="sd">        linear</span>
 <span class="sd">            Whether to space the frequency bands linearly as opposed to geometrically.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        concat</span>
 <span class="sd">            Whether to concatenate the position, sin and cos values, or return</span>
-<span class="sd">            seperately. Default is True.</span>
+<span class="sd">            seperately. Default is ``True``.</span>
 <span class="sd">        flatten</span>
 <span class="sd">            Whether to flatten the position dimension into the batch dimension.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -917,7 +917,7 @@
 <span class="sd">        self</span>
 <span class="sd">            input array</span>
 <span class="sd">        include_infs</span>
-<span class="sd">            Whether to include infs and -infs in the check. Default is True.</span>
+<span class="sd">            Whether to include infs and -infs in the check. Default is ``True``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -989,12 +989,12 @@
 <span class="sd">        default_val</span>
 <span class="sd">            The default value.</span>
 <span class="sd">        catch_exceptions</span>
-<span class="sd">            Whether to catch exceptions from callable x. Default is False.</span>
+<span class="sd">            Whether to catch exceptions from callable x. Default is ``False``.</span>
 <span class="sd">        rev</span>
-<span class="sd">            Whether to reverse the input x and default_val. Default is False.</span>
+<span class="sd">            Whether to reverse the input x and default_val. Default is ``False``.</span>
 <span class="sd">        with_callable</span>
 <span class="sd">            Whether either of the arguments might be callable functions.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

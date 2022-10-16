@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -186,7 +186,7 @@
 <span class="sd">    axis</span>
 <span class="sd">        axis along which the arrays will be joined. If axis is None, arrays are</span>
 <span class="sd">        flattened before concatenation. If axis is negative, the axis is along which</span>
-<span class="sd">        to join is determined by counting from the last dimension. Default: 0.</span>
+<span class="sd">        to join is determined by counting from the last dimension. Default: ``0``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -363,7 +363,7 @@
 <span class="sd">    axis</span>
 <span class="sd">        axis (or axes) along which to flip. If axis is None, all input array axes are</span>
 <span class="sd">        flipped. If axis is negative, axis is counted from the last dimension. If</span>
-<span class="sd">        provided more than one axis, only the specified axes. Default: None.</span>
+<span class="sd">        provided more than one axis, only the specified axes. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -582,7 +582,7 @@
 <span class="sd">        If False, the function must never copy and must</span>
 <span class="sd">        raise a ValueError in case a copy would be necessary.</span>
 <span class="sd">        If None, the function must reuse existing memory buffer if possible</span>
-<span class="sd">        and copy otherwise. Default: None.</span>
+<span class="sd">        and copy otherwise. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -688,7 +688,7 @@
 <span class="sd">    axis</span>
 <span class="sd">        axis (or axes) along which elements to shift. If axis is None, the array</span>
 <span class="sd">        must be flattened, shifted, and then restored to its original shape.</span>
-<span class="sd">        Default None.</span>
+<span class="sd">        Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -800,7 +800,7 @@
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
 <span class="sd">        axis (or axes) to squeeze. If a specified axis has a size greater than one, a</span>
-<span class="sd">        ValueError is. If None, then all squeezable axes are squeezed. Default: None</span>
+<span class="sd">        ValueError is. If None, then all squeezable axes are squeezed. Default: ``None``</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -892,7 +892,7 @@
 <span class="sd">        will have shape (A, B, C, N). A valid axis must be on the interval</span>
 <span class="sd">        [-N, N), where N is the rank (number of dimensions) of x. If</span>
 <span class="sd">        provided an axis outside of the required interval, the function must raise</span>
-<span class="sd">        an exception. Default: 0.</span>
+<span class="sd">        an exception. Default: ``0``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1224,10 +1224,10 @@
 <span class="sd">        integer. The size of each split element if a sequence of integers. Default is to</span>
 <span class="sd">        divide into as many 1-dimensional arrays as the axis dimension.</span>
 <span class="sd">    axis</span>
-<span class="sd">        The axis along which to split, default is 0.</span>
+<span class="sd">        The axis along which to split, default is ``0``.</span>
 <span class="sd">    with_remainder</span>
 <span class="sd">        If the tensor does not split evenly, then store the last remainder entry.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1502,7 +1502,7 @@
 <span class="sd">    axis</span>
 <span class="sd">        Axis for which to unpack the array.</span>
 <span class="sd">    keepdims</span>
-<span class="sd">        Whether to keep dimension 1 in the unstack dimensions. Default is False.</span>
+<span class="sd">        Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

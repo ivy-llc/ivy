@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -160,7 +160,7 @@
 <span class="sd">            input array or container. Should have a numeric data type.</span>
 <span class="sd">        axis</span>
 <span class="sd">            axis along which to search. If None, the function must return the index of</span>
-<span class="sd">            the maximum value of the flattened array. Default  None.</span>
+<span class="sd">            the maximum value of the flattened array. Deafult: ``None``.</span>
 <span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as</span>
 <span class="sd">            dimensions with size one. With this option, the result will broadcast</span>
@@ -207,7 +207,7 @@
 <span class="sd">            input array or container. Should have a numeric data type.</span>
 <span class="sd">        axis</span>
 <span class="sd">            axis along which to search. If None, the function must return the index of</span>
-<span class="sd">            the maximum value of the flattened array. Default  None.</span>
+<span class="sd">            the maximum value of the flattened array. Deafult: ``None``.</span>
 <span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as</span>
 <span class="sd">            dimensions with size one. With this option, the result will broadcast</span>
@@ -493,15 +493,16 @@
 <span class="sd">        self</span>
 <span class="sd">            Boolean array, for which indices are desired.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will</span>
-<span class="sd">            be skipped. Default is True.</span>
+<span class="sd">            be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default</span>
 <span class="sd">            is False.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -538,15 +539,16 @@
 <span class="sd">        self</span>
 <span class="sd">            Boolean array, for which indices are desired.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will</span>
-<span class="sd">            be skipped. Default is True.</span>
+<span class="sd">            be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default</span>
 <span class="sd">            is False.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

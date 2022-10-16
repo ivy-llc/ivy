@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -172,7 +172,7 @@
 <span class="sd">    weight</span>
 <span class="sd">        The weight matrix. *[outer_batch_shape,out_features,in_features]*</span>
 <span class="sd">    bias</span>
-<span class="sd">        The bias vector, default is None. *[outer_batch_shape,out_features]*</span>
+<span class="sd">        The bias vector, default is ``None``. *[outer_batch_shape,out_features]*</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -314,7 +314,7 @@
 <span class="sd">    prob</span>
 <span class="sd">        The probability of zeroing out each array element.</span>
 <span class="sd">    scale</span>
-<span class="sd">        Whether to scale the output by 1/(1-prob), default is True.</span>
+<span class="sd">        Whether to scale the output by 1/(1-prob), default is ``True``.</span>
 <span class="sd">    dtype</span>
 
 <span class="sd">    out</span>
@@ -628,10 +628,10 @@
 <span class="sd">    num_heads</span>
 <span class="sd">        The number of attention heads to use.</span>
 <span class="sd">    context</span>
-<span class="sd">        The array to determine the keys and values from. Default is None.</span>
+<span class="sd">        The array to determine the keys and values from. Default is ``None``.</span>
 <span class="sd">        *[batch_shape,num_keys,cont_feat_dim]*.</span>
 <span class="sd">    mask</span>
-<span class="sd">        The mask to apply to the query-key values. Default is None.</span>
+<span class="sd">        The mask to apply to the query-key values. Default is ``None``.</span>
 <span class="sd">        *[batch_shape,num_queries,num_keys]*</span>
 <span class="sd">    to_q_fn</span>
 <span class="sd">        The function to compute queries from input x, returning queries</span>
@@ -642,11 +642,11 @@
 <span class="sd">        The function to compute the output from the scaled dot-product attention.</span>
 <span class="sd">        (Default value = None)</span>
 <span class="sd">    to_q_v</span>
-<span class="sd">        The variables for function to_q_fn. Default is None.</span>
+<span class="sd">        The variables for function to_q_fn. Default is ``None``.</span>
 <span class="sd">    to_kv_v</span>
-<span class="sd">        The variables for function to_kv_fn. Default is None.</span>
+<span class="sd">        The variables for function to_kv_fn. Default is ``None``.</span>
 <span class="sd">    to_out_v</span>
-<span class="sd">        The variables for function to_out_fn. Default is None.</span>
+<span class="sd">        The variables for function to_out_fn. Default is ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>

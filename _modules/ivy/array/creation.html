@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -167,7 +167,7 @@
 <span class="sd">        dtype</span>
 <span class="sd">            datatype, optional. Datatype is inferred from the input data.</span>
 <span class="sd">        device</span>
-<span class="sd">            device on which to place the created array. Default: None.</span>
+<span class="sd">            device on which to place the created array. Default: ``None``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -330,7 +330,7 @@
 <span class="sd">        k</span>
 <span class="sd">            diagonal above which to zero elements. If k = 0, the diagonal is the main</span>
 <span class="sd">            diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">            diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">            diagonal is above the main diagonal. Default: ``0``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -362,7 +362,7 @@
 <span class="sd">        k</span>
 <span class="sd">            diagonal below which to zero elements. If k = 0, the diagonal is the main</span>
 <span class="sd">            diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">            diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">            diagonal is above the main diagonal. Default: ``0``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -397,10 +397,10 @@
 <span class="sd">            input array from which to derive the output array shape.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            output array data type. If dtype is None, the output array data type must be</span>
-<span class="sd">            inferred from ``self``. Default  None.</span>
+<span class="sd">            inferred from ``self``. Deafult: ``None``.</span>
 <span class="sd">        device</span>
 <span class="sd">            device on which to place the created array. If device is None, the output</span>
-<span class="sd">            array device must be inferred from ``self``. Default: None.</span>
+<span class="sd">            array device must be inferred from ``self``. Default: ``None``.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
@@ -520,7 +520,7 @@
 <span class="sd">        dtype</span>
 <span class="sd">            datatype, optional. Datatype is inferred from the input data.</span>
 <span class="sd">        device</span>
-<span class="sd">            device on which to place the created array. Default: None.</span>
+<span class="sd">            device on which to place the created array. Default: ``None``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -558,7 +558,7 @@
 <span class="sd">        off_value</span>
 <span class="sd">            Value to fill in output when ``indices[j] != i``. Default 0.</span>
 <span class="sd">        axis</span>
-<span class="sd">            The axis to scatter on. The default is -1 which is the last axis.</span>
+<span class="sd">            The axis to scatter on. The default is ``-1`` which is the last axis.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            The data type of the output array. If None, the data type of the on_value is</span>
 <span class="sd">            used, or if that is None, the data type of the off_value is used. Default</span>

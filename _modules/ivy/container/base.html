@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -203,14 +203,14 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        dict_in</span>
-<span class="sd">            the dictionary the container should wrap around. Default is None.</span>
+<span class="sd">            the dictionary the container should wrap around. Default is ``None``.</span>
 <span class="sd">        queues</span>
 <span class="sd">            Sequence of multiprocessing queues, each of which returns containers.</span>
 <span class="sd">            This enables the current container to be passed around asynchronously while</span>
-<span class="sd">            waiting for data. Default is None.</span>
+<span class="sd">            waiting for data. Default is ``None``.</span>
 <span class="sd">        queue_load_sizes</span>
 <span class="sd">            Size of leading dimension of the containers returned by each queue.</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 <span class="sd">        container_combine_method</span>
 <span class="sd">            The method to use for combining containers arriving from different queues.</span>
 <span class="sd">            Default is ivy.Container.list_join</span>
@@ -220,15 +220,15 @@
 <span class="sd">        print_limit</span>
 <span class="sd">            The total array size limit when printing the container. Default is 10.</span>
 <span class="sd">        key_length_limit</span>
-<span class="sd">            The maximum key length when printing the container. Default is None.</span>
+<span class="sd">            The maximum key length when printing the container. Default is ``None``.</span>
 <span class="sd">        print_indent</span>
 <span class="sd">            The number of whitespaces to use for indenting when printing the container.</span>
 <span class="sd">            Default is 4.</span>
 <span class="sd">        print_line_spacing</span>
 <span class="sd">            The number of extra newlines to use between keys when printing the</span>
-<span class="sd">            container. Default is 0.</span>
+<span class="sd">            container. Default is ``0``.</span>
 <span class="sd">        ivyh</span>
-<span class="sd">            Handle to ivy module to use for the calculations. Default is None, which</span>
+<span class="sd">            Handle to ivy module to use for the calculations. Default is ``None``, which</span>
 <span class="sd">            results in the global ivy.</span>
 <span class="sd">        default_key_color</span>
 <span class="sd">            The default key color for printing the container to the terminal.</span>
@@ -238,15 +238,15 @@
 <span class="sd">            container. (Default value = None)</span>
 <span class="sd">        rebuild_child_containers</span>
 <span class="sd">            Whether to rebuild container found in dict_in with these constructor params.</span>
-<span class="sd">            Default is False, in which case the original container are kept as are.</span>
+<span class="sd">            Default is ``False``, in which case the original container are kept as are.</span>
 <span class="sd">        types_to_iteratively_nest</span>
 <span class="sd">            The data types to nest iteratively in the dict structure, each type must be</span>
-<span class="sd">            iterable. Default is None.</span>
+<span class="sd">            iterable. Default is ``None``.</span>
 <span class="sd">        alphabetical_keys</span>
 <span class="sd">            Whether to sort the container keys alphabetically, or preserve the dict</span>
-<span class="sd">            order. Default is True.</span>
+<span class="sd">            order. Default is ``True``.</span>
 <span class="sd">        kwargs</span>
-<span class="sd">            keyword arguments for dict creation. Default is None.</span>
+<span class="sd">            keyword arguments for dict creation. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span> <span class="o">=</span> <span class="n">queues</span>
@@ -480,7 +480,7 @@
 <span class="sd">            The mode by which to unify, must be one of [ concat | mean | sum ]</span>
 <span class="sd">        axis</span>
 <span class="sd">            The axis along which to concattenate the container, if concat mode is set.</span>
-<span class="sd">            Default is 0.</span>
+<span class="sd">            Default is ``0``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -570,16 +570,17 @@
 <span class="sd">            Default is all.</span>
 <span class="sd">        diff_keys</span>
 <span class="sd">            The key/keys to add to the returned container when differences are found.</span>
-<span class="sd">            Default is &quot;diff&quot;.</span>
+<span class="sd">            Default is ``&quot;diff&quot;``.</span>
 <span class="sd">        detect_key_diffs</span>
 <span class="sd">            Whether to treat different keys as detected differences. If not, the keys</span>
 <span class="sd">            among the input containers are simply combined without flagging differences.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        detect_value_diffs</span>
-<span class="sd">            Whether to treat different values as detected differences. Default is True.</span>
+<span class="sd">            Whether to treat different values as detected differences.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        detect_shape_diffs</span>
 <span class="sd">            Whether to treat different array shapes as detected differences.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 <span class="sd">        *containers</span>
@@ -716,10 +717,10 @@
 <span class="sd">        detect_key_diffs</span>
 <span class="sd">            Whether to treat different keys as detected differences.</span>
 <span class="sd">            If not, the keys among the input containers are simply combined without</span>
-<span class="sd">            flagging differences. Default is True.</span>
+<span class="sd">            flagging differences. Default is ``True``.</span>
 <span class="sd">        detect_shape_diffs</span>
 <span class="sd">            Whether to treat different array shapes as detected differences.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 <span class="sd">        *containers</span>
@@ -761,19 +762,20 @@
 <span class="sd">        containers</span>
 <span class="sd">            containers to map.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will</span>
-<span class="sd">            be skipped. Default is True.</span>
+<span class="sd">            be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied,</span>
-<span class="sd">            otherwise the leftmost container value is used. Default is False.</span>
+<span class="sd">            otherwise the leftmost container value is used. Default is ``False``.</span>
 <span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 <span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        assert_identical</span>
 <span class="sd">            Whether to assert that the input containers are identical or not.</span>
 
@@ -887,23 +889,23 @@
 <span class="sd">            containers to check.</span>
 <span class="sd">        check_types</span>
 <span class="sd">            Whether to check if the datatypes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check if the shapes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        same_arrays</span>
 <span class="sd">            Whether to check if the arrays are the exact same instances.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        arrays_equal</span>
-<span class="sd">            Whether to check if the arrays have equal values. Default is True.</span>
+<span class="sd">            Whether to check if the arrays have equal values. Default is ``True``.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will</span>
-<span class="sd">            be skipped. Default is True.</span>
+<span class="sd">            be skipped. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
@@ -980,23 +982,23 @@
 <span class="sd">            containers to check.</span>
 <span class="sd">        check_types</span>
 <span class="sd">            Whether to check if the datatypes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check if the shapes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        same_arrays</span>
 <span class="sd">            Whether to check if the arrays are the exact same instances.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        arrays_equal</span>
-<span class="sd">            Whether to check if the arrays have equal values. Default is True.</span>
+<span class="sd">            Whether to check if the arrays have equal values. Default is ``True``.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
@@ -1034,18 +1036,18 @@
 <span class="sd">            containers to check.</span>
 <span class="sd">        check_types</span>
 <span class="sd">            Whether to also check whether the datatypes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        check_shapes</span>
 <span class="sd">            Whether to also check whether the shapes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
@@ -1084,18 +1086,18 @@
 <span class="sd">            containers to check.</span>
 <span class="sd">        check_types</span>
 <span class="sd">            Whether to also check whether the datatypes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        check_shapes</span>
 <span class="sd">            Whether to also check whether the shapes of the leaf nodes are the same.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
@@ -1174,9 +1176,9 @@
 <span class="sd">            slice object to slice all h5 elements. (Default value = slice(None))</span>
 <span class="sd">        alphabetical_keys</span>
 <span class="sd">            Whether to sort the container keys alphabetically, or preserve the dict</span>
-<span class="sd">            order. Default is True.</span>
+<span class="sd">            order. Default is ``True``.</span>
 <span class="sd">        ivyh</span>
-<span class="sd">            Handle to ivy module to use for the calculations. Default is None, which</span>
+<span class="sd">            Handle to ivy module to use for the calculations. Default is ``None``, which</span>
 <span class="sd">            results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1219,7 +1221,7 @@
 <span class="sd">        pickle_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk.</span>
 <span class="sd">        ivyh</span>
-<span class="sd">            Handle to ivy module to use for the calculations. Default is None, which</span>
+<span class="sd">            Handle to ivy module to use for the calculations. Default is ``None``, which</span>
 <span class="sd">            results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1243,7 +1245,7 @@
 <span class="sd">        json_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk.</span>
 <span class="sd">        ivyh</span>
-<span class="sd">            Handle to ivy module to use for the calculations. Default is None, which</span>
+<span class="sd">            Handle to ivy module to use for the calculations. Default is ``None``, which</span>
 <span class="sd">            results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1711,15 +1713,16 @@
 <span class="sd">            Whether or not to assert each entry is of type Boolean.</span>
 <span class="sd">            (Default value = False)</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1757,15 +1760,16 @@
 <span class="sd">            Whether or not to assert each entry is of type Boolean.</span>
 <span class="sd">            (Default value = False)</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1826,15 +1830,16 @@
 <span class="sd">            Whether or not to assert the entry is of type Boolean.</span>
 <span class="sd">            (Default value = False)</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1864,7 +1869,7 @@
 <span class="sd">        axis</span>
 <span class="sd">            Dimensions along which to unstack.</span>
 <span class="sd">        keepdims</span>
-<span class="sd">            Whether to keep dimension 1 in the unstack dimensions. Default is False.</span>
+<span class="sd">            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.</span>
 <span class="sd">        dim_size</span>
 <span class="sd">            Size of the dimension to unstack. Determined from inputs by default.</span>
 
@@ -1911,20 +1916,21 @@
 <span class="sd">            integer. The size of each split element if a sequence of integers. Default</span>
 <span class="sd">            is to divide into as many 1-dimensional arrays as the axis dimension.</span>
 <span class="sd">        axis</span>
-<span class="sd">            The axis along which to split, default is 0.</span>
+<span class="sd">            The axis along which to split, default is ``0``.</span>
 <span class="sd">        with_remainder</span>
 <span class="sd">            If the tensor does not split evenly, then store the last remainder entry.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will</span>
-<span class="sd">            be skipped. Default is True.</span>
+<span class="sd">            be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default</span>
 <span class="sd">            is False.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2316,7 +2322,7 @@
 <span class="sd">            The sub-container to find.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
@@ -2349,7 +2355,7 @@
 <span class="sd">            The sub-container to check.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2372,7 +2378,7 @@
 <span class="sd">            The sub-container to check.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2398,10 +2404,10 @@
 <span class="sd">        sub_struc_to_find</span>
 <span class="sd">            The sub-container to find.</span>
 <span class="sd">        check_shapes</span>
-<span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
+<span class="sd">            Whether to check array shapes in the sub-structure. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
@@ -2443,10 +2449,10 @@
 <span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
 <span class="sd">        check_shapes</span>
-<span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
+<span class="sd">            Whether to check array shapes in the sub-structure. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -2464,10 +2470,10 @@
 <span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
 <span class="sd">        check_shapes</span>
-<span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
+<span class="sd">            Whether to check array shapes in the sub-structure. Default is ``True``.</span>
 <span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2503,13 +2509,13 @@
 <span class="sd">        queries</span>
 <span class="sd">            The keys to query.</span>
 <span class="sd">        ignore_none</span>
-<span class="sd">            Whether to ignore None input. Default is True.</span>
+<span class="sd">            Whether to ignore None input. Default is ``True``.</span>
 <span class="sd">        containing</span>
 <span class="sd">            Whether to include keys which only contain the query substrings.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        ignore_key_errors</span>
 <span class="sd">            Whether to ignore Key-errors when trying to access the dict.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3048,9 +3054,9 @@
 <span class="sd">            A dict with keys as old key-chains and values as new key-chains.</span>
 <span class="sd">        keep_orig</span>
 <span class="sd">            Whether to keep the original keys, or start from a new empty container.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        replace</span>
-<span class="sd">            Whether to replace the old key-chains by the new ones. Default is True.</span>
+<span class="sd">            Whether to replace the old key-chains by the new ones. Default is ``True``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
@@ -3073,9 +3079,9 @@
 <span class="sd">            A dict with keys as old key-chains and values as new key-chains.</span>
 <span class="sd">        keep_orig</span>
 <span class="sd">            Whether to keep the original keys, are start from a new container.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        replace</span>
-<span class="sd">            Whether to replace the old key-chains by the new ones. Default is True.</span>
+<span class="sd">            Whether to replace the old key-chains by the new ones. Default is ``True``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
@@ -3157,20 +3163,21 @@
 <span class="sd">        func</span>
 <span class="sd">            Function to apply to each container entry</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to apply the mapping inplace, or return a new container.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map to sequences (lists and tuples). Default is False.</span>
+<span class="sd">            Whether to also map to sequences (lists and tuples). Default is ``False``.</span>
 <span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
@@ -3232,21 +3239,21 @@
 <span class="sd">        func</span>
 <span class="sd">            Function to apply to each sub-container</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
 <span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        inplace</span>
 <span class="sd">            Whether to apply the mapping inplace, or return a new container.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is ``False``.</span>
 <span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 <span class="sd">        include_self</span>
 <span class="sd">            Whether to also apply the (possiby in-place) function to this container.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

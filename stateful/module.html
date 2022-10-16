@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Module" href="module/Module.html" />
-    <link rel="prev" title="KaimingNormal" href="initializers/KaimingNormal.html" /> 
+    <link rel="prev" title="GEGLU" href="activations/GEGLU.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -84,17 +84,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="module/Module.html">Module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -149,7 +149,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> – If given, use this container as internal varibles temporarily.
-Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>with_grads</strong> – If True, forward this pass with gradients.</p></li>
 <li><p><strong>track_submod_rets</strong> – If True, will track the returns of submodules.</p></li>
 <li><p><strong>submod_depth</strong> – The depth of tracked submodules.</p></li>
@@ -180,18 +180,19 @@ etc. (Default value = None)</p></li>
 explicitly by the user by calling
 build(), or the first time the __call__ method is run.
 Default is on initialization.</p></li>
-<li><p><strong>compile_on_next_step</strong> – Whether to compile the network on the next forward pass. Default is False.</p></li>
-<li><p><strong>store_vars</strong> – Whether or not to store the variables created. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> – Whether to compile the network on the next forward pass.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>store_vars</strong> – Whether or not to store the variables created. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>stateful</strong> – The constant id stateful items to track as part of the forward pass.
-Used when graph compiling, default is None.</p></li>
+Used when graph compiling, default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>arg_stateful_idxs</strong> – The nested argument indices of stateful items to track as part of
 the forward pass.
-Used when graph compiling, default is None.</p></li>
+Used when graph compiling, default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>kwarg_stateful_idxs</strong> – The nested keyword argument indices of stateful items to track as part of
-the forward pass. Used when graph compiling, default is None.</p></li>
+the forward pass. Used when graph compiling, default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>fallback_to_non_compiled</strong> – Whether to fall back to non-compiled forward call in the case that an error
-is raised during the compiled forward pass. Default is True.</p></li>
-<li><p><strong>with_partial_v</strong> – Whether to allow partial specification of variables. Default is False.</p></li>
+is raised during the compiled forward pass. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>with_partial_v</strong> – Whether to allow partial specification of variables. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>devices</strong> – devices on which to distribute the module’s variables
 ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p></li>
 </ul>
@@ -207,10 +208,10 @@ is raised during the compiled forward pass. Default is True.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_call</strong> – If True, denote that this build is triggered by calling. Otherwise,
-triggered by initializing the module. Default is False.</p></li>
+triggered by initializing the module. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>device</strong> – The device we want to build module on. None for default device.
-Default is None.</p></li>
-<li><p><strong>dtype</strong> – The data type for building the module. Default is None.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>dtype</strong> – The data type for building the module. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -248,7 +249,7 @@ returns passed during call</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>top_mod</strong> – Explicit indicate the top module. None for the top
-module of current module. Default is None.</p>
+module of current module. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>A string of current module key.</em></p>
@@ -287,7 +288,7 @@ module of current module. Default is None.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>depth</strong> – </p></li>
 <li><p><strong>flatten_key_chain</strong> – If set True, will return return a flat (depth-1) container,
-with all nested key-chains flattened. Default is False.</p></li>
+with all nested key-chains flattened. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -317,11 +318,11 @@ Will give prompt if no top module found.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>upper_depth</strong> – How many modules it tracks up as upper module. None for current module.
-Default is None. Will be truncated to mod_depth.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. Will be truncated to mod_depth.</p></li>
 <li><p><strong>lower_depth</strong> – How many modules it tracks down. None for current module.
-Default is None. Will be truncated to mod_height.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. Will be truncated to mod_height.</p></li>
 <li><p><strong>flatten_key_chains</strong> – If set True, will return a flat (depth-1) container,
-which all nested key-chains flattened. Default is False.</p></li>
+which all nested key-chains flattened. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -346,7 +347,7 @@ Will give prompt if either of <cite>v</cite> and <cite>top_v</cite> is not initi
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>depth</strong> – The number of modules we want to step in. None for the value of
-current module. Default is None.</p>
+current module. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -359,11 +360,11 @@ current module. Default is None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>show_v</strong> – If set True, will return values of all submodule variables.
-Default is True.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>depth</strong> – How many layers we step in before beginning enumerating submodules.
-None for current layer. Default is None.</p></li>
+None for current layer. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>flatten_key_chains</strong> – If set True, will return a flat (depth-1) container,
-which all nested key-chains flattened. Default is False.</p></li>
+which all nested key-chains flattened. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -405,9 +406,9 @@ Will give prompt if either of <cite>v</cite> and <cite>top_v</cite> is not initi
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>depth</strong> – The number of modules we want to step in. None for the value of
-current module. Default is None.</p></li>
+current module. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>flatten_key_chains</strong> – If set True, will return a flat (depth-1) container,
-which all nested key-chains flattened. Default is False.</p></li>
+which all nested key-chains flattened. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -424,7 +425,7 @@ which all nested key-chains flattened. Default is False.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="initializers/KaimingNormal.html" class="btn btn-neutral float-left" title="KaimingNormal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="activations/GEGLU.html" class="btn btn-neutral float-left" title="GEGLU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="module/Module.html" class="btn btn-neutral float-right" title="Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

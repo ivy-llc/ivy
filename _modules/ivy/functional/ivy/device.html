@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -486,7 +486,7 @@
 <span class="sd">          array for which to get the device handle.</span>
 
 <span class="sd">    as_native</span>
-<span class="sd">          Whether or not to return the dev in native format. Default is False.</span>
+<span class="sd">          Whether or not to return the dev in native format. Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1183,15 +1183,15 @@
 <span class="sd">        The maximum size of each of the chunks to be fed into the function.</span>
 <span class="sd">    chunk_size</span>
 <span class="sd">        The size of each of the chunks to be fed into the function. Specifying this arg</span>
-<span class="sd">        overwrites the global split factor. Default is None.</span>
+<span class="sd">        overwrites the global split factor. Default is ``None``.</span>
 <span class="sd">    input_axes</span>
 <span class="sd">        The axes along which to split each of the inputs, before passing to the</span>
-<span class="sd">        function. Default is 0.</span>
+<span class="sd">        function. Default is ``0``.</span>
 <span class="sd">    output_axes</span>
 <span class="sd">        The axes along which to concat each of the returned outputs. Default is same as</span>
 <span class="sd">        fist input axis.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients for each computed return. Default is False.</span>
+<span class="sd">        Whether to stop the gradients for each computed return. Default is ``False``.</span>
 <span class="sd">    device</span>
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
 
@@ -1347,7 +1347,7 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to check for the supported device attribute</span>
 <span class="sd">    recurse</span>
-<span class="sd">        Whether to recurse into used ivy functions. Default is True.</span>
+<span class="sd">        Whether to recurse into used ivy functions. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1379,7 +1379,7 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to check for the unsupported device attribute</span>
 <span class="sd">    recurse</span>
-<span class="sd">        Whether to recurse into used ivy functions. Default is True.</span>
+<span class="sd">        Whether to recurse into used ivy functions. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

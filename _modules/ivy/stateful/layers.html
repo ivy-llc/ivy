@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -171,7 +171,7 @@
 <span class="sd">        bias_initializer</span>
 <span class="sd">            Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        with_bias</span>
-<span class="sd">            Whether or not to include a bias term, default is True.</span>
+<span class="sd">            Whether or not to include a bias term, default is ``True``.</span>
 <span class="sd">        device</span>
 <span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. Default is cpu.</span>
@@ -180,7 +180,7 @@
 <span class="sd">            by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -204,7 +204,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 
 
@@ -264,13 +264,13 @@
 <span class="sd">        prob</span>
 <span class="sd">            The probability of zeroing out each array element.</span>
 <span class="sd">        scale</span>
-<span class="sd">            Whether to scale the output by 1/(1-prob), default is True.</span>
+<span class="sd">            Whether to scale the output by 1/(1-prob), default is ``True``.</span>
 <span class="sd">        device</span>
 <span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created.</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prob</span> <span class="o">=</span> <span class="n">prob</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">scale</span>
@@ -287,7 +287,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created .</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -303,7 +303,7 @@
 <span class="sd">            Inputs to process *[batch_shape, in]*.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created .</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -349,24 +349,24 @@
 <span class="sd">        head_dim</span>
 <span class="sd">            The dimension of each of the heads. Default is 64.</span>
 <span class="sd">        dropout_rate</span>
-<span class="sd">            The rate of dropout. Default is 0.</span>
+<span class="sd">            The rate of dropout. Default is ``0``.</span>
 <span class="sd">        context_dim</span>
 <span class="sd">            The dimension of the context array.</span>
-<span class="sd">            Default is None, in which case the query dim is used.</span>
+<span class="sd">            Default is ``None``, in which case the query dim is used.</span>
 <span class="sd">        scale</span>
 <span class="sd">            The value by which to scale the query-key similarity measure.</span>
 <span class="sd">            Default is head_dim^-0.5</span>
 <span class="sd">        with_to_q_fn</span>
 <span class="sd">            Whether to include fully connected mapping from input x to queries.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        with_to_kv_fn</span>
 <span class="sd">            Whether to include fully connected mapping from input context to keys</span>
 <span class="sd">            and values.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        with_to_out_fn</span>
 <span class="sd">            Whether to include fully connected mapping from output scaled dot-product</span>
 <span class="sd">            attention to final output.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        device</span>
 <span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. Default is cpu.</span>
@@ -380,7 +380,7 @@
 <span class="sd">            Default is on initialization.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v_exists</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -439,7 +439,7 @@
 <span class="sd">            etc. Default is cpu</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;to_kv&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="o">.</span><span class="n">v</span><span class="p">}}</span>
@@ -455,7 +455,7 @@
 <span class="sd">        inputs</span>
 <span class="sd">            The array to determine the queries from *[batch_shape,num_queries,x_feats]*.</span>
 <span class="sd">        context</span>
-<span class="sd">            The array to determine the keys and values from. Default is None.</span>
+<span class="sd">            The array to determine the keys and values from. Default is ``None``.</span>
 <span class="sd">            *[batch_shape,num_values,cont_feats]*.</span>
 <span class="sd">        mask</span>
 <span class="sd">            (Default value = None)</span>
@@ -466,7 +466,7 @@
 <span class="sd">            The output following application of scaled dot-product attention.</span>
 <span class="sd">            *[batch_shape,num_queries,out_feats]*</span>
 <span class="sd">            The mask to apply to the query-key values.</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 <span class="sd">            *[batch_shape,num_queries,num_values]*</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_head_attention</span><span class="p">(</span>
@@ -536,7 +536,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -566,7 +566,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created.</span>
-<span class="sd">             Default is None.</span>
+<span class="sd">             Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -661,7 +661,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -691,7 +691,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;w&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
@@ -781,7 +781,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -810,7 +810,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created.</span>
-<span class="sd">            Default is None.</span>
+<span class="sd">            Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -903,7 +903,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -933,7 +933,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1022,7 +1022,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span> <span class="o">=</span> <span class="n">num_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter_shape</span> <span class="o">=</span> <span class="n">filter_shape</span>
@@ -1050,7 +1050,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1140,7 +1140,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -1169,7 +1169,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1262,7 +1262,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -1293,7 +1293,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1367,13 +1367,14 @@
 <span class="sd">        weight_initializer</span>
 <span class="sd">            Initializer for the weights. Default is GlorotUniform.</span>
 <span class="sd">        num_layers</span>
-<span class="sd">            Number of lstm cells in the lstm layer, default is 1.</span>
+<span class="sd">            Number of lstm cells in the lstm layer, default is ``1``.</span>
 <span class="sd">        return_sequence</span>
 <span class="sd">            Whether or not to return the entire output sequence, or</span>
 <span class="sd">            just the latest timestep.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        return_state</span>
-<span class="sd">            Whether or not to return the latest hidden and cell states. Default is True.</span>
+<span class="sd">            Whether or not to return the latest hidden and cell states.</span>
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        device</span>
 <span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
 <span class="sd">            etc. Default is cpu.</span>
@@ -1382,7 +1383,7 @@
 <span class="sd">            constructed internally by default.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
@@ -1403,7 +1404,7 @@
 <span class="sd">        batch_shape</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
@@ -1430,7 +1431,7 @@
 <span class="sd">            etc. Default is cpu.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            the desired data type of the internal variables to be created if not</span>
-<span class="sd">             provided. Default is None.</span>
+<span class="sd">             provided. Default is ``None``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">input_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>

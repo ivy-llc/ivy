@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -300,7 +300,7 @@
 <span class="sd">        the interval (exclusive). If stop is not specified, the default starting value</span>
 <span class="sd">        is 0.</span>
 <span class="sd">    stop</span>
-<span class="sd">        the end of the interval. Default: None.</span>
+<span class="sd">        the end of the interval. Default: ``None``.</span>
 <span class="sd">    step</span>
 <span class="sd">        the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0;</span>
 <span class="sd">        may be negative, this results in an empty array if stop &gt;= start. Default: 1.</span>
@@ -311,7 +311,7 @@
 <span class="sd">        the output array dtype must be the default floating-point data type. Default:</span>
 <span class="sd">        None.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
+<span class="sd">        device on which to place the created array. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -828,7 +828,7 @@
 <span class="sd">    k</span>
 <span class="sd">        diagonal above which to zero elements. If k = 0, the diagonal is the main</span>
 <span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        diagonal is above the main diagonal. Default: ``0``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -875,7 +875,7 @@
 <span class="sd">    k</span>
 <span class="sd">        diagonal below which to zero elements. If k = 0, the diagonal is the main</span>
 <span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        diagonal is above the main diagonal. Default: ``0``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -922,9 +922,9 @@
 <span class="sd">        output array shape.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If dtype is None, the output array data type must be the</span>
-<span class="sd">        default floating-point data type. Default: None.</span>
+<span class="sd">        default floating-point data type. Default: ``None``.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
+<span class="sd">        device on which to place the created array. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -970,10 +970,10 @@
 <span class="sd">        input array from which to derive the output array shape.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If dtype is None, the output array data type must be</span>
-<span class="sd">        inferred from x. Default  None.</span>
+<span class="sd">        inferred from x. Deafult: ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. If device is None, the output array</span>
-<span class="sd">        device must be inferred from x. Default: None.</span>
+<span class="sd">        device must be inferred from x. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1022,13 +1022,13 @@
 <span class="sd">        number of rows in the output array.</span>
 <span class="sd">    n_cols</span>
 <span class="sd">        number of columns in the output array. If None, the default number of columns in</span>
-<span class="sd">        the output array is equal to n_rows. Default: None.</span>
+<span class="sd">        the output array is equal to n_rows. Default: ``None``.</span>
 <span class="sd">    k</span>
 <span class="sd">        index of the diagonal. A positive value refers to an upper diagonal, a negative</span>
-<span class="sd">        value to a lower diagonal, and 0 to the main diagonal. Default: 0.</span>
+<span class="sd">        value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If dtype is None, the output array data type must be the</span>
-<span class="sd">        default floating-point data type. Default: None.</span>
+<span class="sd">        default floating-point data type. Default: ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">         device on which to place the created array.</span>
 <span class="sd">    out</span>
@@ -1038,7 +1038,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
+<span class="sd">        device on which to place the created array. Default: ``None``.</span>
 
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
@@ -1144,7 +1144,7 @@
 <span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates.</span>
 <span class="sd">        Each array should have the same numeric data type.</span>
 <span class="sd">    sparse</span>
-<span class="sd">        if True, a sparse grid is returned in order to conserve memory. Default: False.</span>
+<span class="sd">        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.</span>
 <span class="sd">    indexing</span>
 <span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero or</span>
 <span class="sd">        one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,</span>
@@ -1516,7 +1516,7 @@
 <span class="sd">    dtype</span>
 <span class="sd">        datatype, optional. Datatype is inferred from the input data.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
+<span class="sd">        device on which to place the created array. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1557,11 +1557,13 @@
 <span class="sd">    depth</span>
 <span class="sd">        Scalar defining the depth of the one-hot dimension.</span>
 <span class="sd">    on_value</span>
-<span class="sd">        Scalar defining the value to fill in output when indices[j] == i. Default: 1.</span>
+<span class="sd">        Scalar defining the value to fill in output when indices[j] == i.</span>
+<span class="sd">        Default: ``1``.</span>
 <span class="sd">    off_value</span>
-<span class="sd">        Scalar defining the value to fill in output when indices[j] != i. Default: 0.</span>
+<span class="sd">        Scalar defining the value to fill in output when indices[j] != i.</span>
+<span class="sd">        Default: ``0``.</span>
 <span class="sd">    axis</span>
-<span class="sd">        Axis to scatter on. The default is -1, a new inner-most axis is created.</span>
+<span class="sd">        Axis to scatter on. The default is ``-1``, a new inner-most axis is created.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        The data type of the output tensor.</span>
 <span class="sd">    device</span>

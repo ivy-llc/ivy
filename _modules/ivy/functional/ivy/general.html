@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -465,7 +465,7 @@
 <div class="viewcode-block" id="get_nestable_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/get_nestable_mode.html#ivy.functional.ivy.general.get_nestable_mode">[docs]</a><span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">get_nestable_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the current mode of whether to check if function inputs are ivy.Container.</span>
-<span class="sd">    Default is True.</span>
+<span class="sd">    Default is ``True``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -717,7 +717,7 @@
 <span class="sd">        inputs to compare.</span>
 <span class="sd">    equality_matrix</span>
 <span class="sd">        Whether to return a matrix of equalities comparing each input with every other.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -829,7 +829,7 @@
 <span class="sd">    x</span>
 <span class="sd">        input array</span>
 <span class="sd">    copy</span>
-<span class="sd">        whether to copy the array to a new address or not. Default is True.</span>
+<span class="sd">        whether to copy the array to a new address or not. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1382,10 +1382,10 @@
 <span class="sd">        The number of frequency bands for the encoding. Default is 4.</span>
 <span class="sd">    linear</span>
 <span class="sd">        Whether to space the frequency bands linearly as opposed to geometrically.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 <span class="sd">    concat</span>
 <span class="sd">        Whether to concatenate the position, sin and cos values, or return seperately.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Default is ``True``.</span>
 <span class="sd">    flatten</span>
 <span class="sd">        Whether to flatten the position dimension into the batch dimension. Default is</span>
 <span class="sd">        False.</span>
@@ -1450,7 +1450,7 @@
 <span class="sd">    x</span>
 <span class="sd">        The input to check Input array.</span>
 <span class="sd">    include_infs</span>
-<span class="sd">        Whether to include infs and -infs in the check. Default is True.</span>
+<span class="sd">        Whether to include infs and -infs in the check. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1505,7 +1505,7 @@
 <span class="sd">        Input array.</span>
 <span class="sd">    include_infs</span>
 <span class="sd">        Whether to include ``+infinity`` and ``-infinity`` in the check.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1665,11 +1665,12 @@
 <span class="sd">    default_val</span>
 <span class="sd">        The default value.</span>
 <span class="sd">    catch_exceptions</span>
-<span class="sd">        Whether to catch exceptions from callable x. Default is False.</span>
+<span class="sd">        Whether to catch exceptions from callable x. Default is ``False``.</span>
 <span class="sd">    rev</span>
-<span class="sd">        Whether to reverse the input x and default_val. Default is False.</span>
+<span class="sd">        Whether to reverse the input x and default_val. Default is ``False``.</span>
 <span class="sd">    with_callable</span>
-<span class="sd">        Whether either of the arguments might be callable functions. Default is False.</span>
+<span class="sd">        Whether either of the arguments might be callable functions.</span>
+<span class="sd">        Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1883,7 +1884,7 @@
 <span class="sd">        Functions and/or classes to match the keyword arguments to.</span>
 <span class="sd">    allow_duplicates</span>
 <span class="sd">        Whether to allow one keyword argument to be used for multiple receivers.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2958,8 +2959,8 @@
 <span class="sd">    updates</span>
 <span class="sd">        Values for the new array to hold.</span>
 <span class="sd">    shape</span>
-<span class="sd">        The shape of the result. Default is None, in which case tensor argument must be</span>
-<span class="sd">        provided.</span>
+<span class="sd">        The shape of the result. Default is ``None``, in which case tensor</span>
+<span class="sd">        argument must be provided.</span>
 <span class="sd">    reduction</span>
 <span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39; or &#39;replace&#39;</span>
 <span class="sd">    out</span>
@@ -3039,7 +3040,7 @@
 <span class="sd">        The array which indicates the indices that will be gathered along</span>
 <span class="sd">        the specified axis.</span>
 <span class="sd">    axis</span>
-<span class="sd">        optional int, the axis from which to gather from. Default is -1.</span>
+<span class="sd">        optional int, the axis from which to gather from. Default is ``-1``.</span>
 <span class="sd">    batch_dims</span>
 <span class="sd">        optional int, lets you gather different items from each element of a batch.</span>
 <span class="sd">    out</span>
@@ -3190,7 +3191,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    context</span>
 <span class="sd">        The context of the multiprocessing, either fork, forkserver or spawn.</span>
-<span class="sd">        Default is None.</span>
+<span class="sd">        Default is ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -3534,7 +3535,7 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to check for the supported device and dtype attribute</span>
 <span class="sd">    recurse</span>
-<span class="sd">        Whether to recurse into used ivy functions. Default is True.</span>
+<span class="sd">        Whether to recurse into used ivy functions. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -3571,7 +3572,7 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to check for the unsupported device and dtype attribute</span>
 <span class="sd">    recurse</span>
-<span class="sd">        Whether to recurse into used ivy functions. Default is True.</span>
+<span class="sd">        Whether to recurse into used ivy functions. Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
