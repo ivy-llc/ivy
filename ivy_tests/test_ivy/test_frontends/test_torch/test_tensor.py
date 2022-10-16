@@ -401,4 +401,3 @@ def test_torch_instance_tan(
         class_name="tensor",
         method_name="tan",
     )
-
