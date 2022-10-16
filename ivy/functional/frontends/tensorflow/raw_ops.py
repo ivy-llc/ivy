@@ -22,17 +22,7 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-@to_ivy_arrays_and_back
-def Add(*, x, y, name="Add"):
-    return ivy.add(x, y)
-
-
 Add = tf_frontend.math.add
-
-
-@to_ivy_arrays_and_back
-def ArgMax(*, input, dimension, output_type=None, name=None):
-    return tf_frontend.argmax(input, dimension, output_type)
 
 
 ArgMax = tf_frontend.math.argmax
@@ -107,19 +97,7 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-@to_ivy_arrays_and_back
-def Div(*, x, y, name="Div"):
-    return ivy.divide(x, y)
-
-
 Div = tf_frontend.math.divide
-
-
-@to_ivy_arrays_and_back
-def Cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
 
 
 Cumprod = tf_frontend.math.cumprod
@@ -239,22 +217,12 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
-@to_ivy_arrays_and_back
-def MatrixDeterminant(*, input, name="MatrixDeterminant"):
-    return ivy.det(input)
-
-
 MatrixDeterminant = tf_frontend.linalg.det
 
 
 @to_ivy_arrays_and_back
 def Max(*, input, axis, keep_dims=False, name="Max"):
     return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
-
-
-@to_ivy_arrays_and_back
-def Maximum(*, x, y, name="Maximum"):
-    return tf_frontend.maximum(x, y)
 
 
 Maximum = tf_frontend.math.maximum
@@ -270,17 +238,7 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-@to_ivy_arrays_and_back
-def Mul(*, x, y, name="Mul"):
-    return ivy.multiply(x, y)
-
-
 Mul = tf_frontend.math.multiply
-
-
-@to_ivy_arrays_and_back
-def Neg(*, x, name="Neg"):
-    return tf_frontend.negative(x)
 
 
 Neg = tf_frontend.math.negative
@@ -348,11 +306,6 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-@to_ivy_arrays_and_back
-def Sub(*, x, y, name="Sub"):
-    return tf_frontend.subtract(x, y)
-
-
 Sub = tf_frontend.math.subtract
 
 
@@ -375,18 +328,6 @@ def Tanh(*, x, name="Tanh"):
 def Transpose(*, x, perm, name="Transpose"):
     ret = ivy.permute_dims(x, axes=perm)
     return ret
-
-
-@to_ivy_arrays_and_back
-def ZerosLike(*, x, name="ZerosLike"):
-    return ivy.zeros_like(x)
-
-
-@to_ivy_arrays_and_back
-def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
-    return ivy.astype(
-        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
-    )
 
 
 Cumsum = tf_frontend.math.cumsum
