@@ -1145,7 +1145,6 @@ def heaviside(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def isin(
@@ -1156,7 +1155,28 @@ def isin(
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
 ) -> ivy.Array:
-    return ivy.current_backend().isin(elements, test_elements, assume_unique=assume_unique, invert = invert)
+    """Tests if each element of elements is in test_elements.
+
+    Parameters
+    ----------
+    elements
+        input array
+    test_elements
+        values against which to test for each input element
+    assume_unique
+        If True, assumes both elements and test_elements contain unique elements, which can speed up the calculation.
+        by default is False
+    invert
+        If True, inverts the boolean return array, resulting in True values for elements not in test_elements.
+        by default is False
+
+    Returns
+    -------
+    ret
+        output a boolean array of the same shape as elements that is True for elements in test_elements
+        and False otherwise.
+    """
+    return ivy.current_backend().isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
 
 @to_native_arrays_and_back
 @handle_out_argument

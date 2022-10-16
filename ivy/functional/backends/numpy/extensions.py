@@ -310,8 +310,8 @@ def isin(
     return np.isin(
         elements,
         test_elements,
-        assume_unique = assume_unique,
-        invert = invert,
+        assume_unique=assume_unique,
+        invert=invert,
     )
 
 isin.support_native_out = True

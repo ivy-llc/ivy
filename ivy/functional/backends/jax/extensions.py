@@ -270,8 +270,8 @@ def isin(
     invert: Optional[bool] = False,
 ) -> JaxArray:
     return jnp.isin(elements, test_elements,
-                    assume_unique = assume_unique,
-                    invert = invert)
+                    assume_unique=assume_unique,
+                    invert=invert)
 
 def median(
     input: JaxArray,

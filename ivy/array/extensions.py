@@ -381,3 +381,13 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([6.5, 4.5, 2.5])
         """
         return ivy.median(self._data, axis=axis, keepdims=keepdims, out=out)
+
+    def isin(
+        self: ivy.Array,
+        test_elements: ivy.Array,
+        /,
+        *,
+        assume_unique: Optional[bool] = False,
+        invert: Optional[bool] = False,
+    ) -> ivy.Array:
+        return ivy.isin(self._data, test_elements, assume_unique=assume_unique, invert=invert)
