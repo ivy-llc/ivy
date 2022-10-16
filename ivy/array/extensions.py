@@ -426,3 +426,36 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([False, False, False,  True])
         """
         return ivy.isin(self._data, test_elements, assume_unique=assume_unique, invert=invert)
+
+    def flipud(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.flipud. This method simply
+        wraps the function, and so the docstring for ivy.flipud also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array to be flipped.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array corresponding to input array with elements
+            order reversed along axis 0.
+
+        Examples
+        --------
+        >>> m = ivy.diag([1, 2, 3])
+        >>> m.flipud()
+        ivy.array([[ 0.,  0.,  3.],
+            [ 0.,  2.,  0.],
+            [ 1.,  0.,  0.]])
+        """
+        return ivy.flipud(self._data, out=out)
