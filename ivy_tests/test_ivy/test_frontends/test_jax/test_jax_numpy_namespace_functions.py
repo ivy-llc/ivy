@@ -1015,8 +1015,8 @@ def test_jax_numpy_arccos(
         fn_tree="numpy.arccos",
         x=x[0],
     )
-    
-    
+
+
 # arccosh
 @handle_cmd_line_args
 @given(
@@ -1045,9 +1045,9 @@ def test_jax_numpy_arccosh(
         frontend="jax",
         fn_tree="numpy.arccosh",
         x=x[0],
-    )    
-    
-    
+    )
+
+
 # arcsin
 @handle_cmd_line_args
 @given(
@@ -1076,9 +1076,9 @@ def test_jax_numpy_arcsin(
         frontend="jax",
         fn_tree="numpy.arcsin",
         x=x[0],
-    )    
-    
-    
+    )
+
+
 # arcsinh
 @handle_cmd_line_args
 @given(
@@ -1107,6 +1107,4 @@ def test_jax_numpy_arcsinh(
         frontend="jax",
         fn_tree="numpy.arcsinh",
         x=x[0],
-    )     
-    
-    
+    )
