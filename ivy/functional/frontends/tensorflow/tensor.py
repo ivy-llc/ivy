@@ -21,7 +21,7 @@ class Tensor:
         return y.__radd__(self.data)
 
     def __div__(self, x, name="div"):
-        return tf_frontend.math.divide(x, self.data, name=name)
+        return tf_frontend.math.divide(self.data, x, name=name)
 
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
@@ -58,7 +58,7 @@ class Tensor:
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
 
     def __invert__(self, name="invert"):
-        return tf_frontend.Invert(x=self.data, name=name)
+        return tf_frontend.raw_ops.Invert(x=self.data, name=name)
 
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self.data, y=y.data, name=name)

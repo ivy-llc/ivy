@@ -1092,6 +1092,7 @@ def test_frontend_method(
     native_array_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
     frontend: str,
+    module_name: str,
     class_name: str,
     method_name: str = "__init__",
     rtol_: float = None,
@@ -1131,6 +1132,8 @@ def test_frontend_method(
         input arguments to the method as keyword arguments.
     frontend
         current frontend (framework).
+    module_name
+        current file with the class to test
     class_name
         name of the class to test.
     method_name
@@ -1291,17 +1294,26 @@ def test_frontend_method(
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
+    def import_class(ins_class_string):
+        full_class_path = ins_class_string.split(".")
+        module_path = ".".join(full_class_path[:-1])
+        class_str = full_class_path[-1]
+        imported_class = importlib.import_module(module_path)
+        return getattr(imported_class, class_str)
+
     # Run testing
     class_name = class_name.split(".")
-    ins_class = ivy.functional.frontends.__dict__[frontend]
+    ins_class = f"ivy.functional.frontends.{frontend}.{module_name}"
     if class_name[-1] in ARR_INS_METHOD and frontend != "torch":
         frontend_class = ARR_INS_METHOD[class_name[-1]]
         for c_n in class_name:
-            ins_class = getattr(ins_class, c_n)
+            ins_class = ins_class + "." + c_n
+        ins_class = import_class(ins_class)
     else:
         frontend_class = importlib.import_module(frontend)
         for c_n in class_name:
-            ins_class = getattr(ins_class, c_n)
+            ins_class = ins_class + "." + c_n
+            ins_class = import_class(ins_class)
             frontend_class = getattr(frontend_class, c_n)
     ins = ins_class(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(

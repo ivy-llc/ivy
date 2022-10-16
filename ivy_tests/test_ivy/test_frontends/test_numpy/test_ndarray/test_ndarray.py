@@ -13,33 +13,29 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
     ),
 )
 def test_numpy_ndarray_argmax(
     dtype_and_x,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        input_dtype_init=input_dtype,
+        input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": x[0],
+            "object": x[0],
         },
-        input_dtypes_method=[input_dtype[1]],
+        input_dtypes_method=[input_dtype[0]],
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "value": x[1],
-        },
-        fw=fw,
+        all_as_kwargs_np_method={},
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="argmax",
     )
@@ -80,7 +76,7 @@ def test_numpy_ndarray_reshape(
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": x[0],
+            "object": x[0],
         },
         input_dtypes_method=[],
         as_variable_flags_method=as_variable,
@@ -90,6 +86,7 @@ def test_numpy_ndarray_reshape(
             "shape": shape,
         },
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="reshape",
     )
@@ -115,7 +112,7 @@ def test_numpy_ndarray_add(
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": x[0],
+            "object": x[0],
         },
         input_dtypes_method=[input_dtype[1]],
         as_variable_flags_method=as_variable,
@@ -125,6 +122,7 @@ def test_numpy_ndarray_add(
             "value": x[1],
         },
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="add",
     )
@@ -155,7 +153,7 @@ def test_numpy_ndarray_squeeze(
         num_positional_args_init=0,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": np.array(x, dtype=input_dtype),
+            "object": np.array(x, dtype=input_dtype),
         },
         input_dtypes_method=[],
         as_variable_flags_method=as_variable,
@@ -166,6 +164,7 @@ def test_numpy_ndarray_squeeze(
         },
         fw=fw,
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="squeeze",
     )
@@ -197,7 +196,7 @@ def test_numpy_ndarray_transpose(
         num_positional_args_init=num_positional_args,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": np.array(array),
+            "object": np.array(array),
         },
         input_dtypes_method=dtype,
         as_variable_flags_method=as_variable,
@@ -207,6 +206,7 @@ def test_numpy_ndarray_transpose(
             "axes": axes,
         },
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="transpose",
     )
@@ -253,7 +253,7 @@ def test_numpy_ndarray_any(
         num_positional_args_init=num_positional_args,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
-            "data": x[0],
+            "object": x[0],
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
@@ -266,6 +266,7 @@ def test_numpy_ndarray_any(
             "where": where,
         },
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="any",
     )
@@ -316,7 +317,7 @@ def test_numpy_ndarray_all(
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
         all_as_kwargs_np_init={
-            "data": x[0],
+            "object": x[0],
         },
         all_as_kwargs_np_method={
             "axis": axis,
@@ -325,6 +326,7 @@ def test_numpy_ndarray_all(
             "where": where,
         },
         frontend="numpy",
+        module_name="ndarray",
         class_name="ndarray",
         method_name="all",
     )
@@ -359,6 +361,7 @@ def test_numpy_instance_argsort(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
+        module_name="ndarray",
         frontend_class=np.ndarray,
         fn_tree="ndarray.argsort",
         x=x[0],
