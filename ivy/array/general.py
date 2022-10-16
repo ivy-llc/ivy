@@ -114,7 +114,7 @@ class ArrayWithGeneral(abc.ABC):
             input iterable to compare to ``self``
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
-            other. Default is False.
+            other. Default is ``False``.
 
         Returns
         -------
@@ -137,7 +137,7 @@ class ArrayWithGeneral(abc.ABC):
             input array
         include_infs
             Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
+            Default is ``True``.
 
         Returns
         -------
@@ -175,7 +175,7 @@ class ArrayWithGeneral(abc.ABC):
             The array which indicates the indices that will be gathered along
             the specified axis.
         axis
-            The axis from which the indices will be gathered. Default is -1.
+            The axis from which the indices will be gathered. Default is ``-1``.
         batch_dims
             optional int, lets you gather different items from each element of a batch.
         out
@@ -219,7 +219,7 @@ class ArrayWithGeneral(abc.ABC):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor
+            The shape of the result. Default is ``None``, in which case tensor
             argument must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
@@ -752,13 +752,13 @@ class ArrayWithGeneral(abc.ABC):
             The number of frequency bands for the encoding. Default is 4.
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
-            Default is False.
+            Default is ``False``.
         concat
             Whether to concatenate the position, sin and cos values, or return
-            seperately. Default is True.
+            seperately. Default is ``True``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -787,7 +787,7 @@ class ArrayWithGeneral(abc.ABC):
         self
             input array
         include_infs
-            Whether to include infs and -infs in the check. Default is True.
+            Whether to include infs and -infs in the check. Default is ``True``.
 
         Returns
         -------
@@ -859,12 +859,12 @@ class ArrayWithGeneral(abc.ABC):
         default_val
             The default value.
         catch_exceptions
-            Whether to catch exceptions from callable x. Default is False.
+            Whether to catch exceptions from callable x. Default is ``False``.
         rev
-            Whether to reverse the input x and default_val. Default is False.
+            Whether to reverse the input x and default_val. Default is ``False``.
         with_callable
             Whether either of the arguments might be callable functions.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
