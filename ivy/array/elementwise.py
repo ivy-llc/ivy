@@ -1692,7 +1692,8 @@ class ArrayWithElementwise(abc.ABC):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         modulus
-            whether to compute the modulus instead of the remainder. Default is True.
+            whether to compute the modulus instead of the remainder.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
