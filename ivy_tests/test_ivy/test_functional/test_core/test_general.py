@@ -262,20 +262,38 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 # to_scalar
 @handle_cmd_line_args
 @given(
-    object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=helpers.get_dtypes("valid", full=False),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        large_abs_safety_factor=20,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="to_scalar"),
 )
-def test_to_scalar(object_in, dtype, device, fw):
-    assume(not ("bfloat16" in dtype))
-    # bfloat16 is not supported by numpy
-    # smoke test
-    ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype[0], device=device))
-    true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype[0])).item()
-    # type test
-    assert isinstance(ret, type(true_val))
-    # value test
-    assert (
-        ivy.to_scalar(ivy.array(object_in, dtype=dtype[0], device=device)) == true_val
+def test_to_scalar(
+    x0_n_x1_n_res,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="to_scalar",
+        x=x[0],
     )
 
 
@@ -283,34 +301,33 @@ def test_to_scalar(object_in, dtype, device, fw):
 @handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True)
-    )
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        large_abs_safety_factor=20,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="to_list"),
 )
-def test_to_list(x0_n_x1_n_res, device, fw):
-    dtype, object_in = x0_n_x1_n_res
-    # bfloat16 is not supported by numpy
-    object_in = object_in[0]
-    assume(not ("bfloat16" in dtype))
-    # smoke test
-    arr = ivy.array(object_in, dtype=dtype[0], device=device)
-    ret = ivy.to_list(arr)
-    # type test (result won't be a list if input is 0 dimensional
-    if arr.ndim != 0:
-        assert isinstance(ret, list)
-    # cardinality test
-    assert _get_shape_of_list(ret) == _get_shape_of_list(object_in)
-    # value test
-    assert np.allclose(
-        np.nan_to_num(
-            np.asarray(
-                ivy.to_list(ivy.array(object_in, dtype=dtype[0], device=device))
-            ),
-            posinf=np.inf,
-            neginf=-np.inf,
-        ),
-        np.nan_to_num(
-            np.array(object_in).astype(dtype[0]), posinf=np.inf, neginf=-np.inf
-        ),
+def test_to_list(
+    x0_n_x1_n_res,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="to_list",
+        x=x[0],
     )
 
 
@@ -355,26 +372,33 @@ def test_shape(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True)
     ),
-    as_tensor=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    as_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="get_num_dims"),
 )
-def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
-    dtype, object_in = x0_n_x1_n_res
-    assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
-    ret = ivy.get_num_dims(
-        tensor_fn(object_in, dtype=dtype[0], device=device), as_array=as_tensor
-    )
-    # type test
-    if as_tensor:
-        assert ivy.is_ivy_array(ret)
-    else:
-        assert isinstance(ret, int)
-        ret = ivy.array(ret)
-    # cardinality test
-    assert list(ret.shape) == []
-    # value test
-    assert np.array_equal(
-        ivy.to_numpy(ret), np.asarray(len(np.asarray(object_in).shape), np.int32)
+def test_get_num_dims(
+    x0_n_x1_n_res,
+    as_array,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="get_num_dims",
+        x=x[0],
+        as_array=as_array,
     )
 
 
@@ -385,14 +409,14 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         min_num_dims=1,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
     ),
     max_norm_n_p=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
         num_arrays=2,
         large_abs_safety_factor=16,
-        small_abs_safety_factor=16,
+        small_abs_safety_factor=64,
         safety_factor_scale="log",
         shape=(),
     ),
@@ -425,8 +449,8 @@ def test_clip_vector_norm(
         rtol_=1e-1,
         atol_=1e-1,
         x=x[0],
-        max_norm=max_norm,
-        p=p,
+        max_norm=float(max_norm),
+        p=float(p),
     )
 
 
@@ -700,13 +724,11 @@ def test_gather(
 
 
 @st.composite
-def array_and_ndindices(
+def array_and_ndindices_batch_dims(
     draw,
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
-    min_num_ndindices=1,
-    max_num_ndindices=10,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -725,53 +747,70 @@ def array_and_ndindices(
         )
     )
 
-    # num_ndindices defines the number of elements to generate.
-    num_ndindices = draw(
+    batch_dims = draw(
         helpers.ints(
-            min_value=min_num_ndindices,
-            max_value=max_num_ndindices,
+            min_value=0,
+            max_value=len(x_shape) - 1,
         )
     )
     # indices_dims defines how far into the array to index.
     indices_dims = draw(
         helpers.ints(
             min_value=1,
-            max_value=len(x_shape),
+            max_value=max(1, len(x_shape) - batch_dims),
         )
     )
-    indices = []
-    indices_dtype = draw(st.sampled_from(indices_dtypes))
-    if num_ndindices == 1:
-        index = draw(
+
+    batch_shape = x_shape[0:batch_dims]
+    shape_var = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims - batch_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    ndindices_shape = list(batch_shape) + list(shape_var) + [indices_dims]
+    ndindices = np.zeros(ndindices_shape, dtype="int32")
+    if len(ndindices_shape) <= 1:
+        enumerator = ndindices
+    else:
+        enumerator = np.zeros(ndindices_shape[0:-1], dtype="int32")
+    ndindices_dtype = draw(st.sampled_from(indices_dtypes))
+    for idx, _ in np.ndenumerate(enumerator):
+        bounds = []
+        for j in range(0, indices_dims):
+            bounds.append(x_shape[j + batch_dims] - 1)
+        ndindices[idx] = draw(ndindices_with_bounds(bounds=bounds))
+    ndindices = np.asarray(ndindices, ndindices_dtype)
+    return [x_dtype[0], ndindices_dtype], x[0], ndindices, batch_dims
+
+
+@st.composite
+def ndindices_with_bounds(
+    draw,
+    *,
+    bounds,
+):
+    arr = []
+    for i in bounds:
+        x = draw(
             helpers.ints(
                 min_value=0,
-                max_value=max(0, x_shape[0] - 1),
+                max_value=max(0, i),
             )
         )
-        indices.append(index)
-    else:
-        for _ in range(num_ndindices):
-            nd_index = []
-            for j in range(indices_dims):
-                axis_index = draw(
-                    helpers.ints(
-                        min_value=0,
-                        max_value=max(0, x_shape[j] - 1),
-                    )
-                )
-                nd_index.append(axis_index)
-            indices.append(nd_index)
-    return [x_dtype[0], indices_dtype], x[0], indices
+        arr.append(x)
+    return arr
 
 
 # gather_nd
 @handle_cmd_line_args
 @given(
-    params_n_ndindices=array_and_ndindices(
+    params_n_ndindices_batch_dims=array_and_ndindices_batch_dims(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
-        min_num_ndindices=1,
-        max_num_ndindices=10,
         allow_inf=False,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
@@ -782,7 +821,7 @@ def array_and_ndindices(
     instance_method=st.booleans(),
 )
 def test_gather_nd(
-    params_n_ndindices,
+    params_n_ndindices_batch_dims,
     as_variable,
     with_out,
     num_positional_args,
@@ -791,7 +830,7 @@ def test_gather_nd(
     instance_method,
     fw,
 ):
-    dtypes, params, ndindices = params_n_ndindices
+    dtypes, params, ndindices, batch_dims = params_n_ndindices_batch_dims
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -803,7 +842,8 @@ def test_gather_nd(
         fw=fw,
         fn_name="gather_nd",
         params=params,
-        indices=np.asarray(ndindices, dtypes[1]),
+        indices=ndindices,
+        batch_dims=batch_dims,
     )
 
 
@@ -1075,8 +1115,8 @@ def test_explicit_ivy_framework_handles(device):
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=3,
-        max_num_dims=3,
+        min_num_dims=4,
+        max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
     ).filter(
@@ -1126,25 +1166,22 @@ def test_einops_rearrange(
     )
 
 
+# einops_reduce
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=3,
-        max_num_dims=3,
+        min_num_dims=4,
+        max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
     ).filter(
         lambda x: ivy.array([x[1][0].tolist()]).shape[2] % 2 == 0
         and ivy.array([x[1][0].tolist()]).shape[3] % 2 == 0
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
-            # ('t b  -> b', {}),
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
@@ -1166,7 +1203,7 @@ def test_einops_reduce(
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
     if (reduction in ["mean", "prod"]) and (dtype not in ivy_np.valid_float_dtypes):
-        dtype = "float32"
+        dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1192,8 +1229,8 @@ def test_einops_reduce(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
+        min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=2,
     ),
     pattern_and_axes_lengths=st.sampled_from(
@@ -1671,7 +1708,7 @@ def test_function_supported_device_and_dtype(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # function_unsupported_devices_and_dtypes
@@ -1696,7 +1733,7 @@ def test_function_unsupported_devices(func, expected):
     for key in all_key:
         assert key in res
         assert key in exp
-        assert sorted(res[key]) == sorted(exp[key])
+        assert set(res[key]) == set(exp[key])
 
 
 # Still to Add #
@@ -1774,8 +1811,8 @@ def _get_valid_numeric_no_unsigned(draw):
     dtype_and_min_base=helpers.dtype_and_values(
         available_dtypes=_get_valid_numeric_no_unsigned(),
         num_arrays=1,
-        large_abs_safety_factor=72,
-        small_abs_safety_factor=72,
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
         shared_dtype=True,
     ),
@@ -1792,6 +1829,7 @@ def test_stable_pow(
 ):
     dtypes, xs = dtypes_and_xs
     input_dtype_min_base, min_base = dtype_and_min_base
+    assume(all(["bfloat16" not in x for x in dtypes + input_dtype_min_base]))
     helpers.test_function(
         input_dtypes=dtypes + input_dtype_min_base,
         as_variable_flags=as_variable,
@@ -1804,7 +1842,7 @@ def test_stable_pow(
         fn_name="stable_pow",
         rtol_=1e-2,
         atol_=1e-2,
-        base=xs[0],
+        base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],
     )
@@ -1879,6 +1917,7 @@ def test_supports_inplace_updates(
         instance_method=True,
         fw=fw,
         fn_name="supports_inplace_updates",
+        test_values=False,
         x=x[0],
     )
 

@@ -109,12 +109,12 @@ Calling the different backend files explicitly would work okay, but it would mea
         axis
             axis or axes along which products must be computed. By default, the product must
             be computed over the entire array. If a tuple of integers, products must be
-            computed over multiple axes. Default: None.
+            computed over multiple axes. Default: ``None``.
         keepdims
             bool, if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible with the
             input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: False.
+            (dimensions) must not be included in the result. Default: ``False``.
         dtype
             data type of the returned array. If None,
             if the default data type corresponding to the data type “kind” (integer or
@@ -129,7 +129,7 @@ Calling the different backend files explicitly would work okay, but it would mea
             integer data type (e.g., if the default integer data type is int32, the returned
             array must have a uint32 data type). If the data type (either specified or
             resolved) differs from the data type of x, the input array should be cast to the
-            specified data type before computing the product. Default: None.
+            specified data type before computing the product. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -211,7 +211,7 @@ The functions in this returned module are populated by iterating through the glo
 .. code-block:: python
 
    # ivy/backend_handler.py
-   def set_backend(backend):
+   def set_backend(backend: str):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
@@ -219,17 +219,17 @@ The functions in this returned module are populated by iterating through the glo
            ivy_original_dict = ivy.__dict__.copy()
 
        # add the input backend to global stack
-       backend_stack.append(f)
+       backend_stack.append(backend)
 
        # iterate through original ivy.__dict__
        for k, v in ivy_original_dict.items():
 
            # if method doesn't exist in the backend
-           if k not in f.__dict__:
+           if k not in backend.__dict__:
                # add the original ivy method to backend
-               f.__dict__[k] = v
+               backend.__dict__[k] = v
            # update global ivy.__dict__ with this method
-           ivy.__dict__[k] = f.__dict__[k]
+           ivy.__dict__[k] = backend.__dict__[k]
 
        # maybe log to terminal
        if verbosity.level > 0:
@@ -437,4 +437,4 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

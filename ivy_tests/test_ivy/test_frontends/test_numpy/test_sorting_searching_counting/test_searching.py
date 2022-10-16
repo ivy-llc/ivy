@@ -32,7 +32,6 @@ def test_numpy_where(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
@@ -62,7 +61,6 @@ def test_numpy_nonzero(
     dtype_and_a,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
@@ -96,7 +94,6 @@ def test_numpy_argmin(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -135,7 +132,6 @@ def test_numpy_argmax(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -163,9 +159,7 @@ def test_numpy_argmax(
         fn_name="ivy.functional.frontends.numpy.flatnonzero"
     ),
 )
-def test_numpy_flatnonzero(
-    dtype_and_x, as_variable, native_array, num_positional_args, fw
-):
+def test_numpy_flatnonzero(dtype_and_x, as_variable, native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -193,7 +187,7 @@ def test_numpy_flatnonzero(
     ),
 )
 def test_numpy_searchsorted(
-    dtype_x_v, side, as_variable, native_array, num_positional_args, fw
+    dtype_x_v, side, as_variable, native_array, num_positional_args
 ):
     input_dtypes, xs = dtype_x_v
     helpers.test_frontend_function(
@@ -208,4 +202,108 @@ def test_numpy_searchsorted(
         v=xs[1],
         side=side,
         sorter=np.argsort(xs[0]),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.argwhere"
+    ),
+)
+def test_numpy_argwhere(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        frontend="numpy",
+        fn_tree="argwhere",
+        a=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.nanargmax"
+    ),
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanargmax(
+    dtype_x_axis,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="nanargmax",
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.nanargmin"
+    ),
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanargmin(
+    dtype_x_axis,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="nanargmin",
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
     )

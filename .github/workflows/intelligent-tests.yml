@@ -1,0 +1,40 @@
+name: intelligent-tests
+on:
+  workflow_dispatch:
+  push:
+permissions:
+  actions: read
+jobs:
+   run_tests:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         run: |
+           git clone https://github.com/unifyai/Mapping.git
+           pip install pydriller
+           cp Mapping/tests.pkl ivy/
+           cd ivy
+           python determine_tests.py
+           cd ..
+           mkdir tests
+           cp ivy/tests.pkl tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master

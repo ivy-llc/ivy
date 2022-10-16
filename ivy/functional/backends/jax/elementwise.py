@@ -59,7 +59,7 @@ def add(
     return jnp.add(x1, x2)
 
 
-def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
+def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
@@ -105,7 +105,6 @@ def bitwise_left_shift(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.left_shift(x1, x2)
 
 
@@ -218,6 +217,7 @@ def greater(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.greater(x1, x2)
 
 
@@ -228,6 +228,7 @@ def greater_equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.greater_equal(x1, x2)
 
 
@@ -250,6 +251,7 @@ def less(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.less(x1, x2)
 
 
@@ -260,6 +262,7 @@ def less_equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.less_equal(x1, x2)
 
 
@@ -435,9 +438,16 @@ def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def maximum(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray],
+    /,
+    *,
+    use_where: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 >= x2, x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -446,9 +456,12 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
+    use_where: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        return jnp.where(x1 <= x2, x1, x2)
     return jnp.minimum(x1, x2)
 
 
@@ -464,3 +477,7 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
+
+
+def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.isreal(x)

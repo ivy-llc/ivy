@@ -2,6 +2,9 @@
 import torch
 from typing import Optional
 
+# local
+import ivy
+
 
 def argsort(
     x: torch.Tensor,
@@ -53,14 +56,38 @@ def searchsorted(
     ret_dtype=torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.searchsorted(
-        x,
-        v,
-        sorter=sorter,
-        side=side,
-        out_int32=False if ret_dtype is torch.int64 else True,
-        out=out,
+    assert ivy.is_int_dtype(ret_dtype), ValueError(
+        "only Integer data types are supported for ret_dtype."
     )
+    if sorter is not None:
+        sorter_dtype = ivy.as_native_dtype(sorter.dtype)
+        assert ivy.is_int_dtype(sorter_dtype) and not ivy.is_uint_dtype(
+            sorter_dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter_dtype }."
+        )
+        if sorter_dtype is not torch.int64:
+            sorter = sorter.to(torch.int64)
+    ret_dtype = ivy.as_native_dtype(ret_dtype)
+    if ret_dtype is torch.int64:
+        return torch.searchsorted(
+            x,
+            v,
+            sorter=sorter,
+            side=side,
+            out_int32=False,
+            out=out,
+        )
+    elif ret_dtype is torch.int32:
+        return torch.searchsorted(
+            x,
+            v,
+            sorter=sorter,
+            side=side,
+            out_int32=True,
+            out=out,
+        )
+    return torch.searchsorted(x, v, sorter=sorter, side=side, out=out).to(ret_dtype)
 
 
 searchsorted.support_native_out = True
