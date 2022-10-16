@@ -35,6 +35,9 @@ class Tensor:
         self.data = self.sinh()
         return self.data
 
+    def cos(self, *, out=None):
+        return torch_frontend.cos(self.data, out=out)
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
