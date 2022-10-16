@@ -376,42 +376,40 @@ First, let's set our desired backend as torch.
    :align: center
    :width: 75%
 
-In this example, we observe that both the Ivy code, and the native backend code, compile to the same desired backend code, which in our example was torch.
-Furthermore, the mix of Ivy and native backend code also compiles to the same graph in torch.
+In this example we observe how ivy code, raw torch code, and also a mixture of ivy and torch code all compile to the same torch computation graph.
 
-Now, let's take another example, this time setting the desired backend as tensorflow as tf.
+Now, let's take another example, this time observing how the same Ivy code will compile to different backends. 
 
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
-|                                        |                                         |                                         |                                          
-| def pure_ivy(x):                       | def pure_tf(x):                         | def mix(x):                             | 
-|     y = ivy.mean(x)                    |     y = tf.math_reduce_mean(x)          |     y = ivy.mean(x)                     |             
-|     z = ivy.sum(x)                     |     z = tf.math.reduce_sum(x)           |     z = tf.reduce_sum(x)                    |     
-|     f = ivy.var(y)                     |     f = tf.Variable(y)                  |     f = ivy.var(y)                      |   
-|     k = ivy.cos(z)                     |     k = tf.math.cos(z)                  |     k = tf.math.cos(z)                    |     
-|     m = ivy.sin(f)                     |     m = tf.math.sin(f)                  |     m = ivy.sin(f)                      |     
-|     o = ivy.tan(y)                     |     o = tf.math.tan(y)                  |     o = tf.math.tan(y)                    |    
-|     return ivy.concatenate(            |     return tf.concat(                   |     return ivy.concatenate(             |     
-|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |        
-|                                        |                                         |                                         |                                        
-| # input                                | # input                                 | # input                                 | 
-| x = ivy.array([[1., 2., 3.]])          | x = tf.Tensor([[1., 2., 3.]])           | x = ivy.array([[1., 2., 3.]])           | 
-|                                        |                                         |                                         |                                   
-| # create graph                         | # create graph                          | # create graph                          | 
-| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              | 
-|     pure_ivy, x)                       |     pure_tf, x)                         |     mix, x)                             |     
-|                                        |                                         |                                         |
-| # call graph                           | # call graph                            | # call graph                            |
-| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
++------------------------------------+
+|.. code-block:: python              |
+|                                    | 
+| def ivy_func(x, y):                |
+|     w = ivy.diag(x)                |
+|     z = ivy.matmul(x, y)           |
+|     z = ivy.eig(z)                 |
+|     return w, z                    |
+|                                    |
+| # input                            |
+| x = ivy.array([[1., 2., 3.]])      |
+| y = ivy.array([[2., 3., 4.]])      |
+| # create graph                     |
+| graph = ivy.compile_graph(         |
+|     ivy_func, x, y)                |
+|                                    |
+| # call graph                       |
+| ret = graph(x, y)                  |
++------------------------------------+
+Now, let's look at the compilec codes when we set the backend to tensorflow, torch and numpy respectively.
+
+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/tf_graph_example.png?raw=true
    :align: center
    :width: 75%
 
-Additionally, in the above example we also observe that Ivy code and native backend code is compiled to the desired backend code for any framework, not just torch.
-Another important point to observe is that the nodes in the compiled graph are not Ivy frontend functions, but rather the desired backend framework functions, so there
-is no further code conversions required after graph compilation.
+The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions. 
+Specifically, the same Ivy code compiles to different graphs depending on the selected backend. However, when compiling native framework code, we are only able to compile a graph for that same framework. 
+For example, we cannot take torch code and compile this into tensorflow code. However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
