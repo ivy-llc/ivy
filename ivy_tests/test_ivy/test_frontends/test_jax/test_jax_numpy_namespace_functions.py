@@ -934,15 +934,15 @@ def test_jax_numpy_arccos(
         fn_tree="numpy.arccos",
         x=x[0],
     )
-
     
+
 # arccosh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.arccosh"
+        fn_name="ivy.functional.frontends.jax.numpy.arcosh"
     ),
 )
 def test_jax_numpy_arccosh(
@@ -965,7 +965,7 @@ def test_jax_numpy_arccosh(
         fn_tree="numpy.arccosh",
         x=x[0],
     )
-
+    
     
 # arcsin
 @handle_cmd_line_args
@@ -995,8 +995,8 @@ def test_jax_numpy_arcsin(
         frontend="jax",
         fn_tree="numpy.arcsin",
         x=x[0],
-    )
-
+    )    
+    
     
 # arcsinh
 @handle_cmd_line_args
@@ -1026,4 +1026,6 @@ def test_jax_numpy_arcsinh(
         frontend="jax",
         fn_tree="numpy.arcsinh",
         x=x[0],
-    )
+    )  
+    
+    
