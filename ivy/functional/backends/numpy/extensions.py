@@ -299,6 +299,22 @@ def heaviside(
 heaviside.support_native_out = True
 
 
+def median(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )
+
+
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -310,11 +326,6 @@ def fmod(
         x1,
         x2,
         out=None,
-        where=True,
-        casting="same_kind",
-        order="K",
-        dtype=None,
-        subok=True,
     )
 
 

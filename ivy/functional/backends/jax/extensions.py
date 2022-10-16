@@ -260,6 +260,22 @@ def heaviside(
     return jnp.heaviside(x1, x2)
 
 
+def median(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )
+
+
 def fmod(
     x1: JaxArray,
     x2: JaxArray,

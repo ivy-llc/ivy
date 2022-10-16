@@ -342,6 +342,46 @@ class ArrayWithExtensions(abc.ABC):
         """
         return ivy.heaviside(self._data, x2, out=out)
 
+    def median(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
+        >>> a.median()
+        3.5
+        >>> a.median(axis=0)
+        ivy.array([6.5, 4.5, 2.5])
+        """
+        return ivy.median(self._data, axis=axis, keepdims=keepdims, out=out)
+
     def fmod(
         self: ivy.Array,
         x2: ivy.Array,
@@ -372,7 +412,7 @@ class ArrayWithExtensions(abc.ABC):
         --------
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
-        >>> ivy.fmod(x1, x2)
+        >>> x1.fmod(x2)
         ivy.array([ 0,  3,  0])
 
         >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
@@ -380,4 +420,4 @@ class ArrayWithExtensions(abc.ABC):
         >>> x1.fmod(x2)
         ivy.array([ nan,  nan,  nan])
         """
-        return ivy.moveaxis(self._data, x2, out=out)
+        return ivy.fmod(self._data, x2, out=out)
