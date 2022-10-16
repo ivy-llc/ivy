@@ -181,7 +181,7 @@ def polyval(coeffs, x, name=None):
 
 
 def pow(x, y, name="pow"):
-	return ivy.pow(x, y)
+    return ivy.pow(x, y)
 
 
 def reciprocal_no_nan(x, name="reciprocal_no_nan"):
