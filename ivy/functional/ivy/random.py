@@ -536,8 +536,8 @@ def shuffle(
     ret
         An array object, shuffled along the first dimension.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> x = ivy.array([1, 2, 3, 4, 5])
     >>> y = ivy.shuffle(x)
     >>> print(y)

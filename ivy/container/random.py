@@ -1111,8 +1111,6 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Container` inputs:
-
         >>> x = ivy.Container(a=ivy.array([5,2,9]), \
                               b=ivy.array([7,1,6]))
         >>> x.shuffle()
@@ -1120,12 +1118,6 @@ class ContainerWithRandom(ContainerBase):
             a: ivy.array([9, 5, 2]),
             b: ivy.array([6, 7, 1])
         }
-
-        With :class:`ivy.Array` inputs:
-
-        >>> x = ivy.array([0,1,0])
-        >>> ivy.shuffle(x)
-        ivy.array([0, 0, 1])
         """
         return self.static_shuffle(
             self,
