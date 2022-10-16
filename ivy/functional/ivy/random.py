@@ -538,15 +538,39 @@ def shuffle(
 
     Examples
     --------
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2, 3, 4, 5])
     >>> y = ivy.shuffle(x)
     >>> print(y)
     ivy.array([2, 1, 4, 3, 5])
 
     >>> x = ivy.array([1,0,5])
-    >>> y = ivy.array(ivy.zeros((3,)))
+    >>> y = ivy.array([0, 0, 0])
     >>> z = ivy.shuffle(x, out=y)
     >>> print(y)
     ivy.array([0, 5, 1])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([5,2,9]),
+    ...                   b=ivy.array([7,1,6]))
+    >>> y = ivy.shuffle(x)
+    >>> print(y)
+    {
+        a: ivy.array([5, 9, 2]),
+        b: ivy.array([6, 1, 7])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([8,2,5]),
+    ...                   b=ivy.array([3,9,0]))
+    >>> y = ivy.Container(a=ivy.array([0,0,0]),
+    ...                   b=ivy.array([0,0,0]))
+    >>> z = ivy.shuffle(x, out=y)
+    >>> print(z)
+    {
+        a: ivy.array([2, 8, 5]),
+        b: ivy.array([0, 9, 3])
+    }
     """
     return ivy.current_backend(x).shuffle(x, seed=seed, out=out)

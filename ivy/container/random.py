@@ -1111,8 +1111,8 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([5,2,9]), \
-                              b=ivy.array([7,1,6]))
+        >>> x = ivy.Container(a=ivy.array([5,2,9]),
+        ...                   b=ivy.array([7,1,6]))
         >>> x.shuffle()
         {
             a: ivy.array([9, 5, 2]),
