@@ -191,20 +191,20 @@ def sin(x):
 
 
 @inputs_to_ivy_arrays
-def arccos(x1, x2):
-    return ivy.acos(x1, x2)
+def arccos(x):
+    return ivy.acos(x)
 
 
 @inputs_to_ivy_arrays
-def arccosh(x1, x2):
-    return ivy.acosh(x1, x2)
+def arccosh(x):
+    return ivy.acosh(x)
 
 
 @inputs_to_ivy_arrays
-def arcsin(x1, x2):
-    return ivy.asin(x1, x2)
+def arcsin(x):
+    return ivy.asin(x)
 
 
 @inputs_to_ivy_arrays
-def arcsinh(x1, x2):
-    return ivy.asinh(x1, x2)
+def arcsinh(x):
+    return ivy.asinh(x)
