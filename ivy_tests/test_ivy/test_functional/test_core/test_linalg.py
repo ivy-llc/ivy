@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, assume, strategies as st, settings
 
 # local
 import ivy
@@ -1386,29 +1386,44 @@ def test_cross(
     )
 
 
+@st.composite
+def _dtype_values_padding_value(draw):
+    # dtype = draw(available_dtypes)
+    pass
+
+
 @handle_cmd_line_args
+@settings(max_examples=10000)
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-    dtype_offset=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        max_num_dims=1,
-        min_num_dims=1,
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        max_dim_size=5,
         min_dim_size=1,
+        min_num_dims=1,
+        max_num_dims=1,
     ),
+    offset=helpers.ints(min_value=-5, max_value=5),
+    # padding_value=helpers.floats(),
     dtype_padding_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        max_dim_size=1,
+        min_dim_size=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-1e5,
+        max_value=1e5,
     ),
     align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
-    num_rows=helpers.ints(min_value=1),
-    num_cols=helpers.ints(min_value=1),
+    num_rows=st.one_of(st.none(), helpers.ints(min_value=2, max_value=12)),
+    num_cols=st.one_of(st.none(), helpers.ints(min_value=2, max_value=12)),
+    # num_rows=st.none(),
+    # num_cols=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="diag"),
 )
 def test_diag(
     *,
     dtype_x,
-    dtype_offset,
+    offset,
     dtype_padding_value,
     as_variable,
     with_out,
@@ -1422,10 +1437,16 @@ def test_diag(
     num_cols,
 ):
     x_dtype, x = dtype_x
-    offset_dtype, offset = dtype_offset
+    # offset_dtype, offset = dtype_offset
     padding_value_dtype, padding_value = dtype_padding_value
+    padding_value = padding_value[0][0]
+
+    assume(padding_value_dtype == x_dtype)
+    # Somehow ret_np_from_gt_flat = [] when the backend never returns None?
+
     helpers.test_function(
-        input_dtypes=x_dtype + offset_dtype + padding_value_dtype,
+        # input_dtypes=x_dtype + offset_dtype + padding_value_dtype,
+        input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -1434,12 +1455,13 @@ def test_diag(
         instance_method=instance_method,
         fw=fw,
         fn_name="diag",
-        x=x,
+        x=x[0],
         offset=offset,
         padding_value=padding_value,
         align=align,
         num_rows=num_rows,
         num_cols=num_cols,
+        atol_=1e-02,
     )
 
 
