@@ -521,33 +521,48 @@ class Container(
 
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
-        state_dict["_local_ivy"] = ivy.try_else_none(
-            lambda: state_dict["_local_ivy"].current_backend_str()
+        state_dict["_local_ivy"] = (
+            state_dict["_local_ivy"].current_backend_str()
+            if state_dict["_local_ivy"] is not None
+            else None
         )
         config_in = copy.copy(state_dict["_config_in"])
-        config_in["ivyh"] = ivy.try_else_none(
-            lambda: config_in["ivyh"].current_backend_str()
+        config_in["ivyh"] = (
+            config_in["ivyh"].current_backend_str()
+            if config_in["ivyh"] is not None
+            else None
         )
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
-        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
+        config["ivyh"] = (
+            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
+        )
         state_dict["_config"] = config
         return state_dict
 
     def __setstate__(self, state_dict):
         if "_local_ivy" in state_dict:
             if ivy.exists(state_dict["_local_ivy"]):
-                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+                if len(state_dict["_local_ivy"]) > 0:
+                    state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+                else:
+                    state_dict["_local_ivy"] = ivy
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
-                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+                    if len(config_in["ivyh"]) > 0:
+                        config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+                    else:
+                        config_in["ivyh"] = ivy
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
-                    config["ivyh"] = ivy.get_backend(config["ivyh"])
+                    if len(config["ivyh"]) > 0:
+                        config["ivyh"] = ivy.get_backend(config["ivyh"])
+                    else:
+                        config["ivyh"] = ivy
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
