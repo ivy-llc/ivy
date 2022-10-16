@@ -330,15 +330,15 @@ def test_numpy_negative(
         subok=True,
     )
 
-    
-    
+
 # floor_divide
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2,
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
         min_value=0,
-        exclude_min=True
+        exclude_min=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
@@ -385,5 +385,3 @@ def test_numpy_floor_divide(
         subok=True,
         test_values=False,
     )
-    
-    

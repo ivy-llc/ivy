@@ -234,7 +234,9 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.std(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.std(
+            self, axis=axis, correction=correction, keepdims=keepdims, out=out
+        )
 
     # Extra #
     # ----- #
