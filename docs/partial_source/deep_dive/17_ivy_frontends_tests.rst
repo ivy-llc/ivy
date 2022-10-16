@@ -1,5 +1,5 @@
-Ivy Frontend Tests 🧪
-=====================
+Ivy Frontend Tests
+==================
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
@@ -723,16 +723,14 @@ ivy.add()
         ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
         for (u, v) in zip(ret, ret_gt):
             helpers.value_test(
-                ret=ret,
-                ret_from_gt=ret_gt,
+                ret=u,
+                ret_from_gt=v,
                 ground_truth_backend="jax",
             )
 
 * We use :func:`helpers.value_test` to test the special method.
-* We use the frontend class :class:`DeviceArray` to calculate jax frontend special method's result, which is then compared
-to the regular frontend function's result, when passed into the :func:`helpers.value_test`.
-* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is
-to be tested.
+* We use the frontend class :class:`DeviceArray` to calculate jax frontend special method's result, which is then compared to the regular frontend function's result, when passed into the :func:`helpers.value_test`.
+* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is to be tested.
 
 
 Hypothesis Helpers

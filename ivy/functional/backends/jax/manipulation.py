@@ -20,10 +20,13 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[JaxArray], /, *, axis: int = 0, out: Optional[JaxArray] = None
+    xs: Union[Tuple[JaxArray, ...], List[JaxArray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
-
     if axis is None:
         if is_tuple:
             xs = list(xs)

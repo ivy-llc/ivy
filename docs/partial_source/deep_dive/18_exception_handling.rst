@@ -1,5 +1,5 @@
-Exception Handling ⚠
-====================
+Exception Handling
+==================
 
 .. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
 .. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
