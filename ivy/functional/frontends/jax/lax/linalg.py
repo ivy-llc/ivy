@@ -33,8 +33,3 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
-
-
-@inputs_to_ivy_arrays
-def solve(x1, x2):
-    return ivy.solve(x1, x2)
