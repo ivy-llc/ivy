@@ -355,5 +355,5 @@ def test_jax_numpy_matrix_rank(dtype_and_x, as_variable, native_array, num_posit
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.matrix_rank",
-        a= x[0],
+        M= x[0],
     )
