@@ -84,6 +84,9 @@ class Tensor:
 
     def __or__(self, y, name="or"):
         return y.__ror__(self.data)
+        
+    def __pow__(self, y, name="pow"):
+    	return tf_frontend.math.pow(x=self.data, y=y.data, name=name)
 
     def __radd__(self, x, name="radd"):
         return tf_frontend.math.add(x, self.data, name=name)
