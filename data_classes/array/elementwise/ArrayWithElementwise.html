@@ -270,7 +270,7 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p></li>
 <li><p><strong>alpha</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – optional scalar multiplier for <code class="docutils literal notranslate"><span class="pre">x2</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -416,7 +416,7 @@ with minimal changes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array corresponding to the y-coordinates.
 Should have a real-valued floating-point data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array corresponding to the x-coordinates.
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array corresponding to the x-coordinates.
 Must be compatible with <a href="#id1"><span class="problematic" id="id2">``</span></a>self``(see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued floating-point data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -485,7 +485,7 @@ ivy.bitwise_and also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
@@ -551,7 +551,7 @@ ivy.bitwise_left_shift also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have an integer or boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -579,7 +579,7 @@ to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
 </ul>
@@ -612,7 +612,7 @@ for ivy.bitwise_right_shift also applies to this method with minimal changes.</p
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
@@ -648,7 +648,7 @@ for ivy.bitwise_xor also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have an integer or boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -825,7 +825,7 @@ to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – dividend input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -870,7 +870,7 @@ ivy.equal also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. May have any data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 May have any data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1039,7 +1039,7 @@ also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – dividend input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1084,7 +1084,7 @@ ivy.greater also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1119,7 +1119,7 @@ ivy.greater_equal also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1259,7 +1259,7 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1294,7 +1294,7 @@ for ivy.less_equal also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1506,7 +1506,7 @@ ivy.logaddexp also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1542,7 +1542,7 @@ ivy.logical_and also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1602,7 +1602,7 @@ ivy.logical_or also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a boolean data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1648,7 +1648,7 @@ for ivy.logical_xor also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a boolean data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1683,7 +1683,7 @@ for ivy.maximum also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array containing elements to maximum threshold.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – Tensor containing maximum values, must be broadcastable to x1.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Tensor containing maximum values, must be broadcastable to x1.</p></li>
 <li><p><strong>use_where</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to use <code class="xref py py-func docutils literal notranslate"><span class="pre">where()</span></code> to calculate the maximum. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 maximum is calculated using the <code class="docutils literal notranslate"><span class="pre">(x</span> <span class="pre">+</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">|x</span> <span class="pre">-</span> <span class="pre">y|)/2</span></code> formula. Default is
 <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -1705,7 +1705,7 @@ values.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array containing elements to minimum threshold.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – Tensor containing minimum values, must be broadcastable to x1.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Tensor containing minimum values, must be broadcastable to x1.</p></li>
 <li><p><strong>use_where</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to use <code class="xref py py-func docutils literal notranslate"><span class="pre">where()</span></code> to calculate the minimum. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 minimum is calculated using the <code class="docutils literal notranslate"><span class="pre">(x</span> <span class="pre">+</span> <span class="pre">y</span> <span class="pre">-</span> <span class="pre">|x</span> <span class="pre">-</span> <span class="pre">y|)/2</span></code> formula. Default is
 <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -1731,7 +1731,7 @@ This method simply wraps the function, and so the docstring for ivy.multiply</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1782,7 +1782,7 @@ for ivy.not_equal also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. May have any data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
@@ -1833,7 +1833,7 @@ with minimal changes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array whose elements correspond to the exponentiation base.
 Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array whose elements correspond to the exponentiation
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array whose elements correspond to the exponentiation
 exponent. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1915,7 +1915,7 @@ for ivy.remainder also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – dividend input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>modulus</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to compute the modulus instead of the remainder. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
@@ -2181,7 +2181,7 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – first input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>alpha</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – optional scalar multiplier for <code class="docutils literal notranslate"><span class="pre">x2</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
@@ -2314,7 +2314,7 @@ to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – dividend input array. Should have a real-valued data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
 (see <span class="xref std std-ref">broadcasting</span>).
 Should have a real-valued data type.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)

@@ -212,7 +212,7 @@
 <dd><p>Initialises the DefaultDevice class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string - as an ivy device or nativedevice class</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string - as an ivy device or nativedevice class</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -275,10 +275,10 @@
 <dd><p>Convert device string representation to native device type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string to convert to native device handle.</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Native device handle.</p>
@@ -292,7 +292,7 @@
 <dd><p>Clear memory cache on target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string to convert to native device handle.</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -312,13 +312,13 @@ otherwise the cpu is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]]) – The device to be returned or converted. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>item</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ]) – The item to get the device from. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to be returned or converted. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>item</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – The item to get the device from. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>as_native</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether to convert the device to a native device. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Device handle or string.</p>
@@ -350,12 +350,12 @@ otherwise the cpu is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – array for which to get the device handle.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – array for which to get the device handle.</p></li>
 <li><p><strong>as_native</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not to return the dev in native format. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Device handle for the array, in native framework format.</p>
@@ -384,7 +384,7 @@ otherwise the cpu is returned.</p>
 <dd><p>Get the current utilization (%) for a given device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string of the device to query utilization for.</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string of the device to query utilization for.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
@@ -454,7 +454,7 @@ otherwise the cpu is returned.</p>
 <dd><p>Gets all ivy arrays which are currently alive on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device handle from which to get the arrays</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device handle from which to get the arrays</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
@@ -539,7 +539,7 @@ otherwise the cpu is returned.</p>
 <dd><p>Returns the number of arrays which are currently alive on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device handle from which to count the arrays</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device handle from which to count the arrays</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -683,7 +683,7 @@ used RAM is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string to convert to native device handle.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p></li>
 <li><p><strong>process_specific</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the check the memory used by this python process alone. Default is (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 False.</p></li>
 </ul>
@@ -722,7 +722,7 @@ specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device on which to print the arrays</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device on which to print the arrays</p></li>
 <li><p><strong>attr_only</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not to only print the <cite>shape</cite> and <cite>dtype</cite> attributes of the array (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
 </ul>
 </dd>
@@ -755,7 +755,7 @@ specified device.</p>
 <dd><p>Set the default device to given device instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device to set as the default device</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device to set as the default device</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -794,7 +794,7 @@ splitting chunk sizes for the device across the codebase.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>factor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The factor to set the device-specific split factor to.</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]]) – The device to set the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to set the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -848,7 +848,7 @@ batch splitting chunk sizes across the codebase.</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]]) – The device to query the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to query the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
@@ -880,7 +880,7 @@ useful to reduce memory usage of the device the arrays are on.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – A list of inputs to pass into the function.</p></li>
+<li><p><strong>inputs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – A list of inputs to pass into the function.</p></li>
 <li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The mode by which to unify the return values, must be one of
 [ concat | mean | sum ]</p></li>
 <li><p><strong>max_chunk_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The maximum size of each of the chunks to be fed into the function. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
@@ -891,11 +891,11 @@ function. Default is <code class="docutils literal notranslate"><span class="pre
 <li><p><strong>output_axes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – The axes along which to concat each of the returned outputs. Default is same as (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 fist input axis.</p></li>
 <li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients for each computed return. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]]) – The device to set the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to set the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    </p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – The return from the function, following input splitting and re-concattenation.</p>
@@ -910,8 +910,8 @@ fist input axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – input array to be moved to the desired device</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – device to move the input array <cite>x</cite> to</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array to be moved to the desired device</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – device to move the input array <cite>x</cite> to</p></li>
 <li><p><strong>stream</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – stream object to use during copy. In addition to the types supported in (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 array.__dlpack__(), implementations may choose to support any library-specific
 stream object with the caveat that any code using such an object would not be
@@ -941,7 +941,7 @@ inputs broadcast to.</p></li>
 the total RAM is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string to convert to native device handle.</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
@@ -1010,7 +1010,7 @@ RAM is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]) – The device string to convert to native device handle.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p></li>
 <li><p><strong>process_specific</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to check the memory used by this python process alone. Default is (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 False. Currently is only supported for cpu.</p></li>
 </ul>

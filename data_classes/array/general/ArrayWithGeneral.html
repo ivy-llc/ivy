@@ -181,7 +181,7 @@ other. Default is <code class="docutils literal notranslate"><span class="pre">F
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    </p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Boolean, whether or not the inputs are equal, or matrix array of booleans if
@@ -200,7 +200,7 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array</p></li>
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – input array to compare to <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array to compare to <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -222,7 +222,7 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array</p></li>
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ]) – input list of arrays to compare to <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – input list of arrays to compare to <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -489,7 +489,7 @@ this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array to encode</p></li>
-<li><p><strong>max_freq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The maximum frequency of the encoding.</p></li>
+<li><p><strong>max_freq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The maximum frequency of the encoding.</p></li>
 <li><p><strong>num_bands</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of frequency bands for the encoding. Default is 4. (default: <code class="docutils literal notranslate"><span class="pre">4</span></code>)</p></li>
 <li><p><strong>linear</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to space the frequency bands linearly as opposed to geometrically. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -500,7 +500,7 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>     <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – New array with the final dimension expanded, and the encodings stored in
@@ -519,7 +519,7 @@ this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – The array from which to gather values.</p></li>
-<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The array which indicates the indices that will be gathered along
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The array which indicates the indices that will be gathered along
 the specified axis.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The axis from which the indices will be gathered. Default is <code class="docutils literal notranslate"><span class="pre">-1</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
 <li><p><strong>batch_dims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – optional int, lets you gather different items from each element of a batch. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
@@ -554,7 +554,7 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – The array from which to gather values.</p></li>
-<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – Index array.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Index array.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
 </ul>
@@ -652,8 +652,8 @@ applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The input array to be decremented by the defined value.</p></li>
-<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The value of decrement.</p></li>
+<li><p><strong>self</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The input array to be decremented by the defined value.</p></li>
+<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The value of decrement.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -689,7 +689,7 @@ ivy.inplace_increment also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – The input array to be incremented by the defined value.</p></li>
-<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The value of increment.</p></li>
+<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The value of increment.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -725,7 +725,7 @@ this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array to update</p></li>
-<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The array to update the variable with.</p></li>
+<li><p><strong>val</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The array to update the variable with.</p></li>
 <li><p><strong>ensure_in_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not to ensure that the <cite>ivy.NativeArray</cite> is also inplace updated. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 In cases where it should be, backends which do not natively support inplace
 updates will raise an exception.</p></li>
@@ -838,7 +838,7 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array containing the indices where the new values will occupy</p></li>
-<li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – Values for the new array to hold.</p></li>
+<li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Values for the new array to hold.</p></li>
 <li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The size of the result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>reduction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The reduction method for the scatter, one of ‘sum’, ‘min’, ‘max’ or (default: <code class="docutils literal notranslate"><span class="pre">'sum'</span></code>)
 ‘replace’</p></li>
@@ -863,7 +863,7 @@ the inputs broadcast to.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – array of indices</p></li>
-<li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – values to update input tensor with</p></li>
+<li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – values to update input tensor with</p></li>
 <li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – The shape of the result. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case tensor (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 argument must be provided.</p></li>
 <li><p><strong>reduction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The reduction method for the scatter, one of ‘sum’, ‘min’, ‘max’ (default: <code class="docutils literal notranslate"><span class="pre">'sum'</span></code>)
@@ -910,8 +910,8 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – input array, used as the numerator for division.</p></li>
-<li><p><strong>denominator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – denominator for division.</p></li>
-<li><p><strong>min_denominator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]]) – the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>denominator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – denominator for division.</p></li>
+<li><p><strong>min_denominator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]]) – the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -956,7 +956,7 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array, used as the base.</p></li>
-<li><p><strong>exponent</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>    ) – The exponent number.</p></li>
+<li><p><strong>exponent</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The exponent number.</p></li>
 <li><p><strong>min_base</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – The minimum base to use, use global ivy._MIN_BASE by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>

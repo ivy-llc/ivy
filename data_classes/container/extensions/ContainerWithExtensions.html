@@ -201,6 +201,47 @@ method with minimal changes.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.extensions.ContainerWithExtensions.flipud">
+<span class="sig-name descname"><span class="pre">flipud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions.html#ContainerWithExtensions.flipud"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.ContainerWithExtensions.flipud" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.flipud. This method simply
+wraps the function, and so the docstring for ivy.flipud also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>) – the container with arrays to be flipped.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – container including arrays corresponding to the input container’s array
+with elements order reversed along axis 0.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+&gt;&gt;&gt; m.flipud()
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array(</dt><dd><dl class="simple">
+<dt>[[ 0.,  0.,  3.],</dt><dd><p>[ 0.,  2.,  0.],
+[ 1.,  0.,  0.]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>)
+b: ivy.array([3, 2, 1, 0])</p>
+</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.extensions.ContainerWithExtensions.hann_window">
 <span class="sig-name descname"><span class="pre">hann_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions.html#ContainerWithExtensions.hann_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.ContainerWithExtensions.hann_window" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.hann_window. This method simply
@@ -212,7 +253,7 @@ this method with minimal changes.</p>
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>) – input container with window sizes.</p></li>
 <li><p><strong>periodic</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If True, returns a window to be used as periodic function. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, return a symmetric window.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type to produce. Must be a floating point type. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – The data type to produce. Must be a floating point type. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -282,7 +323,7 @@ also applies to this method with minimal changes.</p>
 <li><p><strong>periodic</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, returns a periodic window suitable for use in spectral analysis. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, returns a symmetric window suitable for use in filter design.</p></li>
 <li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a float used as shape parameter for the window. (default: <code class="docutils literal notranslate"><span class="pre">12.0</span></code>)</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -314,7 +355,7 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> – first input container.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – second input container.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input container.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -520,7 +561,7 @@ with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – input container to flatten at leaves.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – input container to flatten at leaves.</p></li>
 <li><p><strong>start_dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – first dim to flatten. If not set, defaults to 0.</p></li>
 <li><p><strong>end_dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – last dim to flatten. If not set, defaults to -1.</p></li>
 </ul>
@@ -546,6 +587,47 @@ with minimal changes.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.extensions.ContainerWithExtensions.static_flipud">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_flipud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions.html#ContainerWithExtensions.static_flipud"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.ContainerWithExtensions.static_flipud" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of ivy.flipud. This method simply wraps
+the function, and so the docstring for ivy.flipud also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – the container with arrays to be flipped.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – container including arrays corresponding to the input container’s array
+with elements order reversed along axis 0.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+&gt;&gt;&gt; ivy.Container.static_flipud(m)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array(</dt><dd><dl class="simple">
+<dt>[[ 0.,  0.,  3.],</dt><dd><p>[ 0.,  2.,  0.],
+[ 1.,  0.,  0.]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>)
+b: ivy.array([3, 2, 1, 0])</p>
+</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.extensions.ContainerWithExtensions.static_hann_window">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_hann_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions.html#ContainerWithExtensions.static_hann_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.ContainerWithExtensions.static_hann_window" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container static method variant of ivy.hann_window. This method simply wraps
@@ -557,7 +639,7 @@ method with minimal changes.</p>
 <li><p><strong>window_length</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – container including multiple window sizes.</p></li>
 <li><p><strong>periodic</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If True, returns a window to be used as periodic function. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, return a symmetric window.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type to produce. Must be a floating point type. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – The data type to produce. Must be a floating point type. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -589,8 +671,8 @@ with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – input container including the arrays.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – values to use where the array is zero.</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – input container including the arrays.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – values to use where the array is zero.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -627,7 +709,7 @@ also applies to this method with minimal changes.</p>
 <li><p><strong>periodic</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, returns a periodic window suitable for use in spectral analysis. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, returns a symmetric window suitable for use in filter design.</p></li>
 <li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a float used as shape parameter for the window. (default: <code class="docutils literal notranslate"><span class="pre">12.0</span></code>)</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -658,8 +740,8 @@ with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – first input container.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – second input container.</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input container.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input container.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -694,7 +776,7 @@ to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
 <li><p><strong>kernel</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – The size of the window to take a max over.</p></li>
 <li><p><strong>strides</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – The stride of the sliding window for each dimension of input.</p></li>
 <li><p><strong>padding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – “SAME” or “VALID” indicating the algorithm, or list indicating
@@ -769,7 +851,7 @@ with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>     <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – The container with the arrays whose axes should be reordered.</p></li>
+<li><p><strong>a</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – The container with the arrays whose axes should be reordered.</p></li>
 <li><p><strong>source</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Original positions of the axes to move. These must be unique.</p></li>
 <li><p><strong>destination</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Destination positions for each of the original axes.
 These must also be unique.</p></li>
