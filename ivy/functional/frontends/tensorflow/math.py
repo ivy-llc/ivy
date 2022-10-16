@@ -308,10 +308,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 def argmin(input, axis, output_type=None, name=None):
-    if output_type in ["uint16", "int16", "int32", "int64"]:
-        return ivy.astype(ivy.argmin(input, axis=axis), output_type)
-    else:
-        return ivy.astype(ivy.argmin(input, axis=axis), "int64")
+    return ivy.astype(ivy.argmin(input, axis=axis), output_type)
 
     
 def truediv(x, y, name="truediv"):
