@@ -296,6 +296,18 @@ def median(
         )
 
 
+def flipud(
+    m: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.flipud(m)
+
+
+flipud.support_native_out = False
+
+
 def fmod(
     x1: torch.Tensor,
     x2: torch.Tensor,
