@@ -1346,6 +1346,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
+        >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
+        >>> x.bitwise_and(y, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([False, True]),
+            b: ivy.array([False, True])
+        }
         """
         return self.static_bitwise_and(
             self,
@@ -2095,6 +2106,14 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([89]))
+        >>> y = ivy.Container(a = ivy.array([12]))
+        >>> z = x.bitwise_xor(y)
+        >>> print(z)
+        {a:ivy.array([85])}
         """
         return self.static_bitwise_xor(
             self,
