@@ -10,7 +10,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     population_size=helpers.ints(),
     num_samples=helpers.ints(),
-    replace=helpers.bool_val_flags(),
+    replace=helpers.ints(),
+    out=helpers.ints(),
     dtypes=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.multinomial"
