@@ -731,6 +731,14 @@ def test_median(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(2, 2, 2)
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="eigvals"),
+)
 def test_eigvals(
     *,
     dtype_and_x,
