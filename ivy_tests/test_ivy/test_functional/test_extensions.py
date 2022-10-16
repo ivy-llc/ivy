@@ -698,7 +698,7 @@ def statistical_dtype_values(draw, *, function):
 # implement test for isin
 @handle_cmd_line_args
 @given(
-    dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="isin")
 )
 
@@ -713,7 +713,7 @@ def test_isin(
     fw,
 ):
     dtype, values = dtype_and_x
-    assume(len(values) >= 2)
+    assume(len(values) == 2)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
