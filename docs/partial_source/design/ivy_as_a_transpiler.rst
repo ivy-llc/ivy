@@ -304,5 +304,4 @@ Hopefully this has explained how, with the addition of backend-specific frontend
 code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧. This is in
 keeping with the rest of the documentation.
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on
-`discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

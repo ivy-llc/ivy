@@ -1,14 +1,23 @@
 # global
+
 from typing import Union, List, Optional, Sequence
+
 
 import numpy as np
 import torch
 from torch import Tensor
 
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
-# from ivy.functional.backends.numpy.data_type import as_ivy_dtype
+
+from . import version
+
+# noinspection PyProtectedMember
+
+
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -37,6 +46,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -69,7 +79,6 @@ def arange(
 
 
 arange.support_native_out = True
-arange.unsupported_dtypes = ("float16",)
 
 
 @asarray_to_native_arrays_and_back
@@ -94,12 +103,30 @@ def asarray(
 ) -> torch.Tensor:
     if isinstance(obj, torch.Tensor) and dtype is None:
         dtype = obj.dtype
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = ivy.default_dtype(item=obj, as_native=True)
-        if copy is True:
-            return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
+        if dtype is None:
+            dtype = ivy.default_dtype(item=obj, as_native=True)
+
+        # if `obj` is a list of specifically tensors
+        if isinstance(obj[0], torch.Tensor):
+            if copy is True:
+                return (
+                    torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
+                    .clone()
+                    .detach()
+                    .to(device)
+                )
+            else:
+                return torch.stack(
+                    tuple([torch.as_tensor(i, dtype=dtype) for i in obj])
+                ).to(device)
+
+        # if obj is a list of other objects, expected to be a numerical type.
         else:
-            return torch.as_tensor(obj, dtype=dtype).to(device)
+            if copy is True:
+                return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
+            else:
+                return torch.as_tensor(obj, dtype=dtype).to(device)
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
@@ -171,7 +198,7 @@ def eye(
 
     # k=index of the diagonal. A positive value refers to an upper diagonal,
     # a negative value to a lower diagonal, and 0 to the main diagonal.
-    # Default: 0.
+    # Default: ``0``.
     # value of k ranges from -n_rows < k < n_cols
 
     if k == 0:  # refers to the main diagonal
@@ -253,6 +280,9 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
+@with_unsupported_device_and_dtypes(
+    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
@@ -288,7 +318,6 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -480,6 +509,9 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
     return x.clone()
 
 
+@with_unsupported_device_and_dtypes(
+    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+)
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
@@ -497,7 +529,6 @@ def logspace(
 
 
 logspace.support_native_out = True
-logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 
 
 def one_hot(

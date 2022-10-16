@@ -1,12 +1,17 @@
 # global
-import ivy
 import math
-import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import tensorflow as tf
+
+# local
+import ivy
+
 # noinspection PyProtectedMember
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
 
 
 # Array API Standard #
@@ -14,10 +19,10 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def concat(
-    xs: List[tf.Tensor],
+    xs: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
     /,
     *,
-    axis: int = 0,
+    axis: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -44,7 +49,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Sequence[int]] = 0,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -59,7 +64,7 @@ def flip(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:
@@ -94,7 +99,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -211,6 +216,7 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -222,12 +228,18 @@ def repeat(
     return tf.repeat(x, repeats, axis)
 
 
-repeat.supported_dtypes = (
-    "int32",
-    "int64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "int8",
+            "int16",
+        )
+    },
+    backend_version,
 )
-
-
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -241,16 +253,17 @@ def tile(
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
+    # code to unify behaviour with numpy and torch
+    if len(x.shape) < len(reps):
+        while len(x.shape) != len(reps):
+            x = tf.expand_dims(x, 0)
+    elif len(x.shape) > len(reps):
+        reps = list(reps)
+        while len(x.shape) != len(reps):
+            reps = [1] + reps
+    # TODO remove the unifying behaviour code if tensorflow handles this
+    # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
-
-
-tile.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "int8",
-    "int16",
-)
 
 
 def constant_pad(

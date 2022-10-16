@@ -2,10 +2,10 @@ Navigating the Code
 ===================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
-.. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`navigating the code forum`: https://discord.com/channels/799879767196958751/1028295746807660574
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit
@@ -199,13 +199,13 @@ To have a better idea on this, let's look at an example!
             or (isinstance(fill_value, bool))
         ), "the fill_value and data type are not compatible"
 
-In the :code:`full_like` function in :code:`creation.py`, the types of
+In the :func:`full_like` function in :mod:`creation.py`, the types of
 :code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
 check has to be applied to all backends, which means the related code is common
 and identical. In this case, we can extract the code to be a helper function on
-its own, placed in its related submodule (:code:`creation.py` here). In this
+its own, placed in its related submodule (:mod:`creation.py` here). In this
 example, the helper function is named as
-:code:`_assert_fill_value_and_dtype_are_compatible`.
+:func:`_assert_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.
@@ -320,9 +320,8 @@ include any arguments or behaviours which are exclusive to PyTorch version :code
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `project structure discussion`_,
-or reach out on `discord`_ in the `project structure channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_ 
+or in the `navigating the code forum`_ !
 
 
 **Video**

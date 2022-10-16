@@ -1,9 +1,13 @@
 # global
-import ivy
-import numpy as np
 import math
-from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence
+import numpy as np
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -15,7 +19,11 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[np.ndarray], /, *, axis: int = 0, out: Optional[np.ndarray] = None
+    xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
@@ -161,6 +169,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -170,9 +179,6 @@ def repeat(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.repeat(x, repeats, axis)
-
-
-repeat.unsupported_dtypes = ("uint64",)
 
 
 def tile(

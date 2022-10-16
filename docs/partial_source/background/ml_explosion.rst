@@ -27,4 +27,4 @@ A simple and scalable abstraction layer therefore presents itself. The functiona
 
 Hopefully this has painted a clear picture of how many different ML frameworks have exploded onto the scene 🙂
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
