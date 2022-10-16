@@ -180,6 +180,10 @@ def polyval(coeffs, x, name=None):
     return p
 
 
+def pow(x, y, name="pow"):
+	return ivy.pow(x, y)
+
+
 def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
         x == 0,
