@@ -476,28 +476,6 @@ def full_like(
         a: ivy.array([15., 15., 15.]),
         b: ivy.array([15., 15., 15.])
     }
-
-    Instance Method Examples:
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> fill_value = 1
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    ivy.array([1, 1, 1, 1, 1, 1])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
-    >>> fill_value = 10
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    {
-        a: ivy.array([10, 10, 10]),
-        b: ivy.array([10, 10, 10])
-    }
     """
     return current_backend(x).full_like(
         x, fill_value, dtype=dtype, device=device, out=out
