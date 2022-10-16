@@ -337,6 +337,7 @@ def test_jax_slogdet(
     )
 
 
+<<<<<<< HEAD
 # matrix_rank
 @handle_cmd_line_args
 @given(
@@ -351,11 +352,64 @@ def test_jax_numpy_matrix_rank(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+=======
+random_dim = np.random.randint(low=2, high=5)
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=random_dim, max_value=random_dim).map(
+            lambda x: tuple([x, x])
+        ),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0]) != 0
+    ),
+    dtype_and_b=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=random_dim, max_value=random_dim).map(
+            lambda x: tuple([x, 1])
+        ),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.solve"
+    ),
+)
+def test_jax_solve(
+    dtype_and_a,
+    dtype_and_b,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    a_dtype, a = dtype_and_a
+    b_dtype, b = dtype_and_b
+    helpers.test_frontend_function(
+        input_dtypes=[a_dtype[0], b_dtype[0]],
+>>>>>>> fa35f89a5 (added test for jax.numpy.linalg.solve)
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
+<<<<<<< HEAD
         fn_tree="numpy.linalg.matrix_rank",
         M=x[0],
+=======
+        fn_tree="numpy.linalg.solve",
+        a=np.asarray(a[0], dtype=a_dtype[0]),
+        b=np.asarray(b[0], dtype=b_dtype[0]),
+>>>>>>> fa35f89a5 (added test for jax.numpy.linalg.solve)
     )
