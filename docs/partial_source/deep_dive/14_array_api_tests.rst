@@ -1,5 +1,5 @@
-Array API Tests 🤝
-==================
+Array API Tests
+===============
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`test suite`: https://github.com/data-apis/array-api-tests

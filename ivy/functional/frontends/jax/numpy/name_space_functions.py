@@ -188,3 +188,40 @@ def sinh(x):
 @inputs_to_ivy_arrays
 def sin(x):
     return ivy.sin(x)
+
+
+@inputs_to_ivy_arrays
+def arccos(x):
+    return ivy.acos(x)
+
+
+@inputs_to_ivy_arrays
+def arccosh(x):
+    return ivy.acosh(x)
+
+
+@inputs_to_ivy_arrays
+def arcsin(x):
+    return ivy.asin(x)
+
+
+@inputs_to_ivy_arrays
+def arcsinh(x):
+    return ivy.asinh(x)
+
+
+@inputs_to_ivy_arrays
+def fmax(x1, x2):
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
+
+
+@inputs_to_ivy_arrays
+def zeros(shape, dtype=None):
+    if dtype is None:
+        dtype = ivy.float64
+    return ivy.zeros(shape, dtype=dtype)

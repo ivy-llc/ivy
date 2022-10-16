@@ -28,6 +28,13 @@ class Tensor:
         self.data = self.sin()
         return self.data
 
+    def sinh(self, *, out=None):
+        return torch_frontend.sinh(self.data, out=out)
+
+    def sinh_(self):
+        self.data = self.sinh()
+        return self.data
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
@@ -35,9 +42,15 @@ class Tensor:
     def float(self, memory_format=torch.preserve_format):
         return ivy.astype(self.data, ivy.float32)
 
+
     def new_zeros(self, shape, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(shape, dtype=dtype, device=device,
                                    requires_grad=requires_grad)
+
+    def tan(self, *, out=None):
+        return torch_frontend.tan(self.data, out=out)
+
+
 
 # Tensor (alias)
 tensor = Tensor

@@ -145,8 +145,8 @@ def dtype_and_values(
         representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
         minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
-        The operation to use when calculating the maximum value of the list. Can be
-        "linear" or "log". Default value = "linear".
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
     allow_inf
         if True, allow inf in the arrays.
     allow_nan

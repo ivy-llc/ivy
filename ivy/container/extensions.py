@@ -40,15 +40,16 @@ class ContainerWithExtensions(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -101,15 +102,16 @@ class ContainerWithExtensions(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -720,10 +722,12 @@ class ContainerWithExtensions(ContainerBase):
             These must also be unique.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with moved axes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -791,8 +795,8 @@ class ContainerWithExtensions(ContainerBase):
     def static_pad(
         x: ivy.Container,
         /,
-        pad_width: Union[Iterable[Tuple[int]], int],
         *,
+        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -845,8 +849,8 @@ class ContainerWithExtensions(ContainerBase):
     def pad(
         self: ivy.Container,
         /,
-        pad_width: Union[Iterable[Tuple[int]], int],
         *,
+        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -985,3 +989,198 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_heaviside(self, x2, out=out)
+
+    @staticmethod
+    def static_median(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.median. This method simply wraps
+        the function, and so the docstring for ivy.median also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> ivy.Container.static_moveaxis(x, 0, -1).shape
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "median",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def median(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(
+        >>>     a=ivy.array([[10, 7, 4], [3, 2, 1]]),
+        >>>     b=ivy.array([[1, 4, 2], [8, 7, 0]])
+        >>> )
+        >>> x.median(axis=0)
+        {
+            a: ivy.array([6.5, 4.5, 2.5]),
+            b: ivy.array([4.5, 5.5, 1.])
+        }
+        """
+        return self.static_median(self, axis=axis, keepdims=keepdims, out=out)
+
+    @staticmethod
+    def static_flipud(
+        m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.flipud. This method simply wraps
+        the function, and so the docstring for ivy.flipud also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        m
+            the container with arrays to be flipped.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the input container's array
+            with elements order reversed along axis 0.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> ivy.Container.static_flipud(m)
+        {
+            a: ivy.array(
+                [[ 0.,  0.,  3.],
+                 [ 0.,  2.,  0.],
+                 [ 1.,  0.,  0.]]
+            )
+            b: ivy.array([3, 2, 1, 0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "flipud",
+            m,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def flipud(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.flipud. This method simply
+        wraps the function, and so the docstring for ivy.flipud also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with arrays to be flipped.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the input container's array
+            with elements order reversed along axis 0.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> m.flipud()
+        {
+            a: ivy.array(
+                [[ 0.,  0.,  3.],
+                 [ 0.,  2.,  0.],
+                 [ 1.,  0.,  0.]]
+            )
+            b: ivy.array([3, 2, 1, 0])
+        }
+        """
+        return self.static_flipud(self, out=out)

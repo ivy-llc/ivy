@@ -1,9 +1,5 @@
-# global
+# local
 import ivy
-
-from .. import versions
-from ivy.func_wrapper import with_unsupported_dtypes
-
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
@@ -52,13 +48,6 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 def tensordot(a, b, axes, name=None):
     a, b = promote_types_of_tensorflow_inputs(a, b)
     return ivy.tensordot(a, b, axes)
-
-
-@with_unsupported_dtypes(
-    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
-)
-def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
-    return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
