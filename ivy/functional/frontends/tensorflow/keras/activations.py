@@ -42,3 +42,68 @@ def softsign(x):
 
 def swish(x):
     return ivy.multiply(x, ivy.sigmoid(x))
+
+
+def elu(x, alpha=1.0):
+    zeros = ivy.zeros_like(x, dtype=ivy.dtype(x))
+    ones = ivy.ones_like(x, dtype=ivy.dtype(x))
+    alpha = ivy.astype(ivy.array(alpha), ivy.dtype(x))
+    ret_val = ivy.where(
+        x > zeros, x, ivy.multiply(alpha, ivy.subtract(ivy.exp(x), ones))
+    )
+    return ret_val
+
+
+elu.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "bfloat16",
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
+
+
+def selu(x):
+    alpha = 1.6732632423543772848170429916717
+    scale = ivy.astype(ivy.array(1.0507009873554804934193349852946), ivy.dtype(x))
+    return ivy.multiply(scale, elu(x=x, alpha=alpha))
+
+
+selu.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
