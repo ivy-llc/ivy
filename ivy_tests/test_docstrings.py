@@ -106,9 +106,8 @@ def check_docstring_examples_run(
         if example.want != "":
             if parsed_output != "":
                 parsed_output += ","
-            parsed_output += example.want.replace("...", "")    
-        if "print(" not in example.source: 
-            executable_lines.append(example.source)
+            parsed_output += example.want.replace("...", "").replace(" ", "").replace("\n", "")
+        executable_lines.append(example.source.replace("\n", ""))
 
     if parsed_output == "":
         return True
