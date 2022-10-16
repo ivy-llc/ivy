@@ -124,3 +124,7 @@ selu.supported_dtypes = {
         "float64",
     ),
 }
+
+
+def deserialize(name, custom_objects=None):
+    return ivy.deserialize(name, custom_objects=custom_objects)
