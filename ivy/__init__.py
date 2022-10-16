@@ -90,6 +90,54 @@ class Dtype(str):
             )
         return str.__new__(cls, dtype_str)
 
+    def __ge__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self == ivy.promote_types(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self >= other and self != other
+
+    def __lt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self != ivy.promote_types(self, other)
+
+    def __le__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self < other or self == other
+
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
@@ -234,9 +282,6 @@ all_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
-    complex256,
     bool,
 )
 all_numeric_dtypes = (

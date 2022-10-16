@@ -1,27 +1,28 @@
-#global
+# global
 from typing import Callable
 import functools
 
-#local
+# local
 import ivy
-import ivy.functional.frontends.tensorflow  as frontend
+import ivy.functional.frontends.tensorflow as frontend
 from ivy.functional.frontends.tensorflow.tensor import Tensor
 
 
-
 def tensorflow_array_to_ivy(x):
-    if isinstance(x,frontend.Tensor):
+    if isinstance(x, frontend.Tensor):
         return x.data
     return x
 
 
 def ivy_array_to_tensorflow(x):
     if not ivy.is_ivy_array(x):
-        raise ivy.exceptions.IvyException('ivy_array_to_tensorflow takes only ivy.Array instances')
+        raise ivy.exceptions.IvyException(
+            "ivy_array_to_tensorflow takes only ivy.Array instances"
+        )
     return Tensor(x.data)
 
 
-def inputs_to_ivy_arrays(fn:Callable)->Callable:
+def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -49,8 +50,10 @@ def inputs_to_ivy_arrays(fn:Callable)->Callable:
             has_out = True
 
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args=ivy.nested_map(args, tensorflow_array_to_ivy, include_derived=True)
-        ivy_kwargs=ivy.nested_map(kwargs, tensorflow_array_to_ivy, include_derived=True)
+        ivy_args = ivy.nested_map(args, tensorflow_array_to_ivy, include_derived=True)
+        ivy_kwargs = ivy.nested_map(
+            kwargs, tensorflow_array_to_ivy, include_derived=True
+        )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
@@ -59,7 +62,7 @@ def inputs_to_ivy_arrays(fn:Callable)->Callable:
     return new_fn
 
 
-def outputs_to_tensorflow_array(fn:Callable)->Callable:
+def outputs_to_tensorflow_array(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -82,10 +85,11 @@ def outputs_to_tensorflow_array(fn:Callable)->Callable:
         ret = fn(*args, **kwargs)
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
-        return ivy.nested_map(ret,ivy_array_to_tensorflow,include_derived=True)
+        return ivy.nested_map(ret, ivy_array_to_tensorflow, include_derived=True)
 
     new_fn.outputs_to_tensorflow_array = True
     return new_fn
+
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))

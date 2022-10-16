@@ -509,7 +509,7 @@ def _versioned_attribute_factory(attribute_function, base):
         def __repr__(self):
             return repr(self.__get__())
 
-    return VersionedAttributes().__get__()
+    return VersionedAttributes()
 
 
 def _dtype_device_wrapper_creator(attrib, t):

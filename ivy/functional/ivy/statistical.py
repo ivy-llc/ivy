@@ -222,8 +222,8 @@ def max(
         b: ivy.array(5.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([2, 3, 4]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
     >>> z = x.max()
     >>> print(z)
     {
@@ -297,7 +297,7 @@ def mean(
     simplicity, but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
 
-    
+
     Functional Examples
     -------------------
     With :class:`ivy.Array` input:
@@ -348,8 +348,8 @@ def mean(
         b: ivy.array(0.90000004)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+    ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
     >>> ivy.mean(x, axis=0, out=x)
     >>> print(x)
     {
@@ -396,8 +396,8 @@ def mean(
         b: ivy.array(0.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
-                          b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
+    ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
     >>> x.mean(axis=1, out=x)
     >>> print(x)
     {
@@ -507,29 +507,26 @@ def std(
 
     Let ``N`` equal the number of elements over which to compute the standard deviation.
 
-    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
-        deviation).
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
-        propagate).
+    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
     x
-        input array. Should have a floating-point data type
-
+        input array. Should have a real-valued floating-point data type.
     axis
         axis or axes along which standard deviations must be computed. By default, the
         standard deviation must be computed over the entire array. If a tuple of
         integers, standard deviations must be computed over multiple axes.
-        Default: None.
+        Default: ``None``.
     correction
-        degrees of freedom adjustment. Setting this parameter to a value other than 0
+        degrees of freedom adjustment. Setting this parameter to a value other than ``0``
         has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to N-c where N corresponds to the total number of elements
-        over which the standard deviation is computed and c corresponds to the provided
-        degrees of freedom adjustment. When computing the standard deviation of a
-        population, setting this parameter to ``0`` is the standard choice (i.e., the
-        provided array contains data constituting an entire population). When computing
+        deviation according to ``N-c`` where ``N`` corresponds to the total number of
+        elements over which the standard deviation is computed and ``c`` corresponds to
+        the provided degrees of freedom adjustment. When computing the standard deviation
+        of a population, setting this parameter to ``0`` is the standard choice (i.e.,
+        the provided array contains data constituting an entire population). When computing
         the corrected sample standard deviation, setting this parameter to ``1`` is the
         standard choice (i.e., the provided array contains data sampled from a larger
         population; this is commonly referred to as Bessel's correction).
@@ -537,7 +534,7 @@ def std(
     keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
+        input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
     out
         optional output array, for writing the result to.
@@ -545,13 +542,20 @@ def std(
     Returns
     -------
     ret
-        if the sum was computed over the entire array, a zero-dimensional array
-        containing the standard deviation; otherwise, an array containing the standard
-        deviations. The returned array must have a data type as described by the
-        ``dtype`` parameter above.
+        if the standard deviation was computed over the entire array, a zero-dimensional
+        array containing the standard deviation; otherwise, a non-zero-dimensional array
+        containing the standard deviations. The returned array must have the same data
+        type as ``x``.
 
+        .. note::
+           While this specification recommends that this function only accept input
+           arrays having a real-valued floating-point data type, specification-compliant
+           array libraries may choose to accept input arrays having an integer data type.
+           While mixed data type promotion is implementation-defined, if the input array
+           ``x`` has an integer data type, the returned array must have the default
+           real-valued floating-point data type.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
     in the standard.
@@ -801,8 +805,8 @@ def var(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
-                          b=ivy.array([0.7, 0.1, 0.9]))
+    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
+    ...                   b=ivy.array([0.7, 0.1, 0.9]))
     >>> y = ivy.var(x)
     >>> print(y)
     {
@@ -939,24 +943,24 @@ def cumsum(
     >>> print(y)
     ivy.array([0, 1, 6, 8])
 
-    >>> x = ivy.array([[6, 4, 2], \
-                       [1, 3, 0]])
+    >>> x = ivy.array([[6, 4, 2],
+    ...                [1, 3, 0]])
     >>> y = ivy.zeros((2,3))
     >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
     >>> print(y)
     ivy.array([[7, 7, 2],
                [1, 3, 0]])
 
-    >>> x = ivy.array([[1, 5, 2], \
-                       [4, 3, 0]])
+    >>> x = ivy.array([[1, 5, 2],
+    ...                [4, 3, 0]])
     >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
     >>> print(y)
     ivy.array([[4, 3, 0],
                [0, 0, 0]])
 
-    >>> x = ivy.array([[2, 4, 5], \
-                       [3, 6, 5], \
-                       [1, 3, 10]])
+    >>> x = ivy.array([[2, 4, 5],
+    ...                [3, 6, 5],
+    ...                [1, 3, 10]])
     >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
     ivy.array([[11,  9,  5],
@@ -965,8 +969,8 @@ def cumsum(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                          b=ivy.array([[3, 5, 7]]))
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
+    ...                   b=ivy.array([[3, 5, 7]]))
     >>> y = ivy.cumsum(x, axis= 0)
     >>> print(y)
     {
@@ -974,15 +978,15 @@ def cumsum(
         b: ivy.array([[3, 5, 7]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                          b=ivy.array([[3, 5, 8], \
-                                       [5, 6, 5]]), \
-                          c=ivy.array([[2, 4, 1], \
-                                       [3, 6, 9], \
-                                       [0, 2, 3]]))
-    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                          b = ivy.zeros((2, 3)), \
-                          c = ivy.zeros((3,3)))
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+    ...                   b=ivy.array([[3, 5, 8],
+    ...                                [5, 6, 5]]),
+    ...                   c=ivy.array([[2, 4, 1],
+    ...                                [3, 6, 9],
+    ...                                [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+    ...                   b = ivy.zeros((2, 3)),
+    ...                   c = ivy.zeros((3,3)))
     >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
@@ -994,13 +998,13 @@ def cumsum(
                       [5, 5, 3]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+    >>> x = ivy.Container(a=ivy.array([[0],
+    ...                                [5]]),
+    ...                   b=ivy.array([[6, 8, 7],
+    ...                                [4, 2, 3]]),
+    ...                   c=ivy.array([[1, 2],
+    ...                                [3, 4],
+    ...                                [6, 4]]))
     >>> ivy.cumsum(x,axis=0,out=x)
     >>> print(x)
     {
@@ -1204,19 +1208,19 @@ def einsum(
     ivy.array([ 9, 12, 15])
 
     >>> A = ivy.array([0, 1, 2])
-    >>> B = ivy.array([[ 0,  1,  2,  3],\
-                       [ 4,  5,  6,  7],\
-                       [ 8,  9, 10, 11]])
+    >>> B = ivy.array([[ 0,  1,  2,  3],
+    ...                [ 4,  5,  6,  7],
+    ...                [ 8,  9, 10, 11]])
     >>> C = ivy.einsum('i,ij->i', A, B)
     >>> print(C)
     ivy.array([ 0, 22, 76])
 
-    >>> A = ivy.array([[1, 1, 1],\
-                       [2, 2, 2],\
-                       [5, 5, 5]])
-    >>> B = ivy.array([[0, 1, 0],\
-                       [1, 1, 0],\
-                       [1, 1, 1]])
+    >>> A = ivy.array([[1, 1, 1],
+    ...                [2, 2, 2],
+    ...                [5, 5, 5]])
+    >>> B = ivy.array([[0, 1, 0],
+    ...                [1, 1, 0],
+    ...                [1, 1, 1]])
     >>> C = ivy.einsum('ij,jk->ik', A, B)
     >>> print(C)
     ivy.array([[ 2,  3,  1],
@@ -1266,9 +1270,9 @@ def einsum(
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> A = ivy.array([0, 1, 2])
-    >>> B = ivy.native_array([[ 0, 1, 2, 3],\
-                              [ 4, 5, 6, 7],\
-                              [ 8, 9, 10, 11]])
+    >>> B = ivy.native_array([[ 0, 1, 2, 3],
+    ...                       [ 4, 5, 6, 7],
+    ...                       [ 8, 9, 10, 11]])
     >>> C = ivy.einsum('i,ij->i', A, B)
     >>> print(C)
     ivy.array([ 0, 22, 76])
@@ -1276,12 +1280,12 @@ def einsum(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([0, 1, 2])
-    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\
-                                       [ 4,  5,  6,  7],\
-                                       [ 8,  9, 10, 11]]),\
-                          b=ivy.array([[ 0,  1,  2],\
-                                       [ 4,  5,  6],\
-                                       [ 8,  9, 10]]))
+    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],
+    ...                                [ 4,  5,  6,  7],
+    ...                                [ 8,  9, 10, 11]]),
+    ...                   b=ivy.array([[ 0,  1,  2],
+    ...                                [ 4,  5,  6],
+    ...                                [ 8,  9, 10]]))
     >>> z = ivy.einsum('i,ij->i', x, y)
     >>> print(z)
     {
@@ -1291,8 +1295,8 @@ def einsum(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
-                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = ivy.einsum('ii', x)
     >>> print(y)
     {
@@ -1312,8 +1316,8 @@ def einsum(
 
     Using :class:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
-                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+    ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = x.einsum('ii')
     >>> print(y)
     {

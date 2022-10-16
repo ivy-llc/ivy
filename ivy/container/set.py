@@ -54,8 +54,8 @@ class ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.unique_counts. This method simply 
-        wraps the function, and so the docstring for ivy.unique_counts also applies 
+        ivy.Container static method variant of ivy.unique_counts. This method simply
+        wraps the function, and so the docstring for ivy.unique_counts also applies
         to this method with minimal changes.
 
         Parameters
@@ -89,8 +89,8 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
-                              b=ivy.array([1,2,1,3,4,1,3]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = ivy.static_unique_counts(x)
         >>> print(y)
         {
@@ -154,8 +154,8 @@ class ContainerWithSet(ContainerBase):
         --------
         With :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
-                              b=ivy.array([1,2,1,3,4,1,3]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_counts()
         >>> print(y)
         {
@@ -276,8 +276,8 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
-                              b=ivy.array([7,6,4,5,6,3,2]))
+        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),
+        ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()
         >>> print(y)
              {

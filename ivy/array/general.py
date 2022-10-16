@@ -260,6 +260,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -290,7 +291,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array(2)
         """
-        return ivy.gather_nd(self, indices, out=out)
+        return ivy.gather_nd(self, indices, batch_dims=batch_dims, out=out)
 
     def einops_rearrange(
         self: ivy.Array,
@@ -362,20 +363,20 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[[5,4],\
-                       [11, 2]],\
-                      [[3, 5],\
-                       [9, 7]]])
+        >>> x = ivy.array([[[5, 4],
+        ...                 [11, 2]],
+        ...                [[3, 5],
+        ...                 [9, 7]]])
 
         >>> y = x.einops_reduce('a b c -> b c', 'max')
         >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
-        >>> x = ivy.array([[[5, 4, 3],\
-                        [11, 2, 9]],\
-                       [[3, 5, 7],\
-                        [9, 7, 1]]])
+        >>> x = ivy.array([[[5, 4, 3],
+        ...                 [11, 2, 9]],
+        ...                [[3, 5, 7],
+        ...                 [9, 7, 1]]])
         >>> y = x.einops_reduce('a b c -> a () c', 'min')
         >>> print(y)
         ivy.array([[[5, 2, 3]],
@@ -422,8 +423,8 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         ivy.array([[5,5,5],[4,4,4]])
 
-        >>> x = ivy.array([[5,4],\
-                    [2, 3]])\
+        >>> x = ivy.array([[5,4],
+        ...                [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
         ivy.array([[5,5,5],[4,4,4]])
