@@ -695,13 +695,15 @@ def statistical_dtype_values(draw, *, function):
         return dtype, values, axis, correction
     return dtype, values, axis
 
+# implement test for isin
 @handle_cmd_line_args
 @given(
-    dtype_and_values_and_axis_and_correction=statistical_dtype_values(function = "isin"),
-    num_positional_args=helpers.num_positional_args(fn_name="isin"),
+    dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    num_positional_args=helpers.num_positional_args(fn_name="isin")
 )
+
 def test_isin(
-    dtype_and_values_and_axis_and_correction,
+    dtype_and_x,
     with_out,
     as_variable,
     num_positional_args,
@@ -710,12 +712,8 @@ def test_isin(
     instance_method,
     fw,
 ):
-    (
-        dtype,
-        values,
-        axis,
-        correction,
-    ) = dtype_and_values_and_axis_and_correction
+    dtype, values = dtype_and_x
+    assume(len(values) >= 2)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -727,10 +725,7 @@ def test_isin(
         fw=fw,
         fn_name="isin",
         element=values[0],
-        test_elements=values[1],
-        invert=False,
-        assume_unique=False,
-        axis=axis,
+        test_elements=values[1:],
     )
 
 @handle_cmd_line_args
