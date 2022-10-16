@@ -10,6 +10,8 @@ import termcolor
 import numpy as np
 import json
 
+from ivy.exceptions import IvyBackendException, IvyException
+
 
 try:
     # noinspection PyPackageRequirements
@@ -319,7 +321,7 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def _concat_unify(containers, device, axis=0):
         return ivy.concat(
-            [cont.to_device(device) for cont in containers.values()], axis
+            [cont.to_device(device) for cont in containers.values()], axis=axis
         )
 
     @staticmethod
@@ -1284,12 +1286,14 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def trim_key(key, max_length):
         """Summary.
+        Returns a trimmed key with a maximum length of max_length.
 
         Parameters
         ----------
         key
-            param max_length:
+            key to trim
         max_length
+            maximum length of key
 
         """
         key_len = len(key)
@@ -1561,18 +1565,6 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     self[key] = value
 
-    def set_framework(self, ivyh):
-        """Update the framework to use for the container.
-
-        Parameters
-        ----------
-        ivyh
-
-        """
-        self._ivy = ivyh
-        self._config["ivyh"] = ivyh
-        return self
-
     def all_true(
         self,
         assert_is_bool=False,
@@ -1816,7 +1808,12 @@ class ContainerBase(dict, abc.ABC):
         )
         # noinspection PyTypeChecker
         return self.map(
-            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder)
+            lambda x, kc: self._ivy.split(
+                x,
+                num_or_size_splits=num_or_size_splits,
+                axis=axis,
+                with_remainder=with_remainder,
+            )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2365,30 +2362,6 @@ class ContainerBase(dict, abc.ABC):
                     )
                 )
             )
-
-    def has_nans(self, include_infs=True, leafwise=False):
-        """Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
-
-        Parameters
-        ----------
-        include_infs
-            Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
-
-        Returns
-        -------
-            Whether the container has any nans, applied either leafwise or across the
-            entire container.
-
-        """
-        leafwise_res = self.map(lambda x, kc: ivy.has_nans(x, include_infs))
-        if leafwise:
-            return leafwise_res
-        return max([v for k, v in leafwise_res.to_iterator()])
 
     def at_keys(
         self, queries, ignore_none=True, containing=False, ignore_key_errors=False
@@ -3183,7 +3156,7 @@ class ContainerBase(dict, abc.ABC):
         def to_list(x, _=""):
             try:
                 return self._ivy.to_list(x)
-            except (AttributeError, ValueError):
+            except (IvyBackendException):
                 return x
 
         return self.map(to_list)
@@ -3259,7 +3232,7 @@ class ContainerBase(dict, abc.ABC):
         """
         try:
             return self[key]
-        except KeyError:
+        except IvyException:
             return self
 
     def cutoff_at_depth(self, depth_cutoff, inplace=False):
@@ -3488,25 +3461,24 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_ivy_backend(self, ivy_backend):
+    def with_ivy_backend(self, ivy_backend: str, inplace=False):
         """Summary.
 
         Parameters
         ----------
+        self
+            input Container
         ivy_backend
-
+            backend to use
+        inplace
+            whether to modify the container or return a copy
         """
-        return ivy.Container(self, ivyh=ivy_backend)
-
-    def set_ivy_backend(self, ivy_backend):
-        """Summary.
-
-        Parameters
-        ----------
-        ivy_backend
-
-        """
-        self._local_ivy = ivy_backend
+        if inplace:
+            self._ivy = ivy_backend
+            self._config["ivyh"] = ivy_backend
+            return self
+        else:
+            return ivy.Container(self, ivyh=ivy_backend)
 
     def show(self):
 
