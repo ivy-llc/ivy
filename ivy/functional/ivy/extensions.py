@@ -1175,6 +1175,18 @@ def isin(
     ret
         output a boolean array of the same shape as elements that is True for elements in test_elements
         and False otherwise.
+
+    Examples
+    --------
+    >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.isin(x, y)
+    ivy.array([[False, False, False], [ True,  True,  True]])
+
+    >>> x = ivy.array([3, 2, 1, 0])
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.isin(x, y, invert=True)
+    ivy.array([False, False, False,  True])
     """
     return ivy.current_backend().isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
 
