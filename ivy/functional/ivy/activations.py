@@ -1,6 +1,7 @@
 """Collection of Ivy activation functions."""
 
 from typing import Union, Optional
+import sys
 
 # local
 import ivy
@@ -449,3 +450,43 @@ def log_softmax(
     }
     """
     return current_backend(x).log_softmax(x, axis=axis, out=out)
+
+
+@handle_exceptions
+def deserialize(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[ivy.Callable[[Union[ivy.Array, ivy.NativeArray]], ivy.Array], None]:
+    if name is None:
+        return None
+
+    module_name = "ivy.functional.ivy.activations"
+    activation_functions = {}
+    module = sys.modules[module_name]
+
+    for fn_name in dir(module):
+        obj = getattr(module, fn_name)
+        if callable(obj) and fn_name in ACTIVATION_FUNCTIONS:
+            activation_functions[fn_name] = obj
+
+    if isinstance(name, str):
+        if custom_objects and name in custom_objects:
+            fn_obj = custom_objects.get(name)
+        else:
+            fn_obj = activation_functions.get(name)
+            if fn_obj is None:
+                raise ValueError(f"Unknown activation function: {name}.")
+        return fn_obj
+
+    else:
+        raise ValueError(f"Could not interpret serialized activation function: {name}")
+
+
+ACTIVATION_FUNCTIONS = [
+    "gelu",
+    "leaky_relu",
+    "log_softmax",
+    "relu",
+    "sigmoid",
+    "softmax",
+    "softplus",
+]
