@@ -178,7 +178,7 @@ def gelu(
     x
         Input array.
     approximate
-        Whether to approximate, default is True.
+        Whether to approximate, default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -289,8 +289,8 @@ def softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is -1 which indicates
-        the last dimension.
+        The dimension softmax would be performed on. The default is ``-1``
+        which indicates the last dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -358,9 +358,9 @@ def softplus(
     x
         input array.
     beta
-        The beta value for the softplus formation. Default: None.
+        The beta value for the softplus formation. Default: ``None``.
     threshold
-        values above this revert to a linear function. Default: None.
+        values above this revert to a linear function. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -430,7 +430,7 @@ def log_softmax(
     x
         Input array.
     axis
-        The dimension log_softmax would be performed on. The default is -1
+        The dimension log_softmax would be performed on. The default is ``-1``
         which indicates the last dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
