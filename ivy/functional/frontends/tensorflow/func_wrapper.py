@@ -5,7 +5,7 @@ import functools
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
-from ivy.functional.frontends.tensorflow.tensor import Tensor
+
 
 
 def tensorflow_array_to_ivy(x):
@@ -15,11 +15,9 @@ def tensorflow_array_to_ivy(x):
 
 
 def ivy_array_to_tensorflow(x):
-    if not ivy.is_ivy_array(x):
-        raise ivy.exceptions.IvyException(
-            "ivy_array_to_tensorflow takes only ivy.Array instances"
-        )
-    return Tensor(x.data)
+    if isinstance(x,ivy.Array) or ivy.is_native_array(x):
+        return frontend.Tensor(x.data)
+    return x
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -85,7 +83,7 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
         ret = fn(*args, **kwargs)
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
-        return ivy.nested_map(ret, ivy_array_to_tensorflow, include_derived=True)
+        return ivy.nested_map(ret, ivy_array_to_tensorflow, include_derived={tuple: True})
 
     new_fn.outputs_to_tensorflow_array = True
     return new_fn
