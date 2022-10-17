@@ -1137,7 +1137,7 @@ def test_jax_numpy_arcsinh(
 # argmin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("numeric")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.argmin"
     ),
@@ -1151,7 +1151,7 @@ def test_jax_numpy_argmin(
     keepdims,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1162,5 +1162,7 @@ def test_jax_numpy_argmin(
         frontend="jax",
         fn_tree="numpy.argmin",
         a=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        keepdims=keepdims,
     )
     
