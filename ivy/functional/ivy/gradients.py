@@ -27,7 +27,10 @@ def _zero_gradients_to_none_and_to_ivy(grads):
         return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
         zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
-        if not isinstance(zero_idxs, list) or np.asarray(zero_idxs).size == 0:
+        if (
+            not isinstance(zero_idxs, list)
+            or np.asarray(zero_idxs, dtype="object").size == 0
+        ):
             return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
         zero_idxs.reverse()
         ivy.prune_nest_at_indices(grads, zero_idxs)
@@ -42,16 +45,6 @@ def _get_native_arrays_and_indices(func_ret):
         arr_idxs[i] = [str(x) for x in arr_idxs[i]]
         arr_idxs[i] = "_".join(arr_idxs[i])
     return arr_idxs, arr_values
-
-
-def _forward_fn(xs, func):
-    if isinstance(xs, dict):
-        xs = ivy.Container(**xs)
-    ret = func(xs)
-    ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
-    array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
-    array_values = ivy.multi_index_nest(ret, array_idxs)
-    return array_values
 
 
 def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
@@ -280,7 +273,7 @@ def is_variable(
         Whether to check if the data type is exclusively a variable, rather than an
         array. For frameworks like JAX that do not have exclusive variable types, the
         function will always return False if this flag is set, otherwise the check is
-        the same for general arrays. Default is False.
+        the same for general arrays. Default is ``False``.
 
     Returns
     -------
@@ -328,7 +321,7 @@ def is_variable(
     }
 
     """
-    return current_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive=exclusive)
 
 
 is_variable.computes_gradients = True
@@ -440,9 +433,8 @@ def stop_gradient(
 @inputs_to_ivy_arrays
 @handle_exceptions
 def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
-    """Call function func with input of xs variables, and return func first output y,
-    the gradients [dy/dx for x in xs], and any other function outputs after the returned
-    y value.
+    """Call function func with input of xs variables, and return the function result
+    func_ret and the gradients of each output variable w.r.t each input variable,
 
     Parameters
     ----------
@@ -460,8 +452,8 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     Returns
     -------
     ret
-        the function first output y, the gradients [dy/dx for x in xs], and any other
-        extra function outputs.
+        the function result func_ret and a dictionary of gradients of each output
+        variable w.r.t each input variable.
 
     """
     return current_backend(None).execute_with_gradients(
@@ -756,7 +748,7 @@ def optimizer_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -876,7 +868,7 @@ def gradient_descent_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -971,7 +963,7 @@ def lars_update(
         The factor used for weight decay. Default is zero.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1036,7 +1028,7 @@ def adam_update(
         divisor during adam update, preventing division by zero (Default value = 1e-7).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
@@ -1112,7 +1104,7 @@ def lamb_update(
         The factor used for weight decay. (Default value = 0).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
