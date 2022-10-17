@@ -349,7 +349,8 @@ def test_jax_numpy_matrix_rank(
     dtype_and_x,
     as_variable,
     native_array,
-    num_positional_args):
+    num_positional_args
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
