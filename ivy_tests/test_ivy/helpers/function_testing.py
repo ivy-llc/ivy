@@ -562,7 +562,7 @@ def test_frontend_function(
     ret = frontend_fn(*args, **kwargs)
     # since the return from the frontend functions is now
     # a frontend tensor or array object
-    ret = ret.data
+    # ret = ret.data
     if with_out:
         if not inspect.isclass(ret):
             is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -1534,6 +1534,7 @@ def flatten(*, ret):
 
 def flatten_and_to_np(*, ret):
     # flatten the return
+    ret = ivy.to_ivy(ret)
     ret_flat = flatten(ret=ret)
     return [ivy.to_numpy(x) for x in ret_flat]
 
