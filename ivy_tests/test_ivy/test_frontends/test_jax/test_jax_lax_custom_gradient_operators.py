@@ -24,5 +24,3 @@ def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_arr
         fn_tree="lax.stop_gradient",
         x=x[0],
     )
-
-
