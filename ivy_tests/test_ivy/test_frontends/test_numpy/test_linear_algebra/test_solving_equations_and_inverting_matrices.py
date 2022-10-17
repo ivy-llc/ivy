@@ -1,4 +1,5 @@
 # global
+from builtins import tuple
 import numpy as np
 from hypothesis import given
 
@@ -92,4 +93,36 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         frontend="numpy",
         fn_tree="linalg.pinv",
         a=x[0],
+    )
+
+#tensorsolve
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+      shape=helpers.ints(min_value=2).map(lambda x:tuple([x,x]))
+    ),
+    dtype_and_y=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.linalg.tensorsolve"
+    ),
+)
+
+def test_numpy_tensorsolve(dtype_and_x, dtype_and_y, as_variable, native_array, num_positional_args):
+    dtype1, x1 = dtype_and_x
+    dtype2, x2 = dtype_and_y
+    helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="linalg.tensorsolve",
+        a=x1,
+        b=x2,
     )
