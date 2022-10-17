@@ -1112,7 +1112,9 @@ def test_jax_numpy_arcsinh(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("signed_integer", full=True)),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer", full=True)
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.cumprod"
     ),
