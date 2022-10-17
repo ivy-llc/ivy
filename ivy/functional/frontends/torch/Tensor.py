@@ -66,7 +66,10 @@ class Tensor:
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
-    # Special Methoods #
+    def max(self, dim=None, keepdim=False):
+        return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
+
+    # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
