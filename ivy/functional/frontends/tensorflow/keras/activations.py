@@ -24,10 +24,10 @@ def relu(x):
     return ivy.relu(x)
 
 
-
 @to_ivy_arrays_and_back
 def tanh(x):
     return ivy.tanh(x)
+
 
 @to_ivy_arrays_and_back
 def sigmoid(x):
