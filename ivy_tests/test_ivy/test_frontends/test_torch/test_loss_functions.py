@@ -149,3 +149,64 @@ def test_torch_binary_cross_entropy(
         reduce=reduce,
         reduction=reduction,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, min_dim_size=2), key="nll"),
+        max_value=0,    # expected log probabilities
+        allow_inf=False,
+        ret_shape=True
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, min_dim_size=2), key="nll"),
+        min_value=0,
+        allow_inf=False
+    ),
+    dtype_and_weights=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, min_dim_size=2), key="nll"),
+        min_value=0,
+        allow_inf=False
+    ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nll_loss"
+    )
+)
+def test_torch_nll_loss(
+    dtype_and_input,
+    dtype_and_target,
+    dtype_and_weights,
+    size_average,
+    reduce,
+    reduction,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    inputs_dtype, input, shape = dtype_and_input
+    target_dtype, target = dtype_and_target
+    weights_dtype, weights = dtype_and_weights
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtype + target_dtype + weights_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.nll_loss",
+        input=input[0],
+        target=target[0][..., 0].clip(0, shape[-1] - 1),    # gen indeces from 0 to C
+        weight=weights[0][0, ...],
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction
+    )

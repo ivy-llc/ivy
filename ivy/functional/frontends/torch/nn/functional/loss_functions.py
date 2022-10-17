@@ -134,3 +134,32 @@ def smooth_l1_loss(
     ret = reduction(loss)
 
     return ret
+
+
+def nll_loss(
+        input, target,
+        weight=None,
+        size_average=None,
+        ignore_index=- 100,
+        reduce=None,
+        reduction='mean'
+):
+    probs = ivy.exp(input)
+    depth = input.shape[-1]
+    one_hot_target = ivy.one_hot(target, depth)
+    ret = ivy.cross_entropy(one_hot_target, probs, reduction='none', epsilon=0.0)
+    if weight is not None:
+        ret = ivy.multiply(weight, ret)
+        ret = ivy.sum(ret, axis=-1)
+        if reduction == 'mean' and reduce is not False:
+            weighted_targets = ivy.multiply(one_hot_target, weight)
+            weighted_targets = ivy.sum(weighted_targets, axis=-1)
+            weighted_targets = ivy.sum(weighted_targets, axis=0)
+            ret = ivy.divide(ret, weighted_targets)
+            ret = ivy.sum(ret, axis=0)
+        else:
+            ret = _apply_reduction(reduction, size_average, reduce, ret)
+    else:
+        ret = ivy.sum(ret, axis=-1)
+        ret = _apply_reduction(reduction, size_average, reduce, ret)
+    return ret
