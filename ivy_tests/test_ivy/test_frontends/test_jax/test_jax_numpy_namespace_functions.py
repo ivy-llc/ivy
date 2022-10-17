@@ -928,7 +928,8 @@ def test_jax_numpy_floor(
         fn_tree="numpy.floor",
         x=x[0],
     )
-    
+
+
 # fmax
 @handle_cmd_line_args
 @given(
