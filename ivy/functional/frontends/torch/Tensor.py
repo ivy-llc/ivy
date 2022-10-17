@@ -14,7 +14,7 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
+                "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
     # Instance Methoods #
@@ -49,6 +49,10 @@ class Tensor:
 
     def float(self, memory_format=torch.preserve_format):
         return ivy.astype(self.data, ivy.float32)
+
+    def new_zeros(self, shape, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.zeros(shape, dtype=dtype, device=device,
+                                    requires_grad=requires_grad)
 
     def asinh(self, *, out=None):
         return torch_frontend.asinh(self.data, out=out)
