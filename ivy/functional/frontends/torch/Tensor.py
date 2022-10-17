@@ -76,10 +76,10 @@ class Tensor:
         return torch_frontend.add(other, self, alpha=alpha)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self.data, other)
+        return torch_frontend.mul(self, other)
 
     def __rmul__(self, other):
-        return torch_frontend.mul(other, self.data)
+        return torch_frontend.mul(other, self)
 
     def __sub__(self, other, *, alpha=1):
         return torch_frontend.subtract(self, other, alpha=alpha)
