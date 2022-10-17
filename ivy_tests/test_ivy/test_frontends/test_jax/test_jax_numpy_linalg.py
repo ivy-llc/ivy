@@ -334,6 +334,9 @@ def test_jax_slogdet(
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# norm
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
