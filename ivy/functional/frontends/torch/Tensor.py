@@ -3,7 +3,7 @@ import torch
 
 # local
 import ivy
-import ivy.functional.frontends.torch.pointwise_ops as torch_frontend
+import ivy.functional.frontends.torch as torch_frontend
 
 
 class Tensor:
