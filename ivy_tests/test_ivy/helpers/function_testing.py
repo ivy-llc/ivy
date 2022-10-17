@@ -560,7 +560,6 @@ def test_frontend_function(
     copy_kwargs = copy.deepcopy(kwargs)
     copy_args = copy.deepcopy(args)
     ret = frontend_fn(*args, **kwargs)
-    print(type(ret))
     #since the return from the frontend functions is now a frontend tensor or array object
     ret=ret.data
     if with_out:
