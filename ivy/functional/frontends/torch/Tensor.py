@@ -11,6 +11,11 @@ class Tensor:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
+    
+    def __repr__(self):
+        return (
+            "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
+        )
 
     # Instance Methoods #
     # -------------------#
