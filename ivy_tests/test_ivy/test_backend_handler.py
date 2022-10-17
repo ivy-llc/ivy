@@ -95,3 +95,30 @@ def test_current_backend(backend, array_type):
     ivy.set_backend('torch')
     ivy.assertions.check_equal(ivy.current_backend(array_type),
                                importlib.import_module(_backend_dict['torch']))
+
+
+@pytest.mark.parametrize(("excluded"), [
+    'numpy', 'jax', 'tensorflow', 'torch', None
+])
+def test_choose_random_backend(excluded):
+    backend = ivy.choose_random_backend(excluded=excluded)
+    if excluded is None:
+        assert backend in list(_backend_dict.keys())
+    else:
+        assert backend in (list(_backend_dict.keys()))
+
+
+@pytest.mark.parametrize("backend", [
+    'numpy', 'jax', 'tensorflow', 'torch'
+])
+def test_get_backend(backend):
+    imported_backend = importlib.import_module(_backend_dict[backend])
+
+    # checking whether the updating of __dict__ works
+    assert 'pi' not in imported_backend.__dict__
+    ivy.get_backend(backend)
+    assert 'pi' in imported_backend.__dict__
+
+    # checking whether the backend is returned correctly
+    ivy.assertions.check_equal(ivy.get_backend(backend),
+                               imported_backend)
