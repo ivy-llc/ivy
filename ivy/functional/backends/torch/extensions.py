@@ -306,3 +306,25 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def dct(x: torch.Tensor, type: int = 2, norm: str = "ortho"):
+    real_zero = torch.tensor(0.0, dtype=x.dtype)
+    axis_dim = x.shape[-1]
+    axis_dim_float = torch.tensor(axis_dim, dtype=x.dtype)
+
+    if type == 2:
+        scale = 2.0 * torch.exp(
+            torch.complex(
+                real_zero,
+                -torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float,
+            )
+        )
+        dct_out = torch.real(torch.fft.rfft(x, n=2 * axis_dim)[..., :axis_dim] * scale)
+        if norm == "ortho":
+            n1 = 0.5 * torch.rsqrt(axis_dim_float)
+            n2 = n1 * torch.sqrt(torch.tensor(2.0))
+            # vectorising scaling factors
+            sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
+            dct_out = sf * dct_out
+        return dct_out
