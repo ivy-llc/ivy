@@ -14,9 +14,7 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.torch.Tensor("
-            + str(ivy.to_list(self.data))
-            + ")"
+            "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
     # Instance Methoods #
@@ -61,6 +59,9 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
+        
+    def amax(self, dim=None, keepdim=False):
+      return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
@@ -71,11 +72,23 @@ class Tensor:
     # Special Methoods #
     # -------------------#
 
-    def __add__(self, other):
-        return torch_frontend.add(self, other)
+    def __add__(self, other, *, alpha=1):
+        return torch_frontend.add(self, other, alpha=alpha)
 
-    def __radd__(self, other):
-        return torch_frontend.add(other, self)
+    def __radd__(self, other, *, alpha=1):
+        return torch_frontend.add(other, self, alpha=alpha)
+
+    def __mul__(self, other):
+        return torch_frontend.mul(self, other)
+
+    def __rmul__(self, other):
+        return torch_frontend.mul(other, self)
+
+    def __sub__(self, other, *, alpha=1):
+        return torch_frontend.subtract(self, other, alpha=alpha)
+
+    def __truediv__(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
 
 # Tensor (alias)

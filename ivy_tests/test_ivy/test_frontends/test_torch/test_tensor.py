@@ -438,6 +438,38 @@ def test_torch_instance_tan(
     )
 
 
+# amax
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+    ),
+)
+def test_torch_instance_amax(
+    dtype_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="amax",
+    )
+    
+
 # abs
 @handle_cmd_line_args
 @given(
@@ -511,7 +543,7 @@ def test_torch_instance_contiguous(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
-        num_arrays=2
+        num_arrays=2,
     )
 )
 def test_torch_special_add(
@@ -521,6 +553,147 @@ def test_torch_special_add(
     ret = Tensor(x[0]) + Tensor(x[1])
     ret_gt = torch.tensor(x[0], dtype=input_dtype[0]) + torch.tensor(
         x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
+
+
+# __radd__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_radd(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    data = Tensor(x[0])
+    other = Tensor(x[1])
+    ret = data.__radd__(other)
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]).__radd__(
+        torch.tensor(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
+
+
+# __sub__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_sub(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    ret = Tensor(x[0]) - Tensor(x[1])
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]) - torch.tensor(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
+
+
+# __mul__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_mul(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    ret = Tensor(x[0]) * Tensor(x[1])
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]) * torch.tensor(
+        x[1], dtype=input_dtype[1]
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
+
+
+# __rmul__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_rmul(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    data = Tensor(x[0])
+    other = Tensor(x[1])
+    ret = data.__rmul__(other)
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]).__rmul__(
+        torch.tensor(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
+
+
+# __truediv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_treudiv(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    data = Tensor(x[0])
+    other = Tensor(x[1])
+    ret = data.__truediv__(other)
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]).__truediv__(
+        torch.tensor(x[1], dtype=input_dtype[1])
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
