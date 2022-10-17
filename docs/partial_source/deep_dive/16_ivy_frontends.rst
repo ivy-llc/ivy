@@ -42,7 +42,7 @@ When using functions and methods of Ivy Frontends, in addition to importing ivy 
 like :code:`import ivy` please also import the corrisponding Frontend module.
 For example, to use ivy's tensorflow frontend:
 
-    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+    :code:`import ivy.functional.frontends.tensorflow as tf_frontend`
 
 ----
 
@@ -200,7 +200,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
-frontend. There are three arguments according to the `tf.add`_ documentation, which are
+frontend. There are three arguments according to the `tf.math.add`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
 which framework is set in Ivy's backend.
@@ -220,7 +220,7 @@ argument.
         return ivy.tan(x)
 
 Likewise, :code:`tan` is also placed under :code:`math`.
-By referring to the `tf.tan`_ documentation, we add the same arguments,
+By referring to the `tf.math.tan`_ documentation, we add the same arguments,
 and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
@@ -501,8 +501,8 @@ which itself is implemented as follows:
 **Special Method**
 
 Some examples referring to the special methods would make things more clear. For
-example lets take a look at how :meth:`tf.tensor.__add__` is implemented and how
-it's reverse :meth:`tf.tensor.__radd__` is implemented.
+example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how
+it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
 
 .. code-block:: python
 
