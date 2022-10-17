@@ -638,7 +638,11 @@ def test_frontend_function(
         # create frontend framework args
         args_frontend = ivy.nested_map(
             args_np,
-            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+            lambda x: ivy.native_array(x)
+            if isinstance(x, np.ndarray)
+            else ivy.as_native_dtype(x)
+            if isinstance(x, ivy.Dtype)
+            else x,
         )
         kwargs_frontend = ivy.nested_map(
             kwargs_np,

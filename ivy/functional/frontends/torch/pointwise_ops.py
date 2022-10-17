@@ -3,7 +3,7 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def add(input, other, *, alpha=None, out=None):
+def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.add(input, other, alpha=alpha, out=out)
 
