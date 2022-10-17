@@ -334,3 +334,49 @@ def test_jax_slogdet(
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# norm
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+        force_int_axis=True,
+        max_axes_size=2, safety_factor_scale="log",
+        valid_axis=True, large_abs_safety_factor=2
+    ).filter(lambda x: 'float16' not in x[0]
+             and 'bfloat16' not in x[0]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.norm"
+    ),
+    keepdims=st.booleans(),
+    ord=st.sampled_from([1, 2, np.inf]),
+)
+def test_jax_norm(
+        dtype_values_axis,
+        ord,
+        keepdims,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw
+):
+    dtype, inputs, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array, frontend='jax',
+        fn_tree='numpy.linalg.norm',
+        x=inputs[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
+    )
