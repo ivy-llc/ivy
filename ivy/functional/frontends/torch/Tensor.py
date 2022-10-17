@@ -12,6 +12,13 @@ class Tensor:
             data = ivy.Array(data)
         self.data = data
 
+    def __repr__(self):
+        return (
+            "ivy.functional.frontends.torch.Tensor("
+            + str(ivy.to_list(self.data))
+            + ")"
+        )
+
     # Instance Methoods #
     # -------------------#
 
@@ -54,6 +61,15 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
+
+    # Special Methoods #
+    # -------------------#
+
+    def __add__(self, other):
+        return torch_frontend.add(self, other)
+
+    def __radd__(self, other):
+        return torch_frontend.add(other, self)
 
 
 # Tensor (alias)
