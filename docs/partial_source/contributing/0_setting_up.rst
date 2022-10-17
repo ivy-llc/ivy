@@ -397,7 +397,7 @@ It can be headache to install Docker and setup the PyCharm development environme
 
 **Important Note**
 
-There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to access Codespaces you have to buy one of the paid versions which GitHub offers.
+There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
 
 **Pre-requisites**
 
