@@ -232,7 +232,6 @@ def cumsum(x, axis, exclusive, reverse):
     return ivy.cumsum(x, axis, exclusive, reverse)
 
 
-
 @inputs_to_ivy_arrays
 def cumprod(x, axis, exclusive, reverse):
     return ivy.cumprod(x, axis, exclusive, reverse)
