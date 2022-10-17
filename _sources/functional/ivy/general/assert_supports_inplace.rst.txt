@@ -5,9 +5,9 @@ assert_supports_inplace
 
 .. autofunction:: ivy.array.array_methods.assert_supports_inplace
 
-.. autofunction:: ivy.container.container_methods.assert_supports_inplace
-
 .. autofunction:: ivy.container.container_methods.static_assert_supports_inplace
+
+.. autofunction:: ivy.container.container_methods.assert_supports_inplace
 |
 | **Supported Frameworks:**
 
