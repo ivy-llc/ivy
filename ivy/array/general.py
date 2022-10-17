@@ -99,7 +99,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.is_ivy_container(self)
 
     def all_equal(
-        self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
+        self: ivy.Array, *x2: Iterable[Any], equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
@@ -123,7 +123,8 @@ class ArrayWithGeneral(abc.ABC):
             equality_matrix=True is set.
 
         """
-        return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
+        arrays = [self] + [x for x in x2]
+        return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
     def has_nans(self: ivy.Array, include_infs: bool = True):
         """
