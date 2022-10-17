@@ -362,7 +362,7 @@ def norm_params(draw, *, available_dtypes,
     dtype, x, axis = result
     if type(axis) in [tuple, list]:
         ord_param = draw(st.sampled_from([None, 'fro',
-                                          'nuc',0, 1, 2, -1, -2, np.inf, -np.inf]))
+                                          'nuc', 0, 1, 2, -1, -2, np.inf, -np.inf]))
     else:
         ord_param = draw(st.sampled_from([None, 0, 1, 2, -1, -2, np.inf, -np.inf]))
     return dtype, x, axis, ord_param
