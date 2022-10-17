@@ -313,7 +313,12 @@ def dct(x: torch.Tensor, type: int = 2, norm: str = "ortho"):
     axis_dim = x.shape[-1]
     axis_dim_float = torch.tensor(axis_dim, dtype=x.dtype)
 
-    if type == 2:
+    if type == 1:
+        x = torch.concat([x, x.flip(-1)[..., 1:-1]], dim=-1)
+        dct_out = torch.real(torch.fft.rfft(x, dim=-1))
+        return dct_out
+
+    elif type == 2:
         scale = 2.0 * torch.exp(
             torch.complex(
                 real_zero,
