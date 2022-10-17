@@ -395,6 +395,10 @@ GitHub Codespaces
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
 
+**Important Note**
+
+There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to access Codespaces you have to buy one of the paid versions which GitHub offers.
+
 **Pre-requisites**
 
 1. Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from `here <https://code.visualstudio.com/>`_). 
