@@ -76,7 +76,9 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
 
         Returns
         -------
-            The return of the function, with native arrays as ivy arrays.
+
+            The return of the function, with ivy arrays as tensorflow.Tensor arrays.
+
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
