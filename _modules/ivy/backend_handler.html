@@ -130,7 +130,6 @@
   <h1>Source code for ivy.backend_handler</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
@@ -227,7 +226,6 @@
 
 <div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../backend_handler/fn_name_from_version_specific_fn_name.html#ivy.backend_handler.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name</span>
@@ -242,6 +240,7 @@
 <span class="sd">        specific function</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add docstring and tests</span>
     <span class="n">version</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="n">version</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">[:</span> <span class="n">version</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
@@ -286,6 +285,7 @@
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add docstring, functionality and tests</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;backends&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">9</span> <span class="p">:]</span>
 
