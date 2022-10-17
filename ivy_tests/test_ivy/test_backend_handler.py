@@ -31,5 +31,3 @@ def test_set_backend(backend, array_type):
     ivy.assertions.check_equal(stack_after[-1], backend)
     x = ivy.array([1, 2, 3])
     ivy.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
-
-
