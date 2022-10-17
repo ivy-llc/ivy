@@ -451,7 +451,6 @@ def test_torch_instance_amax(
     native_array,
 ):
     input_dtype, x = dtype_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
