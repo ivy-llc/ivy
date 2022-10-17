@@ -74,6 +74,15 @@ class Tensor:
     def __radd__(self, other):
         return torch_frontend.add(other, self)
 
+    def __mul__(self, other):
+        return torch_frontend.mul(self, other)
+
+    def __rmul__(self, other):
+        return torch_frontend.mul(other, self)
+
+    def __sub__(self, other):
+        return torch_frontend.subtract(self, other)
+
 
 # Tensor (alias)
 tensor = Tensor
