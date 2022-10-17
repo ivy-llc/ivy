@@ -334,3 +334,77 @@ def test_jax_slogdet(
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+@st.composite
+def norm_params(draw, *, available_dtypes,
+                min_num_dims=3,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=4,
+                min_axis=-3,
+                max_axis=2,
+                force_int_axis=True,
+                max_axes_size=2, safety_factor_scale="log",
+                valid_axis=True, large_abs_safety_factor=2):
+    result = draw(helpers.dtype_values_axis(
+        available_dtypes=available_dtypes,
+        min_num_dims=min_num_dims,
+        max_num_dims=max_num_dims,
+        min_dim_size=min_dim_size,
+        max_dim_size=max_dim_size,
+        min_axis=min_axis,
+        max_axis=max_axis,
+        force_int_axis=force_int_axis,
+        max_axes_size=max_axes_size, safety_factor_scale=safety_factor_scale,
+        valid_axis=valid_axis, large_abs_safety_factor=large_abs_safety_factor
+    ))
+    dtype, x, axis = result
+    if type(axis) in [tuple, list]:
+        ord_param = draw(st.sampled_from([None, 'fro',
+                                          'nuc', 0, 1, 2, -1, -2, np.inf, -np.inf]))
+    else:
+        ord_param = draw(st.sampled_from([None, 0, 1, 2, -1, -2, np.inf, -np.inf]))
+    return dtype, x, axis, ord_param
+
+
+# norm
+@handle_cmd_line_args
+@given(
+    dtype_vals=norm_params(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+        force_int_axis=True,
+        max_axes_size=2, safety_factor_scale="log",
+        valid_axis=True, large_abs_safety_factor=2
+    ).filter(lambda x: 'bfloat16' not in x[0]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.norm"
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_norm(
+        dtype_vals,
+        keepdims,
+        as_variable,
+        num_positional_args,
+        native_array,
+):
+    dtype, inputs, axis, ord_param = dtype_vals
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array, frontend='jax',
+        fn_tree='numpy.linalg.norm',
+        x=inputs[0],
+        ord=ord_param,
+        axis=axis,
+        keepdims=keepdims,
+    )
