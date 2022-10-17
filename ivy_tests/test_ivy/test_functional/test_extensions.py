@@ -237,10 +237,10 @@ def test_flatten(
     if axes[1] == 0:
         start_dim, end_dim = axes[1], axes[0]
     elif axes[0] * axes[1] < 0:
-        if x.ndim + axes[0] < axes[1]:
-            start_dim, end_dim = axes[1], axes[0]
+        if x.ndim + min(axes) >= max(axes):
+            start_dim, end_dim = max(axes), min(axes)
         else:
-            start_dim, end_dim = axes[0], axes[1]
+            start_dim, end_dim = min(axes), max(axes)
     else:
         start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
