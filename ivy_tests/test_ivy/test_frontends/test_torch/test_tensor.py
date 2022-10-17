@@ -1,6 +1,6 @@
 # global
 import torch
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 from ivy.functional.frontends.torch.Tensor import Tensor
@@ -27,7 +27,6 @@ def test_torch_instance_add(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -67,7 +66,6 @@ def test_torch_instance_reshape(
     native_array,
 ):
     input_dtype, x = dtype_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -103,7 +101,6 @@ def test_torch_instance_sin(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -137,7 +134,6 @@ def test_torch_instance_sin_(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -171,7 +167,6 @@ def test_torch_instance_cos(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -205,7 +200,6 @@ def test_torch_instance_sinh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -239,7 +233,6 @@ def test_torch_instance_sinh_(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -277,7 +270,6 @@ def test_torch_instance_view(
     native_array,
 ):
     input_dtype, x = dtype_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
@@ -346,7 +338,6 @@ def test_torch_instance_asinh(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -382,7 +373,6 @@ def test_torch_instance_asinh_(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
@@ -418,7 +408,6 @@ def test_torch_instance_tan(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
         as_variable_flags_init=as_variable,
