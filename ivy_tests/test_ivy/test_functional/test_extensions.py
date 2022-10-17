@@ -200,7 +200,6 @@ def test_vorbis_window(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(
             helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
         ),
