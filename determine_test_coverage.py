@@ -1,4 +1,5 @@
 import os
+import sys
 from pydriller import Repository
 import pickle
 from tqdm import tqdm
@@ -6,6 +7,13 @@ from tqdm import tqdm
 # Shared Map
 tests = {}
 
+os.system("git config --global --add safe.directory /ivy")
+N = 15
+run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
+if run_iter > 0:
+    with open("tests.pkl", "rb") as f:
+        tests = pickle.load(f)
+    os.system(f"git checkout -f {tests['commit']}")
 
 os.system(
     "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
@@ -20,6 +28,14 @@ with open("test_names") as f:
         test_names.append(line[:-1])
 
 test_names = test_names[:-3]
+
+# Create a Dictionary of Test Names to Index
+if run_iter == 0:
+    tests['index_mapping'] = test_names
+    tests['tests_mapping'] = {}
+    for i in range(len(test_names)):
+        tests['tests_mapping'][test_names[i]] = i
+
 
 directories = [
     "ivy",
@@ -65,7 +81,11 @@ directories = [
 ]
 
 if __name__ == "__main__":
-    for test_name in tqdm(test_names):
+    num_tests = len(test_names)
+    tests_per_run = num_tests // N
+    start = run_iter * tests_per_run
+    end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
+    for test_name in tqdm(test_names[start:end]):
         os.system(
             f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
         )
@@ -83,15 +103,15 @@ if __name__ == "__main__":
                         i = 0
                         for line in f:
                             if line[0] == ">":
-                                tests[file_name][i].add(test_name)
+                                tests[file_name][i].add(tests['tests_mapping'][test_name])
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
-
-commit_hash = ""
-for commit in Repository(".", order="reverse").traverse_commits():
-    commit_hash = commit.hash
-    break
-tests["commit"] = commit_hash
+if run_iter == 0:
+    commit_hash = ""
+    for commit in Repository(".", order="reverse").traverse_commits():
+        commit_hash = commit.hash
+        break
+    tests["commit"] = commit_hash
 with open("tests.pkl", "wb") as f:
     pickle.dump(tests, f)
