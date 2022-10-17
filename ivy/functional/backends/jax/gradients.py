@@ -56,9 +56,11 @@ def _forward_fn(xs, func, duplicate_key_chains):
     ret = func(xs)
 
     if isinstance(ret, ivy.Array):
-        array_values = ret.to_native()
+        array_values = ivy.to_native(ivy.reshape(ret, []))
     else:
-        ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
+        ret = ivy.nested_map(
+            ret, lambda x: ivy.to_native(ivy.reshape(x, [])), include_derived=True
+        )
         array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
         array_values = ivy.multi_index_nest(ret, array_idxs)
 
@@ -91,7 +93,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
         grads = _set_duplicates(grads, duplicate_key_chains)
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 

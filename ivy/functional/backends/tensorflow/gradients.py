@@ -51,7 +51,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
         grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 

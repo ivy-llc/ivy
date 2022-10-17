@@ -47,9 +47,19 @@ def _get_native_arrays_and_indices(func_ret):
     return arr_idxs, arr_values
 
 
-def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
     if not retain_grads:
-        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+        if isinstance(func_ret, ivy.Array):
+            func_ret = ivy.stop_gradient(func_ret)
+        else:
+            ret_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_variable(x))
+            if isinstance(ret_idxs, list) and np.asarray(ret_idxs).size > 0:
+                func_ret = ivy.nested_map(
+                    func_ret, lambda x: x, include_derived=True, to_mutable=True
+                )
+                ret_vars = ivy.multi_index_nest(func_ret, ret_idxs)
+                ret_vars = [ivy.stop_gradient(var) for var in ret_vars]
+                ivy.set_nest_at_indices(func_ret, ret_idxs, ret_vars)
     if grad_idxs is not None:
         for i in range(len(grad_idxs)):
             grad_idxs[i] = [str(x) for x in grad_idxs[i]]
@@ -57,7 +67,7 @@ def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
         grads = {idx: grads[idx] for idx in grad_idxs}
     if not isinstance(grads, ivy.Array):
         grads = ivy.Container(grads)
-    return grads
+    return func_ret, grads
 
 
 # Extra #
