@@ -1,44 +1,36 @@
-import ivy
-import numpy as np
-from hypothesis import given, assume, strategies as st
-from ivy.functional.backends.numpy.data_type import dtype
-
+from hypothesis import given, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
 # hann_window
-
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    # generate pereodic boolean
-    peroidic=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.signal.hann_window"
     ),
 )
 def test_hann_window(
-    dtype_and_x,
-    dtype,
-    periodic,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
-):
+        dtype_and_x,
+        dtype,
+        peroidic,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+periodic=None):
     input_dtype, x = dtype_and_x
 
     # test if periodic is a boolean
-    if periodic is not None:
-        assume(isinstance(periodic, bool))
+    if peroidic is not None:
+        assume(isinstance(peroidic, bool))
 
     as_variable, native_array = helpers.handle_where_and_array_bools(
-        periodic=periodic,
+        perodic=peroidic,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -56,4 +48,3 @@ def test_hann_window(
         periodic=periodic,
         dtype=dtype[0],
     )
-
