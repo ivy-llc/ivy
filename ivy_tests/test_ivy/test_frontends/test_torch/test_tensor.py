@@ -442,9 +442,9 @@ def test_torch_instance_tan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-         available_dtypes=helpers.get_dtypes("float"),
-         allow_inf=False,
-     ),
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
 )
 def test_torch_instance_contiguous(
     dtype_and_x,
