@@ -364,6 +364,8 @@ def test_numpy_instance_argsort(
         x=x[0],
         axis=axis,
     )
+
+    
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
@@ -410,7 +412,7 @@ def test_numpy_ndarray_prod(
         },
         all_as_kwargs_np_method={
             "axis": axis,
-            "dtype":dtype,
+            "dtype": dtype,
             "out": out,
             "keepdims": keepdims,
             "initial" : initial,
