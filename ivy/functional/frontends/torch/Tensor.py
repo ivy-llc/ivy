@@ -66,6 +66,9 @@ class Tensor:
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
+    def min(self, dim=None, keepdim=False):
+        return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
+
     # Special Methoods #
     # -------------------#
 
