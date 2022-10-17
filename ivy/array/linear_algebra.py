@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
+from typing import Union, Optional, Literal, Tuple, List, Sequence
 
 # local
 import ivy
@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -51,7 +51,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -67,18 +67,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
-                       [1.0, 0.5, 0.0, 0.0, 0.0], \
-                       [2.0, 0.0, 3.0, 0.0, 0.0], \
-                       [0.5, 0.0, 0.0, 0.625, 0.0], \
-                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+        ...               [1.0, 0.5, 0.0, 0.0, 0.0],
+        ...               [2.0, 0.0, 3.0, 0.0, 0.0],
+        ...               [0.5, 0.0, 0.0, 0.625, 0.0],
+        ...               [2.0, 0.0, 0.0, 0.0, 16.0]])
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-                   [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-                   [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-                   [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        ...        [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+        ...        [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+        ...        [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
         """
         return ivy.cholesky(self._data, upper=upper, out=out)
 
@@ -106,7 +106,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -130,6 +130,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
     def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        Examples
+        --------
+        >>> x = ivy.array([[2.,4.],[6.,7.]])
+        >>> y = x.det()
+        >>> print(y)
+        ivy.array(-10.)
+        """
         return ivy.det(self._data, out=out)
 
     def diagonal(
@@ -147,7 +155,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array]:
         return ivy.eigh(self._data)
 
     def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -189,6 +197,45 @@ class ArrayWithLinearAlgebra(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            Input array having shape (..., M, N) and whose innermost two dimensions
+            form MxN matrices. Should have a floating-point data type.
+        ord
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
+        keepdims
+            If this is set to True, the axes which are normed over are left in
+            the result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        ivy.array(6.3)
+
+        >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
+        >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
+        >>> print(y)
+        ivy.array([[[ 4.24]],
+                [[11.4 ]]])
+        """
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
         )
@@ -285,20 +332,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        x = ivy.array([[1., 2.],\
-                  [3., 4.]])
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         y = pinv(x, None, None)
         print(y)
-        ivy.array([[-2., 1.],\
-               [1.5, -0.5]])
-    
-        x = ivy.array([[1., 2.],\
-                      [3., 4.]])
+        ivy.array([[-2., 1.],
+        ...        [1.5, -0.5]])
+
+        x = ivy.array([[1., 2.],
+        ...            [3., 4.]])
         out = ivy.array()
         pinv(x, 0, out)
         print(out)
-        ivy.array([[0.0426, 0.0964],\
-               [0.0605, 0.1368]])
+        ivy.array([[0.0426, 0.0964],
+        ...       [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -306,12 +353,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         *,
         mode: str = "reduced",
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         return ivy.qr(self._data, mode=mode)
 
     def slogdet(
         self: ivy.Array,
-    ) -> NamedTuple:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
         function, and so the docstring for ivy.slogdet also applies to this method with
@@ -337,8 +384,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[1.0, 2.0], \
-                           [3.0, 4.0]])
+        >>> x = ivy.array([[1.0, 2.0],
+        ...                [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))

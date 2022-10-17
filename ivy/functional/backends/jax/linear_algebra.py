@@ -21,7 +21,7 @@ from ivy import promote_types_of_inputs
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
-    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -51,30 +51,6 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-def diag(
-    x: JaxArray,
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = jnp.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += jnp.diag(x - padding_value, k=offset)
-
-    return ret
-
-
 def diagonal(
     x: JaxArray,
     /,
@@ -99,8 +75,12 @@ def diagonal(
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
@@ -170,7 +150,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -188,6 +168,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x.shape[-3] == 0:
+        return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -245,7 +227,7 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
+def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -255,7 +237,7 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray]:
     results = NamedTuple("slogdet", [("sign", JaxArray), ("logabsdet", JaxArray)])
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)
@@ -368,6 +350,41 @@ def vector_norm(
 # ------#
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+
+    ret = jnp.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    ret += jnp.diag(x - padding_value, k=offset)
+
+    return ret
+
+
+def vander(
+    x: JaxArray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vander(x, N=N, increasing=increasing)
+
+
 def vector_to_skew_symmetric_matrix(
     vector: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -386,14 +403,3 @@ def vector_to_skew_symmetric_matrix(
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return jnp.concatenate((row1, row2, row3), -2)
-
-
-def vander(
-    x: JaxArray,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.vander(x, N=N, increasing=increasing)

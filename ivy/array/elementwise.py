@@ -348,6 +348,20 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([True, False])
+        >>> y = ivy.array([True, True])
+        >>> x.bitwise_and(y, out=y)
+        >>> print(y)
+        ivy.array([ True, False])
+
+        >>> x = ivy.array([[7],[8],[9]])
+        >>> y = ivy.native_array([[10],[11],[12]])
+        >>> z = x.bitwise_and(y)
+        >>> print(z)
+        ivy.array([[2],[8],[8]])
         """
         return ivy.bitwise_and(self._data, x2, out=out)
 
@@ -519,6 +533,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
+        >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
+        >>> y = a.bitwise_xor(b)
+        >>> print(y)
+        ivy.array([[[74,41,59],[24,5,7]]])
         """
         return ivy.bitwise_xor(self._data, x2, out=out)
 
@@ -1156,8 +1178,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 1.61, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log()
         >>> print(y)
         ivy.array([[nan, 0., 1.61, inf],
@@ -1259,8 +1281,8 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 0.699, inf])
 
-        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                           [+0, -1.0, -5, float('-inf')]])
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log10()
         >>> print(y)
         ivy.array([[nan, 0., 0.699, inf],
@@ -1692,7 +1714,8 @@ class ArrayWithElementwise(abc.ABC):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         modulus
-            whether to compute the modulus instead of the remainder. Default is True.
+            whether to compute the modulus instead of the remainder.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -2231,5 +2254,11 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1j, 2+5j, 3.7-6j])
+        >>> x.isreal()
+        ivy.array([False, False, False])
         """
         return ivy.isreal(self._data, out=out)

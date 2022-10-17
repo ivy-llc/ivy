@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Literal
+from typing import Union, Tuple, Optional, List, Sequence
 
 import tensorflow as tf
 
@@ -19,10 +19,10 @@ from . import backend_version
 
 
 def concat(
-    xs: List[tf.Tensor],
+    xs: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
     /,
     *,
-    axis: int = 0,
+    axis: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -49,7 +49,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Sequence[int]] = 0,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -64,7 +64,7 @@ def flip(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:
@@ -99,7 +99,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -264,31 +264,6 @@ def tile(
     # TODO remove the unifying behaviour code if tensorflow handles this
     # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
-
-
-def pad(
-    x: tf.Tensor,
-    /,
-    pad_width: tf.Tensor,
-    *,
-    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
-    stat_length: Optional[Union[tf.Tensor, int]] = None,
-    constant_values: Optional[Number] = 0,
-    end_values: Optional[Number] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> tf.Tensor:
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    if mode == "constant":
-        return tf.pad(
-            x,
-            pad_width,
-            mode=mode,
-            constant_values=constant_values,
-        )
-    else:
-        return tf.pad(x, pad_width, mode=mode)
 
 
 def constant_pad(

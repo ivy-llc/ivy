@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         allow_inf=False,
@@ -20,8 +20,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.dist"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
-    p=st.sampled_from([None, st.integers()]),
+    p=helpers.floats(min_value=1.0, max_value=10.0),
 )
 def test_torch_dist(
     dtype_and_input,
@@ -413,7 +412,7 @@ def test_torch_var(
 @handle_cmd_line_args
 @given(
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
