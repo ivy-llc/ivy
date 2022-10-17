@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -1192,10 +1192,8 @@
 
 <div class="viewcode-block" id="ContainerWithGeneral.static_all_equal"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_all_equal">[docs]</a>    <span class="nd">staticmethod</span>
     <span class="k">def</span> <span class="nf">static_all_equal</span><span class="p">(</span>
-        <span class="n">x1</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-        <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1211,8 +1209,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        x1</span>
 <span class="sd">            input container.</span>
-<span class="sd">        x2</span>
-<span class="sd">            array or container to be compared to ``x1``.</span>
+<span class="sd">        xs</span>
+<span class="sd">            arrays or containers to be compared to ``x1``.</span>
 <span class="sd">        equality_matrix</span>
 <span class="sd">            Whether to return a matrix of equalities comparing each input with every</span>
 <span class="sd">            other. Default is ``False``.</span>
@@ -1264,7 +1262,7 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;all_equal&quot;</span><span class="p">,</span>
             <span class="n">x1</span><span class="p">,</span>
-            <span class="n">x2</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">xs</span><span class="p">,</span>
             <span class="n">equality_matrix</span><span class="o">=</span><span class="n">equality_matrix</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
@@ -1274,9 +1272,7 @@
 
 <div class="viewcode-block" id="ContainerWithGeneral.all_equal"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.all_equal">[docs]</a>    <span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
-        <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1292,8 +1288,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            input container.</span>
-<span class="sd">        x2</span>
-<span class="sd">            array or container to be compared to ``self``.</span>
+<span class="sd">        xs</span>
+<span class="sd">            arrays or containers to be compared to ``self``.</span>
 <span class="sd">        equality_matrix</span>
 <span class="sd">            Whether to return a matrix of equalities comparing each input with every</span>
 <span class="sd">            other. Default is ``False``.</span>
@@ -1364,7 +1360,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_all_equal</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">x2</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">xs</span><span class="p">,</span>
             <span class="n">equality_matrix</span><span class="o">=</span><span class="n">equality_matrix</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
