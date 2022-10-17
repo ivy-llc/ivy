@@ -336,7 +336,6 @@ def test_jax_slogdet(
     )
 
 
-# norm
 @st.composite
 def norm_params(draw, *, available_dtypes,
                 min_num_dims=3,
@@ -369,6 +368,7 @@ def norm_params(draw, *, available_dtypes,
     return dtype, x, axis, ord_param
 
 
+# norm
 @handle_cmd_line_args
 @given(
     dtype_vals=norm_params(
