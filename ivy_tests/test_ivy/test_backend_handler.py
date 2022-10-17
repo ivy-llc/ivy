@@ -105,7 +105,9 @@ def test_choose_random_backend(excluded):
     if excluded is None:
         assert backend in list(_backend_dict.keys())
     else:
-        assert backend in (list(_backend_dict.keys()))
+        backends_list = list(_backend_dict.keys())
+        backends_list.remove(excluded)
+        assert backend in backends_list
 
 
 @pytest.mark.parametrize("backend", [
