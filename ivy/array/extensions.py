@@ -454,3 +454,43 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([ nan,  nan,  nan])
         """
         return ivy.fmod(self._data, x2, out=out)
+
+    def fmax(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fmax. This method simply
+        wraps the function, and so the docstring for ivy.fmax also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+        x1
+            First input array.
+        x2
+            Second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with element-wise maximums.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([2, 3, 4])
+        >>> x2 = ivy.array([1, 5, 2])
+        >>> ivy.fmax(x1, x2)
+        ivy.array([ 2.,  5.,  4.])
+
+        >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+        >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+        >>> x1.fmax(x2)
+        ivy.array([ 0,  0,  nan])
+        """
+        return ivy.fmax(self._data, x2, out=out)
