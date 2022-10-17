@@ -1049,35 +1049,6 @@ def bitwise_and(
         a: ivy.array([True, False]),
         b: ivy.array([False, True])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([True, False])
-    >>> y = ivy.array([True, True])
-    >>> x.bitwise_and(y, out=y)
-    >>> print(y)
-    ivy.array([ True, False])
-
-    >>> x = ivy.array([[7],[8],[9]])
-    >>> y = ivy.native_array([[10],[11],[12]])
-    >>> z = x.bitwise_and(y)
-    >>> print(z)
-    ivy.array([[2],[8],[8]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
-    >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
-    >>> x.bitwise_and(y, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([False, True]),
-        b: ivy.array([False, True])
-    }
-
     """
     return ivy.current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
@@ -1494,27 +1465,6 @@ def bitwise_xor(
     a: ivy.array([-79, 24])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
-    >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
-    >>> y = a.bitwise_xor(b)
-    >>> print(y)
-    ivy.array([[[74,41,59],[24,5,7]]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.array([89]))
-    >>> b = ivy.array([90])
-    >>> y = ivy.Container(a = ivy.array([12]))
-    >>> b = ivy.array([78])
-    >>> z = x.bitwise_xor(y)
-    >>> print(z)
-    {a:ivy.array([85])}
-
     Operator Examples
     -----------------
 
@@ -1529,9 +1479,7 @@ def bitwise_xor(
     With :class:`ivy.Container` instances:
 
     >>> x = ivy.Container(a = ivy.array([89]))
-    >>> b = ivy.array([90])
     >>> y = ivy.Container(a = ivy.array([12]))
-    >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
     {a:ivy.array([85])}
@@ -4781,7 +4729,7 @@ def remainder(
         divisor input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
         Should have a numeric data type.
     modulus
-        whether to compute the modulus instead of the remainder. Default is True.
+        whether to compute the modulus instead of the remainder. Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
