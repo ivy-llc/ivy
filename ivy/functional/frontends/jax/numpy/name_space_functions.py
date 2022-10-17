@@ -224,8 +224,9 @@ def fmax(x1, x2):
     return ret
 
 
+@inputs_to_ivy_arrays
 def argmin(a, axis=None, out=None, keepdims=None):
-    return ivy.argmin(a)
+    return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
 
 
 @inputs_to_ivy_arrays
