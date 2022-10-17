@@ -188,8 +188,7 @@ def test_torch_nll_loss(
     reduction,
     as_variable,
     num_positional_args,
-    native_array,
-    fw,
+    native_array
 ):
     inputs_dtype, input, shape = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -200,7 +199,6 @@ def test_torch_nll_loss(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="nn.functional.nll_loss",
         input=input[0],
