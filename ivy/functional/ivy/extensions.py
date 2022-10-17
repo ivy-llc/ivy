@@ -18,7 +18,6 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
-from numpy import prod
 
 
 # helpers
@@ -473,8 +472,8 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    start_dim: int = None,
-    end_dim: int = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -509,62 +508,59 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1,2], [3,4])
-    >>> y = ivy.flatten(x)
-    >>> print(y)
+    >>> x = np.array([1,2], [3,4])
+    >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = ivy.array(
-        [[[[5, 5, 0, 6],
-            [17, 15, 11, 16],
-            [6, 3, 13, 12]],
-          [[6, 18, 10, 4],
-            [5, 1, 17, 3],
-            [14, 14, 18, 6]]],
-        [[[12, 0, 1, 13],
-           [8, 7, 0, 3],
-           [19, 12, 6, 17]],
-         [[4, 15,  6, 15],
-           [0, 5, 17, 9],
-           [9, 3, 6, 19]]],
-        [[[17, 13, 11, 16],
-           [4, 18, 17, 4],
-           [10, 10, 9, 1]],
-         [[19, 17, 13, 10],
-           [ 4, 19, 16, 17],
-           [ 2, 12, 8, 14]]]])
-    >>> y = ivy.flatten(x, start_dim = 1, end_dim = 2)
-    >>> print(y)
+    >>> x = np.array(
+        [[[[ 5,  5,  0,  6],
+         [17, 15, 11, 16],
+         [ 6,  3, 13, 12]],
+
+        [[ 6, 18, 10,  4],
+         [ 5,  1, 17,  3],
+         [14, 14, 18,  6]]],
+
+
+       [[[12,  0,  1, 13],
+         [ 8,  7,  0,  3],
+         [19, 12,  6, 17]],
+
+        [[ 4, 15,  6, 15],
+         [ 0,  5, 17,  9],
+         [ 9,  3,  6, 19]]],
+
+
+       [[[17, 13, 11, 16],
+         [ 4, 18, 17,  4],
+         [10, 10,  9,  1]],
+
+        [[19, 17, 13, 10],
+         [ 4, 19, 16, 17],
+         [ 2, 12,  8, 14]]]]
+         )
+    >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
     ivy.array(
-        [[[ 5, 5, 0, 6],
+        [[[ 5,  5,  0,  6],
           [17, 15, 11, 16],
-          [6, 3, 13, 12],
-          [6, 18, 10, 4],
-          [5, 1, 17, 3],
-          [14, 14, 18, 6]],
-         [[12, 0, 1, 13],
-          [8, 7, 0, 3],
-          [19, 12, 6, 17],
-          [4, 15, 6, 15],
-          [0, 5, 17, 9],
-          [9, 3, 6, 19]],
+          [ 6,  3, 13, 12],
+          [ 6, 18, 10,  4],
+          [ 5,  1, 17,  3],
+          [14, 14, 18,  6]],
+
+         [[12,  0,  1, 13],
+          [ 8,  7,  0,  3],
+          [19, 12,  6, 17],
+          [ 4, 15,  6, 15],
+          [ 0,  5, 17,  9],
+          [ 9,  3,  6, 19]],
+
          [[17, 13, 11, 16],
-          [4, 18, 17, 4],
-          [10, 10,  9, 1],
+          [ 4, 18, 17,  4],
+          [10, 10,  9,  1],
           [19, 17, 13, 10],
           [ 4, 19, 16, 17],
-          [ 2, 12,  8, 14]]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> y = ivy.flatten(x)
-    >>> print(y)
-    [{
-        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
-        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
-    }]
+          [ 2, 12,  8, 14]]]))
     """
     if start_dim == end_dim and len(x.shape) != 0:
         return x
@@ -578,22 +574,20 @@ def flatten(
             f"Dimension out of range (expected to be in range of\
             {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
-    if start_dim is None:
-        start_dim = 0
-    if end_dim is None:
-        end_dim = x.shape[-1]
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
     if end_dim < 0:
         end_dim = len(x.shape) + end_dim
-
-    x_shape = x.shape
-    new_shape = (
-        tuple(x_shape[:start_dim])
-        + (int(prod(x_shape[start_dim : end_dim + 1])),)
-        + tuple(x_shape[end_dim + 1 :])
-    )
-    return ivy.reshape(x, new_shape)
+    c = 1
+    for i in range(start_dim, end_dim + 1):
+        c *= x.shape[i]
+    lst = [c]
+    if start_dim != 0:
+        for i in range(0, start_dim):
+            lst.insert(i, x.shape[i])
+    for i in range(end_dim + 1, len(x.shape)):
+        lst.insert(i, x.shape[i])
+    return ivy.reshape(x, tuple(lst))
 
 
 @to_native_arrays_and_back
