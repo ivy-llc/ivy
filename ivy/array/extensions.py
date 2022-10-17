@@ -42,12 +42,12 @@ class ArrayWithExtensions(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
-        start_dim: int,
-        end_dim: int,
+        start_dim: Optional[int] = 0,
+        end_dim: Optional[int] = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.unstack also applies to
+        wraps the function, and so the docstring for ivy.flatten also applies to
         this method with minimal changes.
 
         Parameters
@@ -341,6 +341,119 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([0., -2., 1.])
         """
         return ivy.heaviside(self._data, x2, out=out)
+
+    def median(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
+        >>> a.median()
+        3.5
+        >>> a.median(axis=0)
+        ivy.array([6.5, 4.5, 2.5])
+        """
+        return ivy.median(self._data, axis=axis, keepdims=keepdims, out=out)
+
+    def flipud(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.flipud. This method simply
+        wraps the function, and so the docstring for ivy.flipud also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array to be flipped.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array corresponding to input array with elements
+            order reversed along axis 0.
+
+        Examples
+        --------
+        >>> m = ivy.diag([1, 2, 3])
+        >>> m.flipud()
+        ivy.array([[ 0.,  0.,  3.],
+            [ 0.,  2.,  0.],
+            [ 1.,  0.,  0.]])
+        """
+        return ivy.flipud(self._data, out=out)
+
+    def fmod(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fmod. This method simply
+        wraps the function, and so the docstring for ivy.fmod also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+        x1
+            First input array.
+        x2
+            Second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with element-wise remainder of divisions.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([2, 3, 4])
+        >>> x2 = ivy.array([1, 5, 2])
+        >>> x1.fmod(x2)
+        ivy.array([ 0,  3,  0])
+
+        >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+        >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+        >>> x1.fmod(x2)
+        ivy.array([ nan,  nan,  nan])
+        """
+        return ivy.fmod(self._data, x2, out=out)
 
     def fmax(
         self: ivy.Array,

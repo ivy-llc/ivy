@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 import tensorflow as tf
+import tensorflow_probability as tfp
 import logging
 
 
@@ -197,6 +198,42 @@ def heaviside(
 
 
 heaviside.unsupported_dtypes = ("bfloat16",)
+
+
+def median(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.stats.percentile(
+        input,
+        50.0,
+        axis=axis,
+        interpolation="midpoint",
+        keepdims=keepdims,
+    )
+
+
+def flipud(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.flipud(m)
+
+
+def fmod(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.floormod(x1, x2, name=None)
 
 
 def fmax(
