@@ -119,6 +119,7 @@ def test_torch_instance_sin(
         method_name="sin",
     )
 
+
 # arcsin
 @handle_cmd_line_args
 @given(
