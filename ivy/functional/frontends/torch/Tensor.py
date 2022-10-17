@@ -69,11 +69,11 @@ class Tensor:
     # Special Methoods #
     # -------------------#
 
-    def __add__(self, other):
-        return torch_frontend.add(self, other)
+    def __add__(self, other, *, alpha=1):
+        return torch_frontend.add(self, other, alpha=alpha)
 
-    def __radd__(self, other):
-        return torch_frontend.add(other, self)
+    def __radd__(self, other, *, alpha=1):
+        return torch_frontend.add(other, self, alpha=alpha)
 
     def __mul__(self, other):
         return torch_frontend.mul(self, other)
@@ -81,8 +81,11 @@ class Tensor:
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
 
-    def __sub__(self, other):
-        return torch_frontend.subtract(self, other)
+    def __sub__(self, other, *, alpha=1):
+        return torch_frontend.subtract(self, other, alpha=alpha)
+
+    def __truediv__(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
 
 # Tensor (alias)

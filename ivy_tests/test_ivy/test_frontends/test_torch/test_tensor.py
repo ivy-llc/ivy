@@ -642,3 +642,32 @@ def test_torch_special_rmul(
             ret_np_from_gt_flat=v,
             ground_truth_backend="torch",
         )
+
+
+# __truediv__
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        shared_dtype=True,
+        num_arrays=2,
+    )
+)
+def test_torch_special_treudiv(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    data = Tensor(x[0])
+    other = Tensor(x[1])
+    ret = data.__truediv__(other)
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]).__truediv__(
+        torch.tensor(x[1], dtype=input_dtype[1])
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret_np_flat=u,
+            ret_np_from_gt_flat=v,
+            ground_truth_backend="torch",
+        )
