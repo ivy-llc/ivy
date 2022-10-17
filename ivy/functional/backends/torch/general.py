@@ -246,29 +246,6 @@ def inplace_increment(
     return x
 
 
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": "bfloat16",
-    },
-    version,
-)  # TODO Fixed in PyTorch 1.12.1
-def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
-
-
-cumprod.support_native_out = True
-
-
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
     val: Union[ivy.Array, torch.Tensor],
