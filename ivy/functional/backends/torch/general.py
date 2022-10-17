@@ -50,9 +50,7 @@ def is_native_array(x, /, *, exclusive=False):
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
-    dtype = torch.promote_types(x0.dtype, x1.dtype)
-    x0 = x0.type(dtype=dtype)
-    x1 = x1.type(dtype=dtype)
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
 
 
@@ -246,29 +244,6 @@ def inplace_increment(
     else:
         x = ivy.Array(x_native)
     return x
-
-
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": "bfloat16",
-    },
-    version,
-)  # TODO Fixed in PyTorch 1.12.1
-def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
-
-
-cumprod.support_native_out = True
 
 
 def inplace_update(

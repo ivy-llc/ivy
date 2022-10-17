@@ -305,3 +305,70 @@ def heaviside(
 
 
 heaviside.support_native_out = True
+
+
+def median(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )
+
+
+def flipud(
+    m: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.flipud(m)
+
+
+flipud.support_native_out = False
+
+
+def fmod(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fmod(
+        x1,
+        x2,
+        out=None,
+    )
+
+
+fmod.support_native_out = True
+
+
+def fmax(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fmax(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmax.support_native_out = True

@@ -43,7 +43,6 @@ def relu(
 
     Functional Examples
     -------------------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
@@ -57,30 +56,12 @@ def relu(
     >>> print(y)
     ivy.array([1.5, 0.7, 0.])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                [-4.4, -5.5, -6.6]])
-    >>> ivy.relu(x, out = x)
-    >>> print(x)
-    ivy.array([[1.1, 2.2, 3.3],
-               [0., 0., 0.]])
-
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., -1., 2.])
     >>> y = ivy.relu(x)
     >>> print(y)
     ivy.array([0., 0., 2.])
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-0.5, 1., -2.5])
-    >>> y = x.relu()
-    >>> print(y)
-    ivy.array([0., 1., 0.])
-
     """
     return current_backend(x).relu(x, out=out)
 
@@ -143,18 +124,6 @@ def leaky_relu(
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
     ivy.array([ 0. , -0.2,  2. ])
-
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-0.5, 1., -2.5])
-    >>> y = x.leaky_relu()
-    >>> print(y)
-    ivy.array([-0.1,  1. , -0.5])
-
     """
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
@@ -178,7 +147,7 @@ def gelu(
     x
         Input array.
     approximate
-        Whether to approximate, default is True.
+        Whether to approximate, default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -289,8 +258,8 @@ def softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is -1 which indicates
-        the last dimension.
+        The dimension softmax would be performed on. The default is ``-1``
+        which indicates the last dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -358,9 +327,9 @@ def softplus(
     x
         input array.
     beta
-        The beta value for the softplus formation. Default: None.
+        The beta value for the softplus formation. Default: ``None``.
     threshold
-        values above this revert to a linear function. Default: None.
+        values above this revert to a linear function. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -430,7 +399,7 @@ def log_softmax(
     x
         Input array.
     axis
-        The dimension log_softmax would be performed on. The default is -1
+        The dimension log_softmax would be performed on. The default is ``-1``
         which indicates the last dimension.
     out
         optional output array, for writing the result to. It must have a shape that the

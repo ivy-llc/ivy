@@ -38,13 +38,14 @@ def layer_norm(
     normalized_idxs
         Indices to apply the normalization to.
     weight
-        Learnable gamma variables for elementwise post-multiplication, default is None.
+        Learnable gamma variables for elementwise post-multiplication,
+        default is ``None``.
     bias
-        Learnable beta variables for elementwise post-addition, default is None.
+        Learnable beta variables for elementwise post-addition, default is ``None``.
     epsilon
         small constant to add to the denominator, use global ivy._MIN_BASE by default.
     new_std
-        The standard deviation of the new normalized values. Default is 1.
+        The standard deviation of the new normalized values. Default is ``1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

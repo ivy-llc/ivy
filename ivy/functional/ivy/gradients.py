@@ -2,6 +2,7 @@
 
 # global
 from typing import Union, Optional, Tuple
+import numpy as np
 
 # local
 import ivy
@@ -21,14 +22,42 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _unused_variables_to_zero_gradients(grads, xs):
-    if isinstance(grads, ivy.Container):
-        arrays = {
-            k: ivy.zeros_like(xs[k]) if v is None else v for k, v in grads.to_iterator()
-        }
-        return ivy.Container(**arrays)
+def _zero_gradients_to_none_and_to_ivy(grads):
+    if isinstance(grads, ivy.Array):
+        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
     else:
-        return ivy.zeros_like(xs) if grads is None else grads
+        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
+        if (
+            not isinstance(zero_idxs, list)
+            or np.asarray(zero_idxs, dtype="object").size == 0
+        ):
+            return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+        zero_idxs.reverse()
+        ivy.prune_nest_at_indices(grads, zero_idxs)
+        return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
+
+
+def _get_native_arrays_and_indices(func_ret):
+    func_ret = ivy.nested_map(func_ret, ivy.to_native, include_derived=True)
+    arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
+    arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
+    for i in range(len(arr_idxs)):
+        arr_idxs[i] = [str(x) for x in arr_idxs[i]]
+        arr_idxs[i] = "_".join(arr_idxs[i])
+    return arr_idxs, arr_values
+
+
+def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+    if not retain_grads:
+        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+    if grad_idxs is not None:
+        for i in range(len(grad_idxs)):
+            grad_idxs[i] = [str(x) for x in grad_idxs[i]]
+            grad_idxs[i] = "_".join(grad_idxs[i])
+        grads = {idx: grads[idx] for idx in grad_idxs}
+    if not isinstance(grads, ivy.Array):
+        grads = ivy.Container(grads)
+    return grads
 
 
 # Extra #
@@ -244,7 +273,7 @@ def is_variable(
         Whether to check if the data type is exclusively a variable, rather than an
         array. For frameworks like JAX that do not have exclusive variable types, the
         function will always return False if this flag is set, otherwise the check is
-        the same for general arrays. Default is False.
+        the same for general arrays. Default is ``False``.
 
     Returns
     -------
@@ -292,7 +321,7 @@ def is_variable(
     }
 
     """
-    return current_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive=exclusive)
 
 
 is_variable.computes_gradients = True
@@ -403,10 +432,9 @@ def stop_gradient(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-def execute_with_gradients(func, xs, /, *, retain_grads=False):
-    """Call function func with input of xs variables, and return func first output y,
-    the gradients [dy/dx for x in xs], and any other function outputs after the returned
-    y value.
+def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
+    """Call function func with input of xs variables, and return the function result
+    func_ret and the gradients of each output variable w.r.t each input variable,
 
     Parameters
     ----------
@@ -417,15 +445,20 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False):
         Variables for which to compute the function gradients with respective to.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
+    grad_idxs
+        Indices of the returned arrays for which to return computed gradients If None,
+        all gradients are returned. (Default value = None)
 
     Returns
     -------
     ret
-        the function first output y, the gradients [dy/dx for x in xs], and any other
-        extra function outputs.
+        the function result func_ret and a dictionary of gradients of each output
+        variable w.r.t each input variable.
 
     """
-    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(None).execute_with_gradients(
+        func, xs, retain_grads=retain_grads, grad_idxs=grad_idxs
+    )
 
 
 execute_with_gradients.computes_gradients = True
@@ -715,7 +748,7 @@ def optimizer_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -835,7 +868,7 @@ def gradient_descent_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -930,7 +963,7 @@ def lars_update(
         The factor used for weight decay. Default is zero.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -995,7 +1028,7 @@ def adam_update(
         divisor during adam update, preventing division by zero (Default value = 1e-7).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
@@ -1071,7 +1104,7 @@ def lamb_update(
         The factor used for weight decay. (Default value = 0).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.

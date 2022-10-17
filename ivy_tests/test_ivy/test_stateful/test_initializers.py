@@ -244,6 +244,8 @@ def test_glorot_uniform(
     var_shape=helpers.get_shape(),
     fan_in=helpers.ints(
         min_value=1,
+        safety_factor=4,
+        safety_factor_scale="log",
     ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
@@ -277,7 +279,7 @@ def test_first_layer_siren(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
+        ground_truth_backend="jax",
     )
 
     bound = fan_in
