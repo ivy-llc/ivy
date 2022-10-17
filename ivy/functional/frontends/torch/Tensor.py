@@ -26,6 +26,9 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
 
+    def asin(self, *, out=None):
+        return torch_frontend.asin(self.data, out=out)
+    
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
 
