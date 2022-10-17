@@ -1062,10 +1062,8 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_all_equal(
-        x1: Iterable[Any],
-        x2: Iterable[Any],
-        /,
-        *,
+        x1: ivy.Container,
+        *xs: Iterable[Any],
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1081,8 +1079,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         x1
             input container.
-        x2
-            array or container to be compared to ``x1``.
+        xs
+            arrays or containers to be compared to ``x1``.
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
             other. Default is ``False``.
@@ -1134,7 +1132,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "all_equal",
             x1,
-            x2,
+            *xs,
             equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1144,9 +1142,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def all_equal(
         self: ivy.Container,
-        x2: Iterable[Any],
-        /,
-        *,
+        *xs: Iterable[Any],
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1162,8 +1158,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         self
             input container.
-        x2
-            array or container to be compared to ``self``.
+        xs
+            arrays or containers to be compared to ``self``.
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
             other. Default is ``False``.
@@ -1234,7 +1230,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_all_equal(
             self,
-            x2,
+            *xs,
             equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
