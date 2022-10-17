@@ -231,3 +231,10 @@ def vander(x, N=None, increasing=False):
         return ivy.array([], dtype=x.dtype)
     else:
         return ivy.vander(x, N=N, increasing=increasing, out=None)
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("int8",)}, versions["torch"]
+)
+def lcm(input, other, *, out=None):
+    return ivy.lcm(input, other, out=out)
