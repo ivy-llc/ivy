@@ -21,10 +21,10 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops import _dtyp
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_add(
-    dtype_and_x,
-    alpha,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        alpha,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -61,10 +61,10 @@ def test_torch_instance_add(
     ),
 )
 def test_torch_instance_reshape(
-    dtype_x,
-    shape,
-    as_variable,
-    native_array,
+        dtype_x,
+        shape,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_x
     assume("bfloat16" not in input_dtype)
@@ -98,9 +98,9 @@ def test_torch_instance_reshape(
     ),
 )
 def test_torch_instance_sin(
-    dtype_and_x,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -132,9 +132,9 @@ def test_torch_instance_sin(
     ),
 )
 def test_torch_instance_sin_(
-    dtype_and_x,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -166,9 +166,9 @@ def test_torch_instance_sin_(
     ),
 )
 def test_torch_instance_sinh(
-    dtype_and_x,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -200,9 +200,9 @@ def test_torch_instance_sinh(
     ),
 )
 def test_torch_instance_sinh_(
-    dtype_and_x,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -237,10 +237,10 @@ def test_torch_instance_sinh_(
     ),
 )
 def test_torch_instance_view(
-    dtype_x,
-    shape,
-    as_variable,
-    native_array,
+        dtype_x,
+        shape,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_x
     assume("bfloat16" not in input_dtype)
@@ -272,9 +272,9 @@ def test_torch_instance_view(
     ),
 )
 def test_torch_instance_float(
-    dtype_x,
-    as_variable,
-    native_array,
+        dtype_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -298,7 +298,6 @@ def test_torch_instance_float(
     )
 
 
-
 # new_zeros
 @handle_cmd_line_args
 @given(
@@ -318,14 +317,14 @@ def test_torch_instance_float(
     ),
 )
 def test_torch_instance_new_zeros(
-    dtype_x,
-    shape,
-    dtypes,
-    requires_grad,
-    device,
-    as_variable,
-    num_positional_args,
-    native_array,
+        dtype_x,
+        shape,
+        dtypes,
+        requires_grad,
+        device,
+        as_variable,
+        num_positional_args,
+        native_array,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -342,8 +341,8 @@ def test_torch_instance_new_zeros(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "shape": shape,
-            "dtype":dtypes[0],
-            "requires_grad":requires_grad,
+            "dtype": dtypes[0],
+            "requires_grad": requires_grad,
             "device": device
         },
         frontend="torch",
@@ -361,9 +360,9 @@ def test_torch_instance_new_zeros(
     ),
 )
 def test_torch_instance_tan(
-    dtype_and_x,
-    as_variable,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -384,4 +383,3 @@ def test_torch_instance_tan(
         class_name="tensor",
         method_name="tan",
     )
-    
