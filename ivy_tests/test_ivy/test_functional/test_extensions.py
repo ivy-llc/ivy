@@ -201,16 +201,28 @@ def test_vorbis_window(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.get_shape(min_num_dims=5, max_num_dims=5),
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
+        ),
+        min_value=-100,
+        max_value=100,
     ),
-    start_dim=st.integers(1, 3),
-    end_dim=st.integers(3, 4),
+    axes=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
+        ),
+        allow_neg=True,
+        sorted=True,
+        min_size=2,
+        max_size=2,
+        unique=False,
+        force_tuple=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="flatten"),
 )
 def test_flatten(
     dtype_and_x,
-    start_dim,
-    end_dim,
+    axes,
     with_out,
     as_variable,
     num_positional_args,
@@ -220,6 +232,17 @@ def test_flatten(
     fw,
 ):
     input_dtypes, x = dtype_and_x
+    x = np.asarray(x[0], dtype=input_dtypes[0])
+
+    if axes[1] == 0:
+        start_dim, end_dim = axes[1], axes[0]
+    elif axes[0] * axes[1] < 0:
+        if x.ndim + min(axes) >= max(axes):
+            start_dim, end_dim = max(axes), min(axes)
+        else:
+            start_dim, end_dim = min(axes), max(axes)
+    else:
+        start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -230,7 +253,7 @@ def test_flatten(
         instance_method=instance_method,
         fw=fw,
         fn_name="flatten",
-        x=np.asarray(x[0], dtype=input_dtypes[0]),
+        x=x,
         start_dim=start_dim,
         end_dim=end_dim,
     )
