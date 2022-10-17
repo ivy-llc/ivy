@@ -274,3 +274,22 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def flipud(
+    m: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.flipud(m)
+
+
+def fmod(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmod(x1, x2)

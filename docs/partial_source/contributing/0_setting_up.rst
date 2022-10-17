@@ -181,13 +181,14 @@ Windows
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_ , make sure to only install the Professional version of PyCharm, not the Community version.
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
