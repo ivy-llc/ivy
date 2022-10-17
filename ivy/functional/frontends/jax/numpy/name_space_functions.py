@@ -24,6 +24,17 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
     return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
 
+@inputs_to_ivy_arrays
+def arctan(x):
+    ret = ivy.atan(x)
+    return ret
+
+
+@inputs_to_ivy_arrays
+def arctan2(x1, x2):
+    return ivy.atan2(x1, x2)
+
+
 def argmax(a, axis=None, out=None, keepdims=None):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
@@ -103,6 +114,16 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 @inputs_to_ivy_arrays
+def cos(x):
+    return ivy.cos(x)
+
+
+@inputs_to_ivy_arrays
+def cosh(x):
+    return ivy.cosh(x)
+
+
+@inputs_to_ivy_arrays
 def dot(a, b, *, precision=None):
     a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
@@ -111,6 +132,11 @@ def dot(a, b, *, precision=None):
 @inputs_to_ivy_arrays
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
     return ivy.einsum(equation=optimize, *operands, out=out)
+
+
+@inputs_to_ivy_arrays
+def floor(x):
+    return ivy.floor(x)
 
 
 @inputs_to_ivy_arrays
@@ -134,6 +160,26 @@ def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
 
+@inputs_to_ivy_arrays
+def sinh(x):
+    return ivy.sinh(x)
+
+
+@inputs_to_ivy_arrays
+def sin(x):
+    return ivy.sin(x)
+
+
+@inputs_to_ivy_arrays
+def tan(x):
+    return ivy.tan(x)
+
+
+@inputs_to_ivy_arrays
+def tanh(x):
+    return ivy.tanh(x)
+
+
 def uint16(x):
     return ivy.astype(x, ivy.uint16)
 
@@ -147,48 +193,6 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
-
-
-@inputs_to_ivy_arrays
-def arctan(x):
-    ret = ivy.atan(x)
-    return ret
-
-
-@inputs_to_ivy_arrays
-def arctan2(x1, x2):
-    return ivy.atan2(x1, x2)
-
-
-@inputs_to_ivy_arrays
-def cos(x):
-    return ivy.cos(x)
-
-
-@inputs_to_ivy_arrays
-def cosh(x):
-    return ivy.cosh(x)
-
-
-@inputs_to_ivy_arrays
-def tan(x):
-    return ivy.tan(x)
-
-
-@inputs_to_ivy_arrays
-def tanh(x):
-    return ivy.tanh(x)
-
-
-@inputs_to_ivy_arrays
-def sinh(x):
-    return ivy.sinh(x)
-
-
-@inputs_to_ivy_arrays
-def sin(x):
-    return ivy.sin(x)
-
 
 @inputs_to_ivy_arrays
 def arccos(x):
