@@ -164,6 +164,7 @@ def ints(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
+
     Returns
     -------
     ret
@@ -228,6 +229,7 @@ def number(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
+
     Returns
     -------
     ret

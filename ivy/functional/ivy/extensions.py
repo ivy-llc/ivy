@@ -1185,3 +1185,40 @@ def median(
     ivy.array([6.5, 4.5, 2.5])
     """
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def flipud(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Flip array in the up/down direction.
+    Flip the entries in each column in the up/down direction.
+    Rows are preserved, but appear in a different order than before.
+
+    Parameters
+    ----------
+    m
+        The array to be flipped.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array corresponding to input array with elements
+        order reversed along axis 0.
+
+    Examples
+    --------
+    >>> m = ivy.diag([1, 2, 3])
+    >>> ivy.flipud(m)
+    ivy.array([[ 0.,  0.,  3.],
+        [ 0.,  2.,  0.],
+        [ 1.,  0.,  0.]])
+    """
+    return ivy.current_backend().flipud(m, out=out)

@@ -8,7 +8,6 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-# noinspection PyMissingConstructor
 class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_arange(
@@ -149,15 +148,16 @@ class ContainerWithCreation(ContainerBase):
         fill_value
             Scalar fill value
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -234,15 +234,16 @@ class ContainerWithCreation(ContainerBase):
         fill_value
             Scalar fill value
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -316,15 +317,16 @@ class ContainerWithCreation(ContainerBase):
         x
             input array from which to derive the output array shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output array data type
             must be inferred from ``self``. Default  ``None``.
@@ -374,15 +376,16 @@ class ContainerWithCreation(ContainerBase):
         self
             input array from which to derive the output array shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output array data type
             must be inferred from ``self``. Default  ``None``.
@@ -432,15 +435,16 @@ class ContainerWithCreation(ContainerBase):
         x
             input array or container from which to derive the output container shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output container
             data type must be inferred from ``self``. Default  ``None``.
@@ -490,18 +494,19 @@ class ContainerWithCreation(ContainerBase):
         self
             input array or container from which to derive the output container shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output container
-            data type must be inferred from ``self``. Default  ``None``.
+            data type must be inferred from ``self``. Default: ``None``.
         device
             device on which to place the created array. If device is ``None``, the
             output container device must be inferred from ``self``. Default: ``None``.
@@ -933,20 +938,21 @@ class ContainerWithCreation(ContainerBase):
         off_value
             Value to fill in output when indices[j] != i. If None, defaults to 0.
         axis
-            Axis to scatter on. The default is -1, a new inner-most axis is created.
+            Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
         dtype
             The data type of the output tensor. If None, defaults to the on_value dtype
             or the off_value dtype. If both are None, defaults to float32.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1000,20 +1006,21 @@ class ContainerWithCreation(ContainerBase):
         off_value
             Value to fill in output when indices[j] != i. If None, defaults to 0.
         axis
-            Axis to scatter on. The default is -1, a new inner-most axis is created.
+            Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
         dtype
             The dtype of the returned tensor. If None, defaults to the on_value dtype
             or the off_value dtype. If both are None, defaults to float32.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
