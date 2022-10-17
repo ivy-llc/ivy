@@ -321,7 +321,7 @@ def is_variable(
     }
 
     """
-    return current_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive=exclusive)
 
 
 is_variable.computes_gradients = True
