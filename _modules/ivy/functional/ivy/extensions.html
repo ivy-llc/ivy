@@ -1387,6 +1387,49 @@
 <span class="sd">    ivy.array([ nan,  nan,  nan])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fmax"><a class="viewcode-back" href="../../../../functional/ivy/extensions/fmax/fmax_functional.html#ivy.functional.ivy.extensions.fmax">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the element-wise maximums of two arrays. Differs from ivy.maximum</span>
+<span class="sd">    in the case where one of the elements is NaN. ivy.maximum returns the NaN element</span>
+<span class="sd">    while ivy.fmax returns the non-NaN element.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        First input array.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Second input array</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Array with element-wise maximums.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2, 3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1, 5, 2])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.fmax(x1, x2)</span>
+<span class="sd">    ivy.array([ 2.,  5.,  4.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([ivy.nan, 0, ivy.nan])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0, ivy.nan, ivy.nan])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.fmax(x1, x2)</span>
+<span class="sd">    ivy.array([ 0,  0,  nan])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
