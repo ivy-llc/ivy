@@ -70,19 +70,19 @@ class Tensor:
     # -------------------#
 
     def __add__(self, other):
-        return torch_frontend.add(self, other)
+        return self.add(other.data)
 
     def __radd__(self, other):
-        return torch_frontend.add(other, self)
+        self.add(other.data)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
-        return torch_frontend.mul(other, self)
+        return torch_frontend.mul(other, self.data)
 
     def __sub__(self, other):
-        return torch_frontend.subtract(self, other)
+        return torch_frontend.subtract(self.data, other)
 
 
 # Tensor (alias)
