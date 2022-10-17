@@ -228,10 +228,15 @@ def zeros(shape, dtype=None):
 
 
 @inputs_to_ivy_arrays
-def cumsum(x, axis, exclusive, reverse):
+def cumsum(x,
+           axis=0,
+           exclusive=False,
+           reverse=False):
     return ivy.cumsum(x, axis, exclusive, reverse)
 
 
 @inputs_to_ivy_arrays
-def cumprod(x, axis, exclusive, reverse):
+def cumprod(x, axis=0,
+            exclusive=False,
+            reverse=False):
     return ivy.cumprod(x, axis, exclusive, reverse)

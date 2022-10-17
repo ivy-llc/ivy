@@ -2,9 +2,11 @@
 from hypothesis import given, strategies as st
 import numpy as np
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
+import ivy.functional.frontends.jax.numpy as numpy
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -1113,34 +1115,32 @@ def test_jax_numpy_arcsinh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(
-            "valid",
-            full=True
-        )
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=2,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.cumprod"
+        fn_name="ivy.functional.frontends.jax.numpy.cumprod",
     ),
 )
 def test_jax_numpy_cumprod(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    helpers.test_frontend_array_instance_method(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        fw=fw,
         frontend="jax",
         fn_tree="numpy.cumprod",
         x=x[0],
-        axis=0,
-        exclusive=False,
-        reverse=False
     )
 
 
@@ -1169,7 +1169,4 @@ def test_jax_numpy_cumsum(
         frontend="jax",
         fn_tree="numpy.cumsum",
         x=x[0],
-        axis=0,
-        exclusive=False,
-        reverse=False
     )
