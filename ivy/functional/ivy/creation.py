@@ -1254,21 +1254,6 @@ def to_dlpack(
     return current_backend(x).to_dlpack(x, out=out)
 
 
-# class _Add_dlpack_attribute_to_tensor_object():
-#     def __init__(self, input):
-#         self.jax = __import__('jax.dlpack')
-#         self.jaxlib = __import__('jaxlib')
-#         self.tf = __import__('tensorflow')
-#         self.input = input
-
-#     def __dlpack__(self):
-#         if isinstance(self.input, self.jaxlib.xla_extension.DeviceArray):
-#             return self.jax.to_dlpack(self.input)
-#         if isinstance(self.input, self.tf.Tensor):
-#             return self.tf.experimental.dlpack.to_dlpack(self.input)
-#         return self.input.__dlpack__()
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
