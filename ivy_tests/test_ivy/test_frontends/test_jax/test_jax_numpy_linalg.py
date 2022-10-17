@@ -345,7 +345,11 @@ def test_jax_slogdet(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_rank"
     ),
 )
-def test_jax_numpy_matrix_rank(dtype_and_x, as_variable, native_array, num_positional_args):
+def test_jax_numpy_matrix_rank(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -355,5 +359,5 @@ def test_jax_numpy_matrix_rank(dtype_and_x, as_variable, native_array, num_posit
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.matrix_rank",
-        M= x[0],
+        M=x[0],
     )
