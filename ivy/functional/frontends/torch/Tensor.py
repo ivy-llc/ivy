@@ -14,9 +14,7 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.torch.Tensor("
-            + str(ivy.to_list(self.data))
-            + ")"
+            "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
     # Instance Methoods #
