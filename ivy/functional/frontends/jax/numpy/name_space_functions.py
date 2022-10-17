@@ -225,3 +225,14 @@ def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+@inputs_to_ivy_arrays
+def cumsum(x, axis, exclusive, reverse):
+    return ivy.cumsum(x, axis, exclusive, reverse)
+
+
+
+@inputs_to_ivy_arrays
+def cumprod(x, axis, exclusive, reverse):
+    return ivy.cumprod(x, axis, exclusive, reverse)
