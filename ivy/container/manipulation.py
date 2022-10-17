@@ -8,8 +8,6 @@ from typing import (
     Dict,
     Iterable,
     Sequence,
-    Callable,
-    Literal,
 )
 from numbers import Number
 
@@ -18,12 +16,11 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-# noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_concat(
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container], ...],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         /,
@@ -55,7 +52,7 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         /,
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container], ...],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
@@ -109,15 +106,16 @@ class ContainerWithManipulation(ContainerBase):
             element of the container has the rank of ``N``, then the ``axis`` needs
             to be between ``[-N-1, N]``. Default: ``0``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -132,9 +130,9 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1.]), \
-                              b=ivy.array([3., 4.]), \
-                              c=ivy.array([6., 7.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1.]),
+        ...                   b=ivy.array([3., 4.]),
+        ...                   c=ivy.array([6., 7.]))
         >>> y = ivy.Container.static_expand_dims(x, axis=1)
         >>> print(y)
         {
@@ -148,9 +146,9 @@ class ContainerWithManipulation(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]), \
-                              c=ivy.array([6., 7., 8.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]),
+        ...                   c=ivy.array([6., 7., 8.]))
         >>> container_axis = ivy.Container(a=0, b=-1, c=(0,1))
         >>> y = ivy.Container.static_expand_dims(x, axis=container_axis)
         >>> print(y)
@@ -209,10 +207,10 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0., 1.], \
-                                           [2., 3.]]), \
-                              b=ivy.array([[4., 5.], \
-                                           [6., 7.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1.],
+        ...                                [2., 3.]]),
+        ...                   b=ivy.array([[4., 5.],
+        ...                                [6., 7.]]))
         >>> y = x.expand_dims(axis=1)
         >>> print(y)
         {
@@ -259,20 +257,21 @@ class ContainerWithManipulation(ContainerBase):
             integer. The size of each split element if a sequence of integers. Default
             is to divide into as many 1-dimensional arrays as the axis dimension.
         axis
-            The axis along which to split, default is 0.
+            The axis along which to split, default is ``0``.
         with_remainder
             If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -317,20 +316,21 @@ class ContainerWithManipulation(ContainerBase):
             integer. The size of each split element if a sequence of integers. Default
             is to divide into as many 1-dimensional arrays as the axis dimension.
         axis
-            The axis along which to split, default is 0.
+            The axis along which to split, default is ``0``.
         with_remainder
             If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -497,17 +497,18 @@ class ContainerWithManipulation(ContainerBase):
             If False, the function must never copy and must
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: None.
+            and copy otherwise. Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -522,8 +523,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                              b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
         >>> y = ivy.Container.static_reshape(x, (3,2))
         >>> print(y)
         {
@@ -580,17 +581,18 @@ class ContainerWithManipulation(ContainerBase):
             If False, the function must never copy and must
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: None.
+            and copy otherwise. Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -603,8 +605,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                              b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
         >>> y = x.reshape((2,3))
         >>> print(y)
         {
@@ -661,15 +663,16 @@ class ContainerWithManipulation(ContainerBase):
             array must be flattened, shifted, and then restored to its original shape.
             Default ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -684,8 +687,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_roll(x, 1)
         >>> print(y)
         {
@@ -695,8 +698,8 @@ class ContainerWithManipulation(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> shift = ivy.Container(a=1, b=-1)
         >>> y = ivy.Container.static_roll(x, shift)
         >>> print(y)
@@ -752,15 +755,16 @@ class ContainerWithManipulation(ContainerBase):
             array must be flattened, shifted, and then restored to its original shape.
             Default ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -838,8 +842,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                              b=ivy.array([[[11.], [12.]]]))
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(2)
         >>> print(y)
         {
@@ -847,8 +851,8 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[11., 12.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                              b=ivy.array([[[11.], [12.]]]))
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(0)
         >>> print(y)
         {
@@ -885,6 +889,38 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.stack. This method simply wraps the
         function, and so the docstring for ivy.stack also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> ivy.Container.static_stack(x,axis = 1)
+        {
+            a: ivy.array([[0, 2],
+                        [1, 3]]),
+            b: ivy.array([[4],
+                        [5]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> ivy.Container.static_stack([x,y])
+        {
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
+        }
+        >>> ivy.Container.static_stack([x,y],axis=1)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "stack",
@@ -916,6 +952,29 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.stack. This method
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.stack([y])
+        {
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
+        }
+        >>> ivy.Container.static_stack([x,y],axis=1)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
+        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())
@@ -988,7 +1047,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+            b=ivy.array([3., 4., 5.]))
         >>> y = x.repeat(2)
         >>> print(y)
         {
@@ -1080,114 +1140,6 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_tile(
             self,
             reps,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
-    def static_pad(
-        x: ivy.Container,
-        /,
-        pad_width: Union[Iterable[Tuple[int]], int],
-        *,
-        mode: Optional[
-            Union[
-                Literal[
-                    "constant",
-                    "edge",
-                    "linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "reflect",
-                    "symmetric",
-                    "wrap",
-                    "empty",
-                ],
-                Callable,
-            ]
-        ] = "constant",
-        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        reflect_type: Optional[Literal["even", "odd"]] = "even",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.pad. This method simply
-        wraps the function, and so the docstring for ivy.pad also applies to
-        this method with minimal changes.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "pad",
-            x,
-            pad_width,
-            mode=mode,
-            stat_length=stat_length,
-            constant_values=constant_values,
-            end_values=end_values,
-            reflect_type=reflect_type,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def pad(
-        self: ivy.Container,
-        /,
-        pad_width: Union[Iterable[Tuple[int]], int],
-        *,
-        mode: Optional[
-            Union[
-                Literal[
-                    "constant",
-                    "edge",
-                    "linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "reflect",
-                    "symmetric",
-                    "wrap",
-                    "empty",
-                ],
-                Callable,
-            ]
-        ] = "constant",
-        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        reflect_type: Optional[Literal["even", "odd"]] = "even",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.pad. This method simply
-        wraps the function, and so the docstring for ivy.pad also applies to
-        this method with minimal changes.
-        """
-        return self.static_pad(
-            self,
-            pad_width,
-            mode=mode,
-            stat_length=stat_length,
-            constant_values=constant_values,
-            end_values=end_values,
-            reflect_type=reflect_type,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1389,17 +1341,18 @@ class ContainerWithManipulation(ContainerBase):
         axis
             Axis for which to unpack the array.
         keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1477,17 +1430,18 @@ class ContainerWithManipulation(ContainerBase):
         axis
             Axis for which to unpack the array.
         keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1550,15 +1504,16 @@ class ContainerWithManipulation(ContainerBase):
         x_max
             Maximum value.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1573,8 +1528,8 @@ class ContainerWithManipulation(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip(x, 1., 5.)
         >>> print(y)
         {
@@ -1583,9 +1538,9 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         With multiple :class:`ivy.Container` inputs:
-        
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> x_min = ivy.Container(a=0, b=0)
         >>> x_max = ivy.Container(a=1, b=1)
         >>> y = ivy.Container.static_clip(x, x_min, x_max)
@@ -1633,15 +1588,16 @@ class ContainerWithManipulation(ContainerBase):
         x_max
             Maximum value.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.

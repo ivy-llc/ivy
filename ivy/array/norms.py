@@ -21,7 +21,7 @@ class ArrayWithNorms(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps 
+        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
 
@@ -33,9 +33,9 @@ class ArrayWithNorms(abc.ABC):
             Indices to apply the normalization to.
         weight
             Learnable gamma variables for elementwise post-multiplication,
-            default is None.
+            default is ``None``.
         bias
-            Learnable beta variables for elementwise post-addition, default is None.
+            Learnable beta variables for elementwise post-addition, default is ``None``.
         epsilon
             small constant to add to the denominator, use global ivy._MIN_BASE by
             default.
@@ -52,15 +52,15 @@ class ArrayWithNorms(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
-                           [0.1047,  0.5886,  1.2732], \
-                           [0.7696, -1.7024, -2.2518]])
-        >>> norm = x.layer_norm(x, [0, 1], epsilon=0.001, \
-                                  new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
+        >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
+        ...                   [0.1047,  0.5886,  1.2732],
+        ...                   [0.7696, -1.7024, -2.2518]])
+        >>> norm = x.layer_norm([0, 1], epsilon=0.001,
+        ...                     new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
         >>> print(norm)
-        ivy.array([[ 0.576,  0.312,  1.43 ],
-                   [ 0.581,  0.911,  1.43 ],
-                   [ 1.01 , -0.599, -0.69]])
+        ivy.array([[ 0.826, -0.178, 0.981 ],
+                   [ 0.831,  0.421, 0.981 ],
+                   [ 1.26 , -1.05 , -1.28 ]])
 
         """
         return ivy.layer_norm(

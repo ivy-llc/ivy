@@ -1,13 +1,18 @@
 # global
 import tensorflow as tf
-from typing import NamedTuple, Union, Optional
+from typing import Tuple, Union, Optional
 from collections import namedtuple
 
 
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
     Results = namedtuple(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
@@ -51,7 +56,7 @@ def unique_all(
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     Results = namedtuple("Results", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.sort(tf.reshape(x, [-1])))
     v = tf.cast(v, dtype=x.dtype)
@@ -62,7 +67,7 @@ def unique_counts(
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
     flat_tensor = tf.reshape(x, -1)
     values = tf.unique(tf.sort(flat_tensor))[0]

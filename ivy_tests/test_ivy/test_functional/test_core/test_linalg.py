@@ -703,7 +703,7 @@ def _get_first_matrix(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype,
             shape=tuple([shared_size, shared_size]),
@@ -729,7 +729,7 @@ def _get_second_matrix(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
@@ -757,7 +757,7 @@ def test_solve(
     input_dtype1, x1 = x
     input_dtype2, x2 = y
     helpers.test_function(
-        input_dtypes=input_dtype1 + input_dtype2,
+        input_dtypes=[input_dtype1, input_dtype2],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,

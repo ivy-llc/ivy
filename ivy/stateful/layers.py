@@ -41,7 +41,7 @@ class Linear(Module):
         bias_initializer
             Initializer for the bias. Default is Zeros.
         with_bias
-            Whether or not to include a bias term, default is True.
+            Whether or not to include a bias term, default is ``True``.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
@@ -50,7 +50,7 @@ class Linear(Module):
             by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
 
         """
@@ -74,7 +74,7 @@ class Linear(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
 
 
@@ -134,13 +134,13 @@ class Dropout(Module):
         prob
             The probability of zeroing out each array element.
         scale
-            Whether to scale the output by 1/(1-prob), default is True.
+            Whether to scale the output by 1/(1-prob), default is ``True``.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
-            Default is None.
+            Default is ``None``.
         """
         self._prob = prob
         self._scale = scale
@@ -157,7 +157,7 @@ class Dropout(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created .
-            Default is None.
+            Default is ``None``.
 
 
         """
@@ -173,7 +173,7 @@ class Dropout(Module):
             Inputs to process *[batch_shape, in]*.
         dtype
             the desired data type of the internal variables to be created .
-            Default is None.
+            Default is ``None``.
 
         Returns
         -------
@@ -219,24 +219,24 @@ class MultiHeadAttention(Module):
         head_dim
             The dimension of each of the heads. Default is 64.
         dropout_rate
-            The rate of dropout. Default is 0.
+            The rate of dropout. Default is ``0``.
         context_dim
             The dimension of the context array.
-            Default is None, in which case the query dim is used.
+            Default is ``None``, in which case the query dim is used.
         scale
             The value by which to scale the query-key similarity measure.
             Default is head_dim^-0.5
         with_to_q_fn
             Whether to include fully connected mapping from input x to queries.
-            Default is True.
+            Default is ``True``.
         with_to_kv_fn
             Whether to include fully connected mapping from input context to keys
             and values.
-            Default is True.
+            Default is ``True``.
         with_to_out_fn
             Whether to include fully connected mapping from output scaled dot-product
             attention to final output.
-            Default is True.
+            Default is ``True``.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
@@ -250,7 +250,7 @@ class MultiHeadAttention(Module):
             Default is on initialization.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         v_exists = ivy.exists(v)
@@ -309,7 +309,7 @@ class MultiHeadAttention(Module):
             etc. Default is cpu
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         if self._with_to_kv_fn:
             return {"to_kv": {"k": self._to_k.v, "v": self._to_v.v}}
@@ -325,7 +325,7 @@ class MultiHeadAttention(Module):
         inputs
             The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
         context
-            The array to determine the keys and values from. Default is None.
+            The array to determine the keys and values from. Default is ``None``.
             *[batch_shape,num_values,cont_feats]*.
         mask
             (Default value = None)
@@ -336,7 +336,7 @@ class MultiHeadAttention(Module):
             The output following application of scaled dot-product attention.
             *[batch_shape,num_queries,out_feats]*
             The mask to apply to the query-key values.
-            Default is None.
+            Default is ``None``.
             *[batch_shape,num_queries,num_values]*
         """
         return ivy.multi_head_attention(
@@ -406,7 +406,7 @@ class Conv1D(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -436,7 +436,7 @@ class Conv1D(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
-             Default is None.
+             Default is ``None``.
 
         """
         return {
@@ -531,7 +531,7 @@ class Conv1DTranspose(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -561,7 +561,7 @@ class Conv1DTranspose(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         return {
             "w": self._w_init.create_variables(
@@ -651,7 +651,7 @@ class Conv2D(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -680,7 +680,7 @@ class Conv2D(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
-            Default is None.
+            Default is ``None``.
 
         """
         return {
@@ -773,7 +773,7 @@ class Conv2DTranspose(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -803,7 +803,7 @@ class Conv2DTranspose(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         return {
@@ -892,7 +892,7 @@ class DepthwiseConv2D(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._num_channels = num_channels
         self._filter_shape = filter_shape
@@ -920,7 +920,7 @@ class DepthwiseConv2D(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         return {
@@ -1010,7 +1010,7 @@ class Conv3D(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -1039,7 +1039,7 @@ class Conv3D(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         return {
@@ -1132,7 +1132,7 @@ class Conv3DTranspose(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -1163,7 +1163,7 @@ class Conv3DTranspose(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         return {
@@ -1237,13 +1237,14 @@ class LSTM(Module):
         weight_initializer
             Initializer for the weights. Default is GlorotUniform.
         num_layers
-            Number of lstm cells in the lstm layer, default is 1.
+            Number of lstm cells in the lstm layer, default is ``1``.
         return_sequence
             Whether or not to return the entire output sequence, or
             just the latest timestep.
-            Default is True.
+            Default is ``True``.
         return_state
-            Whether or not to return the latest hidden and cell states. Default is True.
+            Whether or not to return the latest hidden and cell states.
+            Default is ``True``.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
@@ -1252,7 +1253,7 @@ class LSTM(Module):
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -1273,7 +1274,7 @@ class LSTM(Module):
         batch_shape
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         batch_shape = list(batch_shape)
@@ -1300,7 +1301,7 @@ class LSTM(Module):
             etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created if not
-             provided. Default is None.
+             provided. Default is ``None``.
 
         """
         input_weights = dict(
