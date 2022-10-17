@@ -20,10 +20,6 @@ Backend handler
    backend_handler/get_backend.rst
    backend_handler/unset_backend.rst
    backend_handler/clear_backend_stack.rst
-   backend_handler/try_import_ivy_jax.rst
-   backend_handler/try_import_ivy_tf.rst
-   backend_handler/try_import_ivy_torch.rst
-   backend_handler/try_import_ivy_numpy.rst
    backend_handler/choose_random_backend.rst
    backend_handler/ContextManager:
     def __init__.rst
