@@ -44,6 +44,9 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
+    
+    def sigmoid(input, *, out=None):
+        return torch_frontend.sigmoid(input, out=out)
 
 
 # Tensor (alias)
