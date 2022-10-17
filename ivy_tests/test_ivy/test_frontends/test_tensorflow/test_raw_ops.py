@@ -6,6 +6,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper, _not_too_close_to_zero
 
 
 # Acos
@@ -1939,19 +1940,30 @@ def test_tensorflow_RightShift(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-8,
-        max_value=8,
-    ),
+    dtype_and_x=pow_helper(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
 )
-def test_tensorflow_Pow(dtype_and_x, as_variable, num_positional_args, native_array):
-    input_dtype, xs = dtype_and_x
+def test_tensorflow_Pow(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+
+    # Make sure x2 isn't a float when x1 is integer
+    assume(
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
+    )
+
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
+        x[1] = np.abs(x[1])
+
+    x[0] = _not_too_close_to_zero(x[0])
+    x[1] = _not_too_close_to_zero(x[1])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1960,8 +1972,8 @@ def test_tensorflow_Pow(dtype_and_x, as_variable, num_positional_args, native_ar
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.Pow",
-        x=xs[0],
-        y=xs[1],
+        x=x[0],
+        y=x[1],
     )
 
 
