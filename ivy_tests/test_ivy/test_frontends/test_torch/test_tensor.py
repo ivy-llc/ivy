@@ -3,7 +3,6 @@ import torch
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 from ivy.functional.frontends.torch.Tensor import Tensor
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -499,7 +498,7 @@ def test_torch_instance_contiguous(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
     )
@@ -507,10 +506,11 @@ def test_torch_instance_contiguous(
 def test_torch_special_add(
     dtype_x,
 ):
-    _, x = dtype_x
+    input_dtype, x = dtype_x
     ret = Tensor(x[0]) + Tensor(x[1])
-    ret_gt = torch.tensor(x[0]).__add__(torch.tensor(x[1]))
-    ret_gt = ivy.asarray(ret_gt.numpy())
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]) + torch.tensor(
+        x[1], dtype=input_dtype[1]
+    )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -533,12 +533,13 @@ def test_torch_special_add(
 def test_torch_special_radd(
     dtype_x,
 ):
-    _, x = dtype_x
+    input_dtype, x = dtype_x
     data = Tensor(x[0])
     other = Tensor(x[1])
     ret = data.__radd__(other)
-    ret_gt = torch.tensor(x[0]).__radd__(torch.tensor(x[1]))
-    ret_gt = ivy.asarray(ret_gt.numpy())
+    ret_gt = torch.tensor(x[0], dtype=input_dtype[0]).__radd__(
+        torch.tensor(x[1], dtype=input_dtype[1])
+    )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
