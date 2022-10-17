@@ -1095,7 +1095,7 @@ def test_tensorflow_truediv(
     dtype_and_x=statistical_dtype_values(function="argmin"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.argmin"
-    ),
+    ),output_types=_dtypes(),
 )
 def test_tensorflow_argmin(
     dtype_and_x,
@@ -1103,6 +1103,7 @@ def test_tensorflow_argmin(
     num_positional_args,
     native_array,
     fw,
+    output_types,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -1117,5 +1118,5 @@ def test_tensorflow_argmin(
         fn_tree="math.argmin",
         input=x[0],
         axis=axis,
-        output_type="int64",
+        output_type=output_types[0],
     )    
