@@ -561,16 +561,6 @@ def flatten(
           [19, 17, 13, 10],
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.flatten(x)
-    [{
-        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
-        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
-    }]
     """
     if start_dim == end_dim and len(x.shape) != 0:
         return x
