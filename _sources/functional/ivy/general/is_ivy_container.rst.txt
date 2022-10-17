@@ -5,9 +5,9 @@ is_ivy_container
 
 .. autofunction:: ivy.array.array_methods.is_ivy_container
 
-.. autofunction:: ivy.container.container_methods.static_is_ivy_container
-
 .. autofunction:: ivy.container.container_methods.is_ivy_container
+
+.. autofunction:: ivy.container.container_methods.static_is_ivy_container
 |
 | **Supported Frameworks:**
 
