@@ -176,7 +176,7 @@ def test_torch_binary_cross_entropy(
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nll_loss"
+        fn_name="ivy.functional.frontends.torch.nn.functional.nll_loss"
     )
 )
 def test_torch_nll_loss(
