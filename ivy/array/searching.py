@@ -28,7 +28,7 @@ class ArrayWithSearching(abc.ABC):
             input array. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Default  None.
+            the maximum value of the flattened array. Deafult: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast

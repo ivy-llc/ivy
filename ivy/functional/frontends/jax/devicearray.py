@@ -1,3 +1,5 @@
+# global
+
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
@@ -20,6 +22,62 @@ class DeviceArray:
 
     # Special Methods #
     # --------------- #
+
+    @to_ivy_arrays_and_back
+    def __add__(self, other):
+        return jax_frontend.add(self, other)
+
+    @to_ivy_arrays_and_back
+    def __radd__(self, other):
+        return jax_frontend.add(other, self)
+
+    @to_ivy_arrays_and_back
+    def __sub__(self, other):
+        return jax_frontend.sub(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rsub__(self, other):
+        return jax_frontend.sub(other, self)
+
+    @to_ivy_arrays_and_back
+    def __mul__(self, other):
+        return jax_frontend.mul(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rmul__(self, other):
+        return jax_frontend.mul(other, self)
+
+    @to_ivy_arrays_and_back
+    def __div__(self, other):
+        return jax_frontend.div(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rdiv__(self, other):
+        return jax_frontend.div(other, self)
+
+    @to_ivy_arrays_and_back
+    def __mod__(self, other):
+        return jax_frontend.mod(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rmod__(self, other):
+        return jax_frontend.mod(other, self)
+
+    @to_ivy_arrays_and_back
+    def __truediv__(self, other):
+        return jax_frontend.div(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rtruediv__(self, other):
+        return jax_frontend.div(other, self)
+
+    @to_ivy_arrays_and_back
+    def __matmul__(self, other):
+        return jax_frontend.dot(self, other)
+
+    @to_ivy_arrays_and_back
+    def __rmatmul__(self, other):
+        return jax_frontend.dot(other, self)
 
     @to_ivy_arrays_and_back
     def __pos__(self):

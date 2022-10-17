@@ -12,11 +12,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
+    strides = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=2),
+        )
+    )
     padding = draw(
         st.one_of(
             st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
             st.integers(min_value=1, max_value=3),
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
     batch_size = 1
@@ -84,9 +90,41 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 
 @handle_cmd_line_args
 @given(
+    dtype_vals=x_and_filters(dim=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.conv1d"
+    ),
+)
+def test_torch_conv1d(
+    dtype_vals,
+    num_positional_args,
+    as_variable,
+    native_array,
+):
+    dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.conv1d",
+        input=vals,
+        weight=weight,
+        bias=bias,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+        groups=fc,
+    )
+
+
+@handle_cmd_line_args
+@given(
     dtype_vals=x_and_filters(dim=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.conv2d"
+        fn_name="ivy.functional.frontends.torch.nn.functional.conv2d"
     ),
 )
 def test_torch_conv2d(
@@ -104,6 +142,38 @@ def test_torch_conv2d(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="nn.functional.conv2d",
+        input=vals,
+        weight=weight,
+        bias=bias,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+        groups=fc,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_vals=x_and_filters(dim=3),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.conv3d"
+    ),
+)
+def test_torch_conv3d(
+    dtype_vals,
+    num_positional_args,
+    as_variable,
+    native_array,
+):
+    dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.conv3d",
         input=vals,
         weight=weight,
         bias=bias,
@@ -142,7 +212,7 @@ def _int_or_tuple(draw, min_val, max_val):
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.unfold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.unfold"
     ),
 )
 def test_torch_unfold(
@@ -186,7 +256,7 @@ def test_torch_unfold(
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.fold"
+        fn_name="ivy.functional.frontends.torch.nn.functional.fold"
     ),
 )
 def test_torch_fold(

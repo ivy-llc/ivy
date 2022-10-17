@@ -1,14 +1,12 @@
 Setting Up
 ==========
 
-.. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
-.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
@@ -47,8 +45,7 @@ you should make sure to check whether you are eligible for a
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
 -------------------------------
@@ -184,13 +181,14 @@ Windows
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
@@ -230,6 +228,16 @@ Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    </iframe>
+
 
 Ubuntu
 ****
@@ -287,8 +295,17 @@ Ubuntu
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    </iframe>
+
 
 Setting Up Testing
 ******************
@@ -370,10 +387,17 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
+
 GitHub Codespaces
 -----------------
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
+
+**Important Note**
+
+There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
 
 **Pre-requisites**
 
@@ -504,15 +528,12 @@ In order to install and properly set up pre-commit, these steps should be follow
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly,
 as explained above.
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit channel`_!
 
 **Round Up**
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `setting up discussion`_,
-or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
-depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ 
+in the `pycharm channel`_, `docker channel`_,
+`pre-commit channel`_, `pip packages channel`_ depending on the question!
