@@ -28,7 +28,7 @@ With Ivy, this process becomes:
 
 We have turned a 4-step process which can take 100s of hours into a 1-step process which takes a few seconds.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/why_unify/perceiver_effort.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/perceiver_effort.png?raw=true
    :align: center
    :width: 100%
 
