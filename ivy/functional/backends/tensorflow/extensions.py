@@ -215,3 +215,21 @@ def median(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def kaiser_bessel_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if periodic is True:
+        return tf.signal.kaiser_bessel_derived_window(
+            window_length + 1, beta, dtype, name=None
+        )[:-1]
+    else:
+        return tf.signal.kaiser_bessel_derived_window(
+            window_length, beta, dtype, name=None
+        )
