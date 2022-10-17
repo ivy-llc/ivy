@@ -30,6 +30,7 @@ Extensions
    extensions/heaviside.rst
    extensions/median.rst
    extensions/flipud.rst
+   extensions/fmod.rst
    extensions/SparseArray:
     def __init__.rst
    extensions/NativeSparseArray:
