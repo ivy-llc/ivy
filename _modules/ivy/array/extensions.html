@@ -172,12 +172,12 @@
 <div class="viewcode-block" id="ArrayWithExtensions.flatten"><a class="viewcode-back" href="../../../data_classes/array/extensions/ArrayWithExtensions.html#ivy.array.extensions.ArrayWithExtensions.flatten">[docs]</a>    <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">start_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">end_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">start_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">end_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.flatten. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.unstack also applies to</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.flatten also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
