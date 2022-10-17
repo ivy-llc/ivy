@@ -200,7 +200,7 @@ ivy.tan()
             available_dtypes=helpers.get_dtypes("float"),
         ),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.leaky_relu"
+            fn_name="ivy.functional.frontends.torch.nn.functional.leaky_relu"
         ),
         alpha=st.floats(min_value=0, max_value=1),
         with_inplace=st.booleans(),
