@@ -10,7 +10,7 @@ Ivy Frontends
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
 .. _`tf.math.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
-.. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
+.. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
@@ -519,9 +519,9 @@ For the reverse operator of :func:`add`.
         return tf_frontend.add(x, self.data, name=name)
 
 
-Here also, both of them simply call the frontend :func:`tf_frontend.add` under the
+Here also, both of them simply call the frontend :func:`tf_frontend.math.add` under the
 hood. The functions with reverse operators should call the same frontend function
-as shown in the examples above. The implementation for the :func:`tf_frontend.add`
+as shown in the examples above. The implementation for the :func:`tf_frontend.math.add`
 is shown as follows:
 
 .. code-block:: python
