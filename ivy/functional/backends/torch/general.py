@@ -50,9 +50,7 @@ def is_native_array(x, /, *, exclusive=False):
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
-    dtype = torch.promote_types(x0.dtype, x1.dtype)
-    x0 = x0.type(dtype=dtype)
-    x1 = x1.type(dtype=dtype)
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
 
 

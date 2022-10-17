@@ -12,6 +12,13 @@ class Tensor:
             data = ivy.Array(data)
         self.data = data
 
+    def __repr__(self):
+        return (
+            "ivy.functional.frontends.torch.Tensor("
+            + str(ivy.to_list(self.data))
+            + ")"
+        )
+
     # Instance Methoods #
     # -------------------#
 
@@ -54,6 +61,30 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
+
+    def amax(self, dim=None, keepdim=False):
+        return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
+
+    def contiguous(self, memory_format=torch.contiguous_format):
+        return self.data
+
+    # Special Methoods #
+    # -------------------#
+
+    def __add__(self, other):
+        return torch_frontend.add(self, other)
+
+    def __radd__(self, other):
+        return torch_frontend.add(other, self)
+
+    def __mul__(self, other):
+        return torch_frontend.mul(self, other)
+
+    def __rmul__(self, other):
+        return torch_frontend.mul(other, self)
+
+    def __sub__(self, other):
+        return torch_frontend.subtract(self, other)
 
 
 # Tensor (alias)

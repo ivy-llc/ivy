@@ -78,11 +78,11 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
-    start_dim: int,
-    end_dim: int,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.flatten(x, start_dim, end_dim)
+    return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 
 def vorbis_window(
@@ -306,3 +306,17 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def fmod(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmod(x1, x2, out=None)
+
+
+fmod.support_native_out = True
+fmod.unsupported_dtypes = ("bfloat16",)

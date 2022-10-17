@@ -1483,33 +1483,38 @@ def test_is_ivy_container(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, min_num_dims=1
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=2, max_value=10),
+        min_num_dims=1,
     ),
     equality_matrix=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="all_equal"),
 )
 def test_all_equal(
     dtypes_and_xs,
     equality_matrix,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    dtype, x = dtypes_and_xs
+    dtypes, arrays = dtypes_and_xs
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw["x{}".format(i)] = x_
+        i += 1
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=len(arrays) + 1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="all_equal",
-        xs=x,
+        **kw,
         equality_matrix=equality_matrix,
     )
 
@@ -1904,7 +1909,13 @@ def test_set_tmp_dir():
     num_positional_args=helpers.num_positional_args(fn_name="supports_inplace_updates"),
 )
 def test_supports_inplace_updates(
-    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+    x_val_and_dtypes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    instance_method,
+    container,
+    fw,
 ):
     dtype, x = x_val_and_dtypes
     helpers.test_function(
@@ -1914,7 +1925,7 @@ def test_supports_inplace_updates(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=True,
+        instance_method=instance_method,
         fw=fw,
         fn_name="supports_inplace_updates",
         test_values=False,
@@ -1930,7 +1941,13 @@ def test_supports_inplace_updates(
     num_positional_args=helpers.num_positional_args(fn_name="assert_supports_inplace"),
 )
 def test_assert_supports_inplace(
-    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+    x_val_and_dtypes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    instance_method,
+    container,
+    fw,
 ):
     dtype, x = x_val_and_dtypes
     if fw == "tensorflow" or fw == "jax":
@@ -1942,7 +1959,7 @@ def test_assert_supports_inplace(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=True,
+        instance_method=instance_method,
         fw=fw,
         fn_name="assert_supports_inplace",
         ground_truth_backend="numpy",
