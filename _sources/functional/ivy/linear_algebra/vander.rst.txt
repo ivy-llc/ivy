@@ -5,9 +5,9 @@ vander
 
 .. autofunction:: ivy.array.array_methods.vander
 
-.. autofunction:: ivy.container.container_methods.static_vander
-
 .. autofunction:: ivy.container.container_methods.vander
+
+.. autofunction:: ivy.container.container_methods.static_vander
 |
 | **Supported Frameworks:**
 
