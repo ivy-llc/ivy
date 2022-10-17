@@ -1,6 +1,5 @@
 # global
 import ivy
-import logging
 import importlib
 import numpy as np
 from ivy import verbosity
@@ -97,7 +96,6 @@ def _determine_backend_from_args(args):
 
 def fn_name_from_version_specific_fn_name(name, version):
     """
-
     Parameters
     ----------
     name
@@ -112,6 +110,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         specific function
 
     """
+    # TODO: add docstring and tests
     version = str(version)
     if version.find("+") != -1:
         version = int(version[: version.index("+")].replace(".", ""))
@@ -156,6 +155,7 @@ def set_backend_to_specific_version(backend):
     -------
 
     """
+    # TODO: add docstring, functionality and tests
     f = str(backend.__name__)
     f = f[f.index("backends") + 9 :]
 
