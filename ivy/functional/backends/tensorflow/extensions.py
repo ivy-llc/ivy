@@ -207,10 +207,10 @@ def isin(
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
 ) -> tf.Tensor:
-    if invert is True:
-        return tf.math.logical_not(tf.math.equal(elements, test_elements))
-    else:
-        return tf.math.equal(elements, test_elements)
+    if not assume_unique:
+        test_elements = tf.unique(test_elements)[0]
+    return tf.reduce_any(tf.equal(elements[..., tf.newaxis], test_elements), axis=-1) ^ invert
+
 
 isin.support_native_out = True
 
