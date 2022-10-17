@@ -624,7 +624,7 @@ def test_torch_special_mul(
         num_arrays=2,
     )
 )
-def test_torch_special_radd(
+def test_torch_special_rmul(
     dtype_x,
 ):
     input_dtype, x = dtype_x
