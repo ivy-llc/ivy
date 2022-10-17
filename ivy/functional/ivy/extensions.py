@@ -1222,3 +1222,44 @@ def flipud(
         [ 1.,  0.,  0.]])
     """
     return ivy.current_backend().flipud(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmod(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise remainder of divisions of two arrays.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise remainder of divisions.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ 0,  3,  0])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ nan,  nan,  nan])
+    """
+    return ivy.current_backend().fmod(x1, x2, out=out)
