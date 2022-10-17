@@ -95,13 +95,16 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         a=x[0],
     )
 
-#tensorsolve
+
+# tensorsolve
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-      shape=helpers.ints(min_value=2).map(lambda x:tuple([x,x]))
+        shape=helpers.ints(min_value=2).map(lambda x: tuple([x, x])),
     ),
     dtype_and_y=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -111,8 +114,9 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         fn_name="ivy.functional.frontends.numpy.linalg.tensorsolve"
     ),
 )
-
-def test_numpy_tensorsolve(dtype_and_x, dtype_and_y, as_variable, native_array, num_positional_args):
+def test_numpy_tensorsolve(
+    dtype_and_x, dtype_and_y, as_variable, native_array, num_positional_args
+):
     dtype1, x1 = dtype_and_x
     dtype2, x2 = dtype_and_y
     helpers.test_frontend_function(

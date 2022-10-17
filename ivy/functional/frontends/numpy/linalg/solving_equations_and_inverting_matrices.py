@@ -31,4 +31,4 @@ def pinv(a, rtol=1e-15, hermitian=False):
 # tensorsolve
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=None):
-    return ivy.solve(a,b)
+    return ivy.solve(a, b)
