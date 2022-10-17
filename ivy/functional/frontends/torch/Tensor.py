@@ -61,7 +61,7 @@ class Tensor:
         return torch_frontend.tan(self.data, out=out)
         
     def amax(self, dim=None, keepdim=False):
-      return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
+        return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
