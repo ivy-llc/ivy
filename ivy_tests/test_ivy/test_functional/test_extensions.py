@@ -878,7 +878,7 @@ def test_fmax(
     )
 
 
-# kaiser_bessel
+# kaiser_bessel_derived_window
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -890,9 +890,11 @@ def test_fmax(
     periodic=st.booleans(),
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(fn_name="kaiser_bessel_window"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="kaiser_bessel_derived_window"
+    ),
 )
-def test_kaiser_bessel(
+def test_kaiser_bessel_derived_window(
     dtype_and_x,
     periodic,
     beta,
@@ -915,7 +917,7 @@ def test_kaiser_bessel(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="kaiser_bessel_window",
+        fn_name="kaiser_bessel_derived_window",
         window_length=x[0],
         periodic=periodic,
         beta=beta,

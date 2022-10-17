@@ -252,7 +252,7 @@ def fmax(
 fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
 
 
-def kaiser_bessel_window(
+def kaiser_bessel_derived_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
