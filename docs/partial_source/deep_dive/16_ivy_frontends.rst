@@ -8,7 +8,7 @@ Ivy Frontends
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-.. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
+.. _`tf.math.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
 .. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
