@@ -306,3 +306,17 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def fmod(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmod(x1, x2, out=None)
+
+
+fmod.support_native_out = True
+fmod.unsupported_dtypes = ("bfloat16",)
