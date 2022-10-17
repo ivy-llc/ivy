@@ -8,10 +8,6 @@ def add(input, other, *, alpha=None, out=None):
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
-def sigmoid(input, *, out=None):
-    return ivy.sigmoid(input, out=out)
-
-
 def tan(input, *, out=None):
     return ivy.tan(input, out=out)
 
