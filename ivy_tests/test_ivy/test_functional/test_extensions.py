@@ -695,7 +695,7 @@ def statistical_dtype_values(draw, *, function):
         return dtype, values, axis, correction
     return dtype, values, axis
 
-# implement test for isin
+# isin
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"),
