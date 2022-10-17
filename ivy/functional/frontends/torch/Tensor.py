@@ -45,7 +45,7 @@ class Tensor:
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
 
-    def abs(self, *, out=None) -> torch.Tensor:
+    def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
 
 
