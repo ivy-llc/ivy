@@ -187,6 +187,3 @@ def as_tensor(
     device=None,
 ):
     return ivy.asarray(data, dtype=dtype, device=device)
-
-
-tensor = as_tensor

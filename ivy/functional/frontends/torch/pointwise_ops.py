@@ -3,7 +3,7 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def add(input, other, *, alpha=None, out=None):
+def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.add(input, other, alpha=alpha, out=out)
 
@@ -213,3 +213,15 @@ def mul(input, other, *, out=None):
 
 
 multiply = mul
+
+
+def div(input, other, *, rounding_mode=None, out=None):
+    if rounding_mode is not None:
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        promoted = input.dtype
+        if rounding_mode == "trunc":
+            return ivy.trunc_divide(input, other, out=out).astype(promoted)
+        else:
+            return ivy.floor_divide(input, other, out=out).astype(promoted)
+    else:
+        return ivy.divide(input, other, out=out)
