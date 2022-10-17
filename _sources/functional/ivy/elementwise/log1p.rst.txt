@@ -5,9 +5,9 @@ log1p
 
 .. autofunction:: ivy.array.array_methods.log1p
 
-.. autofunction:: ivy.container.container_methods.log1p
-
 .. autofunction:: ivy.container.container_methods.static_log1p
+
+.. autofunction:: ivy.container.container_methods.log1p
 |
 | **Supported Frameworks:**
 
