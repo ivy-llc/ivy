@@ -8,7 +8,6 @@ Ivy Frontends
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-.. _`tf.math.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
 .. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
@@ -200,7 +199,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
-frontend. There are three arguments according to the `tf.math.add`_ documentation, which are
+frontend. There are three arguments according to the `tf.math.add <https://www.tensorflow.org/api_docs/python/tf/math/add>`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
 which framework is set in Ivy's backend.
