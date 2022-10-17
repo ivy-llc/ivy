@@ -1184,3 +1184,96 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_flipud(self, out=out)
+
+    @staticmethod
+    def static_fmod(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fmod. This method simply wraps
+        the function, and so the docstring for ivy.fmod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise remainder of divisions.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> ivy.Container.static_fmod(x1, x2)
+        {
+            a: ivy.array([ 0,  3,  0])
+            b: ivy.array([ nan,  nan,  nan])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "fmod",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fmod(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.fmod. This method simply
+        wraps the function, and so the docstring for ivy.fmod also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise remainder of divisions.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> x1.fmod(x2)
+        {
+            a: ivy.array([ 0,  3,  0])
+            b: ivy.array([ nan,  nan,  nan])
+        }
+        """
+        return self.static_fmod(self, x2, out=out)
