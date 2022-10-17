@@ -215,3 +215,38 @@ def median(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def flipud(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.flipud(m)
+
+
+def fmod(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.floormod(x1, x2, name=None)
+
+
+def fmax(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
+    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
+    ret = tf.math.maximum(x1, x2, name=None)
+    return tf.where(tf.math.is_inf(ret), float("nan"))
+
+
+fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
