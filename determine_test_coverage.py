@@ -29,6 +29,14 @@ with open("test_names") as f:
 
 test_names = test_names[:-3]
 
+# Create a Dictionary of Test Names to Index
+if run_iter == 0:
+    tests['index_mapping'] = test_names
+    tests['tests_mapping'] = {}
+    for i in range(len(test_names)):
+        tests['tests_mapping'][test_names[i]] = i
+
+
 directories = [
     "ivy",
     "ivy/array",
@@ -95,7 +103,7 @@ if __name__ == "__main__":
                         i = 0
                         for line in f:
                             if line[0] == ">":
-                                tests[file_name][i].add(test_name)
+                                tests[file_name][i].add(tests['tests_mapping'][test_name])
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
