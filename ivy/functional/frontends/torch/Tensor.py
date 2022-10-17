@@ -62,6 +62,9 @@ class Tensor:
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
 
+    def contiguous(self, memory_format=torch.contiguous_format):
+        return self.data
+
     # Special Methoods #
     # -------------------#
 
