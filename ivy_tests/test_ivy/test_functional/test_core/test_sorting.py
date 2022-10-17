@@ -2,9 +2,9 @@
 
 # global
 from hypothesis import given, strategies as st
+import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -100,35 +100,60 @@ def test_sort(
 
 
 @st.composite
-def _get_v_and_x(draw):
+def _searchsorted_case1(draw):
+    # 1-D for x, N-D for v
     dtype_x, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=draw(
-                helpers.get_shape(
-                    min_num_dims=1,
-                )
-            ),
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            shape=(draw(st.integers(min_value=1, max_value=5)),),
         )
     )
     dtype_v, v = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            min_num_dims=1,
         )
     )
-    return [dtype_x, dtype_v], [x, v]
+    return dtype_x + dtype_v, x + v
+
+
+@st.composite
+def _searchsorted_case2(draw):
+    # N-D for x, N-D for v
+    arb_leading_dims = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+        )
+    )
+    nx = draw(st.integers(min_value=1, max_value=5))
+    nv = draw(st.integers(min_value=1, max_value=5))
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            shape=arb_leading_dims + (nx,),
+        )
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            shape=arb_leading_dims + (nv,),
+        )
+    )
+    return dtype_x + dtype_v, x + v
 
 
 @handle_cmd_line_args
 @given(
-    dtypes_and_xs=_get_v_and_x(),
+    data=st.data(),
+    dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     num_positional_args=helpers.num_positional_args(fn_name="searchsorted"),
     side=st.sampled_from(["left", "right"]),
-    sorter=st.booleans(),
-    ret_dtype=st.sampled_from(["int32", "int64"]),
+    use_sorter=st.booleans(),
+    ret_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_searchsorted(
     *,
+    data,
     dtypes_and_xs,
     num_positional_args,
     as_variable,
@@ -138,11 +163,17 @@ def test_searchsorted(
     instance_method,
     fw,
     side,
-    sorter,
+    use_sorter,
     ret_dtype,
 ):
     dtypes, xs = dtypes_and_xs
-    sorter = ivy.argsort(ivy.asarray(xs[0])) if sorter and fw != "tensorflow" else None
+    if use_sorter:
+        sorter_dtype = data.draw(helpers.get_dtypes("signed_integer", full=False))
+        dtypes += sorter_dtype
+        sorter = np.argsort(xs[0]).astype(sorter_dtype[0])
+    else:
+        sorter = None
+        xs[0] = np.sort(xs[0])
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -157,5 +188,5 @@ def test_searchsorted(
         v=xs[1],
         side=side,
         sorter=sorter,
-        ret_dtype=ret_dtype,
+        ret_dtype=ret_dtype[0],
     )

@@ -1,22 +1,42 @@
 # local
 import ivy
+from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
 
 
+@inputs_to_ivy_arrays
 def abs(x):
     return ivy.abs(x)
 
 
+@inputs_to_ivy_arrays
 def absolute(x):
     return ivy.abs(x)
 
 
+@inputs_to_ivy_arrays
 def add(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
+@inputs_to_ivy_arrays
 def all(a, axis=None, out=None, keepdims=False, *, where=False):
     return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@inputs_to_ivy_arrays
+def arctan(x):
+    ret = ivy.atan(x)
+    return ret
+
+
+@inputs_to_ivy_arrays
+def arctan2(x1, x2):
+    return ivy.atan2(x1, x2)
+
+
+def argmax(a, axis=None, out=None, keepdims=None):
+    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
@@ -35,6 +55,7 @@ def _compute_isclose_with_tol(input, other, rtol, atol):
     )
 
 
+@inputs_to_ivy_arrays
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_input = ivy.isfinite(a)
     finite_other = ivy.isfinite(b)
@@ -59,10 +80,12 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     return ivy.array(ret, dtype=ivy.bool)
 
 
+@inputs_to_ivy_arrays
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
 
+@inputs_to_ivy_arrays
 def clip(a, a_min=None, a_max=None, out=None):
     ivy.assertions.check_all_or_any_fn(
         a_min,
@@ -82,6 +105,7 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+@inputs_to_ivy_arrays
 def concatenate(arrays, axis=0, dtype=None):
     ret = ivy.concat(arrays, axis=axis)
     if dtype:
@@ -89,15 +113,33 @@ def concatenate(arrays, axis=0, dtype=None):
     return ret
 
 
+@inputs_to_ivy_arrays
+def cos(x):
+    return ivy.cos(x)
+
+
+@inputs_to_ivy_arrays
+def cosh(x):
+    return ivy.cosh(x)
+
+
+@inputs_to_ivy_arrays
 def dot(a, b, *, precision=None):
     a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
+@inputs_to_ivy_arrays
 def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
     return ivy.einsum(equation=optimize, *operands, out=out)
 
 
+@inputs_to_ivy_arrays
+def floor(x):
+    return ivy.floor(x)
+
+
+@inputs_to_ivy_arrays
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:
@@ -108,10 +150,41 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     return ret.astype(dtype)
 
 
+@inputs_to_ivy_arrays
+def mod(x1, x2):
+    return ivy.remainder(x1, x2)
+
+
+@inputs_to_ivy_arrays
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
 
+@inputs_to_ivy_arrays
+def sinh(x):
+    return ivy.sinh(x)
+
+
+@inputs_to_ivy_arrays
+def sin(x):
+    return ivy.sin(x)
+
+
+@inputs_to_ivy_arrays
+def tan(x):
+    return ivy.tan(x)
+
+
+@inputs_to_ivy_arrays
+def tanh(x):
+    return ivy.tanh(x)
+
+
+def uint16(x):
+    return ivy.astype(x, ivy.uint16)
+
+
+@inputs_to_ivy_arrays
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     a = ivy.array(a)
     if dtype is None:
@@ -121,14 +194,42 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
 
+@inputs_to_ivy_arrays
+def arccos(x):
+    return ivy.acos(x)
 
-def arctan(x):
-    ret = ivy.atan(x)
+
+@inputs_to_ivy_arrays
+def arccosh(x):
+    return ivy.acosh(x)
+
+
+@inputs_to_ivy_arrays
+def arcsin(x):
+    return ivy.asin(x)
+
+
+@inputs_to_ivy_arrays
+def arcsinh(x):
+    return ivy.asinh(x)
+
+
+@inputs_to_ivy_arrays
+def fmax(x1, x2):
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
     return ret
 
 
-def arctan2(x1, x2):
-    return ivy.atan2(x1, x2)
-
 def argmin(a, axis=None, out=None, keepdims=None):
     return ivy.argmin(a)
+
+
+@inputs_to_ivy_arrays
+def zeros(shape, dtype=None):
+    if dtype is None:
+        dtype = ivy.float64
+    return ivy.zeros(shape, dtype=dtype)

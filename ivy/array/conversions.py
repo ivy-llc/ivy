@@ -49,7 +49,7 @@ def to_ivy(
     nested
         Whether to apply the conversion on arguments in a nested manner. If so, all
         dicts, lists and tuples will be traversed to their lowest leaves in search of
-        ivy.Array instances. Default is False.
+        ivy.Array instances. Default is ``False``.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict. Default
         is False.
@@ -78,7 +78,7 @@ def args_to_ivy(
         The positional arguments to check
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     kwargs
         The key-word arguments to check
 
@@ -112,12 +112,12 @@ def to_native(
     nested
         Whether to apply the conversion on arguments in a nested manner. If so, all
         dicts, lists and tuples will be traversed to their lowest leaves in search of
-        ivy.Array instances. Default is False.
+        ivy.Array instances. Default is ``False``.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     cont_inplace
-        Whether to update containers in place. Default is False
+        Whether to update containers in place. Default is ``False``
 
     Returns
     -------
@@ -146,10 +146,10 @@ def args_to_native(
         The positional arguments to check
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     cont_inplace
         Whether to update containers in place.
-        Default is False
+        Default is ``False``
     kwargs
         The key-word arguments to check
 

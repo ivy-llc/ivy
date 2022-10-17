@@ -1,4 +1,5 @@
 # global
+import torch
 
 # local
 import ivy
@@ -10,6 +11,13 @@ class Tensor:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
+
+    def __repr__(self):
+        return (
+            "ivy.functional.frontends.torch.Tensor("
+            + str(ivy.to_list(self.data))
+            + ")"
+        )
 
     # Instance Methoods #
     # -------------------#
@@ -26,6 +34,54 @@ class Tensor:
     def sin_(self):
         self.data = self.sin()
         return self.data
+
+    def sinh(self, *, out=None):
+        return torch_frontend.sinh(self.data, out=out)
+
+    def sinh_(self):
+        self.data = self.sinh()
+        return self.data
+
+    def cos(self, *, out=None):
+        return torch_frontend.cos(self.data, out=out)
+
+    def view(self, shape):
+        self.data = torch_frontend.reshape(self.data, shape)
+        return self.data
+
+    def float(self, memory_format=torch.preserve_format):
+        return ivy.astype(self.data, ivy.float32)
+
+    def asinh(self, *, out=None):
+        return torch_frontend.asinh(self.data, out=out)
+
+    def asinh_(self):
+        self.data = self.asinh()
+        return self.data
+
+    def tan(self, *, out=None):
+        return torch_frontend.tan(self.data, out=out)
+
+    def contiguous(self, memory_format=torch.contiguous_format):
+        return self.data
+
+    # Special Methoods #
+    # -------------------#
+
+    def __add__(self, other):
+        return torch_frontend.add(self, other)
+
+    def __radd__(self, other):
+        return torch_frontend.add(other, self)
+
+    def __mul__(self, other):
+        return torch_frontend.mul(self, other)
+
+    def __rmul__(self, other):
+        return torch_frontend.mul(other, self)
+
+    def __sub__(self, other):
+        return torch_frontend.subtract(self, other)
 
 
 # Tensor (alias)
