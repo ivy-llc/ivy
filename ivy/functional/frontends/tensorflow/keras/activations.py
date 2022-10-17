@@ -20,6 +20,10 @@ def relu(x):
     return ivy.relu(x)
 
 
+def tanh(x):
+    return ivy.tanh(x)
+
+
 def sigmoid(x):
     return ivy.sigmoid(x)
 
