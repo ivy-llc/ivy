@@ -9,22 +9,22 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # hann_window
 
-handle_cmd_line_args
-given(
+@handle_cmd_line_args
+@given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    # generate pereodic boolean
+    peroidic=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.signal.hann_window"
     ),
 )
-
-
 def test_hann_window(
     dtype_and_x,
     dtype,
-    where,
+    periodic,
     as_variable,
     with_out,
     num_positional_args,
@@ -32,8 +32,13 @@ def test_hann_window(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    where, as_variable, native_array = helpers.handle_where_and_array_bools(
-        where=where,
+
+    # test if periodic is a boolean
+    if periodic is not None:
+        assume(isinstance(periodic, bool))
+
+    as_variable, native_array = helpers.handle_where_and_array_bools(
+        periodic=periodic,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -48,6 +53,7 @@ def test_hann_window(
         frontend="tensorflow",
         fn_tree="hann_window",
         window_length=x[0],
-        periodic=x[1],
+        periodic=periodic,
         dtype=dtype[0],
     )
+
