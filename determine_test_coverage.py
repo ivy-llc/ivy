@@ -1,7 +1,7 @@
 import os
 import sys
 from pydriller import Repository
-import pickle
+import pickle  # noqa
 from tqdm import tqdm
 import bz2
 import _pickle as cPickle
@@ -34,10 +34,10 @@ test_names = test_names[:-3]
 
 # Create a Dictionary of Test Names to Index
 if run_iter == 0:
-    tests['index_mapping'] = test_names
-    tests['tests_mapping'] = {}
+    tests["index_mapping"] = test_names
+    tests["tests_mapping"] = {}
     for i in range(len(test_names)):
-        tests['tests_mapping'][test_names[i]] = i
+        tests["tests_mapping"][test_names[i]] = i
 
 
 directories = [
@@ -106,7 +106,9 @@ if __name__ == "__main__":
                         i = 0
                         for line in f:
                             if line[0] == ">":
-                                tests[file_name][i].add(tests['tests_mapping'][test_name])
+                                tests[file_name][i].add(
+                                    tests["tests_mapping"][test_name]
+                                )  # noqa
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
