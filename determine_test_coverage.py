@@ -3,16 +3,19 @@ import sys
 from pydriller import Repository
 import pickle
 from tqdm import tqdm
+import bz2
+import _pickle as cPickle
+
 
 # Shared Map
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 10
+N = 15
 run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
-    with open("tests.pkl", "rb") as f:
-        tests = pickle.load(f)
+    tests = bz2.BZ2File("tests.pbz2", "rb")
+    tests = cPickle.load(tests)
     os.system(f"git checkout -f {tests['commit']}")
 
 os.system(
@@ -28,6 +31,14 @@ with open("test_names") as f:
         test_names.append(line[:-1])
 
 test_names = test_names[:-3]
+
+# Create a Dictionary of Test Names to Index
+if run_iter == 0:
+    tests['index_mapping'] = test_names
+    tests['tests_mapping'] = {}
+    for i in range(len(test_names)):
+        tests['tests_mapping'][test_names[i]] = i
+
 
 directories = [
     "ivy",
@@ -95,7 +106,7 @@ if __name__ == "__main__":
                         i = 0
                         for line in f:
                             if line[0] == ">":
-                                tests[file_name][i].add(test_name)
+                                tests[file_name][i].add(tests['tests_mapping'][test_name])
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
@@ -105,5 +116,5 @@ if run_iter == 0:
         commit_hash = commit.hash
         break
     tests["commit"] = commit_hash
-with open("tests.pkl", "wb") as f:
-    pickle.dump(tests, f)
+with bz2.BZ2File("tests.pbz2", "w") as f:
+    cPickle.dump(tests, f)

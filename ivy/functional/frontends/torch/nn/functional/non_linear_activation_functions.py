@@ -77,7 +77,7 @@ def leaky_relu(input, negative_slope=0.01, inplace=False):
     return ret
 
 
-def softmax(input, dim=None, dtype=None):
+def softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(input, axis=dim)
