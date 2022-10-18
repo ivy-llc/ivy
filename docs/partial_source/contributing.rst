@@ -2,14 +2,13 @@ Contributing
 ============
 
 .. _`issues`: https://github.com/unifyai/ivy/issues
-.. _`discussions`: https://github.com/unifyai/ivy/discussions
 .. _`pull-requests`: https://github.com/unifyai/ivy/pulls
 
 We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community,
 regardless of skill-level!
 
 Whether you're a veteran developer 🥷 or a total beginner 🤷,
-everyone is welcome to create `issues`_, start `discussions`_, and create `pull-requests`_.
+everyone is welcome to create `issues`_ and create `pull-requests`_.
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
 
@@ -37,6 +36,9 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 |
 | (f) :ref:`Applied Libraries`
 | Getting started with our applied libraries! 📚
+| 
+| (g) :ref:`Helpful Resources`
+| Resources you would find useful when learning Ivy 📖
 
 .. toctree::
    :hidden:
@@ -49,6 +51,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    deep_dive.rst
    contributing/4_open_tasks.rst
    contributing/5_applied_libraries.rst
+   contributing/6_helpful_resources.rst
 
 **Video**
 

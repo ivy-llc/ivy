@@ -1,12 +1,14 @@
 # global
 import math
-import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
+import jax.numpy as jnp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -18,10 +20,13 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[JaxArray], /, *, axis: int = 0, out: Optional[JaxArray] = None
+    xs: Union[Tuple[JaxArray, ...], List[JaxArray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
-
     if axis is None:
         if is_tuple:
             xs = list(xs)
@@ -43,7 +48,7 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except ValueError as error:
+    except IndexError as error:
         raise ivy.exceptions.IvyException(repr(error))
 
 
@@ -160,7 +165,6 @@ def repeat(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     return jnp.repeat(x, repeats, axis)
 
 
@@ -212,6 +216,7 @@ def clip(
     return jnp.clip(x, x_min, x_max)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
@@ -221,9 +226,6 @@ def constant_pad(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-
-
-constant_pad.unsupported_dtypes = ("uint64",)
 
 
 def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:

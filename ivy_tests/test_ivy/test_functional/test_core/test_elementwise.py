@@ -169,8 +169,8 @@ def test_add(
         instance_method=instance_method,
         fw=fw,
         fn_name="add",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         test_gradients=True,
         x1=x[0],
         x2=x[1],
@@ -212,6 +212,7 @@ def test_asin(
         fn_name="asin",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -250,6 +251,7 @@ def test_asinh(
         fn_name="asinh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -282,6 +284,7 @@ def test_atan(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -322,6 +325,7 @@ def test_atan2(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan2",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -357,6 +361,7 @@ def test_atanh(
         fn_name="atanh",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -626,6 +631,7 @@ def test_ceil(
         instance_method=instance_method,
         fw=fw,
         fn_name="ceil",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -658,6 +664,7 @@ def test_cos(
         instance_method=instance_method,
         fw=fw,
         fn_name="cos",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -690,6 +697,7 @@ def test_cosh(
         instance_method=instance_method,
         fw=fw,
         fn_name="cosh",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -727,6 +735,7 @@ def test_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -795,6 +804,7 @@ def test_exp(
         instance_method=instance_method,
         fw=fw,
         fn_name="exp",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -827,6 +837,9 @@ def test_expm1(
         instance_method=instance_method,
         fw=fw,
         fn_name="expm1",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -862,6 +875,7 @@ def test_floor(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -904,6 +918,7 @@ def test_floor_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor_divide",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         atol_=1,
@@ -1198,6 +1213,7 @@ def test_log(
         instance_method=instance_method,
         fw=fw,
         fn_name="log",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1236,6 +1252,7 @@ def test_log1p(
         instance_method=instance_method,
         fw=fw,
         fn_name="log1p",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1270,6 +1287,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        test_gradients=True,
         rtol_=1e-2,
         x=x[0],
     )
@@ -1305,7 +1323,9 @@ def test_log10(
         instance_method=instance_method,
         fw=fw,
         fn_name="log10",
+        test_gradients=True,
         rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
@@ -1314,7 +1334,11 @@ def test_log10(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        abs_smallest_val=0.137,
+        min_value=-80,
+        max_value=80,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
 )
@@ -1340,7 +1364,9 @@ def test_logaddexp(
         instance_method=instance_method,
         fw=fw,
         fn_name="logaddexp",
-        rtol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -1511,6 +1537,7 @@ def test_multiply(
         instance_method=instance_method,
         fw=fw,
         fn_name="multiply",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -1546,6 +1573,7 @@ def test_negative(
         instance_method=instance_method,
         fw=fw,
         fn_name="negative",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1616,6 +1644,7 @@ def test_positive(
         instance_method=instance_method,
         fw=fw,
         fn_name="positive",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1715,6 +1744,7 @@ def test_pow(
         fn_name="pow",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
     )
@@ -1726,8 +1756,8 @@ def test_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
         safety_factor_scale="log",
     ),
     modulus=st.booleans(),
@@ -1759,6 +1789,7 @@ def test_remainder(
         instance_method=instance_method,
         fw=fw,
         fn_name="remainder",
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
         rtol_=1e-2,
@@ -1797,6 +1828,7 @@ def test_round(
         instance_method=instance_method,
         fw=fw,
         fn_name="round",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1832,6 +1864,7 @@ def test_sign(
         instance_method=instance_method,
         fw=fw,
         fn_name="sign",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1864,6 +1897,7 @@ def test_sin(
         instance_method=instance_method,
         fw=fw,
         fn_name="sin",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1896,6 +1930,7 @@ def test_sinh(
         instance_method=instance_method,
         fw=fw,
         fn_name="sinh",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1930,6 +1965,7 @@ def test_square(
         instance_method=instance_method,
         fw=fw,
         fn_name="square",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -1964,6 +2000,9 @@ def test_sqrt(
         instance_method=instance_method,
         fw=fw,
         fn_name="sqrt",
+        test_gradients=True,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
@@ -2004,8 +2043,9 @@ def test_subtract(
         instance_method=instance_method,
         fw=fw,
         fn_name="subtract",
-        rtol_=1e-2,
-        atol_=1e-2,
+        test_gradients=True,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
@@ -2040,6 +2080,9 @@ def test_tan(
         instance_method=instance_method,
         fw=fw,
         fn_name="tan",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2072,6 +2115,9 @@ def test_tanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="tanh",
+        test_gradients=True,
+        rtol_=1e-1,
+        atol_=1e-2,
         x=x[0],
     )
 
@@ -2106,6 +2152,7 @@ def test_trunc(
         instance_method=instance_method,
         fw=fw,
         fn_name="trunc",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2142,21 +2189,48 @@ def test_erf(
         instance_method=instance_method,
         fw=fw,
         fn_name="erf",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
+
+
+@st.composite
+def min_max_helper(draw):
+    use_where = draw(st.booleans())
+    if use_where:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        )
+    else:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                min_value=-1e5,
+                max_value=1e5,
+                safety_factor_scale="log",
+            )
+        )
+    return dtype_and_x, use_where
 
 
 # minimum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
+    dtype_and_x_and_use_where=min_max_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
 )
 def test_minimum(
     *,
-    dtype_and_x,
+    dtype_and_x_and_use_where,
     as_variable,
     with_out,
     num_positional_args,
@@ -2165,7 +2239,7 @@ def test_minimum(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2176,22 +2250,24 @@ def test_minimum(
         instance_method=instance_method,
         fw=fw,
         fn_name="minimum",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
 # maximum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
+    dtype_and_x_and_use_where=min_max_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
 )
 def test_maximum(
     *,
-    dtype_and_x,
+    dtype_and_x_and_use_where,
     as_variable,
     with_out,
     num_positional_args,
@@ -2200,7 +2276,7 @@ def test_maximum(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2211,8 +2287,12 @@ def test_maximum(
         instance_method=instance_method,
         fw=fw,
         fn_name="maximum",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
@@ -2221,8 +2301,8 @@ def test_maximum(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
         safety_factor_scale="log",
         num_arrays=1,
     ),
@@ -2250,6 +2330,9 @@ def test_reciprocal(
         instance_method=instance_method,
         fw=fw,
         fn_name="reciprocal",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2283,6 +2366,7 @@ def test_deg2rad(
         instance_method=instance_method,
         fw=fw,
         fn_name="deg2rad",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2316,6 +2400,7 @@ def test_rad2deg(
         instance_method=instance_method,
         fw=fw,
         fn_name="rad2deg",
+        test_gradients=True,
         x=x[0],
     )
 
@@ -2324,7 +2409,11 @@ def test_rad2deg(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="trunc_divide"),
 )
@@ -2352,6 +2441,43 @@ def test_trunc_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="trunc_divide",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# isreal
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isreal"),
+)
+def test_isreal(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isreal",
+        x=x[0],
     )

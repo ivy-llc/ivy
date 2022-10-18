@@ -45,8 +45,8 @@ def index_nest(
 
     With :class:`ivy.Array` inputs:
 
-    >>> x = ivy.array([[1., 2.], \
-                       [3., 4.]])
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
     >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
@@ -62,9 +62,9 @@ def index_nest(
 
     With :code:`List` inputs:
 
-    >>> x = [['a', 'b', 'c'], \
-             ['d', 'e', 'f'], \
-             ['g', ['h', 'i']]]
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
     >>> y = iter([2, 1, 0])
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
@@ -115,6 +115,7 @@ def set_nest_at_index(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = (1, 1)
     >>> z = 5.
@@ -130,6 +131,7 @@ def set_nest_at_index(
     ivy.array([1., 5., 3., 4.])
 
     With :code:`Dict` input:
+
     >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
     >>> y = (1, 1)
     >>> z = 2
@@ -138,16 +140,18 @@ def set_nest_at_index(
     {1: [1, 2], 2: (4, 5)}
 
     With :code:`List` inputs:
-    >>> x = [['a', 'b', 'c'], \
-             ['d', 'e', 'f'], \
-             ['g', ['h', 'i']]]
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
     >>> y = (2, 1, 0)
     >>> z = 'H'
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
     [['a','b','c'],['d','e','f'],['g',['H','i']]]
 
-     With :class:`ivy.Container` input:
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
     >>> y = ('b',)
     >>> z = ivy.array([3., 4.])
@@ -362,7 +366,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 64., -17.], [11., 9., 25.]])
+    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
     [map_nest_at_index(nest, index, fn) for index in indices]
 
@@ -388,7 +392,7 @@ def nested_argwhere(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
-        Default is False.
+        Default is ``False``.
     to_ignore
         Types to ignore when deciding whether to go deeper into the nest or not
     _index
@@ -525,7 +529,7 @@ def all_nested_indices(
         The nest to check the leaves of.
     include_nests
         Whether to also include indices of the nests themselves, not only leaves.
-        Default is False.
+        Default is ``False``.
     _index
         The indices detected so far. None at the beginning. Used internally, do not set
         manually.
@@ -579,12 +583,12 @@ def map(
         The function to map onto x.
     constant
         keyword arguments which remain constant between each function call.
-        Default is None.
+        Default is ``None``.
     unique
-        keyword arguments which are unique for each function call. Default is None.
+        keyword arguments which are unique for each function call. Default is ``None``.
     mean
         Whether to compute the mean across the return values, and return this mean.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -596,61 +600,61 @@ def map(
     With :code:`int` inputs:
 
     >>> def special_square(x : float) -> float : return np.square(x)
-    >>> results = ivy.map(fn = special_square, \
-                          constant = None, \
-                          unique = {'x' : [1,2,3]}, \
-                          mean = False)
+    >>> results = ivy.map(fn = special_square,
+    ...                   constant = None,
+    ...                   unique = {'x' : [1,2,3]},
+    ...                   mean = False)
     >>> print(results)
     [1, 4, 9]
 
-    >>> results = ivy.map(fn = special_square, \
-                          constant = None, \
-                          unique = {'x':[0,1,2]},\
-                          mean = True)
+    >>> results = ivy.map(fn = special_square,
+    ...                   constant = None,
+    ...                   unique = {'x':[0,1,2]},
+    ...                   mean = True)
     >>> print(results)
     1.6666666666666667
 
     >>> def special_pow(x:float,y:float) ->float : return np.power(x,y)
-    >>> results = ivy.map(fn = special_pow, \
-                          constant = {'y':[0,1]}, \
-                          unique = {'x':[1,2,3]}, \
-                          mean = False)
+    >>> results = ivy.map(fn = special_pow,
+    ...                   constant = {'y':[0,1]},
+    ...                   unique = {'x':[1,2,3]},
+    ...                   mean = False)
     >>> print(results)
     [array([1,1]),
     array([1,2]),
     array([1,3])]
 
-    >>> results = ivy.map(fn = special_pow, \
-                          constant = {'y':[0,1]}, \
-                          unique = {'x':[1,2,3]}, \
-                          mean = True)
+    >>> results = ivy.map(fn = special_pow,
+    ...                   constant = {'y':[0,1]},
+    ...                   unique = {'x':[1,2,3]},
+    ...                   mean = True)
     >>> print(results)
     [1. 2.]
 
     With float inputs:
 
     >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
-    >>> results = ivy.map(fn = linear_model, \
-                          constant = {'w':10., 'b':1.}, \
-                          unique = {'x':[0.,1.,2.]}, \
-                          mean = False)
+    >>> results = ivy.map(fn = linear_model,
+    ...                   constant = {'w':10., 'b':1.},
+    ...                   unique = {'x':[0.,1.,2.]},
+    ...                   mean = False)
     >>> print(results)
     [1.0, 11.0, 21.0]
 
     With :class:`ivy.Array` inputs:
 
-    >>> results = ivy.map(fn = linear_model, \
-        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
-        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
-        mean = False)
+    >>> results = ivy.map(fn = linear_model,
+    ...    constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])},
+    ...    unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]},
+    ...    mean = False)
     >>> print(results)
     [ivy.array([0., 10., 100.]),
     ivy.array([1., 10., 101.])]
 
-    >>> results = ivy.map(fn = linear_model, \
-        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
-        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
-        mean = True)
+    >>> results = ivy.map(fn = linear_model,
+    ...    constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])},
+    ...    unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]},
+    ...    mean = True)
     >>> print(results)
     ivy.array([  0.5,  10. , 100. ])
     """
@@ -693,10 +697,10 @@ def nested_map(
         The function to map onto x.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
-        Default is False.
+        Default is ``False``.
     max_depth
         The maximum nested depth to reach. Default is 1. Increase this if the nest is
         deeper.
@@ -819,7 +823,7 @@ def nested_any(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
-        Default is False.
+        Default is ``False``.
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
@@ -863,10 +867,10 @@ def copy_nest(
         The nest to copy.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -954,19 +958,19 @@ def nested_multi_map(
     nest
         nests to map.
     key_chains
-        The key-chains to apply or not apply the method to. Default is None.
+        The key-chains to apply or not apply the method to. Default is ``None``.
     to_apply
         If True, the method will be applied to key_chains, otherwise key_chains will
-        be skipped. Default is True.
+        be skipped. Default is ``True``.
     prune_unapplied
         Whether to prune key_chains for which the function was not applied,
-        otherwise the leftmost nest value is used. Default is False.
+        otherwise the leftmost nest value is used. Default is ``False``.
     key_chain
         Chain of keys for this dict entry (Default value = '')
     config
         The configuration for the nests. Default is the same as nest0.
     to_ivy
-        convert the output to ivy_arrays. Default is True
+        convert the output to ivy_arrays. Default is ``True``
     Returns
     -------
         nest containing the result of the funciton.

@@ -1,13 +1,45 @@
 import os
-from pprint import pprint
+import sys
+from pydriller import Repository
+import pickle  # noqa
+from tqdm import tqdm
+import bz2
+import _pickle as cPickle
+
 
 # Shared Map
 tests = {}
 
-# Run Coverage For A Particular Test
-test_names = [
-    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs"
-]
+os.system("git config --global --add safe.directory /ivy")
+N = 15
+run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
+if run_iter > 0:
+    tests = bz2.BZ2File("tests.pbz2", "rb")
+    tests = cPickle.load(tests)
+    os.system(f"git checkout -f {tests['commit']}")
+
+os.system(
+    "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
+)
+test_names = []
+with open("test_names") as f:
+    i = 0
+    for line in f:
+        i += 1
+        if i <= 5:
+            continue
+        test_names.append(line[:-1])
+
+test_names = test_names[:-3]
+
+# Create a Dictionary of Test Names to Index
+if run_iter == 0:
+    tests["index_mapping"] = test_names
+    tests["tests_mapping"] = {}
+    for i in range(len(test_names)):
+        tests["tests_mapping"][test_names[i]] = i
+
+
 directories = [
     "ivy",
     "ivy/array",
@@ -30,6 +62,19 @@ directories = [
     "ivy_tests/test_ivy/test_frontends",
     "ivy_tests/test_ivy/test_frontends/test_jax",
     "ivy_tests/test_ivy/test_frontends/test_numpy",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_creation_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_fft",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_indexing_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_linear_algebra",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_logic",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ma",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_manipulation_routines",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_matrix",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_random",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_sorting_searching_counting",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_statistics",
+    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ufunc",
     "ivy_tests/test_ivy/test_frontends/test_tensorflow",
     "ivy_tests/test_ivy/test_frontends/test_torch",
     "ivy_tests/test_ivy/test_functional",
@@ -39,9 +84,15 @@ directories = [
 ]
 
 if __name__ == "__main__":
-    for test_name in test_names:
-        os.system(f"coverage run -m pytest {test_name}")
-        os.system("coverage annotate")
+    num_tests = len(test_names)
+    tests_per_run = num_tests // N
+    start = run_iter * tests_per_run
+    end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
+    for test_name in tqdm(test_names[start:end]):
+        os.system(
+            f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
+        )
+        os.system("coverage annotate > coverage_output")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
@@ -55,9 +106,17 @@ if __name__ == "__main__":
                         i = 0
                         for line in f:
                             if line[0] == ">":
-                                tests[file_name][i].add(test_name)
+                                tests[file_name][i].add(
+                                    tests["tests_mapping"][test_name]
+                                )  # noqa
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
-
-pprint(tests)
+if run_iter == 0:
+    commit_hash = ""
+    for commit in Repository(".", order="reverse").traverse_commits():
+        commit_hash = commit.hash
+        break
+    tests["commit"] = commit_hash
+with bz2.BZ2File("tests.pbz2", "w") as f:
+    cPickle.dump(tests, f)

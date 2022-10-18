@@ -1,5 +1,7 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import versions
 
 
 def _compute_threshold(input, threshold, value, inplace):
@@ -75,7 +77,7 @@ def leaky_relu(input, negative_slope=0.01, inplace=False):
     return ret
 
 
-def softmax(input, dim=None, dtype=None):
+def softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(input, axis=dim)
@@ -88,7 +90,7 @@ def gelu(
     # approximate = False
     # else:
     # approximate = True
-    return ivy.gelu(input)
+    return ivy.gelu(input, approximate=False)
 
 
 def tanh(input):
@@ -247,3 +249,14 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
     pnorm_res = ivy.pow(sum_, 1.0 / p)
     max_ = ivy.maximum(pnorm_res, eps)
     return ivy.divide(input, max_, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions["torch"])
+def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
+    shape = ivy.shape(input)
+    if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:
+        axis = [-1]
+    else:
+        assert normalized_shape == shape[-len(normalized_shape) :]
+        axis = list(range(len(shape) - len(normalized_shape), len(shape)))
+    return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)

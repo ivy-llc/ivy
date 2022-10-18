@@ -14,7 +14,6 @@ Containers
 .. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
 .. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
 .. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
-.. _`ivy.Container.add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92
 .. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259
 .. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158
 .. _`static method is added`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199
@@ -34,10 +33,10 @@ Containers
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133
-.. _`containers discussion`: https://github.com/unifyai/ivy/discussions/1316
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
+.. _`containers forum`: https://discord.com/channels/799879767196958751/1028297229980668015
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -141,8 +140,8 @@ instance method. For example, we do not implement an instance method for
 `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Under the hood, every *instance* method calls the corresponding *static* method.
-For example, `ivy.Container.add`_ calls :meth:`ivy.Container.static_add`,
-`ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`,
+For example, `ivy.Container.add <https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92>`_
+calls :meth:`ivy.Container.static_add`, `ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`,
 and `ivy.Container.roll`_ calls :meth:`ivy.Container.static_roll`.
 
 As is the case for :class:`ivy.Array`,
@@ -372,9 +371,8 @@ despite :code:`d` not being a non-leaf node in :code:`x`.
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `containers discussion`_,
-or reach out on `discord`_ in the `containers channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `containers channel`_
+or in the `containers forum`_!
 
 
 **Video**

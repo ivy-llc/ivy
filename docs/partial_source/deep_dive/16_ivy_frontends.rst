@@ -8,16 +8,15 @@ Ivy Frontends
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-.. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
-.. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
+.. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
@@ -29,14 +28,25 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-The Basics
-----------
 
-**NOTE:** Type hints, docstrings and examples are not required when working on
+The Frontend Basics
+-------------------
+
+**NOTE:**
+
+Type hints, docstrings and examples are not required when working on
 frontend functions.
 
+When using functions and methods of Ivy Frontends, in addition to importing ivy itself
+like :code:`import ivy` please also import the corrisponding Frontend module.
+For example, to use ivy's tensorflow frontend:
+
+    :code:`import ivy.functional.frontends.tensorflow as tf_frontend`
+
+----
+
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
 
 **Jax**
 
@@ -154,6 +164,7 @@ See the section "Unused Arguments" below for more details.
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
+    @from_zero_dim_arrays_to_float
     def tan(
         x,
         /,
@@ -161,7 +172,7 @@ See the section "Unused Arguments" below for more details.
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
@@ -188,7 +199,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
-frontend. There are three arguments according to the `tf.add`_ documentation, which are
+frontend. There are three arguments according to the `tf.math.add <https://www.tensorflow.org/api_docs/python/tf/math/add>`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
 which framework is set in Ivy's backend.
@@ -208,7 +219,7 @@ argument.
         return ivy.tan(x)
 
 Likewise, :code:`tan` is also placed under :code:`math`.
-By referring to the `tf.tan`_ documentation, we add the same arguments,
+By referring to the `tf.math.tan`_ documentation, we add the same arguments,
 and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
@@ -217,19 +228,15 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
-    def add(input, other, *, alpha=1, out=None):
-        return ivy.add(input, other * alpha, out=out)
+    def add(input, other, *, alpha=None, out=None):
+        return ivy.add(input, other, alpha=alpha, out=out)
 
 For PyTorch, :func:`add` is categorised under :code:`pointwise_ops` as is the case in
 the `torch`_ framework.
 
 In this case, the native `torch.add`_ has both positional and keyword arguments,
 and we therefore use the same for our PyTorch frontend :func:`add`.
-We wrap :func:`ivy.add` as usual, but the arguments work slightly different in this
-example. Looking at the PyTorch `torch.add`_ documentation,
-we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
-into :func:`ivy.add`.
+We wrap :func:`ivy.add` as usual.
 
 .. code-block:: python
 
@@ -308,16 +315,16 @@ the backend :func:`ivy.cumprod` does not support this argument or behaviour.
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/general.py
+    # in ivy/functional/ivy/statistical.py
     def cumprod(
         x: Union[ivy.Array, ivy.NativeArray],
-        /,
         axis: int = 0,
-        *,
         exclusive: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return current_backend(x).cumprod(x, axis, exclusive, out=out)
+        return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
 compositionally able to mimic the required behaviour.
@@ -420,157 +427,269 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
+It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
+may not support the data type due to backend limitation. For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ do support all data types,
+but PyTorch does not support :code:`bfloat16` for the function :code:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
+function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
+
 Classes and Instance Methods
 ----------------------------
 
-Most frameworks include instance methods on their array class for common array
-processing functions, such as :func:`reshape`, :func:`expand_dims` etc.
-This simple design choice comes with many advantages,
-some of which are explained in our :ref:`Ivy Array` section.
+Most frameworks include instance methods and special methods on their array class
+for common array processing functions, such as :func:`reshape`, :func:`expand_dims`
+and :func:`add`.
+This simple design choice comes with many advantages, some of which are explained
+in our :ref:`Ivy Array` section.
+
+**Important Note**
+Before implementing the instance method or special method, make sure that the regular function in the specific
+frontend is already implemented.
 
 In order to implement Ivy's frontend APIs to the extent that is required for arbitrary
-code transpilations, it's necessary for us to also implement these instance methods of
-the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`,
-:class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
+code transpilations, it's necessary for us to also implement these instance methods
+and special methods of the framework-specific array classes (:class:`tf.Tensor`,
+:class:`torch.Tensor`, :class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
+
+**Instance Method**
+
+**numpy.ndarray**
 
 For an example of how these are implemented, we first show the instance method for
-:meth:`np.ndarray.reshape`, which is implemented in the frontend
-`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+:meth:`np.ndarray.add`, which is implemented in the frontend
+`ndarray class <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23>`_:
+
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def add(
+        self,
+        value,
+    ):
+        return np_frontend.add(
+            self.data,
+            value,
+        )
 
-Under the hood, this simply calls the frontend :func:`np_frontend.reshape` function,
+Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 which itself is implemented as follows:
 
 .. code-block:: python
 
-    # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
-    def reshape(x, /, shape, *, copy=None):
-        return ivy.reshape(x, shape, copy=copy)
-
-We need to create these frontend array classes and all of their instance methods such
-that we are able to transpile code which makes use of instance methods.
-As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the
-computation graph in the source framework. In the case of instance methods, we then
-replace each of the original instance methods in the extracted computation graph with
-these new instance methods defined in the Ivy frontend class.
-
-
-Framework-Specific Argument Types
----------------------------------
-
-Some of the frontend functions that we need to implement include framework-specific
-classes as the default values for some of the arguments,
-which do not have a counterpart in other frameworks.
-When re-implementing these functions in Ivy's frontend, we would like to still include
-those arguments without directly using these special classes, which do not exist in Ivy.
-
-A good example is the special class :code:`numpy._NoValue`, which is sometimes used
-instead of :code:`None` as the default value for arguments in numpy. For example,
-the :code:`keepdims`, :code:`initial` and :code:`where` arguments of :func:`numpy.sum`
-use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtype` and
-:code:`out` use :code:`None`, as can be seen in the
-`source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
-
-We now introduce how to deal with such framework-specific classes. For each backend
-framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
-`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
-This holds pairs of framework-specific classes and the corresponding Ivy or
-native Python classes to map to.
-For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
-
-.. code-block:: python
-
-    numpy_classes_to_ivy_classes = {np._NoValue: None}
-
-Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in
-:code:`numpy/numpy/_globals.py`.
-
-Any time a new framework-specific data type is discovered, such as the
-:code:`numpy._NoValue` example given, then this should be added as a key to the
-dictionary, and the most appropriate pure-python or Ivy class or instance should be
-added as the value.
-
-During frontend testing, the helper :func:`test_frontend_function` by default passes
-all the generated inputs into both Ivy's frontend implementation and also the original
-function. For the framework-specific classes discussed, this is a problem.
-Handling the framework-specific class in the Ivy frontend would add a dependency to the
-frontend framework being mimicked. This breaks Ivy's design philosophy,
-whereby only the specific backend framework being used should be a dependency.
-Our solution is to pass the value from the :code:`<framework>_classes_to_ivy_classes`
-dict to the Ivy frontend function and the key from the
-:code:`<framework>_classes_to_ivy_classes` dict to the original function during testing
-in :func:`test_frontend_function`.
-
-The way we do this is to wrap all framework-specific classes inside a
-:class:`NativeClass` during frontend testing. The :class:`NativeClass` is defined in
-:mod:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
-placeholder class to represent the framework-specific class and its counterpart.
-It has only one attribute, :code:`_native_class`, which holds the reference to the
-special class being used by the targeted framework.
-Then, in order to pass the key and value to the original and frontend functions
-respectively, :func:`test_frontend_function` detects all :code:`NativeClass` instances
-in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
-to find the corresponding value to the key wrapped inside the :class:`NativeClass`
-instance, and then passes the key and value as inputs to the corresponding functions
-correctly.
-
-
-As an example, we show how :class:`NativeClass` is used in the frontend test for the
-:func:`sum` function in the NumPy frontend:
-
-.. code-block:: python
-    # sum
-    Novalue = NativeClass(numpy._NoValue)
-    @handle_cmd_line_args
-    @given(
-        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
-        dtype=helpers.get_dtypes("float", full=False, none=True),
-        keep_dims= st.one_of (st.booleans(), Novalue),
-        initial=st.one_of(st.floats(), Novalue),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.sum"
-        ),
-    )
-    def test_numpy_sum(
-        dtype_x_axis,
-        dtype,
-        keep_dims,
-        initial,
-        as_variable,
-        num_positional_args,
-        native_array,
-        with_out,
-        fw,
+    # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    def add(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
     ):
-        (input_dtype, x, axis), where = dtype_x_axis
-        if where is None:
-            where = Novalue
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="numpy",
-            fn_tree="sum",
-            x=np.asarray(x, dtype=input_dtype[0]),
-            axis=axis,
-            dtype=dtype,
-            keepdims=keep_dims,
-            initial=initial,
-            where=where,
-        )
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.add(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
-The function has three optional arguments which have the default value of
-:code:`numpy._NoValue`, being: :code:`where`, :code:`keep_dims` and :code:`initial`.
-We therefore define a :class:`NativeClass` object :code:`Novalue`, and pass this as input
-to each of these arguments when calling :func:`test_frontend_function`.
+**Special Method**
+
+Some examples referring to the special methods would make things more clear. For
+example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how
+it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/tensor.py
+    def __add__(self, y, name="add"):
+        return tf_frontend.add(self.data, y, name=name)
+
+For the reverse operator of :func:`add`.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/tensor.py
+    def __radd__(self, x, name="radd"):
+        return tf_frontend.add(x, self.data, name=name)
+
+
+Here also, both of them simply call the frontend :func:`tf_frontend.math.add` under the
+hood. The functions with reverse operators should call the same frontend function
+as shown in the examples above. The implementation for the :func:`tf_frontend.math.add`
+is shown as follows:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    def add(x, y, name=None):
+    return ivy.add(x, y)
+
+**numpy.matrix**
+
+To support special classes and their instance methods,
+the equivalent classes are created in their respective frontend so that the useful
+instance methods are supported for transpilation.
+
+For instance, the :class:`numpy.matrix` class is supported in the Ivy NumPy frontend.
+Part of the code is shown below as an example:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/matrix/methods.py
+    class matrix:
+        def __init__(self, data, dtype=None, copy=True):
+            self._init_data(data, dtype)
+
+        def _init_data(self, data, dtype):
+            if isinstance(data, str):
+                self._process_str_data(data, dtype)
+            elif isinstance(data, list) or ivy.is_array(data):
+                data = (
+                    ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
+                )
+                ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+                self._data = data
+            else:
+                raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
+            self._shape = ivy.shape(self._data)
+            self._dtype = self._data.dtype
+
+With this class available, the supported instance methods can now be included in the class.
+For example, :class:`numpy.matrix` has an instance method of :code:`any`:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/matrix/methods.py
+    def any(self, axis=None, out=None):
+        if ivy.exists(axis):
+            return ivy.any(self.A, axis=axis, keepdims=True, out=out)
+        return ivy.any(self.A, axis=axis, out=out)
+
+We need to create these frontend array classes and all of their instance methods and
+also their special methods such that we are able to transpile code which makes use
+of these methods. As explained in :ref:`Ivy as a Transpiler`, when transpiling
+code we first extract the computation graph in the source framework. In the case of
+instance methods, we then replace each of the original instance methods in the
+extracted computation graph with these new instance methods defined in the Ivy
+frontend class.
+
+Frontend Data Type Promotion Rules
+----------------------------------
+
+Each frontend framework has its own rules governing the common result type for two array
+operands during an arithmetic operation.
+
+In order to ensure that each frontend framework implemented in Ivy has the same data type
+promotion behaviors as the native framework does, we have implemented data type promotion
+rules according to framework-specific data type promotion tables for these we are currently
+supporting as frontends. The function can be accessed through calling
+:func:`promote_types_of_<frontend>_inputs` and pass in both array operands.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+    ...
+    def add(x, y, name=None):
+        x, y = promote_types_of_tensorflow_inputs(x, y)
+        return ivy.add(x, y)
+
+Although under most cases, array operands being passed into an arithmetic operation function
+should be the same data type, using the data type promotion rules can add a layer of sanity
+check to prevent data precision losses or exceptions from further arithmetic operations.
+
+NumPy Special Argument - Casting
+--------------------------------
+
+NumPy supports an additional, special argument - :code:`casting`, which allows
+user to determine the kind of dtype casting that fits their objectives.
+The :code:`casting` rules are explained in the
+`numpy.can_cast documentation <https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html>`_.
+While handling this argument, the :code:`dtype` argument is used to state the
+desired return dtype.
+
+To handle this, a decorator - :code:`handle_numpy_casting` is used to simplify
+the handling logic and reduce code redundancy. It is located in the
+`ivy/functional/frontends/numpy/func_wrapper.py <https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39>`_
+
+This decorator is then added to the numpy frontend functions with the
+:code:`casting` argument. An example of the :code:`add` function is shown below.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
+    def add(
+        x1,
+        x2,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="k",
+        dtype=None,
+        subok=True,
+    ):
+        ret = ivy.add(x1, x2, out=out)
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        return ret
+
+There is a special case for the :code:`casting` argument, where the allowed
+dtype must be :code:`bool`, therefore a :code:`handle_numpy_casting_special` is included
+to handle this.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/func_wrapper.py
+    def handle_numpy_casting_special(fn: Callable) -> Callable:
+        @functools.wraps(fn)
+        def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+            ivy.assertions.check_elem_in_list(
+                casting,
+                ["no", "equiv", "safe", "same_kind", "unsafe"],
+                message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
+            )
+            if ivy.exists(dtype):
+                ivy.assertions.check_equal(
+                    ivy.as_ivy_dtype(dtype),
+                    "bool",
+                    message="output is compatible with bool only",
+                )
+            return fn(*args, **kwargs)
+        new_fn.handle_numpy_casting_special = True
+        return new_fn
+
+
+An example function using this is the :code:`numpy.isfinite` function.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/logic/array_type_testing.py
+    @handle_numpy_casting_special
+    @to_ivy_arrays_and_back
+    def isfinite(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        ret = ivy.isfinite(x, out=out)
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        return ret
 
 **Round Up**
 
@@ -579,9 +698,8 @@ are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this
 as well if you prefer a video explanation!
 
-If you're ever unsure of how best to proceed,
-please feel free to engage with the `ivy frontends discussion`_,
-or reach out on `discord`_ in the `ivy frontends channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_
+or in the `ivy frontends forum`_!
 
 
 **Video**
