@@ -48,3 +48,8 @@ def cholesky(a):
 @inputs_to_ivy_arrays
 def slogdet(a, method=None):
     return ivy.slogdet(a)
+
+
+@inputs_to_ivy_arrays
+def matrix_rank(M):
+    return ivy.matrix_rank(M)
