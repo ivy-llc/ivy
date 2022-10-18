@@ -320,7 +320,7 @@ class ArrayWithCreation(abc.ABC):
         """
         return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
 
-    def to_dlpack(self: ivy.Array, *, out: Optional[Any] = None) -> Any:
+    def to_dlpack(self: ivy.Array) -> Any:
         """
         ivy.Array instance method variant of ivy.to_dlpack. This method simply wraps
         the function, and so the docstring for ivy.to_dlpack also applies to this
@@ -336,7 +336,7 @@ class ArrayWithCreation(abc.ABC):
         ret
             a PyCapsule object containing a reference to the data in ``self``.
         """
-        return ivy.to_dlpack(self, out=out)
+        return ivy.to_dlpack(self)
 
     def from_dlpack(
         self: Union[ivy.Array, ivy.NativeArray],

@@ -212,9 +212,6 @@ def eye(
 
 def to_dlpack(
     x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Any:
     return tf.experimental.dlpack.to_dlpack(x)
 

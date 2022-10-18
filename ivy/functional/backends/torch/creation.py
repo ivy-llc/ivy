@@ -237,7 +237,7 @@ eye.support_native_out = True
 eye.unsupported_dtypes = ("bfloat16",)
 
 
-def to_dlpack(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> Any:
+def to_dlpack(x: torch.Tensor) -> Any:
     return x.__dlpack__()
 
 

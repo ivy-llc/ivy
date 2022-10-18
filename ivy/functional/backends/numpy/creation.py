@@ -110,7 +110,7 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
-def to_dlpack(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Any:
+def to_dlpack(x: np.ndarray) -> Any:
     return x.__dlpack__()
 
 

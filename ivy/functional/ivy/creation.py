@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
     handle_out_argument,
+    inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
@@ -1206,13 +1207,10 @@ def full(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def to_dlpack(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[Any] = None
-) -> Any:
+def to_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> Any:
     """Returns a PyCapsule object pointing to the data in the input array.
 
     Parameters
@@ -1233,7 +1231,7 @@ def to_dlpack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).to_dlpack(x, out=out)
+    return current_backend(x).to_dlpack(x)
 
 
 @to_native_arrays_and_back

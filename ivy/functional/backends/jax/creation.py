@@ -117,7 +117,7 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
-def to_dlpack(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Any:
+def to_dlpack(x: JaxArray) -> Any:
     return jax.dlpack.to_dlpack(x)
 
 
