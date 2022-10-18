@@ -183,7 +183,12 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
 
 
 @handle_exceptions
-def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable, /):
+def map_nest_at_index(
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
+    index: Sequence[Union[str,int]],
+    fn: Callable[[Any],Any],
+    /
+) -> None:
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -191,9 +196,48 @@ def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable, /):
     nest
         The nested object to update.
     index
-        A tuple of indices for the index at which to update.
+        A linear sequence of indices for the index at which to update.
     fn
-        The function to perform on the nest at the given index.
+        The function to perform on the nested value at the given index.
+
+    Examples
+    --------
+    With :code:`List` inputs:
+
+    >>> nest = [[1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']]
+    >>> index = [1,2]
+    >>> fn = lambda c: c + '1'
+    >>> ivy.map_nest_at_index(nest,index,fn)
+    >>> print(nest)
+    [[1, 2, 3, 4, 5, 6], ['a', 'b', 'c1', 'd', 'e', 'f']]
+
+    With :code:`Dict` inputs:
+
+    >>> nest = {'a': [[1],9], 'b':(1,2)}
+    >>> index = ('a',0)
+    >>> fn = lambda a: a * 2
+    >>> ivy.map_nest_at_index(nest,index,fn)
+    >>> print(nest)
+    {'a': [[1, 1], 9], 'b': (1,2)}
+
+    With :code: `Ivy.Array` inputs:
+    >>> x = ivy.array([1., 2., 3., 4.])
+    >>> i = [2]
+    >>> fn = lambda v: 0. if v > 5 else 3*v + 1
+    >>> ivy.map_nest_at_index(x,i,fn)
+    >>> print(x)
+    ivy.array([1., 2., 10., 4.])
+
+    With :code: `Ivy.Containers` inputs:
+    >>> x = ivy.Container(a=ivy.array([1., 20.]) , b=ivy.array([4., 3.]))
+    >>> y = ('b',1)
+    >>> fn = lambda _: 1e5
+    >>> ivy.map_nest_at_index(x, y, fn)
+    >>> print(x)
+    {
+        a: ivy.array([1., 20.]),
+        b: ivy.array([4., 100000.])
+    }
 
     """
     if len(index) == 1:
