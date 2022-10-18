@@ -1541,6 +1541,22 @@ class ArrayWithElementwise(abc.ABC):
         >>> y = ivy.multiply(x1, x2)
         >>> print(y)
         ivy.array([ 8., 12., 21.])
+
+        With ivy.Array instance method:
+
+        >>> x1 = ivy.array([3., 5., 7.])
+        >>> x2 = ivy.array([4., 6., 8.])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        ivy.array([12., 30., 56.])
+
+        With mix of ivy.Array and ivy.NativeArray instance method:
+
+        >>> x1 = ivy.array([8., 6., 7.])
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        ivy.array([ 8., 12., 21.])
         """
         return ivy.multiply(self._data, x2, out=out)
 
