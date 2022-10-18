@@ -1515,6 +1515,32 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise products. The returned array
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([3., 5., 7.])
+        >>> x2 = ivy.array([4., 6., 8.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([12., 30., 56.])
+
+        With :class:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.native_array([1., 3., 9.])
+        >>> x2 = ivy.native_array([4., 7.2, 1.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([ 4. , 21.6,  9. ])
+
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([8., 6., 7.])
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = ivy.multiply(x1, x2)
+        >>> print(y)
+        ivy.array([ 8., 12., 21.])
         """
         return ivy.multiply(self._data, x2, out=out)
 
