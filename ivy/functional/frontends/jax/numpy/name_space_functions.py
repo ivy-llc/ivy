@@ -226,6 +226,11 @@ def fmax(x1, x2):
 
 
 @inputs_to_ivy_arrays
+def argmin(a, axis=None, out=None, keepdims=None):
+    return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
+
+
+@inputs_to_ivy_arrays
 def array_equal(a1, a2, equal_nan: bool) -> bool:
     try:
         a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
