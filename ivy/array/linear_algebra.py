@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -51,7 +51,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -106,7 +106,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -130,6 +130,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
     def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        Examples
+        --------
+        >>> x = ivy.array([[2.,4.],[6.,7.]])
+        >>> y = x.det()
+        >>> print(y)
+        ivy.array(-10.)
+        """
         return ivy.det(self._data, out=out)
 
     def diagonal(
@@ -189,6 +197,45 @@ class ArrayWithLinearAlgebra(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            Input array having shape (..., M, N) and whose innermost two dimensions
+            form MxN matrices. Should have a floating-point data type.
+        ord
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
+        keepdims
+            If this is set to True, the axes which are normed over are left in
+            the result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        ivy.array(6.3)
+
+        >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
+        >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
+        >>> print(y)
+        ivy.array([[[ 4.24]],
+                [[11.4 ]]])
+        """
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
         )

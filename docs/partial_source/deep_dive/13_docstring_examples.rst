@@ -2,7 +2,7 @@ Docstring Examples
 ==================
 
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
 .. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
