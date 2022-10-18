@@ -56,16 +56,18 @@ You can also run the tests locally before making a PR. There are two ways to do 
 Using the bash file (runs Docker)
 ****
 
-Using the terminal, you can run all array-api tests for a certain backend using the bash file `test_array_api.sh`_:
+Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `test_array_api.sh`_:
 
 .. code-block:: none
 
         # /ivy
-        /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
+        # /bin/bash -e ./run_tests_CLI/test_array_api.sh  <insert_chosen_backend> test_<category>
+        /bin/bash -e ./run_tests_CLI/test_array_api.sh  jax test_linalg
 
-You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax.
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual
+test function categories in :code:`ivy/ivy_tests/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
-You can also run a specific test or test file, as often running *all* tests for a given framework is excessive.
+You can also run a specific test, as often running *all* tests in a file is excessive.
 To make this work, you should set the backend explicitly in the `_array_module.py` file, which can find it in the
 `array_api_tests` submodule. At the beginning of the file, you will see the following line of code :code:`array_module = None`.
 You need to comment out that line and add the following:
@@ -117,7 +119,8 @@ There are currently two ways to skip array-api tests:
 The first method was implemented before the second. Each :code:`<submodule>.txt` file contains a comprehensive list
 of functions which belong to that submodule, some of which are commented out. The commented-out functions are being
 skipped *only* for the backend(s) that is/are causing the failure, not all the backends. This is done by identifying
-any references to a backend in the commented-out line e.g. :code:`#trace # failing for jax, numpy due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202
+any references to a backend in the commented-out line e.g. :code:`#trace # failing for jax, numpy due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202`
+will cause :code:`test_trace` to be skipped on the jax and numpy backends.
 
 The latter method, on the other hand, skips a test on *all* backends, even if
 it is just failing on one. The :code:`ivy_tests/skips.txt` scheme was implemented to skip *specific test cases*. The array-api
