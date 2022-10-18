@@ -45,7 +45,7 @@ Ivy Tests
 .. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
 .. _`ivy tests forum`: https://discord.com/channels/799879767196958751/1028297802826121326
 .. _`test helpers`:  https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers

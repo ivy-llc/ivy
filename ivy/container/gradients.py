@@ -25,15 +25,16 @@ class ContainerWithGradients(ContainerBase):
         x
             An ivy container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -79,15 +80,16 @@ class ContainerWithGradients(ContainerBase):
         self
             An ivy container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -139,17 +141,18 @@ class ContainerWithGradients(ContainerBase):
             Whether to check if the data type is exclusively a variable, rather than an
             array. For frameworks like JAX that do not have exclusive variable types,
             the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is False.
+            check is the same for general arrays. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -216,17 +219,18 @@ class ContainerWithGradients(ContainerBase):
             Whether to check if the data type is exclusively a variable, rather than an
             array. For frameworks like JAX that do not have exclusive variable types,
             the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is False.
+            check is the same for general arrays. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -289,15 +293,16 @@ class ContainerWithGradients(ContainerBase):
         x
             An ivy variable or container of variables.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -333,15 +338,16 @@ class ContainerWithGradients(ContainerBase):
         self
             An ivy container of variables.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -379,15 +385,16 @@ class ContainerWithGradients(ContainerBase):
         x
             Array or Container for which to stop the gradient.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         preserve_type
             Whether to preserve gradient computation on ivy.Array instances. Default is
             True.
@@ -457,15 +464,16 @@ class ContainerWithGradients(ContainerBase):
         self
             Container for which to stop the gradient.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         preserve_type
             Whether to preserve gradient computation on ivy.Array instances. Default is
             True.
@@ -637,7 +645,7 @@ class ContainerWithGradients(ContainerBase):
             relative to the gradient.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -718,18 +726,19 @@ class ContainerWithGradients(ContainerBase):
             Learning rate(s), the rate(s) at which the weights should be
             updated relative to the gradient.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -804,7 +813,7 @@ class ContainerWithGradients(ContainerBase):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -869,7 +878,7 @@ class ContainerWithGradients(ContainerBase):
             (Default value = 1e-7).
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -944,7 +953,7 @@ class ContainerWithGradients(ContainerBase):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.

@@ -78,6 +78,32 @@ def test_tensorflow_sigmoid(
     )
 
 
+# tanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.tanh"
+    ),
+)
+def test_tensorflow_tanh(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.activations.tanh",
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
 # softmax
 @handle_cmd_line_args
 @given(
@@ -237,5 +263,87 @@ def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_
         fn_tree="keras.activations.swish",
         rtol=1e-2,
         atol=1e-2,
+        x=x[0],
+    )
+
+
+# elu
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-3,
+        max_value=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    alpha=st.one_of(
+        helpers.floats(
+            min_value=-3,
+            max_value=3,
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.elu"
+    ),
+)
+def test_tensorflow_elu(
+    dtype_x,
+    alpha,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.activations.elu",
+        x=x[0],
+        alpha=alpha,
+    )
+
+
+# selu
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-3,
+        max_value=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.keras.activations.selu"
+    ),
+)
+def test_tensorflow_selu(
+    dtype_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.activations.selu",
         x=x[0],
     )
