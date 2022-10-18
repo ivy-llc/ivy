@@ -110,7 +110,15 @@ def to_list(x: torch.Tensor, /) -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
-        return x.detach().cpu().tolist()
+        if x.dtype is torch.bfloat16:
+            default_dtype = ivy.default_float_dtype(as_native=True)
+            if default_dtype is torch.bfloat16:
+                x = x.to(torch.float32)
+            else:
+                x = x.to(default_dtype)
+            return x.detach().cpu().numpy().astype("bfloat16").tolist()
+        else:
+            return x.detach().cpu().numpy().tolist()
     raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
