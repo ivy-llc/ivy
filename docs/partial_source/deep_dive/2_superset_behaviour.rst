@@ -2,7 +2,7 @@ Superset Behaviour
 ==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
 

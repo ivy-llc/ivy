@@ -18,7 +18,6 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
-from numpy import prod
 
 
 # helpers
@@ -473,8 +472,8 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    start_dim: int = None,
-    end_dim: int = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -509,62 +508,59 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1,2], [3,4])
-    >>> y = ivy.flatten(x)
-    >>> print(y)
+    >>> x = np.array([1,2], [3,4])
+    >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = ivy.array(
-        [[[[5, 5, 0, 6],
-            [17, 15, 11, 16],
-            [6, 3, 13, 12]],
-          [[6, 18, 10, 4],
-            [5, 1, 17, 3],
-            [14, 14, 18, 6]]],
-        [[[12, 0, 1, 13],
-           [8, 7, 0, 3],
-           [19, 12, 6, 17]],
-         [[4, 15,  6, 15],
-           [0, 5, 17, 9],
-           [9, 3, 6, 19]]],
-        [[[17, 13, 11, 16],
-           [4, 18, 17, 4],
-           [10, 10, 9, 1]],
-         [[19, 17, 13, 10],
-           [ 4, 19, 16, 17],
-           [ 2, 12, 8, 14]]]])
-    >>> y = ivy.flatten(x, start_dim = 1, end_dim = 2)
-    >>> print(y)
+    >>> x = np.array(
+        [[[[ 5,  5,  0,  6],
+         [17, 15, 11, 16],
+         [ 6,  3, 13, 12]],
+
+        [[ 6, 18, 10,  4],
+         [ 5,  1, 17,  3],
+         [14, 14, 18,  6]]],
+
+
+       [[[12,  0,  1, 13],
+         [ 8,  7,  0,  3],
+         [19, 12,  6, 17]],
+
+        [[ 4, 15,  6, 15],
+         [ 0,  5, 17,  9],
+         [ 9,  3,  6, 19]]],
+
+
+       [[[17, 13, 11, 16],
+         [ 4, 18, 17,  4],
+         [10, 10,  9,  1]],
+
+        [[19, 17, 13, 10],
+         [ 4, 19, 16, 17],
+         [ 2, 12,  8, 14]]]]
+         )
+    >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
     ivy.array(
-        [[[ 5, 5, 0, 6],
+        [[[ 5,  5,  0,  6],
           [17, 15, 11, 16],
-          [6, 3, 13, 12],
-          [6, 18, 10, 4],
-          [5, 1, 17, 3],
-          [14, 14, 18, 6]],
-         [[12, 0, 1, 13],
-          [8, 7, 0, 3],
-          [19, 12, 6, 17],
-          [4, 15, 6, 15],
-          [0, 5, 17, 9],
-          [9, 3, 6, 19]],
+          [ 6,  3, 13, 12],
+          [ 6, 18, 10,  4],
+          [ 5,  1, 17,  3],
+          [14, 14, 18,  6]],
+
+         [[12,  0,  1, 13],
+          [ 8,  7,  0,  3],
+          [19, 12,  6, 17],
+          [ 4, 15,  6, 15],
+          [ 0,  5, 17,  9],
+          [ 9,  3,  6, 19]],
+
          [[17, 13, 11, 16],
-          [4, 18, 17, 4],
-          [10, 10,  9, 1],
+          [ 4, 18, 17,  4],
+          [10, 10,  9,  1],
           [19, 17, 13, 10],
           [ 4, 19, 16, 17],
-          [ 2, 12,  8, 14]]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> y = ivy.flatten(x)
-    >>> print(y)
-    [{
-        a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
-        b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
-    }]
+          [ 2, 12,  8, 14]]]))
     """
     if start_dim == end_dim and len(x.shape) != 0:
         return x
@@ -578,22 +574,20 @@ def flatten(
             f"Dimension out of range (expected to be in range of\
             {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
-    if start_dim is None:
-        start_dim = 0
-    if end_dim is None:
-        end_dim = x.shape[-1]
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
     if end_dim < 0:
         end_dim = len(x.shape) + end_dim
-
-    x_shape = x.shape
-    new_shape = (
-        tuple(x_shape[:start_dim])
-        + (int(prod(x_shape[start_dim : end_dim + 1])),)
-        + tuple(x_shape[end_dim + 1 :])
-    )
-    return ivy.reshape(x, new_shape)
+    c = 1
+    for i in range(start_dim, end_dim + 1):
+        c *= x.shape[i]
+    lst = [c]
+    if start_dim != 0:
+        for i in range(0, start_dim):
+            lst.insert(i, x.shape[i])
+    for i in range(end_dim + 1, len(x.shape)):
+        lst.insert(i, x.shape[i])
+    return ivy.reshape(x, tuple(lst))
 
 
 @to_native_arrays_and_back
@@ -1185,3 +1179,124 @@ def median(
     ivy.array([6.5, 4.5, 2.5])
     """
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def flipud(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Flip array in the up/down direction.
+    Flip the entries in each column in the up/down direction.
+    Rows are preserved, but appear in a different order than before.
+
+    Parameters
+    ----------
+    m
+        The array to be flipped.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array corresponding to input array with elements
+        order reversed along axis 0.
+
+    Examples
+    --------
+    >>> m = ivy.diag([1, 2, 3])
+    >>> ivy.flipud(m)
+    ivy.array([[ 0.,  0.,  3.],
+        [ 0.,  2.,  0.],
+        [ 1.,  0.,  0.]])
+    """
+    return ivy.current_backend().flipud(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmod(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise remainder of divisions of two arrays.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise remainder of divisions.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ 0,  3,  0])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ nan,  nan,  nan])
+    """
+    return ivy.current_backend().fmod(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmax(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise maximums of two arrays. Differs from ivy.maximum
+    in the case where one of the elements is NaN. ivy.maximum returns the NaN element
+    while ivy.fmax returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise maximums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 2.,  5.,  4.])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 0,  0,  nan])
+    """
+    return ivy.current_backend().fmax(x1, x2, out=out)
