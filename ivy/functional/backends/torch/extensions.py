@@ -308,7 +308,14 @@ def flipud(
 flipud.support_native_out = False
 
 
-def dct(x: torch.Tensor, type: int = 2, norm: str = "ortho"):
+def dct(x: torch.Tensor, type: int = 2, n: int = None, norm: str = "ortho"):
+    if n is not None:
+        signal_len = x.shape[-1]
+        if n <= signal_len:
+            x = x[..., :n]
+        else:
+            # padding at dim=-1
+            x = torch.nn.functional.pad(x, (0, n - signal_len))
     real_zero = torch.tensor(0.0, dtype=x.dtype)
     axis_dim = x.shape[-1]
     axis_dim_float = torch.tensor(axis_dim, dtype=x.dtype)
