@@ -211,6 +211,8 @@ def test_torch_greater(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        has_aliases=True,
+        all_aliases=["gt"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
