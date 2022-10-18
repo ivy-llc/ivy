@@ -151,11 +151,9 @@ def Gather(
     params,
     indices,
     validate_indices=None,
-    axis=None,
-    batch_dims=0,
-    name=None
+    name="Gather"
 ):
-    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+    return ivy.gather(params, indices, axis=0, batch_dims=0)
 
 
 @to_ivy_arrays_and_back

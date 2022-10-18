@@ -1384,6 +1384,8 @@ def test_tensorflow_Cumprod(
     params_indices_others=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
+        disable_random_axis=True,
+        axis_zero=True,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1391,7 +1393,7 @@ def test_tensorflow_Cumprod(
     ),
 )
 def test_tensorflow_Gather(params_indices_others, as_variable, native_array):
-    dtypes, params, indices, axis, batch_dims = params_indices_others
+    dtypes, params, indices = params_indices_others
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -1402,8 +1404,7 @@ def test_tensorflow_Gather(params_indices_others, as_variable, native_array):
         fn_tree="raw_ops.Gather",
         params=params,
         indices=indices,
-        axis=axis,
-        batch_dims=batch_dims
+        validate_indices=True
     )
 
 
