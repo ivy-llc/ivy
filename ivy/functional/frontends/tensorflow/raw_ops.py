@@ -146,8 +146,17 @@ def FloorDiv(*, x, y, name="FloorDiv"):
 
 
 @to_ivy_arrays_and_back
-def Gather(*, params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
+def Gather(
+    *,
+    params,
+    indices,
+    validate_indices=None,
+    axis=None,
+    batch_dims=0,
+    name=None
+):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
 
 @to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
