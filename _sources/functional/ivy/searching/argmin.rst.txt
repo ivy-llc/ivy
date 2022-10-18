@@ -5,9 +5,9 @@ argmin
 
 .. autofunction:: ivy.array.array_methods.argmin
 
-.. autofunction:: ivy.container.container_methods.argmin
-
 .. autofunction:: ivy.container.container_methods.static_argmin
+
+.. autofunction:: ivy.container.container_methods.argmin
 |
 | **Supported Frameworks:**
 
