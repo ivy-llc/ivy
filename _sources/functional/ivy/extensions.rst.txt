@@ -26,6 +26,7 @@ Extensions
    extensions/kaiser_window.rst
    extensions/moveaxis.rst
    extensions/ndenumerate.rst
+   extensions/ndindex.rst
    extensions/pad.rst
    extensions/heaviside.rst
    extensions/median.rst
