@@ -452,7 +452,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_numpy(self, copy=copy)
 
-    def to_list(self: ivy.Array) -> List:
+    def to_list(self: ivy.Array, /) -> List:
         """
         ivy.Array instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
