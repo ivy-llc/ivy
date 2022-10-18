@@ -6,7 +6,6 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper, _not_too_close_to_zero
 
 
 # Acos
@@ -1975,9 +1974,24 @@ def test_tensorflow_RightShift(
     )
 
 
+@st.composite
+def _pow_helper_tf(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True),
+            num_arrays=2
+        )
+    )
+    dtype1, dtype2 = dtype
+    x1, x2 = x
+    if "int" in dtype2:
+        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
+    return [dtype1, dtype2], [x1, x2]
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x=pow_helper(),
+    dtype_and_x=_pow_helper_tf(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
@@ -1989,18 +2003,6 @@ def test_tensorflow_Pow(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
-
-    # Make sure x2 is non-negative when both is integer
-    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
-        x[1] = np.abs(x[1])
-
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
