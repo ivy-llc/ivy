@@ -342,11 +342,11 @@ def norm_params(draw, *, available_dtypes,
                 max_num_dims=5,
                 min_dim_size=1,
                 max_dim_size=4,
-                min_axis=-3,
-                max_axis=2,
+                min_axis=-1,
+                max_axis=3,
                 force_int_axis=True,
                 max_axes_size=2, safety_factor_scale="log",
-                valid_axis=True, large_abs_safety_factor=2):
+                valid_axis=True, large_abs_safety_factor=3):
     result = draw(helpers.dtype_values_axis(
         available_dtypes=available_dtypes,
         min_num_dims=min_num_dims,
@@ -361,10 +361,14 @@ def norm_params(draw, *, available_dtypes,
     ))
     dtype, x, axis = result
     if type(axis) in [tuple, list]:
-        ord_param = draw(st.sampled_from([None, 'fro',
-                                          'nuc', 0, 1, 2, -1, -2, np.inf, -np.inf]))
+        if len(axis) == 2:
+            ord_param = draw(st.sampled_from(['fro',
+                                              'nuc', 1, 2, -1, -2, np.inf, -np.inf]))
+        else:
+            axis = axis[0]
+            ord_param = draw(st.sampled_from([0, 1, 2, -1, -2, np.inf, -np.inf]))
     else:
-        ord_param = draw(st.sampled_from([None, 0, 1, 2, -1, -2, np.inf, -np.inf]))
+        ord_param = draw(st.sampled_from([0, 1, 2, -1, -2, np.inf, -np.inf]))
     return dtype, x, axis, ord_param
 
 
@@ -379,7 +383,7 @@ def norm_params(draw, *, available_dtypes,
         max_dim_size=4,
         min_axis=-3,
         max_axis=2,
-        force_int_axis=True,
+        force_int_axis=False,
         max_axes_size=2, safety_factor_scale="log",
         valid_axis=True, large_abs_safety_factor=2
     ).filter(lambda x: 'bfloat16' not in x[0]),
