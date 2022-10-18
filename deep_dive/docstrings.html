@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docstrings &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Docstring Examples" href="docstring_examples.html" />
+    <link rel="prev" title="Function Arguments" href="function_arguments.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Docstrings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/docstrings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docstrings">
+<h1>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this heading"></a></h1>
+<p>All functions in the Ivy API at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough docstrings.
+In contrast, all backend implementations at
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should not have any docstrings,
+on account that these are effectively just different instantiations of the functions at
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
+<p>In order to explain how docstrings should be written, we will use <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> as an example.</p>
+<p>Firstly, if the function exists in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, the we start with the corresponding docstring as a
+template. These docstrings can be found under <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api">spec/API_specification/array_api</a>.</p>
+<p>Important: you should open the file in <strong>raw</strong> format.
+If you copy directly from the file preview on GitHub before clicking <strong>raw</strong>,
+then the newlines will <strong>not</strong> be copied over, and the docstring will rendering incorrectly in the online docs.</p>
+<p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> docstring for <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+**Special cases**
+
+For floating-point operands,
+
+- If ``x_i`` is ``NaN``, the result is ``NaN``.
+- If ``x_i`` is ``+0``, the result is ``+0``.
+- If ``x_i`` is ``-0``, the result is ``-0``.
+- If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+Parameters
+----------
+x: array
+    input array whose elements are expressed in radians. Should have a floating-point data type.
+
+Returns
+-------
+out: array
+    an array containing the tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+</pre></div>
+</div>
+<p>This is a good starting point. But we need to make some changes. Firstly, given that we are using type hints, repeating
+all of the types also in the docs would be a needless duplication. Therefore, we simply remove all type info from the
+docstring like so:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-x: array</span><span class="w"></span>
+<span class="gi">+x</span><span class="w"></span>
+<span class="gd">-out: array</span><span class="w"></span>
+<span class="gi">+out</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> defines a subset of behaviour that each function must adhere to.
+Ivy extends many of these functions with additional behaviour and arguments.
+In the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, there is also the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code> which needs to be added to the docstring,
+like so:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+out</span><span class="w"></span>
+<span class="gi">+    optional output array, for writing the result to. It must have a shape that the inputs</span><span class="w"></span>
+<span class="gi">+    broadcast to.</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Because of this <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the input, we also need to rename the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the return, which
+is the default name used in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. We change this to <code class="code docutils literal notranslate"><span class="pre">ret</span></code>:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-out</span><span class="w"></span>
+<span class="gi">+ret</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Next, we add a section in the docstring which explains that it has been modified from the version available in the
+<a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+This function conforms to the `Array API Standard</span><span class="w"></span>
+<span class="gi">+&lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span><span class="w"></span>
+<span class="gi">+`docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_</span><span class="w"></span>
+<span class="gi">+in the standard.</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Finally, <strong>if</strong> the function is <em>nestable</em>, then we add a simple explanation for this as follows:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+Both the description and the type hints above assumes an array input for simplicity,</span><span class="w"></span>
+<span class="gi">+but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span><span class="w"></span>
+<span class="gi">+instances in place of any of the arguments.</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Following these changes, the new docstring is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Calculates an implementation-dependent approximation to the tangent, having
+domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
+element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
+expressed in radians.
+
+**Special cases**
+
+For floating-point operands,
+
+- If ``x_i`` is ``NaN``, the result is ``NaN``.
+- If ``x_i`` is ``+0``, the result is ``+0``.
+- If ``x_i`` is ``-0``, the result is ``-0``.
+- If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+Parameters
+----------
+x
+    input array whose elements are expressed in radians. Should have a
+    floating-point data type.
+out
+    optional output array, for writing the result to. It must have a shape that the inputs
+    broadcast to.
+
+Returns
+-------
+ret
+    an array containing the tangent of each element in ``x``. The return must have a
+    floating-point data type determined by :ref:`type-promotion`.
+
+This function conforms to the `Array API Standard
+&lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the
+`docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_
+in the standard.
+
+Both the description and the type hints above assumes an array input for simplicity,
+but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+instances in place of any of the arguments.
+</pre></div>
+</div>
+<p>If the function that you are writing a docstring for is <strong>not</strong> in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>,
+then you must simply follow this general template as closely as possible,
+but instead you must use your own judgment when adding descriptions for the overall function,
+and also for each of its arguments.</p>
+<p><strong>Classes</strong></p>
+<p>The instance methods in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
+a function in the functional API do not require thorough docstrings, on account that
+these instance methods require no explanation beyond that provided in the docstring
+for the wrapped function.</p>
+<p>Therefore, these docstrings should all simply contain the following text:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.&lt;</span><span class="n">Array</span><span class="o">|</span><span class="n">Container</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">instance</span><span class="o">|</span><span class="n">static</span><span class="o">|</span><span class="n">special</span><span class="o">|</span><span class="n">reverse</span> <span class="n">special</span><span class="o">&gt;</span> <span class="n">method</span> <span class="n">variant</span> <span class="n">of</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;.</span> <span class="n">This</span> <span class="n">method</span> <span class="n">simply</span> <span class="n">wraps</span> <span class="n">the</span>
+<span class="n">function</span><span class="p">,</span> <span class="ow">and</span> <span class="n">so</span> <span class="n">the</span> <span class="n">docstring</span> <span class="k">for</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;</span> <span class="n">also</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">this</span> <span class="n">method</span>
+<span class="k">with</span> <span class="n">minimal</span> <span class="n">changes</span><span class="o">.</span>
+
+<span class="n">Parameters</span>
+<span class="o">----------</span>
+<span class="o">&lt;</span><span class="n">parameters</span> <span class="k">with</span> <span class="n">their</span> <span class="n">description</span><span class="o">&gt;</span>
+
+<span class="n">Returns</span>
+<span class="o">-------</span>
+<span class="o">&lt;</span><span class="k">return</span> <span class="n">value</span> <span class="k">with</span> <span class="n">its</span> <span class="n">description</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The exception to this is <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> <code class="code docutils literal notranslate"><span class="pre">special</span></code> method docstrings,
+which should instead use the following text, as these do not <em>directly</em> wrap a function
+in Ivy’s functional API, but rather wrap the pure operator functions themselves,
+which can be called on any types that support the corresponding special methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>ivy.Container &lt;special|reverse special&gt; method for the &lt;operator_name&gt; operator,
+calling :code:`operator.&lt;operator_name&gt;` for each of the corresponding leaves of
+the two containers.
+
+Parameters
+----------
+&lt;parameters with their description&gt;
+
+Returns
+-------
+&lt;return value with its description&gt;
+</pre></div>
+</div>
+<p>Let’s take <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as an example.
+The docstring for
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191">ivy.add</a>
+is thorough, as explained above.
+However, the docstrings for
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36">ivy.Array.add</a>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209">ivy.Container.add</a>
+and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125">ivy.Container.static_add</a>
+all follow the succinct pattern outlined above.
+Likewise, the docstrings for the special methods
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310">ivy.Array.__add__</a>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359">ivy.Array.__radd__</a>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106">ivy.Container.__add__</a>,
+and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171">ivy.Container.__radd__</a>,
+also follow the succinct pattern outlined above.
+Note that these docstrings all <em>also</em> include examples,
+which we will cover in the next section.</p>
+<p>For all other classes, such as the various layers at
+<code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>,
+then we should add full and thorough docstrings for both
+the <strong>contstructor</strong> and also <strong>all methods</strong>.</p>
+<p>This is the case even when the class directly wraps a function in the functional API.
+For example, the class
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13">ivy.Linear</a>
+wraps the function
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22">ivy.linear</a>,
+but does so in a stateful manner
+with the variables stored internally in the instance of the class.
+Even though the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> in the forward pass
+defined in <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84">ivy.Linear._forward</a>,
+the function signatures of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Linear._forward()</span></code> are still
+quite distinct, with the former including all trainable variables explicitly,
+and the latter having these implicit as internal instance attributes of the class.</p>
+<p>Therefore, with the exception of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+methods which directly wrap functions in the functional API,
+we should always add full and thorough docstrings to all methods of all other classes in Ivy,
+including cases where these also directly wrap functions in the functional API.</p>
+<p><strong>Round Up</strong></p>
+<p>These examples should hopefully give you a good understanding of what is required when adding docstings.</p>
+<p>If you have any questions,please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738313897197600">docstrings channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297612408913982">docstrings forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
+</iframe></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="function_arguments.html" class="btn btn-neutral float-left" title="Function Arguments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docstring_examples.html" class="btn btn-neutral float-right" title="Docstring Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

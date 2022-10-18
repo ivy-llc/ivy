@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Continuous Integration &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Open Tasks" href="../contributing/open_tasks.html" />
+    <link rel="prev" title="Exception Handling" href="exception_handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Continuous Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#array-api-tests">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-core-tests">Ivy Core Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-nn-tests">Ivy NN Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-stateful-tests">Ivy Stateful Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-frontend-tests">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci-pipeline">CI Pipeline ➡️</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#push">Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pull-request">Pull Request</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-tests-cron-jobs">Scheduled Tests (Cron Jobs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard">Dashboard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Continuous Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/continuous_integration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="continuous-integration">
+<h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading"></a></h1>
+<p>We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository. This makes sure that:</p>
+<ol class="arabic simple">
+<li><p>The commit doesn’t introduce any new errors, in the code base. ✅</p></li>
+<li><p>The developer can easily debug the code when finding the source of an error. 🔍</p></li>
+</ol>
+<p>We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.</p>
+<section id="github-actions">
+<h2>GitHub Actions<a class="headerlink" href="#github-actions" title="Permalink to this heading"></a></h2>
+<p>GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. Workflows can be configured to be triggered on the following events:</p>
+<ul class="simple">
+<li><p><strong>Push</strong>: The Workflow triggers on a push to the repository with the possibility of getting started only on changes to specific files.</p></li>
+<li><p><strong>Pull Requests</strong>: The Workflow triggers on any pull request made to the repository.</p></li>
+<li><p><strong>Schedule</strong>: The Workflow runs on a fixed schedule, for ex., every hour, every day, etc. (Similar to Cron Jobs in Ubuntu).</p></li>
+</ul>
+<p>All the workflows used by Ivy are defined in the .github/workflows directory.</p>
+<p>The following sections describe the relevant Workflows used in the Ivy Repository, that implement the CI Pipeline. Each of the workflows described below, are triggered on:</p>
+<ol class="arabic">
+<li><p>Any push made to the repository.</p></li>
+<li><p>Any pull request made to the repository of the following types:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">labeled</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">opened</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">synchronize</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">reopened</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">review_requested</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="array-api-tests">
+<h2>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml">test-array-api.yml</a> workflow runs the Array API Tests. Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab.</p>
+<p>The Workflow runs the Array API Tests for each backend and submodule pair. More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/array_api_tests.rst.html">here</a>.</p>
+</section>
+<section id="ivy-core-tests">
+<h2>Ivy Core Tests<a class="headerlink" href="#ivy-core-tests" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core.yml">test-ivy-core.yml</a> Workflow runs the Ivy Core Tests.</p>
+<p>Individual Tests in the Workflow are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the corresponding test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_core/test_s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/helpers.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/array/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/container/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/b/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/s.py</span></code></p></li>
+</ol>
+<p>In case you want to run all the Ivy Core Tests, a manually-triggered workflow is available <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-manual.yml">here</a> that can be dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> tab.</p>
+<p>More details about Ivy Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_tests.html">here</a>.</p>
+</section>
+<section id="ivy-nn-tests">
+<h2>Ivy NN Tests<a class="headerlink" href="#ivy-nn-tests" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn.yml">test-ivy-core.yml</a> workflow runs the Ivy NN Tests.</p>
+<p>Similar to the Ivy Core Tests Workflow, Individual Tests are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_nn/test_s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/helpers.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/array/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/container/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/b/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/s.py</span></code></p></li>
+</ol>
+<p>Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy NN Tests, a manually-triggered workflow is available <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn-manual.yml">here</a>.</p>
+</section>
+<section id="ivy-stateful-tests">
+<h2>Ivy Stateful Tests<a class="headerlink" href="#ivy-stateful-tests" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful.yml">test-ivy-stateful.yml</a> workflow runs the Ivy Stateful Tests.</p>
+<p>In this case too, Individual Tests are triggered only on changes to specific files. For a given backend <code class="code docutils literal notranslate"><span class="pre">b</span></code> and submodule <code class="code docutils literal notranslate"><span class="pre">s</span></code>, the test is run only if the commit changes the following files (and otherwise, it is skipped):</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_stateful/test_s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/helpers.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/array/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/container/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/b/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/s.py</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy/stateful/s.py</span></code></p></li>
+</ol>
+<p>Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy Stateful Tests, there is a manually-triggered workflow available <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful-manual.yml">here</a>.</p>
+</section>
+<section id="ivy-frontend-tests">
+<h2>Ivy Frontend Tests<a class="headerlink" href="#ivy-frontend-tests" title="Permalink to this heading"></a></h2>
+<p>The following workflows run the Frontend tests for the corresponding backend:</p>
+<ol class="arabic simple">
+<li><p><strong>Jax</strong>: <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-jax.yml">test-frontend-jax.yml</a></p></li>
+<li><p><strong>NumPy</strong>: <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-numpy.yml">test-frontend-numpy.yml</a></p></li>
+<li><p><strong>TensorFlow</strong>: <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-tensorflow.yml">test-frontend-tensorflow.yml</a></p></li>
+<li><p><strong>PyTorch</strong>: <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-torch.yml">test-frontend-torch.yml</a></p></li>
+</ol>
+<p>Each of these workflows can also be Manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab. More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html">here</a>.</p>
+</section>
+<section id="ci-pipeline">
+<h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading"></a></h2>
+<p>The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.</p>
+<section id="push">
+<h3>Push<a class="headerlink" href="#push" title="Permalink to this heading"></a></h3>
+<p>Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:</p>
+<img alt="Push" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push.png?raw=true" />
+<p>Clicking on the yellow dot (🟡) (which changes to a tick (✔) or cross (❌), when the tests have been completed) yields a view of the test-suite results as shown below:</p>
+<img alt="Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push-2.png?raw=true" />
+<p>Click on the “Details” link corresponding to the failing tests, in order to identify the cause of the failure. It redirects to the Actions Tab, showing details of the failure, as shown below:</p>
+<img alt="Workflow Result" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push-3.png?raw=true" />
+<p>Click on the corresponding section, as given below, in order to see the logs of the failing tests:</p>
+<ol class="arabic simple">
+<li><p><strong>Array API Tests</strong>: Run Array Api Tests</p></li>
+<li><p><strong>Ivy Core Tests</strong>: Run Functional-Core Tests</p></li>
+<li><p><strong>Ivy NN Tests</strong>: Run Functional-NN Tests</p></li>
+<li><p><strong>Ivy Stateful Tests</strong>: Run Stateful Tests</p></li>
+<li><p><strong>Ivy Frontend Tests</strong>: Run Frontend Test</p></li>
+</ol>
+<p>You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.</p>
+</section>
+<section id="pull-request">
+<h3>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h3>
+<p>In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:</p>
+<img alt="PR Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/pull-request1.png?raw=true" />
+<p>Clicking on the “Details” link redirects to the Action Log. The rest of the procedure remains the same as given in the Push section above.</p>
+</section>
+</section>
+<section id="scheduled-tests-cron-jobs">
+<h2>Scheduled Tests (Cron Jobs)<a class="headerlink" href="#scheduled-tests-cron-jobs" title="Permalink to this heading"></a></h2>
+<p>In order to make sure that no tests are ignored for a long time, as well as, decouple the commit frequency with the testing frequency, we use Scheduled Tests (Cron Jobs) to run an Ivy Core, Ivy NN, and Ivy Stateful Test every hour. The following workflows run cron jobs:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-cron.yml">test-ivy-core-cron.yml</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn-cron.yml">test-ivy-nn-cron.yml</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-stateful-cron.yml">test-ivy-stateful-cron.yml</a></p></li>
+</ol>
+<p>The cron jobs are used to update the latest results in the Dashboard, as explained in the following section.</p>
+</section>
+<section id="dashboard">
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h2>
+<p>In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test. These are the links to the Dashboard for the given workflows:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md">Array API Tests</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md">Ivy Core Tests</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md">Ivy NN Tests</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md">Ivy Stateful Tests</a></p></li>
+</ol>
+<p>The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">continuous integration channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">continuous integration forum</a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exception_handling.html" class="btn btn-neutral float-left" title="Exception Handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../contributing/open_tasks.html" class="btn btn-neutral float-right" title="Open Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

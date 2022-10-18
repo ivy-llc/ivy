@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navigating the Code &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Function Types" href="function_types.html" />
+    <link rel="prev" title="Deep Dive" href="../deep_dive.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Navigating the Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#categorization">Categorization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-api">Backend API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submodule-helper-functions">Submodule Helper Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-pinning">Version Pinning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Navigating the Code</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/navigating_the_code.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="navigating-the-code">
+<h1>Navigating the Code<a class="headerlink" href="#navigating-the-code" title="Permalink to this heading"></a></h1>
+<section id="categorization">
+<h2>Categorization<a class="headerlink" href="#categorization" title="Permalink to this heading"></a></h2>
+<p>Ivy uses the following categories taken from the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/constants.py">constants</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/creation.py">creation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/data_type.py">data_type</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/elementwise.py">elementwise</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/linear_algebra.py">linear_algebra</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/manipulation.py">manipulation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/searching.py">searching</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/set.py">set</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/sorting.py">sorting</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/statistical.py">statistical</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/utility.py">utility</a></p></li>
+</ul>
+<p>In addition to these, we also add the following categories,
+used for additional functions in Ivy that are not in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/activations.py">activations</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/compilation.py">compilation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py">device</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py">general</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py">gradients</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/image.py">image</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py">layers</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py">losses</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py">meta</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/nest.py">nest</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/norms.py">norms</a></p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/random.py">random</a></p></li>
+</ul>
+<p>Some functions that you’re considering adding might overlap several of these categorizations,
+and in such cases you should look at the other functions included in each file,
+and use your best judgement for which categorization is most suitable.</p>
+<p>We can always suggest a more suitable location when reviewing your pull request if needed 🙂</p>
+</section>
+<section id="submodule-design">
+<h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this heading"></a></h2>
+<p>Ivy is designed so that all methods are called directly from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.matmul()</span></code>,
+and not <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.some_namespace.matmul()</span></code>. Therefore, inside any of the folders <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code>,
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.backends.some_backend</span></code>, <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.backends.another_backend</span></code> the functions can be moved
+to different files or folders without breaking anything at all. This makes it very simple to refactor and re-organize
+parts of the code structure in an ongoing manner.</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> inside each of the subfolders are very similar,
+importing each function via <code class="code docutils literal notranslate"><span class="pre">from</span> <span class="pre">.file_name</span> <span class="pre">import</span> <span class="pre">*</span></code>
+and also importing each file as a submodule via <code class="code docutils literal notranslate"><span class="pre">from</span> <span class="pre">.</span> <span class="pre">import</span> <span class="pre">file_name</span></code>.
+For example, an extract from
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/__init__.py">ivy/ivy/functional/ivy/__init__.py</a>
+is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">elementwise</span>
+<span class="kn">from</span> <span class="nn">.elementwise</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">general</span>
+<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># etc.</span>
+</pre></div>
+</div>
+</section>
+<section id="ivy-api">
+<h2>Ivy API<a class="headerlink" href="#ivy-api" title="Permalink to this heading"></a></h2>
+<p>All function signatures for the Ivy API are defined in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
+look something like the following, (explained in much more detail in the following sections):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    My function does something cool.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        This is an important note.</span>
+
+<span class="sd">    **Special Cases**</span>
+
+<span class="sd">    For this particular case,</span>
+
+<span class="sd">    - If ``x`` is ``NaN``, do something</span>
+<span class="sd">    - If ``y`` is ``-0``, do something else</span>
+<span class="sd">    - etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    axes</span>
+<span class="sd">        the axes along which to perform the op.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        array data type.</span>
+<span class="sd">    device</span>
+<span class="sd">        the device on which to place the new array.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a cooler array.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Some cool examples go here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We follow the <a class="reference external" href="https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root">Array API Standard convention</a> about positional and keyword arguments.</p>
+<ul class="simple">
+<li><p>Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.</p></li>
+<li><p>Optional parameters must be keyword-only arguments</p></li>
+</ul>
+<p>This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
+of argument names when calling functions, and this will increase our flexibility for extending function behaviour in
+future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
+rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments are always keyword-only.
+Arrays always have type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
+All functions which produce a single array include the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
+The reasons for each of these features are explained in the following sections.</p>
+</section>
+<section id="backend-api">
+<h2>Backend API<a class="headerlink" href="#backend-api" title="Permalink to this heading"></a></h2>
+<p>Code in the backend submodules such as <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> should then look something like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">something_cool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments are again all keyword-only,
+but <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> are now required arguments, rather than optional as they were in the Ivy API.
+All arrays also now have the same type hint <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>,
+rather than <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
+The backend methods also should not add a docstring.
+Again, the reasons for these features are explained in the following sections.</p>
+</section>
+<section id="submodule-helper-functions">
+<h2>Submodule Helper Functions<a class="headerlink" href="#submodule-helper-functions" title="Permalink to this heading"></a></h2>
+<p>At times, helper functions specific to submodule is required to:</p>
+<ul class="simple">
+<li><p>keep the code clean and readable</p></li>
+<li><p>be imported in their respective backend implementations</p></li>
+</ul>
+<p>To have a better idea on this, let’s look at an example!</p>
+<p><strong>Helper in Ivy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/creation.py</span>
+<span class="k">def</span> <span class="nf">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span>
+    <span class="p">),</span> <span class="s2">&quot;the fill_value and data type are not compatible&quot;</span>
+</pre></div>
+</div>
+<p>In the <code class="xref py py-func docutils literal notranslate"><span class="pre">full_like()</span></code> function in <code class="xref py py-mod docutils literal notranslate"><span class="pre">creation.py</span></code>, the types of
+<code class="code docutils literal notranslate"><span class="pre">fill_value</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> has to be verified to avoid errors. This
+check has to be applied to all backends, which means the related code is common
+and identical. In this case, we can extract the code to be a helper function on
+its own, placed in its related submodule (<code class="xref py py-mod docutils literal notranslate"><span class="pre">creation.py</span></code> here). In this
+example, the helper function is named as
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_assert_fill_value_and_dtype_are_compatible()</span></code>.</p>
+<p>Then, we import this submodule-specific helper function to the respective backends,
+where examples for each backend is shown below.</p>
+<p><strong>Jax</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/backends/jax/creation.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.creation</span> <span class="kn">import</span> <span class="n">_assert_fill_value_and_dtype_are_compatible</span>
+
+<span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">JaxArray</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">jaxlib</span><span class="o">.</span><span class="n">xla_extension</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+    <span class="n">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_device</span><span class="p">(</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NumPy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/backends/numpy/creation.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.creation</span> <span class="kn">import</span> <span class="n">_assert_fill_value_and_dtype_are_compatible</span>
+
+<span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>TensorFlow</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/backends/tensorflow/creation.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.creation</span> <span class="kn">import</span> <span class="n">_assert_fill_value_and_dtype_are_compatible</span>
+
+<span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">DType</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="n">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Torch</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/backends/torch/creation.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.creation</span> <span class="kn">import</span> <span class="n">_assert_fill_value_and_dtype_are_compatible</span>
+
+<span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="version-pinning">
+<h2>Version Pinning<a class="headerlink" href="#version-pinning" title="Permalink to this heading"></a></h2>
+<p>At any point in time, Ivy’s development will be predominantly focused around a
+particular version (and all prior versions) for each of the backend frameworks.
+These are the pinned versions shown in the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/master/requirements/optional.txt">optional.txt</a>
+file.</p>
+<p>At the time of pinning, these will be the most up-to-date versions for each framework,
+but new releases of the backend frameworks will then of course be made and there will
+sometimes be a short period of time in which we are working towards the next Ivy
+release, and we opt to keep the repo pinned to the older version until the next release
+is out. This helps to prevent our work growing in an unbounded manner, as we work
+towards getting all tests passing and everything in good shape before making the release.
+If we always pulled the latest version of every framework into master, we might end up
+constantly battling new subtle bugs, without knowing whether the bugs come from the
+change in version or our own incremental changes to the code. Therefore, when working
+towards an Ivy release, keeping the backends temporarily pinned essentially ensures that
+our development target remains fixed for this period of time.</p>
+<p>As an example, at the time of writing the latest version of PyTorch is <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>,
+whereas Ivy is pinned to version <code class="code docutils literal notranslate"><span class="pre">1.11.0</span></code>.
+Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not
+include any arguments or behaviours which are exclusive to PyTorch version <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for how to navigate the Ivy codebase.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737793476345888">navigating the code channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028295746807660574">navigating the code forum</a> !</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+</iframe></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../deep_dive.html" class="btn btn-neutral float-left" title="Deep Dive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="function_types.html" class="btn btn-neutral float-right" title="Function Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

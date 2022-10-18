@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formatting &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Function Arguments" href="function_arguments.html" />
+    <link rel="prev" title="Function Wrapping" href="function_wrapping.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Formatting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lint-checks">Lint Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-commit-hook">Pre-Commit Hook</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Formatting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/formatting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="formatting">
+<h1>Formatting<a class="headerlink" href="#formatting" title="Permalink to this heading"></a></h1>
+<section id="lint-checks">
+<h2>Lint Checks<a class="headerlink" href="#lint-checks" title="Permalink to this heading"></a></h2>
+<p>To ensure that Ivy is always formatted correctly, <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> is used to run
+lint checks on all Python files in the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml">CI</a>.
+Some of the main things which <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> checks for are listed below.</p>
+<p><strong>Imports</strong></p>
+<p>Module imports are checked to detect:</p>
+<ul class="simple">
+<li><p>unused imports</p></li>
+<li><p>module imported but not used</p></li>
+<li><p>module used without imports</p></li>
+<li><p>duplicate imports</p></li>
+<li><p>undefined import names</p></li>
+</ul>
+<p><strong>Syntax</strong></p>
+<p>Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
+Some examples are:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">break</span></code> or <code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement outside a <code class="code docutils literal notranslate"><span class="pre">for</span></code> or <code class="code docutils literal notranslate"><span class="pre">while</span></code> loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement in the <code class="code docutils literal notranslate"><span class="pre">finally</span></code> block of a loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">yield</span></code> or <code class="code docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code> statement outside a function</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">return</span></code> statement used with arguments in a generator, or outside a function or method</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">except:</span></code> block not being the last exception handler</p></li>
+<li><p>syntax or length errors in docstrings, comments, or annotations</p></li>
+</ul>
+<p><strong>Literals</strong></p>
+<p>Literals formatting are often used in a string statement; some common checks related to
+this are:</p>
+<ul class="simple">
+<li><p>invalid <code class="code docutils literal notranslate"><span class="pre">%</span></code> format</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">%</span></code> format with missing arguments or unsupported character</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">.format(...)</span></code> with invalid format, missing or unused arguments</p></li>
+<li><p>f-string without placeholders</p></li>
+</ul>
+<p><strong>Others</strong></p>
+<p>There are many more types of checks which <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> can perform.
+These include but are not limited to:</p>
+<ul class="simple">
+<li><p>repeated <code class="code docutils literal notranslate"><span class="pre">dict</span></code> key or variable assigned to different values</p></li>
+<li><p>star-unpacking assignment with too many expressions</p></li>
+<li><p>assertion test is a <code class="code docutils literal notranslate"><span class="pre">tuple</span></code>, which is always <code class="code docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p>use of <code class="code docutils literal notranslate"><span class="pre">==</span></code> or <code class="code docutils literal notranslate"><span class="pre">!=</span></code> to compare <code class="code docutils literal notranslate"><span class="pre">str</span></code>, <code class="code docutils literal notranslate"><span class="pre">bytes</span></code> or <code class="code docutils literal notranslate"><span class="pre">int</span></code> literals</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplemented</span></code> should be <code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplementedError</span></code></p></li>
+</ul>
+</section>
+<section id="pre-commit-hook">
+<h2>Pre-Commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permalink to this heading"></a></h2>
+<p>In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
+we make use of the pre-commit package. The installation is explained in
+the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#pre-commit">pre-commit guide</a>.</p>
+<p>The pre-commit hook runs the <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> lint checks before each commit. This is
+efficient and useful in preventing errors being pushed to the repository.</p>
+<p>In the case where errors are found, error messages will be raised and committing will
+be unsuccessful until the mistake is corrected. If the errors are related to argument
+formatting, it will be reformatted automatically.</p>
+<p>For example, the line length limit might be exceeded if arguments are all added in a
+single line of code like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>When a commit is attempted, <cite>pre-commit</cite> would detect this error by running the lint
+check, and it would then reformat the arguments automatically.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>black....................................................................Failed
+- hook id: black
+- files were modified by this hook
+
+reformatted ivy/functional/ivy/general.py
+
+All done! ✨ 🍰 ✨
+1 file reformatted.
+
+flake8...................................................................Passed
+</pre></div>
+</div>
+<p>The above message indicates that a file disobeying the formatting rules is detected
+and reformatting has taken place successfully. The correctly formatted code, with each
+argument added on a new line, has been saved and the related file(s) can now be staged
+and committed accordingly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>If the code is all formatted correctly, then in this case <cite>pre-commit</cite> will not modify
+the code. For example, when the line limit is not exceeded by the function arguments,
+then the arguments should indeed be listed on the same line, together with the function
+<code class="code docutils literal notranslate"><span class="pre">def(...)</span></code> syntax, as shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This would pass the lint checks, and <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> would allow the code to be
+committed without error.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>black....................................................................Passed
+flake8...................................................................Passed
+</pre></div>
+</div>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a href="#id1"><span class="problematic" id="id2">`discord`_</span></a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028266706436624456">formatting channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297504820838480">formatting forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">
+</iframe></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="function_wrapping.html" class="btn btn-neutral float-left" title="Function Wrapping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="function_arguments.html" class="btn btn-neutral float-right" title="Function Arguments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Array API Tests &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Array API Tests</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/array_api_tests.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="array-api-tests">
+<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h1>
+<p>In conjunction with our own ivy unit tests, we import the array-api <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>. These tests check that all
+ivy backend libraries behave according to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> which was established
+in May 2020 by a group of maintainers. It was intended to bring some consistency and completeness to the various python
+libraries that have gained popularity in the last 5-10 years. Since Ivy aims to unify machine learning frameworks,
+it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.</p>
+<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
+which we keep updated with the upstream test suite. The array-api tests repository is maintained by a group of developers
+unconnected to Ivy. We have made the decision to import the test suite directly from this repository rather than having
+our own fork. This means that the test suite you see in the ivy source code cannot be modified in the usual way of
+pushing to the ivy master branch. Instead, the change must be made to the array-api repository directly and then our
+submodule must be updated with the commands:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># to initialise local config file and fetch + checkout submodule (not needed everytime)
+git submodule update --init --recursive
+
+# pulls changes from upstream remote repo and merges them
+git submodule update --recursive --remote --merge
+</pre></div>
+</div>
+<p>and only <em>then</em> can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the
+source array-api repository. See the <a class="reference external" href="https://www.git-scm.com/book/en/v2/Git-Tools-Submodules">git website</a> for further information on working with submodules.</p>
+<section id="running-the-tests">
+<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading"></a></h2>
+<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
+Therefore, every function which exists in the standard is thoroughly tested for
+adherence to the standard on a continuous basis.</p>
+<p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
+functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
+<cite>Details -&gt; Run [backend] Tests</cite>.</p>
+<p>You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.</p>
+<section id="using-the-bash-file-runs-docker">
+<h3>Using the bash file (runs Docker)<a class="headerlink" href="#using-the-bash-file-runs-docker" title="Permalink to this heading"></a></h3>
+<p>Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file <a class="reference external" href="https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh">test_array_api.sh</a>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># /ivy
+# /bin/bash -e ./run_tests_CLI/test_array_api.sh  &lt;insert_chosen_backend&gt; test_&lt;category&gt;
+/bin/bash -e ./run_tests_CLI/test_array_api.sh  jax test_linalg
+</pre></div>
+</div>
+<p>You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual
+test function categories in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_array_api/array_api_tests</span></code>, e.g. <em>test_set_functions</em>, <em>test_signatures</em> etc.</p>
+<p>You can also run a specific test, as often running <em>all</em> tests in a file is excessive.
+To make this work, you should set the backend explicitly in the <cite>_array_module.py</cite> file, which can find it in the
+<cite>array_api_tests</cite> submodule. At the beginning of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>.
+You need to comment out that line and add the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
+array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
+</pre></div>
+</div>
+<p>You should now be able to run the following commands via terminal:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># run all tests in a file
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+
+# run a single test
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k &quot;test_array_method_signature&quot;
+</pre></div>
+</div>
+</section>
+<section id="using-the-ide">
+<h3>Using the IDE<a class="headerlink" href="#using-the-ide" title="Permalink to this heading"></a></h3>
+<p>You can also run a specific test or test file by using your IDE. To make this work, you should set the
+backend explicitly in the <cite>_array_module.py</cite> file as explained in the previous subsection. After that, you can run
+the API test files as you typically would with other tests. See <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing">here</a>  for instructions on how
+to run tests in ivy more generally.</p>
+<p><em>NB</em>: make sure to not add any changes to the array-api files to your commit.</p>
+</section>
+</section>
+<section id="test-skipping">
+<h2>Test Skipping<a class="headerlink" href="#test-skipping" title="Permalink to this heading"></a></h2>
+<p>Certain tests may need to be skipped when running the array-api test suite. This could be due to a variety of reasons:</p>
+<ol class="arabic simple">
+<li><p>the test function has a known issue which the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> developers are working on (e.g. <code class="code docutils literal notranslate"><span class="pre">test_asarray_arrays</span></code>)</p></li>
+<li><p>the function itself deviates from the standard (e.g. <code class="code docutils literal notranslate"><span class="pre">test_floor_divide</span></code>)</p></li>
+<li><p>there is an issue with the hypothesis test data generation i.e. a failed ‘health check’ (e.g. <code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)</p></li>
+<li><p>tolerance issues when asserting output <code class="code docutils literal notranslate"><span class="pre">isequal()</span></code> (e.g. <code class="code docutils literal notranslate"><span class="pre">test_matrix_norm</span></code>)</p></li>
+</ol>
+<p>All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first
+two are skipped in the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> also. The data generation and tolerance issues are not skipped in the
+array-api repo and are difficult for Ivy developers
+to solve as we cannot alter the tests directly. Currently, we import the test suite and run it; we do not
+have our own fork that we can tweak at will. These issues have been raised in the array-api test repo and will be addressed in due course.</p>
+<p>There are currently two ways to skip array-api tests:</p>
+<ol class="arabic simple">
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test/&lt;submodule&gt;.txt</span></code> and</p></li>
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code></p></li>
+</ol>
+<p>The first method was implemented before the second. Each <code class="code docutils literal notranslate"><span class="pre">&lt;submodule&gt;.txt</span></code> file contains a comprehensive list
+of functions which belong to that submodule, some of which are commented out. The commented-out functions are being
+skipped <em>only</em> for the backend(s) that is/are causing the failure, not all the backends. This is done by identifying
+any references to a backend in the commented-out line e.g. <code class="code docutils literal notranslate"><span class="pre">#trace</span> <span class="pre">#</span> <span class="pre">failing</span> <span class="pre">for</span> <span class="pre">jax,</span> <span class="pre">numpy</span> <span class="pre">due</span> <span class="pre">to</span> <span class="pre">issues</span> <span class="pre">with</span> <span class="pre">dtypes</span> <span class="pre">in</span> <span class="pre">output</span> <span class="pre">in</span> <span class="pre">test:</span> <span class="pre">https://github.com/data-apis/array-api/issues/202</span></code>
+will cause <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> to be skipped on the jax and numpy backends.</p>
+<p>The latter method, on the other hand, skips a test on <em>all</em> backends, even if
+it is just failing on one. The <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> scheme was implemented to skip <em>specific test cases</em>. The array-api
+test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules
+(see <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py</span></code>). In <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code>, tests are
+skipped by writing the filepath + conditions on the input of the test e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop<span class="o">[</span>__ipow__<span class="o">(</span>x1_i is -infinity and x2_i &gt; <span class="m">0</span> and not <span class="o">(</span>x2_i.is_integer<span class="o">()</span> and x2_i % <span class="nv">2</span> <span class="o">==</span> <span class="m">1</span><span class="o">))</span> -&gt; +infinity<span class="o">]</span>
+</pre></div>
+</div>
+<p>is skipping the in-place operations test on the <code class="code docutils literal notranslate"><span class="pre">pow</span></code>
+instance method when x1 is -infinity and x2 is a positive, odd float. The result should be +infinity, however there is
+an issue with the numpy instance method and an <a class="reference external" href="https://github.com/numpy/numpy/issues/21213">issue</a> has been raised on the numpy repository. Tests are categorised
+in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> according to the backend they are failing on and the reason for the failure. This should
+make unskipping temporarily failing tests straightforward once the issue has been resolved, especially if the skip instruction
+itself contains the exact input conditions that are failing.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738404611592256">array api tests channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297759738040440">array api tests forum</a> !</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

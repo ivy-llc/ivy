@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Tasks &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Applied Libraries" href="applied_libraries.html" />
+    <link rel="prev" title="Continuous Integration" href="../deep_dive/continuous_integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Open Tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#function-formatting">Function Formatting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#formatting-checklist">Formatting checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-apis">Frontend APIs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#where-to-place-a-frontend-function">Where to place a frontend function</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-api-extensions">Ivy API Extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+      <li>Open Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contributing/open_tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="open-tasks">
+<h1>Open Tasks<a class="headerlink" href="#open-tasks" title="Permalink to this heading"></a></h1>
+<p>Here, we explain all tasks which are currently open for
+contributions from the community!</p>
+<p>This section of the docs will be updated frequently, whereby new tasks will be added and
+completed tasks will be removed. The tasks outlined here are generally broad high-level
+tasks, each of which is made up of many individual sub-tasks,
+distributed across task-specific
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>.</p>
+<p>Please read about
+<a class="reference external" href="https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues">ToDo List Issues</a>
+in detail before continuing.
+ALl tasks should be selected and allocated as described in the ToDo List Issues section.
+We make no mention of task selection and allocation in the explanations below, which
+instead focus on the steps to complete only once a sub-task has been allocated to you.</p>
+<p>The tasks currently open are:</p>
+<ol class="arabic simple">
+<li><p>Function Formatting</p></li>
+<li><p>Frontend APIs</p></li>
+<li><p>Ivy API Extensions</p></li>
+</ol>
+<p>We try to explain these tasks as clearly as possible, but in cases where things are not
+clear, then please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/985156466963021854">open tasks channel</a>!</p>
+<p>Please always use the latest commit on GitHub when working on any of these tasks,
+<strong>DO NOT</strong> develop your code using the latest PyPI release of <code class="code docutils literal notranslate"><span class="pre">ivy-core</span></code>.</p>
+<section id="function-formatting">
+<h2>Function Formatting<a class="headerlink" href="#function-formatting" title="Permalink to this heading"></a></h2>
+<p>Currently, we have many ToDo list issues
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo">open</a>
+for a general function formatting task,
+which is explained below.</p>
+<p>Each function in each submodule should be updated to follow the implementation
+instructions given in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> section.
+The updates should be applied for the:</p>
+<ol class="arabic simple">
+<li><p>ivy API</p></li>
+<li><p>all backend APIs</p></li>
+<li><p>container static methods</p></li>
+<li><p>array instance methods</p></li>
+<li><p>container instance methods</p></li>
+<li><p>array operators</p></li>
+<li><p>array reverse operators</p></li>
+<li><p>container operators</p></li>
+<li><p>container reverse operators</p></li>
+</ol>
+<p>The <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> is an <strong>essential</strong> resource for learning how each of these
+functions/methods should be implemented. Before starting any contribution task,
+you should go through the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a>, and familiarize yourself with the content.</p>
+<p>At the time of writing, many of the functions are not implemented as they should be.
+You will need to make changes to the current implementations,
+but you do not need to address <em>all</em> sections of the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> in detail.
+Specifically, you <strong>do not</strong> need to address the following:</p>
+<ol class="arabic simple">
+<li><p>implement the hypothesis testing for the function</p></li>
+<li><p>get the tests passing for your function, if they are failing before you start</p></li>
+</ol>
+<p>However, everything else covered in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> must be addressed.
+Some common important tasks are:</p>
+<ol class="arabic simple">
+<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions
+(in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends</span></code>), with each function instead defined using
+<code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
+<li><p>implement the following if they don’t exist but should do: <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance
+method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method.</p></li>
+<li><p>Make sure that the aforementioned methods are added into the correct
+category-specific parent class, such as <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ArrayWithElementwise</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ContainerWithManipulation</span></code> etc.</p></li>
+<li><p>correct all of the <a class="reference internal" href="../deep_dive/function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every
+function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement
+yourself.</p></li>
+<li><p>add the correct <a class="reference internal" href="../deep_dive/docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>,
+including those you did not implement yourself.</p></li>
+<li><p>add thorough <a class="reference internal" href="../deep_dive/docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its
+<em>relevant methods</em> and ensure they pass the docstring tests.</p></li>
+</ol>
+<section id="formatting-checklist">
+<h3>Formatting checklist<a class="headerlink" href="#formatting-checklist" title="Permalink to this heading"></a></h3>
+<p>After creating your Pull Request on github, you should then produce the checklist
+for the formatting task as follows:</p>
+<p>1. Add a comment with the following format:
+<code class="code docutils literal notranslate"><span class="pre">add_reformatting_checklist_&lt;category_name&gt;</span></code> on your PR, where <em>&lt;category_name&gt;</em>
+is the name of the category that the function belongs to. An example of this is shown below.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true" style="width: 420px;" /></a>
+<p>Using this formatting will then trigger our github automation bots to update your
+comment with the proper markdown text for the checklist. These updates might take a
+few moments to take effect, so please be patient. 🙂</p>
+<p>2. After adding the checklist to your PR, you should then modify this checklist with
+the status of each item according to the symbols(emojis) within the LEGEND section.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true" style="width: 420px;" /></a>
+<p>1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for
+your PR and we will start checking your implementation and marking the items as complete
+using the checkboxes next to them.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true" style="width: 420px;" /></a>
+<p>4. In case you are stuck or need help with one of the checklist items, please add the
+🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating
+on your point of struggle with this item. The PR assignee will then see this comment
+and address your issues.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true" style="width: 420px;" /></a>
+<p><strong>Notes</strong>:</p>
+<ol class="arabic simple">
+<li><p>It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.</p></li>
+<li><p>The checklist items’ statuses should be manually updated by the PR author. It does not automatically run any tests to update them!</p></li>
+<li><p>Do not edit the checklist text, only the emoji symbols. 😅</p></li>
+<li><p>Please refrain from using the checkboxes next to checklist items.</p></li>
+</ol>
+</section>
+</section>
+<section id="frontend-apis">
+<h2>Frontend APIs<a class="headerlink" href="#frontend-apis" title="Permalink to this heading"></a></h2>
+<p>For this task, the goal will be to implement functions for each of the
+frontend functional APIs (see <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>),
+with frontend APIs implemented for:
+<code class="code docutils literal notranslate"><span class="pre">JAX</span></code>, <code class="code docutils literal notranslate"><span class="pre">NumPy</span></code>, <code class="code docutils literal notranslate"><span class="pre">TensorFlow</span></code> and <code class="code docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
+<p>Currently, we have many ToDo list issues
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?page=1&amp;q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22">open</a>
+for this task.</p>
+<p>The general workflow for this task is:</p>
+<ol class="arabic simple">
+<li><p>find the correct location for the function by following the <em>Where to place a frontend function</em> subsection below</p></li>
+<li><p>implement the function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a> guide</p></li>
+<li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
+<li><p>verify that the tests for your function are passing</p></li>
+</ol>
+<p>If you feel as though there is an ivy function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> clearly missing,
+which would make your frontend function much simpler to implement,
+then you you should first do the following:</p>
+<ol class="arabic simple">
+<li><p>create a new issue with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, add the labels
+<code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>
+to it, and then simply leave this issue open. At some point, a member of our team
+will assess whether it should be added, and if so, they will add it to another
+appropriate ToDo list issue (see the open task below).
+You do not need to wait for this in order to proceed.</p></li>
+</ol>
+<p>After this, you then have two options for how to proceed:</p>
+<ol class="arabic simple">
+<li><p>try to implement the function as a composition of currently present ivy functions,
+as explained in the “Temporary Compositions” sub-section of the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a>
+guide, and add the <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation as explained. Once the
+PR is merged, your sub-task issue will then be closed as normal.</p></li>
+<li><p>alternatively, if you do not want to try and implement the frontend function
+compositionally, or if this is not feasible, then you can simply choose another
+frontend function to work on. You could also choose to work on another open task
+entirely at this point if you wanted to. For example, you might decide to wait for a
+member of our team to review your suggested addition <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, and
+potentially add this to an Ivy Extension ToDo list issue (see the open task below).
+In either case, you should add the label “Pending other Issue” to the frontend
+sub-task issue, and leave it open. This issue will then still show up as open in the
+original frontend ToDo list, helpfully preventing others from working on this
+problematic frontend function, which depends on the unimplemented
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>. Finally, you should add a comment to the issue with the
+contents: <code class="code docutils literal notranslate"><span class="pre">pending</span> <span class="pre">&lt;issue_link&gt;</span></code>, which links to the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>
+issue, making the “Pending other Issue” label more informative.</p></li>
+</ol>
+<p>There are a few other points to take note of when working on your chosen frontend
+function:</p>
+<ol class="arabic simple">
+<li><p>you should only implement <strong>one</strong> frontend function.</p></li>
+<li><p>the frontend function is framework-specific, thus it should be implemented in
+its respective frontend framework only.</p></li>
+<li><p>each frontend function should be tested on all backends to ensure that conversions
+are working correctly.</p></li>
+<li><p>type hints, docstrings and examples are not required for frontend functions.</p></li>
+<li><p>some frontend functions shown in the ToDo list issues are aliases of other functions.
+If you detect that this is the case, then you should add all aliases in your PR, with
+a single implementation and then simple bindings to this implementation, such as
+<code class="code docutils literal notranslate"><span class="pre">&lt;alias_name&gt;</span> <span class="pre">=</span> <span class="pre">&lt;function_name&gt;</span></code>. If you notice that an alias function has
+already been implemented and pushed, then you can simply add this one-liner binding
+and get this very simple PR merged.</p></li>
+</ol>
+<p>In the case where your chosen function exists in all frameworks by default, but
+is not implemented in Ivy’s functional API, please convert your existing GitHub
+issue to request for the function to be added to Ivy. Meanwhile, you can select
+another frontend function to work on from the ToDo list! If you’re stuck on a
+function which requires complex compositions, you’re allowed to reselect a function
+too!</p>
+<section id="where-to-place-a-frontend-function">
+<h3>Where to place a frontend function<a class="headerlink" href="#where-to-place-a-frontend-function" title="Permalink to this heading"></a></h3>
+<p>The placement of new frontend functions for a given backend should follow the categorisation of the backend API as
+faithfully as possible. In each <a class="reference external" href="https://github.com/unifyai/ivy/issues/1526">issue description</a>, there will be a link to the relevant <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html">reference API</a>. Check
+where the function you’re working on is located, e.g. <code class="code docutils literal notranslate"><span class="pre">numpy.inner</span></code> falls under <code class="code docutils literal notranslate"><span class="pre">numpy.linalg</span></code>. Then, in the
+Ivy source code, check <code class="code docutils literal notranslate"><span class="pre">ivy/functional/frontends/[backend]</span></code> for pre-existing files which best match the function’s
+category in the backend reference API.</p>
+<p>Taking <code class="code docutils literal notranslate"><span class="pre">numpy.inner</span></code> as an example, we can see that there are a few <code class="code docutils literal notranslate"><span class="pre">ivy/functional/frontends/numpy</span></code>
+sub-directories to choose from:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>creation_routines
+fft
+indexing_routines
+<span class="hll">linalg
+</span>logic
+ma
+manipulation_routines
+mathematical_functions
+matrix
+ndarray
+random
+sorting_searching_counting
+statistics
+ufunc
+</pre></div>
+</div>
+<p>There is a <code class="code docutils literal notranslate"><span class="pre">linalg</span></code> sub-directory, so we choose this. Then we need to choose
+from the files at this hierarchy:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>__init__.py
+decompositions.py
+<span class="hll">matrix_and_vector_products.py
+</span>matrix_eigenvalues.py
+norms_and_other_numbers.py
+solving_equations_and_inverting_matrices.py
+</pre></div>
+</div>
+<p>This may require a bit of reasoning. <code class="code docutils literal notranslate"><span class="pre">inner</span></code> calculates the inner product of two arrays, so
+<code class="code docutils literal notranslate"><span class="pre">matrix_and_vector_products.py</span></code> seems like the most appropriate option. It is important to note that some functions
+require the <code class="code docutils literal notranslate"><span class="pre">np.linalg.[func]</span></code> namespace, as can gleamed from the numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html">reference API</a>.
+These functions are listed out under the <code class="code docutils literal notranslate"><span class="pre">functional/frontends/numpy/__init__.py</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27">imports</a>. There are some
+functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
+one of these functions, uncomment it from the list.</p>
+<p>The location of
+<code class="code docutils literal notranslate"><span class="pre">test_numpy_inner</span></code> should mirror the location of its corresponding function, this time in
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/[backend]</span></code>.</p>
+<p>If you’re unsure about where to put the function you’re working on, explore the content of these files to see if you
+can find a similar function. In <code class="code docutils literal notranslate"><span class="pre">matrix_and_vector_products.py</span></code>, we can see other functions such as <code class="code docutils literal notranslate"><span class="pre">outer</span></code>
+that are similar to <code class="code docutils literal notranslate"><span class="pre">inner</span></code>. This is confirmation that we’ve found the correct place! If many of the files are
+empty and you’re unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.</p>
+</section>
+</section>
+<section id="ivy-api-extensions">
+<h2>Ivy API Extensions<a class="headerlink" href="#ivy-api-extensions" title="Permalink to this heading"></a></h2>
+<p>The goal of this task is to add functions to the existing Ivy API which
+would help with the implementation for many of the functions in the frontend.</p>
+<p>Your task is to implement these functions in Ivy, along with their Implementation
+in the respective backends which are <code class="code docutils literal notranslate"><span class="pre">Jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="code docutils literal notranslate"><span class="pre">TensorFlow</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">NumPy</span></code>. You must also implement tests for these functions.</p>
+<p>There is only one central ToDo list
+<a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">issue</a>
+for this task.</p>
+<p>A general workflow for these tasks would be:</p>
+<ol class="arabic simple">
+<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extension.py</span></code>,
+sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific
+helper functions to recreate the behaviour. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api">Backend API Guide</a>
+on how this can be done.</p></li>
+<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/extension.py</span></code> simply deferring to
+their backend-specific implementation. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api">Ivy API Guide</a>
+to get a clearer picture of how this must be done.</p></li>
+<li><p>Write tests for the function using the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html">Ivy Tests</a> guide, and make sure they are passing.</p></li>
+</ol>
+<p>A few points to keep in mind while doing this:</p>
+<ol class="arabic simple">
+<li><p>Make sure all the positional arguments are positional-only and optional arguments are keyword-only.</p></li>
+<li><p>In case some tests require function-specific parameters, you can create composite hypothesis strategies using the <code class="code docutils literal notranslate"><span class="pre">draw</span></code> function
+in the hypothesis library.</p></li>
+</ol>
+<p>If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of the basics for contributing.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/985156466963021854">open tasks channel</a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../deep_dive/continuous_integration.html" class="btn btn-neutral float-left" title="Continuous Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="applied_libraries.html" class="btn btn-neutral float-right" title="Applied Libraries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
