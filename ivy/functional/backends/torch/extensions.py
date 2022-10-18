@@ -359,3 +359,10 @@ def dct(x: torch.Tensor, type: int = 2, n: int = None, norm: str = "ortho"):
             torch.fft.irfft(scale * torch.complex(x, real_zero), n=2 * axis_dim)
         )
         return dct_out[..., :axis_dim]
+
+    elif type == 4:
+        dct_2 = dct(x, type=2, n=2 * axis_dim, norm=None)
+        dct_out = dct_2[..., 1::2]
+        if norm == "ortho":
+            dct_out *= torch.sqrt(torch.tensor(0.5)) * torch.rsqrt(axis_dim_float)
+        return dct_out
