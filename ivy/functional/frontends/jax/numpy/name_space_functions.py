@@ -212,3 +212,16 @@ def array_equal(a1, a2, equal_nan: bool) -> bool:
     if equal_nan:
         eq = ivy.logical_or(eq, ivy.logical_and(ivy.isnan(a1), ivy.isnan(a2)))
     return ivy.all(eq)
+
+
+def array_equiv(a1, a2) -> bool:
+  try:
+    a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
+  except Exception:
+    return False
+  try:
+    eq = ivy.equal(a1, a2)
+  except ValueError:
+    # shapes are not broadcastable
+    return False
+  return ivy.all(eq)
