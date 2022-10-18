@@ -1501,14 +1501,17 @@ class ArrayWithElementwise(abc.ABC):
         Parameters
         ----------
         self
-            first input array. Should have a real-valued data type.
+             first input array. Should have a real-valued data type.
+             Note : "self.data" replaces the first array arguement in the function.
         x2
-            second input array. Must be compatible with ``self``
-            (see :ref:`broadcasting`).
-            Should have a real-valued data type.
+            (Union[Array, NativeArray]) – second input array.
+            Must be compatible with the first input array.
+            The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .
+            The arrays must be boradcastble to get a common shape for the output.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape thatthe inputs broadcast to.
+
 
         Returns
         -------
@@ -1518,30 +1521,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :class:`ivy.Array` inputs:
-
-        >>> x1 = ivy.array([3., 5., 7.])
-        >>> x2 = ivy.array([4., 6., 8.])
-        >>> y = ivy.multiply(x1, x2)
-        >>> print(y)
-        ivy.array([12., 30., 56.])
-
-        With :class:`ivy.NativeArray` inputs:
-
-        >>> x1 = ivy.native_array([1., 3., 9.])
-        >>> x2 = ivy.native_array([4., 7.2, 1.])
-        >>> y = ivy.multiply(x1, x2)
-        >>> print(y)
-        ivy.array([ 4. , 21.6,  9. ])
-
-        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-        >>> x1 = ivy.array([8., 6., 7.])
-        >>> x2 = ivy.native_array([1., 2., 3.])
-        >>> y = ivy.multiply(x1, x2)
-        >>> print(y)
-        ivy.array([ 8., 12., 21.])
-
         With ivy.Array instance method:
 
         >>> x1 = ivy.array([3., 5., 7.])
