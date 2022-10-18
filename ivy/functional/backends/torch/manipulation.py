@@ -55,13 +55,13 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    num_dims = len(x.shape)
+    num_dims: int = len(x.shape)
     if not num_dims:
         return x
     if axis is None:
-        new_axis = list(range(num_dims))
+        new_axis: List[int] = list(range(num_dims))
     else:
-        new_axis = axis
+        new_axis: List[int] = axis
     if isinstance(new_axis, int):
         new_axis = [new_axis]
     else:
