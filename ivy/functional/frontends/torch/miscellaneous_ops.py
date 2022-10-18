@@ -45,6 +45,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
+@to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
@@ -60,6 +61,7 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
 
 
+@to_ivy_arrays_and_back
 def cartesian_prod(*tensors):
     if len(tensors) == 1:
         return tensors
@@ -71,6 +73,7 @@ def cartesian_prod(*tensors):
     return ret
 
 
+@to_ivy_arrays_and_back
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     # TODO: Handle layout flag when possible.
     sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
@@ -242,6 +245,7 @@ def rot90(input, k, dims):
         return ivy.copy_array(input)
 
 
+@to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
     if N == 0:
         return ivy.array([], dtype=x.dtype)
