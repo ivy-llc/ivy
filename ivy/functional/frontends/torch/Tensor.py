@@ -60,6 +60,9 @@ class Tensor:
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
 
+    def log(self):
+        return ivy.log(self.data)
+
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
