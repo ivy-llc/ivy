@@ -10,6 +10,7 @@ from ivy.functional.ivy.extensions import (
 import tensorflow as tf
 import tensorflow_probability as tfp
 import logging
+from math import sqrt
 
 
 def is_native_sparse_array(x):
@@ -250,3 +251,21 @@ def fmax(
 
 
 fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
+
+
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if n is None:
+        n = len(x)
+    if norm == 'forward':
+        return tf.signal.rfft(x, n, norm) / n
+    elif norm == 'ortho':
+        return tf.signal.rfft(x, n, norm) / sqrt(n)
+    elif norm is None or norm == 'backward':
+        return tf.signal.rfft(x, n, norm)
+    raise ValueError(f'Invalid norm value {norm}; should be "backward",'
+                     '"ortho" or "forward".')

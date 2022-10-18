@@ -303,3 +303,14 @@ def fmax(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fmax(x1, x2)
+
+
+def rfft(
+    x: JaxArray,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.fft.rfft(x, n, norm=norm)
