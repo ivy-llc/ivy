@@ -1,11 +1,13 @@
-import pickle
+import pickle  # noqa
 from pydriller import Repository
 import os
+import bz2
+import _pickle as cPickle
 
 
 if __name__ == "__main__":
-    with open("tests.pkl", "rb") as f:
-        tests = pickle.load(f)
+    tests = bz2.BZ2File("tests.pbz2", "rb")
+    tests = cPickle.load(tests)
     tests_to_run = set()
     ref_commit_hash = tests["commit"]
     for commit in Repository(".", single=ref_commit_hash).traverse_commits():
@@ -56,8 +58,8 @@ if __name__ == "__main__":
                 tests_to_run.update(tests_file[line])
         break
 
-    with open("tests.pkl", "wb") as f:
-        pickle.dump(tests, f)
+    with bz2.BZ2File("tests.pbz2", "w") as f:
+        cPickle.dump(tests, f)
 
     # with open("tests_to_run", "w") as f:
     #     for test in tests_to_run:
@@ -65,7 +67,8 @@ if __name__ == "__main__":
 
     # Run Tests
     failed = False
-    for test in tests_to_run:
+    for test_index in tests_to_run:
+        test = tests["index_mapping"][test_index]
         ret = os.system(
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
         )

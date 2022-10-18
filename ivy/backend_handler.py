@@ -1,6 +1,5 @@
 # global
 import ivy
-import logging
 import importlib
 import numpy as np
 from ivy import verbosity
@@ -97,7 +96,6 @@ def _determine_backend_from_args(args):
 
 def fn_name_from_version_specific_fn_name(name, version):
     """
-
     Parameters
     ----------
     name
@@ -112,6 +110,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         specific function
 
     """
+    # TODO: add docstring and tests
     version = str(version)
     if version.find("+") != -1:
         version = int(version[: version.index("+")].replace(".", ""))
@@ -156,6 +155,7 @@ def set_backend_to_specific_version(backend):
     -------
 
     """
+    # TODO: add docstring, functionality and tests
     f = str(backend.__name__)
     f = f[f.index("backends") + 9 :]
 
@@ -387,75 +387,6 @@ def clear_backend_stack():
         unset_backend()
 
 
-# Backend Getters #
-# ----------------#
-
-
-def try_import_ivy_jax(warn=False):
-    try:
-        import ivy.functional.backends.jax
-
-        return ivy.functional.backends.jax
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nEither jax or jaxlib appear to not be installed, "
-            "ivy.functional.backends.jax can therefore not be imported.\n".format(e)
-        )
-
-
-def try_import_ivy_tf(warn=False):
-    try:
-        import ivy.functional.backends.tensorflow
-
-        return ivy.functional.backends.tensorflow
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\ntensorflow does not appear to be installed, "
-            "ivy.functional.backends.tensorflow can therefore not be "
-            "imported.\n".format(e)
-        )
-
-
-def try_import_ivy_torch(warn=False):
-    try:
-        import ivy.functional.backends.torch
-
-        return ivy.functional.backends.torch
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\ntorch does not appear to be installed, "
-            "ivy.functional.backends.torch can therefore not be imported.\n".format(e)
-        )
-
-
-def try_import_ivy_numpy(warn=False):
-    try:
-        import ivy.functional.backends.numpy
-
-        return ivy.functional.backends.numpy
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nnumpy does not appear to be installed, "
-            "ivy.functional.backends.numpy can therefore not be imported.\n".format(e)
-        )
-
-
-FW_DICT = {
-    "jax": try_import_ivy_jax,
-    "tensorflow": try_import_ivy_tf,
-    "torch": try_import_ivy_torch,
-    "numpy": try_import_ivy_numpy,
-}
-
-
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
@@ -467,7 +398,7 @@ def choose_random_backend(excluded=None):
             or not installed.""",
         )
         f = np.random.choice(
-            [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]
+            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
         )
         if f is None:
             excluded.append(f)

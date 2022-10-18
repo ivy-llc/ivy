@@ -26,7 +26,7 @@
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/test-ivy?label=tests">
     </a>
-    <a href="https://discord.gg/G4aR9Q7DTN">
+    <a href="https://discord.gg/sXyFF8tDtm">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
     </div>

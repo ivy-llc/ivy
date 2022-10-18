@@ -4,6 +4,7 @@
 import copy
 import warnings
 import pytest
+import numpy as np
 
 # local
 import ivy
@@ -258,12 +259,17 @@ def test_copy_nest(device):
     "nests",
     [
         [
-            ivy.array([-1.82, 1.25, -2.91, 0.109, 0.76, 1.7, 0.231, 4.45]),
-            ivy.array([-3.98, -3.86, 7.94, 2.08, 9.3, 2.35, 9.37, 1.7]),
+            np.asarray([-1.82, 1.25, -2.91, 0.109, 0.76, 1.7, 0.231, 4.45]),
+            np.asarray([-3.98, -3.86, 7.94, 2.08, 9.3, 2.35, 9.37, 1.7]),
         ]
     ],
 )
 def test_nested_multi_map(func, nests, device, fw):
+    nests = ivy.nested_map(
+        nests,
+        lambda x: ivy.array(x) if isinstance(x, np.ndarray) else x,
+        include_derived=True,
+    )
     # without key_chains specification
     nested_multi_map_res = ivy.nested_multi_map(func, nests)
 

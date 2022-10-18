@@ -11,7 +11,7 @@ def argmax(input, dim=None, keepdim=False):
 
 
 def argmin(input, dim=None, keepdim=False):
-    return ivy.argmin(input, axis=dim, keepdims=keepdim)
+    return ivy.argmin(input, axis=dim, keepdims=keepdim).astype(ivy.int64)
 
 
 def amax(input, dim=None, keepdim=False, *, out=None):

@@ -30,7 +30,7 @@ class LayerNorm(Module):
             small constant to add to the denominator,
             use global ivy._MIN_BASE by default.
         elementwise_affine
-            Whether to include learnable affine parameters, default is True.
+            Whether to include learnable affine parameters, default is ``True``.
         new_std
             The standard deviation of the new normalized values. Default is 1.
         device

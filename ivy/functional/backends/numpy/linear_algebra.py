@@ -21,7 +21,7 @@ from . import backend_version
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cholesky(
-    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -51,31 +51,6 @@ def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
 
 
-def diag(
-    x: np.ndarray,
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-    ret = np.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    # On the diagonal there will be
-    # 1 * padding_value + x_i - padding_value == x_i
-    ret += np.diag(x - padding_value, k=offset)
-
-    return ret
-
-
 def diagonal(
     x: np.ndarray,
     /,
@@ -91,8 +66,12 @@ def diagonal(
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
@@ -159,11 +138,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -192,6 +171,8 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if len(x.shape) < 2:
+        return np.asarray(0).astype(x.dtype)
     if type(atol) and type(rtol) == tuple:
         if atol.all() and rtol.all() is None:
             ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
@@ -244,7 +225,7 @@ def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: np.ndarray,
     /,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
@@ -349,7 +330,43 @@ def vector_norm(
 
 
 # Extra #
-# ------#
+# ----- #
+
+
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if num_rows is None:
+        num_rows = len(x)
+    if num_cols is None:
+        num_cols = len(x)
+    ret = np.ones((num_rows, num_cols))
+    ret *= padding_value
+
+    # On the diagonal there will be
+    # 1 * padding_value + x_i - padding_value == x_i
+    ret += np.diag(x - padding_value, k=offset)
+
+    return ret
+
+
+def vander(
+    x: np.ndarray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
 def vector_to_skew_symmetric_matrix(
