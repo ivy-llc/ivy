@@ -23,7 +23,7 @@ Data Types
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
 .. _`data types forum`: https://discord.com/channels/799879767196958751/1028297299799060490
 

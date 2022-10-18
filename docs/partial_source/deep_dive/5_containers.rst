@@ -34,7 +34,7 @@ Containers
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
 .. _`containers forum`: https://discord.com/channels/799879767196958751/1028297229980668015
 
