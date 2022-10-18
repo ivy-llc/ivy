@@ -11,7 +11,7 @@ import _pickle as cPickle
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 15
+N = 3
 run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
     tests = bz2.BZ2File("tests.pbz2", "rb")
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
         os.system(
-            f"coverage run -m pytest {test_name} --disable-warnings > coverage_output"
+            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} --backend numpy --disable-warnings > coverage_output"
         )
         os.system("coverage annotate > coverage_output")
         for directory in directories:
