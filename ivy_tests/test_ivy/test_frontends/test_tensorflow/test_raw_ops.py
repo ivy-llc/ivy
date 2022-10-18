@@ -1395,7 +1395,12 @@ def test_tensorflow_Cumprod(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Gather"
     ),
 )
-def test_tensorflow_Gather(params_indices_others, num_positional_args, as_variable, native_array):
+def test_tensorflow_Gather(
+    params_indices_others,
+    num_positional_args,
+    as_variable,
+    native_array
+):
     dtypes, params, indices = params_indices_others
     helpers.test_frontend_function(
         input_dtypes=dtypes,

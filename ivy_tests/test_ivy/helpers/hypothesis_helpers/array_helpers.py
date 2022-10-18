@@ -466,7 +466,7 @@ def array_indices_axis(
     x = x[0]
     if disable_random_axis:
         if axis_zero:
-            axis=0
+            axis = 0
         else:
             axis = -1
         batch_dims = 0
