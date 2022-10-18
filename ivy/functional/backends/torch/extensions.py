@@ -333,3 +333,22 @@ def dct(x: torch.Tensor, type: int = 2, norm: str = "ortho"):
             sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
             dct_out = sf * dct_out
         return dct_out
+
+    elif type == 3:
+        if norm == "ortho":
+            n1 = torch.sqrt(axis_dim_float)
+            n2 = n1 * torch.sqrt(torch.tensor(0.5))
+            sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
+            x *= sf
+        else:
+            x *= axis_dim_float
+
+        scale = 2.0 * torch.exp(
+            torch.complex(
+                real_zero, torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+            )
+        )
+        dct_out = torch.real(
+            torch.fft.irfft(scale * torch.complex(x, real_zero), n=2 * axis_dim)
+        )
+        return dct_out[..., :axis_dim]
