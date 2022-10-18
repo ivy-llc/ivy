@@ -1,0 +1,106 @@
+name: determine-test-coverage
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+jobs:
+   job_0:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           git clone https://github.com/unifyai/Backend_Mapping.git
+           cp Backend_Mapping/tests.pbz2 ivy/
+           cd ivy
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 0
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Backend_Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
+
+   job_1:
+     runs-on: ubuntu-latest
+     needs: job_0
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           git clone https://github.com/unifyai/Backend_Mapping.git
+           cp Backend_Mapping/tests.pbz2 ivy/
+           cd ivy
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 1
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Backend_Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
+
+   job_2:
+     runs-on: ubuntu-latest
+     needs: job_1
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           git clone https://github.com/unifyai/Backend_Mapping.git
+           cp Backend_Mapping/tests.pbz2 ivy/
+           cd ivy
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 2
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping - Final
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master

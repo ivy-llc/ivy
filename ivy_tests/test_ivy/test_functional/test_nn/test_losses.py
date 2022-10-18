@@ -122,6 +122,8 @@ def test_binary_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="binary_cross_entropy",
+        rtol_=1e-1,
+        atol_=1e-1,
         true=true[0],
         pred=pred[0],
         epsilon=epsilon,

@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         allow_inf=False,
@@ -20,15 +20,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.dist"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
-    p=st.sampled_from([None, st.integers()]),
+    p=helpers.floats(min_value=1.0, max_value=10.0),
 )
 def test_torch_dist(
     dtype_and_input,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
     p,
 ):
     input_dtype, input = dtype_and_input
@@ -66,7 +64,6 @@ def test_torch_argmax(
     num_positional_args,
     native_array,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -103,7 +100,6 @@ def test_torch_argmin(
     num_positional_args,
     native_array,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -140,7 +136,6 @@ def test_torch_amax(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -178,7 +173,6 @@ def test_torch_amin(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -217,7 +211,6 @@ def test_torch_all(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -256,7 +249,6 @@ def test_torch_any(
     native_array,
     keepdims,
     with_out,
-    fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -288,7 +280,6 @@ def test_torch_mean(
     num_positional_args,
     native_array,
     with_out,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -321,7 +312,6 @@ def test_torch_std(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
@@ -366,7 +356,6 @@ def test_torch_prod(
     native_array,
     with_out,
     keepdims,
-    fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -399,7 +388,6 @@ def test_torch_var(
     with_out,
     num_positional_args,
     native_array,
-    fw,
     keepdims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
@@ -415,5 +403,44 @@ def test_torch_var(
         dim=axis,
         unbiased=bool(correction),
         keepdim=keepdims,
+        out=None,
+    )
+
+
+# ToDo, fails for TensorFlow backend, tf.reduce_min doesn't support bool
+# ToDo, fails for torch backend, tf.argmin_cpu doesn't support bool
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.min"
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_min(
+    dtype_input_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdim,
+    with_out,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="min",
+        input=x[0],
+        dim=axis,
+        keepdim=keepdim,
         out=None,
     )
