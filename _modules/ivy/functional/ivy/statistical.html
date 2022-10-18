@@ -158,33 +158,34 @@
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Calculates the minimum value of the input array x.</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the minimum value of the input array ``x``.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">    When the number of elements over which to compute the minimum value is zero, the</span>
-<span class="sd">    minimum value is implementation-defined. Specification-compliant libraries may</span>
-<span class="sd">    choose to raise an error, return a sentinel value (e.g., if x is a floating-point</span>
-<span class="sd">    input array, return NaN), or return the maximum possible value for the input array x</span>
-<span class="sd">    data type (e.g., if x is a floating-point array, return +infinity).</span>
+<span class="sd">       When the number of elements over which to compute the minimum value is zero, the</span>
+<span class="sd">       minimum value is implementation-defined. Specification-compliant libraries may</span>
+<span class="sd">       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point</span>
+<span class="sd">       input array, return ``NaN``), or return the maximum possible value for the input array ``x``</span>
+<span class="sd">       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).</span>
 
 <span class="sd">    **Special Cases**</span>
 
 <span class="sd">    For floating-point operands,</span>
 
-<span class="sd">    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</span>
+<span class="sd">    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input array containing elements to min.</span>
+<span class="sd">        Input array. Should have a real-valued data type.</span>
 <span class="sd">    axis</span>
-<span class="sd">         axis or axes along which minimum values must be computed. By default, the</span>
-<span class="sd">         minimum value must be computed over the entire array. If a tuple of integers,</span>
-<span class="sd">         minimum values must be computed over multiple axes. Default: ``None``.</span>
+<span class="sd">        axis or axes along which minimum values must be computed. By default, the</span>
+<span class="sd">        minimum value must be computed over the entire array. If a tuple of integers,</span>
+<span class="sd">        minimum values must be computed over multiple axes. Default: ``None``.</span>
+
 <span class="sd">    keepdims</span>
-<span class="sd">        optional boolean, if True, the reduced axes (dimensions) must be included in the</span>
+<span class="sd">        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the</span>
 <span class="sd">        result as singleton dimensions, and, accordingly, the result must be compatible</span>
-<span class="sd">        with the input array (see Broadcasting). Otherwise, if False, the reduced axes</span>
+<span class="sd">        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes</span>
 <span class="sd">        (dimensions) must not be included in the result. Default: ``False``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
@@ -195,10 +196,10 @@
 <span class="sd">        if the minimum value was computed over the entire array, a zero-dimensional</span>
 <span class="sd">        array containing the minimum value; otherwise, a non-zero-dimensional array</span>
 <span class="sd">        containing the minimum values. The returned array must have the same data type</span>
-<span class="sd">        as x.</span>
+<span class="sd">        as ``x``.</span>
 
 
-<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html&gt;`_  </span>
 <span class="sd">    in the standard.</span>
