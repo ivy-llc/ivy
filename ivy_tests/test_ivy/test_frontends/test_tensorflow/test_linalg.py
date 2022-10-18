@@ -186,6 +186,8 @@ def test_tensorflow_solve(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.solve",
+        rtol=1e-3,
+        atol=1e-3,
         matrix=xs[0],
         rhs=xs[1],
     )
@@ -270,7 +272,7 @@ def _get_cholesky_matrix(draw):
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
-    spd = np.matmul(gen, np.transpose(gen))
+    spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0]) * 1e-3
     spd_chol = np.linalg.cholesky(spd)
     return input_dtype, spd_chol
 
@@ -322,8 +324,8 @@ def test_tensorflow_cholesky_solve(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.cholesky_solve",
-        rtol=1e-2,
-        atol=1e-2,
+        rtol=1e-3,
+        atol=1e-3,
         chol=x1,
         rhs=x2,
     )
