@@ -137,6 +137,13 @@ def binary_crossentropy(
 
 
 @to_ivy_arrays_and_back
+def categorical_crossentropy(y_true, y_pred, from_logits: bool = False, label_smoothing: float = 0.0):
+    if from_logits:
+        y_pred = ivy.softmax(y_pred)
+    return ivy.mean(ivy.categorical_cross_entropy(y_true, y_pred, label_smoothing))
+
+
+@to_ivy_arrays_and_back
 def categorical_accuracy(y_true, y_pred):
     return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
 
