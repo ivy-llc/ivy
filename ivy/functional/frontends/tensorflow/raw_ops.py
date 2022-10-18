@@ -104,7 +104,7 @@ def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
 
-Cumprod = tf_frontend.cumprod
+Cumprod = tf_frontend.math.cumprod
 
 
 @to_ivy_arrays_and_back
