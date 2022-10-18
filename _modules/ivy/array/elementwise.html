@@ -1630,21 +1630,41 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            first input array. Should have a real-valued data type.</span>
-<span class="sd">        x2</span>
-<span class="sd">            second input array. Must be compatible with ``self``</span>
-<span class="sd">            (see :ref:`broadcasting`).</span>
-<span class="sd">            Should have a real-valued data type.</span>
+<span class="sd">        self (Array)</span>
+<span class="sd">             first input array. Should have a real-valued data type.</span>
+<span class="sd">             Note : &quot;self.data&quot; replaces the first array arguement in the function.</span>
+<span class="sd">        x2 (Union[Array, NativeArray])</span>
+<span class="sd">            second input array.</span>
+<span class="sd">            Must be compatible with the first input array.</span>
+<span class="sd">            The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .</span>
+<span class="sd">            The arrays must be boradcastble to get a common shape for the output.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">            the inputs broadcast to.</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">            It must have a shape thatthe inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise products. The returned array</span>
 <span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With ivy.Array instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([3., 5., 7.])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([4., 6., 8.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.multiply(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([12., 30., 56.])</span>
+
+<span class="sd">        With mix of ivy.Array and ivy.NativeArray instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([8., 6., 7.])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.native_array([1., 2., 3.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.multiply(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ 8., 12., 21.])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
