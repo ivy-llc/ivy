@@ -246,20 +246,19 @@ def array_equal(a1, a2, equal_nan: bool) -> bool:
 
 @inputs_to_ivy_arrays
 def array_equiv(a1, a2) -> bool:
-  try:
-    a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
-  except Exception:
-    return False
-  try:
-    eq = ivy.equal(a1, a2)
-  except ValueError:
-    # shapes are not broadcastable
-    return False
-  return ivy.all(eq)
+    try:
+        a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
+    except Exception:
+        return False
+    try:
+        eq = ivy.equal(a1, a2)
+    except ValueError:
+        # shapes are not broadcastable
+        return False
+    return ivy.all(eq)
   
  
 def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
-
