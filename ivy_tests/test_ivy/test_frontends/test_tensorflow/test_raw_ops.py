@@ -1377,6 +1377,34 @@ def test_tensorflow_Cumprod(
         reverse=reverse,
     )
 
+# Gather
+@handle_cmd_line_args
+@given(
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+)
+def test_tensorflow_Gather(params_indices_others, as_variable, native_array):
+    dtypes, params, indices, axis, batch_dims = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Gather",
+        params=params,
+        indices=indices,
+        axis=axis,
+        batch_dims=batch_dims
+    )
+
 
 # Greater
 @handle_cmd_line_args
