@@ -774,10 +774,11 @@ def test_torch_repeat_interleave(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
     ),
-    r=st.integers(min_value=1),
+    r=st.integers(min_value=1, max_value=5),
     with_replacement=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.combinations"
@@ -802,7 +803,7 @@ def test_torch_combinations(
         fw=fw,
         frontend="torch",
         fn_tree="combinations",
-        input=np.asarray(x, dtype=input_dtype),
-        r=2,
-        with_replacement=False,
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        r=r,
+        with_replacement=with_replacement,
     )
