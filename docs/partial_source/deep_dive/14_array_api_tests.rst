@@ -63,8 +63,19 @@ Using the terminal, you can run all array-api tests for a certain backend using 
         # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh  '<insert_chosen_backend>'
 
-You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax. If you rather
-run a single test or test file with terminal, use the following commands:
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax.
+
+You can also run a specific test or test file, as often running *all* tests for a given framework is excessive.
+To make this work, you should set the backend explicitly in the `_array_module.py` file, which can find it in the
+`array_api_tests` submodule. At the beginning of the file, you will see the following line of code :code:`array_module = None`.
+You need to comment out that line and add the following:
+
+.. code-block:: none
+
+        import ivy as array_module
+        array_module.set_backend("<insert_chosen_backend>")
+
+You should now be able to run the following commands via terminal:
 
 .. code-block:: none
 
@@ -77,17 +88,11 @@ run a single test or test file with terminal, use the following commands:
 Using the IDE
 ****
 You can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the `_array_module.py` file. You can find it in the `array_api_tests` submodule. At the beginning
-of the file, you will see the following line of code :code:`array_module = None`. You need to comment out that line and add
-the following code:
+backend explicitly in the `_array_module.py` file as explained in the previous subsection. After that, you can run
+the API test files as you typically would with other tests. See `here`_  for instructions on how
+to run tests in ivy more generally.
 
-.. code-block:: none
-
-        import ivy as array_module
-        array_module.set_backend("<insert_chosen_backend>")
-
-After that, you can run the API test files as you typically would with other tests. See `here`_  for instructions on how
-to run tests in ivy more generally. *NB*: make sure to not add any changes to the array-api files to your commit.
+*NB*: make sure to not add any changes to the array-api files to your commit.
 
 Test Skipping
 -------------
@@ -102,8 +107,7 @@ All the examples in this list except point 3 (which only occurs with tensorflow)
 two are skipped in the `array-api test repository`_ also. The data generation and tolerance issues are not skipped in the
 array-api repo and are difficult for Ivy developers
 to solve as we cannot alter the tests directly. Currently, we import the test suite and run it; we do not
-have our own fork that we can tweak at will. The rationale for doing so is that we should adhere as closely to the
-standard as possible. These issues have been raised in the array-api test repo and will be addressed in due course.
+have our own fork that we can tweak at will. These issues have been raised in the array-api test repo and will be addressed in due course.
 
 There are currently two ways to skip array-api tests:
 
@@ -112,8 +116,10 @@ There are currently two ways to skip array-api tests:
 
 The first method was implemented before the second. Each :code:`<submodule>.txt` file contains a comprehensive list
 of functions which belong to that submodule, some of which are commented out. The commented-out functions are being
-skipped *only* for the backend(s) that is/are causing the failure, not all the backends. The latter method, on the
-other hand, skips a test on *all* backends, even if
+skipped *only* for the backend(s) that is/are causing the failure, not all the backends. This is done by identifying
+any references to a backend in the commented-out line e.g. :code:`#trace # failing for jax, numpy due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202
+
+The latter method, on the other hand, skips a test on *all* backends, even if
 it is just failing on one. The :code:`ivy_tests/skips.txt` scheme was implemented to skip *specific test cases*. The array-api
 test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules
 (see :code:`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`). In :code:`ivy_tests/skips.txt`, tests are
