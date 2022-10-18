@@ -4,7 +4,7 @@ Docstrings
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 .. _`docstrings forum`: https://discord.com/channels/799879767196958751/1028297612408913982
 
