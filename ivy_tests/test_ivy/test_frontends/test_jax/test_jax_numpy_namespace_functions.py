@@ -1201,7 +1201,7 @@ def test_jax_numpy_arcsinh(
         x=x[0],
     )
     
-    
+
 # argmin
 @handle_cmd_line_args
 @given(
@@ -1234,4 +1234,4 @@ def test_jax_numpy_argmin(
         axis=axis,
         keepdims=keepdims,
     )
-    
+ 
