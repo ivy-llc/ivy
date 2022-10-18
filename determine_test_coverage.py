@@ -3,6 +3,9 @@ import sys
 from pydriller import Repository
 import pickle
 from tqdm import tqdm
+import bz2
+import _pickle as cPickle
+
 
 # Shared Map
 tests = {}
@@ -11,8 +14,8 @@ os.system("git config --global --add safe.directory /ivy")
 N = 15
 run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
-    with open("tests.pkl", "rb") as f:
-        tests = pickle.load(f)
+    tests = bz2.BZ2File("tests.pbz2", "rb")
+    tests = cPickle.load(tests)
     os.system(f"git checkout -f {tests['commit']}")
 
 os.system(
@@ -113,5 +116,5 @@ if run_iter == 0:
         commit_hash = commit.hash
         break
     tests["commit"] = commit_hash
-with open("tests.pkl", "wb") as f:
-    pickle.dump(tests, f)
+with bz2.BZ2File("tests.pbz2", "w") as f:
+    cPickle.dump(tests, f)
