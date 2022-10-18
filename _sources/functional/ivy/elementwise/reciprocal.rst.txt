@@ -5,9 +5,9 @@ reciprocal
 
 .. autofunction:: ivy.array.array_methods.reciprocal
 
-.. autofunction:: ivy.container.container_methods.static_reciprocal
-
 .. autofunction:: ivy.container.container_methods.reciprocal
+
+.. autofunction:: ivy.container.container_methods.static_reciprocal
 |
 | **Supported Frameworks:**
 

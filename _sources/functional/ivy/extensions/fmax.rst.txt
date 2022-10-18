@@ -6,6 +6,8 @@ fmax
 .. autofunction:: ivy.array.array_methods.fmax
 
 .. autofunction:: ivy.container.container_methods.fmax
+
+.. autofunction:: ivy.container.container_methods.static_fmax
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ fmax
    fmax/fmax_functional.rst
    fmax/fmax_array.rst
    fmax/fmax_container.rst
+   fmax/static_fmax_container.rst
 
