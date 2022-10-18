@@ -996,7 +996,7 @@ def test_jax_numpy_array_equal(
         fn_tree="numpy.array_equal",
         a1=np.array(x[0], dtype=input_dtype[0]),
         a2=np.array(x[1], dtype=input_dtype[1]),
-        equal_nan=equal_nan
+        equal_nan=equal_nan,
     )
 
 
@@ -1200,13 +1200,14 @@ def test_jax_numpy_arcsinh(
         fn_tree="numpy.arcsinh",
         x=x[0],
     )
-    
+
 
 # argmin
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")),
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.argmin"
     ),
@@ -1234,4 +1235,3 @@ def test_jax_numpy_argmin(
         axis=axis,
         keepdims=keepdims,
     )
- 

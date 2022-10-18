@@ -90,7 +90,7 @@ if __name__ == "__main__":
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
         os.system(
-            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} --disable-warnings > coverage_output"
+            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} --disable-warnings > coverage_output"  # noqa
         )
         os.system("coverage annotate > coverage_output")
         for directory in directories:
