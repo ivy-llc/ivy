@@ -3,11 +3,15 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def ceil(
     x,
     /,
@@ -25,6 +29,7 @@ def ceil(
     return ret
 
 
+@to_ivy_arrays_and_back
 def fix(
     x,
     /,

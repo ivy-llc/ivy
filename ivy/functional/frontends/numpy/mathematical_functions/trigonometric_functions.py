@@ -3,11 +3,15 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def cos(
     x,
     /,
@@ -27,6 +31,7 @@ def cos(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def sin(
     x,
     /,
@@ -46,6 +51,7 @@ def sin(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def tan(
     x,
     /,
@@ -65,6 +71,7 @@ def tan(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def arcsin(
     x,
     /,
@@ -84,6 +91,7 @@ def arcsin(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def arccos(
     x,
     /,
@@ -103,6 +111,7 @@ def arccos(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def arctan(
     x,
     /,
@@ -122,6 +131,7 @@ def arctan(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def deg2rad(
     x,
     /,
@@ -143,6 +153,7 @@ def deg2rad(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def rad2deg(
     x,
     /,
