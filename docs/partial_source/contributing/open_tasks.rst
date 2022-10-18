@@ -4,8 +4,8 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
-.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
-.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
+.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html
+.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
@@ -21,7 +21,7 @@ distributed across task-specific
 `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
 Please read about
-`ToDo List Issues <https://lets-unify.ai/ivy/contributing/1_the_basics.html#todo-list-issues>`_
+`ToDo List Issues <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_
 in detail before continuing.
 ALl tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which
@@ -293,10 +293,10 @@ A general workflow for these tasks would be:
 
 #. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extension.py`,
    sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
-   helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api>`_
+   helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api>`_
    on how this can be done.
 #. Implement the functions in :mod:`ivy/functional/ivy/extension.py` simply deferring to
-   their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api>`_ 
+   their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ 
    to get a clearer picture of how this must be done.
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
 
