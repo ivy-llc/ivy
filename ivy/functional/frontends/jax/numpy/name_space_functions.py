@@ -225,3 +225,5 @@ def array_equiv(a1, a2) -> bool:
     # shapes are not broadcastable
     return False
   return ivy.all(eq)
+  
+  
