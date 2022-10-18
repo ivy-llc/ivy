@@ -5306,11 +5306,11 @@ class ContainerWithElementwise(ContainerBase):
         ----------
         self (Container)
             input array or container. Should have a real-valued data type.
-        x2 (Union[Container, Array, NativeArray]) -
+        x2 (Union[Container, Array, NativeArray])
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
-        key_chains (Optional[Union[List[str], Dict[str, str]]]) –
+        key_chains (Optional[Union[List[str], Dict[str, str]]])
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply (bool)
             If True, the method will be applied to key_chains, otherwise key_chains

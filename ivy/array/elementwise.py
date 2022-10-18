@@ -1500,18 +1500,17 @@ class ArrayWithElementwise(abc.ABC):
 
         Parameters
         ----------
-        self
+        self (Array)
              first input array. Should have a real-valued data type.
              Note : "self.data" replaces the first array arguement in the function.
-        x2
-            (Union[Array, NativeArray]) – second input array.
+        x2 (Union[Array, NativeArray])
+            second input array.
             Must be compatible with the first input array.
             The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .
             The arrays must be boradcastble to get a common shape for the output.
         out
             optional output array, for writing the result to.
             It must have a shape thatthe inputs broadcast to.
-
 
         Returns
         -------
