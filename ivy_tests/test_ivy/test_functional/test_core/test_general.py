@@ -345,6 +345,7 @@ def test_to_list(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        device_=device,
         fw=fw,
         fn_name="to_list",
         x=x[0],
