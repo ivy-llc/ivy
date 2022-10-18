@@ -113,14 +113,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -1158,17 +1158,14 @@ instances in place of any of the arguments.</p>
 </pre></div>
 </div>
 <p>With :code: ‘ivy.Container’ inputs:
-&gt;&gt;&gt; x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,</p>
+&gt;&gt;&gt; x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),                           b = ivy.array([[1., 0.], [0., 0.]]))
+&gt;&gt;&gt; ivy.matrix_rank(x)
+{</p>
 <blockquote>
-<div><p>b = ivy.array([[1., 0.], [0., 0.]]))</p>
+<div><p>a:ivy.array(2.),
+b:ivy.array(1.)</p>
 </div></blockquote>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a:ivy.array(2.),</span>
-<span class="go">    b:ivy.array(1.)</span>
-<span class="go">}</span>
-</pre></div>
-</div>
+<p>}</p>
 </dd></dl>
 
 <dl class="py function">
