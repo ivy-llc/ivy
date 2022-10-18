@@ -5304,32 +5304,35 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        self
+        self (Container)
             input array or container. Should have a real-valued data type.
-        x2
+        x2 (Union[Container, Array, NativeArray]) -
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
-        key_chains
+        key_chains (Optional[Union[List[str], Dict[str, str]]]) –
             The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
+        to_apply (bool)
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped. Default is ``True``.
-        prune_unapplied
+        prune_unapplied (bool)
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
-        map_sequences
+        map_sequences (bool)
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
+        out (Optional[Container])
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
+        Return type: Container
 
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container
-            must have a data type determined by :ref:`type-promotion`.
+            a container containing the element-wise products.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5339,7 +5342,7 @@ class ContainerWithElementwise(ContainerBase):
                                b=ivy.array([3.2, 5., 7.5]))
         >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
                                b=ivy.array([5.6, 1.2, 4.2]))
-        >>> y = ivy.multiply(x1, x2)
+        >>> y = x1.multiply(x2)
         >>> print(y)
         {
             a: ivy.array([25.5, 12.6, 19.5]),
@@ -5351,7 +5354,7 @@ class ContainerWithElementwise(ContainerBase):
         >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]),\
                                b=ivy.array([5., 1.7, 0.1]))
         >>> x2 = ivy.array([8.3, 3.2, 6.5])
-        >>> y = ivy.multiply(x1, x2)
+        >>> y = x1.multiply(x2)
         >>> print(y)
         {
             a: ivy.array([51.5, 15.4, 14.9]),
