@@ -11,7 +11,7 @@ import _pickle as cPickle
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 1
+N = 3
 run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
 if run_iter > 0:
     tests = bz2.BZ2File("tests.pbz2", "rb")
