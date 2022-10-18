@@ -194,6 +194,7 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret.astype(dtype)
 
+
 @inputs_to_ivy_arrays
 def arccos(x):
     return ivy.acos(x)
@@ -230,6 +231,19 @@ def argmin(a, axis=None, out=None, keepdims=None):
 
 
 @inputs_to_ivy_arrays
+def array_equal(a1, a2, equal_nan: bool) -> bool:
+    try:
+        a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
+    except Exception:
+        return False
+    if ivy.shape(a1) != ivy.shape(a2):
+        return False
+    eq = ivy.asarray(a1 == a2)
+    if equal_nan:
+        eq = ivy.logical_or(eq, ivy.logical_and(ivy.isnan(a1), ivy.isnan(a2)))
+    return ivy.all(eq)
+
+
 def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64

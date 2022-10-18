@@ -1277,3 +1277,42 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_fmod(self, x2, out=out)
+
+    def fmax(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.fmax. This method simply
+        wraps the function, and so the docstring for ivy.fmax also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise maximums.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> x1.fmax(x2)
+        {
+            a: ivy.array([ 2.,  5.,  4.])
+            b: ivy.array([ 0,  0,  nan])
+        }
+        """
+        return self.static_fmax(self, x2, out=out)

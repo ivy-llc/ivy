@@ -1,6 +1,11 @@
 # global
 import pytest
 import importlib
+import tensorflow as tf
+import torch
+import jax.numpy as jnp
+import numpy as np
+
 # local
 import ivy
 from ivy.backend_handler import _backend_dict
@@ -61,3 +66,61 @@ def test_unset_backend(backend):
     ivy.set_backend('torch')
     ivy.unset_backend()
     ivy.assertions.check_equal(ivy.current_backend_str(), backend)
+
+
+def test_clear_backend_stack():
+    for _ in range(3):
+        ivy.set_backend('numpy')
+        ivy.set_backend('tensorflow')
+        ivy.set_backend('torch')
+        ivy.set_backend('jax')
+
+    ivy.clear_backend_stack()
+    ivy.assertions.check_equal(ivy.backend_stack, [])
+
+
+@pytest.mark.parametrize(("backend", "array_type"),
+                         [("numpy", np.array(3.)),
+                          ("tensorflow",
+                           tf.constant([3.])),
+                          ("torch", torch.tensor([3.])),
+                          ("jax", jnp.array(3.))])
+def test_current_backend(backend, array_type):
+    # test backend inference from arguments when stack clear
+    ivy.clear_backend_stack()
+    ivy.assertions.check_equal(ivy.current_backend(array_type),
+                               importlib.import_module(_backend_dict[backend]))
+
+    # global_backend > argument's backend.
+    ivy.set_backend('torch')
+    ivy.assertions.check_equal(ivy.current_backend(array_type),
+                               importlib.import_module(_backend_dict['torch']))
+
+
+@pytest.mark.parametrize(("excluded"), [
+    'numpy', 'jax', 'tensorflow', 'torch', None
+])
+def test_choose_random_backend(excluded):
+    backend = ivy.choose_random_backend(excluded=excluded)
+    if excluded is None:
+        assert backend in list(_backend_dict.keys())
+    else:
+        backends_list = list(_backend_dict.keys())
+        backends_list.remove(excluded)
+        assert backend in backends_list
+
+
+@pytest.mark.parametrize("backend", [
+    'numpy', 'jax', 'tensorflow', 'torch'
+])
+def test_get_backend(backend):
+    imported_backend = importlib.import_module(_backend_dict[backend])
+
+    # checking whether the updating of __dict__ works
+    assert 'pi' not in imported_backend.__dict__
+    ivy.get_backend(backend)
+    assert 'pi' in imported_backend.__dict__
+
+    # checking whether the backend is returned correctly
+    ivy.assertions.check_equal(ivy.get_backend(backend),
+                               imported_backend)

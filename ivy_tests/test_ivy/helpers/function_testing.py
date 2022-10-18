@@ -560,6 +560,9 @@ def test_frontend_function(
     copy_kwargs = copy.deepcopy(kwargs)
     copy_args = copy.deepcopy(args)
     ret = frontend_fn(*args, **kwargs)
+    # since the return from the frontend functions is now
+    # a frontend tensor or array object
+    ret = ret.data
     if with_out:
         if not inspect.isclass(ret):
             is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -635,7 +638,11 @@ def test_frontend_function(
         # create frontend framework args
         args_frontend = ivy.nested_map(
             args_np,
-            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+            lambda x: ivy.native_array(x)
+            if isinstance(x, np.ndarray)
+            else ivy.as_native_dtype(x)
+            if isinstance(x, ivy.Dtype)
+            else x,
         )
         kwargs_frontend = ivy.nested_map(
             kwargs_np,
@@ -693,7 +700,6 @@ def test_frontend_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
-
     # value tests, iterating through each array in the flattened returns
     value_test(
         ret_np_flat=ret_np_flat,
