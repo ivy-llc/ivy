@@ -16,7 +16,10 @@ def det(input, name=None):
 
 
 def eigh(tensor, name=None):
-    output_tensor = ivy.eigh(tensor)
+    input_dtype = tensor.dtype
+    input_tensor = ivy.astype(tensor, ivy.float32)
+    output_tensor = ivy.eigh(input_tensor)
+    output_tensor = ivy.astype(output_tensor, input_dtype)
     e = output_tensor[0]
     v = output_tensor[1]
     return e, v
