@@ -168,8 +168,12 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.shape[-3] == 0:
-        return jnp.asarray(0).astype(x.dtype)
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return jnp.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
