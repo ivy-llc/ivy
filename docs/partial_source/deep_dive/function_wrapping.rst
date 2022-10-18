@@ -16,7 +16,7 @@ Function Wrapping
 .. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L250
 .. _`handle_nestable`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L297
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
 .. _`function wrapping forum`: https://discord.com/channels/799879767196958751/1028297461611122809
 .. _`integer_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244

@@ -1,6 +1,6 @@
 # global
 import torch
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 from ivy.functional.frontends.torch.Tensor import Tensor
