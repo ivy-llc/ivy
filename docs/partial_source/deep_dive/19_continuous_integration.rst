@@ -3,7 +3,7 @@ Continuous Integration
 
 .. _`continuous integration channel`: https://discord.com/channels/799879767196958751/982737993028755496
 .. _`continuous integration forum`: https://discord.com/channels/799879767196958751/982737993028755496
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 
 We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository. This makes sure that:
 

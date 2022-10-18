@@ -100,6 +100,10 @@ def Cosh(*, x, name="cosh"):
 Div = tf_frontend.math.divide
 
 
+def Diag(*, diagonal, name="Diag"):
+    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+
+
 Cumprod = tf_frontend.math.cumprod
 
 

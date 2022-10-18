@@ -514,6 +514,20 @@ def test_ndenumerate(dtype_and_x):
         assert index1 == index2 and x1 == x2
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        ret_shape=True,
+    ),
+)
+def test_ndindex(dtype_x_shape):
+    shape = dtype_x_shape[2]
+    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
+        assert index1 == index2
+
+
 @st.composite
 def _pad_helper(draw):
     dtype, value, shape = draw(

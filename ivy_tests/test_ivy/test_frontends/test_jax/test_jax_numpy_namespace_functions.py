@@ -965,6 +965,41 @@ def test_jax_numpy_fmax(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    equal_nan=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.array_equal"
+    ),
+)
+def test_jax_numpy_array_equal(
+    dtype_and_x,
+    as_variable,
+    equal_nan,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.array_equal",
+        a1=np.array(x[0], dtype=input_dtype[0]),
+        a2=np.array(x[1], dtype=input_dtype[1]),
+        equal_nan=equal_nan
+    )
+
+
 # zeros
 @handle_cmd_line_args
 @given(
@@ -1133,3 +1168,38 @@ def test_jax_numpy_arcsinh(
         fn_tree="numpy.arcsinh",
         x=x[0],
     )
+    
+    
+# argmin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric")),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.argmin"
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_argmin(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdims,
+    fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.argmin",
+        a=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        keepdims=keepdims,
+    )
+    
