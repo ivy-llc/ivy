@@ -518,7 +518,7 @@ def test_ndenumerate(dtype_and_x):
 def _pad_helper(draw):
     dtype, value, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
         )

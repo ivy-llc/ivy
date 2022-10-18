@@ -908,17 +908,13 @@ def _slice_at_axis(sl, axis):
     return (slice(None),) * axis + (sl,) + (...,)
 
 
-def _view_roi(array, original_area_slice, axis):
-    axis += 1
-    sl = (slice(None),) * axis + original_area_slice[axis:]
-    return array[sl]
-
-
 def _set_pad_area(padded, axis, width_pair, value_pair):
+    padded = padded.astype(np.asarray(value_pair).dtype)
     left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
     padded[left_slice] = value_pair[0]
     right_slice = _slice_at_axis(slice(padded.shape[axis] - width_pair[1], None), axis)
     padded[right_slice] = value_pair[1]
+    return padded
 
 
 def _get_edges(padded, axis, width_pair):
@@ -935,8 +931,8 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
     edge_pair = _get_edges(padded, axis, width_pair)
     left_ramp, right_ramp = (
         ivy.linspace(
-            start=end_value,
-            stop=edge.squeeze(axis),
+            end_value,
+            edge.squeeze(axis),
             num=width,
             endpoint=False,
             dtype=padded.dtype,
@@ -1004,7 +1000,7 @@ def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
         pad_area = _slice_at_axis(slice(start, stop), axis)
         padded[pad_area] = right_chunk
         right_pad -= chunk_length
-    return left_pad, right_pad
+    return left_pad, right_pad, padded
 
 
 def _set_wrap_both(padded, axis, width_pair):
@@ -1042,7 +1038,14 @@ def _set_wrap_both(padded, axis, width_pair):
         else:
             pad_area = _slice_at_axis(slice(-right_pad, None), axis)
         padded[pad_area] = left_chunk
-    return new_left_pad, new_right_pad
+    return new_left_pad, new_right_pad, padded
+
+
+def _to_pairs(x, n):
+    if ivy.isscalar(x):
+        return ((x, x),) * n
+    elif ivy.asarray(x).shape == (2,):
+        return ((x[0], x[1]),) * n
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -1051,7 +1054,7 @@ def _pad_simple(array, pad_width, fill_value=None):
     )
     padded = ivy.empty(new_shape, dtype=array.dtype)
     if fill_value is not None:
-        padded.fill(fill_value)
+        padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
         slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
@@ -1103,8 +1106,8 @@ def pad(
         Number of values padded to the edges of each axis.
              - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
                for each axis.
-             - ((before, after),) yields same before and after pad for each axis.
-             - (pad,) or int is shortcut for before = after = pad width for all axes.
+             - (before, after) yields same before and after pad for each axis.
+             - pad (integer) is shortcut for before = after = pad width for all axes.
     mode
         One of the following string values or a user-supplied function.
              - "constant": Pads with a constant value.
@@ -1144,26 +1147,25 @@ def pad(
         of each axis used to calculate the statistic value.
              - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
                lengths for each axis.
-             - ((before, after),) yields same before and after statistic lengths for
+             - (before, after) yields same before and after statistic lengths for
                each axis.
-             - (stat_length,) or int is a shortcut for before = after = statistic
+             - stat_length (integer) is a shortcut for before = after = stat_length
                length for all axes.
              - None uses the entire axis.
     constant_values
         Used in "constant". The values to set the padded values for each axis.
              - ((before_1, after_1), ... (before_N, after_N)) yields unique pad
                constants for each axis.
-             - ((before, after),) yields same before and after constants for each axis.
-             - (constant,) or constant is a shortcut for before = after = constant for
+             - (before, after) yields same before and after constants for each axis.
+             - constant (integer) is a shortcut for before = after = constant for
                all axes.
     end_values
         Used in "linear_ramp". The values used for the ending value of the linear_ramp
         and that will form the edge of the padded array.
              - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
                for each axis.
-             - ((before, after),) yields same before and after end values for each axis
-             - (constant,) or constant is a shortcut for before = after = constant for
-               all axes.
+             - (before, after) yields same before and after end values for each axis
+             - end (integer) is a shortcut for before = after = end for all axes.
     reflect_type
         Used in "reflect", and "symmetric". The "even" style is the default with an
         unaltered reflection around the edge value. For the "odd" style, the extended
@@ -1237,6 +1239,7 @@ def pad(
     }
     """
     array = ivy.asarray(x, dtype=x.dtype)
+    pad_width = _to_pairs(pad_width, array.ndim)
     pad_width = ivy.asarray(
         pad_width, dtype=ivy.Dtype(str(np.asarray(pad_width).dtype))
     )
@@ -1245,9 +1248,9 @@ def pad(
         padded, _ = _pad_simple(array, pad_width, fill_value=0)
         for axis in range(padded.ndim):
             view = ivy.moveaxis(padded, axis, -1)
-            inds, vals = ivy.ndenumerate(view.shape[:-1])
+            inds = ivy.ndindex(view.shape[:-1])
             for ind in inds:
-                func(view[ind], pad_width[axis], axis, kwargs)
+                view[ind] = func(view[ind], pad_width[axis], axis, kwargs)
         return padded
     padded, original_area_slice = _pad_simple(array, pad_width)
     axes = range(padded.ndim)
@@ -1258,45 +1261,44 @@ def pad(
         "median": ivy.median,
     }
     if mode == "constant":
+        constant_values = _to_pairs(constant_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
-            roi = _view_roi(padded, original_area_slice, axis)
-            _set_pad_area(roi, axis, width_pair, value_pair)
+            padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
         pass
     elif mode == "edge":
         for axis, width_pair in zip(axes, pad_width):
-            roi = _view_roi(padded, original_area_slice, axis)
-            edge_pair = _get_edges(roi, axis, width_pair)
-            _set_pad_area(roi, axis, width_pair, edge_pair)
+            edge_pair = _get_edges(padded, axis, width_pair)
+            padded = _set_pad_area(padded, axis, width_pair, edge_pair)
     elif mode == "linear_ramp":
+        end_values = _to_pairs(end_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, end_values):
-            roi = _view_roi(padded, original_area_slice, axis)
-            ramp_pair = _get_linear_ramps(roi, axis, width_pair, value_pair)
-            _set_pad_area(roi, axis, width_pair, ramp_pair)
+            ramp_pair = _get_linear_ramps(padded, axis, width_pair, value_pair)
+            padded = _set_pad_area(padded, axis, width_pair, ramp_pair)
     elif mode in stat_functions:
         func = stat_functions[mode]
+        stat_length = _to_pairs(stat_length, padded.ndim)
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
-            roi = _view_roi(padded, original_area_slice, axis)
-            stat_pair = _get_stats(roi, axis, width_pair, length_pair, func)
-            _set_pad_area(roi, axis, width_pair, stat_pair)
+            stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
             if array.shape[axis] == 1 and (left_index > 0 or right_index > 0):
                 edge_pair = _get_edges(padded, axis, (left_index, right_index))
-                _set_pad_area(padded, axis, (left_index, right_index), edge_pair)
+                padded = _set_pad_area(
+                    padded, axis, (left_index, right_index), edge_pair
+                )
                 continue
-            roi = _view_roi(padded, original_area_slice, axis)
             while left_index > 0 or right_index > 0:
-                left_index, right_index = _set_reflect_both(
-                    roi, axis, (left_index, right_index), reflect_type, include_edge
+                left_index, right_index, padded = _set_reflect_both(
+                    padded, axis, (left_index, right_index), reflect_type, include_edge
                 )
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            roi = _view_roi(padded, original_area_slice, axis)
             while left_index > 0 or right_index > 0:
-                left_index, right_index = _set_wrap_both(
-                    roi, axis, (left_index, right_index)
+                left_index, right_index, padded = _set_wrap_both(
+                    padded, axis, (left_index, right_index)
                 )
     return padded
 
