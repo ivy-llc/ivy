@@ -39,6 +39,3 @@ def hstack(tup):
     else:
         ret = ivy.concat(tup, axis=1)
     return ret
-
-
-column_stack = hstack
