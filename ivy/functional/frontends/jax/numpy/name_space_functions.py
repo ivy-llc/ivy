@@ -226,6 +226,19 @@ def fmax(x1, x2):
 
 
 @inputs_to_ivy_arrays
+def array_equal(a1, a2, equal_nan: bool) -> bool:
+    try:
+        a1, a2 = ivy.asarray(a1), ivy.asarray(a2)
+    except Exception:
+        return False
+    if ivy.shape(a1) != ivy.shape(a2):
+        return False
+    eq = ivy.asarray(a1 == a2)
+    if equal_nan:
+        eq = ivy.logical_or(eq, ivy.logical_and(ivy.isnan(a1), ivy.isnan(a2)))
+    return ivy.all(eq)
+
+
 def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
