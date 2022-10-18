@@ -11,7 +11,7 @@ import ivy.functional.frontends.torch as torch_frontend
 def _from_torch_frontend_tensor_to_ivy_array(x):
     if len(ivy.backend_stack) != 0 and isinstance(x, ivy.NativeArray):
         raise ivy.exceptions.IvyException("input must be Ivy Torch Tensor")
-    elif isinstance(x, torch_frontend.Tensor.Tensor):
+    elif isinstance(x, torch_frontend.Tensor):
         return x.data
     return x
 
@@ -20,7 +20,7 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
     if nested:
         return ivy.nested_map(x, _from_ivy_array_to_torch_frontend_tensor, include_derived)
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return torch_frontend.Tensor.Tensor(x)
+        return torch_frontend.Tensor(x)
     return x
 
 
@@ -62,7 +62,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        # convert all arrays in the return to `torch_frontend.tensor.Tensor` instances
+        # convert all arrays in the return to `torch_frontend.Tensor` instances
         return _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
