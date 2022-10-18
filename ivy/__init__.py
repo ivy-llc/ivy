@@ -1,14 +1,4 @@
 # global
-from typing import Union
-import jax.numpy as jnp
-import jax
-import jaxlib
-from jaxlib.xla_extension import Buffer
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.types.core import Tensor
-from tensorflow.python.framework.tensor_shape import TensorShape
-import torch
 import warnings
 from ivy._version import __version__ as __version__
 
@@ -30,28 +20,24 @@ class Framework:
     pass
 
 
-NativeArray = Union[
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-    np.ndarray,
-    Tensor,
-    torch.Tensor,
-]
+class NativeArray:
+    pass
 
 
-NativeVariable = Union[
-    jax.interpreters.xla._DeviceArray, np.ndarray, Tensor, torch.Tensor
-]
+class NativeVariable:
+    pass
 
 
-NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
+class NativeDevice:
+    pass
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
+class NativeDtype:
+    pass
 
 
-NativeShape = Union[tuple, TensorShape, torch.Size]
+class NativeShape:
+    pass
 
 
 class Container:
@@ -522,10 +508,6 @@ from .backend_handler import (
     unset_backend,
     backend_stack,
     choose_random_backend,
-    try_import_ivy_jax,
-    try_import_ivy_tf,
-    try_import_ivy_torch,
-    try_import_ivy_numpy,
     clear_backend_stack,
 )
 from . import assertions, backend_handler, func_wrapper, exceptions

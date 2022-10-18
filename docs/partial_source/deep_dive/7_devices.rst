@@ -12,7 +12,7 @@ Devices
 .. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659
 .. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
 .. _`devices forum`: https://discord.com/channels/799879767196958751/1028297346662015057
 

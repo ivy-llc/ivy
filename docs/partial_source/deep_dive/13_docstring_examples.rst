@@ -2,7 +2,7 @@ Docstring Examples
 ==================
 
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
 .. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
@@ -307,8 +307,8 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
     >>> print(y)
     ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                       [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
     ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
@@ -317,7 +317,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 These examples cover points 1, 2, 3, 4 and 5.
 
 Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
-to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings. 
+to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is simple to satisfy. Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by
 points 6 and 7, and ignoring the *nestable* nature of the function which is covered by points 8 and 9,
@@ -450,16 +450,16 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.],
+    ...                [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
                [4., 5., 3.]])
 
-    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
-                       [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
+    ...                 [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -472,7 +472,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 These examples cover points 1, 2, 3, 4 and 5.
 
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
-to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
+to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is a bit less trivial to satisfy than it was for :func:`ivy.tan` above. While :code:`x` again only has one
 variation (for the same reason as explained in the :func:`ivy.tan` example above), :code:`shift` has two variations
@@ -501,8 +501,8 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -519,8 +519,8 @@ in order to satisfy point 7.
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> shift = ivy.Container(a=1, b=-1)
     >>> y = ivy.roll(x, shift)
     >>> print(y)
@@ -542,8 +542,8 @@ in order to satisfy point 8.
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> y = ivy.Container.static_roll(x, 1)
     >>> print(y)
     {
@@ -559,8 +559,8 @@ in order to satisfy point 9.
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
     >>> shift = ivy.Container(a=1, b=-1)
     >>> y = ivy.Container.static_roll(x, shift)
     >>> print(y)
@@ -670,7 +670,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 These examples cover points 1, 2, 3, 4 and 5.
 
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
-to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
+to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7,
@@ -698,8 +698,8 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -720,10 +720,10 @@ in order to satisfy point 7.
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -745,8 +745,8 @@ in order to satisfy point 8.
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.Container.static_add(x, y)
     >>> print(z)
     {
@@ -766,10 +766,10 @@ in order to satisfy point 9.
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                        b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                        b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = ivy.Container.static_add(x, y)
     >>> print(z)
     {
@@ -803,10 +803,10 @@ point 11.
     Examples
     --------
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\ 
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\ 
-                          b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = x.add(y)
     >>> print(z)
     {
@@ -841,8 +841,8 @@ docstring, with the operator called with an :class:`ivy.Array` instance on the l
     With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                        b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x + y
     >>> print(z)
     {
@@ -901,10 +901,10 @@ docstring, with the operator called on two :class:`ivy.Container` instances cont
 
     With :class:`ivy.Array` instances at the leaves:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                          b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    ...                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    ...                   b=ivy.array([5, 6, 7]))
     >>> z = x + y
     >>> print(z)
     {
@@ -920,8 +920,8 @@ and :class:`ivy.Array` on the right.
 
     With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-    >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> y = ivy.array([[1.1, 2.3, -3.6]])
     >>> z = x + y
     >>> print(z)

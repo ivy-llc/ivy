@@ -10,7 +10,6 @@ from typing import Optional, Callable
 import ivy
 from ivy.functional.ivy.gradients import (
     _get_native_arrays_and_indices,
-    _forward_fn,
     _zero_gradients_to_none_and_to_ivy,
     _stop_grad_and_index,
 )
@@ -28,6 +27,19 @@ def is_variable(x, /, *, exclusive: bool = False):
 
 def variable_data(x):
     return x.data
+
+
+def _forward_fn(xs, func):
+    ret = func(xs)
+
+    if isinstance(ret, ivy.Array):
+        array_values = ret.to_native()
+    else:
+        ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
+        array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
+        array_values = ivy.multi_index_nest(ret, array_idxs)
+
+    return array_values
 
 
 # noinspection PyShadowingNames

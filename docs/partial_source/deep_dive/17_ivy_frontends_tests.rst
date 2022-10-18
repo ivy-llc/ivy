@@ -6,7 +6,7 @@ Ivy Frontend Tests
 .. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`Function Wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
 .. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html
@@ -200,7 +200,7 @@ ivy.tan()
             available_dtypes=helpers.get_dtypes("float"),
         ),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.leaky_relu"
+            fn_name="ivy.functional.frontends.torch.nn.functional.leaky_relu"
         ),
         alpha=st.floats(min_value=0, max_value=1),
         with_inplace=st.booleans(),
@@ -723,8 +723,8 @@ ivy.add()
         ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
         for (u, v) in zip(ret, ret_gt):
             helpers.value_test(
-                ret=ret,
-                ret_from_gt=ret_gt,
+                ret=u,
+                ret_from_gt=v,
                 ground_truth_backend="jax",
             )
 

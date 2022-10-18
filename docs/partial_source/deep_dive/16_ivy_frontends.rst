@@ -8,14 +8,13 @@ Ivy Frontends
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-.. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
-.. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
+.. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
@@ -42,7 +41,7 @@ When using functions and methods of Ivy Frontends, in addition to importing ivy 
 like :code:`import ivy` please also import the corrisponding Frontend module.
 For example, to use ivy's tensorflow frontend:
 
-    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+    :code:`import ivy.functional.frontends.tensorflow as tf_frontend`
 
 ----
 
@@ -200,7 +199,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
-frontend. There are three arguments according to the `tf.add`_ documentation, which are
+frontend. There are three arguments according to the `tf.math.add <https://www.tensorflow.org/api_docs/python/tf/math/add>`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
 which framework is set in Ivy's backend.
@@ -220,7 +219,7 @@ argument.
         return ivy.tan(x)
 
 Likewise, :code:`tan` is also placed under :code:`math`.
-By referring to the `tf.tan`_ documentation, we add the same arguments,
+By referring to the `tf.math.tan`_ documentation, we add the same arguments,
 and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
@@ -501,8 +500,8 @@ which itself is implemented as follows:
 **Special Method**
 
 Some examples referring to the special methods would make things more clear. For
-example lets take a look at how :meth:`tf.tensor.__add__` is implemented and how
-it's reverse :meth:`tf.tensor.__radd__` is implemented.
+example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how
+it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
 
 .. code-block:: python
 
@@ -519,9 +518,9 @@ For the reverse operator of :func:`add`.
         return tf_frontend.add(x, self.data, name=name)
 
 
-Here also, both of them simply call the frontend :func:`tf_frontend.add` under the
+Here also, both of them simply call the frontend :func:`tf_frontend.math.add` under the
 hood. The functions with reverse operators should call the same frontend function
-as shown in the examples above. The implementation for the :func:`tf_frontend.add`
+as shown in the examples above. The implementation for the :func:`tf_frontend.math.add`
 is shown as follows:
 
 .. code-block:: python
