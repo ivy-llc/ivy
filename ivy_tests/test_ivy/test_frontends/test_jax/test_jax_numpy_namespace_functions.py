@@ -1246,10 +1246,10 @@ def test_jax_numpy_bitwise_and_bool(
     ),
 )
 def test_jax_numpy_bitwise_and_int(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
