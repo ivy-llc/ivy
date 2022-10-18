@@ -114,14 +114,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -200,8 +200,16 @@ functions which are part of the standard. If a test fails on the CI, you can see
 /bin/bash -e ./run_tests_CLI/test_array_api.sh  &#39;&lt;insert_chosen_backend&gt;&#39;
 </pre></div>
 </div>
-<p>You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax. If you rather
-run a single test or test file with terminal, use the following commands:</p>
+<p>You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax.</p>
+<p>You can also run a specific test or test file, as often running <em>all</em> tests for a given framework is excessive.
+To make this work, you should set the backend explicitly in the <cite>_array_module.py</cite> file, which can find it in the
+<cite>array_api_tests</cite> submodule. At the beginning of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>.
+You need to comment out that line and add the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
+array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
+</pre></div>
+</div>
+<p>You should now be able to run the following commands via terminal:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># run all tests in a file
 pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
 
@@ -213,15 +221,10 @@ pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.
 <section id="using-the-ide">
 <h3>Using the IDE<a class="headerlink" href="#using-the-ide" title="Permalink to this heading"></a></h3>
 <p>You can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the <cite>_array_module.py</cite> file. You can find it in the <cite>array_api_tests</cite> submodule. At the beginning
-of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>. You need to comment out that line and add
-the following code:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
-array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
-</pre></div>
-</div>
-<p>After that, you can run the API test files as you typically would with other tests. See <a class="reference external" href="https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing">here</a>  for instructions on how
-to run tests in ivy more generally. <em>NB</em>: make sure to not add any changes to the array-api files to your commit.</p>
+backend explicitly in the <cite>_array_module.py</cite> file as explained in the previous subsection. After that, you can run
+the API test files as you typically would with other tests. See <a class="reference external" href="https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing">here</a>  for instructions on how
+to run tests in ivy more generally.</p>
+<p><em>NB</em>: make sure to not add any changes to the array-api files to your commit.</p>
 </section>
 </section>
 <section id="test-skipping">
@@ -237,8 +240,7 @@ to run tests in ivy more generally. <em>NB</em>: make sure to not add any change
 two are skipped in the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> also. The data generation and tolerance issues are not skipped in the
 array-api repo and are difficult for Ivy developers
 to solve as we cannot alter the tests directly. Currently, we import the test suite and run it; we do not
-have our own fork that we can tweak at will. The rationale for doing so is that we should adhere as closely to the
-standard as possible. These issues have been raised in the array-api test repo and will be addressed in due course.</p>
+have our own fork that we can tweak at will. These issues have been raised in the array-api test repo and will be addressed in due course.</p>
 <p>There are currently two ways to skip array-api tests:</p>
 <ol class="arabic simple">
 <li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test/&lt;submodule&gt;.txt</span></code> and</p></li>
@@ -246,8 +248,9 @@ standard as possible. These issues have been raised in the array-api test repo a
 </ol>
 <p>The first method was implemented before the second. Each <code class="code docutils literal notranslate"><span class="pre">&lt;submodule&gt;.txt</span></code> file contains a comprehensive list
 of functions which belong to that submodule, some of which are commented out. The commented-out functions are being
-skipped <em>only</em> for the backend(s) that is/are causing the failure, not all the backends. The latter method, on the
-other hand, skips a test on <em>all</em> backends, even if
+skipped <em>only</em> for the backend(s) that is/are causing the failure, not all the backends. This is done by identifying
+any references to a backend in the commented-out line e.g. :code:<a href="#id1"><span class="problematic" id="id2">`</span></a>#trace # failing for jax, numpy due to issues with dtypes in output in test: <a class="reference external" href="https://github.com/data-apis/array-api/issues/202">https://github.com/data-apis/array-api/issues/202</a></p>
+<p>The latter method, on the other hand, skips a test on <em>all</em> backends, even if
 it is just failing on one. The <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> scheme was implemented to skip <em>specific test cases</em>. The array-api
 test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules
 (see <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py</span></code>). In <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code>, tests are

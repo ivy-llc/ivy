@@ -5,9 +5,9 @@ split
 
 .. autofunction:: ivy.array.array_methods.split
 
-.. autofunction:: ivy.container.container_methods.static_split
-
 .. autofunction:: ivy.container.container_methods.split
+
+.. autofunction:: ivy.container.container_methods.static_split
 |
 | **Supported Frameworks:**
 
