@@ -100,7 +100,11 @@ def Cosh(*, x, name="cosh"):
 Div = tf_frontend.math.divide
 
 
-Cumprod = tf_frontend.math.cumprod
+def Diag(*, diagonal, name="Diag"):
+    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+
+
+Cumprod = tf_frontend.cumprod
 
 
 @to_ivy_arrays_and_back
