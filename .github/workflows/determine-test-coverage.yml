@@ -20,12 +20,12 @@ jobs:
        - name: Determine Test Coverage
          run: |
            git clone https://github.com/unifyai/Backend_Mapping.git
-           cp Backend_Mapping/tests.pkl ivy/
+           cp Backend_Mapping/tests.pbz2 ivy/
            cd ivy
            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py ${{ github.run_number }}
            cd ..
            mkdir tests
-           cp ivy/tests.pkl tests/
+           cp ivy/tests.pbz2 tests/
 
        - name: Determine Mapping
          id: det
