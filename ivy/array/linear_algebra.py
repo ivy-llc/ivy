@@ -201,6 +201,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.Array instance method variant of ivy.matrix_norm.
         This method simply wraps the function, and so the docstring for
         ivy.matrix_norm also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
