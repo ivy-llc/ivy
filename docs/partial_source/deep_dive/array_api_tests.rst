@@ -53,7 +53,7 @@ functions which are part of the standard. If a test fails on the CI, you can see
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
-Using the bash file (runs Docker)
+Using Terminal
 ****
 
 Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `test_array_api.sh`_:
