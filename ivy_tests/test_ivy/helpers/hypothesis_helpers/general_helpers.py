@@ -11,7 +11,7 @@ from . import array_helpers, number_helpers, dtype_helpers
 def safety_factor_linalg(
     matrix,
     *,
-    condition_index='high',
+    condition_index="high",
 ):
     """
     Applies safety factor to the condition of a matrix to avoid numerical instabilities in further calculations.
@@ -21,17 +21,29 @@ def safety_factor_linalg(
     matrix
         The original matrix whose condition number is to be determined.
     condition_index
+        When a condition_index of "high" is used we are testing for a little
+        ill-conditioned matrices which are not too much prone to numerical
+        instabilities.
+
+        When a condition_index of "low" is used we are testing for a little
+        well-conditioned matrices.
+
         There is no rule of thumb for what the exact condition number
         should be to consider a matrix ill-conditioned(prone to numerical errors).
         If the condition number is "1", the matrix is perfectly said to be a
-        well-conditioned matrix which will not be prone to any numerical zzinstabilities in further
-        calculations, but that would probably be a very simple matrix.
+        well-conditioned matrix which will not be prone to any numerical
+        instabilities in further calculations, but that would probably be a very
+        simple matrix.
 
         The "low" condition index checks from "1" till "10" as a matrix can
-        be considered well-condition in this range.
+        be considered well-condition in this range. This should be used for
+        a very high numerical computational function because it strictly
+        limits the type of matrices we generate.
 
         The "high" condition index checks from "10" till "30", in this range
-        the matrix is considered to be ill-conditioned but still
+        the matrix is close to multicollinearity and can be considered a
+        little ill-conditioned, going above 30 leads to strong multicollinearity
+        which leads t singularity.
 
     Returns
     -------
@@ -39,12 +51,13 @@ def safety_factor_linalg(
     absolute smallest representable value (only for float dtypes).
     """
     type_casted_matrix = matrix.astype('float64')
-    if condition_index == 'high':
-        if np.linalg.cond(type_casted_matrix) >= 10 and np.linalg.cond(type_casted_matrix) <= 30:
+    if condition_index == "high":
+        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
+        if round(np.linalg.cond(type_casted_matrix)) >= 10 and round(np.linalg.cond(type_casted_matrix)) <= 30:
             return True
         else:
             return False
-    if condition_index == 'low':
+    if condition_index == "low":
         if np.linalg.cond(type_casted_matrix) <= 10:
             return True
         else:
