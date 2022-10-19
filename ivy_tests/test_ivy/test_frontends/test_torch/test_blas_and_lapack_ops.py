@@ -176,7 +176,6 @@ def test_torch_addbmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -185,7 +184,6 @@ def test_torch_addbmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addbmm",
         rtol=1e-01,
@@ -228,7 +226,6 @@ def test_torch_addmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -237,7 +234,6 @@ def test_torch_addmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addmm",
         rtol=1e-01,
@@ -280,7 +276,6 @@ def test_torch_addmv(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, mat, vec = dtype_and_matrices
     helpers.test_frontend_function(
@@ -289,7 +284,6 @@ def test_torch_addmv(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addmv",
         rtol=1e-03,
@@ -332,7 +326,6 @@ def test_torch_addr(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
 
@@ -342,7 +335,6 @@ def test_torch_addr(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="addr",
         rtol=1e-01,
@@ -385,7 +377,6 @@ def test_torch_baddbmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, input, batch1, batch2 = dtype_and_matrices
 
@@ -395,7 +386,6 @@ def test_torch_baddbmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="baddbmm",
         rtol=1e-01,
@@ -422,7 +412,6 @@ def test_torch_bmm(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -431,7 +420,6 @@ def test_torch_bmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="bmm",
         rtol=1e-02,
@@ -465,7 +453,6 @@ def test_torch_cholesky(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = x[0]
@@ -478,7 +465,6 @@ def test_torch_cholesky(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="cholesky",
         rtol=1e-02,
@@ -501,7 +487,6 @@ def test_torch_ger(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -510,7 +495,6 @@ def test_torch_ger(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="ger",
         input=vec1,
@@ -537,7 +521,6 @@ def test_torch_inverse(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -546,7 +529,6 @@ def test_torch_inverse(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="inverse",
         rtol=1e-03,
@@ -568,7 +550,6 @@ def test_torch_det(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -577,7 +558,6 @@ def test_torch_det(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="det",
         input=x,
@@ -598,7 +578,6 @@ def test_torch_logdet(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -607,7 +586,6 @@ def test_torch_logdet(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="logdet",
         input=x,
@@ -628,7 +606,6 @@ def test_torch_slogdet(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -637,7 +614,6 @@ def test_torch_slogdet(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="slogdet",
         input=x,
@@ -658,7 +634,6 @@ def test_torch_matmul(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -667,7 +642,6 @@ def test_torch_matmul(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matmul",
         rtol=1e-02,
@@ -693,7 +667,6 @@ def test_torch_matrix_power(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -702,7 +675,6 @@ def test_torch_matrix_power(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matrix_power",
         rtol=1e-01,
@@ -730,7 +702,6 @@ def test_torch_matrix_rank(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -739,7 +710,6 @@ def test_torch_matrix_rank(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="matrix_rank",
         rtol=1e-01,
@@ -763,7 +733,6 @@ def test_torch_mm(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -772,7 +741,6 @@ def test_torch_mm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="mm",
         rtol=1e-03,
@@ -796,7 +764,6 @@ def test_torch_mv(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, mat, vec = dtype_mat_vec
     helpers.test_frontend_function(
@@ -805,7 +772,6 @@ def test_torch_mv(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="mv",
         rtol=1e-03,
@@ -829,7 +795,6 @@ def test_torch_outer(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -838,7 +803,6 @@ def test_torch_outer(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="outer",
         input=vec1,
@@ -869,7 +833,6 @@ def test_torch_pinverse(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -878,7 +841,6 @@ def test_torch_pinverse(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="pinverse",
         rtol=1e-03,
@@ -911,7 +873,6 @@ def test_torch_qr(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -920,7 +881,6 @@ def test_torch_qr(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="qr",
         rtol=1e-02,
@@ -954,7 +914,6 @@ def test_torch_svd(
     with_out,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -963,7 +922,6 @@ def test_torch_svd(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="svd",
         input=x[0],
@@ -987,7 +945,6 @@ def test_torch_vdot(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -996,7 +953,6 @@ def test_torch_vdot(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="vdot",
         input=vec1,

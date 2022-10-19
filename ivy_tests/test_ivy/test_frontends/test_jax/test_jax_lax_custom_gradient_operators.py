@@ -12,15 +12,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.jax.lax.stop_gradient"
     ),
 )
-def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_array, fw):
+def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_array):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        with_out=False,
         as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.stop_gradient",
         x=x[0],

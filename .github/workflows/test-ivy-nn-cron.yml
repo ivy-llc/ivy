@@ -51,6 +51,7 @@ jobs:
            cd ivy
            python run_tests_CLI/run_ivy_nn_test.py ${{ github.run_number }}
            Write-Host "::set-output name=fw_submod::$(cat fwsubmod.txt)"
+           ./run_tests_CLI/test_ivy_nn.sh $(cat backend.txt) $(cat submodule.txt) ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples

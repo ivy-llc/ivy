@@ -41,15 +41,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -69,12 +70,12 @@ class ContainerWithRandom(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
-        >>> ivy.Container.static_random_uniform(low=x, high=y, device='cpu', \
-                                                dtype='float64')
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),
+        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),
+        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> ivy.Container.static_random_uniform(low=x, high=y, device='cpu',
+        ...                                     dtype='float64')
         {
             a: ivy.array([[10.8, 23.7],
                           [17., 16.6]]),
@@ -139,15 +140,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -229,10 +231,10 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([9.29, 11.2, 9.84])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),
+        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),
+        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
         >>> x.random_uniform(high=y)
         {
             a: ivy.array([[10.4, 17.],
@@ -299,6 +301,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.random_normal. This method
@@ -318,21 +321,24 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -346,12 +352,12 @@ class ContainerWithRandom(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
-        >>> ivy.Container.static_random_normal(mean=x, std=y, device='cpu', \
-                                               dtype='float64')
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),
+        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),
+        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> ivy.Container.static_random_normal(mean=x, std=y, device='cpu',
+        ...                                       dtype='float64')
         {
             a: ivy.array([[-4.11, 0.651],
                           [19.3, -30.4]]),
@@ -376,6 +382,7 @@ class ContainerWithRandom(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -395,6 +402,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.random_normal. This method
@@ -414,15 +422,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -440,8 +449,8 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), \
-                              b=ivy.array([8.7,9.8,4.5]))
+        >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]),
+        ...                   b=ivy.array([8.7,9.8,4.5]))
         >>> x.random_normal(std=17.4)
         {
             a: ivy.array([11.9, -22.9, -24.8]),
@@ -505,10 +514,10 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([22.9, -5.97, -1.28])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]),
+        ...                   b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]),
+        ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
         >>> x.random_normal(std=y)
         {
             a: ivy.array([[10.6, 7.89],
@@ -560,6 +569,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
@@ -577,6 +587,7 @@ class ContainerWithRandom(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.multinomial. This method
@@ -595,20 +606,23 @@ class ContainerWithRandom(ContainerBase):
             The unnormalized probabilities for all elements in population,
             default is uniform *[batch_shape, population_size]*
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -630,6 +644,7 @@ class ContainerWithRandom(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             device=device,
+            seed=seed,
             out=out,
         )
 
@@ -646,6 +661,7 @@ class ContainerWithRandom(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.multinomial. This method
@@ -664,20 +680,23 @@ class ContainerWithRandom(ContainerBase):
         batch_size
             Number of tensors to generate. Default is 1.
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -698,6 +717,7 @@ class ContainerWithRandom(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             device=device,
+            seed=seed,
             out=out,
         )
 
@@ -714,6 +734,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.randint. This method
@@ -732,21 +753,24 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default integer data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -761,10 +785,10 @@ class ContainerWithRandom(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
-                              b=ivy.array([[0,2],[10,6]]))
-        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
-                              b=ivy.array([[44,5],[23,54]]))
+        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]),
+        ...                   b=ivy.array([[0,2],[10,6]]))
+        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]),
+        ...                   b=ivy.array([[44,5],[23,54]]))
         >>> ivy.Container.static_randint(x, y, device='cpu', dtype='int32')
         {
             a: ivy.array([[9, 27],
@@ -794,6 +818,7 @@ class ContainerWithRandom(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            seed=seed,
             out=out,
         )
 
@@ -809,6 +834,7 @@ class ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.randint. This method
@@ -827,21 +853,24 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default integer data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -854,8 +883,8 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([7,6,0]), \
-                              b=ivy.array([8,9,4]))
+        >>> x = ivy.Container(a=ivy.array([7,6,0]),
+        ...                   b=ivy.array([8,9,4]))
         >>> x.randint(30)
         {
             a: ivy.array([23, 15, 20]),
@@ -919,10 +948,10 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([8, 9, 4])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
-                              b=ivy.array([[0,2],[10,6]]))
-        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
-                              b=ivy.array([[44,5],[23,54]]))
+        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]),
+        ...                   b=ivy.array([[0,2],[10,6]]))
+        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]),
+        ...                   b=ivy.array([[44,5],[23,54]]))
         >>> x.randint(y)
         {
             a: ivy.array([[9, 7],
@@ -974,6 +1003,7 @@ class ContainerWithRandom(ContainerBase):
             map_sequences=map_sequences,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
@@ -982,6 +1012,7 @@ class ContainerWithRandom(ContainerBase):
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -996,16 +1027,19 @@ class ContainerWithRandom(ContainerBase):
         ----------
         x
             Input array or container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1018,6 +1052,7 @@ class ContainerWithRandom(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
             x,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1029,6 +1064,7 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        seed: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1043,16 +1079,19 @@ class ContainerWithRandom(ContainerBase):
         ----------
         self
             Input container. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1064,6 +1103,7 @@ class ContainerWithRandom(ContainerBase):
         """
         return self.static_shuffle(
             self,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

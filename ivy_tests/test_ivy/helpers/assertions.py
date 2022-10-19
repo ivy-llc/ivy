@@ -1,7 +1,13 @@
 import ivy
 import numpy as np
 
-TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+TOLERANCE_DICT = {
+    "float16": 1e-2,
+    "bfloat16": 1e-2,
+    "float32": 1e-5,
+    "float64": 1e-5,
+    None: 1e-5,
+}
 
 
 def assert_all_close(

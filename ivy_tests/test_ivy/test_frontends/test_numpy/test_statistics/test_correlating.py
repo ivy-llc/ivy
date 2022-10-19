@@ -28,7 +28,6 @@ def test_numpy_correlate(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtypes, xs = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -37,7 +36,6 @@ def test_numpy_correlate(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="correlate",
         a=xs[0],

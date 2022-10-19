@@ -4,6 +4,10 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 def convolve(a, v, mode="full"):
@@ -11,6 +15,8 @@ def convolve(a, v, mode="full"):
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def clip(
     a,
     a_min,
@@ -45,6 +51,8 @@ def clip(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def sqrt(
     x,
     /,
@@ -57,8 +65,6 @@ def sqrt(
     subok=True,
 ):
     x = ivy.array(x)
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
     )
@@ -66,6 +72,8 @@ def sqrt(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def cbrt(
     x,
     /,
@@ -77,8 +85,6 @@ def cbrt(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
     fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
     ret = ivy.where(
@@ -88,6 +94,8 @@ def cbrt(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def square(
     x,
     /,
@@ -99,8 +107,6 @@ def square(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out
     )
@@ -108,6 +114,8 @@ def square(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def absolute(
     x,
     /,
@@ -119,8 +127,6 @@ def absolute(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
@@ -128,6 +134,8 @@ def absolute(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def fabs(
     x,
     /,
@@ -139,8 +147,6 @@ def fabs(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
@@ -148,6 +154,8 @@ def fabs(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def sign(
     x,
     /,
@@ -159,8 +167,6 @@ def sign(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sign(x, out=out)
     if where is not None:
         ret = ivy.where(
@@ -170,6 +176,8 @@ def sign(
 
 
 @from_zero_dim_arrays_to_float
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def heaviside(
     x1,
     x2,
@@ -184,9 +192,6 @@ def heaviside(
 ):
     x1 = ivy.array(x1)
     x2 = ivy.array(x2)
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.equal(x1, x1.full_like(0.0)),
         x2,
@@ -198,6 +203,7 @@ def heaviside(
     return ret
 
 
+@to_ivy_arrays_and_back
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
@@ -213,10 +219,12 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     return ret
 
 
+@to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
     return ivy.array(a)  # ivy doesn't yet support complex numbers
 
 
+@to_ivy_arrays_and_back
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
