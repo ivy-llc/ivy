@@ -1277,13 +1277,13 @@ def pad(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([0., 1., 2.]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([4, 5, 6]))
     >>> padding = ivy.array([(1, 1)])
     >>> y = ivy.pad(x, padding, mode="constant")
     >>> print(y)
     {
-        a: ivy.array([0., 0., 1., 2., 0.]),
-        b: ivy.array([0., 0., 1., 2., 0.])
+        a: ivy.array([0, 0, 1, 2, 0]),
+        b: ivy.array([0, 4, 5, 6, 0])
     }
     """
     pad_width = _to_pairs(pad_width, input.ndim)

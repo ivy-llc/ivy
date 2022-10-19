@@ -795,9 +795,8 @@ class ContainerWithExtensions(ContainerBase):
     @staticmethod
     def static_pad(
         x: ivy.Container,
-        /,
-        *,
         pad_width: Union[Iterable[Tuple[int]], int],
+        *,
         mode: Optional[
             Union[
                 Literal[
