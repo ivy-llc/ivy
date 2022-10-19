@@ -1,6 +1,7 @@
 name: determine-test-coverage
 on:
   workflow_dispatch:
+  push:
 permissions:
   actions: read
 jobs:
