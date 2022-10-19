@@ -1345,7 +1345,7 @@ def test_jax_numpy_bitwise_or_bool(
         fn_name="ivy.functional.frontends.jax.numpy.bitwise_or"
     ),
 )
-def test_jax_numpy_bitwise_and_int(
+def test_jax_numpy_bitwise_or_int(
     dtype_and_x,
     as_variable,
     num_positional_args,
