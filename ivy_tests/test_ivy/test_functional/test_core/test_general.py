@@ -16,7 +16,6 @@ import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -383,6 +382,7 @@ def test_shape(
     num_positional_args,
     native_array,
     container,
+    instance_method,
     device,
     fw,
 ):
@@ -540,7 +540,7 @@ def values_and_ndindices(
     draw,
     *,
     array_dtypes,
-    indices_dtypes=ivy_np.valid_int_dtypes,
+    indices_dtypes=helpers.get_dtypes("integer"),
     allow_inf=False,
     x_min_value=None,
     x_max_value=None,
@@ -685,7 +685,6 @@ def test_scatter_flat(
 def test_scatter_nd(
     x,
     reduction,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -724,12 +723,7 @@ def test_scatter_nd(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gather"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
 )
 def test_gather(
     params_indices_others,
@@ -764,7 +758,7 @@ def array_and_ndindices_batch_dims(
     draw,
     *,
     array_dtypes,
-    indices_dtypes=ivy_np.valid_int_dtypes,
+    indices_dtypes=helpers.get_dtypes("integer"),
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -849,12 +843,7 @@ def ndindices_with_bounds(
         indices_dtypes=["int32", "int64"],
         allow_inf=False,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
 )
 def test_gather_nd(
     params_n_ndindices_batch_dims,
@@ -1238,7 +1227,7 @@ def test_einops_reduce(
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
-    if (reduction in ["mean", "prod"]) and (dtype not in ivy_np.valid_float_dtypes):
+    if (reduction in ["mean", "prod"]) and (dtype not in helpers.get_dtypes("float")):
         dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
@@ -1437,6 +1426,7 @@ def test_is_ivy_array(
     x_val_and_dtypes,
     exclusive,
     as_variable,
+    instance_method,
     num_positional_args,
     native_array,
     container,
@@ -1450,7 +1440,7 @@ def test_is_ivy_array(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="is_ivy_array",
         x=x[0],
@@ -1471,6 +1461,7 @@ def test_is_array(
     exclusive,
     as_variable,
     num_positional_args,
+    instance_method,
     native_array,
     container,
     fw,
@@ -1483,7 +1474,7 @@ def test_is_array(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="is_array",
         x=x[0],
@@ -1499,7 +1490,13 @@ def test_is_array(
     num_positional_args=helpers.num_positional_args(fn_name="is_ivy_container"),
 )
 def test_is_ivy_container(
-    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+    x_val_and_dtypes,
+    as_variable,
+    num_positional_args,
+    instance_method,
+    native_array,
+    container,
+    fw,
 ):
     dtype, x = x_val_and_dtypes
     helpers.test_function(
@@ -1509,7 +1506,7 @@ def test_is_ivy_container(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="is_ivy_container",
         x=x[0],
@@ -1635,6 +1632,7 @@ def test_has_nans(
     include_infs,
     as_variable,
     num_positional_args,
+    instance_method,
     native_array,
     container,
     fw,
@@ -1647,7 +1645,7 @@ def test_has_nans(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=True,
+        instance_method=instance_method,
         fw=fw,
         fn_name="has_nans",
         x=x[0],
@@ -1818,7 +1816,13 @@ def test_set_min_base(x):
     num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
 )
 def test_stable_divide(
-    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    instance_method,
+    container,
+    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -1828,7 +1832,7 @@ def test_stable_divide(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="stable_divide",
         numerator=x[0],
@@ -1865,6 +1869,7 @@ def test_stable_pow(
     as_variable,
     num_positional_args,
     native_array,
+    instance_method,
     container,
     fw,
 ):
@@ -1878,7 +1883,7 @@ def test_stable_pow(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="stable_pow",
         rtol_=1e-2,
