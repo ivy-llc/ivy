@@ -266,6 +266,6 @@ def zeros(shape, dtype=None):
     return ivy.zeros(shape, dtype=dtype)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def bitwise_and(x1, x2):
     return ivy.bitwise_and(x1, x2)
