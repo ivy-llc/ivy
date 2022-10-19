@@ -182,7 +182,7 @@ def floor_divide(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jax.numpy.floor_divide(x1, x2)
+    return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
 
 
 def greater(
