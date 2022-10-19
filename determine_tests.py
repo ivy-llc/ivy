@@ -1,4 +1,4 @@
-import pickle
+import pickle  # noqa
 from pydriller import Repository
 import os
 import bz2
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     # Run Tests
     failed = False
     for test_index in tests_to_run:
-        test = tests['index_mapping'][test_index]
+        test = tests["index_mapping"][test_index]
         ret = os.system(
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
         )

@@ -5,6 +5,7 @@ signature.
 # global
 import tensorflow as tf
 from typing import Union, Optional, Callable
+import numpy as np
 
 # local
 import ivy
@@ -30,28 +31,42 @@ def variable_data(x):
 
 def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
-        xs = ivy.to_native(xs)
-        tape.watch(xs)
+        tape.watch(ivy.to_native(xs))
         func_ret = func(xs)
-    arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
+    arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret, reshape=False)
 
-    if len(arr_values) == 1:
+    if arr_values is None or (isinstance(arr_values, list) and len(arr_values) == 0):
+        return func_ret, {}
+    if isinstance(arr_values, list) and len(arr_values) == 1:
         y = arr_values[0]
     else:
         y = arr_values
 
     def grad_func(y):
-        ret = tape.gradient(y, xs)
+        ret = tape.gradient(y, ivy.to_native(xs))
         return ret
 
     if isinstance(y, ivy.NativeArray):
         grads = ivy.to_ivy(grad_func(y))
     else:
+        array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
+        if (
+            not isinstance(array_idxs, list)
+            or np.asarray(array_idxs, "object").size == 0
+        ):
+            y = []
+        else:
+            y = ivy.multi_index_nest(y, array_idxs)
+
         grads_ = ivy.nested_map(y, grad_func, include_derived=True)
-        grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
+        grads = grads_
+        if isinstance(arr_idxs, list) and len(arr_idxs):
+            grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs)
+    if not retain_grads:
+        del tape
     return func_ret, grads
 
 

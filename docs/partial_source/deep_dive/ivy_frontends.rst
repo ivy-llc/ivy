@@ -16,10 +16,10 @@ Ivy Frontends
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
+.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -399,7 +399,7 @@ Ivy.
 
 The entire workflow for extending the Ivy Frontends as an external contributor is
 explained in more detail in the
-`Open Tasks <https://lets-unify.ai/ivy/contributing/4_open_tasks.html#frontend-apis>`_
+`Open Tasks <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_
 section.
 
 
