@@ -146,6 +146,17 @@ def FloorDiv(*, x, y, name="FloorDiv"):
 
 
 @to_ivy_arrays_and_back
+def Gather(
+    *,
+    params,
+    indices,
+    validate_indices=None,
+    name="Gather"
+):
+    return ivy.gather(params, indices, axis=0, batch_dims=0)
+
+
+@to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater(x, y)
