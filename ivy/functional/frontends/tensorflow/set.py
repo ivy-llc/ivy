@@ -1,4 +1,3 @@
-#global
 from typing import Union, Tuple
 from collections import namedtuple
 
