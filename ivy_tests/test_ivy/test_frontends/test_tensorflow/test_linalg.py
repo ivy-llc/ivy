@@ -131,9 +131,7 @@ def _solve_get_dtype_and_data(draw):
     random_size = draw(st.integers(min_value=2, max_value=4))
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-                lambda x: "float16" not in x and "bfloat16" not in x
-            ),
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
             key="shared_dtype",
         )
     )
@@ -147,7 +145,9 @@ def _solve_get_dtype_and_data(draw):
                     shape=shape,
                     min_value=-10,
                     max_value=10,
-                ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+                ).filter(
+                    lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
+                )
             )
         )
     shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
@@ -160,7 +160,7 @@ def _solve_get_dtype_and_data(draw):
         )
     )
 
-    return [input_dtype, input_dtype2[0]], [tmp, x[0]]
+    return [[input_dtype] * batch, input_dtype2[0]], [tmp, x[0]]
 
 
 # solve
@@ -179,7 +179,7 @@ def test_tensorflow_solve(
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -254,9 +254,7 @@ def _get_cholesky_matrix(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-                lambda x: "float16" not in x and "bfloat16" not in x
-            ),
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
             key="shared_dtype",
         )
     )
@@ -269,7 +267,7 @@ def _get_cholesky_matrix(draw):
             shape=tuple([shared_size, shared_size]),
             min_value=2,
             max_value=5,
-        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
     )
     spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0]) * 1e-3
     spd_chol = np.linalg.cholesky(spd)
@@ -281,9 +279,7 @@ def _get_second_matrix(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-                lambda x: "float16" not in x and "bfloat16" not in x
-            ),
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
             key="shared_dtype",
         )
     )
