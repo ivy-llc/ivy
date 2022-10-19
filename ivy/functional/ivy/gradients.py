@@ -37,27 +37,54 @@ def _zero_gradients_to_none_and_to_ivy(grads):
         return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
 
 
-def _get_native_arrays_and_indices(func_ret):
-    func_ret = ivy.nested_map(func_ret, ivy.to_native, include_derived=True)
+def _get_native_arrays_and_indices(func_ret, reshape=True):
+    def map_fn(x):
+        if ivy.is_array(x):
+            x = ivy.to_ivy(x) if ivy.is_native_array(x) else x
+            if len(x.shape) == 0:
+                return ivy.to_native(x)
+            elif x.size == 1:
+                if reshape:
+                    return ivy.to_native(ivy.reshape(x, []))
+                return ivy.to_native(x)
+            else:
+                return ivy.to_ivy(x)
+        return x
+
+    if isinstance(func_ret, ivy.Array):
+        return [], map_fn(func_ret)
+
+    func_ret = ivy.nested_map(func_ret, map_fn, include_derived=True)
     arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
-    arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
-    for i in range(len(arr_idxs)):
-        arr_idxs[i] = [str(x) for x in arr_idxs[i]]
-        arr_idxs[i] = "_".join(arr_idxs[i])
+    if not isinstance(arr_idxs, list) or np.asarray(arr_idxs, "object").size == 0:
+        arr_values = []
+    else:
+        arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
+        for i in range(len(arr_idxs)):
+            arr_idxs[i] = [str(x) for x in arr_idxs[i]]
+            arr_idxs[i] = "_".join(arr_idxs[i])
+
     return arr_idxs, arr_values
 
 
-def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
     if not retain_grads:
-        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+        if isinstance(func_ret, ivy.Array):
+            func_ret = ivy.stop_gradient(func_ret)
+        else:
+            func_ret = ivy.nested_map(
+                func_ret,
+                lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
+                include_derived=True,
+            )
     if grad_idxs is not None:
         for i in range(len(grad_idxs)):
             grad_idxs[i] = [str(x) for x in grad_idxs[i]]
             grad_idxs[i] = "_".join(grad_idxs[i])
         grads = {idx: grads[idx] for idx in grad_idxs}
-    if not isinstance(grads, ivy.Array):
+    if isinstance(grads, dict):
         grads = ivy.Container(grads)
-    return grads
+    return func_ret, grads
 
 
 # Extra #
