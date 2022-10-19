@@ -337,7 +337,6 @@ def test_jax_slogdet(
     )
 
 
-<<<<<<< HEAD
 # matrix_rank
 @handle_cmd_line_args
 @given(
@@ -352,8 +351,14 @@ def test_jax_numpy_matrix_rank(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-=======
-random_dim = np.random.randint(low=2, high=5)
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.matrix_rank",
+        M=x[0],
+    )
 
 
 # solve
@@ -363,9 +368,7 @@ random_dim = np.random.randint(low=2, high=5)
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=random_dim, max_value=random_dim).map(
-            lambda x: tuple([x, x])
-        ),
+        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -376,9 +379,7 @@ random_dim = np.random.randint(low=2, high=5)
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=random_dim, max_value=random_dim).map(
-            lambda x: tuple([x, 1])
-        ),
+        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, 1])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -399,18 +400,14 @@ def test_jax_solve(
     b_dtype, b = dtype_and_b
     helpers.test_frontend_function(
         input_dtypes=[a_dtype[0], b_dtype[0]],
->>>>>>> fa35f89a5 (added test for jax.numpy.linalg.solve)
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-<<<<<<< HEAD
-        fn_tree="numpy.linalg.matrix_rank",
-        M=x[0],
-=======
         fn_tree="numpy.linalg.solve",
         a=np.asarray(a[0], dtype=a_dtype[0]),
         b=np.asarray(b[0], dtype=b_dtype[0]),
->>>>>>> fa35f89a5 (added test for jax.numpy.linalg.solve)
+        rtol=1e-01,
+        atol=1e-01,
     )
