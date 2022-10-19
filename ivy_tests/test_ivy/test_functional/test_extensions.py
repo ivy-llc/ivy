@@ -473,7 +473,7 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
-    
+
 
 @st.composite
 def _pad_helper(draw):
@@ -593,21 +593,18 @@ def test_pad(
         end_values=end_values,
         reflect_type=reflect_type,
         out=None,
-    )    
+    )
 
 
 # trapz
 @st.composite
 def _either_x_dx(draw):
-    rand = draw(
-        st.integers(min_value=0, max_value=1)
-    ),
+    rand = (draw(st.integers(min_value=0, max_value=1)),)
     if rand == 0:
         either_x_dx = draw(
             helpers.dtype_and_x(
                 avaliable_dtypes=st.shared(
-                    helpers.get_dtypes("float"),
-                    key="trapz_dtype"
+                    helpers.get_dtypes("float"), key="trapz_dtype"
                 ),
                 min_value=-100,
                 max_value=100,
@@ -628,10 +625,7 @@ def _either_x_dx(draw):
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=st.shared(
-            helpers.get_dtypes("float"),
-            key="trapz_dtype"
-        ),
+        available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -673,6 +667,8 @@ def test_trapz(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        rtol_=1e-2,
+        atol_=1e-2,
         fw=fw,
         fn_name="trapz",
         y=np.asarray(y[0], dtype=input_dtype[0]),
