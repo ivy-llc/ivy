@@ -17,6 +17,7 @@ jobs:
            fetch-depth: 100
 
        - name: Determine and Run Tests
+         id: tests
          run: |
            git clone https://github.com/unifyai/Mapping.git
            pip install pydriller
@@ -26,6 +27,8 @@ jobs:
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
+           python run_tests.py
+         continue-on-error: true
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
@@ -39,6 +42,10 @@ jobs:
            commit-message: Update Mapping
            target-branch: master
 
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
    run_tests_2:
      runs-on: ubuntu-latest
      steps:
@@ -51,6 +58,7 @@ jobs:
            fetch-depth: 100
 
        - name: Determine and Run Tests
+         id: tests
          run: |
            git clone https://github.com/unifyai/Mapping_2.git
            pip install pydriller
@@ -60,6 +68,8 @@ jobs:
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
+           python run_tests.py
+         continue-on-error: true
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
@@ -73,6 +83,10 @@ jobs:
            commit-message: Update Mapping
            target-branch: master
 
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
    run_tests_3:
      runs-on: ubuntu-latest
      steps:
@@ -85,6 +99,7 @@ jobs:
            fetch-depth: 100
 
        - name: Determine and Run Tests
+         id: tests
          run: |
            git clone https://github.com/unifyai/Mapping_3.git
            pip install pydriller
@@ -94,6 +109,8 @@ jobs:
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
+           python run_tests.py
+         continue-on-error: true
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
@@ -107,8 +124,14 @@ jobs:
            commit-message: Update Mapping
            target-branch: master
 
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+
    run_tests_4:
      runs-on: ubuntu-latest
+     id: tests
      steps:
        - name: Checkout Ivy 🛎
          uses: actions/checkout@v2
@@ -128,6 +151,8 @@ jobs:
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
+           python run_tests.py
+           continue-on-error: true
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
@@ -140,3 +165,7 @@ jobs:
            user-email: rashul.chutani@gmail.com
            commit-message: Update Mapping
            target-branch: master
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
