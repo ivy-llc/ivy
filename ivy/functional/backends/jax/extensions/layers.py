@@ -217,3 +217,95 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if periodic is False:
+        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+def moveaxis(
+    a: JaxArray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.moveaxis(a, source, destination)
+
+
+def heaviside(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.heaviside(x1, x2)
+
+
+def median(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.median(
+        input,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+    )
+
+
+def flipud(
+    m: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.flipud(m)
+
+
+def fmod(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmod(x1, x2)
+
+
+def fmax(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmax(x1, x2)
+
+
+def nansum(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nansum(input, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
