@@ -258,11 +258,22 @@ def trapz(
     /,
     *,
     x: Optional[torch.Tensor] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = - 1,
+    dx: Optional[float] = None,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.trapezoid(y, x, dx=dx, dim=axis)
+    if x is None:
+        dx = dx if not None else 1
+        return torch.trapezoid(y, dx=dx, dim=axis)
+    else:
+        if dx is not None:
+            TypeError(
+                "trapezoid() received an invalid combination of arguments - got\
+            (Tensor, Tensor, int), but expected one of: *\
+            (Tensor y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
+            )
+        else:
+            return torch.trapezoid(y, x=x, dim=axis)
 
 
 trapz.support_native_out = False
