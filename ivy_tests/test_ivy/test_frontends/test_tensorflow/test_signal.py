@@ -22,7 +22,7 @@ def test_hann_window(
         num_positional_args,
         native_array,
         fw,
-periodic=None):
+ ):
     input_dtype, x = dtype_and_x
 
     # test if periodic is a boolean
