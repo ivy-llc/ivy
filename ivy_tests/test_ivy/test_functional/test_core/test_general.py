@@ -149,39 +149,6 @@ def test_array_equal(
     )
 
 
-# arrays_equal
-@handle_cmd_line_args
-@given(
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=2, max_value=10),
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="arrays_equal"),
-)
-def test_arrays_equal(
-    dtypes_and_xs,
-    num_positional_args,
-    as_variable,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    dtypes, arrays = dtypes_and_xs
-    helpers.test_function(
-        input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="arrays_equal",
-        xs=arrays,
-    )
-
-
 @st.composite
 def array_and_boolean_mask(
     draw,

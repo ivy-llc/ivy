@@ -206,11 +206,7 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        rep = (
-            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
-            if self._size > 0
-            else ivy.to_numpy(self._data)
-        )
+        rep = ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
         with np.printoptions(precision=dec_vals):
             return (
                 self._pre_repr
