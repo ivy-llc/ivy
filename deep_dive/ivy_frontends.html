@@ -117,14 +117,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -176,18 +176,27 @@ transpilations, as explained <a href="#id6"><span class="problematic" id="id7">`
 </section>
 <section id="the-frontend-basics">
 <h2>The Frontend Basics<a class="headerlink" href="#the-frontend-basics" title="Permalink to this heading"></a></h2>
-<p><strong>NOTE:</strong></p>
-<p>Type hints, docstrings and examples are not required when working on
-frontend functions.</p>
 <p>When using functions and methods of Ivy Frontends, in addition to importing ivy itself
-like <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span></code> please also import the corrisponding Frontend module.
+like <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span></code> please also import the corresponding Frontend module.
 For example, to use ivy’s tensorflow frontend:</p>
 <blockquote>
 <div><p><code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.frontends.tensorflow</span> <span class="pre">as</span> <span class="pre">tf_frontend</span></code></p>
 </div></blockquote>
 <hr class="docutils" />
+<p>When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call <a class="reference external" href="https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109">tensorflow.tan</a> rather than <code class="code docutils literal notranslate"><span class="pre">tensorflow.math.tan</span></code>. In this particular case both are fine, and in fact are <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">aliases</a>.</p>
+<p>However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions <code class="code docutils literal notranslate"><span class="pre">jax.numpy.abs</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax.lax.abs</span></code> both exist, while <cite>jax.abs</cite> does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call <code class="code docutils literal notranslate"><span class="pre">jax.abs</span></code> in our frontend.</p>
+<p>This would result in <code class="code docutils literal notranslate"><span class="pre">jax.numpy.abs</span></code> or <code class="code docutils literal notranslate"><span class="pre">jax.lax.abs</span></code> overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native <code class="code docutils literal notranslate"><span class="pre">jax</span></code> framework.</p>
+<p>If you accidentally test a function with <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;func_name&gt;&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;lax|numpy&gt;.&lt;func_name&gt;&quot;</span></code>, you will see an error since the wrong frontend function is being tested.</p>
+<p>Therefore, in order to avoid this potential conflict:</p>
+<ul class="simple">
+<li><p>All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;math.tan&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;tan&quot;</span></code> in the frontend test.</p></li>
+<li><p>The <cite>__init__.py</cite> file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of <code class="code docutils literal notranslate"><span class="pre">jax.abs</span></code> explained above.</p></li>
+<li><p>You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.</p></li>
+</ul>
 <p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks">open task</a>.</p>
+<p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
+frontend functions.</p>
 <p><strong>Jax</strong></p>
 <p>JAX has two distinct groups of functions, those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and
 those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace. The former set of functions map very closely
