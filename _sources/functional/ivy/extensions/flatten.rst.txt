@@ -5,9 +5,9 @@ flatten
 
 .. autofunction:: ivy.array.array_methods.flatten
 
-.. autofunction:: ivy.container.container_methods.static_flatten
-
 .. autofunction:: ivy.container.container_methods.flatten
+
+.. autofunction:: ivy.container.container_methods.static_flatten
 |
 | **Supported Frameworks:**
 
