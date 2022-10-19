@@ -2016,8 +2016,9 @@ def test_tensorflow_RightShift(
 def _pow_helper_tf(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=True),
-            num_arrays=2
+            available_dtypes=helpers.get_dtypes("float", full=True),
+            num_arrays=2,
+            shared_dtype=True,
         )
     )
     dtype1, dtype2 = dtype
