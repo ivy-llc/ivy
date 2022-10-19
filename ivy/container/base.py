@@ -3767,13 +3767,26 @@ class ContainerBase(dict, abc.ABC):
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
+    def __len__(self):
+        return self.__getattr__("__len__")
+
     # noinspection PyProtectedMember
     def __getattr__(self, item):
         try:
             ret = dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
-            ret = super.__getattr__(item)
+            # ret = super.__getattr__(item)
+            builtins = (str, int, float, bool, list, tuple, set)
+            ret = ContainerBase()
+            for k, v in self.items():
+                if isinstance(v, builtins):
+                    attr = getattr(v, item)
+                    result = attr() if callable(attr) else attr
+                else:
+                    result = v.__getattr__(item)
+                ret[k] = result
+                # raise error
         return ret
 
     def __setattr__(self, name, value):
@@ -3948,7 +3961,7 @@ class ContainerBase(dict, abc.ABC):
     # public
 
     @property
-    def shape(self):
+    def shared_shape(self):
         """The shape of the arrays in the container, with None placed in indices which
         are not consistent across arrays.
         """
