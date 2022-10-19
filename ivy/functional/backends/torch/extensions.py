@@ -342,7 +342,7 @@ def dct(
         dct_out = torch.real(torch.fft.rfft(x, n=2 * axis_dim)[..., :axis_dim] * scale)
         if norm == "ortho":
             n1 = 0.5 * torch.rsqrt(axis_dim_float)
-            n2 = n1 * torch.sqrt(torch.tensor(2.0))
+            n2 = n1 * math.sqrt(2.0)
             # vectorising scaling factors
             sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
             dct_out = sf * dct_out
@@ -351,7 +351,7 @@ def dct(
     elif type == 3:
         if norm == "ortho":
             n1 = torch.sqrt(axis_dim_float)
-            n2 = n1 * torch.sqrt(torch.tensor(0.5))
+            n2 = n1 * math.sqrt(0.5)
             sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
             x = x * sf
         else:
@@ -371,5 +371,5 @@ def dct(
         dct_2 = dct(x, type=2, n=2 * axis_dim, norm=None)
         dct_out = dct_2[..., 1::2]
         if norm == "ortho":
-            dct_out *= torch.sqrt(torch.tensor(0.5)) * torch.rsqrt(axis_dim_float)
+            dct_out *= math.sqrt(0.5) * torch.rsqrt(axis_dim_float)
         return dct_out
