@@ -119,23 +119,35 @@ def test_get_referrers_recursive(device):
 # array_equal
 @handle_cmd_line_args
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    )
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="array_equal"),
 )
-def test_array_equal(x0_n_x1_n_res, device, fw):
-    dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
-    dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
-    # smoke test
-    x0_array = ivy.array(x0, dtype=dtype0, device=device)
-    x1_array = ivy.array(x1, dtype=dtype1, device=device)
-    res = ivy.array_equal(x0_array, x1_array)
-    # type test
-    assert ivy.is_ivy_array(x0_array)
-    assert ivy.is_ivy_array(x1_array)
-    assert isinstance(res, bool) or ivy.is_ivy_array(res)
-    # value test
-    assert res == np.array_equal(np.array(x0, dtype=dtype0), np.array(x1, dtype=dtype1))
+def test_array_equal(
+    dtypes_and_xs,
+    num_positional_args,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtypes, arrays = dtypes_and_xs
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="array_equal",
+        x0=arrays[0],
+        x1=arrays[1],
+    )
 
 
 # arrays_equal
@@ -144,7 +156,6 @@ def test_array_equal(x0_n_x1_n_res, device, fw):
     dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=2, max_value=10),
-        min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="arrays_equal"),
 )
