@@ -264,3 +264,9 @@ def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+# fmod
+@to_ivy_arrays_and_back
+def fmod(x1, x2):
+    return ivy.fmod(x1, x2, out=None)
