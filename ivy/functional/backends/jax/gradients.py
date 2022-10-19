@@ -52,17 +52,11 @@ def _set_duplicates(xs, duplicate_key_chains):
 def _forward_fn(xs, func, duplicate_key_chains):
     if isinstance(xs, ivy.Container):
         xs = _set_duplicates(xs, duplicate_key_chains)
-
     ret = func(xs)
-
-    if isinstance(ret, ivy.Array):
-        array_values = ret.to_native()
-    else:
-        ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
-        array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
-        array_values = ivy.multi_index_nest(ret, array_idxs)
-
-    return array_values
+    _, arr_values = _get_native_arrays_and_indices(ret)
+    if isinstance(arr_values, list) and len(arr_values) == 1:
+        arr_values = arr_values[0]
+    return arr_values
 
 
 def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
@@ -70,7 +64,9 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     xs = ivy.to_native(xs)
     arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
 
-    if len(arr_values) == 1:
+    if arr_values is None or (isinstance(arr_values, list) and len(arr_values) == 0):
+        return func_ret, {}
+    if isinstance(arr_values, list) and len(arr_values) == 1:
         y = arr_values[0]
     else:
         y = arr_values
@@ -85,13 +81,15 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     else:
         grad_fn = jax.jacrev(lambda x: _forward_fn(x, func, duplicate_key_chains))
         grads_ = grad_fn(xs)
-        grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
+        grads = grads_
+        if isinstance(arr_idxs, list) and len(arr_idxs):
+            grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
 
     if isinstance(xs, ivy.Container):
         grads = _set_duplicates(grads, duplicate_key_chains)
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 
