@@ -130,6 +130,11 @@ def pytest_generate_tests(metafunc):
 
 
 @pytest.fixture(scope="session")
+def fixt_frontend_str():  # ToDo, temporary till handle test decorator is updated.
+    return None
+
+
+@pytest.fixture(scope="session")
 def get_command_line_flags(request) -> Dict[str, bool]:
 
     a_v_f_s = request.config.getoption("--skip-variable-testing")
