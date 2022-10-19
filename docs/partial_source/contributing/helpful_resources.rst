@@ -1,5 +1,5 @@
 Helpful Resources
-==========
+=================
 
 Here, we list out a few resourses that you may find helpful 
 when climbing the steep Ivy learning curve.

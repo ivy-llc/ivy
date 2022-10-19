@@ -8,8 +8,8 @@ Ivy Frontend Tests
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`Function Wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
-.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
-.. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html
+.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
 
 Introduction
