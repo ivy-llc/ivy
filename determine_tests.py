@@ -61,6 +61,11 @@ if __name__ == "__main__":
     with bz2.BZ2File("tests.pbz2", "w") as f:
         cPickle.dump(tests, f)
 
+    print("----- Determined Tests -----")
+    for test_index in tests_to_run:
+        print(tests["index_mapping"][test_index])
+    print("----------------------------")
+
     # with open("tests_to_run", "w") as f:
     #     for test in tests_to_run:
     #         f.write(test + "\n")
