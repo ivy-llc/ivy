@@ -112,12 +112,15 @@ def eigvalsh(
 eigvalsh.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, version)
 def inner(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.inner(x1, x2, out=out)
+    ret_dtype = x1.dtype
+    if ivy.is_int_dtype(x1):
+        x1 = x1.long()
+        x2 = x2.long()
+    return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
 inner.support_native_out = True
