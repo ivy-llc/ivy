@@ -445,6 +445,7 @@ def diag(
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def vander(
     x: torch.tensor,
     /,
@@ -454,9 +455,6 @@ def vander(
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.vander(x, N=N, increasing=increasing)
-
-
-vander.unsupported_dtypes = ("bfloat16", "float16")
 
 
 def vector_to_skew_symmetric_matrix(
