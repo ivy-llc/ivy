@@ -476,103 +476,6 @@ def array_equal(
     return current_backend(x0).array_equal(x0, x1)
 
 
-@inputs_to_native_arrays
-@handle_nestable
-@handle_exceptions
-def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]], /) -> bool:
-    """Determines whether input arrays are equal across all elements.
-
-    Parameters
-    ----------
-    xs
-        Sequence of arrays to compare for equality.
-
-    Returns
-    -------
-    ret
-        Boolean, whether or not all of the input arrays are equal across all elements.
-
-    Functional Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> i = ivy.array([1, 2])
-    >>> j = ivy.arrays_equal([i])
-    >>> print(j)
-    True
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> y = ivy.array([1, 0, 2])
-    >>> z = ivy.array([0, 1, 2])
-    >>> w = ivy.arrays_equal([x, y, z])
-    >>> print(w)
-    False
-
-    >>> a = ivy.array([-1, 0, 1])
-    >>> b = ivy.array([-1, 0, 1])
-    >>> c = ivy.array([-1, 0, 1])
-    >>> d = ivy.arrays_equal([a, b, c])
-    >>> print(d)
-    True
-
-    >>> x = ivy.array([0.1, 1.1])
-    >>> y = ivy.array([0.1, 1.1, 2.1])
-    >>> z = ivy.array([0.1, 1.1])
-    >>> w = ivy.arrays_equal([x, y, z])
-    >>> print(w)
-    False
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> m = ivy.native_array([1.1, 0.2, 1.3])
-    >>> n = ivy.native_array([1.1, 0.2, 1.4])
-    >>> o = ivy.arrays_equal([m, n])
-    >>> print(o)
-    False
-
-    >>> a = ivy.native_array([1, 2, 3, 0, -1])
-    >>> b = ivy.array([1, 2, 3, 0, -1])
-    >>> c = ivy.arrays_equal([a,b])
-    >>> print(c)
-    True
-
-    >>> a = ivy.native_array([1, 2, 3, 0, -1])
-    >>> b = ivy.array([1, 2, 3, 0, -2])
-    >>> c = ivy.arrays_equal([a,b])
-    >>> print(c)
-    False
-
-
-    With :class:`ivy.Container` input:
-
-    >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> t = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([6., 7., 8.]))
-    >>> print(ivy.arrays_equal([r,s,t]))
-    {
-        a: true,
-        b: false
-    }
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.array([0,1,2])
-    >>> z = ivy.arrays_equal([x,y])
-    >>> print(z)
-    {
-        a: true,
-        b: false
-    }
-
-    """
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not array_equal(x0, x):
-            return False
-    return True
-
-
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
@@ -663,7 +566,7 @@ def all_equal(
     ivy.array([[ True,  True], [ True,  True]])
 
     """
-    equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
+    equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
         num_arrays = len(xs)
         mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
