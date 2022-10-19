@@ -950,7 +950,7 @@ def _slice_at_axis(sl, axis):
 
 
 def _set_pad_area(padded, axis, width_pair, value_pair):
-    padded = padded.astype(np.asarray(value_pair).dtype)
+    padded = padded.astype(ivy.Dtype(str(np.asarray(value_pair).dtype)))
     left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
     padded[left_slice] = value_pair[0]
     right_slice = _slice_at_axis(slice(padded.shape[axis] - width_pair[1], None), axis)
@@ -1238,7 +1238,7 @@ def pad(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="constant")
     >>> print(y)
     ivy.array([[0, 0, 0, 0, 0, 0, 0],
@@ -1247,7 +1247,7 @@ def pad(
                [0, 0, 0, 0, 0, 0, 0]])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="reflect")
     >>> print(y)
     ivy.array([[6, 5, 4, 5, 6, 5, 4],
@@ -1256,7 +1256,7 @@ def pad(
                [3, 2, 1, 2, 3, 2, 1]])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="symmetric")
     >>> print(y)
     ivy.array([[2, 1, 1, 2, 3, 3, 2],
@@ -1267,7 +1267,7 @@ def pad(
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
-    >>> padding = ivy.array([(1, 1), (2, 2)])
+    >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="constant", constant_values=7)
     >>> print(y)
     ivy.array([[7, 7, 7, 7, 7, 7, 7],
@@ -1278,7 +1278,7 @@ def pad(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([4, 5, 6]))
-    >>> padding = ivy.array([(1, 1)])
+    >>> padding = (1, 1)
     >>> y = ivy.pad(x, padding, mode="constant")
     >>> print(y)
     {
@@ -1288,9 +1288,6 @@ def pad(
     """
     input = ivy.asarray(input, dtype=input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
-    pad_width = ivy.asarray(
-        pad_width, dtype=ivy.Dtype(str(np.asarray(pad_width).dtype))
-    )
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
