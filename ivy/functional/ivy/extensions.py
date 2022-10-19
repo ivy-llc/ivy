@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     inputs_to_native_arrays,
+    outputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
 from math import sqrt
@@ -1303,7 +1304,7 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
