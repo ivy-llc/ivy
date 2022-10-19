@@ -39,6 +39,7 @@ class ndarray:
         out=None,
         keepdims=False
     ):
+        
         return np_frontend.argmin(
             self.data,
             axis=axis,
