@@ -676,7 +676,7 @@ def test_jax_numpy_dot(
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_numpy_einsum(
-        eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
+    eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
 ):
     eq, operands, true_shape = eq_n_op_n_shp
     kw = {}
