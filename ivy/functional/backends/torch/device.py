@@ -18,15 +18,6 @@ torch_scatter = None
 # ----#
 
 
-def print_all_ivy_arrays_on_dev(
-    device: torch.device,
-    /,
-    *,
-    attr_only: bool = True
-) -> None:
-    return None
-
-
 def dev(
     x: torch.Tensor, /, *, as_native: bool = False
 ) -> Union[ivy.Device, torch.device]:

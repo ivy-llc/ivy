@@ -11,15 +11,6 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def print_all_ivy_arrays_on_dev(
-    device: str,
-    /,
-    *,
-    attr_only: bool = True
-) -> None:
-    return None
-    
-
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
     if as_native:
         return "cpu"

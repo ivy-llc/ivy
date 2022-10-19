@@ -28,15 +28,6 @@ def _to_array(x):
 # ----#
 
 
-def print_all_ivy_arrays_on_dev(
-    device: jaxlib.xla_extension.Device,
-    /,
-    *,
-    attr_only: bool = True
-) -> None:
-    return None
-
-
 def dev(
     x: JaxArray,
     /,
