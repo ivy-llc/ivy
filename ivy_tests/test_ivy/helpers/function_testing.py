@@ -580,7 +580,7 @@ def test_frontend_function(
         ret = frontend_fn(*args, **kwargs)
         # since the return from the frontend functions is now
         # a frontend tensor or array object
-        ret = ivy.array(ret) if not ivy.is_array(ret) else ret
+        ret = ret.data
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
