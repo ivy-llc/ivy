@@ -250,3 +250,17 @@ def fmax(
 
 
 fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
+
+
+def nansum(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nansum(
+        input, axis=axis, dtype=dtype, keepdims=keepdims
+    )

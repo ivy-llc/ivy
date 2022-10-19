@@ -333,3 +333,15 @@ def fmax(
 
 
 fmax.support_native_out = True
+
+
+def nansum(
+    input: torch.Tensor,
+    /,
+    *,
+    dim: Optional[Union[Tuple[int], int]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nansum(input, dim=dim, keepdim=keepdims, dtype=dtype)
