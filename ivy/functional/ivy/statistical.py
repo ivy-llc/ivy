@@ -28,33 +28,34 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
+    """Calculates the minimum value of the input array ``x``.
 
     .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
+       When the number of elements over which to compute the minimum value is zero, the
+       minimum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point
+       input array, return ``NaN``), or return the maximum possible value for the input array ``x``
+       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).
 
     **Special Cases**
 
     For floating-point operands,
 
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
     x
-        Input array containing elements to min.
+        Input array. Should have a real-valued data type.
     axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: ``None``.
+        axis or axes along which minimum values must be computed. By default, the
+        minimum value must be computed over the entire array. If a tuple of integers,
+        minimum values must be computed over multiple axes. Default: ``None``.
+
     keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
     out
         optional output array, for writing the result to.
@@ -65,10 +66,10 @@ def min(
         if the minimum value was computed over the entire array, a zero-dimensional
         array containing the minimum value; otherwise, a non-zero-dimensional array
         containing the minimum values. The returned array must have the same data type
-        as x.
+        as ``x``.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
     in the standard.
