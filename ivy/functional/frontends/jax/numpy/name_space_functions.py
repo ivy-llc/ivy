@@ -1,6 +1,7 @@
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
 @inputs_to_ivy_arrays
@@ -256,9 +257,14 @@ def array_equiv(a1, a2) -> bool:
         # shapes are not broadcastable
         return False
     return ivy.all(eq)
-  
- 
+
+
 def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)
