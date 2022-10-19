@@ -11,12 +11,22 @@ from ivy.func_wrapper import (
 )
 from ivy.exceptions import handle_exceptions
 
-
 inf = float("inf")
 
 
 # Array API Standard #
 # -------------------#
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def tensorinv(
+        a: Union[ivy.Array, ivy.NativeArray],
+        ind=2
+) -> ivy.array:
+    return current_backend(a).tensorinv(a , ind = ind)
+
 
 
 @to_native_arrays_and_back
@@ -24,11 +34,11 @@ inf = float("inf")
 @handle_nestable
 @handle_exceptions
 def cholesky(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    upper: bool = False,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        upper: bool = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
@@ -161,15 +171,15 @@ def cholesky(
 @handle_nestable
 @handle_exceptions
 def cross(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axisa: int = -1,
-    axisb: int = -1,
-    axisc: int = -1,
-    axis: int = None,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axisa: int = -1,
+        axisb: int = -1,
+        axisc: int = -1,
+        axis: int = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
@@ -251,7 +261,7 @@ def cross(
 @handle_nestable
 @handle_exceptions
 def det(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
@@ -319,13 +329,13 @@ def det(
 @handle_nestable
 @handle_exceptions
 def diagonal(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: int = 0,
-    axis1: int = -2,
-    axis2: int = -1,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        offset: int = 0,
+        axis1: int = -2,
+        axis2: int = -1,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
@@ -500,11 +510,11 @@ def diagonal(
 @handle_nestable
 @handle_exceptions
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    UPLO: Optional[str] = "L",
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -563,11 +573,11 @@ def eigh(
 @handle_nestable
 @handle_exceptions
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    UPLO: Optional[str] = "L",
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
 
@@ -614,11 +624,11 @@ def eigvalsh(
 @handle_nestable
 @handle_exceptions
 def inner(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the inner product of two vectors ``x1`` and ``x2``.
 
@@ -651,11 +661,11 @@ def inner(
 @handle_nestable
 @handle_exceptions
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    adjoint: bool = False,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        adjoint: bool = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -743,13 +753,13 @@ def inv(
 @handle_nestable
 @handle_exceptions
 def matmul(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    transpose_a: bool = False,
-    transpose_b: bool = False,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        transpose_a: bool = False,
+        transpose_b: bool = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
 
@@ -885,13 +895,13 @@ def matmul(
 @handle_nestable
 @handle_exceptions
 def matrix_norm(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
-    keepdims: bool = False,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        axis: Optional[Tuple[int, int]] = (-2, -1),
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
 
@@ -1031,7 +1041,7 @@ def matrix_norm(
 @handle_nestable
 @handle_exceptions
 def matrix_power(
-    x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
+        x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power n.
 
@@ -1071,12 +1081,12 @@ def matrix_power(
 @handle_nestable
 @handle_exceptions
 def matrix_rank(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    atol: Optional[Union[float, Tuple[float]]] = None,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        atol: Optional[Union[float, Tuple[float]]] = None,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
     stack of matrices).
@@ -1173,7 +1183,7 @@ def matrix_rank(
 @handle_nestable
 @handle_exceptions
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Transposes a matrix (or a stack of matrices) ``x``.
 
@@ -1211,11 +1221,11 @@ def matrix_transpose(
 @handle_nestable
 @handle_exceptions
 def outer(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the outer product of two vectors ``x1`` and ``x2``.
 
@@ -1297,11 +1307,11 @@ def outer(
 @handle_nestable
 @handle_exceptions
 def pinv(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
     ``x``.
@@ -1365,10 +1375,10 @@ def pinv(
 @handle_nestable
 @handle_exceptions
 def qr(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    mode: str = "reduced",
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        mode: str = "reduced",
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
@@ -1422,8 +1432,8 @@ def qr(
 @handle_nestable
 @handle_exceptions
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1493,11 +1503,11 @@ def slogdet(
 @handle_nestable
 @handle_exceptions
 def solve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Returns the solution to the system of linear equations represented by the well-
@@ -1545,11 +1555,11 @@ def solve(
 @handle_nestable
 @handle_exceptions
 def svd(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    compute_uv: bool = True,
-    full_matrices: bool = True,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        compute_uv: bool = True,
+        full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
     matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal
@@ -1648,7 +1658,7 @@ def svd(
 @handle_nestable
 @handle_exceptions
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the singular values of a matrix (or a stack of matrices) ``x``.
 
@@ -1770,12 +1780,12 @@ def svdvals(
 @handle_nestable
 @handle_exceptions
 def tensordot(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = 2,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
@@ -1851,13 +1861,13 @@ def tensordot(
 @handle_nestable
 @handle_exceptions
 def trace(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: int = 0,
-    axis1: int = 0,
-    axis2: int = 1,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        offset: int = 0,
+        axis1: int = 0,
+        axis2: int = 1,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
@@ -1964,12 +1974,12 @@ def trace(
 @handle_nestable
 @handle_exceptions
 def vecdot(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the (vector) dot product of two arrays.
 
@@ -2029,13 +2039,13 @@ def vecdot(
 @handle_nestable
 @handle_exceptions
 def vector_norm(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
 
@@ -2126,15 +2136,15 @@ def vector_norm(
 @handle_nestable
 @handle_exceptions
 def diag(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: Optional[int] = None,
+        num_cols: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
 ):
     return current_backend(x).diag(
         x,
@@ -2152,12 +2162,12 @@ def diag(
 @handle_nestable
 @handle_exceptions
 def vander(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        N: Optional[int] = None,
+        increasing: bool = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a Vandermonde matrix.
     The columns of the output matrix are elementwise powers
@@ -2223,7 +2233,7 @@ def vander(
 @handle_nestable
 @handle_exceptions
 def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+        vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Given vector, return the associated skew-symmetric matrix
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_

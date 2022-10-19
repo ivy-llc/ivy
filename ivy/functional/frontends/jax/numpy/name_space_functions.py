@@ -264,3 +264,20 @@ def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+
+@to_ivy_arrays_and_back
+def tensorinv(a, ind=2):
+    a = ivy.asarray(a)
+    oldshape = a.shape
+    prod = 1
+    if ind > 0:
+        invshape = oldshape[ind:] + oldshape[:ind]
+        for k in oldshape[ind:]:
+            prod *= k
+    else:
+        raise ValueError("Invalid ind argument.")
+    a = ivy.reshape(prod, -1)
+    ia = ivy.inv(a)
+    return ivy.reshape(ia, invshape)

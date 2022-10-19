@@ -1,0 +1,1352 @@
+[1mdiff --git a/.idea/Jax.png b/.idea/Jax.png[m
+[1mdeleted file mode 100644[m
+[1mindex 6c16866a5..000000000[m
+Binary files a/.idea/Jax.png and /dev/null differ
+[1mdiff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml[m
+[1mdeleted file mode 100644[m
+[1mindex a55e7a179..000000000[m
+[1m--- a/.idea/codeStyles/codeStyleConfig.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,5 +0,0 @@[m
+[31m-<component name="ProjectCodeStyleConfiguration">[m
+[31m-  <state>[m
+[31m-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />[m
+[31m-  </state>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/icon.svg b/.idea/icon.svg[m
+[1mdeleted file mode 100644[m
+[1mindex d722434d5..000000000[m
+[1m--- a/.idea/icon.svg[m
+[1m+++ /dev/null[m
+[36m@@ -1,126 +0,0 @@[m
+[31m-<?xml version="1.0" encoding="UTF-8" standalone="no"?>[m
+[31m-<!-- Created with Inkscape (http://www.inkscape.org/) -->[m
+[31m-[m
+[31m-<svg[m
+[31m-   xmlns:dc="http://purl.org/dc/elements/1.1/"[m
+[31m-   xmlns:cc="http://creativecommons.org/ns#"[m
+[31m-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"[m
+[31m-   xmlns:svg="http://www.w3.org/2000/svg"[m
+[31m-   xmlns="http://www.w3.org/2000/svg"[m
+[31m-   xmlns:xlink="http://www.w3.org/1999/xlink"[m
+[31m-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"[m
+[31m-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"[m
+[31m-   width="1000"[m
+[31m-   height="1000"[m
+[31m-   viewBox="0 0 264.58384 264.58335"[m
+[31m-   version="1.1"[m
+[31m-   id="svg8"[m
+[31m-   inkscape:version="0.92.3 (2405546, 2018-03-11)"[m
+[31m-   sodipodi:docname="ivy_logo_only.svg"[m
+[31m-   inkscape:export-filename="/media/djl11/Drive/Ivy/ivy_logo_only.png"[m
+[31m-   inkscape:export-xdpi="96"[m
+[31m-   inkscape:export-ydpi="96">[m
+[31m-  <defs[m
+[31m-     id="defs2">[m
+[31m-    <linearGradient[m
+[31m-       inkscape:collect="always"[m
+[31m-       id="linearGradient927">[m
+[31m-      <stop[m
+[31m-         style="stop-color:#009100;stop-opacity:1;"[m
+[31m-         offset="0"[m
+[31m-         id="stop923" />[m
+[31m-      <stop[m
+[31m-         style="stop-color:#009100;stop-opacity:0;"[m
+[31m-         offset="1"[m
+[31m-         id="stop925" />[m
+[31m-    </linearGradient>[m
+[31m-    <inkscape:path-effect[m
+[31m-       effect="bspline"[m
+[31m-       id="path-effect861"[m
+[31m-       is_visible="true"[m
+[31m-       weight="33.333333"[m
+[31m-       steps="2"[m
+[31m-       helper_size="0"[m
+[31m-       apply_no_weight="true"[m
+[31m-       apply_with_weight="true"[m
+[31m-       only_selected="false" />[m
+[31m-    <inkscape:path-effect[m
+[31m-       effect="bspline"[m
+[31m-       id="path-effect857"[m
+[31m-       is_visible="true"[m
+[31m-       weight="33.333333"[m
+[31m-       steps="2"[m
+[31m-       helper_size="0"[m
+[31m-       apply_no_weight="true"[m
+[31m-       apply_with_weight="true"[m
+[31m-       only_selected="false" />[m
+[31m-    <radialGradient[m
+[31m-       inkscape:collect="always"[m
+[31m-       xlink:href="#linearGradient927"[m
+[31m-       id="radialGradient929"[m
+[31m-       cx="45.866776"[m
+[31m-       cy="282.20438"[m
+[31m-       fx="45.866776"[m
+[31m-       fy="282.20438"[m
+[31m-       r="36.088917"[m
+[31m-       gradientTransform="matrix(6.8295096,-6.6029816,9.9543908,10.295894,-2975.9284,-2423.9445)"[m
+[31m-       gradientUnits="userSpaceOnUse" />[m
+[31m-  </defs>[m
+[31m-  <sodipodi:namedview[m
+[31m-     id="base"[m
+[31m-     pagecolor="#ffffff"[m
+[31m-     bordercolor="#666666"[m
+[31m-     borderopacity="1.0"[m
+[31m-     inkscape:pageopacity="0.0"[m
+[31m-     inkscape:pageshadow="2"[m
+[31m-     inkscape:zoom="0.5"[m
+[31m-     inkscape:cx="482.00807"[m
+[31m-     inkscape:cy="302.50583"[m
+[31m-     inkscape:document-units="mm"[m
+[31m-     inkscape:current-layer="layer1"[m
+[31m-     showgrid="false"[m
+[31m-     showguides="false"[m
+[31m-     units="px"[m
+[31m-     inkscape:window-width="1920"[m
+[31m-     inkscape:window-height="1052"[m
+[31m-     inkscape:window-x="3840"[m
+[31m-     inkscape:window-y="0"[m
+[31m-     inkscape:window-maximized="1" />[m
+[31m-  <metadata[m
+[31m-     id="metadata5">[m
+[31m-    <rdf:RDF>[m
+[31m-      <cc:Work[m
+[31m-         rdf:about="">[m
+[31m-        <dc:format>image/svg+xml</dc:format>[m
+[31m-        <dc:type[m
+[31m-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />[m
+[31m-        <dc:title></dc:title>[m
+[31m-      </cc:Work>[m
+[31m-    </rdf:RDF>[m
+[31m-  </metadata>[m
+[31m-  <g[m
+[31m-     inkscape:label="Layer 1"[m
+[31m-     inkscape:groupmode="layer"[m
+[31m-     id="layer1"[m
+[31m-     transform="translate(0,-32.416256)">[m
+[31m-    <path[m
+[31m-       sodipodi:type="spiral"[m
+[31m-       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient929);stroke-width:22.19278336;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"[m
+[31m-       id="path815"[m
+[31m-       sodipodi:cx="146.49182"[m
+[31m-       sodipodi:cy="178.74434"[m
+[31m-       sodipodi:expansion="1"[m
+[31m-       sodipodi:revolution="2.1525362"[m
+[31m-       sodipodi:radius="125.46326"[m
+[31m-       sodipodi:argument="-14.982467"[m
+[31m-       sodipodi:t0="0"[m
+[31m-       d="m 146.49182,178.74434 c -6.55931,-5.81706 4.60515,-11.71175 9.66834,-10.90201 13.72092,2.19436 16.93783,19.40766 12.13567,30.23868 -8.58993,19.37414 -33.69062,23.08884 -50.80901,13.36935 C 92.364898,197.18661 88.078734,163.28809 102.8838,140.071 c 19.73282,-30.94472 62.70022,-35.79816 91.94969,-15.83669 36.80748,25.11947 42.22472,77.26962 17.07037,112.52003 C 181.43857,279.44732 120.04717,285.4267 78.813483,255.05838 30.221011,219.27037 23.680253,148.60361 59.275772,101.39767 82.917837,70.044115 121.56528,52.545551 160.65312,54.082852" />[m
+[31m-    <ellipse[m
+[31m-       style="opacity:1;fill:#009600;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:43.72273254;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"[m
+[31m-       id="path865"[m
+[31m-       cx="148.9328"[m
+[31m-       cy="179.2731"[m
+[31m-       rx="13.30783"[m
+[31m-       ry="11.510118" />[m
+[31m-  </g>[m
+[31m-</svg>[m
+[1mdiff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 4eb3e39b8..000000000[m
+[1m--- a/.idea/inspectionProfiles/Project_Default.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,155 +0,0 @@[m
+[31m-<component name="InspectionProjectProfileManager">[m
+[31m-  <profile version="1.0">[m
+[31m-    <option name="myName" value="Project Default" />[m
+[31m-    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">[m
+[31m-      <Languages>[m
+[31m-        <language minSize="5420" name="Python" />[m
+[31m-      </Languages>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="DuplicatedInspection" enabled="false" level="WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="InconsistentLineSeparators" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="ProblematicWhitespace" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="PyAbstractClassInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="PyAttributeOutsideInitInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="PyBehaveInspection" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="PyClassicStyleClassInspection" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="PyMandatoryEncodingInspection" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="PyNoneFunctionAssignmentInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">[m
+[31m-      <option name="ignoredPackages">[m
+[31m-        <value>[m
+[31m-          <list size="62">[m
+[31m-            <item index="0" class="java.lang.String" itemvalue="tensorflow" />[m
+[31m-            <item index="1" class="java.lang.String" itemvalue="psutil" />[m
+[31m-            <item index="2" class="java.lang.String" itemvalue="pandas" />[m
+[31m-            <item index="3" class="java.lang.String" itemvalue="setproctitle" />[m
+[31m-            <item index="4" class="java.lang.String" itemvalue="pystrict" />[m
+[31m-            <item index="5" class="java.lang.String" itemvalue="numpy" />[m
+[31m-            <item index="6" class="java.lang.String" itemvalue="pytest" />[m
+[31m-            <item index="7" class="java.lang.String" itemvalue="moviepy" />[m
+[31m-            <item index="8" class="java.lang.String" itemvalue="git" />[m
+[31m-            <item index="9" class="java.lang.String" itemvalue="tensorflow_probability" />[m
+[31m-            <item index="10" class="java.lang.String" itemvalue="tensorflow-addons" />[m
+[31m-            <item index="11" class="java.lang.String" itemvalue="numpy-stl" />[m
+[31m-            <item index="12" class="java.lang.String" itemvalue="scipy" />[m
+[31m-            <item index="13" class="java.lang.String" itemvalue="stl" />[m
+[31m-            <item index="14" class="java.lang.String" itemvalue="tensorflow_addons" />[m
+[31m-            <item index="15" class="java.lang.String" itemvalue="tensorflow_io" />[m
+[31m-            <item index="16" class="java.lang.String" itemvalue="pyrealsense2" />[m
+[31m-            <item index="17" class="java.lang.String" itemvalue="opencv-python" />[m
+[31m-            <item index="18" class="java.lang.String" itemvalue="google_images_download" />[m
+[31m-            <item index="19" class="java.lang.String" itemvalue="pathos" />[m
+[31m-            <item index="20" class="java.lang.String" itemvalue="torch" />[m
+[31m-            <item index="21" class="java.lang.String" itemvalue="mxnet" />[m
+[31m-            <item index="22" class="java.lang.String" itemvalue="cv2" />[m
+[31m-            <item index="23" class="java.lang.String" itemvalue="lxml" />[m
+[31m-            <item index="24" class="java.lang.String" itemvalue="multipledispatch" />[m
+[31m-            <item index="25" class="java.lang.String" itemvalue="ivy" />[m
+[31m-            <item index="26" class="java.lang.String" itemvalue="matplotlib" />[m
+[31m-            <item index="27" class="java.lang.String" itemvalue="open3d" />[m
+[31m-            <item index="28" class="java.lang.String" itemvalue="pyrep" />[m
+[31m-            <item index="29" class="java.lang.String" itemvalue="gym" />[m
+[31m-            <item index="30" class="java.lang.String" itemvalue="tonic" />[m
+[31m-            <item index="31" class="java.lang.String" itemvalue="box2d-py" />[m
+[31m-            <item index="32" class="java.lang.String" itemvalue="ray" />[m
+[31m-            <item index="33" class="java.lang.String" itemvalue="hyperopt" />[m
+[31m-            <item index="34" class="java.lang.String" itemvalue="dm-tree" />[m
+[31m-            <item index="35" class="java.lang.String" itemvalue="tabulate" />[m
+[31m-            <item index="36" class="java.lang.String" itemvalue="GPUtil" />[m
+[31m-            <item index="37" class="java.lang.String" itemvalue="tensorboardX" />[m
+[31m-            <item index="38" class="java.lang.String" itemvalue="cffi" />[m
+[31m-            <item index="39" class="java.lang.String" itemvalue="tf-agents" />[m
+[31m-            <item index="40" class="java.lang.String" itemvalue="gitpython" />[m
+[31m-            <item index="41" class="java.lang.String" itemvalue="h5py" />[m
+[31m-            <item index="42" class="java.lang.String" itemvalue="cupy" />[m
+[31m-            <item index="43" class="java.lang.String" itemvalue="PIL" />[m
+[31m-            <item index="44" class="java.lang.String" itemvalue="jax" />[m
+[31m-            <item index="45" class="java.lang.String" itemvalue="mxboard" />[m
+[31m-            <item index="46" class="java.lang.String" itemvalue="tensorflow-probability" />[m
+[31m-            <item index="47" class="java.lang.String" itemvalue="lz4" />[m
+[31m-            <item index="48" class="java.lang.String" itemvalue="tensorflow-io-nightly" />[m
+[31m-            <item index="49" class="java.lang.String" itemvalue="imageio" />[m
+[31m-            <item index="50" class="java.lang.String" itemvalue="flax" />[m
+[31m-            <item index="51" class="java.lang.String" itemvalue="cupy-cuda102" />[m
+[31m-            <item index="52" class="java.lang.String" itemvalue="torchvision" />[m
+[31m-            <item index="53" class="java.lang.String" itemvalue="absl" />[m
+[31m-            <item index="54" class="java.lang.String" itemvalue="GLU" />[m
+[31m-            <item index="55" class="java.lang.String" itemvalue="pyglet" />[m
+[31m-            <item index="56" class="java.lang.String" itemvalue="Pillow" />[m
+[31m-            <item index="57" class="java.lang.String" itemvalue="pyquaternion" />[m
+[31m-            <item index="58" class="java.lang.String" itemvalue="ivy-core" />[m
+[31m-            <item index="59" class="java.lang.String" itemvalue="ivy-vision" />[m
+[31m-            <item index="60" class="java.lang.String" itemvalue="ivy-mech" />[m
+[31m-            <item index="61" class="java.lang.String" itemvalue="tensorflow-io" />[m
+[31m-          </list>[m
+[31m-        </value>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">[m
+[31m-      <option name="ignoredErrors">[m
+[31m-        <list>[m
+[31m-          <option value="E127" />[m
+[31m-          <option value="E741" />[m
+[31m-          <option value="E402" />[m
+[31m-          <option value="E501" />[m
+[31m-          <option value="W605" />[m
+[31m-          <option value="E722" />[m
+[31m-          <option value="E731" />[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">[m
+[31m-      <option name="ignoredErrors">[m
+[31m-        <list>[m
+[31m-          <option value="N806" />[m
+[31m-          <option value="N803" />[m
+[31m-          <option value="N802" />[m
+[31m-          <option value="N801" />[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">[m
+[31m-      <option name="ignoredNames">[m
+[31m-        <list>[m
+[31m-          <option value="copyright" />[m
+[31m-          <option value="round" />[m
+[31m-          <option value="abs" />[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="PyTypeCheckerInspection" enabled="false" level="WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">[m
+[31m-      <option name="ignoredIdentifiers">[m
+[31m-        <list>[m
+[31m-          <option value="builtins.abs.*" />[m
+[31m-          <option value="object.__add__" />[m
+[31m-          <option value="array.shape" />[m
+[31m-          <option value="mxnet.ndarray.shape" />[m
+[31m-          <option value="mxnet.symbol.shape" />[m
+[31m-          <option value="list.asnumpy" />[m
+[31m-          <option value="bool.*" />[m
+[31m-          <option value="demos.create_doc_images.Simulator._default_vision_sensor" />[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="PyUnusedLocalInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="RestRoleInspection" enabled="true" level="WARNING" enabled_by_default="true">[m
+[31m-      <option name="ignoredRoles">[m
+[31m-        <value>[m
+[31m-          <list size="0" />[m
+[31m-        </value>[m
+[31m-      </option>[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true" />[m
+[31m-    <inspection_tool class="ShellCheck" enabled="true" level="ERROR" enabled_by_default="true">[m
+[31m-      <shellcheck_settings value="SC2046,SC2124,SC2145" />[m
+[31m-    </inspection_tool>[m
+[31m-    <inspection_tool class="SmkPyUnboundLocalVariableInspection" enabled="false" level="WARNING" enabled_by_default="false" />[m
+[31m-    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">[m
+[31m-      <option name="processCode" value="true" />[m
+[31m-      <option name="processLiterals" value="true" />[m
+[31m-      <option name="processComments" value="true" />[m
+[31m-    </inspection_tool>[m
+[31m-  </profile>[m
+[31m-</component>[m
+[1mdiff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml[m
+[1mindex c57e002a9..105ce2da2 100644[m
+[1m--- a/.idea/inspectionProfiles/profiles_settings.xml[m
+[1m+++ b/.idea/inspectionProfiles/profiles_settings.xml[m
+[36m@@ -1,7 +1,6 @@[m
+ <component name="InspectionProjectProfileManager">[m
+   <settings>[m
+[31m-    <option name="PROJECT_PROFILE" value="Default" />[m
+     <option name="USE_PROJECT_PROFILE" value="false" />[m
+     <version value="1.0" />[m
+   </settings>[m
+[31m-</component>[m
+[32m+[m[32m</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/ivy.iml b/.idea/ivy.iml[m
+[1mindex 20dc1eb38..74d515a02 100644[m
+[1m--- a/.idea/ivy.iml[m
+[1m+++ b/.idea/ivy.iml[m
+[36m@@ -1,15 +1,10 @@[m
+ <?xml version="1.0" encoding="UTF-8"?>[m
+ <module type="PYTHON_MODULE" version="4">[m
+   <component name="NewModuleRootManager">[m
+[31m-    <content url="file://$MODULE_DIR$" />[m
+[31m-    <orderEntry type="jdk" jdkName="Remote Python 3.8.10 Docker (unifyai/ivy:latest)" jdkType="Python SDK" />[m
+[32m+[m[32m    <content url="file://$MODULE_DIR$">[m
+[32m+[m[32m      <excludeFolder url="file://$MODULE_DIR$/venv" />[m
+[32m+[m[32m    </content>[m
+[32m+[m[32m    <orderEntry type="inheritedJdk" />[m
+     <orderEntry type="sourceFolder" forTests="false" />[m
+   </component>[m
+[31m-  <component name="PyDocumentationSettings">[m
+[31m-    <option name="format" value="NUMPY" />[m
+[31m-    <option name="myDocStringFormat" value="NumPy" />[m
+[31m-  </component>[m
+[31m-  <component name="TestRunnerService">[m
+[31m-    <option name="PROJECT_TEST_RUNNER" value="py.test" />[m
+[31m-  </component>[m
+[31m-</module>[m
+[32m+[m[32m</module>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/misc.xml b/.idea/misc.xml[m
+[1mindex 7fd019b94..44a807ede 100644[m
+[1m--- a/.idea/misc.xml[m
+[1m+++ b/.idea/misc.xml[m
+[36m@@ -1,10 +1,4 @@[m
+ <?xml version="1.0" encoding="UTF-8"?>[m
+ <project version="4">[m
+[31m-  <component name="JavaScriptSettings">[m
+[31m-    <option name="languageLevel" value="ES6" />[m
+[31m-  </component>[m
+[31m-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.8.10 Docker (unifyai/ivy:latest)" project-jdk-type="Python SDK" />[m
+[31m-  <component name="PyPackaging">[m
+[31m-    <option name="earlyReleasesAsUpgrades" value="true" />[m
+[31m-  </component>[m
+[31m-</project>[m
+[32m+[m[32m  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (ivy) (3)" project-jdk-type="Python SDK" />[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/numpy.png b/.idea/numpy.png[m
+[1mdeleted file mode 100644[m
+[1mindex d9c722d37..000000000[m
+Binary files a/.idea/numpy.png and /dev/null differ
+[1mdiff --git a/.idea/other.xml b/.idea/other.xml[m
+[1mdeleted file mode 100644[m
+[1mindex a708ec781..000000000[m
+[1m--- a/.idea/other.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,6 +0,0 @@[m
+[31m-<?xml version="1.0" encoding="UTF-8"?>[m
+[31m-<project version="4">[m
+[31m-  <component name="PySciProjectComponent">[m
+[31m-    <option name="PY_SCI_VIEW_SUGGESTED" value="true" />[m
+[31m-  </component>[m
+[31m-</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/_template__of_Python.xml b/.idea/runConfigurations/_template__of_Python.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 27decfd9a..000000000[m
+[1m--- a/.idea/runConfigurations/_template__of_Python.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,53 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="true" type="PythonConfigurationType" factoryName="Python">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <envs>[m
+[31m-      <env name="PYTHONUNBUFFERED" value="1" />[m
+[31m-    </envs>[m
+[31m-    <option name="SDK_HOME" value="docker://ivydl/ivy:latest/python3" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="/ivy" />[m
+[31m-    <option name="IS_MODULE_SDK" value="false" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="SCRIPT_NAME" value="" />[m
+[31m-    <option name="PARAMETERS" value="" />[m
+[31m-    <option name="SHOW_COMMAND_LINE" value="false" />[m
+[31m-    <option name="EMULATE_TERMINAL" value="false" />[m
+[31m-    <option name="MODULE_MODE" value="false" />[m
+[31m-    <option name="REDIRECT_INPUT" value="false" />[m
+[31m-    <option name="INPUT_FILE" value="" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/_template__of_py_test.xml b/.idea/runConfigurations/_template__of_py_test.xml[m
+[1mdeleted file mode 100644[m
+[1mindex ebd7359ae..000000000[m
+[1m--- a/.idea/runConfigurations/_template__of_py_test.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="true" type="tests" factoryName="py.test">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="docker://ivydl/ivy:latest/python3" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="/ivy" />[m
+[31m-    <option name="IS_MODULE_SDK" value="false" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PATH&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all.xml b/.idea/runConfigurations/pytest_for_all.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 0313f9bc3..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all" type="tests" factoryName="py.test">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--backend all&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_ivy&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all__jax_.xml b/.idea/runConfigurations/pytest_for_all__jax_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 18d3a75e8..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all__jax_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all (jax)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm" />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework jax&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all__mxnet_.xml b/.idea/runConfigurations/pytest_for_all__mxnet_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 7ea1f4f40..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all__mxnet_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all (mxnet)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework mxnet&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all__numpy_.xml b/.idea/runConfigurations/pytest_for_all__numpy_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex fe71c612e..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all__numpy_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all (numpy)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework numpy&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all__tensorflow_.xml b/.idea/runConfigurations/pytest_for_all__tensorflow_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex db7a6ff52..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all__tensorflow_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all (tensorflow)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework tensorflow&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_all__torch_.xml b/.idea/runConfigurations/pytest_for_all__torch_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 271857666..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_all__torch_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for all (torch)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework torch&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API.xml b/.idea/runConfigurations/pytest_for_array_API.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 102874427..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API" type="tests" factoryName="py.test">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/opt/project" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API__jax_.xml b/.idea/runConfigurations/pytest_for_array_API__jax_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex cf7472c00..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API__jax_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API (jax)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework jax&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API__mxnet_.xml b/.idea/runConfigurations/pytest_for_array_API__mxnet_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 8997d0be7..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API__mxnet_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API (mxnet)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework mxnet&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API__numpy_.xml b/.idea/runConfigurations/pytest_for_array_API__numpy_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex ecd6d92fc..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API__numpy_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API (numpy)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework numpy&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API__tensorflow_.xml b/.idea/runConfigurations/pytest_for_array_API__tensorflow_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex d10080039..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API__tensorflow_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API (tensorflow)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework tensorflow&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_array_API__torch_.xml b/.idea/runConfigurations/pytest_for_array_API__torch_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 56eab4991..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_array_API__torch_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for array API (torch)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework torch&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_array_api&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_container.xml b/.idea/runConfigurations/pytest_for_container.xml[m
+[1mdeleted file mode 100644[m
+[1mindex a988fdf65..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_container.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for container" type="tests" factoryName="py.test">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--backend all&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_ivy.test_container&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_core__jax_.xml b/.idea/runConfigurations/pytest_for_core__jax_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 502fccfe0..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_core__jax_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for core (jax)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework jax&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_ivy.test_functional.test_core&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_core__mxnet_.xml b/.idea/runConfigurations/pytest_for_core__mxnet_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 9d967e4d7..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_core__mxnet_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for core (mxnet)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option name="portBindings">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="publishAllPorts" value="false" />[m
+[31m-      <option name="runCliOptions" value="--entrypoint= --rm " />[m
+[31m-      <option name="version" value="2" />[m
+[31m-      <option name="volumeBindings">[m
+[31m-        <list>[m
+[31m-          <DockerVolumeBindingImpl>[m
+[31m-            <option name="containerPath" value="/ivy" />[m
+[31m-            <option name="editable" value="true" />[m
+[31m-            <option name="hostPath" value="$PROJECT_DIR$" />[m
+[31m-            <option name="readOnly" value="false" />[m
+[31m-          </DockerVolumeBindingImpl>[m
+[31m-        </list>[m
+[31m-      </option>[m
+[31m-    </EXTENSION>[m
+[31m-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />[m
+[31m-    <option name="_new_keywords" value="&quot;&quot;" />[m
+[31m-    <option name="_new_parameters" value="&quot;&quot;" />[m
+[31m-    <option name="_new_additionalArguments" value="&quot;--framework mxnet&quot;" />[m
+[31m-    <option name="_new_target" value="&quot;ivy_tests.test_ivy.test_functional.test_core&quot;" />[m
+[31m-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />[m
+[31m-    <method v="2" />[m
+[31m-  </configuration>[m
+[31m-</component>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/runConfigurations/pytest_for_core__numpy_.xml b/.idea/runConfigurations/pytest_for_core__numpy_.xml[m
+[1mdeleted file mode 100644[m
+[1mindex 7dd5afb85..000000000[m
+[1m--- a/.idea/runConfigurations/pytest_for_core__numpy_.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,48 +0,0 @@[m
+[31m-<component name="ProjectRunConfigurationManager">[m
+[31m-  <configuration default="false" name="pytest for core (numpy)" type="tests" factoryName="py.test" folderName="backends">[m
+[31m-    <module name="ivy" />[m
+[31m-    <option name="INTERPRETER_OPTIONS" value="" />[m
+[31m-    <option name="PARENT_ENVS" value="true" />[m
+[31m-    <option name="SDK_HOME" value="" />[m
+[31m-    <option name="WORKING_DIRECTORY" value="" />[m
+[31m-    <option name="IS_MODULE_SDK" value="true" />[m
+[31m-    <option name="ADD_CONTENT_ROOTS" value="true" />[m
+[31m-    <option name="ADD_SOURCE_ROOTS" value="true" />[m
+[31m-    <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">[m
+[31m-      <option name="envVars">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="extraHosts">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="links">[m
+[31m-        <list />[m
+[31m-      </option>[m
+[31m-      <option name="networkDisabled" value="false" />[m
+[31m-      <option name="networkMode" value="bridge" />[m
+[31m-      <option n

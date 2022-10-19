@@ -75,7 +75,6 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
-
     keepdims = keepdims or False
 
     # Check if it's a matrix norm
@@ -103,3 +102,30 @@ normalize.supported_dtypes = (
     "float32",
     "float64",
 )
+
+"""
+implement matrix_solve_ls(matrix, rhs, l2_regularizer=0.0, fast=True, name=None)
+whiche matrix is an ivy tensor of shape (..., M, N) and rhs is an ivy tensor of shape (..., M, K)
+and return  Returns:
+    output: `ivy Tensor` of shape `[..., N, K]` whose inner-most 2 dimensions form
+      `M`-by-`K` matrices that solve the equations
+      `matrix[..., :, :] * output[..., :, :] = rhs[..., :, :]` in the least
+      squares sense.
+"""
+
+
+@to_ivy_arrays_and_back
+def matrix_solve_ls(matrix, rhs, l2_regularizer=0.0, fast=True, name=None):
+    if fast:
+        matrix = ivy.matrix_transpose(matrix)
+        matrix = ivy.matmul(matrix, matrix)
+        rhs = ivy.matrix_transpose(rhs)
+        rhs = ivy.matmul(matrix, rhs)
+        return ivy.cholesky(matrix, rhs)
+
+    matrix_T = ivy.matrix_transpose(matrix)
+    matrix_T_matrix = ivy.matmul(matrix_T, matrix)
+    matrix_T_rhs = ivy.matmul(matrix_T, rhs)
+    # well i think as the docs mentioned in  matrix.T * matrix * output[..., :, :] = matrix.T * rhs[..., :, :]
+    output = ivy.solve(matrix_T_matrix, matrix_T_rhs)
+    return output
