@@ -433,7 +433,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
-    def to_numpy(self: ivy.Array) -> np.ndarray:
+    def to_numpy(self: ivy.Array, /, *, copy: bool = True) -> np.ndarray:
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
@@ -450,9 +450,9 @@ class ArrayWithGeneral(abc.ABC):
             a numpy array copying all the element of the array ``self``.
 
         """
-        return ivy.to_numpy(self)
+        return ivy.to_numpy(self, copy=copy)
 
-    def to_list(self: ivy.Array) -> List:
+    def to_list(self: ivy.Array, /) -> List:
         """
         ivy.Array instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
@@ -657,29 +657,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.array_equal(self, x)
-
-    def arrays_equal(
-        self: ivy.Array, x: List[Union[ivy.Array, ivy.NativeArray]]
-    ) -> bool:
-        """
-        ivy.Array instance method variant of ivy.arrays_equal. This method simply wraps
-        the function, and so the docstring for ivy.arrays_equal also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input list of arrays to compare to ``self``
-
-        Returns
-        -------
-        ret
-            Boolean, whether the input arrays are equal
-
-        """
-        return ivy.arrays_equal([self] + x)
 
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """

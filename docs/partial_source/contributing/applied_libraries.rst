@@ -7,7 +7,7 @@ Applied Libraries
 .. _`Demo Utils`: https://github.com/unifyai/demo-utils
 .. _`Ivy`: https://github.com/unifyai/ivy
 .. _`Docker Desktop`: https://www.docker.com/products/docker-desktop/
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944

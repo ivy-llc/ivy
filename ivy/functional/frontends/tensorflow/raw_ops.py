@@ -100,6 +100,10 @@ def Cosh(*, x, name="cosh"):
 Div = tf_frontend.math.divide
 
 
+def Diag(*, diagonal, name="Diag"):
+    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+
+
 Cumprod = tf_frontend.math.cumprod
 
 
@@ -139,6 +143,17 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def Gather(
+    *,
+    params,
+    indices,
+    validate_indices=None,
+    name="Gather"
+):
+    return ivy.gather(params, indices, axis=0, batch_dims=0)
 
 
 @to_ivy_arrays_and_back
