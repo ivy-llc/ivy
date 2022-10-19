@@ -88,6 +88,7 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     if isinstance(y, ivy.NativeArray):
         grads = grad_func(torch.clone(y))
     else:
+        # ToDo: use functorch.jacrev if it fixes the issue with broken memory reference
         array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
         if (
             not isinstance(array_idxs, list)
