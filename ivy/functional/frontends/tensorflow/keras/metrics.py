@@ -145,7 +145,6 @@ def binary_focal_crossentropy(
         label_smoothing=0.,
         axis=-1
 ):
-    _E = 1e-7
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.asarray(y_true, dtype=y_pred.dtype)
     label_smoothing = ivy.asarray(label_smoothing, dtype=y_pred.dtype)

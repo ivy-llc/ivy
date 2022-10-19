@@ -281,7 +281,6 @@ def _binary_focal_args(draw):
         exclude_max=True,
         shape=draw(st.shared(shape, key="shape"))
     ))
-
     # from_logits = draw(st.booleans())
     from_logits = draw(helpers.dtype_and_values(
         available_dtypes=draw(helpers.get_dtypes("bool")),
@@ -311,7 +310,7 @@ def _binary_focal_args(draw):
         exclude_max=False,
         shape=(1,)
     ))
-    dtype_gamma=draw(helpers.dtype_and_values(
+    dtype_gamma = draw(helpers.dtype_and_values(
         dtype=draw(st.shared(common_float_dtype, key='float_dtype')),
         min_value=0.,
         max_value=10.,
@@ -326,7 +325,8 @@ def _binary_focal_args(draw):
     ))
     dtype_true, y_true = dtype_y_true
     dtype_pred, y_pred = dtype_y_pred
-    dtype_gamma, gamma= dtype_gamma
+    dtype_gamma, gamma = dtype_gamma
+    dtype_from_logits, from_logits = from_logits
     dtype_label_smoothing, label_smoothing = dtype_label_smoothing
     dtype_axis, axis = dtype_axis
     dtypes = [dtype_true[0], dtype_pred[0], dtype_gamma[0],
@@ -341,8 +341,8 @@ def _binary_focal_args(draw):
 @given(
     binary_focal_args=_binary_focal_args(),
     num_positional_args=helpers.num_positional_args(
-        fn_name=
-        "ivy.functional.frontends.tensorflow.keras.metrics.binary_focal_crossentropy"
+        fn_name="ivy.functional.frontends.tensorflow."
+                "keras.metrics.binary_focal_crossentropy"
     )
 )
 def test_binary_focal_crossentropy(
@@ -366,6 +366,7 @@ def test_binary_focal_crossentropy(
         label_smoothing=values[4],
         axis=values[5]
     )
+
 
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
