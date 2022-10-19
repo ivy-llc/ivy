@@ -1257,7 +1257,7 @@ def value_is_nan(
     >>> print(y)
     False
     """
-    x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
+    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if not x_scalar == x:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
@@ -1268,7 +1268,9 @@ def value_is_nan(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
+def has_nans(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
+) -> bool:
     """Determine whether the array contains any nans, as well as infs or -infs if
     specified.
 
