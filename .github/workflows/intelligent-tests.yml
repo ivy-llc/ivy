@@ -1,6 +1,7 @@
 name: intelligent-tests
 on:
   workflow_dispatch:
+  push:
 permissions:
   actions: read
 jobs:
