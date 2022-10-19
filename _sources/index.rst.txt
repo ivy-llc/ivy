@@ -238,9 +238,9 @@ Design
    :width: 100%
 
 | (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
-| Back-end functional APIs ✅
+| Backend functional APIs ✅
 | Ivy functional API ✅
-| Framework Handler ✅
+| Backend Handler ✅
 | Ivy Compiler 🚧
 |
 | (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
@@ -335,14 +335,14 @@ Citation
    :maxdepth: -1
    :caption: Framework Classes
 
-   stateful/initializers.rst
-   stateful/module.rst
-   stateful/sequential.rst
-   stateful/optimizers.rst
-   stateful/activations.rst
-   stateful/layers.rst
    stateful/converters.rst
+   stateful/sequential.rst
+   stateful/activations.rst
+   stateful/module.rst
+   stateful/optimizers.rst
    stateful/norms.rst
+   stateful/layers.rst
+   stateful/initializers.rst
 
 
 .. toctree::
