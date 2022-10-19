@@ -1087,6 +1087,14 @@ def _to_pairs(x, n):
         return ((x, x),) * n
     elif ivy.asarray(x).shape == (2,):
         return ((x[0], x[1]),) * n
+    ivy.assertions.check_equal(
+        ivy.asarray(x).shape,
+        (n, 2),
+        message="values should be an integer or an iterable "
+        "of ndim pairs where ndim is the number of "
+        "the input's dimensions",
+    )
+    return x
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -1103,13 +1111,11 @@ def _pad_simple(array, pad_width, fill_value=None):
     return padded, original_area_slice
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 def pad(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
+    input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
     *,
     mode: Optional[
@@ -1141,7 +1147,7 @@ def pad(
 
     Parameters
     ----------
-    x
+    input
         Input array to pad.
     pad_width
         Number of values padded to the edges of each axis.
@@ -1152,9 +1158,9 @@ def pad(
     mode
         One of the following string values or a user-supplied function.
              - "constant": Pads with a constant value.
-             - "edge": Pads with the edge values of array.
+             - "edge": Pads with the input's edge values.
              - "linear_ramp": Pads with the linear ramp between end_value
-               and the array edge value.
+               and the input's edge value.
              - "maximum": Pads with the maximum value of all or part of the vector
                along each axis.
              - "mean": Pads with the mean value of all or part of the vector along
@@ -1166,7 +1172,7 @@ def pad(
              - "reflect": Pads with the reflection mirrored on the first and last
                values of the vector along each axis.
              - "symmetric": Pads with the reflection of the vector mirrored along
-               the edge of the array.
+               the edge of the input.
              - "wrap": Pads with the wrap of the vector along the axis.
                The first values are used to pad the end and the end values are used
                to pad the beginning.
@@ -1214,12 +1220,13 @@ def pad(
         times the edge value.
     out
         optional output array, for writing the result to. It must have a shape that
-        the inputs broadcast to.
+        the input broadcasts to.
 
     Returns
     -------
     ret
-        Padded array of rank equal to x with shape increased according to pad_width.
+        Padded array of the same rank as the input but with shape increased according
+        to pad_width.
 
 
     Both the description and the type hints above assume an array input for simplicity,
@@ -1279,21 +1286,20 @@ def pad(
         b: ivy.array([0., 0., 1., 2., 0.])
     }
     """
-    array = ivy.asarray(x, dtype=x.dtype)
-    pad_width = _to_pairs(pad_width, array.ndim)
+    pad_width = _to_pairs(pad_width, input.ndim)
     pad_width = ivy.asarray(
         pad_width, dtype=ivy.Dtype(str(np.asarray(pad_width).dtype))
     )
     if callable(mode):
         func = mode
-        padded, _ = _pad_simple(array, pad_width, fill_value=0)
+        padded, _ = _pad_simple(input, pad_width, fill_value=0)
         for axis in range(padded.ndim):
             view = ivy.moveaxis(padded, axis, -1)
             inds = ivy.ndindex(view.shape[:-1])
             for ind in inds:
                 view[ind] = func(view[ind], pad_width[axis], axis, kwargs)
         return padded
-    padded, original_area_slice = _pad_simple(array, pad_width)
+    padded, original_area_slice = _pad_simple(input, pad_width)
     axes = range(padded.ndim)
     stat_functions = {
         "maximum": ivy.max,
@@ -1325,7 +1331,7 @@ def pad(
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            if array.shape[axis] == 1 and (left_index > 0 or right_index > 0):
+            if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
                 edge_pair = _get_edges(padded, axis, (left_index, right_index))
                 padded = _set_pad_area(
                     padded, axis, (left_index, right_index), edge_pair
