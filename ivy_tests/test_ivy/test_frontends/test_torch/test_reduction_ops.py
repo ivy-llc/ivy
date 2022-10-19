@@ -268,6 +268,38 @@ def test_torch_any(
 
 @handle_cmd_line_args
 @given(
+    dtype_and_x=statistical_dtype_values(function="sum"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.sum"
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_sum(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+    keepdims,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="sum",
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
     dtype_and_x=statistical_dtype_values(function="mean"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.mean"
