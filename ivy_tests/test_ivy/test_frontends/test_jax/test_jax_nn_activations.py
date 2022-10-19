@@ -743,15 +743,15 @@ def test_jax_nn_hard_swish(
 
 @handle_cmd_line_args
 @given(
-     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.nn.selu"
-    ),
+    dtype_and_x=helpers.dtype_and_values(
+       available_dtypes=helpers.get_dtypes("float"),
+       large_abs_safety_factor=2,
+       small_abs_safety_factor=2,
+       safety_factor_scale="linear",
+   ),
+   num_positional_args=helpers.num_positional_args(
+       fn_name="ivy.functional.frontends.jax.nn.selu"
+   ),
 )
 def test_jax_nn_selu(
     dtype_and_x,
