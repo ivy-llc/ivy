@@ -14,26 +14,27 @@ def safety_factor_linalg(
     condition_index="high",
 ):
     """
-    Applies safety factor to the condition of a matrix to avoid numerical instabilities in further calculations.
+    Applies safety factor to the condition of a matrix to avoid numerical
+    instabilities in further calculations.
 
     Parameters
     ----------
     matrix
         The original matrix whose condition number is to be determined.
     condition_index
-        When a condition_index of "high" is used we are testing for a little
-        ill-conditioned matrices which are not too much prone to numerical
+        When a condition_index of "high" is used we are testing for a less
+        ill-conditioned matrix which is not too much prone to numerical
         instabilities.
 
-        When a condition_index of "low" is used we are testing for a little
+        When a condition_index of "low" is used we are testing for a
         well-conditioned matrices.
 
         There is no rule of thumb for what the exact condition number
         should be to consider a matrix ill-conditioned(prone to numerical errors).
         If the condition number is "1", the matrix is perfectly said to be a
-        well-conditioned matrix which will not be prone to any numerical
-        instabilities in further calculations, but that would probably be a very
-        simple matrix.
+        well-conditioned matrix which will not be prone to any numerical type
+        of instabilities in further calculations, but that would probably be a
+        very simple matrix.
 
         The "low" condition index checks from "1" till "10" as a matrix can
         be considered well-condition in this range. This should be used for
@@ -43,17 +44,20 @@ def safety_factor_linalg(
         The "high" condition index checks from "10" till "30", in this range
         the matrix is close to multicollinearity and can be considered a
         little ill-conditioned, going above 30 leads to strong multicollinearity
-        which leads t singularity.
+        which leads to singularity.
 
     Returns
     -------
-    the result of applying safety scaling to minimum value, maximum value and
-    absolute smallest representable value (only for float dtypes).
+    A bool, either True or False. Which tells whether the matrix is suitable for
+    further numerical computations or not.
     """
+    assert condition_index != "high", "wrong condition index given, can either be (high) or (low)"
+    assert condition_index != "low", "wrong condition index given, can either be (high) or (low)"
+
     type_casted_matrix = matrix.astype('float64')
     if condition_index == "high":
-        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
-        if round(np.linalg.cond(type_casted_matrix)) >= 10 and round(np.linalg.cond(type_casted_matrix)) <= 30:
+        if round(np.linalg.cond(type_casted_matrix)) >= 10 and \
+                round(np.linalg.cond(type_casted_matrix)) <= 30:
             return True
         else:
             return False
