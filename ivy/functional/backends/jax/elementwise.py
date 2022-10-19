@@ -103,7 +103,6 @@ def bitwise_right_shift(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
 
