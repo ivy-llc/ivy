@@ -274,19 +274,12 @@ def test_binary_crossentropy(
 @st.composite
 def _binary_focal_args(draw):
     shape = st.tuples(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
-    dtype_y_true = draw(helpers.dtype_and_values(
-        available_dtypes=draw(helpers.get_dtypes("integer")),
-        min_value=0,
-        max_value=2,
-        exclude_max=True,
-        shape=draw(st.shared(shape, key="shape"))
-    ))
-    # from_logits = draw(st.booleans())
+    common_float_dtype = helpers.get_dtypes("float", full=False)
+
     from_logits = draw(helpers.dtype_and_values(
         available_dtypes=draw(helpers.get_dtypes("bool")),
         shape=(1,)
     ))
-    dtype_from_logits, from_logits = from_logits
 
     if from_logits[0]:
         min_value = -10.
@@ -295,7 +288,13 @@ def _binary_focal_args(draw):
         min_value = 0.
         max_value = 1.
 
-    common_float_dtype = helpers.get_dtypes("float", full=False)
+    dtype_y_true = draw(helpers.dtype_and_values(
+        available_dtypes=draw(helpers.get_dtypes("integer")),
+        min_value=0,
+        max_value=2,
+        exclude_max=True,
+        shape=draw(st.shared(shape, key="shape"))
+    ))
     dtype_y_pred = draw(helpers.dtype_and_values(
         dtype=draw(st.shared(common_float_dtype, key='float_dtype')),
         min_value=min_value,
