@@ -388,7 +388,7 @@ def norm_helper(draw):
     return dtype, x, ord_param, axis, keepdims
 
 
-#norm
+# norm
 @handle_cmd_line_args
 @given(
     params=norm_helper().filter(lambda s: 'bfloat16' not in s[0] or 'bool' not in s[0]),
