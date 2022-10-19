@@ -2,12 +2,6 @@
 from typing import Union, Tuple
 from collections import namedtuple
 
-
-# local
-# import ivy
-# import ivy.functional.frontends.tensorflow as ivy_tf
-# from ivy.exceptions import handle_exceptions
-# from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 import tensorflow as tf
 
 from . import version
