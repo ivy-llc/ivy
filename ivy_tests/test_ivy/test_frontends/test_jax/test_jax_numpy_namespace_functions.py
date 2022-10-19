@@ -676,7 +676,7 @@ def test_jax_numpy_dot(
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_numpy_einsum(
-    eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
+        eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
 ):
     eq, operands, true_shape = eq_n_op_n_shp
     kw = {}
@@ -1237,7 +1237,7 @@ def test_jax_numpy_argmin(
     )
 
 
-#bitwise_and
+# bitwise_and
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1299,6 +1299,7 @@ def test_jax_numpy_bitwise_and_int(
         x1=x[0][0],
         x2=x[0][1]
     )
+
 
 # bitwise_or
 @handle_cmd_line_args
