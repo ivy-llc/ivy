@@ -76,15 +76,7 @@ if __name__ == "__main__":
         print(tests["index_mapping"][test_index])
     print("----------------------------")
 
-    # Run Tests
-    failed = False
-    for test_index in tests_to_run:
-        test = tests["index_mapping"][test_index]
-        ret = os.system(
-            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
-        )
-        if ret != 0:
-            failed = True
-
-    if failed:
-        exit(1)
+    with open("tests_to_run", "w") as f:
+        for test_index in tests_to_run:
+            test = tests["index_mapping"][test_index]
+            f.write(test + "\n")
