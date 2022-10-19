@@ -255,7 +255,6 @@ def test_torch_combinations(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -264,7 +263,6 @@ def test_torch_combinations(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="combinations",
         input=np.asarray(x[0], dtype=input_dtype[0]),
