@@ -28,7 +28,6 @@ General
    general/unset_exception_trace_mode.rst
    general/get_exception_trace_mode.rst
    general/array_equal.rst
-   general/arrays_equal.rst
    general/all_equal.rst
    general/to_numpy.rst
    general/isscalar.rst
