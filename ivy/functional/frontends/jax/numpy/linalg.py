@@ -56,8 +56,8 @@ def matrix_rank(M):
 
 
 @inputs_to_ivy_arrays
-def norm(x, ord='fro', axis=None, keepdims=False):
-    if type(axis) in [tuple, list] and len(axis) == 2:
+def norm(x, ord=None, axis=None, keepdims=False):
+    if (type(axis) in [tuple, list]) and len(axis) == 2:
         return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
     return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
