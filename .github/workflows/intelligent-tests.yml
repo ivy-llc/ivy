@@ -131,7 +131,6 @@ jobs:
 
    run_tests_4:
      runs-on: ubuntu-latest
-     id: tests
      steps:
        - name: Checkout Ivy 🛎
          uses: actions/checkout@v2
@@ -142,6 +141,7 @@ jobs:
            fetch-depth: 100
 
        - name: Determine and Run Tests
+         id: tests
          run: |
            git clone https://github.com/unifyai/Mapping_4.git
            pip install pydriller
@@ -152,7 +152,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            python run_tests.py
-           continue-on-error: true
+         continue-on-error: true
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
