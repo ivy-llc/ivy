@@ -4,7 +4,51 @@ import math
 
 # local
 import ivy
+import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+
+
+def safety_factor_linalg(
+    matrix,
+    *,
+    condition_index='high',
+):
+    """
+    Applies safety factor to the condition of a matrix to avoid numerical instabilities in further calculations.
+
+    Parameters
+    ----------
+    matrix
+        The original matrix whose condition number is to be determined.
+    condition_index
+        There is no rule of thumb for what the exact condition number
+        should be to consider a matrix ill-conditioned(prone to numerical errors).
+        If the condition number is "1", the matrix is perfectly said to be a
+        well-conditioned matrix which will not be prone to any numerical zzinstabilities in further
+        calculations, but that would probably be a very simple matrix.
+
+        The "low" condition index checks from "1" till "10" as a matrix can
+        be considered well-condition in this range.
+
+        The "high" condition index checks from "10" till "30", in this range
+        the matrix is considered to be ill-conditioned but still
+
+    Returns
+    -------
+    the result of applying safety scaling to minimum value, maximum value and
+    absolute smallest representable value (only for float dtypes).
+    """
+    type_casted_matrix = matrix.astype('float64')
+    if condition_index == 'high':
+        if np.linalg.cond(type_casted_matrix) >= 10 and np.linalg.cond(type_casted_matrix) <= 30:
+            return True
+        else:
+            return False
+    if condition_index == 'low':
+        if np.linalg.cond(type_casted_matrix) <= 10:
+            return True
+        else:
+            return False
 
 
 def apply_safety_factor(
