@@ -1286,6 +1286,7 @@ def pad(
         b: ivy.array([0, 4, 5, 6, 0])
     }
     """
+    input = ivy.asarray(input, dtype=input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
     pad_width = ivy.asarray(
         pad_width, dtype=ivy.Dtype(str(np.asarray(pad_width).dtype))
