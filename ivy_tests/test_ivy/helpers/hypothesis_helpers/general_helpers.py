@@ -64,7 +64,7 @@ def safety_factor_linalg(
         else:
             return False
     if condition_index == "low":
-        if np.linalg.cond(type_casted_matrix) <= 10:
+        if round(np.linalg.cond(type_casted_matrix)) <= 10:
             return True
         else:
             return False
