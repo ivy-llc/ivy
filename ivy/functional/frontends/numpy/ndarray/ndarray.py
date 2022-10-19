@@ -32,8 +32,8 @@ class ndarray:
         )
     
    
-    def argmin(self,*,axis=None,out=None,keepdims=False):
-        return np_frontend.argmin(self.data,axis=axis,out=out,keepdims=keepdims)
+    def argmin(self, *, axis=None, out=None, keepdims=False):
+        return np_frontend.argmin(self.data, axis=axis, out=out, keepdims=keepdims)
 
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
