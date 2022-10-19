@@ -362,59 +362,43 @@ def test_jax_numpy_matrix_rank(
 
 
 # solve
-dim_arr = np.random.randint(low=2, high=8)
-
-
 @handle_cmd_line_args
 @given(
-    dtype_and_a=helpers.dtype_and_values(
+    dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=dim_arr, max_value=dim_arr).map(
-            lambda x: tuple([x, x])
-        ),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0]) != 0
-    ),
-    dtype_and_b=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=dim_arr, max_value=dim_arr).map(
-            lambda x: tuple([x, 1])
-        ),
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.solve"
     ),
 )
 def test_jax_numpy_solve(
-    dtype_and_a,
-    dtype_and_b,
+    dtype_and_data,
     as_variable,
     num_positional_args,
     native_array,
 ):
-    a_dtype, a = dtype_and_a
-    b_dtype, b = dtype_and_b
+    input_dtype, data = dtype_and_data
+    a = data[0][:, :-1]
+    b = data[0][:, -1].reshape(-1, 1)
     helpers.test_frontend_function(
-        input_dtypes=[a_dtype[0], b_dtype[0]],
+        input_dtypes=[input_dtype[0], input_dtype[0]],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.solve",
-        a=np.asarray(a[0], dtype=a_dtype[0]),
-        b=np.asarray(b[0], dtype=b_dtype[0]),
+        a=np.asarray(a, dtype=input_dtype[0]),
+        b=np.asarray(b, dtype=input_dtype[0]),
         rtol=1e-01,
         atol=1e-01,
     )
