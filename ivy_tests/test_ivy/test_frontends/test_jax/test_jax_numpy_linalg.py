@@ -362,13 +362,18 @@ def test_jax_numpy_matrix_rank(
 
 
 # solve
+dim_arr = np.random.randint(low=2, high=8)
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=dim_arr, max_value=dim_arr).map(
+            lambda x: tuple([x, x])
+        ),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -379,7 +384,9 @@ def test_jax_numpy_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, 1])),
+        shape=helpers.ints(min_value=dim_arr, max_value=dim_arr).map(
+            lambda x: tuple([x, 1])
+        ),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -389,7 +396,7 @@ def test_jax_numpy_matrix_rank(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.solve"
     ),
 )
-def test_jax_solve(
+def test_jax_numpy_solve(
     dtype_and_a,
     dtype_and_b,
     as_variable,
