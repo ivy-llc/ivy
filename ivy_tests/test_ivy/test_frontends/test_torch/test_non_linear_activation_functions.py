@@ -1,4 +1,5 @@
 # global
+import ivy
 from hypothesis import assume, given, strategies as st
 
 # local
@@ -66,7 +67,7 @@ def test_torch_sigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True),
+    dtypes=helpers.get_dtypes("float", none=True, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.softmax"
     ),
@@ -89,7 +90,8 @@ def test_torch_softmax(
         fn_tree="nn.functional.softmax",
         input=x[0],
         dim=axis,
-        dtype=dtypes,
+        _stacklevel=3,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
 
 
@@ -227,7 +229,7 @@ def test_torch_logsigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True),
+    dtypes=helpers.get_dtypes("float", none=True, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.softmin"
     ),
@@ -250,7 +252,7 @@ def test_torch_softmin(
         fn_tree="nn.functional.softmin",
         input=x[0],
         dim=axis,
-        dtype=dtypes,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
 
 

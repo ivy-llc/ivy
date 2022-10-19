@@ -2493,6 +2493,7 @@ class ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2507,6 +2508,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         x
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2564,6 +2567,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
             x,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2574,6 +2578,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2588,6 +2593,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         self
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2652,6 +2659,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_to_numpy(
             self,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

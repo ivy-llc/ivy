@@ -902,6 +902,47 @@ def ndenumerate(
     return _ndenumerate(input)
 
 
+@handle_exceptions
+def ndindex(
+    shape: Tuple,
+) -> Generator:
+    """Multidimensional index iterator.
+
+    Parameters
+    ----------
+    shape
+        The shape of the array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding array coordinates.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index in ivy.ndindex(a):
+    >>>     print(index)
+    (0, 0)
+    (0, 1)
+    (1, 0)
+    (1, 1)
+    """
+
+    def _iter_product(*args, repeat=1):
+        pools = [tuple(pool) for pool in args] * repeat
+        result = [[]]
+        for pool in pools:
+            result = [x + [y] for x in result for y in pool]
+        for prod in result:
+            yield tuple(prod)
+
+    args = []
+    for s in range(len(shape)):
+        args += [range(shape[s])]
+    return _iter_product(*args)
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1257,3 +1298,46 @@ def fmod(
     ivy.array([ nan,  nan,  nan])
     """
     return ivy.current_backend().fmod(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmax(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise maximums of two arrays. Differs from ivy.maximum
+    in the case where one of the elements is NaN. ivy.maximum returns the NaN element
+    while ivy.fmax returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise maximums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 2.,  5.,  4.])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmax(x1, x2)
+    ivy.array([ 0,  0,  nan])
+    """
+    return ivy.current_backend().fmax(x1, x2, out=out)

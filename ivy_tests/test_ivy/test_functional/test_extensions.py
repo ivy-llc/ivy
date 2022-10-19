@@ -514,6 +514,20 @@ def test_ndenumerate(dtype_and_x):
         assert index1 == index2 and x1 == x2
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        ret_shape=True,
+    ),
+)
+def test_ndindex(dtype_x_shape):
+    shape = dtype_x_shape[2]
+    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
+        assert index1 == index2
+
+
 @st.composite
 def _pad_helper(draw):
     dtype, value, shape = draw(
@@ -830,6 +844,49 @@ def test_fmod(
         instance_method=instance_method,
         fw=fw,
         fn_name="fmod",
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# fmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_nan=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="fmax"),
+)
+def test_fmax(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="fmax",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[0], dtype=input_dtype[0]),
     )

@@ -11,6 +11,13 @@ class Tensor:
             data = ivy.Array(data)
         self.data = data
 
+    def __repr__(self):
+        return (
+            "ivy.functional.frontends.tensorflow.tensor("
+            + str(ivy.to_list(self.data))
+            + ")"
+        )
+
     # Instance Methods #
     # -------------------#
 
@@ -58,7 +65,7 @@ class Tensor:
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
 
     def __invert__(self, name="invert"):
-        return tf_frontend.Invert(x=self.data, name=name)
+        return tf_frontend.raw_ops.Invert(x=self.data, name=name)
 
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self.data, y=y.data, name=name)
@@ -96,6 +103,9 @@ class Tensor:
 
     def __rmatmul__(self, x, name="rmatmul"):
         return tf_frontend.raw_ops.MatMul(a=x, b=self.data, name=name)
+
+    def __rmul__(self, x, name="rmul"):
+        return tf_frontend.raw_ops.Mul(x=x, y=self.data, name=name)
 
     def __ror__(self, x, name="ror"):
         return tf_frontend.raw_ops.LogicalOr(x=x, y=self.data, name=name)

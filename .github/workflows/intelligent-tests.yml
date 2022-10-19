@@ -20,12 +20,12 @@ jobs:
          run: |
            git clone https://github.com/unifyai/Mapping.git
            pip install pydriller
-           cp Mapping/tests.pkl ivy/
+           cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
            cd ..
            mkdir tests
-           cp ivy/tests.pkl tests/
+           cp ivy/tests.pbz2 tests/
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
