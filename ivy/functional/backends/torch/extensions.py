@@ -353,9 +353,9 @@ def dct(
             n1 = torch.sqrt(axis_dim_float)
             n2 = n1 * torch.sqrt(torch.tensor(0.5))
             sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
-            x *= sf
+            x = x * sf
         else:
-            x *= axis_dim_float
+            x = x * axis_dim_float
 
         scale = 2.0 * torch.exp(
             torch.complex(
