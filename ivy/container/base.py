@@ -813,7 +813,7 @@ class ContainerBase(dict, abc.ABC):
                     if not min([id_n == id_0 for id_n in ids]):
                         return False
                 elif arrays_equal:
-                    if not ivy.arrays_equal(values):
+                    if not ivy.all_equal(*values):
                         return False
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
