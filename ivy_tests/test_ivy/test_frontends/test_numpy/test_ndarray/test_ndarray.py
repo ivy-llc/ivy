@@ -44,6 +44,7 @@ def test_numpy_ndarray_argmax(
         method_name="argmax",
     )
 
+    
 # argmin
 @handle_cmd_line_args
 @given(
@@ -80,6 +81,7 @@ def test_numpy_ndarray_argmin(
         method_name="argmin",
     )    
 
+    
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
