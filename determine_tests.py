@@ -31,7 +31,10 @@ if __name__ == "__main__":
             deleted = deleted.difference(updated)
             # Now Update the Tests and compute the tests to run
             for line in deleted:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
             for line in sorted(deleted, reverse=True):
                 if line < len(tests_file):
                     del tests_file[line]
@@ -53,22 +56,25 @@ if __name__ == "__main__":
             tests[file_name] = tests_file
             # Now Compute the Tests to Run
             for line in updated:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
             for line in added:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
         break
 
     with bz2.BZ2File("tests.pbz2", "w") as f:
         cPickle.dump(tests, f)
 
     print("----- Determined Tests -----")
+    print(len(tests_to_run))
     for test_index in tests_to_run:
         print(tests["index_mapping"][test_index])
     print("----------------------------")
-
-    # with open("tests_to_run", "w") as f:
-    #     for test in tests_to_run:
-    #         f.write(test + "\n")
 
     # Run Tests
     failed = False
