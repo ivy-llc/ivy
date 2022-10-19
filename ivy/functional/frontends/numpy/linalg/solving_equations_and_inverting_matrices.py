@@ -26,3 +26,9 @@ def inv(a):
 @to_ivy_arrays_and_back
 def pinv(a, rtol=1e-15, hermitian=False):
     return ivy.pinv(a, rtol=rtol)
+
+
+# tensorinv
+@to_ivy_arrays_and_back
+def tensorinv(a, ind=2):
+    return ivy.tensorinv(a, ind=ind)

@@ -1235,3 +1235,35 @@ def test_jax_numpy_argmin(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+# tensorinv
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.tensorinv"
+    ),
+    ind=st.integers(min_value=1, max_value=3),
+)
+def test_jax_numpy_tensorinv(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    ind,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.tensorinv",
+        a=np.asarray(x, dtype=input_dtype),
+        ind=ind,
+    )

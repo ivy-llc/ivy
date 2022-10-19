@@ -18,6 +18,16 @@ inf = float("inf")
 # Array API Standard #
 # -------------------#
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def tensorinv(
+        a: Union[ivy.Array, ivy.NativeArray],
+        ind=2
+) -> ivy.array:
+    return current_backend(a).tensorinv(a , ind = ind)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
