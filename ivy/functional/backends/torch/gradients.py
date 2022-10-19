@@ -2,9 +2,9 @@
 
 # global
 import torch
-import functorch
 import warnings
 from typing import Optional, Callable
+import numpy as np
 
 # local
 import ivy
@@ -30,14 +30,21 @@ def variable_data(x):
 
 
 def _forward_fn(xs, func):
+    xs = ivy.Container(xs)
+    print("xs", xs)
     ret = func(xs)
 
     if isinstance(ret, ivy.Array):
         array_values = ret.to_native()
     else:
-        ret = ivy.nested_map(ret, lambda x: ivy.to_native(x), include_derived=True)
         array_idxs = ivy.nested_argwhere(ret, lambda x: ivy.is_native_array(x))
-        array_values = ivy.multi_index_nest(ret, array_idxs)
+        if (
+            not isinstance(array_idxs, list)
+            or np.asarray(array_idxs, "object").size == 0
+        ):
+            array_values = []
+        else:
+            array_values = ivy.multi_index_nest(ret, array_idxs)
 
     return array_values
 
@@ -48,19 +55,21 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
     xs = ivy.to_native(xs)
     arr_idxs, arr_values = _get_native_arrays_and_indices(func_ret)
 
-    if len(arr_values) == 1:
+    if arr_values is None or (isinstance(arr_values, list) and len(arr_values) == 0):
+        return func_ret, {}
+    if isinstance(arr_values, list) and len(arr_values) == 1:
         y = arr_values[0]
     else:
         y = arr_values
 
-    if isinstance(y, ivy.NativeArray):
+    def grad_func(y):
         if isinstance(xs, ivy.Container):
             grads = xs.from_flat_list(
                 list(
                     torch.autograd.grad(
                         [y],
                         [v for k, v in xs.to_iterator()],
-                        retain_graph=retain_grads,
+                        retain_graph=True,
                         create_graph=retain_grads,
                         allow_unused=True,
                     )
@@ -70,21 +79,34 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
             grads = torch.autograd.grad(
                 y,
                 xs,
-                retain_graph=retain_grads,
+                retain_graph=True,
                 create_graph=retain_grads,
                 allow_unused=True,
             )[0]
+        return grads
+
+    if isinstance(y, ivy.NativeArray):
+        grads = grad_func(torch.clone(y))
     else:
-        if isinstance(xs, ivy.Container):
-            xs = xs.to_dict()
-        grad_func = functorch.jacrev(lambda x: _forward_fn(x, func))
-        grads_ = grad_func(xs)
-        if isinstance(xs, dict):
-            xs = ivy.Container(**xs)
-        grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
+        # ToDo: use functorch.jacrev if it fixes the issue with broken memory reference
+        array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
+        if (
+            not isinstance(array_idxs, list)
+            or np.asarray(array_idxs, "object").size == 0
+        ):
+            y = []
+        else:
+            y = ivy.multi_index_nest(y, array_idxs)
+
+        grad_arr_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
+        grad_arr_values = ivy.multi_index_nest(y, grad_arr_idxs)
+        grads_ = [grad_func(torch.clone(arr_value)) for arr_value in grad_arr_values]
+        grads = grads_
+        if isinstance(arr_idxs, list) and len(arr_idxs):
+            grads = {arr_idxs[i]: grad for i, grad in enumerate(grads_)}
 
     grads = _zero_gradients_to_none_and_to_ivy(grads)
-    grads = _stop_grad_and_index(y, retain_grads, grads, grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs)
     return func_ret, grads
 
 
