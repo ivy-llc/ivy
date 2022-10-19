@@ -101,6 +101,7 @@ def closest_valid_dtype(type):
 backend = "torch"
 backend_version = torch.__version__
 
+# flake8: noqa
 # local sub-modules
 from . import activations
 from .activations import *
