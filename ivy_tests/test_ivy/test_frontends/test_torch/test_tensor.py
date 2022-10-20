@@ -1,4 +1,5 @@
 # global
+import ivy
 import torch
 from hypothesis import assume, given, strategies as st
 
@@ -694,3 +695,82 @@ def test_torch_special_treudiv(
             ret_np_from_gt_flat=v,
             ground_truth_backend="torch",
         )
+
+
+# to_with_device
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+    ),
+    copy=st.booleans(),
+)
+def test_torch_instance_to_with_device(
+    dtype_x,
+    copy,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=4,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "device": ivy.Device("cpu"),
+            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
+            "non_bloacking": False,
+            "copy": copy,
+            "memory_format": torch.preserve_format,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="to",
+    )
+
+
+# to_with_dtype
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+    ),
+    copy=st.booleans(),
+)
+def test_torch_instance_to_with_dtype(
+    dtype_x,
+    copy,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=3,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
+            "non_bloacking": False,
+            "copy": copy,
+            "memory_format": torch.preserve_format,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="to",
+    )
