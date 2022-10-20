@@ -51,11 +51,6 @@ def safety_factor_linalg(
     A bool, either True or False. Which tells whether the matrix is suitable for
     further numerical computations or not.
     """
-    assert condition_index != "high", \
-        "wrong condition index given, can either be (high) or (low)"
-    assert condition_index != "low", \
-        "wrong condition index given, can either be (high) or (low)"
-
     type_casted_matrix = matrix.astype('float64')
     if condition_index == "high":
         if np.linalg.cond(type_casted_matrix) == float("inf"):
