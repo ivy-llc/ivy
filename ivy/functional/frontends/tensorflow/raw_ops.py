@@ -368,5 +368,10 @@ def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
+@to_ivy_arrays_and_back
+def Pow(*, x, y, name="Pow"):
+    return ivy.pow(x, y)
+
+
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
