@@ -2111,6 +2111,32 @@ def vector_norm(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    ------------------------------------------
+    x = np.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.vector_norm(x)
+    >>> print(y)
+    [5.47722558]
+
+
+    x = np.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.vector_norm(x,p=1)
+    >>> print(y)
+    [10.]
+
+
+    ivy.set_framework("numpy")
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.vector_norm(x,p=1)
+    >>> print(y)
+    [10.]
+
+    >>> ivy.set_framework("numpy")
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.vector_norm(x,axis=1)
+    >>> print(y)
+    [2.23606798 5.        ]    
+    
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, out=out
