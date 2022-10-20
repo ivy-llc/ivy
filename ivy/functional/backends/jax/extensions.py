@@ -332,3 +332,10 @@ def dct(
             jnp.fft.irfft(scale * jlax.complex(x, real_zero), n=2 * axis_dim)
         )
         return dct_out[..., :axis_dim]
+
+    elif type == 4:
+        dct_2 = dct(x, type=2, n=2 * axis_dim, norm=None)
+        dct_out = dct_2[..., 1::2]
+        if norm == "ortho":
+            dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
+        return dct_out
