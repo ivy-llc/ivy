@@ -227,13 +227,13 @@ def flipud(
 
 
 def dct(
-    x: tf.Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     type: Optional[int] = 2,
     n: Optional[int] = None,
     norm: Optional[str] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     if x.dtype not in [tf.float32, tf.float64]:
         x = tf.cast(x, tf.float32)
