@@ -269,7 +269,7 @@ def _get_cholesky_matrix(draw):
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
     )
-    spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0]) * 1e-3
+    spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0])
     spd_chol = np.linalg.cholesky(spd)
     return input_dtype, spd_chol
 
