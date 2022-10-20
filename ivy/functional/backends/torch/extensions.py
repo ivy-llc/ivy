@@ -7,6 +7,8 @@ from ivy.functional.ivy.extensions import (
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
 import math
@@ -65,13 +67,13 @@ def native_sparse_array_to_indices_values_and_shape(x):
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
 
 
 def flatten(
