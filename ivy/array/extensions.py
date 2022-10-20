@@ -494,3 +494,36 @@ class ArrayWithExtensions(abc.ABC):
         ivy.array([ 0,  0,  nan])
         """
         return ivy.fmax(self._data, x2, out=out)
+
+
+    def eigvals(
+            self: ivy.Array,
+            /,
+            *,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Returns the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+
+        Parameters
+        ----------
+        x
+            input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Must have a floating-point data type.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            an array containing the computed eigenvalues. The returned array must have shape (..., M) and have the same data type as x.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.random_normal(shape=(2, 2, 2))
+        >>> ivy.eigvals(x)
+
+        """
+        return ivy.eigvals(self._data, out=out)
+
