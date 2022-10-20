@@ -309,29 +309,3 @@ def test_numpy_nanargmin(
     )
 
 
-@handle_cmd_line_args
-@given(
-    dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.extract"
-    ),
-)
-def test_numpy_nonzero(
-    condition,
-    dtype_and_a,
-    native_array,
-    num_positional_args,
-):
-    dtype, arr = dtype_and_a
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="extract",
-        arr=arr[0],
-    )

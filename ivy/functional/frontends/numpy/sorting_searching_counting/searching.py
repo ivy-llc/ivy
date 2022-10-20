@@ -72,7 +72,3 @@ def nanargmin(a, axis=None, keepdims=False):
     if ivy.all(finite_a):
         return ivy.argmin(a, axis=axis, keepdims=keepdims)
     return ivy.argmin(a[finite_a], axis=axis, keepdims=keepdims)
-
-@to_ivy_arrays_and_back
-def extract(condition , arr):
-    return ivy.extract(condition , arr)
