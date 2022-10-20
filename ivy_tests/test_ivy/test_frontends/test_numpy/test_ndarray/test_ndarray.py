@@ -381,9 +381,7 @@ def test_numpy_instance_argsort(
 )
 def test_numpy_ndarray_prod(
     dtype_x_axis,
-    dtype,
     out,
-    keepdims,
     initial,
     where,
     as_variable,
@@ -411,9 +409,7 @@ def test_numpy_ndarray_prod(
         },
         all_as_kwargs_np_method={
             "axis": axis,
-            "dtype": dtype,
             "out": out,
-            "keepdims": keepdims,
             "initial" : initial,
             "where": where,
         },
