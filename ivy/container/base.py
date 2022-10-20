@@ -3674,7 +3674,7 @@ class ContainerBase(dict, abc.ABC):
                                     "{} = {}".format(name, v[i])
                                     if v[i].size < self._print_limit
                                     else "{} = {}, shape={}".format(
-                                        name, type(v[i]), v[i].shape
+                                        name, type(v[i]), list(v[i].shape)
                                     )
                                     for i, name in enumerate(v._fields)
                                 ],
@@ -3683,20 +3683,20 @@ class ContainerBase(dict, abc.ABC):
                             rep = (
                                 "NamedTuple({})".format(len(v)),
                                 type(v[0]),
-                                "shape={}".format(v[0].shape),
+                                "shape={}".format(list(v[0].shape)),
                             )
 
                     elif isinstance(v, tuple):
                         rep = (
                             "tuple({})".format(len(v)),
                             type(v[0]),
-                            "shape={}".format(v[0].shape),
+                            "shape={}".format(list(v[0].shape)),
                         )
                     else:
                         rep = (
                             "list[{}]".format(len(v)),
                             type(v[0]),
-                            "shape={}".format(v[0].shape),
+                            "shape={}".format(list(v[0].shape)),
                         )
 
                 else:
