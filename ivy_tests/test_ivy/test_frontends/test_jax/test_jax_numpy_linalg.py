@@ -359,3 +359,46 @@ def test_jax_numpy_matrix_rank(
         fn_tree="numpy.linalg.matrix_rank",
         M=x[0],
     )
+
+
+# solve
+@handle_cmd_line_args
+@given(
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.solve"
+    ),
+)
+def test_jax_numpy_solve(
+    dtype_and_data,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, data = dtype_and_data
+    a = data[0][:, :-1]
+    b = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.solve",
+        a=np.asarray(a, dtype=input_dtype[0]),
+        b=np.asarray(b, dtype=input_dtype[0]),
+        rtol=1e-01,
+        atol=1e-01,
+    )
