@@ -1043,7 +1043,7 @@ def test_tensorflow_truediv(
 @given(
     dtype_and_x=statistical_dtype_values(function="argmin"),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.math.argmin"
+    fn_name="ivy.functional.frontends.tensorflow.math.argmin"
     ), output_types=helpers.get_dtypes("numeric"),
 )
 def test_tensorflow_argmin(
