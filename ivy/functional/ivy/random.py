@@ -338,7 +338,7 @@ def multinomial(
         The unnormalized probabilities for all elements in population,
         default is uniform *[batch_shape, population_size]*
     replace
-        Whether to replace samples once they've been drawn. Default is True.
+        Whether to replace samples once they've been drawn. Default is ``True``.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
@@ -399,7 +399,6 @@ def multinomial(
     ...                     replace=False)
     >>> print(y)
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
-
     """
     return ivy.current_backend().multinomial(
         population_size,

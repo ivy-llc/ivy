@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
 )
 from ivy.exceptions import handle_exceptions
 
+
 inf = float("inf")
 
 
@@ -26,7 +27,7 @@ def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    upper: Optional[bool] = False,
+    upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
@@ -39,7 +40,7 @@ def cholesky(
         type.
     upper
         If True, the result must be the upper-triangular Cholesky factor U. If False,
-        the result must be the lower-triangular Cholesky factor L. Default: False.
+        the result must be the lower-triangular Cholesky factor L. Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -170,7 +171,7 @@ def cross(
     axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+    """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
 
@@ -184,7 +185,7 @@ def cross(
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
         the cross product.vIf set to -1, the function computes the cross product for
-        vectors defined by the last axis (dimension). Default: -1.
+        vectors defined by the last axis (dimension). Default: ``-1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -309,53 +310,8 @@ def det(
     >>> y = ivy.det(x)
     >>> print(y)
     {a:ivy.array(8.),b:ivy.array(1.)}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[2.,4.],[6.,7.]])
-    >>> y = x.det()
-    >>> print(y)
-    ivy.array(-10.)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,
-    ...                   b = ivy.array([[2., 1.], [1., 1.]]))
-    >>> y = x.det()
-    >>> print(y)
-    {a:ivy.array(8.),b:ivy.array(1.)}
-
-
     """
     return current_backend(x).det(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def diag(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
-):
-    return current_backend(x).diag(
-        x,
-        offset=offset,
-        padding_value=padding_value,
-        align=align,
-        num_rows=num_rows,
-        num_cols=num_cols,
-    )
 
 
 @to_native_arrays_and_back
@@ -942,13 +898,53 @@ def matrix_norm(
     Parameters
     ----------
     x
-        Input array.
+        Input array having shape (..., M, N) and whose innermost two dimensions
+        form MxN matrices. Should have a floating-point data type.
     ord
-        Order of the norm. Default is "fro".
+        order of the norm. The following mathematical norms must be supported:
+
+        +------------------+---------------------------------+
+        | ord              | description                     |
+        +==================+=================================+
+        | 'fro'            | Frobenius norm                  |
+        +------------------+---------------------------------+
+        | 'nuc'            | nuclear norm                    |
+        +------------------+---------------------------------+
+        | 1                | max(sum(abs(x), axis=0))        |
+        +------------------+---------------------------------+
+        | 2                | largest singular value          |
+        +------------------+---------------------------------+
+        | inf              | max(sum(abs(x), axis=1))        |
+        +------------------+---------------------------------+
+
+        The following non-mathematical "norms" must be supported:
+
+        +------------------+---------------------------------+
+        | ord              | description                     |
+        +==================+=================================+
+        | -1               | min(sum(abs(x), axis=0))        |
+        +------------------+---------------------------------+
+        | -2               | smallest singular value         |
+        +------------------+---------------------------------+
+        | -inf             | min(sum(abs(x), axis=1))        |
+        +------------------+---------------------------------+
+
+        If ``ord=1``, the norm corresponds to the induced matrix norm where 
+        ``p=1`` (i.e., the maximum absolute value column sum).
+
+        If ``ord=2``, the norm corresponds to the induced matrix norm where 
+        ``p=inf`` (i.e., the maximum absolute value row sum).
+
+        If ``ord=inf``, the norm corresponds to the induced matrix norm where 
+        ``p=2`` (i.e., the largest singular value).
+
+        Default: "fro".
+    axis
+        specifies the axes that hold 2-D matrices. Default: (-2, -1).
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
-        against the original x. Default is False.
+        against the original x. Default is ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -967,6 +963,62 @@ def matrix_norm(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:'ivy.Array' inputs:
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.matrix_norm(x)
+    >>> print(y)
+    ivy.array(5.47722558)
+
+    >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
+    >>> y = ivy.zeros(2)
+    >>> ivy.matrix_norm(x, ord=1, out=y)
+    >>> print(y)
+    ivy.array([ 4., 12.])
+
+    >>> x = ivy.arange(12, dtype=float).reshape((3, 2, 2))
+    >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)
+    >>> print(x)
+    ivy.array([ 4., 12., 20.])
+
+    >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
+    >>> y = ivy.matrix_norm(x, ord='nuc', keepdims=True)
+    >>> print(y)
+    ivy.array([[11.]])
+
+    >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \
+                        [[1., 0., 1.1], [1., 1., 0.]]])   
+    >>> ivy.matrix_norm(x, ord='fro', out=x)
+    >>> print(x)
+    ivy.array([10.5 ,  2.05])
+
+    With :class:'ivy.Container' input:
+    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
+                                       [42.69, 9.23]]), \
+                          b=ivy.array([[1.1, 2.2, 3.3], \
+                                       [4.4, 5.5, 6.6]]))   
+    >>> y = ivy.matrix_norm(x, ord=-ivy.inf)
+    >>> print(y)
+    {
+        a: ivy.array(9.776),
+        b: ivy.array(6.6000004)
+    }
+
+    With multiple :class:'ivy:Container' inputs:
+    >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
+    >>> ord = ivy.Container(a=1, b=float('inf'))
+    >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+    >>> k = ivy.Container(a=False, b=True)
+    >>> y = ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=k)
+    >>> print(y)
+    {
+        a: ivy.array([4., 12., 20.]),
+        b: ivy.array([[[4.]], 
+                      [[12.]]])
+    }
 
     """
     return current_backend(x).matrix_norm(
@@ -1103,8 +1155,8 @@ def matrix_rank(
     ivy.array([2., 1.])
 
     With :code: 'ivy.Container' inputs:
-    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
-                            b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), \
+                          b = ivy.array([[1., 0.], [0., 0.]]))
     >>> ivy.matrix_rank(x)
     {
         a:ivy.array(2.),
@@ -2073,32 +2125,26 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Given vector, return the associated skew-symmetric matrix
-    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
-
-    Parameters
-    ----------
-    vector
-        Vector to convert *[batch_shape,3]*.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Skew-symmetric matrix *[batch_shape,3,3]*.
-
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    """
-    return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+def diag(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+):
+    return current_backend(x).diag(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -2110,7 +2156,7 @@ def vander(
     /,
     *,
     N: Optional[int] = None,
-    increasing: Optional[bool] = False,
+    increasing: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a Vandermonde matrix.
@@ -2170,3 +2216,35 @@ def vander(
         )
     """
     return current_backend().vander(x, N=N, increasing=increasing, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vector_to_skew_symmetric_matrix(
+    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Given vector, return the associated skew-symmetric matrix
+    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+
+    Parameters
+    ----------
+    vector
+        Vector to convert *[batch_shape,3]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Skew-symmetric matrix *[batch_shape,3,3]*.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)

@@ -13,3 +13,8 @@ def asarray(
     if dtype:
         return ivy.asarray(a, dtype=dtype)
     return ivy.asarray(a, dtype=a.dtype())
+
+
+@to_ivy_arrays_and_back
+def copy(a, order="K", subok=False):
+    return ivy.copy_array(a, dtype=a.dtype())

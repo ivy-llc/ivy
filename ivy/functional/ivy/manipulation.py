@@ -38,7 +38,7 @@ def _calculate_out_shape(axis, array_shape):
 @handle_exceptions
 def concat(
     xs: Union[
-        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
         List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
@@ -56,7 +56,7 @@ def concat(
     axis
         axis along which the arrays will be joined. If axis is None, arrays are
         flattened before concatenation. If axis is negative, the axis is along which
-        to join is determined by counting from the last dimension. Default: 0.
+        to join is determined by counting from the last dimension. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -233,7 +233,7 @@ def flip(
     axis
         axis (or axes) along which to flip. If axis is None, all input array axes are
         flipped. If axis is negative, axis is counted from the last dimension. If
-        provided more than one axis, only the specified axes. Default: None.
+        provided more than one axis, only the specified axes. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -452,7 +452,7 @@ def reshape(
         If False, the function must never copy and must
         raise a ValueError in case a copy would be necessary.
         If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: None.
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -558,7 +558,7 @@ def roll(
     axis
         axis (or axes) along which elements to shift. If axis is None, the array
         must be flattened, shifted, and then restored to its original shape.
-        Default None.
+        Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -670,7 +670,7 @@ def squeeze(
         input array.
     axis
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a
-        ValueError is. If None, then all squeezable axes are squeezed. Default: None
+        ValueError is. If None, then all squeezable axes are squeezed. Default: ``None``
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -762,7 +762,7 @@ def stack(
         will have shape (A, B, C, N). A valid axis must be on the interval
         [-N, N), where N is the rank (number of dimensions) of x. If
         provided an axis outside of the required interval, the function must raise
-        an exception. Default: 0.
+        an exception. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -788,8 +788,48 @@ def stack(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4.])
+    >>> y = ivy.array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.Array` input and different `axis` :
+
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
+
+    With :code: `ivy.native_array` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y))
+    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
+        [ 6.,  7.,  8.,  9., 10.]])
+
+    With :code: `ivy.native_array` input and different `axis` :
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
+    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
+    >>> ivy.stack((x,y),axis=1)
+    ivy.array([[ 0.,  6.],
+        [ 1.,  7.],
+        [ 2.,  8.],
+        [ 3.,  9.],
+        [ 4., 10.]])
     """
-    return current_backend(arrays).stack(arrays, axis=axis, out=out)
+    res = current_backend(arrays).stack(arrays, axis=axis, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 # Extra #
@@ -1054,10 +1094,10 @@ def split(
         integer. The size of each split element if a sequence of integers. Default is to
         divide into as many 1-dimensional arrays as the axis dimension.
     axis
-        The axis along which to split, default is 0.
+        The axis along which to split, default is ``0``.
     with_remainder
         If the tensor does not split evenly, then store the last remainder entry.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -1332,7 +1372,7 @@ def unstack(
     axis
         Axis for which to unpack the array.
     keepdims
-        Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
 
     Returns
     -------

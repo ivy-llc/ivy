@@ -36,15 +36,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -89,15 +90,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -142,15 +144,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -195,15 +198,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -248,15 +252,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -301,15 +306,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -350,15 +356,16 @@ class ContainerWithGeneral(ContainerBase):
         x
             The input to check
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -398,15 +405,16 @@ class ContainerWithGeneral(ContainerBase):
         self
             The input to check
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -452,15 +460,16 @@ class ContainerWithGeneral(ContainerBase):
         p
             optional float, the p-value for computing the p-norm. Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -521,15 +530,16 @@ class ContainerWithGeneral(ContainerBase):
         p
             optional float, the p-value for computing the p-norm. Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -588,15 +598,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             value to update the input container with
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -646,15 +657,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             value to update the input container with
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -698,15 +710,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             The value of decrement.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -776,15 +789,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             The value of decrement.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -838,15 +852,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             The value of increment.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -916,15 +931,16 @@ class ContainerWithGeneral(ContainerBase):
         val
             The value of increment.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -975,15 +991,16 @@ class ContainerWithGeneral(ContainerBase):
         x
             input container to check for inplace support for.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1018,15 +1035,16 @@ class ContainerWithGeneral(ContainerBase):
         x
             input container to check for inplace support for.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1044,10 +1062,8 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_all_equal(
-        x1: Iterable[Any],
-        x2: Iterable[Any],
-        /,
-        *,
+        x1: ivy.Container,
+        *xs: Iterable[Any],
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1063,21 +1079,22 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         x1
             input container.
-        x2
-            array or container to be compared to ``x1``.
+        xs
+            arrays or containers to be compared to ``x1``.
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
-            other. Default is False.
+            other. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1115,7 +1132,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "all_equal",
             x1,
-            x2,
+            *xs,
             equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1125,9 +1142,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def all_equal(
         self: ivy.Container,
-        x2: Iterable[Any],
-        /,
-        *,
+        *xs: Iterable[Any],
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1143,21 +1158,22 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         self
             input container.
-        x2
-            array or container to be compared to ``self``.
+        xs
+            arrays or containers to be compared to ``self``.
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
-            other. Default is False.
+            other. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1214,7 +1230,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_all_equal(
             self,
-            x2,
+            *xs,
             equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1251,20 +1267,21 @@ class ContainerWithGeneral(ContainerBase):
             The number of frequency bands for the encoding. Default is 4.
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
-            Default is False.
+            Default is ``False``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1314,24 +1331,25 @@ class ContainerWithGeneral(ContainerBase):
             The number of frequency bands for the encoding. Default is 4.
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
-            Default is False.
+            Default is ``False``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -1378,19 +1396,20 @@ class ContainerWithGeneral(ContainerBase):
             The container or array which indicates the indices that will be
             gathered along the specified axis.
         axis
-            The axis from which the indices will be gathered. Default is -1.
+            The axis from which the indices will be gathered. Default is ``-1``.
         batch_dims
             optional int, lets you gather different items from each element of a batch.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1467,17 +1486,17 @@ class ContainerWithGeneral(ContainerBase):
             The container or array which indicates the indices that will be
             gathered along the specified axis.
         axis
-            The axis from which the indices will be gathered. Default is -1.
+            The axis from which the indices will be gathered. Default is ``-1``.
         batch_dims
             optional int, lets you gather different items from each element of a batch.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is
             False.
@@ -1518,121 +1537,56 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-        x: ivy.Container,
-        /,
-        *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        x: ivy.Container, include_infs=True, leafwise=False
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.has_nans. This method simply wraps
-        the function, and so the docstring for ivy.has_nans also applies to this method
-        with minimal changes.
+        Determine whether arrays in the container contain any nans, as well as infs
+        or -infs if specified.
 
         Parameters
         ----------
         x
-            Input container.
+            The container to check for nans.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to include infs and -infs in the check. Default is True.
+        leafwise
+            Whether to apply the check leaf-wise, and return a container of booleans.
+            Default is False, in which case the check is applied across the entire
+            container, returning a single boolean.
 
         Returns
         -------
-        ret
-            container of booleans, whether there is a nans at indices.
+            Whether the container has any nans, applied either leafwise or across the
+            entire container.
 
-        Examples
-        --------
-        With :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
-        >>> y = ivy.Container.static_has_nans(x)
-        >>> print(y)
-        {
-            a: false,
-            b: true
-        }
         """
-        return ContainerBase.multi_map_in_static_method(
-            "has_nans",
-            x,
-            include_infs=include_infs,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
+        leafwise_res = x.map(lambda x, kc: ivy.has_nans(x, include_infs))
+        if leafwise:
+            return leafwise_res
+        return max([v for k, v in leafwise_res.to_iterator()])
 
     def has_nans(
-        self: ivy.Container,
-        /,
-        *,
-        include_infs=True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        self: ivy.Container, /, *, include_infs=True, leafwise=False
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.has_nans.
-        This method simply wraps the function, and so the docstring
-        for ivy.has_nans also applies to this method
-        with minimal changes.
+        Determine whether arrays in the container contain any nans, as well as infs
+        or -infs if specified.
 
         Parameters
         ----------
-        self
-            The container from which to check nans.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to include infs and -infs in the check. Default is True.
+        leafwise
+            Whether to apply the check leaf-wise, and return a container of booleans.
+            Default is False, in which case the check is applied across the entire
+            container, returning a single boolean.
 
         Returns
         -------
-        ret
-            Boolean, true if container has a nans, false otherwise.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
-        >>> y = x.has_nans()
-        >>> print(y)
-        {
-            a: false,
-            b: true
-        }
+            Whether the container has any nans, applied either leafwise or across the
+            entire container.
         """
-        return self.static_has_nans(
-            self,
-            include_infs=include_infs,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
+        return self.static_has_nans(self, include_infs=include_infs, leafwise=leafwise)
 
     @staticmethod
     def static_scatter_nd(
@@ -1660,21 +1614,22 @@ class ContainerWithGeneral(ContainerBase):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument
+            The shape of the result. Default is ``None``, in which case tensor argument
             must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1757,21 +1712,22 @@ class ContainerWithGeneral(ContainerBase):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument
+            The shape of the result. Default is ``None``, in which case tensor argument
             must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1856,15 +1812,16 @@ class ContainerWithGeneral(ContainerBase):
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1918,15 +1875,16 @@ class ContainerWithGeneral(ContainerBase):
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1954,6 +1912,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1968,15 +1927,16 @@ class ContainerWithGeneral(ContainerBase):
         indices
             Index array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1999,6 +1959,7 @@ class ContainerWithGeneral(ContainerBase):
             "gather_nd",
             params,
             indices,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2011,6 +1972,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2030,15 +1992,16 @@ class ContainerWithGeneral(ContainerBase):
         indices
             Index array or container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
             ``x`` if None.
@@ -2070,6 +2033,7 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather_nd(
             self,
             indices,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2101,15 +2065,16 @@ class ContainerWithGeneral(ContainerBase):
             One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
             callable.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
 
@@ -2172,15 +2137,16 @@ class ContainerWithGeneral(ContainerBase):
             One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
             callable.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -2247,15 +2213,16 @@ class ContainerWithGeneral(ContainerBase):
         pattern
             Rearrangement pattern.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
         **axes_lengths
@@ -2321,15 +2288,16 @@ class ContainerWithGeneral(ContainerBase):
         axes_lengths
             Any additional specifications for dimensions.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -2385,18 +2353,19 @@ class ContainerWithGeneral(ContainerBase):
         x
             input container.
         include_infs
-            Whether to include infs and -infs in the check. Default is True.
+            Whether to include infs and -infs in the check. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is
             None.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2465,18 +2434,19 @@ class ContainerWithGeneral(ContainerBase):
         self
             input container.
         include_infs
-            Whether to include infs and -infs in the check. Default is True.
+            Whether to include infs and -infs in the check. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is
             None.
         to_apply
             If True, the method will be applied to key_chains, otherwise
-            key_chains will be skipped. Default is True.
+            key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2523,6 +2493,7 @@ class ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2537,16 +2508,19 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         x
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2593,6 +2567,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
             x,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2603,6 +2578,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2617,16 +2593,19 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         self
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2680,6 +2659,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_to_numpy(
             self,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2706,15 +2686,16 @@ class ContainerWithGeneral(ContainerBase):
         x
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2762,15 +2743,16 @@ class ContainerWithGeneral(ContainerBase):
         self
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2821,15 +2803,16 @@ class ContainerWithGeneral(ContainerBase):
         x
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2875,15 +2858,16 @@ class ContainerWithGeneral(ContainerBase):
         self
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2938,15 +2922,16 @@ class ContainerWithGeneral(ContainerBase):
             Container of the minimum denominator to use,
             use global ivy._MIN_DENOMINATOR by default.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -3041,15 +3026,16 @@ class ContainerWithGeneral(ContainerBase):
             Container of the minimum denominator to use,
             use global ivy._MIN_DENOMINATOR by default.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -3126,13 +3112,13 @@ class ContainerWithGeneral(ContainerBase):
         min_base
             The minimum base to use, use global ivy._MIN_BASE by default.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise
-            key_chains will be skipped. Default is True.
+            key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is
             False.
@@ -3180,13 +3166,13 @@ class ContainerWithGeneral(ContainerBase):
         min_base
             The minimum base to use, use global ivy._MIN_BASE by default.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise
-            key_chains will be skipped. Default is True.
+            key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is
             False.
@@ -3231,15 +3217,16 @@ class ContainerWithGeneral(ContainerBase):
         pattern
             Rearrangement pattern.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
 
@@ -3283,15 +3270,16 @@ class ContainerWithGeneral(ContainerBase):
         pattern
             Rearrangement pattern.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
         **axes_lengths
@@ -3340,15 +3328,16 @@ class ContainerWithGeneral(ContainerBase):
         p
             The p-value for computing the p-norm. Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -3410,15 +3399,16 @@ class ContainerWithGeneral(ContainerBase):
         p
             The p-value for computing the p-norm. Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -3474,17 +3464,17 @@ class ContainerWithGeneral(ContainerBase):
             An ivy.Container.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped.
-            Default is True.
+            Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -3550,17 +3540,17 @@ class ContainerWithGeneral(ContainerBase):
             An ivy.Container whose elements are data types supported by Ivy.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped.
-            Default is True.
+            Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -3620,16 +3610,17 @@ class ContainerWithGeneral(ContainerBase):
         as_array
             Whether to return the shape as a array, default False.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
 
         Returns
         -------
@@ -3643,16 +3634,16 @@ class ContainerWithGeneral(ContainerBase):
         {
             b: 2
         }
-        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]]
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
         >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3
         }
-        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> ivy.Container.static_get_num_dims(x)
         {
             b: 3,
@@ -3696,16 +3687,17 @@ class ContainerWithGeneral(ContainerBase):
         as_array
             Whether to return the shape as a array, default False.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
 
         Returns
         -------
@@ -3714,21 +3706,21 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])) 
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> a.get_num_dims()
         {
             b: 2
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
         >>> a.get_num_dims()
         {
             b: 3
         }
-        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],\
-                                            [[0,0,0],[0,0,0],[0,0,0]]]),\
-                                            c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
         >>> a.get_num_dims()
         {
             b: 3,
@@ -3740,7 +3732,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerWithGeneral.static_supports_inplace_updates(
+        return ContainerWithGeneral.static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,

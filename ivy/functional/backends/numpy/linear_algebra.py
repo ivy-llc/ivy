@@ -21,7 +21,7 @@ from . import backend_version
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cholesky(
-    x: np.ndarray, /, *, upper: Optional[bool] = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -561,7 +561,18 @@ def vector_norm(
 
 
 # Extra #
-# ------#
+# ----- #
+
+
+def vander(
+    x: np.ndarray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
 def vector_to_skew_symmetric_matrix(
@@ -585,17 +596,3 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
-
-
-def vander(
-    x: np.ndarray,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: Optional[bool] = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
-
-
-vander.support_native_out = False

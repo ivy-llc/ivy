@@ -19,10 +19,10 @@ from . import backend_version
 
 
 def concat(
-    xs: List[tf.Tensor],
+    xs: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
     /,
     *,
-    axis: int = 0,
+    axis: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -49,7 +49,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Sequence[int]] = 0,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -64,7 +64,7 @@ def flip(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:
@@ -99,7 +99,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -136,14 +136,10 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        ivy.assertions.check_less(
-            x.shape[axis],
-            1,
-            allow_equal=True,
-            message="Expected dimension of size 1, but found dimension size {}".format(
-                x.shape[axis]
-            ),
-        )
+        if ivy.any(x.shape[axis] > 1):
+            raise ValueError(
+                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
+            )
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -160,7 +156,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ivy.exceptions.IvyException(
+                raise ValueError(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )

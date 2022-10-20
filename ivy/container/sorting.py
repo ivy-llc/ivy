@@ -49,15 +49,16 @@ class ContainerWithSorting(ContainerBase):
             relative order of ``x`` values which compare as equal
             is implementation-dependent). Default: ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -165,16 +166,16 @@ class ContainerWithSorting(ContainerBase):
             compare as equal is implementation-dependent).
             Default: ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output container, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -340,6 +341,7 @@ class ContainerWithSorting(ContainerBase):
         *,
         side="left",
         sorter=None,
+        ret_dtype=ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -358,6 +360,7 @@ class ContainerWithSorting(ContainerBase):
             v,
             side=side,
             sorter=sorter,
+            ret_dtype=ret_dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -372,6 +375,7 @@ class ContainerWithSorting(ContainerBase):
         *,
         side="left",
         sorter=None,
+        ret_dtype=ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -389,6 +393,7 @@ class ContainerWithSorting(ContainerBase):
             v,
             side=side,
             sorter=sorter,
+            ret_dtype=ret_dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

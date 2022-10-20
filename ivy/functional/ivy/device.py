@@ -38,7 +38,6 @@ max_chunk_sizes = dict()
 class DefaultDevice:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
@@ -53,7 +52,6 @@ class DefaultDevice:
 
         Examples
         --------
-        >>> z = ivy.DefaultDevice("cpu")
         >>> x = ivy.DefaultDevice("tpu")
         """
         self._dev = device
@@ -74,7 +72,6 @@ class DefaultDevice:
         >>>     # with block calls device.__enter__()
         >>>     print(device._dev)
         "cpu"
-
         """
         ivy.set_default_device(self._dev)
         return self
@@ -97,15 +94,6 @@ class DefaultDevice:
         >>> # after with block device.__exit__() is called
         >>> print(device._dev)
         "cpu"
-
-        A "tpu" as device:
-
-        >>> with ivy.DefaultDevice("tpu") as device:
-        >>>     pass
-        >>> # after with block device.__exit__() is called
-        >>> print(device._dev)
-        "cpu"
-
         """
         ivy.unset_default_device()
         return self
@@ -113,7 +101,7 @@ class DefaultDevice:
 
 # Helpers #
 
-# noinspection PyShadowingNames
+
 def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     global dev_handles
     if device in dev_handles:
@@ -356,7 +344,7 @@ def dev(
           array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is False.
+          Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
@@ -379,48 +367,6 @@ def dev(
     >>> y = ivy.dev(x, as_native=True)
     >>> print(y)
     cpu
-
-    Array Instance Method Examples
-    ------------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
-    >>> y = x.dev(as_native=True)
-    >>> print(y)
-    cpu
-
-    Container Static Method Examples
-    ---------------------------------
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),
-    ...                   b=ivy.native_array([1, 2, 4, 5, 7]))
-    >>> as_native = ivy.Container(a=True, b=False)
-    >>> y = ivy.Container.static_dev(x, as_native=as_native)
-    >>> print(y)
-    {
-        a: device(type=cpu),
-        b: cpu
-    }
-
-    Container Instance Method Examples
-    ----------------------------
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
-    ...                   b=ivy.native_array([[1, 2], [4, 5]]))
-    >>> as_native = ivy.Container(a=False, b=True)
-    >>> y = x.dev(as_native=as_native)
-    >>> print(y)
-    {
-        a: cpu,
-        b: device(type=cpu)
-    }
-
-
     """
     return ivy.current_backend(x).dev(x, as_native=as_native)
 
@@ -459,7 +405,6 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     -------
     ret
         Native device handle.
-
     """
     return ivy.current_backend().as_native_dev(device)
 
@@ -930,7 +875,7 @@ def to_device(
     >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return ivy.current_backend(x).to_device(x, device, out=out)
+    return ivy.current_backend(x).to_device(x, device)
 
 
 # Function Splitting #
@@ -1053,15 +998,15 @@ def split_func_call(
         The maximum size of each of the chunks to be fed into the function.
     chunk_size
         The size of each of the chunks to be fed into the function. Specifying this arg
-        overwrites the global split factor. Default is None.
+        overwrites the global split factor. Default is ``None``.
     input_axes
         The axes along which to split each of the inputs, before passing to the
-        function. Default is 0.
+        function. Default is ``0``.
     output_axes
         The axes along which to concat each of the returned outputs. Default is same as
         fist input axis.
     stop_gradients
-        Whether to stop the gradients for each computed return. Default is False.
+        Whether to stop the gradients for each computed return. Default is ``False``.
     device
         The device to set the split factor for. Sets the default device by default.
 
@@ -1217,7 +1162,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the supported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1249,7 +1194,7 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the unsupported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
