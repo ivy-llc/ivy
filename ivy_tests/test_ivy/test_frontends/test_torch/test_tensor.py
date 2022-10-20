@@ -74,9 +74,7 @@ def test_torch_instance_add(
 # new_ones
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     size=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -88,13 +86,13 @@ def test_torch_instance_add(
     requires_grad=_requires_grad(),
 )
 def test_torch_instance_new_ones(
-        dtype_and_x,
-        size,
-        dtypes,
-        requires_grad,
-        device,
-        as_variable,
-        native_array,
+    dtype_and_x,
+    size,
+    dtypes,
+    requires_grad,
+    device,
+    as_variable,
+    native_array,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -793,12 +791,12 @@ def test_torch_instance_to_with_device(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=4,
+        num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "device": ivy.Device("cpu"),
             "dtype": ivy.as_ivy_dtype(input_dtype[0]),
-            "non_bloacking": False,
+            "non_blocking": False,
             "copy": copy,
             "memory_format": torch.preserve_format,
         },
@@ -837,7 +835,7 @@ def test_torch_instance_to_with_dtype(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "dtype": ivy.as_ivy_dtype(input_dtype[0]),
-            "non_bloacking": False,
+            "non_blocking": False,
             "copy": copy,
             "memory_format": torch.preserve_format,
         },
