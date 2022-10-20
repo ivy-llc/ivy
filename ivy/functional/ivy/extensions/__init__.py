@@ -41,5 +41,7 @@ from . import sorting
 from .sorting import *
 from . import statistical
 from .statistical import *
+from . import sparse_array
+from .sparse_array import *
 from . import utility
 from .utility import *
