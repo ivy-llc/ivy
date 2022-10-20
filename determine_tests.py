@@ -19,7 +19,10 @@ if __name__ == "__main__":
         diff_index = ref_commit.diff(commit._c_object, create_patch=True)
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
-            file_name = file.new_path + ",cover"
+            try:
+                file_name = file.new_path + ",cover"
+            except:
+                continue
             if file_name not in tests.keys():
                 continue
             tests_file = tests[file_name]
