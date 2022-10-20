@@ -134,7 +134,7 @@ return new type promoted values, respectively.
 For an example of how some of these functions are used,
 the implementations for :func:`ivy.add` in each backend framework are as follows:
 
-# JAX
+JAX:
 
 .. code-block:: python
 
@@ -148,7 +148,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return jnp.add(x1, x2)
 
-# NumPy
+NumPy:
 
 .. code-block:: python
 
@@ -163,7 +163,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return np.add(x1, x2, out=out)
 
-# TensorFlow
+TensorFlow:
 
 .. code-block:: python
 
@@ -177,7 +177,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return tf.experimental.numpy.add(x1, x2)
 
-# PyTorch
+PyTorch:
 
 .. code-block:: python
 
@@ -203,6 +203,22 @@ data types should be promoted, and their own type promoting functions
 in :mod:`ivy/functional/frontends/frontend_name/__init__.py`.
 We should always use these functions in any frontend implementation,
 to ensure we follow exactly the same promotion rules as the frontend framework uses.
+
+It should be noted that data type promotion is only used for unifying data types of inputs
+to a common one for performing various operations.
+Examples shown above demonstrate the usage of ``add`` operation.
+As different data types cannot be simply summed, they are promoted to a least common type,
+according to the presented promotion table.
+This ensures that functions always return specific and expected values,
+independently of the specified backend.
+
+However, data promotion is never used for increasing the accuracy or precision of the computations.
+For example, if two ``float32`` values are divided, the produced result will still be a ``float32``,
+even though the result's precision can be improved by promoting it to a ``float64``.
+Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
+User expects a specific behavior and memory constraints whenever they specify and use concrete data types,
+and those decisions should be respcted.
+
 
 Arguments in other Functions
 ----------------------------
