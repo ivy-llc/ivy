@@ -9,6 +9,27 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# Helper functions
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _requires_grad(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        return draw(st.just(False))
+    return draw(st.booleans())
+
+
 # add
 @handle_cmd_line_args
 @given(
@@ -47,6 +68,56 @@ def test_torch_instance_add(
         frontend="torch",
         class_name="tensor",
         method_name="add",
+    )
+
+
+# new_ones
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
+    size=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+)
+def test_torch_instance_new_ones(
+        dtype_and_x,
+        size,
+        dtypes,
+        requires_grad,
+        device,
+        as_variable,
+        native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=dtypes,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "size": size,
+            "dtype": dtypes[0],
+            "requires_grad": requires_grad,
+            "device": device,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="new_ones",
     )
 
 
