@@ -2,7 +2,7 @@ import logging
 from typing import Optional, Union, Tuple, Callable, Literal, Sequence
 from numbers import Number
 import ivy
-from ivy.functional.ivy.extensions import (
+from ivy.functional.ivy.extensions.sparse_array import (
     _verify_coo_components,
     _verify_csr_components,
     _is_coo_not_csr,

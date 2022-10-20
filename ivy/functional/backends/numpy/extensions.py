@@ -3,7 +3,7 @@ from numbers import Number
 import logging
 import ivy
 import numpy as np
-from ivy.functional.ivy.extensions import (
+from ivy.functional.ivy.extensions.sparse_array import (
     _verify_coo_components,
     _verify_csr_components,
     _is_coo_not_csr,
