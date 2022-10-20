@@ -3771,22 +3771,26 @@ class ContainerBase(dict, abc.ABC):
         return self.__getattr__("__len__")
 
     # noinspection PyProtectedMember
-    def __getattr__(self, item):
+    def __getattr__(self, item, *args, **kwargs):
         try:
             ret = dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
-            # ret = super.__getattr__(item)
-            builtins = (str, int, float, bool, list, tuple, set)
-            ret = ContainerBase()
+            ret = ivy.Container()
             for k, v in self.items():
-                if isinstance(v, builtins):
-                    attr = getattr(v, item)
-                    result = attr() if callable(attr) else attr
+                if isinstance(v, ivy.Container):
+                    result = v.__getattr__(item, *args, **kwargs)
                 else:
-                    result = v.__getattr__(item)
-                ret[k] = result
-                # raise error
+                    # raise error
+                    if not hasattr(v, item):
+                        raise IvyException(
+                            "'{}' object has no attribute '{}'".format(
+                                type(v).__module__, item
+                            )
+                        )
+                    attr = getattr(v, item)
+                    result = attr(*args, **kwargs) if callable(attr) else attr
+                ret.__setitem__(k, result)
         return ret
 
     def __setattr__(self, name, value):
