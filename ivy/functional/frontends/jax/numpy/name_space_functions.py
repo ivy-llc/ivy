@@ -264,3 +264,8 @@ def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def bitwise_and(x1, x2):
+    return ivy.bitwise_and(x1, x2)
