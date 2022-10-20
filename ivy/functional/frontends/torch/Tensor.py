@@ -69,8 +69,8 @@ class Tensor:
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
-    def new_ones(self, shape, dtype=None, device=None, requires_grad=False):
-        return torch_frontend.ones(shape, dtype=dtype, device=device,
+    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(size, dtype=dtype, device=device,
                                    requires_grad=requires_grad)
 
     # Special Methods #
