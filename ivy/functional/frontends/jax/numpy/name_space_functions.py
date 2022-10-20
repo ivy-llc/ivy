@@ -276,5 +276,7 @@ def divide(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.divide(x1, x2)
 
+
+@to_ivy_arrays_and_back
 def log10(x):
     return ivy.log10(x)
