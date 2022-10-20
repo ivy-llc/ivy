@@ -5,7 +5,7 @@ import torch as torch
 # local
 import ivy
 
-version = {"version": torch.__version__.split("+")[0]}
+backend_version = {"version": torch.__version__.split("+")[0]}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -99,7 +99,6 @@ def closest_valid_dtype(type):
 
 
 backend = "torch"
-backend_version = torch.__version__
 
 
 # local sub-modules
