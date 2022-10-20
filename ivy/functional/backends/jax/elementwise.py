@@ -356,7 +356,7 @@ def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.where(x == -0.0, 0.0, jnp.sign(x))
+    return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 
 def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
