@@ -59,7 +59,7 @@ class ndarray:
         return np_frontend.argsort(self.data, axis, kind, order)
 
     def argmin(
-        self, 
+        self,
         *,
         axis=None,
         out=None,
