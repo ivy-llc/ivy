@@ -1,6 +1,6 @@
 import pickle  # noqa
 from pydriller import Repository
-import os
+import os  # noqa
 import bz2
 import _pickle as cPickle
 
