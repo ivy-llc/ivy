@@ -42,7 +42,7 @@ def pytest_configure(config):
     if num_examples:
         profile_settings["max_examples"] = num_examples
     if deadline:
-        profile_settings[deadline] = deadline
+        profile_settings["deadline"] = deadline
 
     settings.register_profile("test-profile", **profile_settings, print_blob=True)
     settings.load_profile("test-profile")
