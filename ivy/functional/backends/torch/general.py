@@ -288,7 +288,7 @@ def multiprocessing(context=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": "bfloat16",
+        "1.11.0 and below": ("bfloat16",),
     },
     version,
 )
