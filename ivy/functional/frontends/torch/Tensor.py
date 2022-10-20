@@ -15,7 +15,7 @@ class Tensor:
             "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -64,8 +64,15 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def abs(self, *, out=None):
+        return torch_frontend.abs(self.data, out=out)
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
+
+    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(size, dtype=dtype, device=device,
+                                   requires_grad=requires_grad)
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
@@ -99,7 +106,7 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
-    # Special Methoods #
+    # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
