@@ -77,7 +77,7 @@ def test_torch_instance_add(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float")
     ),
-    shape=helpers.get_shape(
+    size=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
@@ -86,41 +86,37 @@ def test_torch_instance_add(
     ),
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.Tensor.new_ones"
-    ),
 )
 def test_torch_instance_new_ones(
         dtype_and_x,
-        shape,
+        size,
         dtypes,
         requires_grad,
         device,
         as_variable,
-        num_positional_args,
         native_array,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
-        num_positional_args_init=num_positional_args,
+        num_positional_args_init=1,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
             "data": x[0],
         },
         input_dtypes_method=dtypes,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
+        num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
-            "shape": shape,
+            "shape": size,
             "dtype": dtypes[0],
             "requires_grad": requires_grad,
             "device": device,
         },
         frontend="torch",
-        class_name="Tensor",
+        class_name="tensor",
         method_name="new_ones",
     )
 
