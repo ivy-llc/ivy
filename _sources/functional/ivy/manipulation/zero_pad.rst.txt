@@ -5,9 +5,9 @@ zero_pad
 
 .. autofunction:: ivy.array.array_methods.zero_pad
 
-.. autofunction:: ivy.container.container_methods.zero_pad
-
 .. autofunction:: ivy.container.container_methods.static_zero_pad
+
+.. autofunction:: ivy.container.container_methods.zero_pad
 |
 | **Supported Frameworks:**
 

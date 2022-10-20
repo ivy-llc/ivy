@@ -58,7 +58,8 @@ Building the Docs with Docker
 Dockerless Doc-building
 -----------------------
 
-First, change to the `docs` folder. Now, we need to create a virtual environment using either `miniconda`_ or `venv`_:
+To build the Ivy documentation locally, we will need to clone both the :code:`unifyai/doc-builder` and :code:`unifyai/ivy` repositories.
+After cloning repos, we need to create a virtual environment using either `miniconda`_ or `venv`_:
 
 Using miniconda
 ****
@@ -107,7 +108,8 @@ This is a builtin package and doesn't require explicit installation.
 
     (on Mac/Linux)
 
-Next, execute the following command to build the docs from inside the virtual environment
+After setting up the virtual environment, we can build the documentation locally.
+Move to the `ivy/docs` folder in a terminal and execute the following command to build the docs from inside the virtual environment.
 
 1. For Windows users
 
@@ -126,6 +128,15 @@ Next, execute the following command to build the docs from inside the virtual en
     .. code-block:: none
 
         bash make_docs_without_docker.sh <path to doc-builder folder relative to current folder i.e. ivy/docs>
+
+Assuming that we cloned the `doc-builder` and `ivy` repositories in the same folder, we can run `make_docs_without_docker.sh` as follows:
+
+.. code-block:: none
+
+        bash make_docs_without_docker.sh ../../doc-builder/
+
+You will now see the `build` folder where you can find generated `html` files.
+You can open them using any preferred browser and see how your changes affected the documentation pages.
 
 Working of the Documentation Building Pipeline
 ----------------------------------------------

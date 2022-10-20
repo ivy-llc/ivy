@@ -5,9 +5,9 @@ squeeze
 
 .. autofunction:: ivy.array.array_methods.squeeze
 
-.. autofunction:: ivy.container.container_methods.static_squeeze
-
 .. autofunction:: ivy.container.container_methods.squeeze
+
+.. autofunction:: ivy.container.container_methods.static_squeeze
 |
 | **Supported Frameworks:**
 

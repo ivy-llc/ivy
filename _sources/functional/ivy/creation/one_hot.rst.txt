@@ -5,9 +5,9 @@ one_hot
 
 .. autofunction:: ivy.array.array_methods.one_hot
 
-.. autofunction:: ivy.container.container_methods.one_hot
-
 .. autofunction:: ivy.container.container_methods.static_one_hot
+
+.. autofunction:: ivy.container.container_methods.one_hot
 |
 | **Supported Frameworks:**
 
