@@ -365,7 +365,7 @@ def test_numpy_instance_argsort(
         axis=axis,
     )
 
-    
+
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
@@ -392,7 +392,6 @@ def test_numpy_ndarray_prod(
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        dtype=dtype, out=out, keepdims=keepdims, initial=initial,
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
