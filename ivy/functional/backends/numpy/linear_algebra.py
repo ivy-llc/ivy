@@ -285,6 +285,7 @@ def tensordot(
 
 
 @_handle_0_dim_output
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: np.ndarray,
     /,
@@ -297,7 +298,6 @@ def trace(
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = ("float16", "bfloat16")
 trace.support_native_out = True
 
 

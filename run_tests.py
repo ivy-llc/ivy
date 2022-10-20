@@ -8,8 +8,7 @@ if __name__ == "__main__":
             test = line[:-1]
             print(test)
             ret = os.system(
-                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'
-                # noqa
+                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
             )
             if ret != 0:
                 failed = True

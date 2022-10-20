@@ -297,6 +297,11 @@ def RightShift(*, x, y, name="RightShift"):
 
 
 @to_ivy_arrays_and_back
+def Round(*, x, name="Round"):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
