@@ -4,16 +4,6 @@ from collections import namedtuple
 
 import tensorflow as tf
 
-from . import version
-from ivy.func_wrapper import with_unsupported_dtypes
-
-
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": ("float16",),
-    },
-    version,
-)
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
