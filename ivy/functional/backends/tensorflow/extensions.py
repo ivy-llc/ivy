@@ -224,3 +224,17 @@ def flipud(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.flipud(m)
+
+
+def dct(
+    x: tf.Tensor,
+    /,
+    *,
+    type: Optional[int] = 2,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    if x.dtype not in [tf.float32, tf.float64]:
+        x = tf.cast(x, tf.float32)
+    return tf.signal.dct(x, type=type,  n=n, norm=norm)
