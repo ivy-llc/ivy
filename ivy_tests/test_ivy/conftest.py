@@ -46,11 +46,10 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = int(deadline) if deadline else 500000
     profile_settings = {}
     os.getenv("REDIS_URL")
     if num_examples is not None:
-        profile_settings["max_examples"] = int(num_examples)
+        profile_settings["max_examples"] = num_examples
     if r is not None:
         profile_settings["database"] = RedisExampleDatabase(
             r, key_prefix=b"hypothesis-examples:"
@@ -219,7 +218,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--deadline",
         action="store",
-        default=None,
+        default=500000,
         type=int,
         help="set deadline for testing one example",
     )
