@@ -156,7 +156,7 @@ def test_sinc(
         instance_method=instance_method,
         fw=fw,
         fn_name="sinc",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -296,8 +296,8 @@ def test_lcm(
         fw=fw,
         fn_name="lcm",
         test_gradients=True,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[1],
     )
 
 
@@ -493,7 +493,7 @@ def test_moveaxis(
         instance_method=instance_method,
         fw=fw,
         fn_name="moveaxis",
-        a=np.asarray(a[0], dtype=input_dtype[0]),
+        a=a[0],
         source=source,
         destination=destination,
     )
@@ -512,6 +512,20 @@ def test_ndenumerate(dtype_and_x):
         np.ndenumerate(values), ivy.ndenumerate(values)
     ):
         assert index1 == index2 and x1 == x2
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        ret_shape=True,
+    ),
+)
+def test_ndindex(dtype_x_shape):
+    shape = dtype_x_shape[2]
+    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
+        assert index1 == index2
 
 
 @st.composite
@@ -672,8 +686,8 @@ def test_heaviside(
         instance_method=instance_method,
         fw=fw,
         fn_name="heaviside",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[0],
     )
 
 
@@ -789,7 +803,7 @@ def test_flipud(
         instance_method=instance_method,
         fw=fw,
         fn_name="flipud",
-        m=np.asarray(m[0], dtype=input_dtype[0]),
+        m=m[0],
     )
 
 
@@ -830,8 +844,8 @@ def test_fmod(
         instance_method=instance_method,
         fw=fw,
         fn_name="fmod",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[0], dtype=input_dtype[0]),
+        x1=x[0],
+        x2=x[0],
     )
 
 
@@ -873,8 +887,8 @@ def test_fmax(
         instance_method=instance_method,
         fw=fw,
         fn_name="fmax",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[0], dtype=input_dtype[0]),
+        x1=x[0],
+        x2=x[0],
     )
 
 

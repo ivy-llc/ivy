@@ -7,7 +7,7 @@ Backend Setting
 .. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
 .. _`backend setting forum`: https://discord.com/channels/799879767196958751/982737886963187772
 

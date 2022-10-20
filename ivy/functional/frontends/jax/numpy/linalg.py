@@ -1,19 +1,19 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def det(a):
     return ivy.det(a)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def eigh(a, UPLO="L", symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added
@@ -25,31 +25,36 @@ def eigh(a, UPLO="L", symmetrize_input=True):
     return ivy.eigh(a, UPLO=UPLO)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def eigvalsh(a, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def eigvals(a):
     return ivy.eigh(a)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def cholesky(a):
     return ivy.cholesky(a)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def slogdet(a, method=None):
     return ivy.slogdet(a)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def matrix_rank(M):
     return ivy.matrix_rank(M)
+
+
+@to_ivy_arrays_and_back
+def solve(a, b):
+    return ivy.solve(a, b)

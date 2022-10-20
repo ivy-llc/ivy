@@ -101,4 +101,4 @@ In this demo we create an egocentric 3D map of a room using :code:`ivy_memory.ES
 
 Hopefully this has given you an idea of what’s possible using Ivy’s collection of applied libraries, and more importantly, given you inspiration for what’s possible using Ivy 🙂
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
