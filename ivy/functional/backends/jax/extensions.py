@@ -295,7 +295,10 @@ def dct(
     norm: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    
+    real_zero = jnp.array(0.0, dtype=x.dtype)
+    axis_dim = x.shape[-1]
+    axis_dim_float = jnp.array(axis_dim, dtype=x.dtype)
+
     if type == 1:
         x = jnp.concatenate([x, x[..., -2:0:-1]])
         dct_out = jnp.real(jnp.fft.rfft(x))
@@ -304,3 +307,22 @@ def dct(
     elif type == 2:
         dct_out = jax.scipy.fft.dct(x, type=2, n=n, norm=norm)
         return dct_out
+    
+    elif type == 3:
+        if norm == "ortho":
+            n1 = jnp.sqrt(axis_dim_float)
+            n2 = n1 * jnp.sqrt(0.5)
+            sf = jnp.pad(jnp.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
+            x = x * sf
+        else:
+            x = x * axis_dim_float
+
+        scale = 2.0 * jnp.exp(
+            jlax.complex(
+                real_zero, jnp.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+            )
+        )
+        dct_out = jnp.real(
+            jnp.fft.irfft(scale * jlax.complex(x, real_zero), n=2 * axis_dim)
+        )
+        return dct_out[..., :axis_dim]
