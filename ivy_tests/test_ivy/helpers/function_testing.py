@@ -1327,7 +1327,11 @@ def test_frontend_method(
     )
     args_method_frontend = ivy.nested_map(
         args_method_np,
-        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        lambda x: ivy.native_array(x)
+        if isinstance(x, np.ndarray)
+        else ivy.as_native_dtype(x)
+        if isinstance(x, ivy.Dtype)
+        else x,
     )
     kwargs_method_frontend = ivy.nested_map(
         kwargs_method_np,
