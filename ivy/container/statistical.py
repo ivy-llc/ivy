@@ -22,7 +22,7 @@ class ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-                Examples
+            Examples
                 --------
 
                 With: code:`ivy.Container`
