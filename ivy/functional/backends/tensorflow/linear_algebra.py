@@ -407,6 +407,7 @@ def pinv(
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.pinv(x, rtol)
     return ret
 
