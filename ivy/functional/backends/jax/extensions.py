@@ -8,6 +8,7 @@ from ivy.functional.ivy.extensions import (
     _is_coo_not_csr,
 )
 from ivy.functional.backends.jax import JaxArray
+import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 import math
@@ -283,3 +284,18 @@ def flipud(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
+
+
+def dct(
+    x: JaxArray,
+    /,
+    *,
+    type: Optional[int] = 2,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if type == 2:
+        dct_out = jax.scipy.fft.dct(x, type=2, n=n, norm=norm)
+        return dct_out
