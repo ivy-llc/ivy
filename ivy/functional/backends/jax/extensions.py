@@ -57,10 +57,6 @@ def native_sparse_array_to_indices_values_and_shape(x):
     return None, None, None
 
 
-def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.sinc(x)
-
-
 def vorbis_window(
     window_length: JaxArray,
     *,
@@ -79,10 +75,6 @@ def vorbis_window(
         ],
         dtype=dtype,
     )
-
-
-def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.lcm(x1, x2)
 
 
 def hann_window(
@@ -283,23 +275,3 @@ def flipud(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
-
-
-def fmod(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fmod(x1, x2)
-
-
-def fmax(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fmax(x1, x2)

@@ -65,15 +65,6 @@ def native_sparse_array_to_indices_values_and_shape(x):
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
 
 
-def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    x = _cast_for_unary_op(x)
-    return torch.sinc(x, out=out)
-
-
-sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
-
-
 def flatten(
     x: torch.Tensor,
     /,
@@ -106,20 +97,6 @@ def vorbis_window(
 
 
 vorbis_window.support_native_out = False
-
-
-def lcm(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.abs(torch.lcm(x1, x2, out=out))
-
-
-lcm.support_native_out = True
 
 
 def hann_window(
@@ -306,30 +283,3 @@ def flipud(
 
 
 flipud.support_native_out = False
-
-
-def fmod(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.fmod(x1, x2, out=None)
-
-
-fmod.support_native_out = True
-fmod.unsupported_dtypes = ("bfloat16",)
-
-
-def fmax(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.fmax(x1, x2, out=None)
-
-
-fmax.support_native_out = True
