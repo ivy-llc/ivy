@@ -56,7 +56,7 @@ def cross(
         axis = -1
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
-    if axis:
+    if axis is not None:
         return torch.linalg.cross(input=x1, other=x2, dim=axis)
     x1 = torch.transpose(x1, axisa, 1)
     x2 = torch.transpose(x2, axisb, 1)
