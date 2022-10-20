@@ -19,19 +19,24 @@ from ivy.functional.backends.jax.device import to_device
 # Extra #
 # ------#
 
+
 class RNGWrapper:
-    def __init__ (self):
+    def __init__(self):
         self.key = jax.random.PRNGKey(0)
 
+
 RNG = RNGWrapper()
+
 
 def _setRNG(key):
     global RNG
     RNG.key = key
 
+
 def _getRNG():
     global RNG
     return RNG.key
+
 
 def random_uniform(
     *,
