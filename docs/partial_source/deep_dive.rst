@@ -55,10 +55,10 @@ We're excited for you to get involved!  🦾
 | (m) :ref:`Docstrings` 📄
 | How to properly write docstrings
 |
-| (n) :ref:`Docstring Examples 💯`
+| (n) :ref:`Docstring Examples` 💯
 | How to add useful examples to the docstrings
 |
-| (o) :ref:`Array API Tests 🤝`
+| (o) :ref:`Array API Tests` 🤝
 | How we're borrowing the test suite from the Array API Standard
 |
 | (p) :ref:`Ivy Tests` 🧪
@@ -94,7 +94,7 @@ We're excited for you to get involved!  🦾
    deep_dive/function_arguments.rst
    deep_dive/docstrings.rst
    deep_dive/docstring_examples.rst
-   deep_dive/array_api_tests.rst.rst
+   deep_dive/array_api_tests.rst
    deep_dive/ivy_tests.rst
    deep_dive/ivy_frontends.rst
    deep_dive/ivy_frontends_tests.rst
