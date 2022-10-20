@@ -1,15 +1,5 @@
 # local
-from typing import (
-    Optional,
-    Union,
-    Tuple,
-    Iterable,
-    Callable,
-    Literal,
-    Sequence,
-    Generator,
-)
-from numbers import Number
+from typing import Optional, Union
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
