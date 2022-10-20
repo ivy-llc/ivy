@@ -7,6 +7,8 @@ from ivy.functional.ivy.extensions import (
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 import tensorflow as tf
 import tensorflow_probability as tfp
 import logging
@@ -72,6 +74,25 @@ def vorbis_window(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def lcm(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if [x1.dtype, x2.dtype] == [tf.int8, tf.int8]:
+        dtype = tf.int8
+        x1 = tf.cast(x1, dtype=tf.int16)
+        x2 = tf.cast(x2, dtype=tf.int16)
+    else:
+        dtype = x1.dtype
+    return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
 
 
 def hann_window(
@@ -158,6 +179,7 @@ def moveaxis(
     return tf.experimental.numpy.moveaxis(a, source, destination)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def heaviside(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -166,9 +188,6 @@ def heaviside(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.heaviside(x1, x2)
-
-
-heaviside.unsupported_dtypes = ("bfloat16",)
 
 
 def median(
@@ -195,3 +214,29 @@ def flipud(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.flipud(m)
+
+
+def fmod(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.floormod(x1, x2, name=None)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("blfoat16", "float16", "float32", "float64")}, backend_version
+)
+def fmax(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
+    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
+    ret = tf.math.maximum(x1, x2, name=None)
+    return tf.where(tf.math.is_inf(ret), float("nan"))
