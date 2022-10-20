@@ -424,19 +424,20 @@ backend-specific implementation.</p>
 <section id="supported-and-unsupported-data-types">
 <h2>Supported and Unsupported Data Types<a class="headerlink" href="#supported-and-unsupported-data-types" title="Permalink to this heading"></a></h2>
 <p>Some backend functions (implemented in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/</span></code>)
-have attributes named <code class="xref py py-attr docutils literal notranslate"><span class="pre">supported_dtypes</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>,
+make use of the decorators <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_supported_dtypes</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code>,
 which flag the data types which this particular function does and does not support
 respectively for the associated backend.
-Only one of these attributes can be specified for any given function.
-In the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">supported_dtypes</span></code> it is assumed that all unmentioned data types
-are unsupported, and in the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> it is assumed that all
+Only one of these decorators can be specified for any given function.
+In the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_supported_dtypes</span></code> it is assumed that all unmentioned data types
+are unsupported, and in the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> it is assumed that all
 unmentioned data types are supported.</p>
-<p>These attributes should always be in tuple form, with each entry in the tuple
-being a string, like so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<p>The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding
+version of the backend framework and the current version of the backend framework on the user’s system. Based on that,
+the version specific unsupported dtypes and devices are set for the given function everytime the function is called.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">with_unsupported_dtypes</span><span class="p">({</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)},</span> <span class="n">version</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_cast_for_unary_op</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-
-<span class="n">expm1</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)</span>
 </pre></div>
 </div>
 <p>For compositional functions, the supported and unsupported data types can then be
@@ -447,11 +448,11 @@ and
 respectively, which traverse the abstract syntax tree of the compositional function and
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.</p>
-<p>It should be noted that the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from
+<p>It should be noted that <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from
 <code class="docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> which consists of all the data types that every function
 of that particular backend does not support, and so if a certain <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is
-already present in the <code class="docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should not add it into the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute.</p>
+already present in the <code class="docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should not add it to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> decorator.</p>
 <p>Sometimes, it might be possible to support a natively unsupported data type by either
 casting to a supported data type and then casting back, or explicitly handling these
 data types without deferring to a backend function at all.</p>
@@ -482,7 +483,7 @@ data types without deferring to a backend function at all.</p>
 might be more difficult to handle correctly. For example, in many cases casting to
 another data type will result in a loss of precision, input range, or both.
 In such cases, the best solution is to simply add the data type to the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> decorator,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.</p>
 <p>Some cases where a data type is not supported are very subtle. For example,
@@ -522,9 +523,9 @@ which is the latest stable release at the time of writing. This is a
 majority of cases, our solution is to still add <code class="code docutils literal notranslate"><span class="pre">&quot;int32&quot;</span></code> into the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, which will prevent the unit tests from failing in the CI.
 We also add the following comment above the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)</span>
-<span class="c1">#  is fixed.</span>
-<span class="n">tensordot</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">,)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ToDo: re-add int32 support once</span>
+<span class="c1"># (https://github.com/pytorch/pytorch/issues/84530) is fixed</span>
+<span class="nd">with_unsupported_dtypes</span><span class="p">({</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">,)},</span> <span class="n">version</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Similarly, the following code throws an error for torch version <code class="docutils literal notranslate"><span class="pre">1.11.0</span></code>
@@ -537,10 +538,6 @@ but not <code class="docutils literal notranslate"><span class="pre">1.12.1</spa
 to the backend implementations, and introduce the risk of forgetting about the patch,
 needlessly bloating the codebase with redundant code.
 In such cases, we can explicitly flag which versions support which data types like so:</p>
-<p>We use a decorator <code class="code docutils literal notranslate"><span class="pre">with_unsupported_dtypes</span></code> which takes two arguments, a dictionary with the unsupported
-dtypes mapped to the corresponding version of the backend framework  and the current version of the
-backend framework on the user’s system. Based on that, the version specific unsupported dtypes and devices
-are set for the given function everytime the function is called.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">with_unsupported_dtypes</span><span class="p">(</span>
     <span class="p">{</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;float16&quot;</span><span class="p">),</span> <span class="s2">&quot;1.12.1&quot;</span><span class="p">:</span> <span class="p">()},</span> <span class="n">version</span>
 <span class="p">)</span>
