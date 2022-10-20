@@ -1,15 +1,6 @@
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal
-from numbers import Number
-import logging
-import ivy
+from typing import Optional
 import numpy as np
-from ivy.functional.ivy.extensions import (
-    _verify_coo_components,
-    _verify_csr_components,
-    _is_coo_not_csr,
-)
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
-import math
 
 
 @_handle_0_dim_output

@@ -2,11 +2,6 @@ import logging
 from typing import Optional, Union, Tuple, Callable, Literal, Sequence
 from numbers import Number
 import ivy
-from ivy.functional.ivy.extensions import (
-    _verify_coo_components,
-    _verify_csr_components,
-    _is_coo_not_csr,
-)
 from ivy.functional.backends.jax import JaxArray
 import jax.lax as jlax
 import jax.numpy as jnp

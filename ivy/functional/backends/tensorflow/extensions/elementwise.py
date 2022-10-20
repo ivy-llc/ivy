@@ -1,12 +1,6 @@
 from typing import Union, Optional, Tuple, Literal, Sequence
 from numbers import Number
 import ivy
-from ivy.functional.ivy.extensions import (
-    _verify_coo_components,
-    _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-    _is_coo_not_csr,
-)
 import tensorflow as tf
 import tensorflow_probability as tfp
 import logging

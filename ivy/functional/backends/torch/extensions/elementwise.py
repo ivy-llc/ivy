@@ -1,12 +1,6 @@
 from typing import Optional, Union, Tuple, Literal, List, Sequence
 from numbers import Number
 import ivy
-from ivy.functional.ivy.extensions import (
-    _verify_coo_components,
-    _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-    _is_coo_not_csr,
-)
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
 import math
