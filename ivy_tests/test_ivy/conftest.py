@@ -142,24 +142,24 @@ def get_command_line_flags(request) -> Dict[str, bool]:
         getopt("--with-variable-testing"),
     )
     CONFIG_DICT["native_array"] = (
-        getopt["--skip-native-array-testing"],
-        getopt["--with-native-array-testing"],
+        getopt("--skip-native-array-testing"),
+        getopt("--with-native-array-testing"),
     )
     CONFIG_DICT["with_out"] = (
-        getopt["--skip-out-testing"],
-        getopt["--with-out-testing"],
+        getopt("--skip-out-testing"),
+        getopt("--with-out-testing"),
     )
     CONFIG_DICT["container"] = (
-        getopt["--skip-nestable-testing"],
-        getopt["--with-nestable-testing"],
+        getopt("--skip-nestable-testing"),
+        getopt("--with-nestable-testing"),
     )
     CONFIG_DICT["instance_method"] = (
-        getopt["--skip-instance-method-testing"],
-        getopt["--with-instance-method-testing"],
+        getopt("--skip-instance-method-testing"),
+        getopt("--with-instance-method-testing"),
     )
     CONFIG_DICT["test_gradients"] = (
-        getopt["--skip-gradient-testing"],
-        getopt["--with-gradient-testing"],
+        getopt("--skip-gradient-testing"),
+        getopt("--with-gradient-testing"),
     )
 
     # final mapping for hypothesis value generation
