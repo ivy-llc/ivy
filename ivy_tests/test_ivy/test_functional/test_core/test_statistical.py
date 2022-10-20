@@ -205,7 +205,7 @@ def test_var(
         fw=fw,
         fn_name="var",
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         x=x[0],
         axis=axis,
         correction=correction,
