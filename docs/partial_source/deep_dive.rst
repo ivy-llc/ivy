@@ -64,14 +64,14 @@ We're excited for you to get involved!  🦾
 | (p) :ref:`Ivy Tests` 🧪
 | How to add new tests for each Ivy function
 |
-| (q) :ref:`Ivy Frontends`
+| (q) :ref:`Ivy Frontends` ➡
 | How to implement frontend functions
 |
-| (r) :ref:`Ivy Frontend Tests` ➡🧪
+| (r) :ref:`Ivy Frontend Tests` 🧪
 | How to add new tests for each frontend function
 |
 | (s) :ref:`Exception Handling` ⚠
-| How to handle exceptions and assertions in a function ️
+| How to handle exceptions and assertions in a function
 |
 | (t) :ref:`Continuous Integration` 🔁
 | Ivy Tests running on the Repository
