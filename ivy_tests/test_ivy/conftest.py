@@ -1,21 +1,13 @@
 # global
 import os
 import pytest
-import redis
 from typing import Dict, Union, Tuple
 from hypothesis import settings
-from hypothesis.extra.redis import RedisExampleDatabase
 
 # local
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
-
-r = None
-if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
-    r = redis.Redis.from_url(
-        os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
-    )
 
 MAX_EXAMPLES: int
 
@@ -47,17 +39,12 @@ def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
     profile_settings = {}
-    os.getenv("REDIS_URL")
     if num_examples:
         profile_settings["max_examples"] = num_examples
-    if r:
-        profile_settings["database"] = RedisExampleDatabase(
-            r, key_prefix=b"hypothesis-examples:"
-        )
     if deadline:
         profile_settings[deadline] = deadline
 
-    settings.register_profile("test-profile", **profile_settings)
+    settings.register_profile("test-profile", **profile_settings, print_blob=True)
     settings.load_profile("test-profile")
 
     # device
