@@ -1123,7 +1123,8 @@ def matrix_rank(
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Transposes a matrix (or a stack of matrices) ``x``.
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -1149,6 +1150,49 @@ def matrix_transpose(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code: 'ivy.Array' inputs:
+
+    >>> x = ivy.array([[0., 2.], [1., 3.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[0., 1.],
+               [2., 3.]])
+
+    >>> x = ivy.array([[1., 4.], [2., 5.], [3., 1.]])
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.matrix_transpose(x, out=y)
+    ivy.array([[1., 2., 3.],
+               [4., 5., 1.]])
+
+    >>> x = ivy.array([[2., 3.], [1., 2.]])
+    >>> ivy.matrix_transpose(x, out=x)
+    ivy.array([[2., 1.],
+       [3., 2.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[0., 1.],
+               [1., 2.],
+               [2., 3.]])
+
+    With :code: 'ivy.Container' inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1.], [0., 2.]]), \
+                          b=ivy.array([[3., 4.], [3., 5.]]))
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0.],
+                      [1., 2.]]),
+        b: ivy.array([[3., 3.],
+                      [4., 5.]])
+    }
 
     """
     return current_backend(x).matrix_transpose(x, out=out)
