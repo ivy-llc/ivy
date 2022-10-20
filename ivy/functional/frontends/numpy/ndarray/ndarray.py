@@ -58,5 +58,17 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self.data, axis, kind, order)
 
-    def argmin(self, *, axis=None, out=None, keepdims=False):
-        return np_frontend.argmin(self.data, axis=axis, out=out, keepdims=keepdims)
+    def argmin(
+        self, 
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+
+        return np_frontend.argmin(
+            self.data,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
