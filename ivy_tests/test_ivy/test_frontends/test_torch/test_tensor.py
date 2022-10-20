@@ -110,7 +110,7 @@ def test_torch_instance_new_ones(
         num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
-            "shape": size,
+            "size": size,
             "dtype": dtypes[0],
             "requires_grad": requires_grad,
             "device": device,
