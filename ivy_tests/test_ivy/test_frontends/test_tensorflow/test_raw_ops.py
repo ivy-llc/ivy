@@ -1,6 +1,6 @@
 # global
 import ivy
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 import numpy as np
 
 # local
@@ -1378,6 +1378,44 @@ def test_tensorflow_Cumprod(
     )
 
 
+# Gather
+@handle_cmd_line_args
+@given(
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        disable_random_axis=True,
+        axis_zero=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Gather"
+    ),
+)
+def test_tensorflow_Gather(
+    params_indices_others,
+    num_positional_args,
+    as_variable,
+    native_array
+):
+    dtypes, params, indices = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Gather",
+        params=params,
+        indices=indices,
+        validate_indices=True
+    )
+
+
 # Greater
 @handle_cmd_line_args
 @given(
@@ -1910,6 +1948,43 @@ def test_tensorflow_Ceil(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-1e30,
+        max_value=1e30,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Diag"
+    ),
+)
+def test_tensorflow_Diag(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Diag",
+        diagonal=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
@@ -1967,4 +2042,54 @@ def test_tensorflow_Sum(
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"), num_arrays=2, shared_dtype=True
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.TruncateDiv"
+    ),
+)
+def test_tensorflow_TruncateDiv(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    dtype, xs = dtype_and_x
+    # prevent too close to zero
+    assume(not np.any(np.isclose(xs[1], 0)))
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.TruncateDiv",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Relu6(dtype_and_x, as_variable, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Relu6",
+        features=x[0],
     )

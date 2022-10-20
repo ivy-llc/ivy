@@ -14,7 +14,7 @@ class ArrayWithManipulation(abc.ABC):
     def concat(
         self: ivy.Array,
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            Tuple[Union[ivy.Array, ivy.NativeArray], ...],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
         /,
@@ -35,7 +35,7 @@ class ArrayWithManipulation(abc.ABC):
         axis
             axis along which the arrays will be joined. If axis is None, arrays
             must be flattened before concatenation. If axis is negative, axis on
-            which to join arrays is determined by counting from the top. Default: 0.
+            which to join arrays is determined by counting from the top. Default: ``0``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -144,7 +144,7 @@ class ArrayWithManipulation(abc.ABC):
             If False, the function must never copy and must
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: None.
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -366,10 +366,10 @@ class ArrayWithManipulation(abc.ABC):
             integer. The size of each split element if a sequence of integers. Default
             is to divide into as many 1-dimensional arrays as the axis dimension.
         axis
-            The axis along which to split, default is 0.
+            The axis along which to split, default is ``0``.
         with_remainder
             If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -448,7 +448,7 @@ class ArrayWithManipulation(abc.ABC):
         axis
             Axis for which to unpack the array.
         keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
 
         Returns
         -------

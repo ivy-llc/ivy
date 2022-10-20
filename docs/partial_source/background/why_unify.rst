@@ -28,7 +28,7 @@ With Ivy, this process becomes:
 
 We have turned a 4-step process which can take 100s of hours into a 1-step process which takes a few seconds.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/why_unify/perceiver_effort.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/perceiver_effort.png?raw=true
    :align: center
    :width: 100%
 
@@ -63,4 +63,4 @@ With Ivy, we have implemented Modules, Optimizers and Trainers **once** with sim
 
 Hopefully this has given you some idea of the many benefits that a fully unified ML framework could offer 🙂
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

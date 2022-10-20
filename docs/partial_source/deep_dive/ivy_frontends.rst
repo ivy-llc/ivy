@@ -2,23 +2,24 @@ Ivy Frontends
 =============
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
+.. _`tensorflow.tan`: https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109
+.. _`aliases`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-.. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
-.. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
+.. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
+.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -33,21 +34,37 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Frontend Basics
 -------------------
 
-**NOTE:**
-
-Type hints, docstrings and examples are not required when working on
-frontend functions.
-
 When using functions and methods of Ivy Frontends, in addition to importing ivy itself
-like :code:`import ivy` please also import the corrisponding Frontend module.
+like :code:`import ivy` please also import the corresponding Frontend module.
 For example, to use ivy's tensorflow frontend:
 
-    :code:`import ivy.functional.frontends.tensorflow as ivy_tf`
+    :code:`import ivy.functional.frontends.tensorflow as tf_frontend`
 
 ----
 
+When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call `tensorflow.tan`_ rather than :code:`tensorflow.math.tan`. In this particular case both are fine, and in fact are `aliases`_.
+
+However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions :code:`jax.numpy.abs` and :code:`jax.lax.abs` both exist, while `jax.abs` does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :code:`jax.abs` in our frontend.
+
+This would result in :code:`jax.numpy.abs` or :code:`jax.lax.abs` overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native :code:`jax` framework.
+
+If you accidentally test a function with :code:`fn_tree="<func_name>"` instead of :code:`fn_tree="<lax|numpy>.<func_name>"`, you will see an error since the wrong frontend function is being tested.
+
+Therefore, in order to avoid this potential conflict:
+
+* All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing :code:`fn_tree="math.tan"` instead of :code:`fn_tree="tan"` in the frontend test.
+
+* The `__init__.py` file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of :code:`jax.abs` explained above.
+
+* You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.
+
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
+
+
+**NOTE:** Type hints, docstrings and examples are not required when working on
+frontend functions.
+
 
 **Jax**
 
@@ -200,7 +217,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
-frontend. There are three arguments according to the `tf.add`_ documentation, which are
+frontend. There are three arguments according to the `tf.math.add <https://www.tensorflow.org/api_docs/python/tf/math/add>`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
 which framework is set in Ivy's backend.
@@ -220,7 +237,7 @@ argument.
         return ivy.tan(x)
 
 Likewise, :code:`tan` is also placed under :code:`math`.
-By referring to the `tf.tan`_ documentation, we add the same arguments,
+By referring to the `tf.math.tan`_ documentation, we add the same arguments,
 and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
@@ -382,7 +399,7 @@ Ivy.
 
 The entire workflow for extending the Ivy Frontends as an external contributor is
 explained in more detail in the
-`Open Tasks <https://lets-unify.ai/ivy/contributing/4_open_tasks.html#frontend-apis>`_
+`Open Tasks <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_
 section.
 
 
@@ -501,8 +518,8 @@ which itself is implemented as follows:
 **Special Method**
 
 Some examples referring to the special methods would make things more clear. For
-example lets take a look at how :meth:`tf.tensor.__add__` is implemented and how
-it's reverse :meth:`tf.tensor.__radd__` is implemented.
+example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how
+it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
 
 .. code-block:: python
 
@@ -519,9 +536,9 @@ For the reverse operator of :func:`add`.
         return tf_frontend.add(x, self.data, name=name)
 
 
-Here also, both of them simply call the frontend :func:`tf_frontend.add` under the
+Here also, both of them simply call the frontend :func:`tf_frontend.math.add` under the
 hood. The functions with reverse operators should call the same frontend function
-as shown in the examples above. The implementation for the :func:`tf_frontend.add`
+as shown in the examples above. The implementation for the :func:`tf_frontend.math.add`
 is shown as follows:
 
 .. code-block:: python

@@ -20,7 +20,7 @@ Arrays
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 .. _`arrays forum`: https://discord.com/channels/799879767196958751/1028296936203235359
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95

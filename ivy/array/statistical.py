@@ -145,7 +145,7 @@ class ArrayWithStatistical(abc.ABC):
         axis
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array. If a tuple of integers,
-            variances must be computed over multiple axes. Default: None.
+            variances must be computed over multiple axes. Default: ``None``.
         correction
             degrees of freedom adjustment. Setting this parameter to a value other
             than 0 has the effect of adjusting the divisor during the calculation
@@ -157,13 +157,13 @@ class ArrayWithStatistical(abc.ABC):
             When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled
             from a larger population; this is commonly referred to as Bessel's
-            correction). Default: 0.
+            correction). Default: ``0``.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible
             with the input array (see Broadcasting). Otherwise, if False, the
             reduced axes (dimensions) must not be included in the result.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to.
 
@@ -260,16 +260,16 @@ class ArrayWithStatistical(abc.ABC):
         self
             Input array to apply cumsum.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional array container. Default is None.
+            Optional array container. Default is ``None``.
 
         Returns
         -------
@@ -334,13 +334,13 @@ class ArrayWithStatistical(abc.ABC):
         self
             input array
         axis
-            int, axis along which to take the cumulative product. Default is 0.
+            int, axis along which to take the cumulative product. Default is ``0``.
         exclusive
             optional bool, whether to exclude the first value of the input array.
-            Default is False.
+            Default is ``False``.
         reverse
             Whether to perform the cumprod from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         out
             optional output array, for writing the result to.
 

@@ -19,8 +19,19 @@ from ivy.functional.backends.jax.device import to_device
 # Extra #
 # ------#
 
-RNG = jax.random.PRNGKey(0)
+class RNGWrapper:
+    def __init__ (self):
+        self.key = jax.random.PRNGKey(0)
 
+RNG = RNGWrapper()
+
+def _setRNG(key):
+    global RNG
+    RNG.key = key
+
+def _getRNG():
+    global RNG
+    return RNG.key
 
 def random_uniform(
     *,
@@ -32,8 +43,8 @@ def random_uniform(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
-    global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
     return to_device(
         jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
         device,
@@ -52,8 +63,8 @@ def random_normal(
 ) -> JaxArray:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
-    global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
     return (
@@ -78,8 +89,8 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
     if probs is None:
@@ -124,24 +135,22 @@ def randint(
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
-    global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
     return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
 
 
 def seed(*, seed_value: int = 0) -> None:
-    global RNG
-    RNG = jax.random.PRNGKey(seed_value)
-    return
+    _setRNG(jax.random.PRNGKey(seed_value))
 
 
 def shuffle(
     x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
     return jax.random.shuffle(rng_input, x)

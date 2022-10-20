@@ -51,7 +51,7 @@ class ArrayWithGradients(abc.ABC):
             Whether to check if the data type is exclusively a variable, rather than an
             array. For frameworks like JAX that do not have exclusive variable types,
             the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is False.
+            check is the same for general arrays. Default is ``False``.
 
         Returns
         -------
@@ -214,7 +214,7 @@ class ArrayWithGradients(abc.ABC):
             relative to the gradient.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -267,10 +267,10 @@ class ArrayWithGradients(abc.ABC):
             variable updates, and handle gradients behind the scenes such as PyTorch.
             If the update step should form part of a computation graph
             (i.e. higher order optimization), then this should be set to False.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
 
         Returns
         -------
@@ -326,7 +326,7 @@ class ArrayWithGradients(abc.ABC):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -390,7 +390,7 @@ class ArrayWithGradients(abc.ABC):
             (Default value = 1e-7).
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -466,7 +466,7 @@ class ArrayWithGradients(abc.ABC):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

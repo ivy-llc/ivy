@@ -42,7 +42,7 @@ def linear(
     weight
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
     bias
-        The bias vector, default is None. *[outer_batch_shape,out_features]*
+        The bias vector, default is ``None``. *[outer_batch_shape,out_features]*
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -184,7 +184,7 @@ def dropout(
     prob
         The probability of zeroing out each array element.
     scale
-        Whether to scale the output by 1/(1-prob), default is True.
+        Whether to scale the output by 1/(1-prob), default is ``True``.
     dtype
 
     out
@@ -498,10 +498,10 @@ def multi_head_attention(
     num_heads
         The number of attention heads to use.
     context
-        The array to determine the keys and values from. Default is None.
+        The array to determine the keys and values from. Default is ``None``.
         *[batch_shape,num_keys,cont_feat_dim]*.
     mask
-        The mask to apply to the query-key values. Default is None.
+        The mask to apply to the query-key values. Default is ``None``.
         *[batch_shape,num_queries,num_keys]*
     to_q_fn
         The function to compute queries from input x, returning queries
@@ -512,11 +512,11 @@ def multi_head_attention(
         The function to compute the output from the scaled dot-product attention.
         (Default value = None)
     to_q_v
-        The variables for function to_q_fn. Default is None.
+        The variables for function to_q_fn. Default is ``None``.
     to_kv_v
-        The variables for function to_kv_fn. Default is None.
+        The variables for function to_kv_fn. Default is ``None``.
     to_out_v
-        The variables for function to_out_fn. Default is None.
+        The variables for function to_out_fn. Default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

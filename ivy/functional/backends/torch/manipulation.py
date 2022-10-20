@@ -19,7 +19,11 @@ from . import version
 
 
 def concat(
-    xs: List[torch.Tensor], /, *, axis: int = 0, out: Optional[torch.Tensor] = None
+    xs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         is_tuple = type(xs) is tuple
@@ -120,7 +124,7 @@ def squeeze(
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
@@ -142,7 +146,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )

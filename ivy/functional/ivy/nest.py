@@ -392,7 +392,7 @@ def nested_argwhere(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
-        Default is False.
+        Default is ``False``.
     to_ignore
         Types to ignore when deciding whether to go deeper into the nest or not
     _index
@@ -529,7 +529,7 @@ def all_nested_indices(
         The nest to check the leaves of.
     include_nests
         Whether to also include indices of the nests themselves, not only leaves.
-        Default is False.
+        Default is ``False``.
     _index
         The indices detected so far. None at the beginning. Used internally, do not set
         manually.
@@ -583,12 +583,12 @@ def map(
         The function to map onto x.
     constant
         keyword arguments which remain constant between each function call.
-        Default is None.
+        Default is ``None``.
     unique
-        keyword arguments which are unique for each function call. Default is None.
+        keyword arguments which are unique for each function call. Default is ``None``.
     mean
         Whether to compute the mean across the return values, and return this mean.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -697,10 +697,10 @@ def nested_map(
         The function to map onto x.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
-        Default is False.
+        Default is ``False``.
     max_depth
         The maximum nested depth to reach. Default is 1. Increase this if the nest is
         deeper.
@@ -823,7 +823,7 @@ def nested_any(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
-        Default is False.
+        Default is ``False``.
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
@@ -867,10 +867,10 @@ def copy_nest(
         The nest to copy.
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
-        Default is False.
+        Default is ``False``.
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -958,19 +958,19 @@ def nested_multi_map(
     nest
         nests to map.
     key_chains
-        The key-chains to apply or not apply the method to. Default is None.
+        The key-chains to apply or not apply the method to. Default is ``None``.
     to_apply
         If True, the method will be applied to key_chains, otherwise key_chains will
-        be skipped. Default is True.
+        be skipped. Default is ``True``.
     prune_unapplied
         Whether to prune key_chains for which the function was not applied,
-        otherwise the leftmost nest value is used. Default is False.
+        otherwise the leftmost nest value is used. Default is ``False``.
     key_chain
         Chain of keys for this dict entry (Default value = '')
     config
         The configuration for the nests. Default is the same as nest0.
     to_ivy
-        convert the output to ivy_arrays. Default is True
+        convert the output to ivy_arrays. Default is ``True``
     Returns
     -------
         nest containing the result of the funciton.
