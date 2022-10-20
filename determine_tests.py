@@ -21,7 +21,7 @@ if __name__ == "__main__":
         for file in modified_files:
             try:
                 file_name = file.new_path + ",cover"
-            except:
+            except:  # noqa
                 continue
             if file_name not in tests.keys():
                 continue
