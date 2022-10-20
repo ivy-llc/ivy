@@ -62,7 +62,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Function Arguments</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#positional-and-keyword-arguments">Positional and Keyword Arguments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#arrays">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-arrays">Input Arrays</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#out-argument">out Argument</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dtype-and-device-arguments">dtype and device arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#numbers-in-operator-functions">Numbers in Operator Functions</a></li>
@@ -170,7 +170,7 @@
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>Many of these points are already adressed in the previous sections:
-<a class="reference internal" href="#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
+<a class="reference internal" href="arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
 However, we thought it would be convenient to revisit all of these considerations in a single section,
 dedicated to function arguments.</p>
 <p>As for type-hints,
@@ -279,8 +279,8 @@ The rationale behind this is purely a convention. The <code class="code docutils
 passed as a keyword for improved understandability of the code. Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adopts these same exceptions to the
 general rule for the <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">num</span></code> arguments in these functions.</p>
 </section>
-<section id="arrays">
-<h2>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
+<section id="input-arrays">
+<h2>Input Arrays<a class="headerlink" href="#input-arrays" title="Permalink to this heading"></a></h2>
 <p>In each example, we can see that the input arrays have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>
 whereas the output arrays have type <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is the case for all functions in the Ivy API.
 We always return an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
@@ -291,7 +291,7 @@ calling any of (<code class="code docutils literal notranslate"><span class="pre
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are also not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, which is used in many functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is specified.
-This is all explained in more detail in the <a class="reference internal" href="#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
+This is all explained in more detail in the <a class="reference internal" href="arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
 </section>
 <section id="out-argument">
 <h2>out Argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>

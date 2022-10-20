@@ -284,7 +284,7 @@ class, they all make calls to the corresponding standard operator functions.</p>
 passed input objects if available, otherwise it will make use of the reverse special
 method of the righthand operand. For instance, if the lefthand operand at any given leaf
 of the container in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to
-the special methods of this array object. As explained in the <a class="reference internal" href="function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a> section of
+the special methods of this array object. As explained in the <a class="reference internal" href="arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section of
 the Deep Dive, these special methods will in turn call the corresponding functions from
 the ivy functional API.</p>
 <p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which will make
