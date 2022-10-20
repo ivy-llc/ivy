@@ -3,12 +3,12 @@ Navigating the Code
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
 .. _`navigating the code forum`: https://discord.com/channels/799879767196958751/1028295746807660574
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit
+.. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------

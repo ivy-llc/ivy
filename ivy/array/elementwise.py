@@ -348,6 +348,20 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([True, False])
+        >>> y = ivy.array([True, True])
+        >>> x.bitwise_and(y, out=y)
+        >>> print(y)
+        ivy.array([ True, False])
+
+        >>> x = ivy.array([[7],[8],[9]])
+        >>> y = ivy.native_array([[10],[11],[12]])
+        >>> z = x.bitwise_and(y)
+        >>> print(z)
+        ivy.array([[2],[8],[8]])
         """
         return ivy.bitwise_and(self._data, x2, out=out)
 
@@ -519,6 +533,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
+        >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
+        >>> y = a.bitwise_xor(b)
+        >>> print(y)
+        ivy.array([[[74,41,59],[24,5,7]]])
         """
         return ivy.bitwise_xor(self._data, x2, out=out)
 
@@ -1478,21 +1500,41 @@ class ArrayWithElementwise(abc.ABC):
 
         Parameters
         ----------
-        self
-            first input array. Should have a real-valued data type.
-        x2
-            second input array. Must be compatible with ``self``
-            (see :ref:`broadcasting`).
-            Should have a real-valued data type.
+        self (Array)
+             first input array. Should have a real-valued data type.
+             Note : "self.data" replaces the first array arguement in the function.
+        x2 (Union[Array, NativeArray])
+            second input array.
+            Must be compatible with the first input array.
+            The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .
+            The arrays must be boradcastble to get a common shape for the output.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape thatthe inputs broadcast to.
 
         Returns
         -------
         ret
             an array containing the element-wise products. The returned array
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With ivy.Array instance method:
+
+        >>> x1 = ivy.array([3., 5., 7.])
+        >>> x2 = ivy.array([4., 6., 8.])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        ivy.array([12., 30., 56.])
+
+        With mix of ivy.Array and ivy.NativeArray instance method:
+
+        >>> x1 = ivy.array([8., 6., 7.])
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        ivy.array([ 8., 12., 21.])
         """
         return ivy.multiply(self._data, x2, out=out)
 
@@ -1692,7 +1734,8 @@ class ArrayWithElementwise(abc.ABC):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         modulus
-            whether to compute the modulus instead of the remainder. Default is True.
+            whether to compute the modulus instead of the remainder.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

@@ -41,15 +41,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -139,15 +140,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -319,15 +321,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -419,15 +422,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -602,17 +606,18 @@ class ContainerWithRandom(ContainerBase):
             The unnormalized probabilities for all elements in population,
             default is uniform *[batch_shape, population_size]*
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
@@ -675,17 +680,18 @@ class ContainerWithRandom(ContainerBase):
         batch_size
             Number of tensors to generate. Default is 1.
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
@@ -747,15 +753,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -846,15 +853,16 @@ class ContainerWithRandom(ContainerBase):
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
@@ -1022,15 +1030,16 @@ class ContainerWithRandom(ContainerBase):
         seed
             A python integer. Used to create a random seed distribution
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1073,15 +1082,16 @@ class ContainerWithRandom(ContainerBase):
         seed
             A python integer. Used to create a random seed distribution
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.

@@ -2,7 +2,7 @@ The Basics
 ==========
 
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
 .. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
@@ -16,14 +16,14 @@ Getting Help
 
 There are a few different communication channels that you can make use of in order to ask for help:
 
-#. `discord server <https://discord.gg/ZVQdvbzNQJ>`_
+#. `discord server <https://discord.gg/sXyFF8tDtm>`_
 #. `issues <https://github.com/unifyai/ivy/issues>`_
 
 We'll quickly outline how each of these should be used, and also which question is most appropriate for which context.
 
 **Discord Server**
 
-The `discord server <https://discord.gg/ZVQdvbzNQJ>`_ is most suitable for very quick and simple questions.
+The `discord server <https://discord.gg/sXyFF8tDtm>`_ is most suitable for very quick and simple questions.
 These questions should **always** be asked in the correct channel.
 There is a tendency to use the *general* landing channel for everything.
 This isn't the end of the world, but if many unrelated messages come flying into the *general* channel,

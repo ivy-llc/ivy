@@ -24,9 +24,20 @@ from ivy.exceptions import handle_exceptions
 
 def _zero_gradients_to_none_and_to_ivy(grads):
     if isinstance(grads, ivy.Array):
-        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
+        return (
+            None
+            if ivy.all(ivy.abs(grads).astype("float64") < 1e-10)
+            else ivy.to_ivy(grads)
+        )
     else:
-        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
+
+        def func(x):
+            if ivy.is_array(x):
+                abs_val = ivy.abs(x)
+                return ivy.all(abs_val.astype("float64") < 1e-10)
+            return x is None
+
+        zero_idxs = ivy.nested_argwhere(grads, func)
         if (
             not isinstance(zero_idxs, list)
             or np.asarray(zero_idxs, dtype="object").size == 0
@@ -37,27 +48,54 @@ def _zero_gradients_to_none_and_to_ivy(grads):
         return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
 
 
-def _get_native_arrays_and_indices(func_ret):
-    func_ret = ivy.nested_map(func_ret, ivy.to_native, include_derived=True)
+def _get_native_arrays_and_indices(func_ret, reshape=True):
+    def map_fn(x):
+        if ivy.is_array(x):
+            x = ivy.to_ivy(x) if ivy.is_native_array(x) else x
+            if len(x.shape) == 0:
+                return ivy.to_native(x)
+            elif x.size == 1:
+                if reshape:
+                    return ivy.to_native(ivy.reshape(x, []))
+                return ivy.to_native(x)
+            else:
+                return ivy.to_ivy(x)
+        return x
+
+    if isinstance(func_ret, ivy.Array):
+        return [], map_fn(func_ret)
+
+    func_ret = ivy.nested_map(func_ret, map_fn, include_derived=True)
     arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
-    arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
-    for i in range(len(arr_idxs)):
-        arr_idxs[i] = [str(x) for x in arr_idxs[i]]
-        arr_idxs[i] = "_".join(arr_idxs[i])
+    if not isinstance(arr_idxs, list) or np.asarray(arr_idxs, "object").size == 0:
+        arr_values = []
+    else:
+        arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
+        for i in range(len(arr_idxs)):
+            arr_idxs[i] = [str(x) for x in arr_idxs[i]]
+            arr_idxs[i] = "_".join(arr_idxs[i])
+
     return arr_idxs, arr_values
 
 
-def _stop_grad_and_index(y, retain_grads, grads, grad_idxs):
+def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
     if not retain_grads:
-        y = ivy.nested_map(y, lambda x: ivy.stop_gradient(x))
+        if isinstance(func_ret, ivy.Array):
+            func_ret = ivy.stop_gradient(func_ret)
+        else:
+            func_ret = ivy.nested_map(
+                func_ret,
+                lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
+                include_derived=True,
+            )
     if grad_idxs is not None:
         for i in range(len(grad_idxs)):
             grad_idxs[i] = [str(x) for x in grad_idxs[i]]
             grad_idxs[i] = "_".join(grad_idxs[i])
         grads = {idx: grads[idx] for idx in grad_idxs}
-    if not isinstance(grads, ivy.Array):
+    if isinstance(grads, dict):
         grads = ivy.Container(grads)
-    return grads
+    return func_ret, grads
 
 
 # Extra #
@@ -273,7 +311,7 @@ def is_variable(
         Whether to check if the data type is exclusively a variable, rather than an
         array. For frameworks like JAX that do not have exclusive variable types, the
         function will always return False if this flag is set, otherwise the check is
-        the same for general arrays. Default is False.
+        the same for general arrays. Default is ``False``.
 
     Returns
     -------
@@ -321,7 +359,7 @@ def is_variable(
     }
 
     """
-    return current_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive=exclusive)
 
 
 is_variable.computes_gradients = True
@@ -748,7 +786,7 @@ def optimizer_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -868,7 +906,7 @@ def gradient_descent_update(
         the gradient.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -963,7 +1001,7 @@ def lars_update(
         The factor used for weight decay. Default is zero.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1028,7 +1066,7 @@ def adam_update(
         divisor during adam update, preventing division by zero (Default value = 1e-7).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.
@@ -1104,7 +1142,7 @@ def lamb_update(
         The factor used for weight decay. (Default value = 0).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
-        Default is True.
+        Default is ``True``.
     out
         optional output array, for writing the new function weights ws_new to. It must
         have a shape that the inputs broadcast to.

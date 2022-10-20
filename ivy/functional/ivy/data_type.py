@@ -146,7 +146,7 @@ def _get_dtypes(fn, complement=True):
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if "einops" in fn.__name__ and isinstance(v, dict):
+            if isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
 
             ivy.assertions.check_isinstance(v, tuple)
@@ -1258,7 +1258,7 @@ def dtype(
     x
         Tensor for which to get the data type.
     as_native
-        Whether or not to return the dtype in string format. Default is False.
+        Whether or not to return the dtype in string format. Default is ``False``.
 
     Returns
     -------
@@ -1302,7 +1302,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     fn
         The function to check for the supported dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1339,7 +1339,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     fn
         The function to check for the unsupported dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------

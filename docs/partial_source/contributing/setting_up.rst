@@ -2,7 +2,7 @@ Setting Up
 ==========
 
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
@@ -181,13 +181,14 @@ Windows
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_ , make sure to only install the Professional version of PyCharm, not the Community version.
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
@@ -393,6 +394,10 @@ GitHub Codespaces
 -----------------
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
+
+**Important Note**
+
+There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
 
 **Pre-requisites**
 

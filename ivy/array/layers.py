@@ -30,7 +30,7 @@ class ArrayWithLayers(abc.ABC):
         weight
             The weight matrix. *[outer_batch_shape,out_features,in_features]*
         bias
-            The bias vector, default is None. *[outer_batch_shape,out_features]*
+            The bias vector, default is ``None``. *[outer_batch_shape,out_features]*
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.

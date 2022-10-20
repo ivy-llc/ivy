@@ -10,6 +10,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close, handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
+    _matrix_rank_helper,
 )
 
 
@@ -333,4 +334,71 @@ def test_jax_slogdet(
         frontend="jax",
         fn_tree="numpy.linalg.slogdet",
         a=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# matrix_rank
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_matrix_rank_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_rank"
+    ),
+)
+def test_jax_numpy_matrix_rank(
+    dtype_and_x, as_variable, native_array, num_positional_args
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.matrix_rank",
+        M=x[0],
+    )
+
+
+# solve
+@handle_cmd_line_args
+@given(
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.solve"
+    ),
+)
+def test_jax_numpy_solve(
+    dtype_and_data,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, data = dtype_and_data
+    a = data[0][:, :-1]
+    b = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.solve",
+        a=np.asarray(a, dtype=input_dtype[0]),
+        b=np.asarray(b, dtype=input_dtype[0]),
+        rtol=1e-01,
+        atol=1e-01,
     )
