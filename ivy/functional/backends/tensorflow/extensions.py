@@ -237,4 +237,4 @@ def dct(
 ) -> tf.Tensor:
     if x.dtype not in [tf.float32, tf.float64]:
         x = tf.cast(x, tf.float32)
-    return tf.signal.dct(x, type=type,  n=n, norm=norm)
+    return tf.signal.dct(x, type=type, n=n, norm=norm)

@@ -3,6 +3,7 @@ from numbers import Number
 import logging
 import ivy
 import numpy as np
+from scipy import fft
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
     _verify_csr_components,
@@ -325,3 +326,15 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def dct(
+    x: np.ndarray,
+    /,
+    *,
+    type: Optional[int] = 2,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return fft.dct(x, type=type, n=n, norm=norm)
