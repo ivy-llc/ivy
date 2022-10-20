@@ -58,13 +58,17 @@ def safety_factor_linalg(
 
     type_casted_matrix = matrix.astype('float64')
     if condition_index == "high":
-        if round(np.linalg.cond(type_casted_matrix)) >= 10 and \
+        if np.linalg.cond(type_casted_matrix) == float("inf"):
+            return False
+        elif round(np.linalg.cond(type_casted_matrix)) >= 10 and \
                 round(np.linalg.cond(type_casted_matrix)) <= 30:
             return True
         else:
             return False
     if condition_index == "low":
-        if round(np.linalg.cond(type_casted_matrix)) <= 10:
+        if np.linalg.cond(type_casted_matrix) == float("inf"):
+            return False
+        elif round(np.linalg.cond(type_casted_matrix)) <= 10:
             return True
         else:
             return False
