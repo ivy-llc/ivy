@@ -761,7 +761,7 @@ def gradient_test(
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
     _, grads = ivy.execute_with_gradients(grad_fn, xs)
     grads_np_flat = flatten_and_to_np(ret=grads)
-    print("grads", grads)
+
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
