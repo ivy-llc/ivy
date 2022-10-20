@@ -53,3 +53,8 @@ def slogdet(a, method=None):
 @to_ivy_arrays_and_back
 def matrix_rank(M):
     return ivy.matrix_rank(M)
+
+
+@to_ivy_arrays_and_back
+def solve(a, b):
+    return ivy.solve(a, b)
