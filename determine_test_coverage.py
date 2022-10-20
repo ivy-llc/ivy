@@ -11,15 +11,11 @@ import _pickle as cPickle
 tests = {}
 
 os.system("git config --global --add safe.directory /ivy")
-N = 3
-run_iter = int(sys.argv[1]) % N  # Splitting into N workflows
-if run_iter > 0:
-    tests = bz2.BZ2File("tests.pbz2", "rb")
-    tests = cPickle.load(tests)
-    os.system(f"git checkout -f {tests['commit']}")
+N = 4
+run_iter = int(sys.argv[1])
 
 os.system(
-    "pytest --disable-pytest-warnings ivy_tests/test_ivy/ --my_test_dump true > test_names"  # noqa
+    "pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
 )
 test_names = []
 with open("test_names") as f:
@@ -33,11 +29,10 @@ with open("test_names") as f:
 test_names = test_names[:-3]
 
 # Create a Dictionary of Test Names to Index
-if run_iter == 0:
-    tests["index_mapping"] = test_names
-    tests["tests_mapping"] = {}
-    for i in range(len(test_names)):
-        tests["tests_mapping"][test_names[i]] = i
+tests["index_mapping"] = test_names
+tests["tests_mapping"] = {}
+for i in range(len(test_names)):
+    tests["tests_mapping"][test_names[i]] = i
 
 
 directories = [
@@ -90,7 +85,8 @@ if __name__ == "__main__":
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
         os.system(
-            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} --disable-warnings > coverage_output"  # noqa
+            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} "
+            "--disable-warnings > coverage_output"
         )
         os.system("coverage annotate > coverage_output")
         for directory in directories:
@@ -108,15 +104,15 @@ if __name__ == "__main__":
                             if line[0] == ">":
                                 tests[file_name][i].add(
                                     tests["tests_mapping"][test_name]
-                                )  # noqa
+                                )
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 
-if run_iter == 0:
-    commit_hash = ""
-    for commit in Repository(".", order="reverse").traverse_commits():
-        commit_hash = commit.hash
-        break
-    tests["commit"] = commit_hash
+
+commit_hash = ""
+for commit in Repository(".", order="reverse").traverse_commits():
+    commit_hash = commit.hash
+    break
+tests["commit"] = commit_hash
 with bz2.BZ2File("tests.pbz2", "w") as f:
     cPickle.dump(tests, f)
