@@ -225,7 +225,7 @@ def _x_and_filters(
         type="2d",
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.atrous_conv2d"
+        fn_name="ivy.functional.frontends.tensorflow.nn.atrous_conv2d"
     ),
 )
 def test_tensorflow_atrous_conv2d(
@@ -261,7 +261,7 @@ def test_tensorflow_atrous_conv2d(
         atrous=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.atrous_conv2d_transpose"
+        fn_name="ivy.functional.frontends.tensorflow.nn.atrous_conv2d_transpose"
     ),
 )
 def test_tensorflow_atrous_conv2d_transpose(
@@ -304,7 +304,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         type="1d",
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv1d"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv1d"
     ),
 )
 def test_tensorflow_conv1d(x_f_d_df, as_variable, num_positional_args, native_array):
@@ -339,7 +339,7 @@ def test_tensorflow_conv1d(x_f_d_df, as_variable, num_positional_args, native_ar
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv1d_transpose"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv1d_transpose"
     ),
 )
 def test_tensorflow_conv1d_transpose(
@@ -380,7 +380,7 @@ def test_tensorflow_conv1d_transpose(
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.gelu"
+        fn_name="ivy.functional.frontends.tensorflow.nn.gelu"
     ),
 )
 def test_tensorflow_gelu(
@@ -413,7 +413,7 @@ def test_tensorflow_gelu(
         type="2d",
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv2d"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv2d"
     ),
 )
 def test_tensorflow_conv2d(x_f_d_df, as_variable, num_positional_args, native_array):
@@ -445,7 +445,7 @@ def test_tensorflow_conv2d(x_f_d_df, as_variable, num_positional_args, native_ar
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv2d_transpose"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv2d_transpose"
     ),
 )
 def test_tensorflow_conv2d_transpose(
@@ -488,7 +488,7 @@ def test_tensorflow_conv2d_transpose(
         type="3d",
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv3d"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv3d"
     ),
 )
 def test_tensorflow_conv3d(x_f_d_df, as_variable, num_positional_args, native_array):
@@ -524,7 +524,7 @@ def test_tensorflow_conv3d(x_f_d_df, as_variable, num_positional_args, native_ar
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.conv3d_transpose"
+        fn_name="ivy.functional.frontends.tensorflow.nn.conv3d_transpose"
     ),
 )
 def test_tensorflow_conv3d_transpose(
@@ -570,7 +570,7 @@ def test_tensorflow_conv3d_transpose(
     offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.batch_normalization"
+        fn_name="ivy.functional.frontends.tensorflow.nn.batch_normalization"
     ),
 )
 def test_tensorflow_batch_normalization(
@@ -611,7 +611,7 @@ def test_tensorflow_batch_normalization(
     prob=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.dropout"
+        fn_name="ivy.functional.frontends.tensorflow.nn.dropout"
     ),
 )
 def test_tensorflow_dropout(
@@ -634,4 +634,136 @@ def test_tensorflow_dropout(
         x=x[0],
         prob=prob,
         scale=scale,
+    )
+
+
+# silu
+@handle_cmd_line_args
+@given(
+    dtype_features=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    beta=st.one_of(
+        helpers.floats(
+            min_value=0,
+            max_value=3,
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.nn.silu",
+    ),
+)
+def test_tensorflow_silu(
+    dtype_features,
+    beta,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, features = dtype_features
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.silu",
+        features=features[0],
+        beta=beta,
+    )
+
+
+# sigmoid_cross_entropy_with_logits
+@handle_cmd_line_args
+@given(
+    dtype_labels_logits=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.nn.sigmoid_cross_entropy_with_logits",  # noqa
+    ),
+)
+def test_tensorflow_sigmoid_cross_entropy_with_logits(
+    dtype_labels_logits,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input_values = dtype_labels_logits
+    labels, logits = input_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.sigmoid_cross_entropy_with_logits",
+        labels=labels,
+        logits=logits,
+    )
+
+
+# weighted_cross_entropy_with_logits
+@handle_cmd_line_args
+@given(
+    dtype_labels_logits=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        shared_dtype=True,
+    ),
+    pos_weight=st.one_of(
+        helpers.floats(
+            min_value=0,
+            max_value=3,
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.nn.weighted_cross_entropy_with_logits",  # noqa
+    ),
+)
+def test_tensorflow_weighted_cross_entropy_with_logits(
+    dtype_labels_logits,
+    pos_weight,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input_values = dtype_labels_logits
+    labels, logits = input_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="nn.weighted_cross_entropy_with_logits",
+        labels=labels,
+        logits=logits,
+        pos_weight=pos_weight,
     )

@@ -93,12 +93,6 @@ def check_all(results, message="one of the args is False"):
         raise ivy.exceptions.IvyException(message)
 
 
-# lshift, rshift array-api type_promotion tests need an OverflowError to be raised
-def check_all_bitshifts(results):
-    if not ivy.all(results):
-        raise OverflowError
-
-
 def check_any(results, message="all of the args are False"):
     if not ivy.any(results):
         raise ivy.exceptions.IvyException(message)
@@ -123,6 +117,18 @@ def check_all_or_any_fn(
         raise ivy.exceptions.IvyException("type must be all or any")
 
 
+def check_shape(x1, x2, message=""):
+    message = (
+        message
+        if message != ""
+        else "{} and {} must have the same shape ({} vs {})".format(
+            x1, x2, ivy.shape(x1), ivy.shape(x2)
+        )
+    )
+    if ivy.shape(x1) != ivy.shape(x2):
+        raise ivy.exceptions.IvyException(message)
+
+
 # Creation #
 # -------- #
 
@@ -139,5 +145,54 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         raise ivy.exceptions.IvyException(
             "the fill_value: {} and data type: {} are not compatible".format(
                 fill_value, dtype
+            )
+        )
+
+
+# General #
+# ------- #
+
+
+def check_gather_input_valid(params, indices, axis, batch_dims):
+    if batch_dims > axis:
+        raise ivy.exceptions.IvyException(
+            "batch_dims ({}) must be less than or equal to axis ({}).".format(
+                batch_dims, axis
+            )
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "batch dimensions must match in `params` and `indices`;"
+            + " saw {} vs. {}".format(
+                params.shape[0:batch_dims], indices.shape[0:batch_dims]
+            )
+        )
+
+
+def check_gather_nd_input_valid(params, indices, batch_dims):
+    if batch_dims >= len(params.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = {} must be less than rank(`params`) = {}.".format(
+                batch_dims, len(params.shape)
+            )
+        )
+    if batch_dims >= len(indices.shape):
+        raise ivy.exceptions.IvyException(
+            "batch_dims = {}  must be less than rank(`indices`) = {}.".format(
+                batch_dims, len(indices.shape)
+            )
+        )
+    if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
+        raise ivy.exceptions.IvyException(
+            "batch dimensions must match in `params` and `indices`;"
+            + " saw {} vs. {}".format(
+                params.shape[0:batch_dims], indices.shape[0:batch_dims]
+            )
+        )
+    if indices.shape[-1] > (len(params.shape[batch_dims:])):
+        raise ivy.exceptions.IvyException(
+            "index innermost dimension length must be <= "
+            + "rank(`params[batch_dims:]`); saw: {} vs. {} .".format(
+                indices.shape[-1], len(params.shape[batch_dims:])
             )
         )

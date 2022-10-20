@@ -122,14 +122,14 @@ def var(
     if x.size == 0:
         return jnp.asarray(float("nan"))
     size = 1
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
     for a in axis:
         size *= x.shape[a]
+    if size == correction:
+        size += 0.0001  # to avoid division by zero in return
     return jnp.asarray(
         jnp.multiply(
             jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-            size / (size - correction),
+            size / jnp.abs(size - correction),
         )
     ).astype(x.dtype)
 
@@ -158,13 +158,13 @@ def cumprod(
     elif exclusive and reverse:
         x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
         x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = jnp.swapaxes(x, axis, -1)
         return jnp.flip(x, axis=(axis,))
 
     elif exclusive:
         x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = jnp.cumprod(x, -1, dtype=dtype)
         return jnp.swapaxes(x, axis, -1)
     else:

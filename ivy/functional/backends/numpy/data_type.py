@@ -1,11 +1,13 @@
 # global
-import numpy as np
 from typing import Optional, Union, Sequence, List
+
+import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-
+from . import backend_version
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -20,6 +22,8 @@ ivy_dtype_dict = {
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",
+    np.dtype("complex64"): "complex64",
+    np.dtype("complex128"): "complex128",
     np.dtype("bool"): "bool",
     np.int8: "int8",
     np.int16: "int16",
@@ -32,6 +36,8 @@ ivy_dtype_dict = {
     np.float16: "float16",
     np.float32: "float32",
     np.float64: "float64",
+    np.complex64: "complex64",
+    np.complex128: "complex128",
     np.bool_: "bool",
 }
 
@@ -47,6 +53,8 @@ native_dtype_dict = {
     "float16": np.dtype("float16"),
     "float32": np.dtype("float32"),
     "float64": np.dtype("float64"),
+    "complex64": np.dtype("complex64"),
+    "complex128": np.dtype("complex128"),
     "bool": np.dtype("bool"),
 }
 
@@ -162,6 +170,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
@@ -171,9 +180,6 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
         raise ivy.exceptions.IvyException(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
-
-
-as_native_dtype.unsupported_dtypes = ("bfloat16",)
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
@@ -191,4 +197,5 @@ def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )

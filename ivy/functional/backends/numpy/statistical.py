@@ -177,12 +177,12 @@ def cumprod(
     elif exclusive and reverse:
         x = np.cumprod(np.flip(x, axis=axis), axis=axis, dtype=dtype)
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = np.swapaxes(x, axis, -1)
         return np.flip(x, axis=axis)
     elif exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = np.cumprod(x, -1, dtype=dtype)
         return np.swapaxes(x, axis, -1)
     elif reverse:

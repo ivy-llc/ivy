@@ -14,6 +14,11 @@ def where(draw):
 
 
 @st.composite
+def get_casting(draw):
+    return draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+
+
+@st.composite
 def dtype_x_bounded_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
@@ -112,39 +117,40 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
-def _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs):
-    where = kwargs["where"]
-    kwargs["test_values"] = False
-    values = helpers.test_frontend_array_instance_method(*args, **kwargs)
-    if values is None:
-        return
-    ret, frontend_ret = values
-    ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
-    ]
-    frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
-    ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
-
-
-# noinspection PyShadowingNames
-def test_frontend_array_instance_method(*args, where=None, **kwargs):
-    if not ivy.exists(where):
-        helpers.test_frontend_array_instance_method(*args, **kwargs)
-    else:
-        kwargs["where"] = where
-        if "out" in kwargs and kwargs["out"] is None:
-            _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs)
-        else:
-            helpers.test_frontend_array_instance_method(*args, **kwargs)
-
-
-# noinspection PyShadowingNames
 def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
     if isinstance(where, list):
         input_dtype += ["bool"]
         return where, as_variable + [False], native_array + [False]
     return where, as_variable, native_array
+
+
+def handle_dtype_and_casting(
+    *,
+    dtypes,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+):
+    casting = get_casting()
+    if casting in ["no", "equiv"]:
+        dtype = dtypes[0]
+        dtypes = [dtype for x in dtypes]
+        return dtype, dtypes, casting
+    dtype = helpers.get_dtypes(
+        get_dtypes_kind,
+        index=get_dtypes_index,
+        full=False,
+        none=get_dtypes_none,
+        key=get_dtypes_key,
+    )
+    if casting in ["safe", "same_kind"]:
+        while not ivy.all([ivy.can_cast(x, dtype) for x in dtypes]):
+            dtype = helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+    return dtype, dtypes, casting

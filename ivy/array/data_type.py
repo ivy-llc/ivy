@@ -190,6 +190,13 @@ class ArrayWithDataTypes(abc.ABC):
         return ivy.finfo(self._data)
 
     def iinfo(self: ivy.Array):
+        """
+        Examples
+        --------
+        >>> x = ivy.array([-119,122,14], dtype=ivy.int8))
+        >>> x.iinfo()
+        iinfo(min=-128, max=127, dtype=int8)
+        """
         return ivy.iinfo(self._data)
 
     def is_bool_dtype(self: ivy.Array) -> bool:

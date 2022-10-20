@@ -117,7 +117,7 @@ class Uniform(Initializer):
               This is useful when training using forward-propogation.
             - `fan_sum` sets `fan` to the sum of the number of input features and
               output features of this neuron.
-            - `fan_sum` sets `fan` to the average of the number of input features and
+            - `fan_avg` sets `fan` to the average of the number of input features and
               output features of this neuron.
         power
             Sets the drop-off factor for the calculated `fan`.
