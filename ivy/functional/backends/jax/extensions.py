@@ -295,7 +295,12 @@ def dct(
     norm: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    
+    if type == 1:
+        x = jnp.concatenate([x, x[..., -2:0:-1]])
+        dct_out = jnp.real(jnp.fft.rfft(x))
+        return dct_out
 
-    if type == 2:
+    elif type == 2:
         dct_out = jax.scipy.fft.dct(x, type=2, n=n, norm=norm)
         return dct_out
