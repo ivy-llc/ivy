@@ -22,7 +22,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-Add = tf_frontend.math.add
+@to_ivy_arrays_and_back
+def Add(*, x, y, name="Add"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.add(x, y)
 
 
 ArgMax = tf_frontend.math.argmax
@@ -244,7 +247,9 @@ def Max(*, input, axis, keep_dims=False, name="Max"):
     return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-Maximum = tf_frontend.math.maximum
+@to_ivy_arrays_and_back
+def Maximum(*, x, y, name="Maximum"):
+    return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -257,11 +262,14 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-Mul = tf_frontend.math.multiply
+@to_ivy_arrays_and_back
+def Mul(*, x, y, name="Mul"):
+    return ivy.multiply(x, y)
 
 
-Neg = tf_frontend.math.negative
-
+@to_ivy_arrays_and_back
+def Neg(*, x, name="Neg"):
+    return ivy.negative(x)
 
 @to_ivy_arrays_and_back
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
