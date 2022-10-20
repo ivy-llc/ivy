@@ -1316,6 +1316,7 @@ def rfft(
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Compute the one-dimensional discrete Fourier Transform for real input.
+
     Parameters
     ----------
     x
@@ -1327,6 +1328,7 @@ def rfft(
         Normalization mode.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
@@ -1334,16 +1336,20 @@ def rfft(
     Both the description and the type hints above assumes an array input for
     simplicity, but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.array([0, 1, 2, 3])
     >>> ivy.rfft(x)
     ivy.array([ 6.+0.j, -2.+2.j, -2.+0.j])
+
     >>> ivy.rfft(x, norm='ortho')
     ivy.array([ 3.+0.j, -1.+1.j, -1.+0.j])
+
     >>> ivy.rfft(x, norm='forward')
     ivy.array([ 1.5000+0.0000j, -0.5000+0.5000j, -0.5000+0.0000j])
+
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),
     ...                   b=ivy.array([0, 1, 2, 3]))

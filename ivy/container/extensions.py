@@ -1333,6 +1333,7 @@ class ContainerWithExtensions(ContainerBase):
         """ivy.Container static method variant of ivy.rfft. This method simply
         wraps the function, and so the docstring for ivy.rfft also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         x
@@ -1354,10 +1355,12 @@ class ContainerWithExtensions(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             a container containing the real FFT of ```x```.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),
@@ -1395,6 +1398,7 @@ class ContainerWithExtensions(ContainerBase):
         """ivy.Container instance method variant of ivy.rfft. This method simply
         wraps the function, and so the docstring for ivy.rfft also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1416,10 +1420,12 @@ class ContainerWithExtensions(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             a container containing the real FFT of ```x```.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0, 1, 0, 0]),

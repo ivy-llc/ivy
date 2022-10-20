@@ -507,6 +507,7 @@ class ArrayWithExtensions(abc.ABC):
         ivy.Array instance method variant of ivy.rfft. This method simply
         wraps the function, and so the docstring for ivy.rfft also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -518,10 +519,12 @@ class ArrayWithExtensions(abc.ABC):
             Normalization mode.
         out
             optional output array, for writing the result to.
+
         Returns
         -------
         ret
             The output array.
+
         Examples
         --------
         >>> x = ivy.array([0, 1, 2, 3])
