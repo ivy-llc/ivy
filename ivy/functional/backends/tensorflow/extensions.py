@@ -252,9 +252,6 @@ def fmax(
     return tf.where(tf.math.is_inf(ret), float("nan"))
 
 
-fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
-
-
 def nansum(
     input: Union[tf.Tensor, tf.Variable],
     /,
