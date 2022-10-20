@@ -145,6 +145,7 @@ hann_window.support_native_out = False
 
 
 # noinspection PyUnresolvedReferences
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -179,9 +180,6 @@ def max_pool2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
-
-
-max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
 
 
 def pad(
@@ -255,6 +253,7 @@ def moveaxis(
 moveaxis.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
 def heaviside(
     x1: torch.tensor,
     x2: torch.tensor,
@@ -310,6 +309,7 @@ def flipud(
 flipud.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
 def fmod(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -321,7 +321,6 @@ def fmod(
 
 
 fmod.support_native_out = True
-fmod.unsupported_dtypes = ("bfloat16",)
 
 
 def fmax(
