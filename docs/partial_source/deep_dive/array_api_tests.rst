@@ -85,7 +85,7 @@ You should now be able to run the following commands via terminal:
         pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
 
         # run a single test
-        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_array_method_signature"
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
 
 Using the IDE
 ****
