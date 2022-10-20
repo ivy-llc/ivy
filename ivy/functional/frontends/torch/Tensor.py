@@ -8,9 +8,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        if ivy.is_native_array(data):
-            data = ivy.Array(data)
-        self.data = data
+        self.data = ivy.array(data)
 
     def __repr__(self):
         return (
@@ -68,6 +66,38 @@ class Tensor:
 
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
+
+    def to(self, *args, **kwargs):
+        if len(args) > 0:
+            if isinstance(args[0], ivy.Dtype):
+                return self._to_with_dtype(*args, **kwargs)
+            elif isinstance(args[0], ivy.Device):
+                return self._to_with_device(*args, **kwargs)
+            else:
+                return self._to_with_tensor(*args, **kwargs)
+
+        else:
+            if "tensor" not in kwargs:
+                return self._to_with_device(**kwargs)
+            else:
+                return self._to_with_tensor(**kwargs)
+
+    def _to_with_tensor(
+        self, tensor, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(
+            self.data, dtype=tensor.dtype, device=tensor.device, copy=copy
+        )
+
+    def _to_with_dtype(
+        self, dtype, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, dtype=dtype, copy=copy)
+
+    def _to_with_device(
+        self, device, dtype=None, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
     # Special Methoods #
     # -------------------#

@@ -1241,8 +1241,7 @@ def test_jax_numpy_argmin(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
-        num_arrays=2
+        available_dtypes=helpers.get_dtypes("bool"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.bitwise_and"
@@ -1264,7 +1263,7 @@ def test_jax_numpy_bitwise_and_bool(
         frontend="jax",
         fn_tree="numpy.bitwise_and",
         x1=x[0],
-        x2=x[1]
+        x2=x[1],
     )
 
 
@@ -1297,7 +1296,7 @@ def test_jax_numpy_bitwise_and_int(
         frontend="jax",
         fn_tree="numpy.bitwise_and",
         x1=x[0][0],
-        x2=x[0][1]
+        x2=x[0][1],
     )
 
 
