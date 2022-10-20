@@ -1,12 +1,32 @@
 # global
+import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops \
-    import _dtypes, _requires_grad
+
+
+# Helper functions
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _requires_grad(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        return draw(st.just(False))
+    return draw(st.booleans())
 
 
 # add
