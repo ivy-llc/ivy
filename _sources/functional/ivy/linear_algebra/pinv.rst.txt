@@ -5,9 +5,9 @@ pinv
 
 .. autofunction:: ivy.array.array_methods.pinv
 
-.. autofunction:: ivy.container.container_methods.static_pinv
-
 .. autofunction:: ivy.container.container_methods.pinv
+
+.. autofunction:: ivy.container.container_methods.static_pinv
 |
 | **Supported Frameworks:**
 
