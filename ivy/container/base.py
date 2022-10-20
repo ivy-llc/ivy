@@ -3669,11 +3669,13 @@ class ContainerBase(dict, abc.ABC):
                         and hasattr(v, "_fields")
                     ):
                         if len(v) <= self._print_limit:
-                            rep = (
+                            rep = tuple(
                                 [
-                                    f"{name}={v[i]}"
+                                    "{} = {}".format(name, v[i])
                                     if v[i].size < self._print_limit
-                                    else f"{name}={type(v[i])}, shape={v[i].shape}"
+                                    else "{} = {}, shape={}".format(
+                                        name, type(v[i]), v[i].shape
+                                    )
                                     for i, name in enumerate(v._fields)
                                 ],
                             )
@@ -3681,23 +3683,20 @@ class ContainerBase(dict, abc.ABC):
                             rep = (
                                 "NamedTuple({})".format(len(v)),
                                 type(v[0]),
-                                "shape=",
-                                (v[0].shape),
+                                "shape={}".format(v[0].shape),
                             )
 
                     elif isinstance(v, tuple):
                         rep = (
                             "tuple({})".format(len(v)),
                             type(v[0]),
-                            "shape=",
-                            (v[0].shape),
+                            "shape={}".format(v[0].shape),
                         )
                     else:
                         rep = (
                             "list[{}]".format(len(v)),
                             type(v[0]),
-                            "shape=",
-                            (v[0].shape),
+                            "shape={}".format(v[0].shape),
                         )
 
                 else:
