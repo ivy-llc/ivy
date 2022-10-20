@@ -420,7 +420,9 @@
 <div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="nd">handle_nestable</span>
 <span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">attr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">attr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the shape and dtype for all ivy arrays which are currently alive on the</span>
