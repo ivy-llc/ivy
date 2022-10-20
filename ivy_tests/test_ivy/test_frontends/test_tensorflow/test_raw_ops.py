@@ -1960,7 +1960,7 @@ def test_tensorflow_Ceil(
         max_value=1e30,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Diag"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Diag"
     ),
 )
 def test_tensorflow_Diag(
@@ -2024,7 +2024,7 @@ def test_tensorflow_RightShift(
     ),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Sum"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Sum"
     ),
 )
 def test_tensorflow_Sum(

@@ -83,6 +83,7 @@ def Ceil(*, x, name=None):
     return ivy.ceil(x)
 
 
+@to_ivy_arrays_and_back
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -97,9 +98,12 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-Div = tf_frontend.math.divide
+@to_ivy_arrays_and_back
+def Div(*, x, y, name="Div"):
+    return tf_frontend.math.divide(x, y, name=name)
 
 
+@to_ivy_arrays_and_back
 def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
@@ -368,5 +372,6 @@ def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
+@to_ivy_arrays_and_back
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
