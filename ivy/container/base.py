@@ -813,7 +813,7 @@ class ContainerBase(dict, abc.ABC):
                     if not min([id_n == id_0 for id_n in ids]):
                         return False
                 elif arrays_equal:
-                    if not ivy.arrays_equal(values):
+                    if not ivy.all_equal(*values):
                         return False
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
@@ -3663,12 +3663,42 @@ class ContainerBase(dict, abc.ABC):
                     and v
                     and (self._ivy.is_native_array(v[0]) or isinstance(v[0], ivy.Array))
                 ):
-                    rep = (
-                        "list[{}]".format(len(v)),
-                        type(v[0]),
-                        "shape=",
-                        list(v[0].shape),
-                    )
+                    if (
+                        isinstance(v, tuple)
+                        and hasattr(v, "_asdict")
+                        and hasattr(v, "_fields")
+                    ):
+                        if len(v) <= self._print_limit:
+                            rep = tuple(
+                                [
+                                    "{} = {}".format(name, v[i])
+                                    if v[i].size < self._print_limit
+                                    else "{} = {}, shape={}".format(
+                                        name, type(v[i]), list(v[i].shape)
+                                    )
+                                    for i, name in enumerate(v._fields)
+                                ],
+                            )
+                        else:
+                            rep = (
+                                "NamedTuple({})".format(len(v)),
+                                type(v[0]),
+                                "shape={}".format(list(v[0].shape)),
+                            )
+
+                    elif isinstance(v, tuple):
+                        rep = (
+                            "tuple({})".format(len(v)),
+                            type(v[0]),
+                            "shape={}".format(list(v[0].shape)),
+                        )
+                    else:
+                        rep = (
+                            "list[{}]".format(len(v)),
+                            type(v[0]),
+                            "shape={}".format(list(v[0].shape)),
+                        )
+
                 else:
                     rep = v
             new_dict[k] = rep
