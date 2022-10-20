@@ -667,6 +667,17 @@ def erf(
     return tf.math.erf(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -684,14 +695,6 @@ def maximum(
     return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
 
 
-maximum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -707,14 +710,6 @@ def minimum(
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
-
-
-minimum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 @with_unsupported_dtypes(
