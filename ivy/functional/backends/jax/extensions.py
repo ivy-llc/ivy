@@ -295,6 +295,12 @@ def dct(
     norm: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if n is not None:
+        signal_len = x.shape[-1]
+        if n <= signal_len:
+            x = x[..., :n]
+        else:
+            x = jnp.pad(x, (0, n - signal_len))
     real_zero = jnp.array(0.0, dtype=x.dtype)
     axis_dim = x.shape[-1]
     axis_dim_float = jnp.array(axis_dim, dtype=x.dtype)
