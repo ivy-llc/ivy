@@ -156,7 +156,7 @@ def test_sinc(
         instance_method=instance_method,
         fw=fw,
         fn_name="sinc",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -296,8 +296,8 @@ def test_lcm(
         fw=fw,
         fn_name="lcm",
         test_gradients=True,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[1],
     )
 
 
@@ -493,7 +493,7 @@ def test_moveaxis(
         instance_method=instance_method,
         fw=fw,
         fn_name="moveaxis",
-        a=np.asarray(a[0], dtype=input_dtype[0]),
+        a=a[0],
         source=source,
         destination=destination,
     )
@@ -686,8 +686,8 @@ def test_heaviside(
         instance_method=instance_method,
         fw=fw,
         fn_name="heaviside",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[0],
     )
 
 
@@ -803,7 +803,7 @@ def test_flipud(
         instance_method=instance_method,
         fw=fw,
         fn_name="flipud",
-        m=np.asarray(m[0], dtype=input_dtype[0]),
+        m=m[0],
     )
 
 

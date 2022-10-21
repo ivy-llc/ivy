@@ -8,16 +8,14 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        if ivy.is_native_array(data):
-            data = ivy.Array(data)
-        self.data = data
+        self.data = ivy.array(data)
 
     def __repr__(self):
         return (
             "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -66,10 +64,49 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def abs(self, *, out=None):
+        return torch_frontend.abs(self.data, out=out)
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
-    # Special Methoods #
+    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(size, dtype=dtype, device=device,
+                                   requires_grad=requires_grad)
+
+    def to(self, *args, **kwargs):
+        if len(args) > 0:
+            if isinstance(args[0], ivy.Dtype):
+                return self._to_with_dtype(*args, **kwargs)
+            elif isinstance(args[0], ivy.Device):
+                return self._to_with_device(*args, **kwargs)
+            else:
+                return self._to_with_tensor(*args, **kwargs)
+
+        else:
+            if "tensor" not in kwargs:
+                return self._to_with_device(**kwargs)
+            else:
+                return self._to_with_tensor(**kwargs)
+
+    def _to_with_tensor(
+        self, tensor, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(
+            self.data, dtype=tensor.dtype, device=tensor.device, copy=copy
+        )
+
+    def _to_with_dtype(
+        self, dtype, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, dtype=dtype, copy=copy)
+
+    def _to_with_device(
+        self, device, dtype=None, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
+
+    # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
