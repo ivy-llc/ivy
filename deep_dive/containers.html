@@ -272,12 +272,108 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.</p
 which is the abstract base class for all containers.
 These special methods include
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4588">__repr__</a> which controls how the container is printed in the terminal,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782">__getattr__</a> that enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782">__getattr__</a> that primarily enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes,
+whereas if no attribute, item or method is found which matches the name provided on the container
+itself, then the leaves will also be recursively traversed, searching for the attribute. If it turns out
+to be a callable function on the leaves, then it will call the function on each leaf and update the
+leaves with the returned results, for more detailed explanation with examples, see code block below.
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4790">__setattr__</a> that enables attribute setting to update the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4842">__getitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried via a chain of keys,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span>
+    <span class="p">],</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">1</span>
+        <span class="p">],</span>
+        <span class="n">b</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">3</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="n">num_dims</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num_dims</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work because Python in low-level C has restriction on return type of `len` to be `int`</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">num_dims</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">num_dims</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work because some Python built-in functions have enforce on input argument types</span>
+
+<span class="c1"># external method flexibility enables positional and keyword arguments to be passed into the attribute</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">c1</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">l2</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="n">c1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">l2</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work since essentially the argument 1 won&#39;t be passed to `__getattr__`</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;__add__&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">]))</span>
+<span class="p">{</span>
+    <span class="n">c1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l1</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">3</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">],</span>
+        <span class="n">l2</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">4</span><span class="p">,</span>
+            <span class="mi">5</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">10</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 class, they all make calls to the corresponding standard operator functions.</p>
 <p>As a result, the operator functions will make use of the special methods of the lefthand
