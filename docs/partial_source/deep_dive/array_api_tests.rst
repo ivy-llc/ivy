@@ -85,7 +85,7 @@ You should now be able to run the following commands via terminal:
         pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
 
         # run a single test
-        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_array_method_signature"
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
 
 Using the IDE
 ****
@@ -145,3 +145,11 @@ This should have hopefully given you a good understanding of how the Array API t
 
 If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_
 or in the `array api tests forum`_ !
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+    </iframe>

@@ -290,7 +290,9 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    *,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
