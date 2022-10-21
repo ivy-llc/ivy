@@ -528,7 +528,6 @@ def diagflat(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[1,2], [3,4]])
