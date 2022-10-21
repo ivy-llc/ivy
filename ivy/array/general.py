@@ -658,29 +658,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.array_equal(self, x)
 
-    def arrays_equal(
-        self: ivy.Array, x: List[Union[ivy.Array, ivy.NativeArray]]
-    ) -> bool:
-        """
-        ivy.Array instance method variant of ivy.arrays_equal. This method simply wraps
-        the function, and so the docstring for ivy.arrays_equal also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input list of arrays to compare to ``self``
-
-        Returns
-        -------
-        ret
-            Boolean, whether the input arrays are equal
-
-        """
-        return ivy.arrays_equal([self] + x)
-
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """
         ivy.Array instance method variant of ivy.assert_supports_inplace. This method
