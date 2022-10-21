@@ -8,6 +8,7 @@ def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
 
+@_handle_0_dim_output
 def lcm(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -27,6 +28,7 @@ def lcm(
 lcm.support_native_out = True
 
 
+@_handle_0_dim_output
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -44,6 +46,7 @@ def fmod(
 fmod.support_native_out = True
 
 
+@_handle_0_dim_output
 def fmax(
     x1: np.ndarray,
     x2: np.ndarray,

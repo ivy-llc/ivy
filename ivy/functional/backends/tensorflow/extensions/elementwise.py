@@ -1,9 +1,10 @@
-from typing import Union, Optional, Tuple, Literal, Sequence
-from numbers import Number
-import ivy
+from typing import Union, Optional
 import tensorflow as tf
-import tensorflow_probability as tfp
-import logging
+from .. import backend_version
+
+
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def sinc(
@@ -16,6 +17,9 @@ def sinc(
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -45,6 +49,9 @@ def fmod(
     return tf.math.floormod(x1, x2, name=None)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("blfoat16", "float16", "float32", "float64")}, backend_version
+)
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
