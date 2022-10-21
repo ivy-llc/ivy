@@ -62,7 +62,7 @@
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
-.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
 Contents
 --------
@@ -230,9 +230,9 @@ Design
    :width: 100%
 
 | (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
-| Back-end functional APIs ✅
+| Backend functional APIs ✅
 | Ivy functional API ✅
-| Framework Handler ✅
+| Backend Handler ✅
 | Ivy Compiler 🚧
 |
 | (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_

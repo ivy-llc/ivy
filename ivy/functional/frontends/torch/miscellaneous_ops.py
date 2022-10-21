@@ -1,12 +1,15 @@
 import ivy
 from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def flip(input, dims):
     return ivy.flip(input, axis=dims)
 
 
+@to_ivy_arrays_and_back
 def fliplr(input):
     ivy.assertions.check_greater(
         len(input.shape),
@@ -17,10 +20,12 @@ def fliplr(input):
     return ivy.flip(input, axis=(-1,))
 
 
+@to_ivy_arrays_and_back
 def roll(input, shifts, dims=None):
     return ivy.roll(input, shifts, axis=dims)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
     versions["torch"],
@@ -29,6 +34,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("float16", "bfloat16")}, versions["torch"]
 )
@@ -39,19 +45,23 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
+@to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
+@to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
+@to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
 
 
+@to_ivy_arrays_and_back
 def cartesian_prod(*tensors):
     if len(tensors) == 1:
         return tensors
@@ -63,24 +73,29 @@ def cartesian_prod(*tensors):
     return ret
 
 
+@to_ivy_arrays_and_back
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     # TODO: Handle layout flag when possible.
     sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
+@to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
 
 
+@to_ivy_arrays_and_back
 def tril(input, diagonal=0, *, out=None):
     return ivy.tril(input, k=diagonal, out=out)
 
 
+@to_ivy_arrays_and_back
 def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
+@to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
     epsilon = 1e-07
@@ -123,6 +138,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     return ret
 
 
+@to_ivy_arrays_and_back
 def logcumsumexp(input, dim, *, out=None):
     if len(input.shape) == 0:
         ret = input
@@ -138,14 +154,17 @@ def logcumsumexp(input, dim, *, out=None):
     return ret
 
 
+@to_ivy_arrays_and_back
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
 
 
+@to_ivy_arrays_and_back
 def ravel(input):
     return ivy.reshape(input, (-1,))
 
 
+@to_ivy_arrays_and_back
 def rot90(input, k, dims):
     total_dims = ivy.get_num_dims(input)
     total_rot_dims = len(dims)
@@ -226,6 +245,7 @@ def rot90(input, k, dims):
         return ivy.copy_array(input)
 
 
+@to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
     if N == 0:
         return ivy.array([], dtype=x.dtype)
@@ -233,6 +253,7 @@ def vander(x, N=None, increasing=False):
         return ivy.vander(x, N=N, increasing=increasing, out=None)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, versions["torch"])
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)

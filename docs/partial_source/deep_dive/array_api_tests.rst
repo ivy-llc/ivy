@@ -13,7 +13,7 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
-.. _`here`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#setting-up-testing
+.. _`here`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_. These tests check that all
@@ -53,7 +53,7 @@ functions which are part of the standard. If a test fails on the CI, you can see
 
 You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
 
-Using the bash file (runs Docker)
+Using Terminal
 ****
 
 Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `test_array_api.sh`_:
@@ -85,7 +85,7 @@ You should now be able to run the following commands via terminal:
         pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
 
         # run a single test
-        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_array_method_signature"
+        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
 
 Using the IDE
 ****
@@ -145,3 +145,11 @@ This should have hopefully given you a good understanding of how the Array API t
 
 If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_
 or in the `array api tests forum`_ !
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+    </iframe>
