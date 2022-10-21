@@ -15,6 +15,10 @@ from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
+from ivy.functional.frontends.torch.Tensor import tensor as torch_tensor
+from ivy.functional.frontends.tensorflow.tensor import Tensor as tf_tensor
+from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 from ivy.functional.backends.numpy.general import (
     is_native_array as is_numpy_native_array,
 )
@@ -560,9 +564,10 @@ def test_frontend_function(
     copy_kwargs = copy.deepcopy(kwargs)
     copy_args = copy.deepcopy(args)
     ret = frontend_fn(*args, **kwargs)
-    # since the return from the frontend functions is now
-    # a frontend tensor or array object
-    ret = ret.data
+
+    # converting to ivy.array if FrontendArray was returned
+    if _is_frontend_array(ret):
+        ret = ret.data
     if with_out:
         if not inspect.isclass(ret):
             is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -627,7 +632,6 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
-    backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(function_dict, fn_name)
@@ -676,8 +680,7 @@ def test_frontend_function(
             return
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
-            backend_returned_scalar = True
+        if ivy.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
             # tuplify the frontend return
@@ -692,10 +695,7 @@ def test_frontend_function(
     # unset frontend framework from backend
     ivy.unset_backend()
 
-    if backend_returned_scalar:
-        ret_np_flat = ivy.to_numpy([ret])
-    else:
-        ret_np_flat = flatten_and_to_np(ret=ret)
+    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1592,4 +1592,13 @@ def gradient_incompatible_function(*, fn):
         not ivy.supports_gradients
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
+    )
+
+
+def _is_frontend_array(x):
+    return (
+        isinstance(x, ndarray)
+        or isinstance(x, torch_tensor)
+        or isinstance(x, tf_tensor)
+        or isinstance(x, DeviceArray)
     )
