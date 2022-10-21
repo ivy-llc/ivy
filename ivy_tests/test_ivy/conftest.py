@@ -88,12 +88,14 @@ def run_around_tests(
     clear_backend_stack()
     if backend_fw is not None:
         with backend_fw.use:
-            test_globals.set_frontend(fixt_frontend_str)
+            if fixt_frontend_str:
+                test_globals.set_frontend(fixt_frontend_str)
             with DefaultDevice(device):
                 yield
                 test_globals.unset_frontend()
     else:
-        test_globals.set_frontend(fixt_frontend_str)
+        if fixt_frontend_str:
+            test_globals.set_frontend(fixt_frontend_str)
         with DefaultDevice(device):
             yield
         test_globals.unset_frontend()
