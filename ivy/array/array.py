@@ -14,7 +14,6 @@ from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
-from .extensions import ArrayWithExtensions
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -29,6 +28,7 @@ from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
+from .extensions import *
 
 
 class Array(
@@ -37,7 +37,6 @@ class Array(
     ArrayWithDataTypes,
     ArrayWithDevice,
     ArrayWithElementwise,
-    ArrayWithExtensions,
     ArrayWithGeneral,
     ArrayWithGradients,
     ArrayWithImage,
@@ -52,6 +51,26 @@ class Array(
     ArrayWithSorting,
     ArrayWithStatistical,
     ArrayWithUtility,
+    ArrayWithActivationsExtensions,
+    ArrayWithConversionsExtensions,
+    ArrayWithCreationExtensions,
+    ArrayWithData_typeExtensions,
+    ArrayWithDeviceExtensions,
+    ArrayWithElementWiseExtensions,
+    ArrayWithGeneralExtensions,
+    ArrayWithGradientsExtensions,
+    ArrayWithImageExtension,
+    ArrayWithLayersExtensions,
+    ArrayWithLinalgExtensions,
+    ArrayWithLossesExtensions,
+    ArrayWithManipulationExtensions,
+    ArrayWithNormsExtensions,
+    ArrayWithRandomExtensions,
+    ArrayWithSearchingExtensions,
+    ArrayWithSetExtensions,
+    ArrayWithSortingExtensions,
+    ArrayWithStatisticalExtensions,
+    ArrayWithUtilityExtensions,
 ):
     def __init__(self, data):
         ArrayWithActivations.__init__(self)
@@ -73,6 +92,26 @@ class Array(
         ArrayWithSorting.__init__(self)
         ArrayWithStatistical.__init__(self)
         ArrayWithUtility.__init__(self)
+        ArrayWithActivationsExtensions.__init__(self),
+        ArrayWithConversionsExtensions.__init__(self),
+        ArrayWithCreationExtensions.__init__(self),
+        ArrayWithData_typeExtensions.__init__(self),
+        ArrayWithDeviceExtensions.__init__(self),
+        ArrayWithElementWiseExtensions.__init__(self),
+        ArrayWithGeneralExtensions.__init__(self),
+        ArrayWithGradientsExtensions.__init__(self),
+        ArrayWithImageExtension.__init__(self),
+        ArrayWithLayersExtensions.__init__(self),
+        ArrayWithLinalgExtensions.__init__(self),
+        ArrayWithLossesExtensions.__init__(self),
+        ArrayWithManipulationExtensions.__init__(self),
+        ArrayWithNormsExtensions.__init__(self),
+        ArrayWithRandomExtensions.__init__(self),
+        ArrayWithSearchingExtensions.__init__(self),
+        ArrayWithSetExtensions.__init__(self),
+        ArrayWithSortingExtensions.__init__(self),
+        ArrayWithStatisticalExtensions.__init__(self),
+        ArrayWithUtilityExtensions.__init__(self),
         self._init(data)
 
     def _init(self, data):
