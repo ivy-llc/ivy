@@ -794,8 +794,9 @@ class ContainerWithExtensions(ContainerBase):
 
     @staticmethod
     def static_pad(
-        x: ivy.Container,
+        input: ivy.Container,
         pad_width: Union[Iterable[Tuple[int]], int],
+        /,
         *,
         mode: Optional[
             Union[
@@ -833,7 +834,7 @@ class ContainerWithExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "pad",
-            x,
+            input,
             pad_width,
             mode=mode,
             stat_length=stat_length,
@@ -850,9 +851,9 @@ class ContainerWithExtensions(ContainerBase):
 
     def pad(
         self: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[

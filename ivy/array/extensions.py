@@ -221,6 +221,7 @@ class ArrayWithExtensions(abc.ABC):
     def pad(
         self: ivy.Array,
         pad_width: Union[Iterable[Tuple[int]], int],
+        /,
         *,
         mode: Optional[
             Union[

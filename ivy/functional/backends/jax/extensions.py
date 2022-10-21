@@ -161,9 +161,9 @@ def _flat_array_to_1_dim_array(x):
 
 
 def pad(
-    x: JaxArray,
-    /,
+    input: JaxArray,
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    /,
     *,
     mode: Optional[
         Union[
@@ -192,42 +192,42 @@ def pad(
 ) -> JaxArray:
     if callable(mode):
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             **kwargs,
         )
     if mode in ["maximum", "mean", "median", "minimum"]:
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             stat_length=stat_length,
         )
     elif mode == "constant":
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             constant_values=constant_values,
         )
     elif mode == "linear_ramp":
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             end_values=end_values,
         )
     elif mode in ["reflect", "symmetric"]:
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             reflect_type=reflect_type,
         )
     else:
         return jnp.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
         )

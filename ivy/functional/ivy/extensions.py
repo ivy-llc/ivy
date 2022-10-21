@@ -19,7 +19,6 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
 )
 from ivy.exceptions import handle_exceptions
-import numpy as np
 
 
 # helpers
@@ -515,32 +514,32 @@ def flatten(
     ivy.array([1, 2, 3, 4])
 
     >>> x = np.array(
-        [[[[ 5,  5,  0,  6],
-         [17, 15, 11, 16],
-         [ 6,  3, 13, 12]],
+    >>>     [[[[ 5,  5,  0,  6],
+    >>>      [17, 15, 11, 16],
+    >>>      [ 6,  3, 13, 12]],
 
-        [[ 6, 18, 10,  4],
-         [ 5,  1, 17,  3],
-         [14, 14, 18,  6]]],
-
-
-       [[[12,  0,  1, 13],
-         [ 8,  7,  0,  3],
-         [19, 12,  6, 17]],
-
-        [[ 4, 15,  6, 15],
-         [ 0,  5, 17,  9],
-         [ 9,  3,  6, 19]]],
+    >>>     [[ 6, 18, 10,  4],
+    >>>      [ 5,  1, 17,  3],
+    >>>      [14, 14, 18,  6]]],
 
 
-       [[[17, 13, 11, 16],
-         [ 4, 18, 17,  4],
-         [10, 10,  9,  1]],
+    >>>    [[[12,  0,  1, 13],
+    >>>      [ 8,  7,  0,  3],
+    >>>      [19, 12,  6, 17]],
 
-        [[19, 17, 13, 10],
-         [ 4, 19, 16, 17],
-         [ 2, 12,  8, 14]]]]
-         )
+    >>>      [[ 4, 15,  6, 15],
+    >>>      [ 0,  5, 17,  9],
+    >>>      [ 9,  3,  6, 19]]],
+
+
+    >>>    [[[17, 13, 11, 16],
+    >>>      [ 4, 18, 17,  4],
+    >>>      [10, 10,  9,  1]],
+
+    >>>     [[19, 17, 13, 10],
+    >>>      [ 4, 19, 16, 17],
+    >>>       [ 2, 12,  8, 14]]]]
+    >>>      )
     >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
     ivy.array(
         [[[ 5,  5,  0,  6],
@@ -956,19 +955,20 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
     elif end < 0:
         end += dim_length
     i = 0
-    value = ivy.flatten(value)
+    value = ivy.asarray(value, dtype=input.dtype)
+    if len(value.shape) > 1:
+        value = ivy.flatten(value)
     for ind in ivy.ndindex(input.shape):
         if (ind[0] < end) and (ind[0] >= start):
-            if ivy.isscalar(value):
-                input[ind] = value
-            else:
+            if len(value.shape) >= 1:
                 input[ind] = value[i]
+            else:
+                input[ind] = value
             i += 1
     return input
 
 
 def _set_pad_area(padded, width_pair, value_pair):
-    padded = padded.astype(ivy.Dtype(str(np.asarray(value_pair).dtype)))
     padded = _scatter_at_0_axis(padded, value_pair[0], end=width_pair[0])
     padded = _scatter_at_0_axis(
         padded, value_pair[1], start=padded.shape[0] - width_pair[1]
@@ -997,7 +997,7 @@ def _get_linear_ramps(padded, width_pair, end_value_pair):
         )
         for end_value, edge, width in zip(end_value_pair, edge_pair, width_pair)
     )
-    right_ramp = right_ramp[::-1, ...]
+    right_ramp = ivy.flip(right_ramp)
     return left_ramp, right_ramp
 
 
@@ -1031,7 +1031,7 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         chunk_length = min(old_length, left_pad)
         stop = left_pad - edge_offset
         start = stop + chunk_length
-        left_chunk = padded[start:stop:-1, ...]
+        left_chunk = ivy.flip(padded[stop:start, ...])
         if method == "odd":
             left_chunk = 2 * padded[left_pad : left_pad + 1, ...] - left_chunk
         start = left_pad - chunk_length
@@ -1042,7 +1042,7 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         chunk_length = min(old_length, right_pad)
         start = -right_pad + edge_offset - 2
         stop = start - chunk_length
-        right_chunk = padded[start:stop:-1, ...]
+        right_chunk = ivy.flip(padded[stop:start, ...])
         if method == "odd":
             right_chunk = 2 * padded[-right_pad - 1 : -right_pad, ...] - right_chunk
         start = padded.shape[0] - right_pad
@@ -1106,7 +1106,9 @@ def _pad_simple(array, pad_width, fill_value=None):
     sl = []
     for size, (left, right) in zip(array.shape, pad_width):
         sl.append(ivy.arange(left, left + size))
-    array_flat = ivy.flatten(array)
+    # if len(array.shape) > 1:
+    #     array = ivy.flatten(array)
+    array = ivy.flatten(array)
     j = 0
     for ind in ivy.ndindex(padded.shape):
         flag = True
@@ -1115,7 +1117,7 @@ def _pad_simple(array, pad_width, fill_value=None):
                 flag = False
                 break
         if flag:
-            padded[ind] = array_flat[j]
+            padded[ind] = array[j]
             j += 1
     return padded
 
@@ -1127,6 +1129,7 @@ def _pad_simple(array, pad_width, fill_value=None):
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
+    /,
     *,
     mode: Optional[
         Union[
@@ -1163,7 +1166,7 @@ def pad(
         Number of values padded to the edges of each axis.
              - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths
                for each axis.
-             - (before, after) yields same before and after pad for each axis.
+             - ((before, after),) yields same before and after pad for each axis.
              - pad (integer) is shortcut for before = after = pad width for all axes.
     mode
         One of the following string values or a user-supplied function.
@@ -1204,7 +1207,7 @@ def pad(
         of each axis used to calculate the statistic value.
              - ((before_1, after_1), … (before_N, after_N)) yields unique statistic
                lengths for each axis.
-             - (before, after) yields same before and after statistic lengths for
+             - ((before, after),) yields same before and after statistic lengths for
                each axis.
              - stat_length (integer) is a shortcut for before = after = stat_length
                length for all axes.
@@ -1213,7 +1216,7 @@ def pad(
         Used in "constant". The values to set the padded values for each axis.
              - ((before_1, after_1), ... (before_N, after_N)) yields unique pad
                constants for each axis.
-             - (before, after) yields same before and after constants for each axis.
+             - ((before, after),) yields same before and after constants for each axis.
              - constant (integer) is a shortcut for before = after = constant for
                all axes.
     end_values
@@ -1221,7 +1224,7 @@ def pad(
         and that will form the edge of the padded array.
              - ((before_1, after_1), ... (before_N, after_N)) yields unique end values
                for each axis.
-             - (before, after) yields same before and after end values for each axis
+             - ((before, after),) yields same before and after end values for each axis
              - end (integer) is a shortcut for before = after = end for all axes.
     reflect_type
         Used in "reflect", and "symmetric". The "even" style is the default with an
