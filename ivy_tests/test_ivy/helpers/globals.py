@@ -18,6 +18,7 @@ CURRENT_RUNNING_TEST = _Notsetval
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
 class TestData:
     test_fn: callable
+    callable_fn: callable
     fn_tree: str
     unsupported_dtypes: dict = None
 
