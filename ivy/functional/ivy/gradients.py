@@ -50,7 +50,7 @@ def _zero_gradients_to_none_and_to_ivy(grads):
 
 def _get_native_arrays_and_indices(func_ret, reshape=True):
     def map_fn(x):
-        if ivy.is_array(x):
+        if ivy.is_array(x) and ivy.is_variable(x):
             x = ivy.to_ivy(x) if ivy.is_native_array(x) else x
             if len(x.shape) == 0:
                 return ivy.to_native(x)
@@ -62,7 +62,7 @@ def _get_native_arrays_and_indices(func_ret, reshape=True):
                 return ivy.to_ivy(x)
         return x
 
-    if isinstance(func_ret, ivy.Array):
+    if ivy.is_array(func_ret) and ivy.is_variable(func_ret):
         return [], map_fn(func_ret)
 
     func_ret = ivy.nested_map(func_ret, map_fn, include_derived=True)

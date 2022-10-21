@@ -1651,3 +1651,12 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+def _is_frontend_array(x):
+    return (
+        isinstance(x, ndarray)
+        or isinstance(x, torch_tensor)
+        or isinstance(x, tf_tensor)
+        or isinstance(x, DeviceArray)
+    )
