@@ -131,11 +131,14 @@ def dirichlet(
     alpha: Union[torch.tensor, float, Sequence[float]],
     /,
     *,
-    size: Optional[Union[int, Sequence[int]]] = None,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
+    seed: Optional[int] = None,
     dtype: Optional[torch.dtype] = None,
 ) -> torch.Tensor:
     size = size if not None else len(alpha)
+    if seed is not None:
+        torch.manual_seed(seed)
     return torch.Tensor(
         torch.distributions.dirichlet.Dirichlet(alpha).sample(size), dtype=dtype
     )

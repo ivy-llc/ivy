@@ -1110,8 +1110,9 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        size: Optional[ivy.Container] = None,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.dirichlet. This method
@@ -1128,6 +1129,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output container, for writing the result to.
 
@@ -1173,8 +1176,9 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        size: Optional[ivy.Container] = None,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.dirichlet. This method
@@ -1191,6 +1195,8 @@ class ContainerWithRandom(ContainerBase):
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output container, for writing the result to.
 

@@ -555,8 +555,9 @@ def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
     *,
-    size: Optional[Union[int, Sequence[int]]],
+    size: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draw size samples of dimension k from a Dirichlet distribution.
@@ -575,6 +576,8 @@ def dirichlet(
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to.
 
@@ -600,4 +603,10 @@ def dirichlet(
         [0.15564976, 0.50542368, 0.33892656],
         [0.1325352 , 0.44439589, 0.42306891]]])
     """
-    return ivy.current_backend().dirichlet(alpha, size=size, out=out, dtype=dtype)
+    return ivy.current_backend().dirichlet(
+        alpha,
+        size=size,
+        dtype=dtype,
+        seed=seed,
+        out=out,
+    )

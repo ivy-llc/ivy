@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Sequence
+from typing import Optional, Union
 
 # local
 import ivy
@@ -379,8 +379,9 @@ class ArrayWithRandom(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        size: Optional[Union[int, Sequence[int]]] = None,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.dirichlet. This method simply
@@ -398,6 +399,8 @@ class ArrayWithRandom(abc.ABC):
         dtype
             output array data type. If ``dtype`` is ``None``, the output array data
             type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to.
 
@@ -422,4 +425,4 @@ class ArrayWithRandom(abc.ABC):
             [0.15564976, 0.50542368, 0.33892656],
             [0.1325352 , 0.44439589, 0.42306891]]])
         """
-        return ivy.dirichlet(self, size=size, dtype=dtype, out=out)
+        return ivy.dirichlet(self, size=size, dtype=dtype, seed=seed, out=out)

@@ -151,10 +151,13 @@ def dirichlet(
     alpha: Union[JaxArray, float, Sequence[float]],
     /,
     *,
-    size: Optional[Union[int, Sequence[int]]] = None,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
+    seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return jax.random.dirichlet(rng_input, shape=size, key=rng_input, dtype=dtype)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
+    return jax.random.dirichlet(rng_input, alpha, shape=size, dtype=dtype)

@@ -123,15 +123,16 @@ def dirichlet(
     alpha: Union[np.ndarray, float, Sequence[float]],
     /,
     *,
-    size: Optional[Union[int, Sequence[int]]] = None,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     size = size if not None else len(alpha)
     dtype = dtype if not None else np.float64
-    return np.asarray(
-        np.random.dirichlet(alpha, size=size), dtype=dtype
-    )
+    if seed is not None:
+        np.random.seed(seed)
+    return np.asarray(np.random.dirichlet(alpha, size=size), dtype=dtype)
 
 
 dirichlet.support_native_out = False

@@ -346,11 +346,13 @@ def test_shuffle(
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
 )
 def test_dirichlet(
     dtype_and_alpha,
     size,
+    seed,
     with_out,
     as_variable,
     num_positional_args,
@@ -373,6 +375,7 @@ def test_dirichlet(
         fn_name="dirichlet",
         alpha=np.asarray(alpha[0], dtype=dtype[0]),
         size=size,
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)

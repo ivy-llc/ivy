@@ -138,8 +138,9 @@ def dirichlet(
     alpha: Union[tf.Tensor, tf.Variable, float, Sequence[float]],
     /,
     *,
-    size: Optional[Union[int, Sequence[int]]] = None,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    seed: Optional[int] = None,
     dtype: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     size = size if not None else len(alpha)
@@ -147,6 +148,8 @@ def dirichlet(
         dtype = tf.float64
     else:
         dtype = dtype
+    if seed is not None:
+        tf.random.set_seed(seed)
     return tf.cast(
         tfd.Dirichlet(
             concentration=alpha,
