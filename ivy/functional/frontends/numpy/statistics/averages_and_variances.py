@@ -26,6 +26,17 @@ def mean(
 
     return ret
 
+def var(a,/, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
+
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype:
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+    ret = ivy.var(a, axis=axis, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+var.unsupported_dtypes = {"torch": ("float16",)}
 
 @from_zero_dim_arrays_to_float
 def nanmean(
