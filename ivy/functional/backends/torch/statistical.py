@@ -292,4 +292,5 @@ def einsum(
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    operands = (operand.to(torch.float32) for operand in operands)
     return torch.einsum(equation, *operands)
