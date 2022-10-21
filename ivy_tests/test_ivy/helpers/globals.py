@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 
 
-_ivy_fws_dict = {
+FWS_DICT = {
     "numpy": lambda: _get_ivy_numpy(),
     "jax": lambda: _get_ivy_jax(),
     "tensorflow": lambda: _get_ivy_tensorflow(),
     "tensorflow_graph": lambda: _get_ivy_tensorflow(),
     "torch": lambda: _get_ivy_torch(),
+    "": None,
 }
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
@@ -82,14 +83,14 @@ def set_frontend(framework: str):
     global CURRENT_FRONTEND
     if CURRENT_FRONTEND is _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_FRONTEND = _ivy_fws_dict[framework]
+    CURRENT_FRONTEND = FWS_DICT[framework]
 
 
 def set_backend(framework: str):
     global CURRENT_BACKEND
     if CURRENT_BACKEND is _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_BACKEND = _ivy_fws_dict[framework]
+    CURRENT_BACKEND = FWS_DICT[framework]
 
 
 # Teardown

@@ -6,20 +6,8 @@ from hypothesis import settings
 
 # local
 from ivy import clear_backend_stack, DefaultDevice
-from ivy_tests.test_ivy import helpers
+from ivy_tests.test_ivy.helpers import globals as test_globals
 
-
-MAX_EXAMPLES: int
-
-FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
-
-TEST_BACKENDS: Dict[str, callable] = {
-    "numpy": lambda: helpers.get_ivy_numpy(),
-    "jax": lambda: helpers.get_ivy_jax(),
-    "tensorflow": lambda: helpers.get_ivy_tensorflow(),
-    "torch": lambda: helpers.get_ivy_torch(),
-    "": lambda: None,
-}
 
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
@@ -57,7 +45,7 @@ def pytest_configure(config):
     # framework
     raw_value = config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = FW_STRS
+        backend_strs = ["numpy", "jax", "tensorflow", "torch"]
     else:
         backend_strs = raw_value.split(",")
 
@@ -85,7 +73,7 @@ def pytest_configure(config):
                     TEST_PARAMS_CONFIG.append(
                         (
                             device,
-                            TEST_BACKENDS[backend_str](),
+                            test_globals.FWS_DICT[backend_str](),
                             compile_graph,
                             implicit,
                             backend_str,

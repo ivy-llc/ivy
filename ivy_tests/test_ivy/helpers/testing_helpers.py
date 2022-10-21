@@ -69,11 +69,6 @@ _ivy_fws_dict = {
 }
 
 
-def get_current_frontend():
-    """Returns the current frontend framework, returns None if no frontend is set."""
-    return frontend_fw()
-
-
 @st.composite
 def num_positional_args(draw, *, fn_name: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
