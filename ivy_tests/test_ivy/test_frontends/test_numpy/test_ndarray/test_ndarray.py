@@ -450,7 +450,7 @@ def test_numpy_ndarray_argmin(
         },
         frontend="numpy",
         class_name="ndarray",
-        method_name="min",
+        method_name="argmin",
         frontend_class=np.ndarray,
         fn_tree="ndarray.argmin",
     )
