@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy
@@ -318,1139 +318,549 @@ def test_multi_head_attention_layer(
 # -------------#
 
 
+@st.composite
+def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    strides = draw(st.integers(min_value=1, max_value=3))
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    batch_size = draw(st.integers(1, 1))
+    filter_shape = draw(
+        helpers.get_shape(
+            min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+        )
+    )
+    input_channels = draw(st.integers(1, 3))
+    output_channels = draw(st.integers(1, 3))
+    dilations = draw(st.integers(1, 2))
+    x_dim = []
+    for i in range(dim):
+        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+        x_dim.append(draw(st.integers(min_x, 20)))
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = [batch_size] + x_dim + [input_channels]
+    else:
+        x_shape = [batch_size] + [input_channels] + x_dim
+
+    if transpose:
+        output_shape = []
+        for i in range(dim):
+            output_shape.append(
+                ivy.deconv_length(
+                    x_dim[i], strides, filter_shape[i], padding, dilations
+                )
+            )
+    filter_shape = list(filter_shape)
+    if dim == 1:
+        filter_shape = filter_shape[0]
+    dtype, vals = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", full=True),
+            shape=x_shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+        )
+    )
+    if transpose:
+        return (
+            dtype,
+            vals,
+            input_channels,
+            output_channels,
+            filter_shape,
+            strides,
+            dilations,
+            data_format,
+            padding,
+            output_shape,
+        )
+    return (
+        dtype,
+        vals,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        dilations,
+        data_format,
+        padding,
+    )
+
+
 # conv1d
 @handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_res=st.sampled_from(
-        [
-            (
-                [[[0.0], [3.0], [0.0]]],
-                3,
-                "SAME",
-                [[[1.0679483], [2.2363136], [0.5072848]]],
-            ),
-            (
-                [[[0.0], [3.0], [0.0]] for _ in range(5)],
-                3,
-                "SAME",
-                [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
-            ),
-            ([[[0.0], [3.0], [0.0]]], 3, "VALID", [[[2.2363136]]]),
-        ]
-    ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Conv1D.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Conv1D._forward"),
 )
-def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv1d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_size, padding, target = x_n_fs_n_pad_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-
-    target = np.array(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-
-    width = x.shape[1]
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([1, 1, output_channels], device=device, dtype=dtype))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv1d_layer = ivy.Conv1D(
+def test_conv1d_layer(
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    device,
+):
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
-        filter_size,
-        1,
+        filter_shape,
+        strides,
+        dilations,
+        data_format,
         padding,
-        device=device,
-        v=v,
-        dtype=dtype,
+    ) = _x_ic_oc_f_s_d_df_p
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="Conv1D",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        atol_=1e-02,
+        rtol_=1e-02,
     )
-    ret = conv1d_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_width = width if padding == "SAME" else width - filter_size + 1
-    assert ret.shape == (batch_size, new_width, output_channels)
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv1d_layer(x)), target, rtol=tolerance_dict[dtype]
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # conv1d transpose
+@handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_outshp_n_res=st.sampled_from(
-        [
-            (
-                [[[0.0], [3.0], [0.0]]],
-                3,
-                "SAME",
-                (1, 3, 1),
-                [[[0.5072848], [2.2363136], [1.0679483]]],
-            ),
-            (
-                [[[0.0], [3.0], [0.0]] for _ in range(5)],
-                3,
-                "SAME",
-                (5, 3, 1),
-                [[[0.5072848], [2.2363136], [1.0679483]] for _ in range(5)],
-            ),
-            (
-                [[[0.0], [3.0], [0.0]]],
-                3,
-                "VALID",
-                (1, 5, 1),
-                [[[0.0], [0.5072848], [2.2363136], [1.0679483], [0.0]]],
-            ),
-        ]
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1, transpose=True),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(
+        fn_name="Conv1DTranspose.__init__"
     ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="Conv1DTranspose._forward"
+    ),
 )
 def test_conv1d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_size, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-
-    target = np.array(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-    width = x.shape[1]
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([1, 1, output_channels], device=device, dtype=dtype))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv1d_trans_layer = ivy.Conv1DTranspose(
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
-        filter_size,
-        1,
+        filter_shape,
+        strides,
+        dilations,
+        data_format,
         padding,
-        output_shape=out_shape,
-        device=device,
-        v=v,
-        dtype=dtype,
+        output_shape,
+    ) = _x_ic_oc_f_s_d_df_p
+    assume(not (fw == "tensorflow" and dilations > 1 and device == "cpu"))
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "output_shape": output_shape,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=False,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        ground_truth_backend="jax",
+        class_name="Conv1DTranspose",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
     )
-    ret = conv1d_trans_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_width = width if padding == "SAME" else width + filter_size - 1
-    assert ret.shape == (batch_size, new_width, output_channels)
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv1d_trans_layer(x)), target, rtol=tolerance_dict[dtype]
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # # conv2d
 @given(
-    x_n_fs_n_pad_n_res=st.sampled_from(
-        [
-            (
-                [
-                    [
-                        [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                        [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                        [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                        [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                        [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                    ]
-                ],
-                [3, 3],
-                "SAME",
-                [
-                    [
-                        [
-                            [20.132391],
-                            [22.194885],
-                            [25.338402],
-                            [28.481918],
-                            [10.9251585],
-                        ],
-                        [[37.611], [40.64039], [45.05442], [49.468452], [20.488476]],
-                        [[59.139305], [62.71055], [67.12458], [71.53861], [30.220888]],
-                        [[80.66761], [84.78071], [89.19474], [93.60877], [39.9533]],
-                        [[23.54352], [30.85646], [32.52338], [34.1903], [15.24139]],
-                    ]
-                ],
-            ),
-            (
-                [
-                    [
-                        [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                        [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                        [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                        [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                        [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                    ]
-                    for _ in range(5)
-                ],
-                [3, 3],
-                "SAME",
-                [
-                    [
-                        [
-                            [20.132391],
-                            [22.194885],
-                            [25.338402],
-                            [28.481918],
-                            [10.9251585],
-                        ],
-                        [[37.611], [40.64039], [45.05442], [49.468452], [20.488476]],
-                        [[59.139305], [62.71055], [67.12458], [71.53861], [30.220888]],
-                        [[80.66761], [84.78071], [89.19474], [93.60877], [39.9533]],
-                        [[23.54352], [30.85646], [32.52338], [34.1903], [15.24139]],
-                    ]
-                    for _ in range(5)
-                ],
-            ),
-            (
-                [
-                    [
-                        [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                        [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                        [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                        [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                        [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                    ]
-                ],
-                [3, 3],
-                "VALID",
-                [
-                    [
-                        [[40.64039], [45.05442], [49.468452]],
-                        [[62.71055], [67.12458], [71.53861]],
-                        [[84.78071], [89.19474], [93.60877]],
-                    ]
-                ],
-            ),
-        ],
-    ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Conv2D.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Conv2D._forward"),
 )
 def test_conv2d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-    target = np.asarray(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, output_channels], device=device, dtype=dtype)
-        )
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv2d_layer = ivy.Conv2D(
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
         filter_shape,
-        1,
+        strides,
+        dilations,
+        data_format,
         padding,
-        device=device,
-        v=v,
-        dtype=dtype,
+    ) = _x_ic_oc_f_s_d_df_p
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="Conv2D",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
     )
-    ret = conv2d_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_shape = (
-        input_shape
-        if padding == "SAME"
-        else [item - filter_shape[i] + 1 for i, item in enumerate(input_shape)]
-    )
-    assert ret.shape == tuple([batch_size] + new_shape + [output_channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv2d_layer(x)), target, rtol=tolerance_dict[dtype]
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # # conv2d transpose
+@handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_outshp_n_res=st.sampled_from(
-        [
-            (
-                [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-                [3, 3],
-                "SAME",
-                (1, 3, 3, 1),
-                [
-                    [
-                        [[0.5072848], [2.2363136], [1.0679483]],
-                        [[0.46643972], [-0.7934026], [1.516176]],
-                        [[-0.64861274], [4.0714245], [4.818525]],
-                    ]
-                ],
-            ),
-            (
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [3.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ]
-                    for _ in range(5)
-                ],
-                [3, 3],
-                "SAME",
-                (5, 3, 3, 1),
-                [
-                    [
-                        [[0.5072848], [2.2363136], [1.0679483]],
-                        [[0.46643972], [-0.7934026], [1.516176]],
-                        [[-0.64861274], [4.0714245], [4.818525]],
-                    ]
-                    for _ in range(5)
-                ],
-            ),
-            (
-                [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-                [3, 3],
-                "VALID",
-                (1, 5, 5, 1),
-                [
-                    [
-                        [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        [[0.0], [0.5072848], [2.2363136], [1.0679483], [0.0]],
-                        [[0.0], [0.46643972], [-0.7934026], [1.516176], [0.0]],
-                        [[0.0], [-0.64861274], [4.0714245], [4.818525], [0.0]],
-                        [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                    ]
-                ],
-            ),
-        ]
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(transpose=True),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(
+        fn_name="Conv2DTranspose.__init__"
     ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="Conv2DTranspose._forward"
+    ),
 )
 def test_conv2d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_shape, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-    target = np.asarray(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, output_channels], device=device, dtype=dtype)
-        )
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv2d_transpose_layer = ivy.Conv2DTranspose(
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
         filter_shape,
-        1,
+        strides,
+        dilations,
+        data_format,
         padding,
-        output_shape=out_shape,
-        device=device,
-        v=v,
-        dtype=dtype,
+        output_shape,
+    ) = _x_ic_oc_f_s_d_df_p
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    assume("bfloat16" not in input_dtype[0])
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "output_shape": output_shape,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="Conv2DTranspose",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        ground_truth_backend="jax",
     )
-    ret = conv2d_transpose_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_shape = (
-        input_shape
-        if padding == "SAME"
-        else [item + filter_shape[i] - 1 for i, item in enumerate(input_shape)]
-    )
-    assert ret.shape == tuple([batch_size] + new_shape + [output_channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv2d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # # depthwise conv2d
+@handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_res=st.sampled_from(
-        [
-            (
-                [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-                [3, 3],
-                "SAME",
-                [
-                    [
-                        [[4.818525], [4.0714245], [-0.64861274]],
-                        [[1.516176], [-0.7934026], [0.46643972]],
-                        [[1.0679483], [2.2363136], [0.5072848]],
-                    ]
-                ],
-            ),
-            (
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [3.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ]
-                    for _ in range(5)
-                ],
-                [3, 3],
-                "SAME",
-                [
-                    [
-                        [[4.818525], [4.0714245], [-0.64861274]],
-                        [[1.516176], [-0.7934026], [0.46643972]],
-                        [[1.0679483], [2.2363136], [0.5072848]],
-                    ]
-                    for _ in range(5)
-                ],
-            ),
-            (
-                [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-                [3, 3],
-                "VALID",
-                [[[[-0.7934026]]]],
-            ),
-        ]
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(depthwise=True),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(
+        fn_name="DepthwiseConv2D.__init__"
     ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="DepthwiseConv2D._forward"
+    ),
 )
 def test_depthwise_conv2d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    device,
+    fw,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-    target = np.asarray(target)
-    num_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (num_channels * 2)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, tuple(filter_shape + [num_channels])),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, num_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (num_channels * 2)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, tuple(filter_shape + [num_channels])),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([1, 1, num_channels], device=device, dtype=dtype))
-        v = Container({"w": w, "b": b})
-
-    else:
-        v = None
-    depthwise_conv2d_layer = ivy.DepthwiseConv2D(
-        num_channels, filter_shape, 1, padding, device=device, v=v, dtype=dtype
-    )
-    ret = depthwise_conv2d_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_shape = (
-        input_shape
-        if padding == "SAME"
-        else [item - filter_shape[i] + 1 for i, item in enumerate(input_shape)]
-    )
-    assert ret.shape == tuple([batch_size] + new_shape + [num_channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(depthwise_conv2d_layer(x)), target, rtol=tolerance_dict[dtype]
+    (
+        input_dtype,
+        vals,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        dilations,
+        data_format,
+        padding,
+    ) = _x_ic_oc_f_s_d_df_p
+    assume(not (fw == "tensorflow" and dilations > 1 and strides > 1))
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "num_channels": input_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="DepthwiseConv2D",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        ground_truth_backend="jax",
     )
 
 
-#
-# # conv3d
+# conv3d
+@handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_res=st.sampled_from(
-        [
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                ],
-                [3, 3, 3],
-                "SAME",
-                [
-                    [
-                        [
-                            [[-3.7063813], [1.4541019], [-3.9670086]],
-                            [[2.9153447], [-0.4003182], [3.108947]],
-                            [[4.9739475], [3.8452792], [2.8906898]],
-                        ],
-                        [
-                            [[3.456687], [-4.986037], [-4.290678]],
-                            [[-4.457924], [4.4229302], [0.70713985]],
-                            [[0.3002848], [3.0316954], [-1.2113112]],
-                        ],
-                        [
-                            [[4.818525], [4.0714245], [-0.64861274]],
-                            [[1.516176], [-0.7934026], [0.46643972]],
-                            [[1.0679483], [2.2363136], [0.5072848]],
-                        ],
-                    ]
-                ],
-            ),
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                    for _ in range(5)
-                ],
-                [3, 3, 3],
-                "SAME",
-                [
-                    [
-                        [
-                            [[-3.7063813], [1.4541019], [-3.9670086]],
-                            [[2.9153447], [-0.4003182], [3.108947]],
-                            [[4.9739475], [3.8452792], [2.8906898]],
-                        ],
-                        [
-                            [[3.456687], [-4.986037], [-4.290678]],
-                            [[-4.457924], [4.4229302], [0.70713985]],
-                            [[0.3002848], [3.0316954], [-1.2113112]],
-                        ],
-                        [
-                            [[4.818525], [4.0714245], [-0.64861274]],
-                            [[1.516176], [-0.7934026], [0.46643972]],
-                            [[1.0679483], [2.2363136], [0.5072848]],
-                        ],
-                    ]
-                    for _ in range(5)
-                ],
-            ),
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                ],
-                [3, 3, 3],
-                "VALID",
-                [[[[[4.4229302]]]]],
-            ),
-        ]
-    ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Conv3D.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Conv3D._forward"),
 )
 def test_conv3d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    else:
-        x = ivy.array(x, dtype=dtype, device=device)
-    target = np.asarray(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:4])
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, 1, output_channels], device=device, dtype=dtype)
-        )
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv3d_layer = ivy.Conv3D(
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
         filter_shape,
-        1,
+        strides,
+        dilations,
+        data_format,
         padding,
-        device=device,
-        v=v,
-        dtype=dtype,
-    )
-    ret = conv3d_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_shape = (
-        input_shape
-        if padding == "SAME"
-        else [item - filter_shape[i] + 1 for i, item in enumerate(input_shape)]
-    )
-    assert ret.shape == tuple([batch_size] + new_shape + [output_channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv3d_layer(x)), target, rtol=tolerance_dict[dtype]
+    ) = _x_ic_oc_f_s_d_df_p
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="Conv3D",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        ground_truth_backend="jax",
     )
 
 
-# # conv3d transpose
+# conv3d transpose
+@handle_cmd_line_args
 @given(
-    x_n_fs_n_pad_n_outshp_n_res=st.sampled_from(
-        [
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                ],
-                [3, 3, 3],
-                "SAME",
-                (1, 3, 3, 3, 1),
-                [
-                    [
-                        [
-                            [[0.5072848], [2.2363136], [1.0679483]],
-                            [[0.46643972], [-0.7934026], [1.516176]],
-                            [[-0.64861274], [4.0714245], [4.818525]],
-                        ],
-                        [
-                            [[-1.2113112], [3.0316954], [0.3002848]],
-                            [[0.70713985], [4.4229302], [-4.457924]],
-                            [[-4.290678], [-4.986037], [3.456687]],
-                        ],
-                        [
-                            [[2.8906898], [3.8452792], [4.9739475]],
-                            [[3.108947], [-0.4003182], [2.9153447]],
-                            [[-3.9670086], [1.4541019], [-3.7063813]],
-                        ],
-                    ]
-                ],
-            ),
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                    for _ in range(5)
-                ],
-                [3, 3, 3],
-                "SAME",
-                (5, 3, 3, 3, 1),
-                [
-                    [
-                        [
-                            [[0.5072848], [2.2363136], [1.0679483]],
-                            [[0.46643972], [-0.7934026], [1.516176]],
-                            [[-0.64861274], [4.0714245], [4.818525]],
-                        ],
-                        [
-                            [[-1.2113112], [3.0316954], [0.3002848]],
-                            [[0.70713985], [4.4229302], [-4.457924]],
-                            [[-4.290678], [-4.986037], [3.456687]],
-                        ],
-                        [
-                            [[2.8906898], [3.8452792], [4.9739475]],
-                            [[3.108947], [-0.4003182], [2.9153447]],
-                            [[-3.9670086], [1.4541019], [-3.7063813]],
-                        ],
-                    ]
-                    for _ in range(5)
-                ],
-            ),
-            (
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [3.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                ],
-                [3, 3, 3],
-                "VALID",
-                (1, 5, 5, 5, 1),
-                [
-                    [
-                        [
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.5072848], [2.2363136], [1.0679483], [0.0]],
-                            [[0.0], [0.46643972], [-0.7934026], [1.516176], [0.0]],
-                            [[0.0], [-0.64861274], [4.0714245], [4.818525], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [-1.2113112], [3.0316954], [0.3002848], [0.0]],
-                            [[0.0], [0.70713985], [4.4229302], [-4.457924], [0.0]],
-                            [[0.0], [-4.290678], [-4.986037], [3.456687], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [2.8906898], [3.8452792], [4.9739475], [0.0]],
-                            [[0.0], [3.108947], [-0.4003182], [2.9153447], [0.0]],
-                            [[0.0], [-3.9670086], [1.4541019], [-3.7063813], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        ],
-                        [
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                            [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                        ],
-                    ]
-                ],
-            ),
-        ]
+    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3, transpose=True),
+    weight_initializer=_sample_initializer(),
+    bias_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(
+        fn_name="Conv3DTranspose.__init__"
     ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="Conv3DTranspose._forward"
+    ),
 )
 def test_conv3d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
+    _x_ic_oc_f_s_d_df_p,
+    weight_initializer,
+    bias_initializer,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        return
-    if ivy.current_backend_str() in ("numpy", "jax"):
-        # numpy and jax do not yet support conv1d
-        return
-    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv2d
-        # doesn't seem to be able to handle it
-        return
-    # smoke test
-    x, filter_shape, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
-    if as_variable:
-        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    x = ivy.array(x, dtype=dtype, device=device)
-    target = np.asarray(target)
-    input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:4])
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, 1, output_channels], device=device, dtype="float32")
-        )
-        v = Container({"w": w, "b": b})
-    elif with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(
-                    -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
-                ),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.zeros([1, 1, 1, 1, output_channels], device=device, dtype=dtype)
-        )
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    conv3d_transpose_layer = ivy.Conv3DTranspose(
+    (
+        input_dtype,
+        vals,
         input_channels,
         output_channels,
         filter_shape,
-        1,
+        strides,
+        dilations,
+        data_format,
         padding,
-        output_shape=out_shape,
-        device=device,
-        v=v,
-        dtype=dtype,
-    )
-    ret = conv3d_transpose_layer(x)
-
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    new_shape = (
-        input_shape
-        if padding == "SAME"
-        else [item + filter_shape[i] - 1 for i, item in enumerate(input_shape)]
-    )
-    assert ret.shape == tuple([batch_size] + new_shape + [output_channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(conv3d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
+        output_shape,
+    ) = _x_ic_oc_f_s_d_df_p
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "filter_shape": filter_shape,
+            "strides": strides,
+            "padding": padding,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "output_shape": output_shape,
+            "data_format": data_format,
+            "dilations": dilations,
+            "device": device,
+            "dtype": input_dtype[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": vals[0]},
+        class_name="Conv3DTranspose",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        ground_truth_backend="jax",
     )
 
 

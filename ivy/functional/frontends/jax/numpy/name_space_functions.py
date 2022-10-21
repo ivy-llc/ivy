@@ -131,8 +131,15 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
-    return ivy.einsum(equation=optimize, *operands, out=out)
+def einsum(
+    subscripts,
+    *operands,
+    out=None,
+    optimize="optimal",
+    precision=None,
+    _use_xeinsum=False
+):
+    return ivy.einsum(subscripts, *operands, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -264,3 +271,8 @@ def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def bitwise_and(x1, x2):
+    return ivy.bitwise_and(x1, x2)
