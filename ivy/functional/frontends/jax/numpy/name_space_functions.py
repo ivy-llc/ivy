@@ -131,9 +131,8 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
-    return ivy.einsum(equation=optimize, *operands, out=out)
-
+def einsum(subscripts, *operands, out=None, optimize='optimal', precision=None, _use_xeinsum=False):
+    return ivy.einsum(subscripts,*operands, out=out)
 
 @to_ivy_arrays_and_back
 def floor(x):
