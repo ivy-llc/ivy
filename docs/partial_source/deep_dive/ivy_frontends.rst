@@ -2,6 +2,8 @@ Ivy Frontends
 =============
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
+.. _`tensorflow.tan`: https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109
+.. _`aliases`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
@@ -32,21 +34,37 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 The Frontend Basics
 -------------------
 
-**NOTE:**
-
-Type hints, docstrings and examples are not required when working on
-frontend functions.
-
 When using functions and methods of Ivy Frontends, in addition to importing ivy itself
-like :code:`import ivy` please also import the corrisponding Frontend module.
+like :code:`import ivy` please also import the corresponding Frontend module.
 For example, to use ivy's tensorflow frontend:
 
     :code:`import ivy.functional.frontends.tensorflow as tf_frontend`
 
 ----
 
+When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call `tensorflow.tan`_ rather than :code:`tensorflow.math.tan`. In this particular case both are fine, and in fact are `aliases`_.
+
+However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions :code:`jax.numpy.abs` and :code:`jax.lax.abs` both exist, while `jax.abs` does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :code:`jax.abs` in our frontend.
+
+This would result in :code:`jax.numpy.abs` or :code:`jax.lax.abs` overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native :code:`jax` framework.
+
+If you accidentally test a function with :code:`fn_tree="<func_name>"` instead of :code:`fn_tree="<lax|numpy>.<func_name>"`, you will see an error since the wrong frontend function is being tested.
+
+Therefore, in order to avoid this potential conflict:
+
+* All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing :code:`fn_tree="math.tan"` instead of :code:`fn_tree="tan"` in the frontend test.
+
+* The `__init__.py` file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of :code:`jax.abs` explained above.
+
+* You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.
+
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
+
+
+**NOTE:** Type hints, docstrings and examples are not required when working on
+frontend functions.
+
 
 **Jax**
 
