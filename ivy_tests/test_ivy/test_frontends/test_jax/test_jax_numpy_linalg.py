@@ -457,5 +457,3 @@ def test_jax_norm(
                                    ord=ord_param,
                                    axis=axis,
                                    keepdims=keepdims)
-
-
