@@ -164,14 +164,13 @@ def test_sinc(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float",full=False), 
+        min_num_dims=1, max_num_dims=1
     ),
-    dtype=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="vorbis_window"),
 )
 def test_vorbis_window(
     dtype_and_x,
-    dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -192,7 +191,7 @@ def test_vorbis_window(
         fw=fw,
         fn_name="vorbis_window",
         x=x[0],
-        dtype=dtype,
+        dtype=input_dtype,
     )
 
 
@@ -200,7 +199,7 @@ def test_vorbis_window(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(
             helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
         ),
