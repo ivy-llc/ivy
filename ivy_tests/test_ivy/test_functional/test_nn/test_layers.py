@@ -132,7 +132,6 @@ def test_dropout(
         x=x[0],
         prob=prob,
         scale=scale,
-        dtype=dtype,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
@@ -155,6 +154,7 @@ def test_dropout(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
+    data_format=st.sampled_from(["NWC", "NCW"]),
     num_positional_args=helpers.num_positional_args(fn_name="dropout1d"),
 )
 def test_dropout1d(
@@ -162,6 +162,7 @@ def test_dropout1d(
     dtype_and_x,
     prob,
     training,
+    data_format,
     as_variable,
     with_out,
     num_positional_args,
@@ -186,7 +187,8 @@ def test_dropout1d(
         x=x[0],
         prob=prob,
         training=training,
-        dtype=dtype,
+        data_format = data_format,
+        ground_truth_backend='tensorflow',
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:

@@ -87,7 +87,6 @@ class ArrayWithLayers(abc.ABC):
             /,
             *,
             training: bool = True,
-            dtype: ivy.Dtype = None,
             data_format: str = "NWC",
             out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -96,7 +95,6 @@ class ArrayWithLayers(abc.ABC):
             prob,
             training=training,
             data_format=data_format,
-            dtype=dtype,
             out=out,
         )
 

@@ -234,7 +234,7 @@ def dropout1d(
         controls whether dropout1d is performed during training or ignored
         during testing.
     data_format
-        NWC" or "NCW". Defaults to "NWC"..
+        "NWC" or "NCW". Defaults to "NWC".
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.

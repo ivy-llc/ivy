@@ -452,7 +452,7 @@ def dropout1d(
         if data_format == "NCW":
             perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
             x = tf.transpose(x, perm)
-        noise_shape = x.shape.as_list()
+        noise_shape = list(x.shape)
         noise_shape[-2] = 1
         res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
         if data_format == "NCW":

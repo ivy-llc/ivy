@@ -688,10 +688,17 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if data_format == "NWC":
-        perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-        x = torch.permute(x, perm)
-    res = torch.nn.functional.dropout1d(x, p=prob, training=training)
-    if data_format == "NWC":
-        res = torch.permute(res, perm)
-    return res
+    if training:
+        if data_format == "NWC":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = torch.permute(x, perm)
+        # ToDo: switch to native dropout1d once torch version is updated.
+        noise_shape = list(x.shape)
+        noise_shape[-1] = 1
+        mask = torch.rand(noise_shape) > prob
+        res = torch.where(mask, x / (1 - prob), 0)
+        if data_format == "NWC":
+            res = torch.permute(res, perm)
+        return res
+    else:
+      return x
