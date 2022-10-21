@@ -297,6 +297,11 @@ def RightShift(*, x, y, name="RightShift"):
 
 
 @to_ivy_arrays_and_back
+def Round(*, x, name="Round"):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
@@ -361,6 +366,11 @@ def ZerosLike(*, x, name="ZerosLike"):
 @to_ivy_arrays_and_back
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
+@to_ivy_arrays_and_back
+def Pow(*, x, y, name="Pow"):
+    return ivy.pow(x, y)
 
 
 def Relu6(features, name="Relu6"):
