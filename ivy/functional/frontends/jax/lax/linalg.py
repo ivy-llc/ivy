@@ -33,3 +33,7 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+
+@to_ivy_arrays_and_back
+def matrix_power(x,n):
+    return ivy.matrix_power(x,n)
