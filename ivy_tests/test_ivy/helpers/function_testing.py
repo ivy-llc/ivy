@@ -398,7 +398,6 @@ def test_frontend_function(
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
     with_inplace: bool = False,
-    has_aliases: bool = False,
     all_aliases: List[str] = None,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
@@ -426,9 +425,6 @@ def test_frontend_function(
     with_inplace
         if True, the function is only tested with direct inplace update back to
         the inputted array and ignore the value of with_out.
-    has_aliases
-        if True, we test the aliases of the function against the same functions
-        of the target framework
     all_aliases
         a list of strings containing all aliases for that function
         in the current frontend with their full namespaces.
@@ -750,7 +746,7 @@ def test_frontend_function(
     _test_frontend_function(test_unsupported, args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
-    if has_aliases:
+    if all_aliases:
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_dict, fn_name, frontend_submods = _get_function(
