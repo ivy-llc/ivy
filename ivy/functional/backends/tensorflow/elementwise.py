@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional
-
 import tensorflow as tf
 
 # local
@@ -161,7 +160,6 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -695,6 +693,17 @@ def maximum(
     return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
