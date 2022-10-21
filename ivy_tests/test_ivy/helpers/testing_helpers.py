@@ -8,6 +8,7 @@ from typing import Union
 # local
 import ivy
 from .hypothesis_helpers import number_helpers as nh
+from .globals import TestData
 
 
 cmd_line_args = (
@@ -119,6 +120,37 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
     if cl_arg is not None:
         return draw(st.booleans().filter(lambda x: x == cl_arg))
     return draw(st.booleans())
+
+
+# Decorators
+
+
+def handle_test(*, fn_tree: str, **_given_kwargs):
+    def test_wrapper(test_func):
+        def wrapped_test(*args, **kwargs):
+            return test_func(*args, **kwargs)
+
+        return wrapped_test
+
+    return test_wrapper
+
+
+def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
+    print("I'm called!")
+
+    def test_wrapper(test_fn):
+        print("I'm being wrapped!")
+
+        def wrapped_test(*args, **kwargs):
+            print("I'm running!")
+            return test_fn(*args, **kwargs)
+
+        test_data = TestData(test_fn=wrapped_test, fn_tree=fn_tree)
+        print(test_data)
+        print("i'm wrapped:(")
+        return wrapped_test
+
+    return test_wrapper
 
 
 def handle_cmd_line_args(test_fn):
