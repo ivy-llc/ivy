@@ -61,6 +61,11 @@ def solve(a, b):
 
 
 @to_ivy_arrays_and_back
+def solve(a, b):
+    return ivy.solve(a, b)
+
+
+@to_ivy_arrays_and_back
 def norm(x, ord=None, axis=None, keepdims=False):
     if type(axis) in [list, tuple] and len(axis) == 2:
         return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
