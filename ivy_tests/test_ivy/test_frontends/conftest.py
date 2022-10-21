@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 def run_around_tests(
     request, device, backend_fw, fixt_frontend_str, compile_graph, fw, implicit
 ):
-    print("hi")
     test_globals.set_frontend(fixt_frontend_str)
     # test_globals.set_backend(backend_fw)
     test_globals.set_test_data(request.function.test_data)
