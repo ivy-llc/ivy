@@ -129,9 +129,7 @@ def handle_cmd_line_args(test_fn):
 
     @given(data=st.data())
     @settings(max_examples=1)
-    def new_fn(
-        data, get_command_line_flags, device, f, fw, fixt_frontend_str, *args, **kwargs
-    ):
+    def new_fn(data, fixt_cl_flags, device, f, fw, *args, **kwargs):
         gc.collect()
         flag, backend_string = (False, "")
         # skip test if device is gpu and backend is numpy
@@ -152,11 +150,11 @@ def handle_cmd_line_args(test_fn):
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:
                     kwargs[param.name] = data.draw(
-                        bool_val_flags(get_command_line_flags[param.name])
+                        bool_val_flags(fixt_cl_flags[param.name])
                     )
                 elif param.name in cmd_line_args_lists:
                     kwargs[param.name] = [
-                        data.draw(bool_val_flags(get_command_line_flags[param.name]))
+                        data.draw(bool_val_flags(fixt_cl_flags[param.name]))
                     ]
                 elif param.name == "fw":
                     kwargs["fw"] = fw if flag else backend_string

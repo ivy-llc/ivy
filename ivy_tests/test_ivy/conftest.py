@@ -107,7 +107,7 @@ def fixt_frontend_str():  # ToDo, temporary till handle test decorator is update
 
 
 @pytest.fixture(scope="session")
-def get_command_line_flags(request) -> Dict[str, bool]:
+def fixt_cl_flags(request) -> Dict[str, bool]:
     getopt = request.config.getoption
     no_extra_testing = getopt("--no-extra-testing")
 
