@@ -8,7 +8,7 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 
 def _out_shape(x, strides, pad, dilations, filters):
@@ -22,7 +22,7 @@ def _out_shape(x, strides, pad, dilations, filters):
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnresolvedReferences
 def conv1d(
@@ -65,7 +65,7 @@ def conv1d(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
@@ -132,7 +132,7 @@ def conv1d_transpose(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnresolvedReferences
 def conv2d(
@@ -190,7 +190,7 @@ def conv2d(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
@@ -270,7 +270,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -319,7 +319,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 # noinspection PyUnresolvedReferences
 def conv3d(
     x: torch.Tensor,
@@ -381,7 +381,7 @@ def conv3d(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
@@ -487,7 +487,7 @@ def conv3d_transpose(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 def conv_general_dilated(
     x: torch.Tensor,
@@ -566,7 +566,7 @@ def conv_general_dilated(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 def conv_general_transpose(
     x: torch.Tensor,

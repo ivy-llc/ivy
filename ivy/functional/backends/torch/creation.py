@@ -13,7 +13,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
-from . import version
+from . import backend_version
 
 # noinspection PyProtectedMember
 
@@ -46,7 +46,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -176,6 +176,7 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -235,7 +236,6 @@ def eye(
 
 
 eye.support_native_out = True
-eye.unsupported_dtypes = ("bfloat16",)
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
@@ -281,7 +281,7 @@ def full_like(
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -510,7 +510,7 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def logspace(
     start: Union[torch.Tensor, int],
