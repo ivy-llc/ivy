@@ -2,6 +2,7 @@
 import ivy
 from hypothesis import given, assume, strategies as st
 import numpy as np
+import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1396,10 +1397,7 @@ def test_tensorflow_Cumprod(
     ),
 )
 def test_tensorflow_Gather(
-    params_indices_others,
-    num_positional_args,
-    as_variable,
-    native_array
+    params_indices_others, num_positional_args, as_variable, native_array
 ):
     dtypes, params, indices = params_indices_others
     helpers.test_frontend_function(
@@ -1412,7 +1410,7 @@ def test_tensorflow_Gather(
         fn_tree="raw_ops.Gather",
         params=params,
         indices=indices,
-        validate_indices=True
+        validate_indices=True,
     )
 
 
@@ -2012,6 +2010,62 @@ def test_tensorflow_RightShift(
     )
 
 
+@st.composite
+def _pow_helper_tf(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", full=True),
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    )
+    dtype1, dtype2 = dtype
+    x1, x2 = x
+    if "int" in dtype2:
+        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
+
+    if ivy.is_int_dtype(dtype2):
+        max_val = ivy.iinfo(dtype2).max
+    else:
+        max_val = ivy.finfo(dtype2).max
+    max_x1 = np.max(np.abs(x1))
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+
+    return [dtype1, dtype2], [x1, x2]
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_pow_helper_tf(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
+    ),
+)
+def test_tensorflow_Pow(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Pow",
+        x=x[0],
+        y=x[1],
+    )
+
+
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
@@ -2092,4 +2146,53 @@ def test_tensorflow_Relu6(dtype_and_x, as_variable, native_array):
         frontend="tensorflow",
         fn_tree="raw_ops.Relu6",
         features=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_tensorflow_Round(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Round",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Unpack(
+    dtype_x_axis,
+    as_variable,
+    native_array,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Unpack",
+        value=x[0],
+        num=x[0].shape[axis],
+        axis=axis,
     )
