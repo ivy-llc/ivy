@@ -499,6 +499,82 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def diagflat(
+    v: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: Optional[int] = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Create a two-dimensional array with the flattened input as a diagonal.
+
+    Parameters
+    ----------
+    v
+        Input array, containing arrays which are flattened and set as the k-th diagonal
+        of the output.
+    k
+        Diagonal to set; 0, the default, corresponds to the “main” diagonal, a positive
+        (negative) k giving the number of the diagonal above (below) the main.
+    out
+        optional output container, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Container with 2-D output arrays, with ``v`` as its diagonal
+
+    Examples
+    --------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[1,2], [3,4]])
+    >>> x.diagflat()
+    ivy.array([[1, 0, 0, 0],
+           [0, 2, 0, 0],
+           [0, 0, 3, 0],
+           [0, 0, 0, 4]])
+    >>> x = ivy.array([1,2])
+    >>> x.diagflat(k=1)
+    ivy.array([[0, 1, 0],
+           [0, 0, 2],
+           [0, 0, 0]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[1,2], [3,4]])
+    >>> x.diagflat()
+    ivy.array([[1, 0, 0, 0],
+           [0, 2, 0, 0],
+           [0, 0, 3, 0],
+           [0, 0, 0, 4]])
+    >>> x = ivy.native_array([1,2])
+    >>> x.diagflat(k=1)
+    ivy.array([[0, 1, 0],
+           [0, 0, 2],
+           [0, 0, 0]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x=ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+            b=ivy.native_array([1,2]))
+    >>> x.diagflat()
+    {
+        a: (<class ivy.array.array.Array> shape=[4, 4]),
+        b: ivy.array([[1, 0],
+                      [0, 2]])
+    }
+    """
+    return current_backend(v).diagflat(v, k=k, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

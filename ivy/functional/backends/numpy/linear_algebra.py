@@ -63,6 +63,12 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
+def diagflat(
+    v: np.ndarray, /, *, k: Optional[int] = 0, out: Optional[ivy.Array] = None
+) -> np.ndarray:
+    return np.diagflat(v, k)
+
+
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None

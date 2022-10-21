@@ -82,6 +82,16 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
+def diagflat(
+    v: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: Optional[int] = 0,
+    out: Optional[ivy.Array] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diagflat(v, k)
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],

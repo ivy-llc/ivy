@@ -72,6 +72,12 @@ def diagonal(
     return ret
 
 
+def diagflat(
+    v: JaxArray, /, *, k: Optional[int] = 0, out: Optional[ivy.Array] = None
+) -> JaxArray:
+    return jnp.diagflat(v, k)
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None

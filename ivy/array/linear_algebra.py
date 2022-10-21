@@ -153,6 +153,49 @@ class ArrayWithLinearAlgebra(abc.ABC):
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
 
+    def diagflat(
+        self: ivy.Array, /, *, k: Optional[int] = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diagflat.
+        This method simply wraps the function, and so the docstring
+        for ivy.diagflat also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array, which is flattened and set as the k-th diagonal of the output.
+        k
+            Diagonal to set; 0, the default, corresponds to the “main” diagonal, a
+            positive (negative) k giving the number of the diagonal above (below) the
+            main.
+        out
+            Optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The 2-D output array, with v as its diagonal
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.diagflat()
+        ivy.array([[1, 0, 0, 0],
+               [0, 2, 0, 0],
+               [0, 0, 3, 0],
+               [0, 0, 0, 4]])
+        >>> x = ivy.array([1,2])
+        >>> x.diagflat(k=1)
+        ivy.array([[0, 1, 0],
+               [0, 0, 2],
+               [0, 0, 0]])
+        """
+        return ivy.diagflat(self._data, k=k, out=out)
+
     def eigh(
         self: ivy.Array,
     ) -> Tuple[ivy.Array]:

@@ -88,6 +88,12 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
+def diagflat(
+    v: torch.Tensor, /, *, k: Optional[int] = 0, out: Optional[ivy.Array] = None
+) -> torch.Tensor:
+    return torch.diagflat(v, k)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
