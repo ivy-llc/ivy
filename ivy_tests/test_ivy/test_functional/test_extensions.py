@@ -164,7 +164,7 @@ def test_sinc(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
+        available_dtypes=helpers.get_dtypes("float",full=False), 
         min_num_dims=1, max_num_dims=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vorbis_window"),
