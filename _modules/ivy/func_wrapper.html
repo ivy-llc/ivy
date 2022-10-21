@@ -283,6 +283,10 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
+<span class="k">def</span> <span class="nf">_is_zero_dim_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
 <div class="viewcode-block" id="from_zero_dim_arrays_to_float"><a class="viewcode-back" href="../../func_wrapper/from_zero_dim_arrays_to_float.html#ivy.func_wrapper.from_zero_dim_arrays_to_float">[docs]</a><span class="k">def</span> <span class="nf">from_zero_dim_arrays_to_float</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -304,14 +308,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># call unmodified function</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="c1"># get out arg index</span>
-        <span class="n">out_arg_pos</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arg_info</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)[</span><span class="s2">&quot;idx&quot;</span><span class="p">]</span>
-        <span class="c1"># check if out is None or out is not present in args and kwargs.</span>
-        <span class="n">out_args</span> <span class="o">=</span> <span class="n">out_arg_pos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">out_arg_pos</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
-        <span class="n">out_kwargs</span> <span class="o">=</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;out&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">out_args</span> <span class="ow">or</span> <span class="n">out_kwargs</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-        <span class="c1"># convert to float from 0 dim</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arg_names</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="c1"># get out arg index</span>
+            <span class="n">out_arg_pos</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arg_info</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)[</span><span class="s2">&quot;idx&quot;</span><span class="p">]</span>
+            <span class="c1"># check if out is None or out is not present in args and kwargs.</span>
+            <span class="n">out_args</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">out_arg_pos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">out_arg_pos</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="n">out_arg_pos</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no out argument accepted by the function</span>
+            <span class="n">out_args</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">out_kwargs</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;out&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;out&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span>
+        <span class="k">if</span> <span class="n">out_args</span> <span class="ow">and</span> <span class="n">out_kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="c1"># converting every scalar element of the tuple to float</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">ret_idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">())</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">map_nest_at_indices</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ret_idx</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># converting the scalar to float</span>
+                <span class="k">if</span> <span class="n">_is_zero_dim_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">zero_dim_arrays_to_float</span> <span class="o">=</span> <span class="kc">True</span>
