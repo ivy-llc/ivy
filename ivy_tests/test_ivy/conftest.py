@@ -5,7 +5,7 @@ from typing import Dict
 from hypothesis import settings
 
 # local
-from ivy import clear_backend_stack, DefaultDevice
+from ivy import DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
@@ -81,22 +81,15 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(
-    device, backend_fw, fixt_frontend_str, compile_graph, fw, implicit
+    request, device, backend_fw, fixt_frontend_str, compile_graph, fw, implicit
 ):
-    clear_backend_stack()
-    if backend_fw is not None:
-        with backend_fw.use:
-            if fixt_frontend_str:
-                test_globals.set_frontend(fixt_frontend_str)
-            with DefaultDevice(device):
-                yield
-                test_globals.unset_frontend()
-    else:
-        if fixt_frontend_str:
-            test_globals.set_frontend(fixt_frontend_str)
+    test_globals.set_test_data(request.function.test_data)
+
+    with backend_fw.use:
         with DefaultDevice(device):
             yield
-        test_globals.unset_frontend()
+
+    test_globals.unset_test_data()
 
 
 def pytest_generate_tests(metafunc):
@@ -170,7 +163,7 @@ def process_cl_flags(config) -> Dict[str, bool]:
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="")
+    parser.addoption("--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
 
