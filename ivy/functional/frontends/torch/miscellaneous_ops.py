@@ -3,6 +3,7 @@ import itertools
 from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.exceptions import handle_exceptions
 
 
 def flip(input, dims):
@@ -240,6 +241,7 @@ def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
 
 
+@handle_exceptions
 @to_ivy_arrays_and_back
 def combinations(input, r=2, with_replacement=False):
     if input.ndim > 1:

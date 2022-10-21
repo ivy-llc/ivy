@@ -887,6 +887,8 @@ def test_torch_lcm(
         shape=st.tuples(
             st.integers(min_value=1, max_value=5),
         ),
+        min_value=-100,
+        max_value=100,
     ),
     r=st.integers(min_value=1, max_value=5),
     with_replacement=st.booleans(),
@@ -903,7 +905,7 @@ def test_torch_combinations(
     native_array,
 ):
     input_dtype, x = dtype_and_x
-    ret, ret_np = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -911,7 +913,7 @@ def test_torch_combinations(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="combinations",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
+        input=np.asarray(x, dtype=input_dtype[0]),
         r=r,
         with_replacement=with_replacement,
     )
