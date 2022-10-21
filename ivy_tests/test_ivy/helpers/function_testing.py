@@ -1331,12 +1331,26 @@ def test_frontend_method(
         if isinstance(x, np.ndarray)
         else ivy.as_native_dtype(x)
         if isinstance(x, ivy.Dtype)
+        else ivy.as_native_dev(x)
+        if isinstance(x, ivy.Device)
         else x,
     )
     kwargs_method_frontend = ivy.nested_map(
         kwargs_method_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
     )
+
+    # change ivy dtypes to native dtypes
+    if "dtype" in kwargs_method_frontend:
+        kwargs_method_frontend["dtype"] = ivy.as_native_dtype(
+            kwargs_method_frontend["dtype"]
+        )
+
+    # change ivy device to native devices
+    if "device" in kwargs_method_frontend:
+        kwargs_method_frontend["device"] = ivy.as_native_dev(
+            kwargs_method_frontend["device"]
+        )
 
     ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
     frontend_ret = ins_gt.__getattribute__(method_name)(
@@ -1548,6 +1562,8 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
+    if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
+        ret = ret.data
     return ret, flatten_and_to_np(ret=ret)
 
 
