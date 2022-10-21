@@ -1397,10 +1397,7 @@ def test_tensorflow_Cumprod(
     ),
 )
 def test_tensorflow_Gather(
-    params_indices_others,
-    num_positional_args,
-    as_variable,
-    native_array
+    params_indices_others, num_positional_args, as_variable, native_array
 ):
     dtypes, params, indices = params_indices_others
     helpers.test_frontend_function(
@@ -1413,7 +1410,7 @@ def test_tensorflow_Gather(
         fn_tree="raw_ops.Gather",
         params=params,
         indices=indices,
-        validate_indices=True
+        validate_indices=True,
     )
 
 
@@ -2169,4 +2166,33 @@ def test_tensorflow_Round(dtype_and_x, as_variable, native_array):
         frontend="tensorflow",
         fn_tree="raw_ops.Round",
         x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Unpack(
+    dtype_x_axis,
+    as_variable,
+    native_array,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Unpack",
+        value=x[0],
+        num=x[0].shape[axis],
+        axis=axis,
     )
