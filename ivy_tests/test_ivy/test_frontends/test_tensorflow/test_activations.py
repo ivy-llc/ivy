@@ -345,3 +345,10 @@ def test_tensorflow_selu(
         fn_tree="keras.activations.selu",
         x=x[0],
     )
+
+
+# deserialize
+@handle_cmd_line_args
+@given()
+def test_tensorflow_deserialize():
+    pass
