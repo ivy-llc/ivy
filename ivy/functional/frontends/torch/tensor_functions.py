@@ -11,8 +11,8 @@ def is_tensor(obj):
     return Tensor(ivy.is_array(obj))
 
 
-# def is_storage(obj):
-# 	return ivy.is_storage(obj)
+def is_storage(obj):
+	return Tensor(ivy.is_storage(obj))
 
 # def is_complex(obj):
 # 	return ivy.is_complex(obj)
