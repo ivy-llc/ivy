@@ -193,4 +193,5 @@ def einsum(
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.einsum(equation, *operands)
