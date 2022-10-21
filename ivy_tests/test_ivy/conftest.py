@@ -1,7 +1,7 @@
 # global
 import os
 import pytest
-from typing import Dict, Union, Tuple
+from typing import Dict
 from hypothesis import settings
 
 # local
@@ -9,13 +9,9 @@ from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
-CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
-    "as_variable": None,
-    "native_array": None,
-    "with_out": None,
-    "container": None,
-    "instance_method": None,
-}
+GENERAL_CONFIG_DICT = {}
+UNSET_TEST_CONFIG = []
+UNSET_TEST_API_CONFIG = []
 
 TEST_PARAMS_CONFIG = []
 
@@ -80,6 +76,8 @@ def pytest_configure(config):
                         )
                     )
 
+    process_cl_flags(config)
+
 
 @pytest.fixture(autouse=True)
 def run_around_tests(
@@ -112,38 +110,39 @@ def fixt_frontend_str():  # ToDo, temporary till handle test decorator is update
     return None
 
 
-@pytest.fixture(scope="session")
-def fixt_cl_flags(request) -> Dict[str, bool]:
-    getopt = request.config.getoption
+def process_cl_flags(config) -> Dict[str, bool]:
+    getopt = config.getoption
     no_extra_testing = getopt("--no-extra-testing")
 
-    CONFIG_DICT["as_variable"] = (
-        getopt("--skip-variable-testing"),
-        getopt("--with-variable-testing"),
-    )
-    CONFIG_DICT["native_array"] = (
-        getopt("--skip-native-array-testing"),
-        getopt("--with-native-array-testing"),
-    )
-    CONFIG_DICT["with_out"] = (
-        getopt("--skip-out-testing"),
-        getopt("--with-out-testing"),
-    )
-    CONFIG_DICT["container"] = (
-        getopt("--skip-nestable-testing"),
-        getopt("--with-nestable-testing"),
-    )
-    CONFIG_DICT["instance_method"] = (
-        getopt("--skip-instance-method-testing"),
-        getopt("--with-instance-method-testing"),
-    )
-    CONFIG_DICT["test_gradients"] = (
-        getopt("--skip-gradient-testing"),
-        getopt("--with-gradient-testing"),
-    )
+    tmp_config = {
+        "as_variable": (
+            getopt("--skip-variable-testing"),
+            getopt("--with-variable-testing"),
+        ),
+        "native_array": (
+            getopt("--skip-native-array-testing"),
+            getopt("--with-native-array-testing"),
+        ),
+        "with_out": (
+            getopt("--skip-out-testing"),
+            getopt("--with-out-testing"),
+        ),
+        "container": (
+            getopt("--skip-nestable-testing"),
+            getopt("--with-nestable-testing"),
+        ),
+        "instance_method": (
+            getopt("--skip-instance-method-testing"),
+            getopt("--with-instance-method-testing"),
+        ),
+        "test_gradients": (
+            getopt("--skip-gradient-testing"),
+            getopt("--with-gradient-testing"),
+        ),
+    }
 
     # final mapping for hypothesis value generation
-    for k, v in CONFIG_DICT.items():
+    for k, v in tmp_config.items():
         # when both flags are true
         if v[0] and v[1]:
             raise Exception(
@@ -157,15 +156,16 @@ def fixt_cl_flags(request) -> Dict[str, bool]:
             )
         # skipping a test
         if v[0] or no_extra_testing:
-            CONFIG_DICT[k] = False
+            GENERAL_CONFIG_DICT[k] = False
         # extra testing
         if v[1]:
-            CONFIG_DICT[k] = True
-        # default
+            GENERAL_CONFIG_DICT[k] = True
+        # let hypothesis generate it
         if not v[0] ^ v[1]:
-            CONFIG_DICT[k] = None
-
-    return CONFIG_DICT
+            if k in ["instance_method", "container", "test_gradients"]:
+                UNSET_TEST_API_CONFIG.append(k)
+            else:
+                UNSET_TEST_CONFIG.append(k)
 
 
 def pytest_addoption(parser):
