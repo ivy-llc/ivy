@@ -169,12 +169,11 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
-    from ivy_tests.test_ivy.conftest import (
-        FW_STRS,
-        TEST_BACKENDS,
-    )
+    from ivy_tests.test_ivy.helpers.globals import FWS_DICT
 
+    FW_STRS = ["numpy", "jax", "torch", "tensorflow"]
     # first[1:-2] 5 arguments are all fixtures
+
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(
@@ -189,7 +188,7 @@ def handle_cmd_line_args(test_fn):
         if not f:
             # randomly draw a backend if not set
             backend_string = data.draw(st.sampled_from(FW_STRS))
-            f = TEST_BACKENDS[backend_string]()
+            f = FWS_DICT[backend_string]()
         else:
             # use the one which is parametrized
             flag = True
