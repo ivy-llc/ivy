@@ -1,12 +1,11 @@
 # general
-import pytest
-import gc
+import importlib
 import inspect
-from hypothesis import given, settings, strategies as st
-from typing import Union
+from hypothesis import given, strategies as st
 
 # local
 import ivy
+from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 
@@ -115,13 +114,6 @@ def num_positional_args_from_fn(draw, *, fn: str = None):
     )
 
 
-@st.composite
-def bool_val_flags(draw, cl_arg: Union[bool, None]):
-    if cl_arg is not None:
-        return draw(st.booleans().filter(lambda x: x == cl_arg))
-    return draw(st.booleans())
-
-
 # Decorators
 
 
@@ -136,65 +128,40 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
-    print("I'm called!")
+    print("I'm called!")  # ToDo DEBUG
+    split_index = fn_tree.rfind(".")
+    fn_name = fn_tree[split_index + 1 :]
+    module_to_import = fn_tree[:split_index]
+    tmp_mod = importlib.import_module(module_to_import)
+    callable_fn = tmp_mod.__dict__[fn_name]
+
+    _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
+    for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
+        _given_kwargs[flag_key] = st.just(flag_value)
+    for flag in cfg.UNSET_TEST_CONFIG:
+        _given_kwargs[flag] = st.booleans()
 
     def test_wrapper(test_fn):
-        print("I'm being wrapped!")
+        print("I'm being wrapped!")  # ToDo DEBUG
 
         def wrapped_test(*args, **kwargs):
-            print("I'm running!")
-            return test_fn(*args, **kwargs)
+            __tracebackhide__ = True
+            print("I'm running!")  # ToDo DEBUG
+            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            return wrapped_hypothesis_test(*args, **kwargs)
 
-        test_data = TestData(test_fn=wrapped_test, fn_tree=fn_tree)
-        print(test_data)
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            callable_fn=callable_fn,
+            fn_tree=fn_tree,
+            unsupported_dtypes=None,
+        )
+        # ToDo DEBUG
+        print(wrapped_test.test_data)
         print("i'm wrapped:(")
         return wrapped_test
 
     return test_wrapper
-
-
-def handle_cmd_line_args(test_fn):
-    from ivy_tests.test_ivy.helpers.globals import FWS_DICT
-
-    FW_STRS = ["numpy", "jax", "torch", "tensorflow"]
-    # first[1:-2] 5 arguments are all fixtures
-
-    @given(data=st.data())
-    @settings(max_examples=1)
-    def new_fn(data, fixt_cl_flags, device, backend_fw, fw, *args, **kwargs):
-        gc.collect()
-        flag, backend_string = (False, "")
-        # skip test if device is gpu and backend is numpy
-        if "gpu" in device and ivy.current_backend_str() == "numpy":
-            # Numpy does not support GPU
-            pytest.skip()
-        if not backend_fw:
-            # randomly draw a backend if not set
-            backend_string = data.draw(st.sampled_from(FW_STRS))
-            backend_fw = FWS_DICT[backend_string]()
-        else:
-            # use the one which is parametrized
-            flag = True
-
-        # set backend using the context manager
-        with backend_fw.use:
-            # inspecting for keyword arguments in test function
-            for param in inspect.signature(test_fn).parameters.values():
-                if param.name in cmd_line_args:
-                    kwargs[param.name] = data.draw(
-                        bool_val_flags(fixt_cl_flags[param.name])
-                    )
-                elif param.name in cmd_line_args_lists:
-                    kwargs[param.name] = [
-                        data.draw(bool_val_flags(fixt_cl_flags[param.name]))
-                    ]
-                elif param.name == "fw":
-                    kwargs["fw"] = fw if flag else backend_string
-                elif param.name == "device":
-                    kwargs["device"] = device
-            return test_fn(*args, **kwargs)
-
-    return new_fn
 
 
 @st.composite
