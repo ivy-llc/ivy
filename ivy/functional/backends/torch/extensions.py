@@ -6,6 +6,8 @@ from ivy.functional.ivy.extensions import (
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
 import math
@@ -64,13 +66,13 @@ def native_sparse_array_to_indices_values_and_shape(x):
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
 
 
 def flatten(
@@ -142,6 +144,7 @@ hann_window.support_native_out = False
 
 
 # noinspection PyUnresolvedReferences
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -181,6 +184,44 @@ def max_pool2d(
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
 
 
+def pad(
+    x: torch.Tensor,
+    /,
+    pad_width: Tuple[int],
+    *,
+    mode: Optional[Literal["constant", "reflect", "edge", "wrap"]] = "constant",
+    stat_length: Optional[Union[torch.Tensor, int]] = None,
+    constant_values: Optional[Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if x.shape == ():
+        x = x.unsqueeze(0)
+    if isinstance(pad_width, torch.Tensor):
+        pad_width = pad_width.detach().cpu().numpy().tolist()
+    pad_width.reverse()
+    pad_width_flat: List[int] = list()
+    for pad_width_sec in pad_width:
+        for item in pad_width_sec:
+            pad_width_flat.append(item)
+    if mode == "constant":
+        return torch.nn.functional.pad(
+            x,
+            pad_width_flat,
+            mode=mode,
+            value=constant_values,
+        )
+    else:
+        x = x.unsqueeze(dim=0)
+        if mode == "edge":
+            mode = "replicate"
+        elif mode == "wrap":
+            mode = "circular"
+            x = x.unsqueeze(dim=0)
+        return torch.nn.functional.pad(x, pad_width_flat, mode=mode).squeeze()
+
+
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -214,6 +255,7 @@ def moveaxis(
 moveaxis.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
 def heaviside(
     x1: torch.tensor,
     x2: torch.tensor,
@@ -269,6 +311,7 @@ def flipud(
 flipud.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
 def fmod(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -280,7 +323,6 @@ def fmod(
 
 
 fmod.support_native_out = True
-fmod.unsupported_dtypes = ("bfloat16",)
 
 
 def fmax(
