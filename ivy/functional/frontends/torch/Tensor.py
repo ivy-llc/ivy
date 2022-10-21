@@ -64,6 +64,9 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def abs(self, *, out=None):
+        return torch_frontend.abs(self.data, out=out)
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 

@@ -4,6 +4,8 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+from .. import versions
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -153,13 +155,7 @@ def FloorDiv(*, x, y, name="FloorDiv"):
 
 
 @to_ivy_arrays_and_back
-def Gather(
-    *,
-    params,
-    indices,
-    validate_indices=None,
-    name="Gather"
-):
+def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
 
@@ -370,6 +366,14 @@ def TruncateDiv(*, x, y, name="TruncateDiv"):
     return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
+@to_ivy_arrays_and_back
+def Unpack(*, value, num, axis=0, name="Unpack"):
+    return ivy.unstack(value, axis=axis)[:num]
+
+
 @to_ivy_arrays_and_back
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
@@ -379,6 +383,10 @@ def ZerosLike(*, x, name="ZerosLike"):
 def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
 
+
+@to_ivy_arrays_and_back
+def Pow(*, x, y, name="Pow"):
+    return ivy.pow(x, y)
 
 @to_ivy_arrays_and_back
 def Relu6(features, name="Relu6"):
