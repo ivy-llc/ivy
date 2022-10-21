@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.torch.Tensor import Tensor
 
 
+
 # TODO: Once the PyTorch Frontend Array Decorators are added,
 #  casting to Tensor before returning should be removed as redundant.
 
@@ -14,8 +15,8 @@ def is_tensor(obj):
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
-# def is_complex(obj):
-# 	return ivy.is_complex(obj)
+def is_complex(obj):
+ 	return Tensor(ivy.is_complex(obj))
 
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
