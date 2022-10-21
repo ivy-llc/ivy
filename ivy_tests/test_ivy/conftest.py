@@ -82,15 +82,19 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, compile_graph, fw, implicit):
+def run_around_tests(device, f, fixt_frontend_str, compile_graph, fw, implicit):
     clear_backend_stack()
     if f is not None:
         with f.use:
+            test_globals.set_frontend(fixt_frontend_str)
             with DefaultDevice(device):
                 yield
+                test_globals.unset_frontend()
     else:
+        test_globals.set_frontend(fixt_frontend_str)
         with DefaultDevice(device):
             yield
+        test_globals.unset_frontend()
 
 
 def pytest_generate_tests(metafunc):

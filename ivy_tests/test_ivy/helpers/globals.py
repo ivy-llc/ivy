@@ -73,21 +73,21 @@ def _get_ivy_torch():
 
 def set_test_data(test_data: TestData):
     global CURRENT_RUNNING_TEST
-    if CURRENT_RUNNING_TEST is _Notsetval:
+    if CURRENT_RUNNING_TEST is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_RUNNING_TEST = test_data
 
 
 def set_frontend(framework: str):
     global CURRENT_FRONTEND
-    if CURRENT_FRONTEND is _Notsetval:
+    if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_FRONTEND = FWS_DICT[framework]
 
 
 def set_backend(framework: str):
     global CURRENT_BACKEND
-    if CURRENT_BACKEND is _Notsetval:
+    if CURRENT_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_BACKEND = FWS_DICT[framework]
 

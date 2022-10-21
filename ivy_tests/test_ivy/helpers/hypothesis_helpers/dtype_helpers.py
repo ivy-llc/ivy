@@ -8,7 +8,7 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
 from . import number_helpers as nh
 from . import array_helpers as ah
-from .. import testing_helpers as th
+from .. import globals as test_globals
 
 
 @st.composite
@@ -115,8 +115,8 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
         }
 
     backend_dtypes = _get_type_dict(ivy)[kind]
-    if th.frontend_fw:
-        fw_dtypes = _get_type_dict(th.frontend_fw())[kind]
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
         valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
         valid_dtypes = backend_dtypes

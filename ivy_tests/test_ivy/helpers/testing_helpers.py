@@ -5,13 +5,11 @@ import inspect
 from hypothesis import given, settings, strategies as st
 from typing import Union
 
-
 # local
 import ivy
 from .hypothesis_helpers import number_helpers as nh
 
 
-frontend_fw = None
 cmd_line_args = (
     "with_out",
     "instance_method",
@@ -22,51 +20,6 @@ cmd_line_args_lists = (
     "native_array",
     "container",
 )
-
-
-def get_ivy_numpy():
-    """Import Numpy module from ivy"""
-    try:
-        import ivy.functional.backends.numpy
-    except ImportError:
-        return None
-    return ivy.functional.backends.numpy
-
-
-def get_ivy_jax():
-    """Import JAX module from ivy"""
-    try:
-        import ivy.functional.backends.jax
-    except ImportError:
-        return None
-    return ivy.functional.backends.jax
-
-
-def get_ivy_tensorflow():
-    """Import Tensorflow module from ivy"""
-    try:
-        import ivy.functional.backends.tensorflow
-    except ImportError:
-        return None
-    return ivy.functional.backends.tensorflow
-
-
-def get_ivy_torch():
-    """Import Torch module from ivy"""
-    try:
-        import ivy.functional.backends.torch
-    except ImportError:
-        return None
-    return ivy.functional.backends.torch
-
-
-_ivy_fws_dict = {
-    "numpy": lambda: get_ivy_numpy(),
-    "jax": lambda: get_ivy_jax(),
-    "tensorflow": lambda: get_ivy_tensorflow(),
-    "tensorflow_graph": lambda: get_ivy_tensorflow(),
-    "torch": lambda: get_ivy_torch(),
-}
 
 
 @st.composite
@@ -192,14 +145,6 @@ def handle_cmd_line_args(test_fn):
         else:
             # use the one which is parametrized
             flag = True
-
-        # Set the frontend framework
-        # Reset to None if we're not testing frontend function.
-        global frontend_fw
-        if fixt_frontend_str is None:
-            frontend_fw = None
-        else:
-            frontend_fw = _ivy_fws_dict[fixt_frontend_str]
 
         # set backend using the context manager
         with f.use:
