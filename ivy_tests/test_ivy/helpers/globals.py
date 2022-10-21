@@ -20,6 +20,7 @@ class TestData:
     test_fn: callable
     callable_fn: callable
     fn_tree: str
+    fn_name: str
     unsupported_dtypes: dict = None
 
 

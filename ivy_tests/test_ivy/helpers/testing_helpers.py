@@ -128,7 +128,6 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
-    print("I'm called!")  # ToDo DEBUG
     split_index = fn_tree.rfind(".")
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
@@ -141,24 +140,33 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     for flag in cfg.UNSET_TEST_CONFIG:
         _given_kwargs[flag] = st.booleans()
 
-    def test_wrapper(test_fn):
-        print("I'm being wrapped!")  # ToDo DEBUG
+    # Override with_out to be compatible
+    # TODO this actually override GENERAL_CONFIG_DICT, should handle this
+    for k in inspect.signature(callable_fn).parameters.keys():
+        if k.endswith("out"):
+            _given_kwargs["with_out"] = st.booleans()
+            break
+    else:
+        _given_kwargs["with_out"] = st.just(False)
 
-        def wrapped_test(*args, **kwargs):
+    def test_wrapper(test_fn):
+        def wrapped_test(fixt_frontend_str, *args, **kwargs):
             __tracebackhide__ = True
-            print("I'm running!")  # ToDo DEBUG
+            fn_name = wrapped_test.test_data.fn_name
+            frontend = fixt_frontend_str
             wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-            return wrapped_hypothesis_test(*args, **kwargs)
+            return wrapped_hypothesis_test(
+                fn_tree=fn_name, frontend=frontend, *args, **kwargs
+            )
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
             callable_fn=callable_fn,
             fn_tree=fn_tree,
-            unsupported_dtypes=None,
+            fn_name=fn_name,
+            unsupported_dtypes=None,  # TODO
         )
-        # ToDo DEBUG
-        print(wrapped_test.test_data)
-        print("i'm wrapped:(")
+
         return wrapped_test
 
     return test_wrapper
