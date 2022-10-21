@@ -24,9 +24,20 @@ from ivy.exceptions import handle_exceptions
 
 def _zero_gradients_to_none_and_to_ivy(grads):
     if isinstance(grads, ivy.Array):
-        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
+        return (
+            None
+            if ivy.all(ivy.abs(grads).astype("float64") < 1e-10)
+            else ivy.to_ivy(grads)
+        )
     else:
-        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
+
+        def func(x):
+            if ivy.is_array(x):
+                abs_val = ivy.abs(x)
+                return ivy.all(abs_val.astype("float64") < 1e-10)
+            return x is None
+
+        zero_idxs = ivy.nested_argwhere(grads, func)
         if (
             not isinstance(zero_idxs, list)
             or np.asarray(zero_idxs, dtype="object").size == 0
@@ -39,7 +50,7 @@ def _zero_gradients_to_none_and_to_ivy(grads):
 
 def _get_native_arrays_and_indices(func_ret, reshape=True):
     def map_fn(x):
-        if ivy.is_array(x):
+        if ivy.is_array(x) and ivy.is_variable(x):
             x = ivy.to_ivy(x) if ivy.is_native_array(x) else x
             if len(x.shape) == 0:
                 return ivy.to_native(x)
@@ -51,7 +62,7 @@ def _get_native_arrays_and_indices(func_ret, reshape=True):
                 return ivy.to_ivy(x)
         return x
 
-    if isinstance(func_ret, ivy.Array):
+    if ivy.is_array(func_ret) and ivy.is_variable(func_ret):
         return [], map_fn(func_ret)
 
     func_ret = ivy.nested_map(func_ret, map_fn, include_derived=True)
