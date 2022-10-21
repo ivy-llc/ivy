@@ -71,3 +71,19 @@ class ndarray:
     @property
     def dtype(self):
         return self.data.dtype
+
+    def argmin(
+            self,
+            /,
+            *,
+            axis=None,
+            keepdims=False,
+            out=None,
+    ):
+
+        return np_frontend.argmin(
+            self.data,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+        )
