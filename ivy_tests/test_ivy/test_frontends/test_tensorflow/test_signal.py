@@ -1,10 +1,5 @@
-import ivy
-
-from hypothesis import given, assume, strategies as st
-from ivy.functional.backends.numpy.data_type import dtype
-
-# local
 import ivy_tests.test_ivy.helpers as helpers
+from hypothesis import given, assume, strategies as st
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
