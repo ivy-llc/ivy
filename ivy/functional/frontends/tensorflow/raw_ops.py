@@ -228,6 +228,10 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
+def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
+    return ivy.inv(input, adjoint=adjoint)
+
+
 MatrixDeterminant = tf_frontend.linalg.det
 
 
