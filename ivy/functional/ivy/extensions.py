@@ -945,69 +945,83 @@ def ndindex(
     return _iter_product(*args)
 
 
-def _slice_at_axis(sl, axis):
-    return (slice(None),) * axis + (sl,) + (...,)
+def _scatter_at_0_axis(input, value, start=None, end=None):
+    dim_length = input.shape[0]
+    if start is None:
+        start = 0
+    elif start < 0:
+        start += dim_length
+    if end is None:
+        end = dim_length
+    elif end < 0:
+        end += dim_length
+    i = 0
+    value = ivy.flatten(value)
+    for ind in ivy.ndindex(input.shape):
+        if (ind[0] < end) and (ind[0] >= start):
+            if ivy.isscalar(value):
+                input[ind] = value
+            else:
+                input[ind] = value[i]
+            i += 1
+    return input
 
 
-def _set_pad_area(padded, axis, width_pair, value_pair):
+def _set_pad_area(padded, width_pair, value_pair):
     padded = padded.astype(ivy.Dtype(str(np.asarray(value_pair).dtype)))
-    left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
-    padded[left_slice] = value_pair[0]
-    right_slice = _slice_at_axis(slice(padded.shape[axis] - width_pair[1], None), axis)
-    padded[right_slice] = value_pair[1]
+    padded = _scatter_at_0_axis(padded, value_pair[0], end=width_pair[0])
+    padded = _scatter_at_0_axis(
+        padded, value_pair[1], start=padded.shape[0] - width_pair[1]
+    )
     return padded
 
 
-def _get_edges(padded, axis, width_pair):
+def _get_edges(padded, width_pair):
     left_index = width_pair[0]
-    left_slice = _slice_at_axis(slice(left_index, left_index + 1), axis)
-    left_edge = padded[left_slice]
-    right_index = padded.shape[axis] - width_pair[1]
-    right_slice = _slice_at_axis(slice(right_index - 1, right_index), axis)
-    right_edge = padded[right_slice]
+    left_edge = padded[left_index : left_index + 1, ...]
+    right_index = padded.shape[0] - width_pair[1]
+    right_edge = padded[right_index - 1 : right_index, ...]
     return left_edge, right_edge
 
 
-def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
-    edge_pair = _get_edges(padded, axis, width_pair)
+def _get_linear_ramps(padded, width_pair, end_value_pair):
+    edge_pair = _get_edges(padded, width_pair)
     left_ramp, right_ramp = (
         ivy.linspace(
             end_value,
-            edge.squeeze(axis),
+            edge.squeeze(0),
             num=width,
             endpoint=False,
             dtype=padded.dtype,
-            axis=axis,
+            axis=0,
         )
         for end_value, edge, width in zip(end_value_pair, edge_pair, width_pair)
     )
-    right_ramp = right_ramp[_slice_at_axis(slice(None, None, -1), axis)]
+    right_ramp = right_ramp[::-1, ...]
     return left_ramp, right_ramp
 
 
-def _get_stats(padded, axis, width_pair, length_pair, stat_func):
+def _get_stats(padded, width_pair, length_pair, stat_func):
     left_index = width_pair[0]
-    right_index = padded.shape[axis] - width_pair[1]
+    right_index = padded.shape[0] - width_pair[1]
     max_length = right_index - left_index
     left_length, right_length = length_pair
     if left_length is None or max_length < left_length:
         left_length = max_length
     if right_length is None or max_length < right_length:
         right_length = max_length
-    left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
-    left_chunk = padded[left_slice]
-    left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
+    left_chunk = padded[left_index : left_index + left_length, ...]
+    left_stat = stat_func(left_chunk, axis=0, keepdims=True)
     if left_length == right_length == max_length:
         return left_stat, left_stat
-    right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
-    right_chunk = padded[right_slice]
-    right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
+    right_chunk = padded[right_index - right_length : right_index, ...]
+    right_stat = stat_func(right_chunk, axis=0, keepdims=True)
     return left_stat, right_stat
 
 
-def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
+def _set_reflect_both(padded, width_pair, method, include_edge=False):
     left_pad, right_pad = width_pair
-    old_length = padded.shape[axis] - right_pad - left_pad
+    old_length = padded.shape[0] - right_pad - left_pad
     if include_edge:
         edge_offset = 1
     else:
@@ -1017,68 +1031,53 @@ def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
         chunk_length = min(old_length, left_pad)
         stop = left_pad - edge_offset
         start = stop + chunk_length
-        left_slice = _slice_at_axis(slice(start, stop, -1), axis)
-        left_chunk = padded[left_slice]
+        left_chunk = padded[start:stop:-1, ...]
         if method == "odd":
-            edge_slice = _slice_at_axis(slice(left_pad, left_pad + 1), axis)
-            left_chunk = 2 * padded[edge_slice] - left_chunk
+            left_chunk = 2 * padded[left_pad : left_pad + 1, ...] - left_chunk
         start = left_pad - chunk_length
         stop = left_pad
-        pad_area = _slice_at_axis(slice(start, stop), axis)
-        padded[pad_area] = left_chunk
+        padded = _scatter_at_0_axis(padded, left_chunk, start=start, end=stop)
         left_pad -= chunk_length
     if right_pad > 0:
         chunk_length = min(old_length, right_pad)
         start = -right_pad + edge_offset - 2
         stop = start - chunk_length
-        right_slice = _slice_at_axis(slice(start, stop, -1), axis)
-        right_chunk = padded[right_slice]
+        right_chunk = padded[start:stop:-1, ...]
         if method == "odd":
-            edge_slice = _slice_at_axis(slice(-right_pad - 1, -right_pad), axis)
-            right_chunk = 2 * padded[edge_slice] - right_chunk
-        start = padded.shape[axis] - right_pad
+            right_chunk = 2 * padded[-right_pad - 1 : -right_pad, ...] - right_chunk
+        start = padded.shape[0] - right_pad
         stop = start + chunk_length
-        pad_area = _slice_at_axis(slice(start, stop), axis)
-        padded[pad_area] = right_chunk
+        padded = _scatter_at_0_axis(padded, right_chunk, start=start, end=stop)
         right_pad -= chunk_length
     return left_pad, right_pad, padded
 
 
-def _set_wrap_both(padded, axis, width_pair):
+def _set_wrap_both(padded, width_pair):
     left_pad, right_pad = width_pair
-    period = padded.shape[axis] - right_pad - left_pad
+    period = padded.shape[0] - right_pad - left_pad
     new_left_pad = 0
     new_right_pad = 0
     if left_pad > 0:
-        right_slice = _slice_at_axis(
-            slice(
-                -right_pad - min(period, left_pad),
-                -right_pad if right_pad != 0 else None,
-            ),
-            axis,
-        )
-        right_chunk = padded[right_slice]
+        right_chunk = padded[
+            -right_pad - min(period, left_pad) : -right_pad if right_pad != 0 else None,
+            ...,
+        ]
         if left_pad > period:
-            pad_area = _slice_at_axis(slice(left_pad - period, left_pad), axis)
+            padded = _scatter_at_0_axis(
+                padded, right_chunk, start=left_pad - period, end=left_pad
+            )
             new_left_pad = left_pad - period
         else:
-            pad_area = _slice_at_axis(slice(None, left_pad), axis)
-        padded[pad_area] = right_chunk
+            padded = _scatter_at_0_axis(padded, right_chunk, end=left_pad)
     if right_pad > 0:
-        left_slice = _slice_at_axis(
-            slice(
-                left_pad,
-                left_pad + min(period, right_pad),
-            ),
-            axis,
-        )
-        left_chunk = padded[left_slice]
+        left_chunk = padded[left_pad : left_pad + min(period, right_pad), ...]
         if right_pad > period:
-            pad_area = _slice_at_axis(slice(-right_pad, -right_pad + period), axis)
+            padded = _scatter_at_0_axis(
+                padded, left_chunk, start=-right_pad, end=-right_pad + period
+            )
             new_right_pad = right_pad - period
         else:
-            pad_area = _slice_at_axis(slice(-right_pad, None), axis)
-        padded[pad_area] = left_chunk
+            padded = _scatter_at_0_axis(padded, left_chunk, start=-right_pad)
     return new_left_pad, new_right_pad, padded
 
 
@@ -1101,16 +1100,27 @@ def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
         left + size + right for size, (left, right) in zip(array.shape, pad_width)
     )
-    padded = ivy.empty(new_shape, dtype=array.dtype)
+    padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
-    original_area_slice = tuple(
-        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
-    )
-    padded[original_area_slice] = array
-    return padded, original_area_slice
+    sl = []
+    for size, (left, right) in zip(array.shape, pad_width):
+        sl.append(ivy.arange(left, left + size))
+    array_flat = ivy.flatten(array)
+    j = 0
+    for ind in ivy.ndindex(padded.shape):
+        flag = True
+        for i, k in enumerate(ind):
+            if ivy.argwhere(sl[i] - k).shape[0] == sl[i].shape[0]:
+                flag = False
+                break
+        if flag:
+            padded[ind] = array_flat[j]
+            j += 1
+    return padded
 
 
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -1290,14 +1300,14 @@ def pad(
     pad_width = _to_pairs(pad_width, input.ndim)
     if callable(mode):
         func = mode
-        padded, _ = _pad_simple(input, pad_width, fill_value=0)
+        padded = _pad_simple(input, pad_width, fill_value=0)
         for axis in range(padded.ndim):
             view = ivy.moveaxis(padded, axis, -1)
             inds = ivy.ndindex(view.shape[:-1])
             for ind in inds:
                 view[ind] = func(view[ind], pad_width[axis], axis, kwargs)
         return padded
-    padded, original_area_slice = _pad_simple(input, pad_width)
+    padded = _pad_simple(input, pad_width)
     axes = range(padded.ndim)
     stat_functions = {
         "maximum": ivy.max,
@@ -1308,43 +1318,47 @@ def pad(
     if mode == "constant":
         constant_values = _to_pairs(constant_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
-            padded = _set_pad_area(padded, axis, width_pair, value_pair)
+            padded = _set_pad_area(padded, width_pair, value_pair)
+            padded = ivy.moveaxis(padded, 0, -1)
     elif mode == "empty":
         pass
     elif mode == "edge":
         for axis, width_pair in zip(axes, pad_width):
-            edge_pair = _get_edges(padded, axis, width_pair)
-            padded = _set_pad_area(padded, axis, width_pair, edge_pair)
+            edge_pair = _get_edges(padded, width_pair)
+            padded = _set_pad_area(padded, width_pair, edge_pair)
+            padded = ivy.moveaxis(padded, 0, -1)
     elif mode == "linear_ramp":
         end_values = _to_pairs(end_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, end_values):
-            ramp_pair = _get_linear_ramps(padded, axis, width_pair, value_pair)
-            padded = _set_pad_area(padded, axis, width_pair, ramp_pair)
+            ramp_pair = _get_linear_ramps(padded, width_pair, value_pair)
+            padded = _set_pad_area(padded, width_pair, ramp_pair)
+            padded = ivy.moveaxis(padded, 0, -1)
     elif mode in stat_functions:
         func = stat_functions[mode]
         stat_length = _to_pairs(stat_length, padded.ndim)
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
-            stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
-            padded = _set_pad_area(padded, axis, width_pair, stat_pair)
+            stat_pair = _get_stats(padded, width_pair, length_pair, func)
+            padded = _set_pad_area(padded, width_pair, stat_pair)
+            padded = ivy.moveaxis(padded, 0, -1)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
-                edge_pair = _get_edges(padded, axis, (left_index, right_index))
-                padded = _set_pad_area(
-                    padded, axis, (left_index, right_index), edge_pair
-                )
+            if input.shape[0] == 1 and (left_index > 0 or right_index > 0):
+                edge_pair = _get_edges(padded, (left_index, right_index))
+                padded = _set_pad_area(padded, (left_index, right_index), edge_pair)
                 continue
             while left_index > 0 or right_index > 0:
                 left_index, right_index, padded = _set_reflect_both(
-                    padded, axis, (left_index, right_index), reflect_type, include_edge
+                    padded, (left_index, right_index), reflect_type, include_edge
                 )
+            padded = ivy.moveaxis(padded, 0, -1)
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
             while left_index > 0 or right_index > 0:
                 left_index, right_index, padded = _set_wrap_both(
-                    padded, axis, (left_index, right_index)
+                    padded, (left_index, right_index)
                 )
+            padded = ivy.moveaxis(padded, 0, -1)
     return padded
 
 
