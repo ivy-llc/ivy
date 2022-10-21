@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 
-
 FWS_DICT = {
     "numpy": lambda: _get_ivy_numpy(),
     "jax": lambda: _get_ivy_jax(),
     "tensorflow": lambda: _get_ivy_tensorflow(),
     "tensorflow_graph": lambda: _get_ivy_tensorflow(),
     "torch": lambda: _get_ivy_torch(),
-    "": None,
+    "": lambda: None,
 }
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
@@ -16,11 +15,11 @@ CURRENT_FRONTEND = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
 class TestData:
     test_fn: callable
     fn_tree: str
-    unsupported_dtypes: dict
+    unsupported_dtypes: dict = None
 
 
 class InterruptedTest(BaseException):
