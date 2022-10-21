@@ -414,35 +414,43 @@ def test_numpy_instance_min(
 # argmin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.argmin"
     ),
 )
 def test_numpy_ndarray_argmin(
-    dtype_and_x,
+    dtype_x_axis,
+    keepdims,
     as_variable,
+    num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtype_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "keepdims": keepdims,
+        },
+        fw=fw,
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        input_dtypes_method=[input_dtype[1]],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "value": x[1],
-        },
-        fw=fw,
         frontend="numpy",
         class_name="ndarray",
-        method_name="argmin",
+        method_name="min",
+        frontend_class=np.ndarray,
+        fn_tree="ndarray.argmin",
     )
