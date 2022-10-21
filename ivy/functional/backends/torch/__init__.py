@@ -100,7 +100,6 @@ def closest_valid_dtype(type):
 
 backend = "torch"
 
-
 # local sub-modules
 from . import activations
 from .activations import *
