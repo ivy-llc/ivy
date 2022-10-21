@@ -844,8 +844,8 @@ def test_fmod(
         instance_method=instance_method,
         fw=fw,
         fn_name="fmod",
-        x1=x[0],
-        x2=x[0],
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -887,6 +887,6 @@ def test_fmax(
         instance_method=instance_method,
         fw=fw,
         fn_name="fmax",
-        x1=x[0],
-        x2=x[0],
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
