@@ -666,25 +666,24 @@ def test_jax_numpy_dot(
 # einsum
 @handle_cmd_line_args
 @given(
-    eq_n_op_n_shp=st.sampled_from(
+    eq_n_op=st.sampled_from(
         [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+            ("ii", np.arange(25).reshape(5, 5),),
+            ("ii->i", np.arange(25).reshape(5, 5),),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
         ]
     ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_numpy_einsum(
-    eq_n_op_n_shp, dtype, with_out, as_variable, native_array, fw, device
+    eq_n_op, dtype, with_out, as_variable, native_array, fw, device
 ):
-    eq, operands, true_shape = eq_n_op_n_shp
     kw = {}
     i = 0
-    for x_ in operands:
+    for x_ in eq_n_op:
         kw["x{}".format(i)] = x_
         i += 1
-    num_positional_args = len(operands)
+    num_positional_args = i
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -693,11 +692,11 @@ def test_jax_numpy_einsum(
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.einsum",
+        **kw,
         out=None,
-        optimize=eq,
+        optimize='optimal',
         precision=None,
         _use_xeinsum=False,
-        **kw
     )
 
 
