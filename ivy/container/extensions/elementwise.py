@@ -226,7 +226,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         ...                  b=ivy.array([32, 40, 25, 13]))
         >>> x1.lcm(x2)
         {
-            a: ivy.array([10, 21, 60]),
+            a: ivy.array([10, 24, 60]),
             b: ivy.array([96, 1080, 1550, 130])
         }
 
