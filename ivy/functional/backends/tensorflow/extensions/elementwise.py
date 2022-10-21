@@ -36,9 +36,6 @@ def lcm(
     return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
 
 
-lcm.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -63,6 +60,3 @@ def fmax(
     x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
     ret = tf.math.maximum(x1, x2, name=None)
     return tf.where(tf.math.is_inf(ret), float("nan"))
-
-
-fmax.supported_dtypes = ("blfoat16", "float16", "float32", "float64")
