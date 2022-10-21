@@ -1,11 +1,6 @@
-import logging
-from typing import Optional, Union, Tuple, Callable, Literal, Sequence
-from numbers import Number
-import ivy
+from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-import jax.lax as jlax
 import jax.numpy as jnp
-import math
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
