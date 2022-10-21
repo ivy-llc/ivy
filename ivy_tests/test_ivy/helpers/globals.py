@@ -1,3 +1,9 @@
+"""
+A state holder for testing, this is only intended to hold and store
+testing data to be used by the test helpers to prune unsupported data.
+Should not be used inside any of the test functions.
+"""
+
 from dataclasses import dataclass
 
 FWS_DICT = {
