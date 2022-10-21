@@ -1,9 +1,11 @@
-from typing import Optional, Union, Tuple, Literal, List, Sequence
-from numbers import Number
-import ivy
-from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
+# global
+from typing import Optional
 import torch
-import math
+
+# local
+from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 
 def lcm(
@@ -47,10 +49,10 @@ def fmax(
 fmax.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
