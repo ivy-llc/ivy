@@ -129,23 +129,23 @@ def handle_cmd_line_args(test_fn):
 
     @given(data=st.data())
     @settings(max_examples=1)
-    def new_fn(data, fixt_cl_flags, device, f, fw, *args, **kwargs):
+    def new_fn(data, fixt_cl_flags, device, backend_fw, fw, *args, **kwargs):
         gc.collect()
         flag, backend_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
             # Numpy does not support GPU
             pytest.skip()
-        if not f:
+        if not backend_fw:
             # randomly draw a backend if not set
             backend_string = data.draw(st.sampled_from(FW_STRS))
-            f = FWS_DICT[backend_string]()
+            backend_fw = FWS_DICT[backend_string]()
         else:
             # use the one which is parametrized
             flag = True
 
         # set backend using the context manager
-        with f.use:
+        with backend_fw.use:
             # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:

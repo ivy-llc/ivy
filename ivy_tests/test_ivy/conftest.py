@@ -82,10 +82,12 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, fixt_frontend_str, compile_graph, fw, implicit):
+def run_around_tests(
+    device, backend_fw, fixt_frontend_str, compile_graph, fw, implicit
+):
     clear_backend_stack()
-    if f is not None:
-        with f.use:
+    if backend_fw is not None:
+        with backend_fw.use:
             test_globals.set_frontend(fixt_frontend_str)
             with DefaultDevice(device):
                 yield
@@ -98,7 +100,9 @@ def run_around_tests(device, f, fixt_frontend_str, compile_graph, fw, implicit):
 
 
 def pytest_generate_tests(metafunc):
-    metafunc.parametrize("device,f,compile_graph,implicit,fw", TEST_PARAMS_CONFIG)
+    metafunc.parametrize(
+        "device,backend_fw,compile_graph,implicit,fw", TEST_PARAMS_CONFIG
+    )
 
 
 @pytest.fixture(scope="session")
