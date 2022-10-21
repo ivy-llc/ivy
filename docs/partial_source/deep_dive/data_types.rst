@@ -224,7 +224,7 @@ back to ``float32`` may help to produce a stable result.
 However, temporary upcasting and subsequent downcasting can not be performed as this is not expected by the user.
 Whenever the user defines data with a specific data type, they expect a certain memory footprint.
 
-The user expects a specific behaviour and memory constraints whenever they specify and use concrete data types,
+The user expects specific behaviour and memory constraints whenever they specify and use concrete data types,
 and those decisions should be respected.
 Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
 
