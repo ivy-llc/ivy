@@ -215,6 +215,7 @@ def test_vorbis_window(
         min_size=2,
         max_size=2,
         unique=False,
+        force_tuple=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="flatten"),
 )
