@@ -25,7 +25,7 @@ from .set import ContainerWithSet
 from .sorting import ContainerWithSorting
 from .statistical import ContainerWithStatistical
 from .utility import ContainerWithUtility
-from .extensions import (
+from ivy.container.extensions import (
     ContainerWithActivationExtensions,
     ContainerWithConversionExtensions,
     ContainerWithCreationExtensions,
