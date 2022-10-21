@@ -79,11 +79,8 @@ def multinomial(
         np.random.choice(num_classes, num_samples, replace, p=prob[0])
         for prob in probs_stack
     ]
-    samples_flat = np.stack(samples_stack, out=out)
+    samples_flat = np.stack(samples_stack)
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
-
-
-multinomial.support_native_out = True
 
 
 def randint(

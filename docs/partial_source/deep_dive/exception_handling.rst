@@ -3,7 +3,7 @@ Exception Handling
 
 .. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
 .. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`discord`: https://discord.gg/sXyFF8tDtm
 
 As Ivy is unifying multiple backends, various issues are seen during exception
 handling:

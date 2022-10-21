@@ -7,6 +7,8 @@ from ivy.functional.ivy.extensions import (
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 import torch
 import math
@@ -65,24 +67,24 @@ def native_sparse_array_to_indices_values_and_shape(x):
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
 
 
 def flatten(
     x: torch.Tensor,
     /,
     *,
-    start_dim: int,
-    end_dim: int,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.flatten(x, start_dim, end_dim)
+    return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 
 def vorbis_window(
@@ -143,6 +145,7 @@ hann_window.support_native_out = False
 
 
 # noinspection PyUnresolvedReferences
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -177,9 +180,6 @@ def max_pool2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
-
-
-max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
 
 
 def pad(
@@ -253,6 +253,7 @@ def moveaxis(
 moveaxis.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
 def heaviside(
     x1: torch.tensor,
     x2: torch.tensor,
@@ -294,3 +295,42 @@ def median(
             keepdim=keepdims,
             out=out,
         )
+
+
+def flipud(
+    m: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.flipud(m)
+
+
+flipud.support_native_out = False
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, backend_version)
+def fmod(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmod(x1, x2, out=None)
+
+
+fmod.support_native_out = True
+
+
+def fmax(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmax(x1, x2, out=None)
+
+
+fmax.support_native_out = True

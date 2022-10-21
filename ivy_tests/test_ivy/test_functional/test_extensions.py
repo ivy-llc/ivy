@@ -156,7 +156,7 @@ def test_sinc(
         instance_method=instance_method,
         fw=fw,
         fn_name="sinc",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -164,14 +164,13 @@ def test_sinc(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float",full=False), 
+        min_num_dims=1, max_num_dims=1
     ),
-    dtype=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="vorbis_window"),
 )
 def test_vorbis_window(
     dtype_and_x,
-    dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -192,7 +191,7 @@ def test_vorbis_window(
         fw=fw,
         fn_name="vorbis_window",
         x=x[0],
-        dtype=dtype,
+        dtype=input_dtype,
     )
 
 
@@ -200,17 +199,29 @@ def test_vorbis_window(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.get_shape(min_num_dims=5, max_num_dims=5),
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
+        ),
+        min_value=-100,
+        max_value=100,
     ),
-    start_dim=st.integers(1, 3),
-    end_dim=st.integers(3, 4),
+    axes=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
+        ),
+        allow_neg=True,
+        sorted=True,
+        min_size=2,
+        max_size=2,
+        unique=False,
+        force_tuple=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="flatten"),
 )
 def test_flatten(
     dtype_and_x,
-    start_dim,
-    end_dim,
+    axes,
     with_out,
     as_variable,
     num_positional_args,
@@ -220,6 +231,17 @@ def test_flatten(
     fw,
 ):
     input_dtypes, x = dtype_and_x
+    x = np.asarray(x[0], dtype=input_dtypes[0])
+
+    if axes[1] == 0:
+        start_dim, end_dim = axes[1], axes[0]
+    elif axes[0] * axes[1] < 0:
+        if x.ndim + min(axes) >= max(axes):
+            start_dim, end_dim = max(axes), min(axes)
+        else:
+            start_dim, end_dim = min(axes), max(axes)
+    else:
+        start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -230,7 +252,7 @@ def test_flatten(
         instance_method=instance_method,
         fw=fw,
         fn_name="flatten",
-        x=np.asarray(x[0], dtype=input_dtypes[0]),
+        x=x,
         start_dim=start_dim,
         end_dim=end_dim,
     )
@@ -273,8 +295,8 @@ def test_lcm(
         fw=fw,
         fn_name="lcm",
         test_gradients=True,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[1],
     )
 
 
@@ -470,7 +492,7 @@ def test_moveaxis(
         instance_method=instance_method,
         fw=fw,
         fn_name="moveaxis",
-        a=np.asarray(a[0], dtype=input_dtype[0]),
+        a=a[0],
         source=source,
         destination=destination,
     )
@@ -489,6 +511,20 @@ def test_ndenumerate(dtype_and_x):
         np.ndenumerate(values), ivy.ndenumerate(values)
     ):
         assert index1 == index2 and x1 == x2
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        ret_shape=True,
+    ),
+)
+def test_ndindex(dtype_x_shape):
+    shape = dtype_x_shape[2]
+    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
+        assert index1 == index2
 
 
 @st.composite
@@ -649,8 +685,8 @@ def test_heaviside(
         instance_method=instance_method,
         fw=fw,
         fn_name="heaviside",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[0],
     )
 
 
@@ -728,4 +764,128 @@ def test_median(
         input=x[0],
         axis=axis,
         keepdims=keep_dims,
+    )
+
+
+# flipud
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="flipud"),
+)
+def test_flipud(
+    dtype_and_m,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="flipud",
+        m=m[0],
+    )
+
+
+# fmod
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="fmod"),
+)
+def test_fmod(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="fmod",
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# fmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_nan=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="fmax"),
+)
+def test_fmax(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="fmax",
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )

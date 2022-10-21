@@ -255,4 +255,4 @@ In addition to the functions in the topic-specific parent classes, there are abo
 
 That should hopefully be enough to get you started with the Ivy Array 😊
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

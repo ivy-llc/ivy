@@ -57,3 +57,33 @@ class ndarray:
 
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self.data, axis, kind, order)
+
+    def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
+        return np_frontend.amin(
+            self.data,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where
+        )
+    
+    @property
+    def dtype(self):
+        return self.data.dtype
+
+    def argmin(
+            self,
+            /,
+            *,
+            axis=None,
+            keepdims=False,
+            out=None,
+    ):
+
+        return np_frontend.argmin(
+            self.data,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+        )
