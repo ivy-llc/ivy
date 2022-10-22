@@ -544,3 +544,77 @@ def shuffle(
 
     """
     return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def beta(
+    a: Union[float, ivy.NativeArray, ivy.Array],
+    b: Union[float, ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns an array filled with random values sampled from a beta distribution.
+
+    Parameters
+    ----------
+    a
+        Alpha parameter of the beta distribution.
+    b
+        Beta parameter of the beta distribution.
+    shape
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
+    device
+        device on which to create the array. 'cuda:0',
+        'cuda:1', 'cpu' etc. (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the given shape filled with random values sampled from
+        a beta distribution.
+
+    Examples
+    --------
+    >>> y = ivy.beta(0.5, 0.5, shape=(1,1))
+    >>> print(y)
+    ivy.array([[0.5]])
+
+    >>> y = ivy.beta(0.5, 0.5, shape=(2, 2), device='cpu')
+    >>> print(y)
+    ivy.array([[0.5,0.5],[0.5,0.5]])
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.beta(0.5, 0.5, shape=(3,), out=x)
+    >>> print(x)
+    ivy.array([0.5, 0.5, 0.5])
+
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.beta(0.5, 0.5, shape=(3, 3), device='cpu', out=y)
+    >>> print(y)
+    ivy.array([[0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5]])
+
+    """
+    return ivy.current_backend().beta(
+        a, b, shape=shape, device=device, dtype=dtype, seed=seed, out=out
+    )

@@ -159,3 +159,22 @@ def shuffle(
     if seed is not None:
         jax.random.PRNGKey(seed)
     return jax.random.shuffle(rng_input, x)
+
+
+def beta(
+    a: Union[float, JaxArray],
+    b: Union[float, JaxArray],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device = None,
+    dtype: jnp.dtype = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    shape = _check_bounds_and_get_shape(a, b, shape)
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
+    return to_device(jax.random.beta(rng_input, a, b, shape, dtype), device)
