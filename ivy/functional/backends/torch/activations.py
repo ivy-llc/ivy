@@ -90,9 +90,11 @@ def log_softmax(
     return torch.nn.functional.log_softmax(x, axis)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def mish(
     x: torch.Tensor,
     /,
     *,
-    inplace: bool = False) -> torch.Tensor:
+    inplace: bool = False,
+) -> torch.Tensor:
     return torch.nn.functional.mish(x, inplace=inplace)
