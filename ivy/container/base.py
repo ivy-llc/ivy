@@ -697,7 +697,7 @@ class ContainerBase(dict, abc.ABC):
                         map_nests,
                         assert_identical,
                     )
-                    if ret:
+                    if ret is not None:
                         return_dict[key] = ret
                 elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
                     ret = ivy.nested_multi_map(
@@ -1749,7 +1749,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if dim_size is None:
-            dim_size = self.shape[axis]
+            dim_size = self.shared_shape[axis]
         if keepdims:
             # noinspection PyTypeChecker
             return [

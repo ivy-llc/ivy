@@ -35,6 +35,7 @@ def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
     xs = _arrays_to_float_variables(xs)
+    xs = ivy.stop_gradient(xs)
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         tape.watch(ivy.to_native(xs))
         func_ret = func(xs)
