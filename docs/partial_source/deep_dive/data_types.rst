@@ -350,23 +350,26 @@ Supported and Unsupported Data Types
 ------------------------------------
 
 Some backend functions (implemented in :mod:`ivy/functional/backends/<some_backend>`)
-have attributes named :attr:`supported_dtypes` or :attr:`unsupported_dtypes`,
+make use of the decorators :attr:`@with_supported_dtypes` or :attr:`@with_unsupported_dtypes`,
 which flag the data types which this particular function does and does not support
 respectively for the associated backend.
-Only one of these attributes can be specified for any given function.
-In the case of :attr:`supported_dtypes` it is assumed that all unmentioned data types
-are unsupported, and in the case of :attr:`unsupported_dtypes` it is assumed that all
+Only one of these decorators can be specified for any given function.
+In the case of :attr:`@with_supported_dtypes` it is assumed that all unmentioned data types
+are unsupported, and in the case of :attr:`@with_unsupported_dtypes` it is assumed that all
 unmentioned data types are supported.
 
-These attributes should always be in tuple form, with each entry in the tuple
-being a string, like so:
+The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding 
+version of the backend framework and the current version of the backend framework on the user's system. Based on that, 
+the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
+
 
 .. code-block:: python
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
         return torch.expm1(x, out=out)
 
-    expm1.unsupported_dtypes = ("float16",)
 
 For compositional functions, the supported and unsupported data types can then be
 inferred automatically using the helper functions
@@ -377,11 +380,11 @@ respectively, which traverse the abstract syntax tree of the compositional funct
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
 
-It should be noted that the :attr:`unsupported_dtypes` is different from
+It should be noted that :attr:`unsupported_dtypes` is different from
 ``ivy.invalid_dtypes`` which consists of all the data types that every function
 of that particular backend does not support, and so if a certain ``dtype`` is
-already present in the ``ivy.invalid_dtypes`` then we should not add it into the
-:attr:`unsupported_dtypes` attribute.
+already present in the ``ivy.invalid_dtypes`` then we should not add it to the
+:attr:`@with_unsupported_dtypes` decorator.
 
 Sometimes, it might be possible to support a natively unsupported data type by either
 casting to a supported data type and then casting back, or explicitly handling these
@@ -418,7 +421,7 @@ In some cases, the lack of support for a particular data type by the backend fun
 might be more difficult to handle correctly. For example, in many cases casting to
 another data type will result in a loss of precision, input range, or both.
 In such cases, the best solution is to simply add the data type to the
-:attr:`unsupported_dtypes` attribute,
+:attr:`@with_unsupported_dtypes` decorator,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.
 
@@ -468,9 +471,9 @@ We also add the following comment above the :attr:`unsupported_dtypes` attribute
 
 .. code-block:: python
 
-    # ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
-    #  is fixed.
-    tensordot.unsupported_dtypes = ("int32",)
+    # ToDo: re-add int32 support once
+    # (https://github.com/pytorch/pytorch/issues/84530) is fixed
+    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, version)
 
 Similarly, the following code throws an error for torch version ``1.11.0``
 but not ``1.12.1``.
@@ -484,11 +487,6 @@ Writing short-lived patches for these temporary issues would add unwarranted com
 to the backend implementations, and introduce the risk of forgetting about the patch,
 needlessly bloating the codebase with redundant code.
 In such cases, we can explicitly flag which versions support which data types like so:
-
-We use a decorator :code:`with_unsupported_dtypes` which takes two arguments, a dictionary with the unsupported
-dtypes mapped to the corresponding version of the backend framework  and the current version of the
-backend framework on the user's system. Based on that, the version specific unsupported dtypes and devices
-are set for the given function everytime the function is called.
 
 .. code-block:: python
 

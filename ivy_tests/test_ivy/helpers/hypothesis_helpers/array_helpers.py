@@ -718,6 +718,14 @@ def array_values(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 )
+            # kind of a hack to not use the calculated max and min values
+            elif allow_inf or allow_nan:
+                float_strategy = st.floats(
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=floats_info[dtype]["width"],
+                )
             else:
                 float_strategy = st.one_of(
                     st.floats(

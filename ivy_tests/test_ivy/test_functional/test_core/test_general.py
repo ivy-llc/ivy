@@ -1568,28 +1568,48 @@ def test_clip_matrix_norm(
 
 @handle_cmd_line_args
 @given(
-    x_n_include_inf_n_value=st.sampled_from(
-        [
-            [ivy.array([1]), True, False],
-            [ivy.array(ivy.nan), False, True],
-            [ivy.native_array(ivy.inf), True, True],
-            [ivy.array(ivy.inf), False, False],
-        ]
-    )
+    val_dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+        allow_nan=True,
+        allow_inf=True,
+    ),
+    include_infs=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="value_is_nan"),
 )
-def test_value_is_nan(x_n_include_inf_n_value):
-    x, include_inf, value = x_n_include_inf_n_value
-    ret = ivy.value_is_nan(x, include_infs=include_inf)
-    assert ret == value
+def test_value_is_nan(
+    val_dtype,
+    include_infs,
+    as_variable,
+    num_positional_args,
+    instance_method,
+    native_array,
+    container,
+    fw,
+):
+    dtype, val = val_dtype
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="value_is_nan",
+        x=val,
+        include_infs=include_infs,
+    )
 
 
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_nan=True,
+        allow_inf=True,
     ),
     include_infs=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="has_nans"),

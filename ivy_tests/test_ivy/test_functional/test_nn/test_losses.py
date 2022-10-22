@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        min_value=0,
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1.0013580322265625e-05,
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         exclude_min=True,
@@ -61,7 +61,9 @@ def test_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="cross_entropy",
-        rtol_=1e-03,
+        test_gradients=True,
+        rtol_=1e-02,
+        atol_=1e-02,
         true=true[0],
         pred=pred[0],
         axis=axis,
