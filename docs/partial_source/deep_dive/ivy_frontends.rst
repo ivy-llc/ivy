@@ -42,11 +42,11 @@ For example, to use ivy's tensorflow frontend:
 
 ----
 
-When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call `tensorflow.tan`_ rather than :code:`tensorflow.math.tan`. In this particular case both are fine, and in fact are `aliases`_.
+When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call `tensorflow.tan`_ rather than :func:`tensorflow.math.tan`. In this particular case both are fine, and in fact are `aliases`_.
 
-However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions :code:`jax.numpy.abs` and :code:`jax.lax.abs` both exist, while `jax.abs` does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :code:`jax.abs` in our frontend.
+However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions :func:`jax.numpy.abs` and :func:`jax.lax.abs` both exist, while `jax.abs` does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :func:`jax.abs` in our frontend.
 
-This would result in :code:`jax.numpy.abs` or :code:`jax.lax.abs` overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native :code:`jax` framework.
+This would result in :func:`jax.numpy.abs` or :func:`jax.lax.abs` overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native :mod:`jax` framework.
 
 If you accidentally test a function with :code:`fn_tree="<func_name>"` instead of :code:`fn_tree="<lax|numpy>.<func_name>"`, you will see an error since the wrong frontend function is being tested.
 
@@ -54,7 +54,7 @@ Therefore, in order to avoid this potential conflict:
 
 * All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing :code:`fn_tree="math.tan"` instead of :code:`fn_tree="tan"` in the frontend test.
 
-* The `__init__.py` file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of :code:`jax.abs` explained above.
+* The `__init__.py` file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of :func:`jax.abs` explained above.
 
 * You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.
 
@@ -118,7 +118,7 @@ according to the framework set in the backend.
         return ivy.tan(x)
 
 Using :func:`lax.tan` as a second example, we can see that this is placed under
-:code:`operators`, again in the `jax.lax`_ directory.
+:mod:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
 argument. In the same manner as our :func:`add` function, we simply link its return
 to :func:`ivy.tan`, and again the computation then depends on the backend framework.
@@ -148,8 +148,8 @@ to :func:`ivy.tan`, and again the computation then depends on the backend framew
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
-In NumPy, :code:`add` is categorised under :code:`mathematical_functions` with a
-sub-category of :code:`arithmetic_operations` as shown in the
+In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a
+sub-category of :mod:`arithmetic_operations` as shown in the
 `numpy mathematical functions`_ directory.
 
 The function arguments for this function are slightly more complex due to the extra
@@ -202,7 +202,7 @@ See the section "Unused Arguments" below for more details.
         return ret
 
 For the second example, :func:`tan` has a sub-category of
-:code:`trigonometric_functions` according to the `numpy mathematical functions`_
+:mod:`trigonometric_functions` according to the `numpy mathematical functions`_
 directory. By referring to the `numpy.tan`_ documentation, we can see it has the same
 additional arguments as the :func:`add` function. In the same manner as :func:`add`,
 we handle the argument :code:`out`, :code:`where` and :code:`dtype`,
@@ -216,7 +216,7 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
     def add(x, y, name=None):
         return ivy.add(x, y)
 
-The :func:`add` function is categorised under the :code:`math` folder in the TensorFlow
+The :func:`add` function is categorised under the :mod:`math` folder in the TensorFlow
 frontend. There are three arguments according to the `tf.math.add <https://www.tensorflow.org/api_docs/python/tf/math/add>`_ documentation, which are
 written accordingly as shown above. Just like the previous examples, the implementation
 wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on
@@ -236,7 +236,7 @@ argument.
     def tan(x, name=None):
         return ivy.tan(x)
 
-Likewise, :code:`tan` is also placed under :code:`math`.
+Likewise, :code:`tan` is also placed under :mod:`math`.
 By referring to the `tf.math.tan`_ documentation, we add the same arguments,
 and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
@@ -249,7 +249,7 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
     def add(input, other, *, alpha=None, out=None):
         return ivy.add(input, other, alpha=alpha, out=out)
 
-For PyTorch, :func:`add` is categorised under :code:`pointwise_ops` as is the case in
+For PyTorch, :func:`add` is categorised under :mod:`pointwise_ops` as is the case in
 the `torch`_ framework.
 
 In this case, the native `torch.add`_ has both positional and keyword arguments,
@@ -262,7 +262,7 @@ We wrap :func:`ivy.add` as usual.
     def tan(input, *, out=None):
         return ivy.tan(input, out=out)
 
-:func:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
+:func:`tan` is also placed under :mod:`pointwise_ops` as is the case in the `torch`_
 framework. Looking at the `torch.tan`_ documentation, we can mimic the same arguments,
 and again simply wrap :func:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
@@ -346,8 +346,8 @@ the backend :func:`ivy.cumprod` does not support this argument or behaviour.
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
 compositionally able to mimic the required behaviour.
-For example, we can simply reverse the result by calling :func:`ivy.flip()` on the
-result of :func:`ivy.cumprod()`.
+For example, we can simply reverse the result by calling :func:`ivy.flip` on the
+result of :func:`ivy.cumprod`.
 
 **TensorFlow Frontend**
 
@@ -376,7 +376,7 @@ frontend implementation would become very simple, with some light wrapping aroun
 
 Adding :func:`ivy.median` would be a sensible decision, as many frameworks support this
 function. When you come across such a function which is missing from Ivy, you should
-create a new issue on the Ivy repo, with the title :func:`ivy.<func_name>` and with the
+create a new issue on the Ivy repo, with the title :func:`ivy.func_name` and with the
 labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`.
 A member of our team will then review this issue, and if the proposed addition is deemed
 to be timely and sensible, then we will add this function to the
@@ -394,7 +394,7 @@ member of our team to review and possibly add to the "Extend Ivy Functional API"
 `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_,
 you can instead go straight ahead add the frontend function as a heavy composition of
 the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this
-frontend implementation will be simplified if/when :func:`ivy.<func_name>` is add to
+frontend implementation will be simplified if/when :func:`ivy.func_name` is add to
 Ivy.
 
 The entire workflow for extending the Ivy Frontends as an external contributor is
@@ -447,7 +447,7 @@ as this is a limitation of the entire framework, and this limitation is already
 
 It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
 may not support the data type due to backend limitation. For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ do support all data types,
-but PyTorch does not support :code:`bfloat16` for the function :code:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
+but PyTorch does not support :code:`bfloat16` for the function :func:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type. In that case, we should flag that the backend
 function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
 
 Classes and Instance Methods
@@ -578,7 +578,7 @@ Part of the code is shown below as an example:
             self._dtype = self._data.dtype
 
 With this class available, the supported instance methods can now be included in the class.
-For example, :class:`numpy.matrix` has an instance method of :code:`any`:
+For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
 
 .. code-block:: python
 
@@ -636,7 +636,7 @@ the handling logic and reduce code redundancy. It is located in the
 `ivy/functional/frontends/numpy/func_wrapper.py <https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39>`_
 
 This decorator is then added to the numpy frontend functions with the
-:code:`casting` argument. An example of the :code:`add` function is shown below.
+:code:`casting` argument. An example of the :func:`add` function is shown below.
 
 .. code-block:: python
 
@@ -686,7 +686,7 @@ to handle this.
         return new_fn
 
 
-An example function using this is the :code:`numpy.isfinite` function.
+An example function using this is the :func:`numpy.isfinite` function.
 
 .. code-block:: python
 

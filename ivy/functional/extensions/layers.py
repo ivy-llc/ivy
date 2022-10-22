@@ -17,6 +17,199 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def vorbis_window(
+    window_length: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns an array that contains a vorbis power complementary window
+    of size window_length.
+
+    Parameters
+    ----------
+    window_length
+        the length of the vorbis window.
+    dtype
+        data type of the returned array. By default float32.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Input array with the vorbis window.
+
+    Examples
+    --------
+    >>> ivy.vorbis_window(3)
+    ivy.array([0.38268346, 1. , 0.38268352])
+
+    >>> ivy.vorbis_window(5)
+    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    """
+    return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Hann window. The Hanning window
+    is a taper formed by using a weighted cosine.
+
+    Parameters
+    ----------
+    window_length
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.hann_window(4, True)
+    ivy.array([0. , 0.5, 1. , 0.5])
+
+    >>> ivy.hann_window(7, False)
+    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
+
+    """
+    return ivy.current_backend().hann_window(
+        window_length, periodic, dtype=dtype, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def max_pool2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 2-D max pool given 4-D input x.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,h,w,d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[h,w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimensio paddings.
+    data_format
+        NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+    >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
+    ivy.array([[[[ 2,  3],
+     [ 4,  5],
+     [ 4,  5]]],
+    [[[ 8,  9],
+     [10, 11],
+     [10, 11]]]])
+
+    >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+    >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
+    ivy.array([[[[16, 17]],
+    [[22, 23]]],
+    [[[40, 41]],
+    [[46, 47]]]])
+    """
+    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Kaiser window with window length window_length and shape beta
+
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+        If True, returns a periodic window suitable for use in spectral analysis.
+        If False, returns a symmetric window suitable for use in filter design.
+    beta
+        a float used as shape parameter for the window.
+    dtype
+        data type of the returned array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Examples
+    --------
+    >>> ivy.kaiser_window(5)
+    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
+    >>> ivy.kaiser_window(5, True, 5)
+    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])
+    >>> ivy.kaiser_window(5, False, 5)
+    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
+    """
+    return ivy.current_backend().kaiser_window(
+        window_length, periodic, beta, dtype=dtype, out=out
+    )
+
+
 def _scatter_at_0_axis(input, value, start=None, end=None):
     dim_length = input.shape[0]
     if start is None:
@@ -179,9 +372,8 @@ def _pad_simple(array, pad_width, fill_value=None):
     sl = []
     for size, (left, right) in zip(array.shape, pad_width):
         sl.append(ivy.arange(left, left + size))
-    # if len(array.shape) > 1:
-    #     array = ivy.flatten(array)
-    array = ivy.flatten(array)
+    if len(array.shape) > 1:
+        array = ivy.flatten(array)
     j = 0
     for ind in ivy.ndindex(padded.shape):
         flag = True
