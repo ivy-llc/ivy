@@ -73,7 +73,7 @@ def _remove_zeros_and_nones(grads, x, idx=[]):
             idx.pop()
 
         keys = [k for k in x]
-        if len(keys) == 0:
+        if len(keys) == 0 and len(idx) and _check_if_empty(idx):
             ivy.prune_nest_at_index(grads, idx)
     return grads
 
