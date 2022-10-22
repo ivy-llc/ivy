@@ -131,6 +131,10 @@ def elu_(input, alpha=1.0):
     return _compute_elu(input, alpha, inplace=True)
 
 
+def mish(input, inplace=False):
+    return ivy.mish(input, inplace)
+
+
 def celu(input, alpha=1.0, inplace=False):
     prod = ivy.multiply(
         alpha,

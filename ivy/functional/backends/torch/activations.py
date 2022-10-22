@@ -88,3 +88,11 @@ def log_softmax(
     out: Optional[torch.Tensor] = None,
 ):
     return torch.nn.functional.log_softmax(x, axis)
+
+
+def mish(
+    x: torch.Tensor,
+    /,
+    *,
+    inplace: bool = False) -> torch.Tensor:
+    return torch.nn.functional.mish(x, inplace=inplace)
