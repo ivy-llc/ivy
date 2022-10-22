@@ -69,6 +69,7 @@ def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
     xs = _arrays_to_float_variables(xs)
+    xs = ivy.stop_gradient(xs)
     func_ret = func(xs)
     xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
     xs = ivy.to_native(xs)
