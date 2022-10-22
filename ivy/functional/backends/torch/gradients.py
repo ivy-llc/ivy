@@ -129,7 +129,7 @@ def value_and_grad(func):
                 else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
             )
             grad = ivy.to_ivy(grad)
-            grad = _remove_zeros_and_nones(grads, grads)
+            grad = _remove_zeros_and_nones(grad, grad)
             return grad
 
         grads = ivy.nested_map(
