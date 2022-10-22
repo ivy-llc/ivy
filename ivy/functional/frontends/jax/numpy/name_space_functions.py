@@ -285,3 +285,8 @@ def moveaxis(a, source, destination):
 @to_ivy_arrays_and_back
 def argwhere(a):
     return ivy.argwhere(a)
+
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)
+
