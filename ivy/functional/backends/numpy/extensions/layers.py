@@ -2,7 +2,7 @@
 import math
 from numbers import Number
 import numpy as np
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal
+from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
 
 # local
 import ivy
@@ -107,14 +107,31 @@ def max_pool2d(
     return res
 
 
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if periodic is False:
+        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+kaiser_window.support_native_out = False
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
 def pad(
-    x: np.ndarray,
-    /,
+    input: np.ndarray,
     pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
+    /,
     *,
     mode: Optional[
         Union[
@@ -139,55 +156,46 @@ def pad(
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     out: Optional[np.ndarray] = None,
+    **kwargs: Optional[Any],
 ) -> np.ndarray:
+    if callable(mode):
+        return np.pad(
+            _flat_array_to_1_dim_array(input),
+            pad_width,
+            mode=mode,
+            **kwargs,
+        )
     if mode in ["maximum", "mean", "median", "minimum"]:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             stat_length=stat_length,
         )
     elif mode == "constant":
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             constant_values=constant_values,
         )
     elif mode == "linear_ramp":
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             end_values=end_values,
         )
     elif mode in ["reflect", "symmetric"]:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             reflect_type=reflect_type,
         )
     else:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
         )
-
-
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if periodic is False:
-        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
-    else:
-        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
-
-
-kaiser_window.support_native_out = False

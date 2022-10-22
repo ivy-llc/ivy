@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Literal,
     Iterable,
+    Any,
 )
 from numbers import Number
 
@@ -460,10 +461,10 @@ class ContainerWithLayersExtensions(ContainerBase):
 
     @staticmethod
     def static_pad(
-        x: ivy.Container,
+        input: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -491,6 +492,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.pad. This method simply
@@ -499,7 +501,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "pad",
-            x,
+            input,
             pad_width,
             mode=mode,
             stat_length=stat_length,
@@ -511,13 +513,14 @@ class ContainerWithLayersExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
         )
 
     def pad(
         self: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -545,6 +548,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.pad. This method simply
@@ -564,4 +568,5 @@ class ContainerWithLayersExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
         )
