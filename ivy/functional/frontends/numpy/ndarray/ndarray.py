@@ -125,3 +125,6 @@ class ndarray:
 
     def ravel(self, order="C"):
         return np_frontend.ravel(self.data, order=order)
+
+    def repeat(self, repeats, axis=None):
+        return np_frontend.repeat(self.data, repeats, axis=axis)
