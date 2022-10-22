@@ -1,7 +1,7 @@
 import ivy
-import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
-def dct(input, type=2, n=None, axis=-1, norm=None, name=None ):
-    input = ivy.array(input)
+@to_ivy_arrays_and_back
+def dct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type, n, axis, norm, name)
