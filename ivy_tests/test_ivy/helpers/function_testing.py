@@ -486,22 +486,22 @@ def test_frontend_function(
     def _get_function(fn_tree):
         # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
         *frontend_submods, fn_name = fn_tree.split(".")
-        function_dict = ivy.functional.frontends.__dict__[frontend]
+        frontend_module = f"ivy.functional.frontends.{frontend}"
 
         # Getting function attributes when we have function tree such as
         # nn.functional etc
         len_frontend_submods = len(frontend_submods)
         if len_frontend_submods > 0:
-            len_tracker = 0
-            while len_tracker < len_frontend_submods:
-                sub_tree = frontend_submods[len_tracker]
-                function_dict = function_dict.__dict__[sub_tree]
-                len_tracker += 1
+            frontend_module += "." + ".".join(frontend_submods)
 
-        function = getattr(function_dict, fn_name)
-        return function, function_dict, fn_name, frontend_submods
+        function_module = importlib.import_module(frontend_module)
 
-    function, function_dict, fn_name, frontend_submods = _get_function(fn_tree=fn_tree)
+        function = getattr(function_module, fn_name)
+        return function, function_module, fn_name, frontend_submods
+
+    function, function_module, fn_name, frontend_submods = _get_function(
+        fn_tree=fn_tree
+    )
 
     # check for unsupported dtypes in backend framework
     def _test_backend_unsupported():
@@ -555,7 +555,7 @@ def test_frontend_function(
 
     def _test_frontend_function(test_unsupported, args, kwargs, args_ivy, kwargs_ivy):
         # frontend function
-        frontend_fn = getattr(function_dict, fn_name)
+        frontend_fn = getattr(function_module, fn_name)
 
         # check and replace NativeClass object in arguments with ivy counterparts
         convs = {
@@ -649,7 +649,7 @@ def test_frontend_function(
         ivy.set_backend(frontend)
         try:
             # check for unsupported dtypes in frontend framework
-            function = getattr(function_dict, fn_name)
+            function = getattr(function_module, fn_name)
             test_unsupported = check_unsupported_dtype(
                 fn=function,
                 input_dtypes=input_dtypes,
@@ -749,7 +749,7 @@ def test_frontend_function(
     if all_aliases:
         # for each alias in aliases list
         for alias in all_aliases:
-            function, function_dict, fn_name, frontend_submods = _get_function(
+            function, function_module, fn_name, frontend_submods = _get_function(
                 fn_tree=alias
             )
 
