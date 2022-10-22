@@ -198,9 +198,9 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
         )
 
 
-def check_broadcastable(x1, x2):
+def check_one_way_broadcastable(x1, x2):
     for a, b in zip(x1[::-1], x2[::-1]):
-        if a == 1 or b == 1 or a == b:
+        if b == 1 or a == b:
             pass
         else:
             return False
@@ -208,7 +208,7 @@ def check_broadcastable(x1, x2):
 
 
 def check_inplace_sizes_valid(var, data):
-    if not check_broadcastable(var.shape, data.shape):
+    if not check_one_way_broadcastable(var.shape, data.shape):
         raise ivy.exceptions.IvyException(
             "Could not output values of shape {} into array with shape {}.".format(
                 data.shape, var.shape
