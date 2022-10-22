@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Iterable, Callable, Literal
+from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Any
 from numbers import Number
 
 # local
@@ -157,8 +157,8 @@ class ArrayWithLayersExtensions(abc.ABC):
 
     def pad(
         self: ivy.Array,
-        /,
         pad_width: Union[Iterable[Tuple[int]], int],
+        /,
         *,
         mode: Optional[
             Union[
@@ -183,6 +183,7 @@ class ArrayWithLayersExtensions(abc.ABC):
         end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
         reflect_type: Optional[Literal["even", "odd"]] = "even",
         out: Optional[ivy.Array] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.pad. This method simply
@@ -198,4 +199,5 @@ class ArrayWithLayersExtensions(abc.ABC):
             end_values=end_values,
             reflect_type=reflect_type,
             out=out,
+            **kwargs,
         )
