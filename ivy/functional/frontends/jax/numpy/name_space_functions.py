@@ -286,4 +286,3 @@ def moveaxis(a, source, destination):
 @to_ivy_arrays_and_back
 def argwhere(a):
     return ivy.argwhere(a)
-

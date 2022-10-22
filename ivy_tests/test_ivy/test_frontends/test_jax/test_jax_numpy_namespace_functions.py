@@ -1410,4 +1410,3 @@ def test_jax_numpy_argwhere(
         fn_tree="numpy.argwhere",
         a=x[0],
     )
-
