@@ -148,18 +148,15 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     else:
         _given_kwargs["with_out"] = st.just(False)
 
-    unsupported_dtypes_dict = {
-        "numpy": (),
-        "jax": (),
-        "tensorflow": (),
-        "torch": (),
-    }
-    for k in unsupported_dtypes_dict.keys():  # ToDo can optimize this ?
-        ivy.set_backend(k)
+    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
+    supported_dtypes_dict = {}
+    supported_device_dtype = {}
+    for b in backends:  # ToDo can optimize this ?
+        ivy.set_backend(b)
         _tmp_mod = importlib.import_module(module_to_import)
-        unsupported_dtypes_dict[k] = ivy.function_unsupported_dtypes(
-            _tmp_mod.__dict__[fn_name]
-        )
+        _fn = _tmp_mod.__dict__[fn_name]
+        supported_dtypes_dict[b] = ivy.function_supported_dtypes(_fn)
+        supported_device_dtype[b] = ivy.function_supported_devices_and_dtypes(_fn)
         ivy.unset_backend()
 
     def test_wrapper(test_fn):
@@ -176,7 +173,8 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
             test_fn=wrapped_test,
             fn_tree=fn_tree,
             fn_name=fn_name,
-            unsupported_dtypes=unsupported_dtypes_dict,
+            supported_dtypes=supported_dtypes_dict,
+            supported_device_dtypes=supported_device_dtype,
         )
 
         return wrapped_test

@@ -26,7 +26,8 @@ class TestData:
     test_fn: callable
     fn_tree: str
     fn_name: str
-    unsupported_dtypes: dict = None
+    supported_dtypes: dict = None
+    supported_device_dtypes: dict = None
 
 
 class InterruptedTest(BaseException):
