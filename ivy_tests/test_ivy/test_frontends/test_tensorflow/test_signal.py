@@ -1,6 +1,7 @@
 # global
 import ivy
 from hypothesis import given
+from ivy.functional.ivy.creation import native_array
 import ivy_tests.test_ivy.helpers as helpers
 
 # local
@@ -13,6 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.signal.dct"
     ),
+    native_array=helpers.array_bools()
 )
 def test_tensorflow_dct(
     dtype_and_x,
@@ -30,5 +32,5 @@ def test_tensorflow_dct(
         fw=fw,
         frontend="tensorflow",
         fn_tree="signal.dct",
-        x=x[0],
+        input=x[0]
     )
