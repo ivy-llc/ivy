@@ -1382,12 +1382,19 @@ def test_jax_numpy_moveaxis(
 # argwhere
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.jax.numpy.argwhere"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.argwhere"),
 )
 def test_jax_numpy_argwhere(
-    dtype_and_x, dtype, as_variable, with_out, num_positional_args, native_array
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
