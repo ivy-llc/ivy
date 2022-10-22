@@ -460,7 +460,7 @@ def mish(
     /,
     *,
     inplace: bool = False
-)-> ivy.Array:
+) -> ivy.Array:
     """
     Applies the Mish function, element-wise.
     Mish: A Self Regularized Non-Monotonic 
@@ -476,4 +476,3 @@ def mish(
         The input array with mish applied element-wise.
     """
     return current_backend(x).mish(x, inplace)
-    
