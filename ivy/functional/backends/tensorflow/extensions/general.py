@@ -11,5 +11,5 @@ def isin(
     invert: Optional[bool] = False,
 ) -> tf.Tensor:
     if not assume_unique:
-        test_elements = tf.unique(test_elements)[0]
+        test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
     return tf.reduce_any(tf.equal(elements[..., tf.newaxis], test_elements), axis=-1) ^ invert
