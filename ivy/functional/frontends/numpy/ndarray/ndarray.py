@@ -113,3 +113,9 @@ class ndarray:
             dtype=dtype,
             out=out,
         )
+
+    def sort(self, *, axis=-1, kind=None, order=None):
+        return np_frontend.sort(self.data, axis=axis, kind=kind, order=order)
+
+    def copy(self, order='C'):
+        return np_frontend.copy(self.data, order=order)
