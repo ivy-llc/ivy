@@ -97,3 +97,19 @@ class ndarray:
             keepdims=keepdims,
             out=out,
         )
+
+    def cumprod(self, *, axis=None, dtype=None, out=None):
+        return np_frontend.cumprod(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def cumsum(self, *, axis=None, dtype=dtype, out=None):
+        return np_frontend.cumsum(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
