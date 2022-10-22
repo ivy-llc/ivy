@@ -113,7 +113,7 @@ class Tensor:
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
     def arctan(self, *, out=None):
-        return torch_frontend.arctanh(self, out=out)
+        return torch_frontend.arctan(self, out=out)
 
     # Special Methods #
     # -------------------#
