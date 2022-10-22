@@ -131,8 +131,15 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def einsum(*operands, out=None, optimize=None, precision=None, _use_xeinsum=False):
-    return ivy.einsum(equation=optimize, *operands, out=out)
+def einsum(
+    subscripts,
+    *operands,
+    out=None,
+    optimize="optimal",
+    precision=None,
+    _use_xeinsum=False
+):
+    return ivy.einsum(subscripts, *operands, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -266,12 +273,14 @@ def zeros(shape, dtype=None):
     return ivy.zeros(shape, dtype=dtype)
 
 
+=======
+@to_ivy_arrays_and_back
+def bitwise_and(x1, x2):
+    return ivy.bitwise_and(x1, x2)
 
-
-
-
-
-
+@to_ivy_arrays_and_back
+def moveaxis(a, source, destination):
+    return ivy.moveaxis(a, source, destination)
 
 
 def argsort(a, axis=-1, kind=None, order=None):

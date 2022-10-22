@@ -9,7 +9,7 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 # Array API Standard #
 # -------------------#
@@ -90,7 +90,7 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16", "uint8")}, version
+    {"1.11.0 and below": ("float16", "bfloat16", "uint8")}, backend_version
 )
 def prod(
     x: torch.Tensor,
@@ -115,7 +115,8 @@ def prod(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "int16", "int32", "int64", "float16")}, version
+    {"1.11.0 and below": ("int8", "int16", "int32", "int64", "float16")},
+    backend_version,
 )
 def std(
     x: torch.Tensor,
@@ -151,7 +152,7 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"1.11.0": ("uint8",)}, version)
+@with_unsupported_dtypes({"1.11.0": ("uint8",)}, backend_version)
 def sum(
     x: torch.Tensor,
     /,
@@ -210,7 +211,7 @@ def var(
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
-@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "bfloat16")}, backend_version)
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
@@ -249,7 +250,8 @@ cumprod.support_native_out = True
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, version
+    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
+    backend_version,
 )
 def cumsum(
     x: torch.Tensor,
@@ -290,4 +292,5 @@ def einsum(
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    operands = (operand.to(torch.float32) for operand in operands)
     return torch.einsum(equation, *operands)

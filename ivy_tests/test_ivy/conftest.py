@@ -1,21 +1,13 @@
 # global
 import os
 import pytest
-import redis
 from typing import Dict, Union, Tuple
 from hypothesis import settings
-from hypothesis.extra.redis import RedisExampleDatabase
 
 # local
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
-
-r = None
-if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
-    r = redis.Redis.from_url(
-        os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
-    )
 
 MAX_EXAMPLES: int
 
@@ -36,10 +28,8 @@ CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "container": None,
     "instance_method": None,
 }
-MAP_BOOL_FLAGS: Dict[str, bool] = {
-    "true": True,
-    "false": False,
-}
+
+TEST_PARAMS_CONFIG = []
 
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -48,24 +38,59 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = int(deadline) if deadline else 500000
     profile_settings = {}
-    os.getenv("REDIS_URL")
-    if num_examples is not None:
-        profile_settings["max_examples"] = int(num_examples)
-    if r is not None:
-        profile_settings["database"] = RedisExampleDatabase(
-            r, key_prefix=b"hypothesis-examples:"
-        )
+    if num_examples:
+        profile_settings["max_examples"] = num_examples
+    if deadline:
+        profile_settings["deadline"] = deadline
 
-    if profile_settings:
-        settings.register_profile(
-            "custom-profile", **profile_settings, deadline=deadline
-        )
-        settings.load_profile("custom-profile")
+    settings.register_profile("test-profile", **profile_settings, print_blob=True)
+    settings.load_profile("test-profile")
+
+    # device
+    raw_value = config.getoption("--device")
+    if raw_value == "all":
+        devices = ["cpu", "gpu:0", "tpu:0"]
     else:
-        settings.register_profile("default", deadline=deadline)
-        settings.load_profile("default")
+        devices = raw_value.split(",")
+
+    # framework
+    raw_value = config.getoption("--backend")
+    if raw_value == "all":
+        backend_strs = FW_STRS
+    else:
+        backend_strs = raw_value.split(",")
+
+    # compile_graph
+    raw_value = config.getoption("--compile_graph")
+    if raw_value == "both":
+        compile_modes = [True, False]
+    elif raw_value == "true":
+        compile_modes = [True]
+    else:
+        compile_modes = [False]
+
+    # implicit
+    raw_value = config.getoption("--with_implicit")
+    if raw_value == "true":
+        implicit_modes = [True, False]
+    else:
+        implicit_modes = [False]
+
+    # create test configs
+    for backend_str in backend_strs:
+        for device in devices:
+            for compile_graph in compile_modes:
+                for implicit in implicit_modes:
+                    TEST_PARAMS_CONFIG.append(
+                        (
+                            device,
+                            TEST_BACKENDS[backend_str](),
+                            compile_graph,
+                            implicit,
+                            backend_str,
+                        )
+                    )
 
 
 @pytest.fixture(autouse=True)
@@ -81,52 +106,7 @@ def run_around_tests(device, f, compile_graph, fw, implicit):
 
 
 def pytest_generate_tests(metafunc):
-    # device
-    raw_value = metafunc.config.getoption("--device")
-    if raw_value == "all":
-        devices = ["cpu", "gpu:0", "tpu:0"]
-    else:
-        devices = raw_value.split(",")
-
-    # framework
-    raw_value = metafunc.config.getoption("--backend")
-    if raw_value == "all":
-        backend_strs = FW_STRS
-    else:
-        backend_strs = raw_value.split(",")
-
-    # compile_graph
-    raw_value = metafunc.config.getoption("--compile_graph")
-    if raw_value == "both":
-        compile_modes = [True, False]
-    elif raw_value == "true":
-        compile_modes = [True]
-    else:
-        compile_modes = [False]
-
-    # implicit
-    raw_value = metafunc.config.getoption("--with_implicit")
-    if raw_value == "true":
-        implicit_modes = [True, False]
-    else:
-        implicit_modes = [False]
-
-    # create test configs
-    configs = list()
-    for backend_str in backend_strs:
-        for device in devices:
-            for compile_graph in compile_modes:
-                for implicit in implicit_modes:
-                    configs.append(
-                        (
-                            device,
-                            TEST_BACKENDS[backend_str](),
-                            compile_graph,
-                            implicit,
-                            backend_str,
-                        )
-                    )
-    metafunc.parametrize("device,f,compile_graph,implicit,fw", configs)
+    metafunc.parametrize("device,f,compile_graph,implicit,fw", TEST_PARAMS_CONFIG)
 
 
 @pytest.fixture(scope="session")
@@ -136,31 +116,33 @@ def fixt_frontend_str():  # ToDo, temporary till handle test decorator is update
 
 @pytest.fixture(scope="session")
 def get_command_line_flags(request) -> Dict[str, bool]:
+    getopt = request.config.getoption
+    no_extra_testing = getopt("--no-extra-testing")
 
-    a_v_f_s = request.config.getoption("--skip-variable-testing")
-    n_f_s = request.config.getoption("--skip-native-array-testing")
-    o_f_s = request.config.getoption("--skip-out-testing")
-    n_s = request.config.getoption("--skip-nestable-testing")
-    i_m_f_s = request.config.getoption("--skip-instance-method-testing")
-    g_t_f_s = request.config.getoption("--skip-gradient-testing")
-
-    a_v_f_w = request.config.getoption("--with-variable-testing")
-    n_f_w = request.config.getoption("--with-native-array-testing")
-    o_f_w = request.config.getoption("--with-out-testing")
-    n_w = request.config.getoption("--with-nestable-testing")
-    i_m_f_w = request.config.getoption("--with-instance-method-testing")
-    g_t_f_w = request.config.getoption("--with-gradient-testing")
-
-    no_extra_testing = MAP_BOOL_FLAGS[request.config.getoption("--no-extra-testing")]
-
-    # mapping command line arguments, first element of the tuple is
-    # the --skip flag, and the second is the --with flag
-    CONFIG_DICT["as_variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
-    CONFIG_DICT["native_array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
-    CONFIG_DICT["with_out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
-    CONFIG_DICT["container"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
-    CONFIG_DICT["instance_method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
-    CONFIG_DICT["test_gradients"] = (MAP_BOOL_FLAGS[g_t_f_s], MAP_BOOL_FLAGS[g_t_f_w])
+    CONFIG_DICT["as_variable"] = (
+        getopt("--skip-variable-testing"),
+        getopt("--with-variable-testing"),
+    )
+    CONFIG_DICT["native_array"] = (
+        getopt("--skip-native-array-testing"),
+        getopt("--with-native-array-testing"),
+    )
+    CONFIG_DICT["with_out"] = (
+        getopt("--skip-out-testing"),
+        getopt("--with-out-testing"),
+    )
+    CONFIG_DICT["container"] = (
+        getopt("--skip-nestable-testing"),
+        getopt("--with-nestable-testing"),
+    )
+    CONFIG_DICT["instance_method"] = (
+        getopt("--skip-instance-method-testing"),
+        getopt("--with-instance-method-testing"),
+    )
+    CONFIG_DICT["test_gradients"] = (
+        getopt("--skip-gradient-testing"),
+        getopt("--with-gradient-testing"),
+    )
 
     # final mapping for hypothesis value generation
     for k, v in CONFIG_DICT.items():
@@ -191,34 +173,36 @@ def get_command_line_flags(request) -> Dict[str, bool]:
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("--backend", action="store", default="")
-    parser.addoption("--compile_graph", action="store", default="true")
-    parser.addoption("--with_implicit", action="store", default="false")
+    parser.addoption("--compile_graph", action="store_true")
+    parser.addoption("--with_implicit", action="store_true")
 
-    parser.addoption("--skip-variable-testing", action="store", default="false")
-    parser.addoption("--skip-native-array-testing", action="store", default="false")
-    parser.addoption("--skip-out-testing", action="store", default="false")
-    parser.addoption("--skip-nestable-testing", action="store", default="false")
-    parser.addoption("--skip-instance-method-testing", action="store", default="false")
-    parser.addoption("--skip-gradient-testing", action="store", default="false")
+    parser.addoption("--skip-variable-testing", action="store_true")
+    parser.addoption("--skip-native-array-testing", action="store_true")
+    parser.addoption("--skip-out-testing", action="store_true")
+    parser.addoption("--skip-nestable-testing", action="store_true")
+    parser.addoption("--skip-instance-method-testing", action="store_true")
+    parser.addoption("--skip-gradient-testing", action="store_true")
 
-    parser.addoption("--with-variable-testing", action="store", default="false")
-    parser.addoption("--with-native-array-testing", action="store", default="false")
-    parser.addoption("--with-out-testing", action="store", default="false")
-    parser.addoption("--with-nestable-testing", action="store", default="false")
-    parser.addoption("--with-instance-method-testing", action="store", default="false")
-    parser.addoption("--with-gradient-testing", action="store", default="false")
+    parser.addoption("--with-variable-testing", action="store_true")
+    parser.addoption("--with-native-array-testing", action="store_true")
+    parser.addoption("--with-out-testing", action="store_true")
+    parser.addoption("--with-nestable-testing", action="store_true")
+    parser.addoption("--with-instance-method-testing", action="store_true")
+    parser.addoption("--with-gradient-testing", action="store_true")
 
-    parser.addoption("--no-extra-testing", action="store", default="false")
+    parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--num-examples",
         action="store",
-        default=None,
+        default=5,
+        type=int,
         help="set max examples generated by Hypothesis",
     )
     parser.addoption(
         "--deadline",
         action="store",
-        default=None,
+        default=500000,
+        type=int,
         help="set deadline for testing one example",
     )
     parser.addoption(
@@ -230,6 +214,9 @@ def pytest_addoption(parser):
 
 
 def pytest_collection_finish(session):
+    # Make sure we're not accidentally accessing it during test
+    global TEST_PARAMS_CONFIG
+    del TEST_PARAMS_CONFIG
     if session.config.option.my_test_dump is not None:
         for item in session.items:
             item_path = os.path.relpath(item.path)

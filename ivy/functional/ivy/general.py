@@ -3267,26 +3267,22 @@ def _get_devices_and_dtypes(fn, complement=True):
     # Their values are formatted like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
     if hasattr(fn, "supported_device_and_dtype"):
-        fn_supported_dnd = fn.supported_device_and_dtype
+        fn_supported_dnd = fn.supported_device_and_dtype.__get__()
 
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(
-            list(fn_supported_dnd.__get__().values())[0], tuple
-        )
+        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
-        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype.__get__()
 
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(
-            list(fn_unsupported_dnd.__get__().values())[0], tuple
-        )
+        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
