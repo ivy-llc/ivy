@@ -1,4 +1,5 @@
 import ivy
+from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -204,13 +205,14 @@ kullback_leibler_divergence = kl_divergence
 
 
 def log_cosh(y_true, y_pred):
-    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+    y_true, y_pred = promote_types_of_tensorflow_inputs(y_true, y_pred)
     diff = y_pred - y_true
-    logval = ivy.astype(ivy.log(2.0), diff.dtype, copy=False)
+    logval = ivy.log(2.0)
+    diff, logval = promote_types_of_tensorflow_inputs(diff, logval)
     return ivy.mean(diff + ivy.softplus(-2.0 * diff) - logval, axis=-1)
 
 
-log_cosh.unsupported_dtypes = ("float16",)
+log_cosh.unsupported_dtypes = ("float16", "float32",)
 
 
 @to_ivy_arrays_and_back

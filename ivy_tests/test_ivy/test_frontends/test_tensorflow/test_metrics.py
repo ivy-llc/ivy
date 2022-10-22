@@ -196,13 +196,13 @@ def test_sparse_categorical_crossentropy(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.log_cosh"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.log_cosh"
     ),
 )
 def test_tensorflow_log_cosh(
