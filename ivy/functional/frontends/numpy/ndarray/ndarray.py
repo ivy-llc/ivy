@@ -128,3 +128,6 @@ class ndarray:
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
+
+    def searchsorted(self, v, side='left', sorter=None):
+        return np_frontend.searchsorted(self.data, v, side=side, sorter=sorter)
