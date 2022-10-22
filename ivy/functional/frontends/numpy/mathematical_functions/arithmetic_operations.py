@@ -184,3 +184,24 @@ def floor_divide(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@handle_numpy_casting
+@to_ivy_arrays_and_back
+def remainder(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
+    ret = ivy.remainder(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
