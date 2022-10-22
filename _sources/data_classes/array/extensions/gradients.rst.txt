@@ -1,0 +1,17 @@
+Gradients
+=========
+
+.. automodule:: ivy.array.extensions.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Gradients
+
+   gradients/ArrayWithGradientsExtensions.rst
+

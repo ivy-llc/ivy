@@ -1,0 +1,21 @@
+Layers
+======
+
+.. automodule:: ivy.functional.extensions.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/vorbis_window.rst
+   layers/hann_window.rst
+   layers/max_pool2d.rst
+   layers/kaiser_window.rst
+   layers/pad.rst
+

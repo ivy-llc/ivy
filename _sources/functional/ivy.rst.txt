@@ -12,7 +12,6 @@
    ivy/data_type.rst
    ivy/device.rst
    ivy/elementwise.rst
-   ivy/extensions.rst
    ivy/general.rst
    ivy/gradients.rst
    ivy/layers.rst

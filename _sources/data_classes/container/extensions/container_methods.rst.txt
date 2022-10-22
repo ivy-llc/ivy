@@ -1,0 +1,42 @@
+Container methods
+=================
+
+.. automodule:: ivy.container.extensions.container_methods
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Container methods
+
+   container_methods/static_sinc.rst
+   container_methods/sinc.rst
+   container_methods/static_lcm.rst
+   container_methods/lcm.rst
+   container_methods/static_fmod.rst
+   container_methods/fmod.rst
+   container_methods/static_fmax.rst
+   container_methods/fmax.rst
+   container_methods/static_flatten.rst
+   container_methods/flatten.rst
+   container_methods/static_hann_window.rst
+   container_methods/hann_window.rst
+   container_methods/static_max_pool2d.rst
+   container_methods/max_pool2d.rst
+   container_methods/static_kaiser_window.rst
+   container_methods/kaiser_window.rst
+   container_methods/static_pad.rst
+   container_methods/pad.rst
+   container_methods/static_moveaxis.rst
+   container_methods/moveaxis.rst
+   container_methods/static_heaviside.rst
+   container_methods/heaviside.rst
+   container_methods/static_flipud.rst
+   container_methods/flipud.rst
+   container_methods/static_median.rst
+   container_methods/median.rst
+

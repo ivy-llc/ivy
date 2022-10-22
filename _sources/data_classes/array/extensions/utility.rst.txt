@@ -1,0 +1,17 @@
+Utility
+=======
+
+.. automodule:: ivy.array.extensions.utility
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Utility
+
+   utility/ArrayWithUtilityExtensions.rst
+

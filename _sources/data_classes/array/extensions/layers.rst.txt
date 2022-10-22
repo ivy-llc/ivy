@@ -1,0 +1,17 @@
+Layers
+======
+
+.. automodule:: ivy.array.extensions.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/ArrayWithLayersExtensions.rst
+

@@ -1,0 +1,17 @@
+Elementwise
+===========
+
+.. automodule:: ivy.array.extensions.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Elementwise
+
+   elementwise/ArrayWithElementWiseExtensions.rst
+

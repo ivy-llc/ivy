@@ -1,0 +1,20 @@
+Elementwise
+===========
+
+.. automodule:: ivy.functional.extensions.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Elementwise
+
+   elementwise/sinc.rst
+   elementwise/lcm.rst
+   elementwise/fmod.rst
+   elementwise/fmax.rst
+

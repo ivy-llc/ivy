@@ -1,0 +1,17 @@
+General
+=======
+
+.. automodule:: ivy.array.extensions.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: General
+
+   general/ArrayWithGeneralExtensions.rst
+

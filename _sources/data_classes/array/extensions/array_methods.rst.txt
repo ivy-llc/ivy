@@ -1,0 +1,27 @@
+Array methods
+=============
+
+.. automodule:: ivy.array.extensions.array_methods
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Array methods
+
+   array_methods/sinc.rst
+   array_methods/lcm.rst
+   array_methods/fmod.rst
+   array_methods/fmax.rst
+   array_methods/flatten.rst
+   array_methods/max_pool2d.rst
+   array_methods/pad.rst
+   array_methods/moveaxis.rst
+   array_methods/heaviside.rst
+   array_methods/flipud.rst
+   array_methods/median.rst
+
