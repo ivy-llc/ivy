@@ -225,7 +225,7 @@ class ArrayWithRandom(abc.ABC):
         batch_size
             Number of tensors to generate. Default is 1.
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)

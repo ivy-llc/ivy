@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1416,5 +1416,52 @@ def test_torch_mul(
         rtol=1e-03,
         input=x[0],
         other=x[1],
+        out=None,
+    )
+
+
+# div
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    rounding_mode=st.one_of(
+        st.sampled_from(["floor", "trunc"]),
+        st.none(),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.div"
+    ),
+)
+def test_torch_div(
+    dtype_and_x,
+    rounding_mode,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="div",
+        atol=1,
+        input=x[0],
+        other=x[1],
+        rounding_mode=rounding_mode,
         out=None,
     )

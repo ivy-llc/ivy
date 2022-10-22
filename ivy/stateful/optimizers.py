@@ -35,17 +35,18 @@ class Optimizer(abc.ABC):
             Whether to update the variables in-place, or to create new variable handles.
             This is only relevant for frameworks with stateful variables such as
             PyTorch.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         init_on_first_step
-            Whether the optimizer is initialized on the first step. Default is False.
+            Whether the optimizer is initialized on the first step.
+            Default is ``False``.
         compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is False.
+            Whether to compile the optimizer on the next step. Default is ``False``.
         fallback_to_non_compiled
             Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is True.
+            is raised during the compiled forward pass. Default is ``True``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -106,7 +107,7 @@ class Optimizer(abc.ABC):
         ignore_missing
             Whether to ignore keys missing from the gradients which exist in
             the variables.
-            Default is False
+            Default is ``False``
         """
         if ignore_missing:
             return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
@@ -146,7 +147,7 @@ class Optimizer(abc.ABC):
         ignore_missing
             Whether to ignore keys missing from the gradients which exist in
             the variables.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -177,17 +178,17 @@ class SGD(Optimizer):
         Parameters
         ----------
         lr
-            Learning rate, default is 1e-4.
+            Learning rate, default is ``1e-4``.
         inplace
             Whether to update the variables in-place, or to create new variable handles.
             This is only relevant for frameworks with stateful variables such as
             PyTorch.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is False.
+            Whether to compile the optimizer on the next step. Default is ``False``.
         """
         Optimizer.__init__(
             self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
@@ -252,19 +253,19 @@ class LARS(Optimizer):
         Parameters
         ----------
         lr
-            Learning rate, default is 1e-4.
+            Learning rate, default is ``1e-4``.
         decay_lambda
-            The factor used for weight decay. Default is zero.
+            The factor used for weight decay. Default is ``0``.
         inplace
             Whether to update the variables in-place, or to create new variable handles.
             This is only relevant for frameworks with stateful variables such as
             PyTorch.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is False.
+            Whether to compile the optimizer on the next step. Default is ``False``.
         """
         self._decay_lambda = decay_lambda
         Optimizer.__init__(
@@ -334,23 +335,24 @@ class Adam(Optimizer):
         Parameters
         ----------
         lr
-            Learning rate, default is 1e-4.
+            Learning rate, default is ``1e-4``.
         beta1
-            gradient forgetting factor, default is 0.9
+            gradient forgetting factor, default is ``0.9``
         beta2
-            second moment of gradient forgetting factor, default is 0.999
+            second moment of gradient forgetting factor, default is ``0.999``
         epsilon
-            divisor during adam update, preventing division by zero, default is 1e-07
+            divisor during adam update, preventing division by zero,
+            default is ``1e-07``
         inplace
             Whether to update the variables in-place, or to create new variable handles.
             This is only relevant for frameworks with stateful variables such as
             PyTorch.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is False.
+            Whether to compile the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -444,28 +446,29 @@ class LAMB(Optimizer):
         Parameters
         ----------
         lr
-            Learning rate, default is 1e-4.
+            Learning rate, default is ``1e-4``.
         beta1
-            gradient forgetting factor, default is 0.9
+            gradient forgetting factor, default is ``0.9``
         beta2
-            second moment of gradient forgetting factor, default is 0.999
+            second moment of gradient forgetting factor, default is ``0.999``
         epsilon
-            divisor during adam update, preventing division by zero, default is 1e-07
+            divisor during adam update, preventing division by zero,
+            default is ``1e-07``
         max_trust_ratio
             The max value of the trust ratio; the ratio between the norm of the layer
-            weights and norm of gradients update. Default is 10.
+            weights and norm of gradients update. Default is ``10``.
         decay_lambda
-            The factor used for weight decay. Default is zero.
+            The factor used for weight decay. Default is ``0``.
         inplace
             Whether to update the variables in-place, or to create new variable handles.
             This is only relevant for frameworks with stateful variables such as
             PyTorch.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is False.
+            Whether to compile the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)

@@ -1,7 +1,7 @@
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def stop_gradient(x):
     return ivy.stop_gradient(x)

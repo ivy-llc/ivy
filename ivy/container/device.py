@@ -7,7 +7,7 @@ from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
-# noinspection PyMissingConstructor
+
 class ContainerWithDevice(ContainerBase):
     @staticmethod
     def static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
@@ -16,6 +16,17 @@ class ContainerWithDevice(ContainerBase):
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),
+        ...                   b=ivy.native_array([1, 2, 4, 5, 7]))
+        >>> as_native = ivy.Container(a=True, b=False)
+        >>> y = ivy.Container.static_dev(x, as_native=as_native)
+        >>> print(y)
+        {
+            a: device(type=cpu),
+            b: cpu
+        }
         """
         return ContainerBase.multi_map_in_static_method("dev", x, as_native=as_native)
 
@@ -25,6 +36,17 @@ class ContainerWithDevice(ContainerBase):
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
+        ...                   b=ivy.native_array([[1, 2], [4, 5]]))
+        >>> as_native = ivy.Container(a=False, b=True)
+        >>> y = x.dev(as_native=as_native)
+        >>> print(y)
+        {
+            a: cpu,
+            b: device(type=cpu)
+        }
         """
         return self.static_dev(self, as_native=as_native)
 
@@ -53,15 +75,16 @@ class ContainerWithDevice(ContainerBase):
         device
             device to move the input array `x` to
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         stream
             stream object to use during copy. In addition to the types supported
             in array.__dlpack__(), implementations may choose to support any
@@ -112,15 +135,16 @@ class ContainerWithDevice(ContainerBase):
         device
             device to move the input array `x` to
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         stream
             stream object to use during copy. In addition to the types supported
             in array.__dlpack__(), implementations may choose to support any

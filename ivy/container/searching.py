@@ -30,7 +30,7 @@ class ContainerWithSearching(ContainerBase):
             input array or container. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Default  None.
+            the maximum value of the flattened array. Deafult: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -77,7 +77,7 @@ class ContainerWithSearching(ContainerBase):
             input array or container. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Default  None.
+            the maximum value of the flattened array. Deafult: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -363,15 +363,16 @@ class ContainerWithSearching(ContainerBase):
         self
             Boolean array, for which indices are desired.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -408,15 +409,16 @@ class ContainerWithSearching(ContainerBase):
         self
             Boolean array, for which indices are desired.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------

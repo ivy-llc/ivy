@@ -1,6 +1,8 @@
 import ivy
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def _binary_matches(y_true, y_pred, threshold=0.5):
     threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
     y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
@@ -9,6 +11,7 @@ def _binary_matches(y_true, y_pred, threshold=0.5):
     )
 
 
+@to_ivy_arrays_and_back
 def _cond_convert_labels(y_true):
     are_zeros = ivy.equal(y_true, 0.0)
     are_ones = ivy.equal(y_true, 1.0)
@@ -19,6 +22,7 @@ def _cond_convert_labels(y_true):
     return y_true
 
 
+@to_ivy_arrays_and_back
 def _sparse_categorical_matches(y_true, y_pred):
     reshape = False
     y_true = ivy.array(y_true)
@@ -43,6 +47,7 @@ def _sparse_categorical_matches(y_true, y_pred):
     return matches
 
 
+@to_ivy_arrays_and_back
 def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     # Temporary composition
     def _in_top_k(targets, predictions, topk):
@@ -117,10 +122,12 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     return matches
 
 
+@to_ivy_arrays_and_back
 def binary_accuracy(y_true, y_pred, threshold=0.5):
     return ivy.mean(_binary_matches(y_true, y_pred, threshold), axis=-1)
 
 
+@to_ivy_arrays_and_back
 def binary_crossentropy(
     y_true, y_pred, from_logits: bool = False, label_smoothing: float = 0.0
 ):
@@ -129,16 +136,19 @@ def binary_crossentropy(
     return ivy.mean(ivy.binary_cross_entropy(y_true, y_pred, label_smoothing))
 
 
+@to_ivy_arrays_and_back
 def categorical_accuracy(y_true, y_pred):
     return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
 
 
+@to_ivy_arrays_and_back
 def hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.maximum(1.0 - y_true * y_pred, 0.0), axis=-1)
 
 
+@to_ivy_arrays_and_back
 def kl_divergence(y_true, y_pred):
     # clip to range but avoid div-0
     y_true = ivy.clip(y_true, 1e-7, 1)
@@ -152,6 +162,7 @@ kld = kl_divergence
 kullback_leibler_divergence = kl_divergence
 
 
+@to_ivy_arrays_and_back
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
 
@@ -159,6 +170,7 @@ def mean_absolute_error(y_true, y_pred):
 mae = mean_absolute_error
 
 
+@to_ivy_arrays_and_back
 def mean_absolute_percentage_error(y_true, y_pred):
     y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
 
@@ -169,6 +181,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
 mape = mean_absolute_percentage_error
 
 
+@to_ivy_arrays_and_back
 def mean_squared_error(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
 
@@ -176,6 +189,7 @@ def mean_squared_error(y_true, y_pred):
 mse = mean_squared_error
 
 
+@to_ivy_arrays_and_back
 def mean_squared_logarithmic_error(y_true, y_pred):
     y_true = ivy.astype(y_true, y_pred.dtype)
     first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
@@ -186,27 +200,32 @@ def mean_squared_logarithmic_error(y_true, y_pred):
 msle = mean_squared_logarithmic_error
 
 
+@to_ivy_arrays_and_back
 def poisson(y_true, y_pred):
     y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
     return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
 
 
+@to_ivy_arrays_and_back
 def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1):
     if from_logits:
         y_pred = ivy.softmax(y_pred)
     return ivy.sparse_cross_entropy(y_true, y_pred, axis=axis)
 
 
+@to_ivy_arrays_and_back
 def sparse_top_k_categorical_accuracy(y_true, y_pred, k=5):
     return _sparse_top_k_categorical_matches(y_true, y_pred, k)
 
 
+@to_ivy_arrays_and_back
 def squared_hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
 
 
+@to_ivy_arrays_and_back
 def cosine_similarity(y_true, y_pred):
 
     y_pred = ivy.asarray(y_pred)

@@ -74,7 +74,6 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
             else:
                 self._post_repr = ")"
             self.framework_str = ivy.current_backend_str()
-            self._is_variable = ivy.is_variable(self._data)
 
         # Properties #
         # -----------#
@@ -255,4 +254,4 @@ In addition to the functions in the topic-specific parent classes, there are abo
 
 That should hopefully be enough to get you started with the Ivy Array 😊
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
