@@ -119,3 +119,9 @@ class ndarray:
 
     def copy(self, order='C'):
         return np_frontend.copy(self.data, order=order)
+
+    def nonzero(self,):
+        return np_frontend.nonzero(self.data)[0]
+
+    def ravel(self, order="C"):
+        return np_frontend.ravel(self.data, order=order)
