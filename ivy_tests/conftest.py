@@ -13,12 +13,13 @@ if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
         "ci_with_db",
         database=RedisExampleDatabase(r, key_prefix=b"hypothesis-example:"),
         suppress_health_check=(HealthCheck(3), HealthCheck(2)),
+        print_blob=True,
     )
     settings.load_profile("ci_with_db")
 
 else:
     settings.register_profile(
-        "ci", suppress_health_check=(HealthCheck(3), HealthCheck(2))
+        "ci", suppress_health_check=(HealthCheck(3), HealthCheck(2)), print_blob=True
     )
     settings.load_profile("ci")
 

@@ -1,9 +1,14 @@
 # local
 import ivy
+from ivy.functional.frontends.torch.Tensor import Tensor
+
+
+# TODO: Once the PyTorch Frontend Array Decorators are added,
+#  casting to Tensor before returning should be removed as redundant.
 
 
 def is_tensor(obj):
-    return ivy.is_array(obj)
+    return Tensor(ivy.is_array(obj))
 
 
 # def is_storage(obj):
@@ -21,7 +26,7 @@ def numel(input):
         is_tensor(input),
         message="input must be a tensor",
     )
-    return input.size
+    return Tensor(input.size)
 
 
 def is_floating_point(input):
@@ -29,20 +34,13 @@ def is_floating_point(input):
         is_tensor(input),
         message="input must be a tensor",
     )
-    return ivy.is_float_dtype(input)
+    return Tensor(ivy.is_float_dtype(input))
 
 
 def is_nonzero(input):
-    ivy.assertions.check_true(
-        is_tensor(input),
-        message="input must be a tensor",
-    )
     ivy.assertions.check_equal(
-        numel(input),
+        numel(input).data,
         1,
         message="bool value of tensor with more than one or no values is ambiguous",
     )
-    if input.ndim:
-        return not input[0]
-    else:
-        return not input
+    return Tensor(ivy.nonzero(input)[0].size != 0)

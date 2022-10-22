@@ -839,9 +839,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            Input array.
+            Input array having shape (..., M, N) and whose innermost two deimensions 
+            form MxN matrices. Should have a floating-point data type.
         ord
-            Order of the norm. Default is 2.
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
@@ -865,6 +868,30 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
+                              b=ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.Container.static_matrix_norm(x, ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
+
+        >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
+        >>> ord = ivy.Container(a=1, b=float('inf'))
+        >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+        >>> k = ivy.Container(a=False, b=True)
+        >>> y = ivy.Container.static_matrix_norm(x, ord=ord, axis=axis, keepdims=k)
+        >>> print(y)
+        {
+            a: ivy.array([4.24, 11.4, 19.2]),
+            b: ivy.array([[[3.7]], 
+                          [[11.2]]])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -901,9 +928,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Input array.
+            Container having shape (..., M, N) and whose innermost two dimensions 
+            form MxN matrices. Should have a floating-point data type.
         ord
-            Order of the norm. Default is 2.
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
@@ -928,6 +958,30 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ret
             Matrix norm of the array at specified axes.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
+                              b=ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
+
+        >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
+        >>> ord = ivy.Container(a="nuc", b=ivy.inf)
+        >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+        >>> k = ivy.Container(a=True, b=False)
+        >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
+        >>> print(y)
+        {
+            a: ivy.array([[[4.24]], 
+                         [[11.4]], 
+                         [[19.2]]]),
+            b: ivy.array([4., 12.])
+        }
         """
         return self.static_matrix_norm(
             self,
