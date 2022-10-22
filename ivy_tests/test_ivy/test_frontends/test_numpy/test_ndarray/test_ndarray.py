@@ -754,3 +754,48 @@ def test_numpy_instance_ravel(
         class_name="ndarray",
         method_name="ravel",
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+    repeats=helpers.ints(min_value=2, max_value=5),
+    axis=helpers.ints(min_value=-1, max_value=1),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.repeat"
+    ),
+)
+def test_numpy_instance_repeat(
+    dtype_and_x,
+    repeats,
+    axis,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "repeats": repeats,
+            "axis": axis,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="repeat",
+    )
