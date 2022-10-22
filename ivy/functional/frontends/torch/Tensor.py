@@ -112,9 +112,6 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
-    def acos(self, *, out=None):
-        return torch_frontend.acos(self.data, out=out)
-
     # Special Methods #
     # -------------------#
 
