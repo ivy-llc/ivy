@@ -1,28 +1,37 @@
 import os
 import redis
 from hypothesis import settings, HealthCheck
+from hypothesis.database import (
+    MultiplexedDatabase,
+    ReadOnlyDatabase,
+    DirectoryBasedExampleDatabase,
+)
 from hypothesis.extra.redis import RedisExampleDatabase
 from pytest import mark
 from pathlib import Path
 
-if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
-    r = redis.Redis.from_url(
-        os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
-    )
-    settings.register_profile(
-        "ci_with_db",
-        database=RedisExampleDatabase(r, key_prefix=b"hypothesis-example:"),
-        suppress_health_check=(HealthCheck(3), HealthCheck(2)),
-        print_blob=True,
-    )
-    settings.load_profile("ci_with_db")
 
-else:
-    settings.register_profile(
-        "ci", suppress_health_check=(HealthCheck(3), HealthCheck(2)), print_blob=True
-    )
-    settings.load_profile("ci")
+cache = os.getcwd() + "/.hypothesis/examples/"
+try:
+    os.makedirs(cache)
+except FileExistsError:
+    pass
 
+r = redis.Redis.from_url(
+    url="redis://redis-17011.c259.us-central1-2.gce.cloud.redislabs.com:17011",
+    username="general_use",
+    password="Hypothesiscache@123",
+)
+shared = RedisExampleDatabase(r, key_prefix=b"hypothesis-example:")
+local = DirectoryBasedExampleDatabase(path=cache)
+
+settings.register_profile(
+    "ci_with_db",
+    database=MultiplexedDatabase(local, ReadOnlyDatabase(shared)),
+    suppress_health_check=(HealthCheck(3), HealthCheck(2)),
+    print_blob=True,
+)
+settings.load_profile("ci_with_db")
 skip_ids = []
 skips_path = Path(__file__).parent / "skips.txt"
 if skips_path.exists():
