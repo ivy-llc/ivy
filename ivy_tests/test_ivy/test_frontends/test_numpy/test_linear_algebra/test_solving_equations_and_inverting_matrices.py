@@ -1,5 +1,4 @@
 # global
-from builtins import tuple
 import numpy as np
 from hypothesis import given
 
@@ -106,8 +105,12 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         min_num_dims=2,
         min_value=-1e05,
         max_value=1e05,
-    ).filter(lambda x: (x[1][0].shape[-2] == x[1][0].shape[-1])
-             and (np.prod(x[1][0].shape[x[1][1].ndim:]) == np.prod(x[1][0].shape[:x[1][1].ndim]))),
+    ).filter(lambda x: 
+             (x[1][0].shape[-2] == x[1][0].shape[-1])
+             and (
+                 np.prod(x[1][0].shape[x[1][1].ndim:]) == np.prod(
+                     x[1][0].shape[:x[1][1].ndim])
+             )),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.tensorsolve"
     ),
