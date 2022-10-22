@@ -109,12 +109,12 @@ Calling the different backend files explicitly would work okay, but it would mea
         axis
             axis or axes along which products must be computed. By default, the product must
             be computed over the entire array. If a tuple of integers, products must be
-            computed over multiple axes. Default: None.
+            computed over multiple axes. Default: ``None``.
         keepdims
             bool, if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible with the
             input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: False.
+            (dimensions) must not be included in the result. Default: ``False``.
         dtype
             data type of the returned array. If None,
             if the default data type corresponding to the data type “kind” (integer or
@@ -129,7 +129,7 @@ Calling the different backend files explicitly would work okay, but it would mea
             integer data type (e.g., if the default integer data type is int32, the returned
             array must have a uint32 data type). If the data type (either specified or
             resolved) differs from the data type of x, the input array should be cast to the
-            specified data type before computing the product. Default: None.
+            specified data type before computing the product. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -437,4 +437,4 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

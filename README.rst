@@ -26,7 +26,7 @@
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/test-ivy?label=tests">
     </a>
-    <a href="https://discord.gg/G4aR9Q7DTN">
+    <a href="https://discord.gg/sXyFF8tDtm">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
     </div>
@@ -62,7 +62,7 @@
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
-.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
 Contents
 --------
@@ -230,9 +230,9 @@ Design
    :width: 100%
 
 | (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
-| Back-end functional APIs ✅
+| Backend functional APIs ✅
 | Ivy functional API ✅
-| Framework Handler ✅
+| Backend Handler ✅
 | Ivy Compiler 🚧
 |
 | (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_

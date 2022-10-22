@@ -45,13 +45,13 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
    :maxdepth: -1
    :caption: Contributing
 
-   contributing/0_setting_up.rst
-   contributing/1_the_basics.rst
+   contributing/setting_up.rst
+   contributing/the_basics.rst
    contributing/building_the_docs.rst
    deep_dive.rst
-   contributing/4_open_tasks.rst
-   contributing/5_applied_libraries.rst
-   contributing/6_helpful_resources.rst
+   contributing/open_tasks.rst
+   contributing/applied_libraries.rst
+   contributing/helpful_resources.rst
 
 **Video**
 

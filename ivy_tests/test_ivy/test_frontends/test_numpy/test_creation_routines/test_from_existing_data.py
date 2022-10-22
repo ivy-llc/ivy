@@ -39,3 +39,38 @@ def test_numpy_asarray(
         a=a,
         dtype=dtype,
     )
+
+
+# copy
+@handle_cmd_line_args
+@given(
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.copy"
+    ),
+)
+def test_numpy_copy(
+    dtype_and_a,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="copy",
+        a=a,
+        dtype=dtype,
+    )

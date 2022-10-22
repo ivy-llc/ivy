@@ -335,7 +335,7 @@ def unset_nestable_mode() -> None:
 @handle_exceptions
 def get_nestable_mode() -> bool:
     """Get the current mode of whether to check if function inputs are ivy.Container.
-    Default is True.
+    Default is ``True``.
 
     Examples
     --------
@@ -476,103 +476,6 @@ def array_equal(
     return current_backend(x0).array_equal(x0, x1)
 
 
-@inputs_to_native_arrays
-@handle_nestable
-@handle_exceptions
-def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]], /) -> bool:
-    """Determines whether input arrays are equal across all elements.
-
-    Parameters
-    ----------
-    xs
-        Sequence of arrays to compare for equality.
-
-    Returns
-    -------
-    ret
-        Boolean, whether or not all of the input arrays are equal across all elements.
-
-    Functional Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> i = ivy.array([1, 2])
-    >>> j = ivy.arrays_equal([i])
-    >>> print(j)
-    True
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> y = ivy.array([1, 0, 2])
-    >>> z = ivy.array([0, 1, 2])
-    >>> w = ivy.arrays_equal([x, y, z])
-    >>> print(w)
-    False
-
-    >>> a = ivy.array([-1, 0, 1])
-    >>> b = ivy.array([-1, 0, 1])
-    >>> c = ivy.array([-1, 0, 1])
-    >>> d = ivy.arrays_equal([a, b, c])
-    >>> print(d)
-    True
-
-    >>> x = ivy.array([0.1, 1.1])
-    >>> y = ivy.array([0.1, 1.1, 2.1])
-    >>> z = ivy.array([0.1, 1.1])
-    >>> w = ivy.arrays_equal([x, y, z])
-    >>> print(w)
-    False
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> m = ivy.native_array([1.1, 0.2, 1.3])
-    >>> n = ivy.native_array([1.1, 0.2, 1.4])
-    >>> o = ivy.arrays_equal([m, n])
-    >>> print(o)
-    False
-
-    >>> a = ivy.native_array([1, 2, 3, 0, -1])
-    >>> b = ivy.array([1, 2, 3, 0, -1])
-    >>> c = ivy.arrays_equal([a,b])
-    >>> print(c)
-    True
-
-    >>> a = ivy.native_array([1, 2, 3, 0, -1])
-    >>> b = ivy.array([1, 2, 3, 0, -2])
-    >>> c = ivy.arrays_equal([a,b])
-    >>> print(c)
-    False
-
-
-    With :class:`ivy.Container` input:
-
-    >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> t = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([6., 7., 8.]))
-    >>> print(ivy.arrays_equal([r,s,t]))
-    {
-        a: true,
-        b: false
-    }
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.array([0,1,2])
-    >>> z = ivy.arrays_equal([x,y])
-    >>> print(z)
-    {
-        a: true,
-        b: false
-    }
-
-    """
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not array_equal(x0, x):
-            return False
-    return True
-
-
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
@@ -587,7 +490,7 @@ def all_equal(
         inputs to compare.
     equality_matrix
         Whether to return a matrix of equalities comparing each input with every other.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -663,7 +566,7 @@ def all_equal(
     ivy.array([[ True,  True], [ True,  True]])
 
     """
-    equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
+    equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
         num_arrays = len(xs)
         mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
@@ -699,7 +602,7 @@ def to_numpy(
     x
         input array
     copy
-        whether to copy the array to a new address or not. Default is True.
+        whether to copy the array to a new address or not. Default is ``True``.
 
     Returns
     -------
@@ -1252,10 +1155,10 @@ def fourier_encode(
         The number of frequency bands for the encoding. Default is 4.
     linear
         Whether to space the frequency bands linearly as opposed to geometrically.
-        Default is False.
+        Default is ``False``.
     concat
         Whether to concatenate the position, sin and cos values, or return seperately.
-        Default is True.
+        Default is ``True``.
     flatten
         Whether to flatten the position dimension into the batch dimension. Default is
         False.
@@ -1320,7 +1223,7 @@ def value_is_nan(
     x
         The input to check Input array.
     include_infs
-        Whether to include infs and -infs in the check. Default is True.
+        Whether to include infs and -infs in the check. Default is ``True``.
 
     Returns
     -------
@@ -1354,7 +1257,7 @@ def value_is_nan(
     >>> print(y)
     False
     """
-    x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
+    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if not x_scalar == x:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
@@ -1365,7 +1268,9 @@ def value_is_nan(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
+def has_nans(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
+) -> bool:
     """Determine whether the array contains any nans, as well as infs or -infs if
     specified.
 
@@ -1375,7 +1280,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
         Input array.
     include_infs
         Whether to include ``+infinity`` and ``-infinity`` in the check.
-        Default is True.
+        Default is ``True``.
 
     Returns
     -------
@@ -1535,11 +1440,12 @@ def default(
     default_val
         The default value.
     catch_exceptions
-        Whether to catch exceptions from callable x. Default is False.
+        Whether to catch exceptions from callable x. Default is ``False``.
     rev
-        Whether to reverse the input x and default_val. Default is False.
+        Whether to reverse the input x and default_val. Default is ``False``.
     with_callable
-        Whether either of the arguments might be callable functions. Default is False.
+        Whether either of the arguments might be callable functions.
+        Default is ``False``.
 
     Returns
     -------
@@ -1753,7 +1659,7 @@ def match_kwargs(
         Functions and/or classes to match the keyword arguments to.
     allow_duplicates
         Whether to allow one keyword argument to be used for multiple receivers.
-        Default is False.
+        Default is ``False``.
 
     Returns
     -------
@@ -2476,9 +2382,7 @@ def inplace_variables_supported(f=None):
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def supports_inplace_updates(
-    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray]
-) -> bool:
+def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
     by the current backend framework setting.
@@ -2533,7 +2437,7 @@ def supports_inplace_updates(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
+def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters
@@ -2828,8 +2732,8 @@ def scatter_nd(
     updates
         Values for the new array to hold.
     shape
-        The shape of the result. Default is None, in which case tensor argument must be
-        provided.
+        The shape of the result. Default is ``None``, in which case tensor
+        argument must be provided.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     out
@@ -2909,7 +2813,7 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from. Default is -1.
+        optional int, the axis from which to gather from. Default is ``-1``.
     batch_dims
         optional int, lets you gather different items from each element of a batch.
     out
@@ -3060,7 +2964,7 @@ def multiprocessing(context: str = None):
     ----------
     context
         The context of the multiprocessing, either fork, forkserver or spawn.
-        Default is None.
+        Default is ``None``.
 
     Returns
     -------
@@ -3363,26 +3267,22 @@ def _get_devices_and_dtypes(fn, complement=True):
     # Their values are formatted like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
     if hasattr(fn, "supported_device_and_dtype"):
-        fn_supported_dnd = fn.supported_device_and_dtype
+        fn_supported_dnd = fn.supported_device_and_dtype.__get__()
 
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(
-            list(fn_supported_dnd.__get__().values())[0], tuple
-        )
+        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
-        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype.__get__()
 
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(
-            list(fn_unsupported_dnd.__get__().values())[0], tuple
-        )
+        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
@@ -3404,7 +3304,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the supported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -3441,7 +3341,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the unsupported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------

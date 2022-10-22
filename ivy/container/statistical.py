@@ -93,16 +93,16 @@ class ContainerWithStatistical(ContainerBase):
             the result. Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was
-            not applied. Default is False.
+            not applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -211,7 +211,7 @@ class ContainerWithStatistical(ContainerBase):
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array for each array in the input
             container. If a tuple of integers, variances must be computed over
-            multiple axes. Default: None.
+            multiple axes. Default: ``None``.
         correction
             degrees of freedom adjustment. Setting this parameter to a value other than
             0 has the effect of adjusting the divisor during the calculation of the
@@ -223,26 +223,26 @@ class ContainerWithStatistical(ContainerBase):
             When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled from
             a larger population; this is commonly referred to as Bessel's correction).
-            Default: 0.
+            Default: ``0``.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible
             with the input array (see Broadcasting). Otherwise, if False, the
             reduced axes (dimensions) must not be included in the result.
-            Default: False.
+            Default: ``False``.
             input array. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not
-            applied. Default is False.
+            applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -329,16 +329,16 @@ class ContainerWithStatistical(ContainerBase):
             input array. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was
-            not applied. Default is False.
+            not applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -510,26 +510,27 @@ class ContainerWithStatistical(ContainerBase):
         x
             Input array or container to apply cumsum.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -651,26 +652,27 @@ class ContainerWithStatistical(ContainerBase):
         self
             Input container to apply cumsum at leaves.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -806,26 +808,28 @@ class ContainerWithStatistical(ContainerBase):
         x
             Input array or container to cumprod.
         axis
-            Axis to cumprod along. Default is 0.
+            Axis to cumprod along. Default is ``0``.
         exclusive
-            Whether to exclude the first element of the input array. Default is False.
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
         reverse
             Whether to perform the cumprod from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -895,23 +899,25 @@ class ContainerWithStatistical(ContainerBase):
         self
             Input container to cumprod at leaves.
         axis
-            Axis along which the cumulative product is computed. Default is 0.
+            Axis along which the cumulative product is computed. Default is ``0``.
         exclusive
-            Whether to exclude the first element of the input array. Default is False.
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------

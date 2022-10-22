@@ -9,7 +9,6 @@ import pickle
 
 # local
 import ivy
-from ivy import container
 from ivy.container import Container
 from ivy.exceptions import IvyException
 
@@ -4210,14 +4209,14 @@ def test_container_remove_print_limit(device):
     default_print_limit = cont._print_limit
     id_cont = id(cont)
     cont1 = cont.remove_print_limit()
-    assert cont1._print_limit == None
+    assert cont1._print_limit is None
     assert id(cont1) != id(cont)
     assert cont._print_limit == default_print_limit
     assert cont._print_limit != cont1._print_limit
     assert cont.b._print_limit == default_print_limit
     cont.remove_print_limit(inplace=True)
-    assert cont._print_limit == None
-    assert cont.b._print_limit == None
+    assert cont._print_limit is None
+    assert cont.b._print_limit is None
     assert id(cont) == id_cont
 
 
@@ -4259,14 +4258,14 @@ def test_container_remove_key_length_limit(device):
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
     cont1 = cont.remove_key_length_limit()
-    assert cont1._key_length_limit == None
+    assert cont1._key_length_limit is None
     assert id(cont1) != id(cont)
     assert cont._key_length_limit == default_key_length_limit
     assert cont.b._key_length_limit == default_key_length_limit
     assert cont._key_length_limit != cont1._key_length_limit
     cont.remove_key_length_limit(inplace=True)
-    assert cont._key_length_limit == None
-    assert cont.b._key_length_limit == None
+    assert cont._key_length_limit is None
+    assert cont.b._key_length_limit is None
     assert id(cont) == id_cont
 
 

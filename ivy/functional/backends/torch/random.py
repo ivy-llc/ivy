@@ -27,7 +27,7 @@ def random_uniform(
 ) -> torch.Tensor:
     shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
-    return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
+    return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
 
 
 def random_normal(
