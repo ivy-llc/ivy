@@ -456,6 +456,20 @@ def log_softmax(
 def deserialize(
     name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
 ) -> Union[ivy.Callable[[Union[ivy.Array, ivy.NativeArray]], ivy.Array], None]:
+    """
+
+    Parameters
+    ----------
+    name
+    custom_objects
+
+    Returns
+    -------
+
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().deserialize(name, custom_objects=custom_objects)
+
     if name is None:
         return None
 
