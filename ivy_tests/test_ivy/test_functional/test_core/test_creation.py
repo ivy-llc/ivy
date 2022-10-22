@@ -380,6 +380,50 @@ def test_eye(
     )
 
 
+# __dlpack__ and to_dlpack
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    ivy_array_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
+    target_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
+)
+def test_to_dlpack(*, dtype_and_x, ivy_array_framework, target_framework):
+    dtype, x = dtype_and_x
+    ivy.set_backend(ivy_array_framework)
+    ivy_array = ivy.array(
+        x[0]
+    )  # invoking the class method __dlpack__ which in turn calls to_dlpack
+
+    if target_framework == "numpy":
+        import numpy as np
+
+        target_array = np.array(x[0], dtype=dtype[0])
+        assert target_array == np.from_dlpack(ivy_array)
+    elif target_framework == "jax":
+        import jax
+        import jax.dlpack
+
+        target_array = jax.numpy.array(x[0], dtype=dtype[0])
+        assert target_array == jax.dlpack.from_dlpack(ivy_array)
+    elif target_framework == "tensorflow":
+        import tensorflow as tf
+
+        target_array = tf.convert_to_tensor(x[0], dtype=dtype[0])
+        assert target_array == tf.experimental.dlpack.from_dlpack(ivy_array)
+    else:
+        import torch
+
+        target_array = torch.Tensor(x[0], dtype=dtype[0])
+        assert target_array == torch.from_dlpack(ivy_array)
+    ivy.unset_backend()
+
+
 # from_dlpack
 @handle_cmd_line_args
 @given(
