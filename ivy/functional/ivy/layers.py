@@ -210,6 +210,7 @@ def dropout(
 
 
 @handle_exceptions
+@to_native_arrays_and_back
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,

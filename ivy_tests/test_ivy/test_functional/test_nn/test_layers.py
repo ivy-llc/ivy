@@ -188,7 +188,7 @@ def test_dropout1d(
         prob=prob,
         training=training,
         data_format = data_format,
-        ground_truth_backend='tensorflow',
+        ground_truth_backend='tensorflow'
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:

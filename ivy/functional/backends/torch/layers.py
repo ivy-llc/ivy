@@ -696,9 +696,9 @@ def dropout1d(
         noise_shape = list(x.shape)
         noise_shape[-1] = 1
         mask = torch.rand(noise_shape) > prob
-        res = torch.where(mask, x / (1 - prob), 0)
+        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
         if data_format == "NWC":
             res = torch.permute(res, perm)
         return res
     else:
-      return x
+        return x
