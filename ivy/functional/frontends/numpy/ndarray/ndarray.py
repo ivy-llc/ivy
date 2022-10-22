@@ -67,7 +67,33 @@ class ndarray:
             initial=initial,
             where=where
         )
+
+    def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
+        return np_frontend.amax(
+            self.data,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where
+        )
     
     @property
     def dtype(self):
         return self.data.dtype
+
+    def argmin(
+            self,
+            /,
+            *,
+            axis=None,
+            keepdims=False,
+            out=None,
+    ):
+
+        return np_frontend.argmin(
+            self.data,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+        )
