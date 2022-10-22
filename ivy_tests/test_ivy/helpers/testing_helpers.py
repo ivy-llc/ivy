@@ -128,6 +128,7 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
+    fn_tree = "ivy." + fn_tree
     split_index = fn_tree.rfind(".")
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
@@ -141,13 +142,25 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
         _given_kwargs[flag] = st.booleans()
 
     # Override with_out to be compatible
-    # TODO this actually override GENERAL_CONFIG_DICT, should handle this
     for k in inspect.signature(callable_fn).parameters.keys():
         if k.endswith("out"):
-            _given_kwargs["with_out"] = st.booleans()
             break
     else:
         _given_kwargs["with_out"] = st.just(False)
+
+    unsupported_dtypes_dict = {
+        "numpy": (),
+        "jax": (),
+        "tensorflow": (),
+        "torch": (),
+    }
+    for k in unsupported_dtypes_dict.keys():  # ToDo can optimize this ?
+        ivy.set_backend(k)
+        _tmp_mod = importlib.import_module(module_to_import)
+        unsupported_dtypes_dict[k] = ivy.function_unsupported_dtypes(
+            _tmp_mod.__dict__[fn_name]
+        )
+        ivy.unset_backend()
 
     def test_wrapper(test_fn):
         def wrapped_test(fixt_frontend_str, *args, **kwargs):
@@ -161,10 +174,9 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
-            callable_fn=callable_fn,
             fn_tree=fn_tree,
             fn_name=fn_name,
-            unsupported_dtypes=None,  # TODO
+            unsupported_dtypes=unsupported_dtypes_dict,
         )
 
         return wrapped_test
