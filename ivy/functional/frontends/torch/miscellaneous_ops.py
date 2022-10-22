@@ -244,13 +244,12 @@ def lcm(input, other, *, out=None):
 @handle_exceptions
 @to_ivy_arrays_and_back
 def combinations(input, r=2, with_replacement=False):
-    if input.ndim > 1:
-        raise ivy.exception(
-            f"Expect a 1D vector, but got shape\
-        {list(tuple(input.shape))}"
+    if input.size != input.shape[0]:
+        raise ivy.exceptions.IvyException(
+            f"Expect a 1D vector, but got shape {input.shape}"
         )
-    elif input.ndim < 1:
-        raise ivy.exception(f"Expect a positive number, but got {r}")
+    elif r < 0:
+        raise ivy.exceptions.IvyException(f"Expect a positive number, but got {r}")
     else:
         array_dtype = input.dtype
         lst = [float(x) for x in input]
