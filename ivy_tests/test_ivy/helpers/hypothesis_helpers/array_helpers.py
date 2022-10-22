@@ -1,4 +1,4 @@
-# global
+                    # global
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st
