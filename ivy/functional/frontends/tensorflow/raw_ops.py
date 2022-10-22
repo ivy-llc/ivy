@@ -376,7 +376,8 @@ def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-@to_ivy_arrays_and_back
+# @to_ivy_arrays_and_back
+# @inputs_to_ivy_arrays
 def Pow(*, x, y, name="Pow"):
     return ivy.pow(x, y)
 
