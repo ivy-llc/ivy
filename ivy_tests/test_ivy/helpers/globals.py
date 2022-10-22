@@ -78,21 +78,33 @@ def _get_ivy_torch():
 # Setup
 
 
-def set_test_data(test_data: TestData):
+def setup_test(test_data: TestData, frontend: str, backend: str):
+    _set_test_data(test_data)
+    _set_frontend(frontend)
+    _set_backend(backend)
+
+
+def teardown_test():
+    _unset_test_data()
+    _unset_frontend()
+    _unset_backend()
+
+
+def _set_test_data(test_data: TestData):
     global CURRENT_RUNNING_TEST
     if CURRENT_RUNNING_TEST is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_RUNNING_TEST = test_data
 
 
-def set_frontend(framework: str):
+def _set_frontend(framework: str):
     global CURRENT_FRONTEND
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_FRONTEND = FWS_DICT[framework]
 
 
-def set_backend(framework: str):
+def _set_backend(framework: str):
     global CURRENT_BACKEND
     if CURRENT_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
@@ -102,16 +114,16 @@ def set_backend(framework: str):
 # Teardown
 
 
-def unset_test_data():
+def _unset_test_data():
     global CURRENT_RUNNING_TEST
     CURRENT_RUNNING_TEST = _Notsetval
 
 
-def unset_frontend():
+def _unset_frontend():
     global CURRENT_FRONTEND
     CURRENT_FRONTEND = _Notsetval
 
 
-def unset_backend():
+def _unset_backend():
     global CURRENT_BACKEND
     CURRENT_BACKEND = _Notsetval

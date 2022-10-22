@@ -72,7 +72,6 @@ def pytest_configure(config):
                             test_globals.FWS_DICT[backend_str](),
                             compile_graph,
                             implicit,
-                            backend_str,
                         )
                     )
 
@@ -81,7 +80,7 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(
-    request, device, backend_fw, fixt_frontend_str, compile_graph, fw, implicit
+    request, device, backend_fw, fixt_frontend_str, compile_graph, implicit
 ):
     test_globals.set_test_data(request.function.test_data)
 
@@ -93,14 +92,7 @@ def run_around_tests(
 
 
 def pytest_generate_tests(metafunc):
-    metafunc.parametrize(
-        "device,backend_fw,compile_graph,implicit,fw", TEST_PARAMS_CONFIG
-    )
-
-
-@pytest.fixture(scope="session")
-def fixt_frontend_str():  # ToDo, temporary till handle test decorator is updated.
-    return None
+    metafunc.parametrize("device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG)
 
 
 def process_cl_flags(config) -> Dict[str, bool]:
