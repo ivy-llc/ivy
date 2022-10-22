@@ -799,3 +799,48 @@ def test_numpy_instance_repeat(
         class_name="ndarray",
         method_name="repeat",
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+    ),
+    side=st.sampled_from(["left", "right"]),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.searchsorted"
+    ),
+)
+def test_numpy_instance_searchsorted(
+    dtype_x_v,
+    side,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, xs = dtype_x_v
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "v": xs[1],
+            "side": side,
+            "sorter": np.argsort(xs[0]),
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="searchsorted",
+    )
