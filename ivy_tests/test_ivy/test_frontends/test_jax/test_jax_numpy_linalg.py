@@ -415,8 +415,10 @@ def norm_helper(draw):
         min_axis=-1,
         max_axis=2,
         force_int_axis=False,
-        max_axes_size=2, safety_factor_scale="log",
-        valid_axis=True, large_abs_safety_factor=2
+        max_axes_size=2,
+        safety_factor_scale="log",
+        valid_axis=True,
+        large_abs_safety_factor=2,
     ))
     if type(axis) in [tuple, list]:
         if len(axis) == 2:
@@ -451,9 +453,11 @@ def test_jax_norm(
                                    as_variable_flags=as_variable,
                                    with_out=False,
                                    num_positional_args=num_positional_args,
-                                   native_array_flags=native_array, frontend='jax',
+                                   native_array_flags=native_array,
+                                   frontend='jax',
                                    fn_tree='numpy.linalg.norm',
                                    x=x[0],
                                    ord=ord_param,
                                    axis=axis,
-                                   keepdims=keepdims)
+                                   keepdims=keepdims,
+                                   )
