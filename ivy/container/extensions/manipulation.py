@@ -328,15 +328,6 @@ class ContainerWithManipulationExtensions(ContainerBase):
             b: ivy.array([[[4, 5]],
                         [[1, 0]]])
         }
-        >>> ivy.Container.static_stack([x,y],axis=1)
-        {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
-        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())
@@ -384,6 +375,85 @@ class ContainerWithManipulationExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "vstack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hstack(
+        self: ivy.Container,
+        /,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hstack. This method
+        simply wraps the function, and so the docstring for ivy.hstack
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.hstack([y])
+        {
+            a: ivy.array([[0, 1, 3, 2],
+                          [2, 3, 1, 0]]),
+            b: ivy.array([[4, 5, 1, 0]])
+        }
+        """
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
+        return self.static_hstack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_hstack(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hstack. This method simply wraps the
+        function, and so the docstring for ivy.hstack also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])])
+        >>> ivy.Container.static_hstack(c)
+        {
+            a: ivy.array([1, 2, 3, 0, 0, 0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hstack",
             xs,
             key_chains=key_chains,
             to_apply=to_apply,
