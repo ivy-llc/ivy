@@ -20,4 +20,5 @@ Manipulation
    manipulation/heaviside.rst
    manipulation/flipud.rst
    manipulation/vstack.rst
+   manipulation/hstack.rst
 
