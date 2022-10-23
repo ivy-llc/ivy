@@ -50,10 +50,11 @@ def random_uniform(
 ) -> JaxArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
 
-    RNG_, rng_input = jax.random.split(_getRNG())
-    _setRNG(RNG_)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
 
     return to_device(
         jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
@@ -74,13 +75,11 @@ def random_normal(
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
 
-     RNG_, rng_input = jax.random.split(_getRNG())
-    _setRNG(RNG_)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
-
-
-
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
     return (
         to_device(
             jax.random.normal(rng_input, shape, dtype=dtype),
@@ -108,6 +107,9 @@ def multinomial(
     _setRNG(RNG_)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
 
     if probs is None:
         probs = (
@@ -152,11 +154,11 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
 
-    RNG_, rng_input = jax.random.split(_getRNG())
-    _setRNG(RNG_)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
-
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
 
     return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
 
@@ -169,9 +171,10 @@ def shuffle(
     x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:
 
-    RNG_, rng_input = jax.random.split(_getRNG())
-    _setRNG(RNG_)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
 
     return jax.random.shuffle(rng_input, x)
