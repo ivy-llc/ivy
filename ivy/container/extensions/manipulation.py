@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
     Sequence,
+    Tuple,
 )
 
 
@@ -294,3 +295,69 @@ class ContainerWithManipulationExtensions(ContainerBase):
         }
         """
         return self.static_flipud(self, out=out)
+
+    def vstack(
+        self: ivy.Container,
+        /,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stack. This method
+        simply wraps the function, and so the docstring for ivy.stack
+        also applies to this method with minimal changes.
+        """
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
+        return self.static_vstack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_vstack(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.vstack also applies to this method
+        with minimal changes.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> ivy.Container.static_vstack(m)
+
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "vstack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
