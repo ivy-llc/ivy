@@ -95,6 +95,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def wrap_raw_ops_alias(fn: callable) -> callable:
+    @functools.wraps(fn)
     def _wraped_fn(*args, **kwargs):
         kwargs.update(zip(fn.__code__.co_varnames, args))
         return fn(**kwargs)
