@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple, List
 
 # local
 import ivy
@@ -118,3 +118,20 @@ class ArrayWithManipulationExtensions(abc.ABC):
             [ 1.,  0.,  0.]])
         """
         return ivy.flipud(self._data, out=out)
+
+    def vstack(
+        self: ivy.Array,
+        /,
+        arrays: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.vstack. This method simply
+        wraps the function, and so the docstring for ivy.vstack also applies
+        to this method with minimal changes.
+        """
+        return ivy.vstack(self.concat(arrays), out=out)
