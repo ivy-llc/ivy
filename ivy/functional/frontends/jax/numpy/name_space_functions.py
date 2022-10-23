@@ -272,16 +272,22 @@ def zeros(shape, dtype=None):
         dtype = ivy.float64
     return ivy.zeros(shape, dtype=dtype)
 
-
-=======
 @to_ivy_arrays_and_back
 def bitwise_and(x1, x2):
     return ivy.bitwise_and(x1, x2)
 
 @to_ivy_arrays_and_back
+def bitwise_or(x1, x2):
+    return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)
 
 def argsort(a, axis=-1, kind=None, order=None):
     return ivy.argsort(a, axis=axis)
