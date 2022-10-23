@@ -1,5 +1,7 @@
 # global
 from hypothesis import given, strategies as st
+import numpy as np
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -436,48 +438,50 @@ def test_numpy_floor_divide(
     )
     
 
+# remainder
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=6,
-        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    modulus=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
+    where=np_frontend_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.remainder"
+    ),
 )
-def test_remainder(
-    *,
+def test_numpy_remainder(
     dtype_and_x,
-    modulus,
+    where,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    container,
-    instance_method,
-    fw,
 ):
-    input_dtype, x = dtype_and_x
-    # Make sure values is not too close to zero
-    assume(not np.any(np.isclose(x[0], 0)))
-    assume(not np.any(np.isclose(x[1], 0)))
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=[as_variable, False],
+    input_dtypes, xs = dtype_and_x
+    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtypes,
+        get_dtypes_kind="numeric",
+    )
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="remainder",
-        test_gradients=True,
-        x1=x[0],
-        x2=x[1],
-        rtol_=1e-2,
-        atol_=1e-2,
-        modulus=modulus,
+        frontend="numpy",
+        fn_tree="remainder",
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
