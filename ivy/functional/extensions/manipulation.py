@@ -368,7 +368,7 @@ def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
     ivy.array([[1, 2, 3],
            [2, 3, 4]])
     >>> ivy.vstack((x, y, x, y))
-        ivy.array([[1, 2, 3],
+    ivy.array([[1, 2, 3],
                [2, 3, 4],
                [1, 2, 3],
                [2, 3, 4]])
@@ -397,6 +397,20 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
     -------
     ret
         The array formed by stacking the given arrays.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([2, 3, 4])
+    >>> ivy.hstack((x, y))
+    ivy.array([1, 2, 3, 2, 3, 4])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([0, 0, 0])
+    >>> ivy.hstack((x, y, x))
+    ivy.array([1, 2, 3, 0, 0, 0, 1, 2, 3])
+    >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+    >>> print(ivy.hstack(y))
+    ivy.array([[5, 6, 7, 8]])
 
     """
     return ivy.current_backend(arrays[0]).hstack(arrays)

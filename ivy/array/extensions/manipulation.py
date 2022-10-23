@@ -161,5 +161,12 @@ class ArrayWithManipulationExtensions(abc.ABC):
         wraps the function, and so the docstring for ivy.hstack also applies
         to this method with minimal changes.
 
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2]])
+        >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+        >>> print(x.vstack(y))
+        ivy.array([1, 2, 5, 6, 7, 8])
+
         """
         return ivy.hstack(self.concat(arrays), out=out)
