@@ -24,7 +24,7 @@ def random_uniform(
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
-    seed:Optional[int] = None,
+    seed: Optional[int] = None,
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
