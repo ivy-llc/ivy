@@ -193,7 +193,7 @@ def glu(input, dim=-1):
     return ivy.multiply(a, ivy.sigmoid(b))
 
 
-def log_softmax(input, dim=None, dtype=None):
+def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     if dim is None:

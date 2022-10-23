@@ -1537,7 +1537,14 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-        x: ivy.Container, include_infs=True, leafwise=False
+        self: ivy.Container,
+        /,
+        *,
+        include_infs=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         Determine whether arrays in the container contain any nans, as well as infs
@@ -1549,10 +1556,6 @@ class ContainerWithGeneral(ContainerBase):
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
 
         Returns
         -------
@@ -1560,13 +1563,25 @@ class ContainerWithGeneral(ContainerBase):
             entire container.
 
         """
-        leafwise_res = x.map(lambda x, kc: ivy.has_nans(x, include_infs))
-        if leafwise:
-            return leafwise_res
-        return max([v for k, v in leafwise_res.to_iterator()])
+        return ContainerBase.multi_map_in_static_method(
+            "has_nans",
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
 
     def has_nans(
-        self: ivy.Container, /, *, include_infs=True, leafwise=False
+        self: ivy.Container,
+        /,
+        *,
+        include_infs=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         Determine whether arrays in the container contain any nans, as well as infs
@@ -1576,17 +1591,19 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         include_infs
             Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
 
         Returns
         -------
-            Whether the container has any nans, applied either leafwise or across the
-            entire container.
+            Whether the container has any nans, applied across the entire container.
         """
-        return self.static_has_nans(self, include_infs=include_infs, leafwise=leafwise)
+        return self.static_has_nans(
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
 
     @staticmethod
     def static_scatter_nd(

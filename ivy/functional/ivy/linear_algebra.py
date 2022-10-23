@@ -1155,8 +1155,8 @@ def matrix_rank(
     ivy.array([2., 1.])
 
     With :code: 'ivy.Container' inputs:
-    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
-                            b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), \
+                          b = ivy.array([[1., 0.], [0., 0.]]))
     >>> ivy.matrix_rank(x)
     {
         a:ivy.array(2.),
