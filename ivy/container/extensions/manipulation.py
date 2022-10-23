@@ -314,6 +314,27 @@ class ContainerWithManipulationExtensions(ContainerBase):
         ivy.Container instance method variant of ivy.stack. This method
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.vstack([y])
+        {
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
+        }
+        >>> ivy.Container.static_stack([x,y],axis=1)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
+        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())
@@ -347,10 +368,16 @@ class ContainerWithManipulationExtensions(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
-        >>> ivy.Container.static_vstack(m)
-
-
+        >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
+                              b=ivy.arange(3))
+        >>> ivy.Container.static_vstack(c)
+        {
+            a: ivy.array([[1, 2, 3],
+                          [0, 0, 0]]),
+            b: ivy.array([[0],
+                          [1],
+                          [2]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "vstack",
