@@ -31,3 +31,12 @@ def flipud(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
+
+
+def vstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vstack(arrays)
