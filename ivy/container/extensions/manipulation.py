@@ -317,9 +317,8 @@ class ContainerWithManipulationExtensions(ContainerBase):
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())
-        return self.static_stack(
+        return self.static_vstack(
             new_xs,
-            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -328,14 +327,13 @@ class ContainerWithManipulationExtensions(ContainerBase):
         )
 
     @staticmethod
-    def static_stack(
+    def static_vstack(
         xs: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         /,
         *,
-        axis: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -344,43 +342,19 @@ class ContainerWithManipulationExtensions(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stack. This method simply wraps the
-        function, and so the docstring for ivy.stack also applies to this method
+        function, and so the docstring for ivy.vstack also applies to this method
         with minimal changes.
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
-        >>> ivy.Container.static_stack(x,axis = 1)
-        {
-            a: ivy.array([[0, 2],
-                        [1, 3]]),
-            b: ivy.array([[4],
-                        [5]])
-        }
-        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
-        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
-        >>> ivy.Container.static_stack([x,y])
-        {
-            a: ivy.array([[[0, 1],
-                        [2, 3]],
-                        [[3, 2],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5]],
-                        [[1, 0]]])
-        }
-        >>> ivy.Container.static_stack([x,y],axis=1)
-        {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
-        }
+        With one :class:`ivy.Container` input:
+        >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
+        >>> ivy.Container.static_vstack(m)
+
+
         """
         return ContainerBase.multi_map_in_static_method(
-            "stack",
+            "vstack",
             xs,
-            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
