@@ -40,3 +40,12 @@ def vstack(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.vstack(arrays)
+
+
+def hstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hstack(arrays)
