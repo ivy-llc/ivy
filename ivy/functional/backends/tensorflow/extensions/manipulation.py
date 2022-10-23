@@ -51,4 +51,3 @@ def hstack(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hstack(arrays)
-

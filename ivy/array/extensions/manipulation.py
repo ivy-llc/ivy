@@ -145,7 +145,6 @@ class ArrayWithManipulationExtensions(abc.ABC):
         """
         return ivy.vstack(self.concat(arrays), out=out)
 
-
     def hstack(
         self: ivy.Array,
         /,
