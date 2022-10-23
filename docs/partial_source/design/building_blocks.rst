@@ -344,7 +344,9 @@ The compiler takes in any Ivy function, backend function, or composition, and re
    :align: center
    :width: 75%
 
-As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code. 
+First, let's set our desired backend as PyTorch. When we compile the three functions below, despite the fact that each
+has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -405,35 +407,7 @@ For all existing ML frameworks, the functional API is the backbone which underpi
    :align: center
    :width: 75%
 
-The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
-
-.. code-block:: python
-
-    # ivy/functional/backends/tensorflow/compilation.py
-    compile = lambda fn, dynamic=True, example_inputs=None,\
-    static_argnums=None, static_argnames=None:\
-        tf.function(fn)
-
-.. code-block:: python
-
-    # ivy/functional/backends/torch/compilation.py
-    def compile(fn, dynamic=True, example_inputs=None,
-            static_argnums=None, static_argnames=None):
-    if dynamic:
-        return torch.jit.script(fn)
-    return torch.jit.trace(fn, example_inputs)
-
-.. code-block:: python
-
-    # ivy/functional/backends/jax/compilation.py
-    compile = lambda fn, dynamic=True, example_inputs=None,\
-                static_argnums=None, static_argnames=None:\
-    jax.jit(fn, static_argnums=static_argnums,
-            static_argnames=static_argnames)
-
-Therefore, the backend code can always be run with maximal efficiency by compiling into an efficient low-level backend-specific computation graph.
-
-This compilation is not restricted to just PyTorch. For example, let's take another example, but compile to Tensorflow, NumPy and JAX:
+This compilation is not restricted to just PyTorch. Let's take another example, but compile to Tensorflow, NumPy and JAX:
 
 +------------------------------------+
 |.. code-block:: python              |
@@ -472,6 +446,33 @@ The example above further emphasizes that the graph compiler creates a computati
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend. However, when compiling native framework code, we are only able to compile a graph for that same framework. 
 For example, we cannot take torch code and compile this into tensorflow code. However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
 
+The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
+
+.. code-block:: python
+
+    # ivy/functional/backends/tensorflow/compilation.py
+    compile = lambda fn, dynamic=True, example_inputs=None,\
+    static_argnums=None, static_argnames=None:\
+        tf.function(fn)
+
+.. code-block:: python
+
+    # ivy/functional/backends/torch/compilation.py
+    def compile(fn, dynamic=True, example_inputs=None,
+            static_argnums=None, static_argnames=None):
+    if dynamic:
+        return torch.jit.script(fn)
+    return torch.jit.trace(fn, example_inputs)
+
+.. code-block:: python
+
+    # ivy/functional/backends/jax/compilation.py
+    compile = lambda fn, dynamic=True, example_inputs=None,\
+                static_argnums=None, static_argnames=None:\
+    jax.jit(fn, static_argnums=static_argnums,
+            static_argnames=static_argnames)
+
+Therefore, the backend code can always be run with maximal efficiency by compiling into an efficient low-level backend-specific computation graph.
 
 **Round Up**
 
