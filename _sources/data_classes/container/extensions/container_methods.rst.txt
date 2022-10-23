@@ -38,7 +38,7 @@ Container methods
    container_methods/static_flipud.rst
    container_methods/flipud.rst
    container_methods/vstack.rst
-   container_methods/static_stack.rst
+   container_methods/static_vstack.rst
    container_methods/static_median.rst
    container_methods/median.rst
 
