@@ -2,7 +2,10 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    wrap_raw_ops_alias,
+)
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -24,7 +27,8 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-Add = tf_frontend.math.add
+def Add(*, x, y, name="Add"):
+    return wrap_raw_ops_alias(tf_frontend.math.add)
 
 
 ArgMax = tf_frontend.math.argmax

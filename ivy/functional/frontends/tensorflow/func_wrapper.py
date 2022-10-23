@@ -92,3 +92,11 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))
+
+
+def wrap_raw_ops_alias(fn: callable) -> callable:
+    def _wraped_fn(*args, **kwargs):
+        kwargs.update(zip(fn.__code__.co_varnames, args))
+        return fn(**kwargs)
+
+    return _wraped_fn
