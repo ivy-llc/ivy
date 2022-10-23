@@ -380,3 +380,23 @@ def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
 
     """
     return ivy.current_backend(arrays[0]).vstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+    """Stack arrays in sequence horizotally (column wise).
+
+    Parameters
+    ----------
+    arrays
+        Sequence of arrays to be stacked.
+
+    Returns
+    -------
+    ret
+        The array formed by stacking the given arrays.
+
+    """
+    return ivy.current_backend(arrays[0]).hstack(arrays)
