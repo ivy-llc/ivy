@@ -349,14 +349,17 @@ def flipud(
 @handle_nestable
 def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
     """Stack arrays in sequence vertically (row wise).
+
     Parameters
     ----------
     arrays
         Sequence of arrays to be stacked.
+
     Returns
     -------
     ret
         The array formed by stacking the given arrays.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 3])

@@ -315,6 +315,8 @@ class ContainerWithManipulationExtensions(ContainerBase):
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
 
+        Examples
+        --------
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.vstack([y])
@@ -365,6 +367,7 @@ class ContainerWithManipulationExtensions(ContainerBase):
         ivy.Container static method variant of ivy.stack. This method simply wraps the
         function, and so the docstring for ivy.vstack also applies to this method
         with minimal changes.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
