@@ -263,6 +263,15 @@
 <span class="sd">        ivy.Array instance method variant of ivy.vstack. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.vstack also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2]])</span>
+<span class="sd">        &gt;&gt;&gt; y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]</span>
+<span class="sd">        &gt;&gt;&gt; print(x.vstack(y))</span>
+<span class="sd">            ivy.array([[1, 2],</span>
+<span class="sd">                       [5, 6],</span>
+<span class="sd">                       [7, 8]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>

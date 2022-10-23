@@ -1038,8 +1038,20 @@ function, and so the docstring for ivy.vstack also applies to this method
 with minimal changes.
 .. rubric:: Examples</p>
 <p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
-&gt;&gt;&gt; ivy.Container.static_vstack(m)</p>
+&gt;&gt;&gt; c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],</p>
+<blockquote>
+<div><p>b=ivy.arange(3))</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_vstack</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1, 2, 3],</span>
+<span class="go">                  [0, 0, 0]]),</span>
+<span class="go">    b: ivy.array([[0],</span>
+<span class="go">                  [1],</span>
+<span class="go">                  [2]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
@@ -1053,6 +1065,28 @@ with minimal changes.
 <dd><p>ivy.Container instance method variant of ivy.stack. This method
 simply wraps the function, and so the docstring for ivy.stack
 also applies to this method with minimal changes.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">y</span><span class="p">])</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[[0, 1],</span>
+<span class="go">                [2, 3]],</span>
+<span class="go">                [[3, 2],</span>
+<span class="go">                [1, 0]]]),</span>
+<span class="go">    b: ivy.array([[[4, 5]],</span>
+<span class="go">                [[1, 0]]])</span>
+<span class="go">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[[0, 1],</span>
+<span class="go">                [3, 2]],</span>
+<span class="go">                [[2, 3],</span>
+<span class="go">                [1, 0]]]),</span>
+<span class="go">    b: ivy.array([[[4, 5],</span>
+<span class="go">                [1, 0]]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
