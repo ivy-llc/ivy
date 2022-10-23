@@ -142,6 +142,21 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
+<span class="c1"># Helpers #</span>
+<span class="c1"># --------#</span>
+
+
+<span class="k">def</span> <span class="nf">_get_promoted_type_of_operands</span><span class="p">(</span><span class="n">operands</span><span class="p">):</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">operands</span><span class="p">:</span>
+        <span class="n">operand_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">operand_dtype</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">operand_dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
