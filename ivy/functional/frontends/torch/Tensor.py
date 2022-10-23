@@ -73,10 +73,14 @@ class Tensor:
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
 
+    def abs_(self):
+        self.data = self.abs()
+        return self.data
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
-    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.ones(size, dtype=dtype, device=device,
                                    requires_grad=requires_grad)
 
@@ -135,6 +139,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    # Method aliases
+    absolute, absolute_ = abs, abs_
 
 
 # Tensor (alias)
