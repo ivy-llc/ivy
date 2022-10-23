@@ -29,13 +29,16 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
+    seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
-    RNG, rng_input = jax.random.split(RNG)
+    key = RNG
+    if seed:
+        key = jax.random.PRNGKey(seed)
     return to_device(
-        jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
+        jax.random.uniform(key, shape, minval=low, maxval=high, dtype=dtype),
         device,
     )
 
@@ -54,8 +57,8 @@ def random_normal(
     shape = _check_bounds_and_get_shape(mean, std, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    if seed is not None:
-        jax.random.PRNGKey(seed)
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
     return (
         to_device(
             jax.random.normal(rng_input, shape, dtype=dtype),
@@ -80,8 +83,8 @@ def multinomial(
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    if seed is not None:
-        jax.random.PRNGKey(seed)
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
     if probs is None:
         probs = (
             jnp.ones(
@@ -126,8 +129,8 @@ def randint(
     shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    if seed is not None:
-        jax.random.PRNGKey(seed)
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
     return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
 
 
@@ -142,6 +145,6 @@ def shuffle(
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    if seed is not None:
-        jax.random.PRNGKey(seed)
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
     return jax.random.shuffle(rng_input, x)
