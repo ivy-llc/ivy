@@ -263,7 +263,7 @@ def trapz(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x is None:
-        dx = dx if not None else 1
+        dx = dx if dx is not None else 1
         return torch.trapezoid(y, dx=dx, dim=axis)
     else:
         if dx is not None:
