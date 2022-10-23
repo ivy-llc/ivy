@@ -199,6 +199,7 @@ def test_flipud(
         m=m[0],
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_m=helpers.dtype_and_values(
@@ -208,10 +209,10 @@ def test_flipud(
         shared_dtype=True,
         num_arrays=2,
         shape=helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3),
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vstack"),
 )
@@ -238,4 +239,3 @@ def test_vstack(
         fn_name="vstack",
         arrays=m,
     )
-
