@@ -19,4 +19,5 @@ Manipulation
    manipulation/ndindex.rst
    manipulation/heaviside.rst
    manipulation/flipud.rst
+   manipulation/vstack.rst
 
