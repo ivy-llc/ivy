@@ -325,8 +325,12 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(x.shape) < 2:
-        return tf.constant(0, dtype=x.dtype)
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return tf.constant(0, dtype=x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return tf.constant(0, dtype=x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -403,6 +407,7 @@ def pinv(
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.pinv(x, rtol)
     return ret
 

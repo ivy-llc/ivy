@@ -145,3 +145,11 @@ This should have hopefully given you a good understanding of how the Array API t
 
 If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_
 or in the `array api tests forum`_ !
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+    </iframe>

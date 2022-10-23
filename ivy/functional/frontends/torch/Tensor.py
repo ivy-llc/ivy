@@ -15,7 +15,7 @@ class Tensor:
             "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -24,6 +24,9 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
 
+    def asin(self, *, out=None):
+        return torch_frontend.asin(self.data, out=out)
+    
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
 
@@ -40,6 +43,9 @@ class Tensor:
 
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
+   
+    def arcsin(self, *, out=None):
+        return torch_frontend.arcsin(self.data, out=out)
 
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
@@ -64,8 +70,15 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def abs(self, *, out=None):
+        return torch_frontend.abs(self.data, out=out)
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
+
+    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(size, dtype=dtype, device=device,
+                                   requires_grad=requires_grad)
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
@@ -99,7 +112,10 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
-    # Special Methoods #
+    def arctan(self, *, out=None):
+        return torch_frontend.arctan(self, out=out)
+
+    # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
