@@ -28,7 +28,8 @@ def Acosh(*, x, name="Acosh"):
 
 
 def Add(*, x, y, name="Add"):
-    return wrap_raw_ops_alias(tf_frontend.math.add)
+    fn = wrap_raw_ops_alias(tf_frontend.math.add)
+    return fn(x=x, y=y, name=name)
 
 
 ArgMax = tf_frontend.math.argmax
