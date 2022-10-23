@@ -30,7 +30,7 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
     device: str,
-    seed=None,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = _check_bounds_and_get_shape(low, high, shape)
