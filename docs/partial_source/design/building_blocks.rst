@@ -109,12 +109,12 @@ Calling the different backend files explicitly would work okay, but it would mea
         axis
             axis or axes along which products must be computed. By default, the product must
             be computed over the entire array. If a tuple of integers, products must be
-            computed over multiple axes. Default: ``None``.
+            computed over multiple axes. Default: None.
         keepdims
             bool, if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible with the
             input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: ``False``.
+            (dimensions) must not be included in the result. Default: False.
         dtype
             data type of the returned array. If None,
             if the default data type corresponding to the data type “kind” (integer or
@@ -129,7 +129,7 @@ Calling the different backend files explicitly would work okay, but it would mea
             integer data type (e.g., if the default integer data type is int32, the returned
             array must have a uint32 data type). If the data type (either specified or
             resolved) differs from the data type of x, the input array should be cast to the
-            specified data type before computing the product. Default: ``None``.
+            specified data type before computing the product. Default: None.
         out
             optional output array, for writing the result to.
 
@@ -433,8 +433,48 @@ The graph compiler does not compile to C++, CUDA or any other lower level langua
 
 Therefore, the backend code can always be run with maximal efficiency by compiling into an efficient low-level backend-specific computation graph.
 
+This compilation is not restricted to just PyTorch. For example, let's take another example, but compile to Tensorflow, NumPy and JAX:
+
++------------------------------------+
+|.. code-block:: python              |
+|                                    | 
+| def ivy_func(x, y):                |
+|     w = ivy.diag(x)                |
+|     z = ivy.matmul(w, y)           |
+|     return z                       |
+|                                    |
+| # input                            |
+| x = ivy.array([[1., 2., 3.]])      |
+| y = ivy.array([[2., 3., 4.]])      |
+| # create graph                     |
+| graph = ivy.compile_graph(         |
+|     ivy_func, x, y)                |
+|                                    |
+| # call graph                       |
+| ret = graph(x, y)                  |
++------------------------------------+
+
+Converting this code to a graph, we get a slightly different graph for each backend:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
+   :align: center
+   :width: 75%
+
+The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions. 
+Specifically, the same Ivy code compiles to different graphs depending on the selected backend. However, when compiling native framework code, we are only able to compile a graph for that same framework. 
+For example, we cannot take torch code and compile this into tensorflow code. However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
+
+
 **Round Up**
 
 Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
-Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
