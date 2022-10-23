@@ -279,6 +279,11 @@ def bitwise_and(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_or(x1, x2):
+    return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
