@@ -619,6 +619,24 @@ add_ivy_container_instance_methods(
     static=True,
 )
 
+class GlobalsDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+globals = GlobalsDict({
+    "array_significant_figures_stack": array_significant_figures_stack,
+    "backend_stack": backend_stack,
+    "default_dtype_stack": data_type.default_dtype_stack,
+    "default_device_stack": device.default_device_stack,
+})
+
+def set_global_attr(attr_name, attr_val):
+    setattr(globals, attr_name, attr_val)
+
+def del_global_attr(attr_name):
+    delattr(globals, attr_name)
+
 backend = "none"
 backend_version = "none"
 
