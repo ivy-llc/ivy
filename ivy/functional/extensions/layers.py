@@ -628,3 +628,5 @@ def pad(
                 )
             padded = ivy.moveaxis(padded, 0, -1)
     return padded
+
+
