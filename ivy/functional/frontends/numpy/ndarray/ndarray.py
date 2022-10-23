@@ -131,3 +131,10 @@ class ndarray:
 
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
+
+    def round(self, decimals=0, out=None):
+        return np_frontend.round(
+            self.data,
+            decimals=decimals,
+            out=out
+        )
