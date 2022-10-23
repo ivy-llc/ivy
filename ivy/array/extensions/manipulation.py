@@ -133,5 +133,14 @@ class ArrayWithManipulationExtensions(abc.ABC):
         ivy.Array instance method variant of ivy.vstack. This method simply
         wraps the function, and so the docstring for ivy.vstack also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2]])
+        >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+        >>> print(x.vstack(y))
+            ivy.array([[1, 2],
+                       [5, 6],
+                       [7, 8]])
         """
         return ivy.vstack(self.concat(arrays), out=out)
