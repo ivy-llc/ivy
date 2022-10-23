@@ -467,6 +467,14 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([4, 3, 2])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container.static_flip(x, axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "flip",
@@ -530,13 +538,21 @@ class ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
         ...                   b=ivy.array([2, 3, 4]))
-        >>> y = ivy.flip(x)
+        >>> y = x.flip()
         >>> print(y)
         {
             a: ivy.array([1, 0, -1]),
             b: ivy.array([4, 3, 2])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = x.flip(axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
         """
         return self.static_flip(
             self,

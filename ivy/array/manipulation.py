@@ -126,6 +126,11 @@ class ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([3, 2, 1])
 
+        >>> x = ivy.array([4, 5, 6])
+        >>> y = x.flip(axis=0)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
         """
         return ivy.flip(self._data, axis=axis, out=out)
 
