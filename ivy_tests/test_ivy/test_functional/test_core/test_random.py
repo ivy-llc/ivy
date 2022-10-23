@@ -7,7 +7,6 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import random
 
 # random_uniform
 @handle_cmd_line_args
