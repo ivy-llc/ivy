@@ -9,6 +9,8 @@ class Tensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
+        elif isinstance(data, list):
+            data = ivy.asarray(data)
         self.data = data
 
     def __repr__(self):
@@ -60,6 +62,9 @@ class Tensor:
 
     def __ge__(self, y, name="ge"):
         return tf_frontend.raw_ops.GreaterEqual(x=self.data, y=y.data, name=name)
+
+    def __getitem__(self, slice_spec, var=None, name="getitem"):
+        return Tensor(self.data.__getitem__(slice_spec))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
