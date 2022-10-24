@@ -478,20 +478,6 @@ def test_frontend_function(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_name = fn_tree.split(".")
-    function_dict = ivy.functional.frontends.__dict__[frontend]
-
-    # Getting function attributes when we have function tree such as
-    # nn.functional etc
-    len_frontend_submods = len(frontend_submods)
-    if len_frontend_submods > 0:
-        len_tracker = 0
-        while len_tracker < len_frontend_submods:
-            sub_tree = frontend_submods[len_tracker]
-            function_dict = function_dict.__dict__[sub_tree]
-            len_tracker += 1
-
     args, kwargs, _, _, _ = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
@@ -506,7 +492,11 @@ def test_frontend_function(
     args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)  # ToDo, probably redundant?
 
     # frontend function
-    frontend_fn = getattr(function_dict, fn_name)
+    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
+    split_index = fn_tree.rfind(".")
+    fn_name = fn_tree[split_index + 1 :]
+    fn_module = fn_tree[:split_index]
+    frontend_fn = importlib.import_module(fn_module).__dict__[fn_name]
 
     # check and replace NativeClass object in arguments with ivy counterparts
     convs = {
@@ -625,7 +615,9 @@ def test_frontend_function(
         )
 
         # compute the return via the frontend framework
-        frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+        # 25 chars for ivy.functional.frontends
+        no_ivy_tree = fn_tree[25:split_index]
+        frontend_fw = importlib.import_module(no_ivy_tree)
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
         if ivy.isscalar(frontend_ret):

@@ -209,7 +209,7 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
             __tracebackhide__ = True
             wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
             return wrapped_hypothesis_test(
-                fn_tree=fn_name, frontend=fixt_frontend_str, *args, **kwargs
+                fn_tree=fn_tree, frontend=fixt_frontend_str, *args, **kwargs
             )
 
         wrapped_test.test_data = TestData(
