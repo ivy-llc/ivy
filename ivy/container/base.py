@@ -3810,7 +3810,7 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     # raise error
                     if not hasattr(v, item):
-                        raise IvyException(
+                        raise AttributeError(
                             "'{}' object has no attribute '{}'".format(
                                 type(v).__module__, item
                             )
