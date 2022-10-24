@@ -277,7 +277,58 @@
 <span class="sd">        &gt;&gt;&gt; x1.fmax(x2)</span>
 <span class="sd">        ivy.array([ 0,  0,  nan])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementWiseExtensions.trapz"><a class="viewcode-back" href="../../../../data_classes/array/extensions/elementwise/ArrayWithElementWiseExtensions.html#ivy.array.extensions.elementwise.ArrayWithElementWiseExtensions.trapz">[docs]</a>    <span class="k">def</span> <span class="nf">trapz</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.trapz. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.trapz also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The array that should be integrated.</span>
+<span class="sd">        x</span>
+<span class="sd">            The sample points corresponding to the input array values. </span>
+<span class="sd">            If x is None, the sample points are assumed to be evenly spaced</span>
+<span class="sd">            dx apart. The default is None.            </span>
+<span class="sd">        dx </span>
+<span class="sd">            The spacing between sample points when x is None. The default is 1.</span>
+<span class="sd">        axis</span>
+<span class="sd">            The axis along which to integrate.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Definite integral of n-dimensional array as approximated along</span>
+<span class="sd">            a single axis by the trapezoidal rule. If the input array is a</span>
+<span class="sd">            1-dimensional array, then the result is a float. If n is greater</span>
+<span class="sd">            than 1, then the result is an n-1 dimensional array.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([1, 2, 3]) </span>
+<span class="sd">        &gt;&gt;&gt; ivy.trapz(y)</span>
+<span class="sd">        4.0</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([4, 6, 8])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.trapz(y, x=x)</span>
+<span class="sd">        8.0</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([1, 2, 3]) </span>
+<span class="sd">        &gt;&gt;&gt; ivy.trapz(y, dx=2)</span>
+<span class="sd">        8.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
