@@ -138,8 +138,8 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
     for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
         _given_kwargs[flag_key] = st.just(flag_value)
-    for flag in cfg.UNSET_TEST_CONFIG:
-        _given_kwargs[flag] = st.booleans()
+    for flag in cfg.UNSET_TEST_CONFIG:  # TODO make sure they should be lists
+        _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
 
     # Override with_out to be compatible
     for k in inspect.signature(callable_fn).parameters.keys():

@@ -3,7 +3,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -29,7 +29,7 @@ def _get_clip_inputs(draw):
 
 
 # clip_by_value
-@handle_cmd_line_args
+# @handle_cmd_line_args
 @given(
     input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
@@ -58,17 +58,14 @@ def test_tensorflow_clip_by_value(
 
 
 # eye
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="functional.frontends.tensorflow.eye",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     batch_shape=st.lists(
         helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
     ),
     dtype=helpers.get_dtypes("valid", full=False),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.eye"
-    ),
 )
 def test_tensorflow_eye(
     n_rows,
@@ -77,18 +74,21 @@ def test_tensorflow_eye(
     dtype,
     as_variable,
     native_array,
+    with_out,
+    frontend,
+    fn_tree,
     num_positional_args,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="eye",
+        frontend=frontend,
+        fn_tree=fn_tree,
         num_rows=n_rows,
         num_columns=n_cols,
         batch_shape=batch_shape,
-        dtype=dtype,
+        dtype=dtype[0],
     )

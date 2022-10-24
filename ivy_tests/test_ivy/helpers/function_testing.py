@@ -450,7 +450,6 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-    _assert_dtypes_are_valid(input_dtypes)
     assert (
         not with_out or not with_inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -493,52 +492,18 @@ def test_frontend_function(
             function_dict = function_dict.__dict__[sub_tree]
             len_tracker += 1
 
-    # check for unsupported dtypes in backend framework
-    function = getattr(function_dict, fn_name)
-    test_unsupported = check_unsupported_dtype(
-        fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
+    args, kwargs, _, _, _ = create_args_kwargs(
+        args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
+        kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
     )
-
-    if not test_unsupported:
-        test_unsupported = check_unsupported_device_and_dtype(
-            fn=function,
-            device=device,
-            input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np,
-        )
-
-    # create args
-    if test_unsupported:
-        try:
-            args, kwargs, _, _, _ = create_args_kwargs(
-                args_np=args_np,
-                arg_np_vals=arg_np_vals,
-                args_idxs=args_idxs,
-                kwargs_np=kwargs_np,
-                kwarg_np_vals=kwarg_np_vals,
-                kwargs_idxs=kwargs_idxs,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-            )
-            args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
-        except Exception:
-            return
-    else:
-        args, kwargs, _, _, _ = create_args_kwargs(
-            args_np=args_np,
-            arg_np_vals=arg_np_vals,
-            args_idxs=args_idxs,
-            kwargs_np=kwargs_np,
-            kwarg_np_vals=kwarg_np_vals,
-            kwargs_idxs=kwargs_idxs,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-        )
-        args_ivy, kwargs_ivy = ivy.args_to_ivy(
-            *args, **kwargs
-        )  # ToDo, probably redundant?
+    args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)  # ToDo, probably redundant?
 
     # frontend function
     frontend_fn = getattr(function_dict, fn_name)
@@ -555,10 +520,6 @@ def test_frontend_function(
         args = ivy.nested_map(args, fn=conv, include_derived=True)
         kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
-    # run from the Ivy API directly
-    if test_unsupported:
-        test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
-        return
     # Make copy for arguments for functions that might use
     # inplace update by default
     copy_kwargs = copy.deepcopy(kwargs)
@@ -633,12 +594,6 @@ def test_frontend_function(
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
     try:
-        # check for unsupported dtypes in frontend framework
-        function = getattr(function_dict, fn_name)
-        test_unsupported = check_unsupported_dtype(
-            fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
-        )
-
         # create frontend framework args
         args_frontend = ivy.nested_map(
             args_np,
@@ -671,13 +626,6 @@ def test_frontend_function(
 
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
-        if test_unsupported:
-            test_unsupported_function(
-                fn=frontend_fw.__dict__[fn_name],
-                args=args_frontend,
-                kwargs=kwargs_frontend,
-            )
-            return
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
         if ivy.isscalar(frontend_ret):
