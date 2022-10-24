@@ -426,3 +426,96 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_fmax(self, x2, out=out)
+
+    @staticmethod
+    def static_float_power(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.float_power. This method simply wraps
+        the function, and so the docstring for ivy.float_power also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            container with the base input arrays.
+        x2
+            container with the exponent input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with base arrays raised to the powers
+            of exponents arrays, element-wise .
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([2, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
+        >>> ivy.Container.static_float_power(x1, x2)
+        {
+            a: ivy.array([1,  8,  3])
+            b: ivy.array([1, 1])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "float_power",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def float_power(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.float_power. This method simply
+        wraps the function, and so the docstring for ivy.float_power also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        x2
+            container with the exponent input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with base arrays raised to the powers
+            of exponents arrays, element-wise .
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([2, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
+        >>> x1.float_power(x2)
+        {
+            a: ivy.array([1,  8,  3])
+            b: ivy.array([1, 1])
+        }
+        """
+        return self.static_float_power(self, x2, out=out)

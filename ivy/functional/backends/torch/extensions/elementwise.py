@@ -1,5 +1,5 @@
 # global
-from typing import Optional
+from typing import Optional, Union
 import torch
 
 # local
@@ -82,3 +82,19 @@ def trapz(
 
 
 trapz.support_native_out = False
+
+
+def float_power(
+    x1: Union[torch.Tensor, float, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.tensor(
+        torch.float_power(x1, x2, out=out),
+        dtype=x1.dtype
+    )
+
+
+float_power.support_native_out = True
