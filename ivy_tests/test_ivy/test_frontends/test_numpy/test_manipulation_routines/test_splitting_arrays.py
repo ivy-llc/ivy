@@ -27,7 +27,7 @@ def test_numpy_split(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes="float32",
+        input_dtypes="int8",
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
