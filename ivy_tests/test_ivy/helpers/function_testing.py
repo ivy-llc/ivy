@@ -734,14 +734,6 @@ def test_frontend_function(
             ground_truth_backend=frontend,
         )
 
-    def _is_frontend_array(x):
-        return (
-            isinstance(x, ndarray)
-            or isinstance(x, torch_tensor)
-            or isinstance(x, tf_tensor)
-            or isinstance(x, DeviceArray)
-        )
-
     # Call the frontend testing function
     _test_frontend_function(test_unsupported, args, kwargs, args_ivy, kwargs_ivy)
 
