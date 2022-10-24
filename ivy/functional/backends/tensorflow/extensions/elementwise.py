@@ -5,6 +5,7 @@ from .. import backend_version
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
+import tensorflow_probability as tfp
 
 
 def sinc(
@@ -60,3 +61,15 @@ def fmax(
     x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
     ret = tf.math.maximum(x1, x2, name=None)
     return tf.where(tf.math.is_inf(ret), float("nan"))
+
+
+def trapz(
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    x: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
