@@ -211,9 +211,9 @@ import threading
 # devices
 all_devices = ("cpu", "gpu", "tpu")
 
-valid_devices = all_devices
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # data types

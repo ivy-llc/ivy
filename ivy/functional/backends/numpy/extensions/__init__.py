@@ -17,7 +17,7 @@ from . import gradients
 from .gradients import *
 from . import layers
 from .layers import *
-from . import linear_algebra as linalg
+from . import linear_algebra
 from .linear_algebra import *
 from . import manipulation
 from .manipulation import *
