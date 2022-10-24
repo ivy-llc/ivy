@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor-Specific Compilers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ML-Unifying Companies" href="ml_unifying_companies.html" />
+    <link rel="prev" title="Vendor-Specific APIs" href="vendor_specific_apis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../related_work.html">Related Work</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api_standards.html">API Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wrapper_frameworks.html">Wrapper Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frameworks.html">Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graph_tracers.html">Graph Tracers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exchange_formats.html">Exchange Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compiler_infrastructure.html">Compiler Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_vendor_compiler_frameworks.html">Multi-Vendor Compiler Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_specific_apis.html">Vendor-Specific APIs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Vendor-Specific Compilers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">ICC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#icx">ICX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nvcc">NVCC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ml_unifying_companies.html">ML-Unifying Companies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="what_does_ivy_add.html">What does Ivy Add?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../related_work.html">Related Work</a> &raquo;</li>
+      <li>Vendor-Specific Compilers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/related_work/vendor_specific_compilers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vendor-specific-compilers">
+<h1>Vendor-Specific Compilers<a class="headerlink" href="#vendor-specific-compilers" title="Permalink to this heading"></a></h1>
+<p>Below the vendor-specific APIs are the vendor specific compilers. As far as modern machine learning practitioners go, these compilers are very rarely interacted with directly. As for our own representation of the ML stack, these compilers are the lowest level building blocks that we consider. Of course, we could talk about assembly languages and byte code, but this is outside the scope of what is really relevant for ML practitioners when considering their software stack.</p>
+<section id="id1">
+<h2>ICC<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference">Intel C++ Compiler Classic (ICC)</a> is the first of <a class="reference external" href="https://www.intel.com/">Intel</a>’s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems. It is available for Windows, Linux, and macOS operating systems. It targets general-purpose Intel x86-64 architecture CPUs.</p>
+</section>
+<section id="icx">
+<h2>ICX<a class="headerlink" href="#icx" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/dpc-compiler.html">Intel oneAPI DPC++/C++ Compiler (ICX)</a> is the second of <a class="reference external" href="https://www.intel.com/">Intel</a>’s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems. Again, it is available for Windows, Linux, and macOS operating systems. Unlike <a class="reference external" href="https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference">ICC</a>, It generates code for both Intel’s general-purpose x86-64 CPUs and also GPUs. Specifically, it targets Intel IA-32, Intel 64 (aka x86-64), Core, Xeon, and Xeon Scalable processors, as well as GPUs including Intel Processor Graphics Gen9 and above, Intel Xe architecture, and Intel Programmable Acceleration Card with Intel Arria 10 GX FPGA. It builds on the SYCL specification from The <a class="reference external" href="https://www.khronos.org/">Khronos Group</a>. It is designed to allow developers to reuse code across hardware targets (CPUs and accelerators such as GPUs and FPGAs) and perform custom tuning for a specific accelerator. ICX adopts <a class="reference external" href="https://llvm.org/">LLVM</a> for faster build times, and benefits from supporting the latest C++ standards.</p>
+</section>
+<section id="nvcc">
+<h2>NVCC<a class="headerlink" href="#nvcc" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference external" href="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc">Nvidia CUDA Compiler (NVCC)</a> is a proprietary compiler by <a class="reference external" href="https://www.nvidia.com/">NVIDIA</a> intended for use with <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">CUDA</a>. CUDA code runs on both the CPU and GPU. NVCC separates these two parts and sends host code (the part of code which will be run on the CPU) to a C compiler like <a class="reference external" href="https://gcc.gnu.org/">GCC</a> or <a class="reference external" href="https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference">Intel C++ Compiler Classic (ICC)</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/cpp/">Microsoft Visual C++ Compiler</a>, and sends the device code (the part which will run on the GPU) to the GPU. The device code is further compiled by NVCC. Like <a class="reference internal" href="#icx">ICX</a>, NVCC is also based on <a class="reference external" href="https://llvm.org/">LLVM</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vendor_specific_apis.html" class="btn btn-neutral float-left" title="Vendor-Specific APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ml_unifying_companies.html" class="btn btn-neutral float-right" title="ML-Unifying Companies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
