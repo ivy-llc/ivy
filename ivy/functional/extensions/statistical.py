@@ -53,3 +53,13 @@ def median(
     ivy.array([6.5, 4.5, 2.5])
     """
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
+
+def unravel_index(
+    indices: ivy.Array,
+    shape: ivy.Array,
+    /,
+    *,
+    order: Optional[str]='C'
+) -> ivy.Array:
+
+    return ivy.current_backend().unravel_index(indices, shape)
