@@ -136,6 +136,7 @@ def shuffle(
 
 
 
+
 def beta(
     alpha: Union[float, tf.Tensor, tf.Variable],
     beta: Union[float, tf.Tensor, tf.Variable],

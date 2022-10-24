@@ -339,6 +339,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 
+
 @to_ivy_arrays_and_back
 def truediv(x, y, name="truediv"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
