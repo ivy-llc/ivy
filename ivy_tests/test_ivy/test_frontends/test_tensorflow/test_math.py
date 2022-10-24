@@ -1044,19 +1044,14 @@ def test_tensorflow_truediv(
 # ibeta
 @handle_cmd_line_args
 @given(
-    dtype_and_alpha_beta=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=2,
-        num_arrays=2,
-        exclude_min=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.math.ibeta"
+        fn_name="ivy.functional.frontends.tensorflow.math.lbeta"
     ),
 )
-def test_tensorflow_ibeta(dtype_and_x, as_variable, num_positional_args, native_array):
+def test_tensorflow_lbeta(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1065,7 +1060,6 @@ def test_tensorflow_ibeta(dtype_and_x, as_variable, num_positional_args, native_
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
-        fn_tree="math.ibeta",
-        a=x[0],
-        b=x[1],
+        fn_tree="math.lbeta",
+        x=x[0],
     )

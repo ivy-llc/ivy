@@ -123,7 +123,7 @@ def beta(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str = None,
-    dtype: np.dtype,
+    dtype: np.dtype = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
