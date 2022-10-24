@@ -1553,7 +1553,7 @@ def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     return args, kwargs
 
 
-def flatten_fw(*, ret, fw):
+def flatten_fw_and_to_np(*, ret, fw):
     """Returns a flattened numpy version of the arrays in ret for a given framework."""
     if not isinstance(ret, tuple):
         ret = (ret,)
@@ -1573,8 +1573,14 @@ def flatten_fw(*, ret, fw):
         ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
-    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [
+            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat
+        ]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     # convert the return to NumPy
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     return ret_np_flat
