@@ -2,8 +2,6 @@
 from numpy import complex128, complex192, complex64
 import ivy
 from ivy.functional.frontends.torch.Tensor import Tensor
-from ivy.functional.ivy.general import is_array
-
 
 
 # TODO: Once the PyTorch Frontend Array Decorators are added,
@@ -20,8 +18,6 @@ def is_tensor(obj):
 def is_complex(obj):
     if ivy.dtype(obj) == complex64 or ivy.dtype(obj) == complex128 or ivy.dtype(obj) == complex192:
         return Tensor(is_tensor(obj))
-
-    
 
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
@@ -41,6 +37,7 @@ def is_floating_point(input):
         message="input must be a tensor",
     )
     return Tensor(ivy.is_float_dtype(input))
+
 
 def is_nonzero(input):
     ivy.assertions.check_equal(
