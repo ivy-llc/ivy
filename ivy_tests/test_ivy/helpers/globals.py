@@ -78,13 +78,23 @@ def _get_ivy_torch():
 # Setup
 
 
-def setup_test(test_data: TestData, frontend: str, backend: str):
+def setup_api_test(test_data: TestData, backend: str):
+    _set_test_data(test_data)
+    _set_backend(backend)
+
+
+def teardown_api_test():
+    _unset_test_data()
+    _unset_backend()
+
+
+def setup_frontend_test(test_data: TestData, frontend: str, backend: str):
     _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
 
 
-def teardown_test():
+def teardown_frontend_test():
     _unset_test_data()
     _unset_frontend()
     _unset_backend()

@@ -114,6 +114,63 @@ def num_positional_args_from_fn(draw, *, fn: str = None):
     )
 
 
+# Decorators helpers
+
+
+def _import_fn(fn_tree: str):
+    """
+    Imports a function from function tree string
+    Parameters
+    ----------
+    fn_tree
+        Full function tree without "ivy" root
+        example: "functional.backends.jax.creation.arange".
+    Returns
+    -------
+    Returns fn_name, imported module, callable function
+    """
+    fn_tree = "ivy." + fn_tree
+    split_index = fn_tree.rfind(".")
+    fn_name = fn_tree[split_index + 1 :]
+    module_to_import = fn_tree[:split_index]
+    mod = importlib.import_module(module_to_import)
+    callable_fn = mod.__dict__[fn_name]
+    return callable_fn, fn_name, module_to_import
+
+
+def _generate_shared_test_flags(_given_kwargs: dict, fn_tree: str, fn: callable):
+    """
+    Generates flags that all tests use.
+    Returns
+    -------
+
+    """
+    _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
+    for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
+        _given_kwargs[flag_key] = st.just(flag_value)
+    for flag in cfg.UNSET_TEST_CONFIG:  # TODO make sure they should be lists
+        _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
+        # Override with_out to be compatible
+    for k in inspect.signature(fn).parameters.keys():
+        if k.endswith("out"):
+            break
+    else:
+        _given_kwargs["with_out"] = st.just(False)
+    return _given_kwargs
+
+
+def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
+    supported_device_dtypes = {}
+    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
+    for b in backends:  # ToDo can optimize this ?
+        ivy.set_backend(b)
+        _tmp_mod = importlib.import_module(fn_module)
+        _fn = _tmp_mod.__dict__[fn_name]
+        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        ivy.unset_backend()
+    return supported_device_dtypes
+
+
 # Decorators
 
 
@@ -128,43 +185,16 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
-    fn_tree = "ivy." + fn_tree
-    split_index = fn_tree.rfind(".")
-    fn_name = fn_tree[split_index + 1 :]
-    module_to_import = fn_tree[:split_index]
-    tmp_mod = importlib.import_module(module_to_import)
-    callable_fn = tmp_mod.__dict__[fn_name]
-
-    _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
-    for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
-        _given_kwargs[flag_key] = st.just(flag_value)
-    for flag in cfg.UNSET_TEST_CONFIG:  # TODO make sure they should be lists
-        _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
-
-    # Override with_out to be compatible
-    for k in inspect.signature(callable_fn).parameters.keys():
-        if k.endswith("out"):
-            break
-    else:
-        _given_kwargs["with_out"] = st.just(False)
-
-    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
-    supported_device_dtypes = {}
-    for b in backends:  # ToDo can optimize this ?
-        ivy.set_backend(b)
-        _tmp_mod = importlib.import_module(module_to_import)
-        _fn = _tmp_mod.__dict__[fn_name]
-        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
-        ivy.unset_backend()
+    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+    _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
+    supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
     def test_wrapper(test_fn):
         def wrapped_test(fixt_frontend_str, *args, **kwargs):
             __tracebackhide__ = True
-            fn_name = wrapped_test.test_data.fn_name
-            frontend = fixt_frontend_str
             wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
             return wrapped_hypothesis_test(
-                fn_tree=fn_name, frontend=frontend, *args, **kwargs
+                fn_tree=fn_name, frontend=fixt_frontend_str, *args, **kwargs
             )
 
         wrapped_test.test_data = TestData(
