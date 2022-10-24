@@ -20,9 +20,9 @@ NativeSparseArray = torch.Tensor
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
