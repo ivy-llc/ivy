@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 import numpy as np
 
 
@@ -61,3 +61,14 @@ def hstack(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.hstack(arrays)
+
+
+def rot90(
+    m: np.ndarray,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.rot90(m, k, axes)
