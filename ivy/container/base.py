@@ -3797,9 +3797,6 @@ class ContainerBase(dict, abc.ABC):
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
-    def __len__(self):
-        return self.__getattr__("__len__")
-
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
         try:
@@ -3813,7 +3810,7 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     # raise error
                     if not hasattr(v, item):
-                        raise IvyException(
+                        raise AttributeError(
                             "'{}' object has no attribute '{}'".format(
                                 type(v).__module__, item
                             )
