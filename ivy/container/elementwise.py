@@ -8166,3 +8166,110 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_trapz(
+        y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trapz. This method simply wraps
+        the function, and so the docstring for ivy.trapz also applies to this method
+        with minimal changes.
+        Parameters
+        ----------
+        y
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values. 
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.            
+        dx 
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule. 
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> ivy.Container.static_trapz(y)
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "trapz",
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            x=x,
+            dx=dx,
+            axis=axis,
+            out=out,
+        )
+
+    def trapz(
+        self: ivy.Container,
+        /,
+        *,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.trapz. This method simply
+        wraps the function, and so the docstring for ivy.trapz also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values. 
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.            
+        dx 
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule. 
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> y.trapz()
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return self.static_trapz(self, x=x, dx=dx, axis=axis, out=out)
