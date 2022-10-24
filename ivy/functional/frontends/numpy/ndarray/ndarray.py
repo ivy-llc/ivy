@@ -146,4 +146,3 @@ class ndarray:
 
     def __copy__(self,):
         return np_frontend.copy(self.data)
-
