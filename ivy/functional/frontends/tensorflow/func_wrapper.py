@@ -111,7 +111,7 @@ def map_raw_ops_alias(alias: callable, **function_kwargs):
     Returns
     -------
     ret
-        The output of the function after performing the given raw_ops operation.
+        The output of the wrapped function passed key-word only arguments as input.
     """
 
     def _wrap_raw_ops_alias(fn: callable) -> callable:
