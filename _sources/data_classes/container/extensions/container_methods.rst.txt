@@ -31,6 +31,8 @@ Container methods
    container_methods/kaiser_window.rst
    container_methods/static_pad.rst
    container_methods/pad.rst
+   container_methods/static_kaiser_bessel_derived_window.rst
+   container_methods/kaiser_bessel_derived_window.rst
    container_methods/static_moveaxis.rst
    container_methods/moveaxis.rst
    container_methods/static_heaviside.rst

@@ -18,4 +18,5 @@ Layers
    layers/max_pool2d.rst
    layers/kaiser_window.rst
    layers/pad.rst
+   layers/kaiser_bessel_derived_window.rst
 
