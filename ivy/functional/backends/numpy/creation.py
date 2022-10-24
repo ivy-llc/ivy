@@ -13,6 +13,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 from .data_type import as_native_dtype
 
@@ -115,23 +116,26 @@ def to_dlpack(x: np.ndarray) -> Any:
 
 
 class _Add_dlpack_attribute_to_tensor_object:
-    def __init__(self, input):
-        self.jax = __import__("jax")
-        self.tf = __import__("tensorflow")
+    def __init__(self, input, capsule):
+        # self.jax = __import__("jax")
+        # self.tf = __import__("tensorflow")
         self.input = input
+        self.capsule = capsule
 
     def __dlpack__(self):
-        if isinstance(self.input, self.jax.numpy.ndarray):
-            import jax.dlpack
+        # if isinstance(self.input, self.jax.numpy.ndarray):
+        #     import jax.dlpack
 
-            return jax.dlpack.to_dlpack(self.input)
-        if isinstance(self.input, self.tf.Tensor):
-            return self.tf.experimental.dlpack.to_dlpack(self.input)
-        return self.input.__dlpack__()
+        #     return jax.dlpack.to_dlpack(self.input)
+        # if isinstance(self.input, self.tf.Tensor):
+        #     return self.tf.experimental.dlpack.to_dlpack(self.input)
+        # return self.input.__dlpack__()
+        return self.capsule
 
 
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x)
+    capsule = _get_pycapsule_from_array_object(x)
+    x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x, capsule)
     return np.from_dlpack(x_with_dlpack)
 
 

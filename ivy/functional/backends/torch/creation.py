@@ -24,6 +24,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 
 # Array API Standard #
@@ -242,8 +243,8 @@ def to_dlpack(x: torch.Tensor) -> Any:
 
 
 def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    capsule = _get_pycapsule_from_array_object(x)
+    return torch.utils.dlpack.from_dlpack(capsule)
 
 
 def full(

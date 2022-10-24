@@ -18,8 +18,12 @@ import numpy as np
 # local
 import ivy
 from ivy import to_ivy, to_native
-from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
+from ivy.backend_handler import (
+    current_backend,
+    _determine_backend_from_args,
+    _backend_dict,
+)
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
@@ -1546,3 +1550,16 @@ def logspace(
     return current_backend(start).logspace(
         start, stop, num, base=base, axis=axis, dtype=dtype, device=device, out=out
     )
+
+
+def _get_pycapsule_from_array_object(x):
+    input_backend = _determine_backend_from_args(x).__name__
+    try:
+        for backend, module_name in _backend_dict.items():
+            if input_backend == module_name:
+                ivy.set_backend(backend)
+                capsule = ivy.to_dlpack(ivy.asarray(x))
+                ivy.unset_backend()
+                return capsule
+    except Exception:
+        print(x, " does not belong to the supported frameworks")

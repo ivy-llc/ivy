@@ -393,35 +393,17 @@ def test_eye(
     ivy_array_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
     target_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
 )
-# @reproduce_failure('6.48.2', b'AAA=')
 def test_to_dlpack(*, dtype_and_x, ivy_array_framework, target_framework):
     _, x = dtype_and_x
     ivy.set_backend(ivy_array_framework)
     ivy_array = ivy.array(
         x[0]
     )  # invoking the class method __dlpack__ which in turn calls to_dlpack
-
-    if target_framework == "numpy":
-        import numpy as np
-
-        target_array = np.array(x[0])
-        assert target_array == np.from_dlpack(ivy_array)
-    elif target_framework == "jax":
-        import jax
-        import jax.dlpack
-
-        target_array = jax.numpy.array(x[0])
-        assert target_array == jax.dlpack.from_dlpack(ivy_array.to_dlpack())
-    elif target_framework == "tensorflow":
-        import tensorflow as tf
-
-        target_array = tf.convert_to_tensor(x[0])
-        assert target_array == tf.experimental.dlpack.from_dlpack(ivy_array.to_dlpack())
-    elif target_framework == "torch":
-        import torch
-
-        target_array = torch.Tensor(x[0])
-        assert target_array == torch.from_dlpack(ivy_array.to_dlpack())
+    native_array = ivy_array.to_native()
+    ivy.set_backend(target_framework)
+    target_array = ivy.from_dlpack(native_array)
+    assert target_array == ivy_array
+    ivy.unset_backend()
     ivy.unset_backend()
 
 

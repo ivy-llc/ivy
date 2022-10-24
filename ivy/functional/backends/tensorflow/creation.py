@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 
 
@@ -223,7 +224,7 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    capsule = to_dlpack(x)
+    capsule = _get_pycapsule_from_array_object(x)
     return tf.experimental.dlpack.from_dlpack(capsule)
 
 
