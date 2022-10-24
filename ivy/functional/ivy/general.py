@@ -2183,7 +2183,7 @@ def stable_pow(
         ivy.default_dtype(item=default(min_base, ivy._MIN_BASE)),
     )
     return_dtype = ivy.promote_types(return_dtype, ivy.default_dtype(item=exponent))
-    ret = (base + default(min_base, ivy._MIN_BASE)) ** exponent
+    ret = (base + default(min_base, ivy._MIN_BASE)) ** ivy.array(exponent)
     return ret.astype(return_dtype)
 
 
