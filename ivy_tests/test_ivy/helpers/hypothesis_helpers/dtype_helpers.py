@@ -121,6 +121,14 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     else:
         valid_dtypes = backend_dtypes
 
+    # TODO, do this in a better way...
+    valid_dtypes = tuple(
+        set(valid_dtypes).intersection(
+            test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+                test_globals.CURRENT_BACKEND().backend
+            ]["cpu"]
+        )
+    )
     if none:
         valid_dtypes += (None,)
     if full:

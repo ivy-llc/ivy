@@ -16,8 +16,8 @@ FWS_DICT = {
 }
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
-CURRENT_BACKEND = _Notsetval
-CURRENT_FRONTEND = _Notsetval
+CURRENT_BACKEND: callable = _Notsetval
+CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 
 
