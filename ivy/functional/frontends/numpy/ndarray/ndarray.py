@@ -46,9 +46,6 @@ class ndarray:
             value,
         )
 
-    def squeeze(self, axis=None):
-        return np_frontend.squeeze(self.data, axis)
-
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
 
@@ -67,7 +64,70 @@ class ndarray:
             initial=initial,
             where=where
         )
+
+    def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
+        return np_frontend.amax(
+            self.data,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where
+        )
     
     @property
     def dtype(self):
         return self.data.dtype
+
+    def argmin(
+            self,
+            /,
+            *,
+            axis=None,
+            keepdims=False,
+            out=None,
+    ):
+
+        return np_frontend.argmin(
+            self.data,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+        )
+
+    def cumprod(self, *, axis=None, dtype=None, out=None):
+        return np_frontend.cumprod(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def cumsum(self, *, axis=None, dtype=dtype, out=None):
+        return np_frontend.cumsum(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def sort(self, *, axis=-1, kind=None, order=None):
+        return np_frontend.sort(self.data, axis=axis, kind=kind, order=order)
+
+    def copy(self, order='C'):
+        return np_frontend.copy(self.data, order=order)
+
+    def nonzero(self,):
+        return np_frontend.nonzero(self.data)[0]
+
+    def ravel(self, order="C"):
+        return np_frontend.ravel(self.data, order=order)
+
+    def repeat(self, repeats, axis=None):
+        return np_frontend.repeat(self.data, repeats, axis=axis)
+
+    def searchsorted(self, v, side='left', sorter=None):
+        return np_frontend.searchsorted(self.data, v, side=side, sorter=sorter)
+
+    def squeeze(self, axis=None):
+        return np_frontend.squeeze(self.data, axis=axis)

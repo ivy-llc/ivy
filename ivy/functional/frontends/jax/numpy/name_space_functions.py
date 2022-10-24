@@ -131,8 +131,16 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def einsum(subscripts, *operands, out=None, optimize='optimal', precision=None, _use_xeinsum=False):
-    return ivy.einsum(subscripts,*operands, out=out)
+def einsum(
+    subscripts,
+    *operands,
+    out=None,
+    optimize="optimal",
+    precision=None,
+    _use_xeinsum=False
+):
+    return ivy.einsum(subscripts, *operands, out=out)
+
 
 @to_ivy_arrays_and_back
 def floor(x):
@@ -268,3 +276,18 @@ def zeros(shape, dtype=None):
 @to_ivy_arrays_and_back
 def bitwise_and(x1, x2):
     return ivy.bitwise_and(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bitwise_or(x1, x2):
+    return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def moveaxis(a, source, destination):
+    return ivy.moveaxis(a, source, destination)
+
+
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)

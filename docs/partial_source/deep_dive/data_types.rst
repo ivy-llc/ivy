@@ -380,6 +380,10 @@ respectively, which traverse the abstract syntax tree of the compositional funct
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
 
+In order to get the supported and unsupported devices and dtypes for a function, the corresponding documentation
+of that function for that specific framework can be referred. However, sometimes new unsupported dtypes are
+discovered while testing too. So it is suggested to explore it both ways.
+
 It should be noted that :attr:`unsupported_dtypes` is different from
 ``ivy.invalid_dtypes`` which consists of all the data types that every function
 of that particular backend does not support, and so if a certain ``dtype`` is
