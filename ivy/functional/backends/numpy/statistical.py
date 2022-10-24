@@ -236,3 +236,18 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+def unravel_index(
+    indices: np.ndarray,
+    shape: np.ndarray,
+    /,
+    *,
+) -> np.ndarray:
+    max_value = np.prod(shape)
+    for i in range(len(indices)):
+        if indices[i] > max_value:
+            indices[i] = max_value
+
+        # TODO if negative value in indices
+
+    return np.asarray(np.unravel_index(indices, shape))

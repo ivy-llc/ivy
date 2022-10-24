@@ -296,3 +296,21 @@ def einsum(
     dtype = _get_promoted_type_of_operands(operands)
     operands = (operand.to(torch.float32) for operand in operands)
     return torch.einsum(equation, *operands).to(dtype)
+
+def unravel_index(
+        indices: torch.Tensor,
+        shape: torch.Tensor,
+        /,
+        *,
+) -> torch.Tensor:
+    if indices.shape == torch.Size([1]):
+        max_value = torch.prod(shape)
+        if indices > max_value: # clip output to valid range
+            return torch.Tensor(shape)
+        output = []
+        for dim in reversed(shape):
+            output.append(indices % dim)
+            indices = indices // dim
+        return torch.Tensor(reversed(output))
+    else:
+        return torch.Tensor([torch.unravel_index(index) for index in indices])

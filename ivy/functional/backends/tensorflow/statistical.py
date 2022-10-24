@@ -197,3 +197,12 @@ def einsum(
     dtype = _get_promoted_type_of_operands(operands)
     operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
+
+
+def unravel_index(
+        indices: tf.Tensor,
+        shape: tf.Tensor,
+        /,
+        *,
+) -> tf.Tensor:
+    return tf.cast(tf.unravel_index(indices, shape))
