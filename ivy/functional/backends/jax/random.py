@@ -164,6 +164,7 @@ def shuffle(
 
 
 
+
 def beta(
     a: Union[float, JaxArray],
     b: Union[float, JaxArray],
