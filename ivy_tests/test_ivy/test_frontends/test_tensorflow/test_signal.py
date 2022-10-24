@@ -1,7 +1,6 @@
 import ivy_tests.test_ivy.helpers as helpers
-from hypothesis import given,strategies as st
+from hypothesis import given, strategies as st
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
 
 
 @handle_cmd_line_args
@@ -10,15 +9,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     # generate pereodic boolean
-    periodic = st.booleans(),
+    periodic=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.signal.hann_window"
     ),
 )
-
-
-
 def test_tensorflow_hann_window(
     periodic,
     dtype_and_x,
@@ -41,6 +37,4 @@ def test_tensorflow_hann_window(
         window_length=x[0],
         periodic=periodic,
         dtype=dtype[0],
-)
-    
-    
+    )
