@@ -95,11 +95,11 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     ret, frontend_ret = values
     ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
+        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
     ]
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
+        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
     ]
     helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
