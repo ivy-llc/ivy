@@ -3608,6 +3608,12 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
+            uniform_indent_wo_overflow_list = list(
+                filter(
+                    None,
+                    uniform_indent_wo_overflow.split("\\n")
+                )
+            )
             uniform_indent = "\n".join(
                 [
                     local_indent_str + extra_indent + " " + s
@@ -3622,7 +3628,7 @@ class ContainerBase(dict, abc.ABC):
                         if (not s[0].isspace() and s[0] != '"')
                         else s
                     )
-                    for s in uniform_indent_wo_overflow.split("\\n")
+                    for s in uniform_indent_wo_overflow_list
                 ]
             )
             indented = uniform_indent
