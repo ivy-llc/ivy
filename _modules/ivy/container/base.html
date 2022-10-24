@@ -3939,7 +3939,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># raise error</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">IvyException</span><span class="p">(</span>
+                        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                             <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                 <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">item</span>
                             <span class="p">)</span>
