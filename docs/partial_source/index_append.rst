@@ -6,6 +6,7 @@
 
    background.rst
    design.rst
+   related_work.rst
    extensions.rst
    contributing.rst
    deep_dive.rst
