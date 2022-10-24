@@ -476,3 +476,9 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+def rot90(
+    m: torch.Tensor, /, *, k: Optional[int] = 1, axes: Optional[Tuple[int, int]] = (0, 1), out: Optional[ivy.Array] = None
+) -> torch.Tensor:
+    return torch.rot90(m, k, axes)
