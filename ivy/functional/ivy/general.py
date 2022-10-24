@@ -3200,14 +3200,8 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _all_dnd_combinations():
-    # TODO: not hard code this
-
-    VALID_DEVICES = ("cpu",)
-    INVALID_DEVICES = ("gpu", "tpu")
-    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
-
     all_comb = {}
-    for device in ALL_DEVICES:
+    for device in ivy.all_devices:
         all_comb[device] = ivy.all_dtypes
     return all_comb
 
