@@ -126,6 +126,7 @@ def shuffle(
 
 shuffle.support_native_out = True
 
+
 def beta(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],

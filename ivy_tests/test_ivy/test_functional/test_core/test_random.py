@@ -284,6 +284,8 @@ def test_randint(
 def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_value=seed_val)
+
+
 # shuffle
 @handle_cmd_line_args
 @given(
@@ -333,7 +335,7 @@ def test_shuffle(
 @given(
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value = 0,
+        min_value=0,
         min_num_dims=1,
         max_num_dims=2,
         num_arrays=2,
@@ -353,8 +355,9 @@ def test_beta(
     instance_method,
     fw,
 ):
+
     dtype, alpha_beta = dtype_and_alpha_beta
-    if 'float16' in dtype:
+    if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
         input_dtypes=dtype,
