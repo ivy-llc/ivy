@@ -59,7 +59,7 @@ def test_tensorflow_clip_by_value(
 
 # eye
 @handle_frontend_test(
-    fn_tree="functional.frontends.tensorflow.eye",
+    fn_tree="tensorflow.eye",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     batch_shape=st.lists(

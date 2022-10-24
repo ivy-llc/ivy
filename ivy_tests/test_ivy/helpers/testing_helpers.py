@@ -129,7 +129,6 @@ def _import_fn(fn_tree: str):
     -------
     Returns fn_name, imported module, callable function
     """
-    fn_tree = "ivy." + fn_tree
     split_index = fn_tree.rfind(".")
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
@@ -175,9 +174,24 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 
 def handle_test(*, fn_tree: str, **_given_kwargs):
-    def test_wrapper(test_func):
+    fn_tree = "ivy.functional.ivy." + fn_tree
+    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+    # TODO add support for flexible kwargs based on the function itself.
+    _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
+    supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+
+    def test_wrapper(test_fn):
         def wrapped_test(*args, **kwargs):
-            return test_func(*args, **kwargs)
+            __tracebackhide__ = True
+            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            return wrapped_hypothesis_test(fn_tree=fn_name, *args, **kwargs)
+
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            fn_tree=fn_tree,
+            fn_name=fn_name,
+            supported_device_dtypes=supported_device_dtypes,
+        )
 
         return wrapped_test
 
@@ -185,6 +199,7 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
+    fn_tree = "ivy.functional.frontends." + fn_tree
     callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
     _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
     supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
