@@ -3329,14 +3329,8 @@
 
 
 <span class="k">def</span> <span class="nf">_all_dnd_combinations</span><span class="p">():</span>
-    <span class="c1"># TODO: not hard code this</span>
-
-    <span class="n">VALID_DEVICES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,)</span>
-    <span class="n">INVALID_DEVICES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="s2">&quot;tpu&quot;</span><span class="p">)</span>
-    <span class="n">ALL_DEVICES</span> <span class="o">=</span> <span class="n">VALID_DEVICES</span> <span class="o">+</span> <span class="n">INVALID_DEVICES</span>
-
     <span class="n">all_comb</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">ALL_DEVICES</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all_devices</span><span class="p">:</span>
         <span class="n">all_comb</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all_dtypes</span>
     <span class="k">return</span> <span class="n">all_comb</span>
 
