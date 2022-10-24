@@ -37,15 +37,6 @@ class ndarray:
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
-    def add(
-        self,
-        value,
-    ):
-        return np_frontend.add(
-            self.data,
-            value,
-        )
-
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
 
@@ -131,3 +122,15 @@ class ndarray:
 
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
+
+    def __add__(self, value, /):
+        return np_frontend.add(self.data, value)
+
+    def __sub__(self, value, /):
+        return np_frontend.subtract(self.data, value)
+
+    def __mul__(self, value, /):
+        return np_frontend.multiply(self.data, value)
+
+    def __matmul__(self, value, /):
+        return np_frontend.matmul(self.data, value)
