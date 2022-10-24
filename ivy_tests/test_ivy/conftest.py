@@ -79,16 +79,16 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(
-    request, device, backend_fw, fixt_frontend_str, compile_graph, implicit
-):
-    test_globals.set_test_data(request.function.test_data)
-
+def run_around_tests(request, device, backend_fw, compile_graph, implicit):
+    try:
+        test_globals.setup_api_test(request.function.test_data, backend_fw.backend)
+    except Exception as e:
+        test_globals.teardown_api_test()
+        raise RuntimeError(f"Setting up test for {request.function} failed.") from e
     with backend_fw.use:
         with DefaultDevice(device):
             yield
-
-    test_globals.unset_test_data()
+    test_globals.teardown_api_test()
 
 
 def pytest_generate_tests(metafunc):
