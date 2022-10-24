@@ -72,7 +72,6 @@ Contents
 * `Background`_
 * `Design`_
 * `Extensions`_
-* `Roadmap`_
 * `Contributing`_
 
 Overview
