@@ -141,9 +141,9 @@ def poisson_nll_loss(
     target,
     log_input: bool = True,
     full: bool = False,
-    size_average = None,
+    size_average=None,
     eps: float = 1e-8,
-    reduce = None,
+    reduce=None,
     reduction: str = "mean",
 ):
     if log_input:
