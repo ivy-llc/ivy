@@ -1562,6 +1562,8 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
+    if _is_frontend_array(ret):
+        ret = ret.data
     if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
         ret = ret.data
     return ret, flatten_and_to_np(ret=ret)
