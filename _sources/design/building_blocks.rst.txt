@@ -344,7 +344,9 @@ The compiler takes in any Ivy function, backend function, or composition, and re
    :align: center
    :width: 75%
 
-As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code. 
+First, let's set our desired backend as PyTorch. When we compile the three functions below, despite the fact that each
+has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -404,6 +406,45 @@ For all existing ML frameworks, the functional API is the backbone which underpi
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true
    :align: center
    :width: 75%
+
+This compilation is not restricted to just PyTorch. Let's take another example, but compile to Tensorflow, NumPy and JAX:
+
++------------------------------------+
+|.. code-block:: python              |
+|                                    | 
+| def ivy_func(x, y):                |
+|     w = ivy.diag(x)                |
+|     z = ivy.matmul(w, y)           |
+|     return z                       |
+|                                    |
+| # input                            |
+| x = ivy.array([[1., 2., 3.]])      |
+| y = ivy.array([[2., 3., 4.]])      |
+| # create graph                     |
+| graph = ivy.compile_graph(         |
+|     ivy_func, x, y)                |
+|                                    |
+| # call graph                       |
+| ret = graph(x, y)                  |
++------------------------------------+
+
+Converting this code to a graph, we get a slightly different graph for each backend:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
+   :align: center
+   :width: 75%
+
+The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions. 
+Specifically, the same Ivy code compiles to different graphs depending on the selected backend. However, when compiling native framework code, we are only able to compile a graph for that same framework. 
+For example, we cannot take torch code and compile this into tensorflow code. However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
 
 The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
