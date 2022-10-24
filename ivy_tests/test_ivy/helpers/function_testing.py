@@ -581,6 +581,8 @@ def test_frontend_function(
         # converting to ivy.array if FrontendArray was returned
         if _is_frontend_array(ret):
             ret = ret.data
+        elif isinstance(ret, list) or isinstance(ret, tuple):
+            ret = [x.data for x in ret]
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
