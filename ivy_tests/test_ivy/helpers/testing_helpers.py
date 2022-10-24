@@ -178,15 +178,23 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 def handle_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.ivy." + fn_tree
     callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+    is_hypothesis_test = len(_given_kwargs) != 0
     # TODO add support for flexible kwargs based on the function itself.
-    _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
+    if is_hypothesis_test:
+        _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
     supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
     def test_wrapper(test_fn):
-        def wrapped_test(*args, **kwargs):
-            __tracebackhide__ = True
-            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-            return wrapped_hypothesis_test(fn_tree=fn_name, *args, **kwargs)
+        # No Hypothesis @given is used
+        if is_hypothesis_test:
+
+            def wrapped_test(*args, **kwargs):
+                __tracebackhide__ = True
+                wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+                return wrapped_hypothesis_test(fn_tree=fn_name, *args, **kwargs)
+
+        else:
+            wrapped_test = test_fn
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
@@ -203,16 +211,23 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.frontends." + fn_tree
     callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-    _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
+    is_hypothesis_test = len(_given_kwargs) != 0
+    if is_hypothesis_test:
+        _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
     supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
     def test_wrapper(test_fn):
-        def wrapped_test(fixt_frontend_str, *args, **kwargs):
-            __tracebackhide__ = True
-            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-            return wrapped_hypothesis_test(
-                fn_tree=fn_tree, frontend=fixt_frontend_str, *args, **kwargs
-            )
+        if is_hypothesis_test:
+
+            def wrapped_test(fixt_frontend_str, *args, **kwargs):
+                __tracebackhide__ = True
+                wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+                return wrapped_hypothesis_test(
+                    fn_tree=fn_tree, frontend=fixt_frontend_str, *args, **kwargs
+                )
+
+        else:
+            wrapped_test = test_fn
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
