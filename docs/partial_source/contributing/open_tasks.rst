@@ -291,11 +291,11 @@ for this task.
 
 A general workflow for these tasks would be:
 
-#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extension.py`,
+#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extensions/[relevant_submodule].py`,
    sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
    helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api>`_
    on how this can be done.
-#. Implement the functions in :mod:`ivy/functional/ivy/extension.py` simply deferring to
+#. Implement the functions in :mod:`ivy/functional/ivy/extensions/[relevant_submodule].py` simply deferring to
    their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ 
    to get a clearer picture of how this must be done.
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
