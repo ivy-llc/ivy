@@ -147,7 +147,7 @@ def poisson_nll_loss(
     reduction: str = "mean",
 ):
     if log_input:
-        loss = ivy.exp(input) - ivy.multiply(target,input)
+        loss = ivy.exp(input) - ivy.multiply(target, input)
     else:
         loss = input - ivy.multiply(target, ivy.log(input + eps))
     if full:
