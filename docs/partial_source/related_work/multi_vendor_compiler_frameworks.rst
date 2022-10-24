@@ -9,6 +9,9 @@ Multi-Vendor Compiler Frameworks
 .. _`JAX`: https://jax.readthedocs.io/
 .. _`PyTorch`: https://pytorch.org/
 .. _`Julia`: https://julialang.org/
+.. _`GNU Compiler Collection (GCC)`: https://gcc.gnu.org/git/gcc.git
+.. _`GNU Project`: https://www.gnu.org/
+.. _`Free Software Foundation (FSF)`: https://www.fsf.org/
 
 The compiler frameworks explained below enable Machine Learning code to be executed on a variety of hardware targets, with abstractions selected carefully in order to simplify this process and reduce the implementational overhead for supporting many different end targets. In general, these multi-target compiler frameworks can also make use of compiler infrastructure such as that explained in the previous section, in order to follow best practices, streamline the design, and maximize interoperability.
 
@@ -19,3 +22,8 @@ Apache's `Tensor Virtual Machine (TVM)`_ is an open source machine learning comp
 XLA
 ---
 `Accelerated Linear Algebra (XLA)`_ is a compiler for linear algebra that can accelerate models with potentially no source code changes. The results are improvements in speed and memory usage. Conventionally, when ML programs are run, all of the operations are executed individually on the target device. In the case of GPU execution, each operation has a precompiled GPU kernel implementation that the executor dispatches to. XLA provides an alternative mode of running models: it compiles the graph into a sequence of computation kernels generated specifically for the given model. Because these kernels are unique to the model, they can exploit model-specific information for optimization. XLA is supported by `TensorFlow`_, `JAX`_, `PyTorch`_ and the `Julia`_ language, and is able to compile to TPUs, GPUs and CPUs.
+
+GCC
+---
+
+The `GNU Compiler Collection (GCC)`_ is an optimizing compiler produced by the `GNU Project`_ supporting various programming languages, hardware architectures and operating systems. The `Free Software Foundation (FSF)`_ distributes GCC as free software under the GNU General Public License (GNU GPL). GCC is a key component of the GNU toolchain and the standard compiler for most projects related to GNU and the Linux kernel. With roughly 15 million lines of code in 2019, GCC is one of the biggest free programs in existence, and it has played an important role in the growth of free software, as both a tool and an example.
