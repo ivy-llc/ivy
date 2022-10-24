@@ -56,3 +56,29 @@ def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 sinc.support_native_out = True
+
+
+def trapz(
+    y: torch.Tensor,
+    /,
+    *,
+    x: Optional[torch.Tensor] = None,
+    dx: Optional[float] = None,
+    axis: Optional[int] = -1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if x is None:
+        dx = dx if dx is not None else 1
+        return torch.trapezoid(y, dx=dx, dim=axis)
+    else:
+        if dx is not None:
+            TypeError(
+                "trapezoid() received an invalid combination of arguments - got\
+            (Tensor, Tensor, int), but expected one of: *\
+            (Tensor y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
+            )
+        else:
+            return torch.trapezoid(y, x=x, dim=axis)
+
+
+trapz.support_native_out = False
