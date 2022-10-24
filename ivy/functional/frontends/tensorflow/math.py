@@ -285,7 +285,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
     scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
-    return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
+    return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
