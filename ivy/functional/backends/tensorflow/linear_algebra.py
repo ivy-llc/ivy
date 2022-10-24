@@ -686,6 +686,11 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
 
 
 def rot90(
-    m: Union[tf.Tensor, tf.Variable], /, *, k: Optional[int] = 1, axes: Optional[Tuple[int, int]] = (0, 1), out: Optional[ivy.Array] = None
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[ivy.Array] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rot90(m, k, axes)

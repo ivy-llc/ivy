@@ -410,6 +410,11 @@ def vector_to_skew_symmetric_matrix(
 
 
 def rot90(
-    m: JaxArray, /, *, k: Optional[int] = 1, axes: Optional[Tuple[int, int]] = (0, 1), out: Optional[JaxArray] = None
+    m: JaxArray,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.rot90(m, k, axes)

@@ -584,7 +584,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         k
             Number of times the array is rotated by 90 degrees.
         axes
-            The array is rotated in the plane defined by the axes. Axes must be different.
+            The array is rotated in the plane defined by the axes.
+            Axes must be different.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -651,7 +652,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         k
             Number of times the array is rotated by 90 degrees.
         axes
-            The array is rotated in the plane defined by the axes. Axes must be different.
+            The array is rotated in the plane defined by the axes.
+            Axes must be different.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -668,7 +670,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            Container with a rotated view of m.
+            Container with a rotated view of input array.
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\

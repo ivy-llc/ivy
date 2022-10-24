@@ -393,6 +393,11 @@ vector_to_skew_symmetric_matrix.support_native_out = True
 
 
 def rot90(
-    m: np.ndarray, /, *, k: Optional[int] = 1, axes: Optional[Tuple[int, int]] = (0, 1), out: Optional[ivy.Array] = None
+    m: np.ndarray,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[ivy.Array] = None,
 ) -> np.ndarray:
     return np.rot90(m, k, axes)
