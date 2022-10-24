@@ -168,6 +168,7 @@ def test_jax_lax_eig(
         x=x,
     )
 
+
 # eigh
 @handle_cmd_line_args
 @given(
