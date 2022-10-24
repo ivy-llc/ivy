@@ -189,13 +189,14 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         Examples
         --------
         >>> y = ivy.array([1, 2, 3]) 
-        >>> ivy.trapz([1,2,3])
+        >>> ivy.trapz(y)
         4.0
         >>> y = ivy.array([1, 2, 3])
-        >>> ivy.trapz([1,2,3], x=[4, 6, 8])
+        >>> x = ivy.array([4, 6, 8])
+        >>> ivy.trapz(y, x=x)
         8.0
         >>> y = ivy.array([1, 2, 3]) 
-        >>> ivy.trapz([1,2,3], dx=2)
+        >>> ivy.trapz(y, dx=2)
         8.0
         """
         return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)

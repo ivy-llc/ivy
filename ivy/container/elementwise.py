@@ -8210,7 +8210,7 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
         >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
-        >>> ivy.Container.static_moveaxis(y)
+        >>> ivy.Container.static_trapz(y)
         {
             a: 4.0
             b: 10.5
