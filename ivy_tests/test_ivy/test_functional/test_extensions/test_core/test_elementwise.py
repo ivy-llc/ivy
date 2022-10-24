@@ -1,10 +1,10 @@
 # global
-from hypothesis import given
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
+import numpy as np
 
 # Helpers #
 # ------- #
@@ -170,4 +170,86 @@ def test_fmax(
         fn_name="fmax",
         x1=x[0],
         x2=x[0],
+    )
+
+
+# trapz
+@st.composite
+def _either_x_dx(draw):
+    rand = (draw(st.integers(min_value=0, max_value=1)),)
+    if rand == 0:
+        either_x_dx = draw(
+            helpers.dtype_and_x(
+                avaliable_dtypes=st.shared(
+                    helpers.get_dtypes("float"), key="trapz_dtype"
+                ),
+                min_value=-100,
+                max_value=100,
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            )
+        )
+        return rand, either_x_dx
+    else:
+        either_x_dx = draw(
+            st.floats(min_value=-10, max_value=10),
+        )
+        return rand, either_x_dx
+
+
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_neg_axes=True,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    rand_either=_either_x_dx(),
+    num_positional_args=helpers.num_positional_args(fn_name="trapz"),
+)
+def test_trapz(
+    dtype_values_axis,
+    rand_either,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, y, axis = dtype_values_axis
+    rand, either_x_dx = rand_either
+    if rand == 0:
+        dtype_x, x = either_x_dx
+        x = np.asarray(x, dtype=dtype_x)
+        dx = None
+    else:
+        x = None
+        dx = either_x_dx
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        rtol_=1e-2,
+        atol_=1e-2,
+        fw=fw,
+        fn_name="trapz",
+        y=np.asarray(y[0], dtype=input_dtype[0]),
+        x=x,
+        dx=dx,
+        axis=axis,
     )
