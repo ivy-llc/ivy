@@ -161,11 +161,6 @@ def shuffle(
     return jax.random.shuffle(rng_input, x)
 
 
-
-
-
-
-
 def beta(
     a: Union[float, JaxArray],
     b: Union[float, JaxArray],

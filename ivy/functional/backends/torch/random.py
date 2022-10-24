@@ -124,10 +124,6 @@ def shuffle(
     return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 
-
-
-
-
 shuffle.support_native_out = True
 
 def beta(
