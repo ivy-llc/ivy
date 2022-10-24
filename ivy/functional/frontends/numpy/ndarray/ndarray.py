@@ -132,5 +132,17 @@ class ndarray:
     def __mul__(self, value, /):
         return np_frontend.multiply(self.data, value)
 
+    def __and__(self, value, /):
+        return np_frontend.logical_and(self.data, value)
+
+    def __or__(self, value, /):
+        return np_frontend.logical_or(self.data, value)
+
+    def __xor__(self, value, /):
+        return np_frontend.logical_xor(self.data, value)
+
     def __matmul__(self, value, /):
         return np_frontend.matmul(self.data, value)
+
+    def __copy__(self,):
+        return np_frontend.copy(self.data)
