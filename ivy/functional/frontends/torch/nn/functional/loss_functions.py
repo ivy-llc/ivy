@@ -135,6 +135,7 @@ def smooth_l1_loss(
 
     return ret
 
+
 def poisson_nll_loss(
     input,
     target,
@@ -148,10 +149,11 @@ def poisson_nll_loss(
     if log_input:
         loss = ivy.exp(input) - ivy.multiply(target,input)
     else:
-        loss =input - ivy.multiply(target, ivy.log(input + eps))
+        loss = input - ivy.multiply(target, ivy.log(input + eps))
     if full:
         stirling_term = (
-            target * ivy.log(target) - target + ivy.multiply(0.5, ivy.log(ivy.multiply(2 * ivy.pi, target)))
+            target * ivy.log(target) - target
+            + ivy.multiply(0.5, ivy.log(ivy.multiply(2 * ivy.pi, target)))
         )
         indices = ivy.where(target <= 1)
         stirling_term[indices] = 0
