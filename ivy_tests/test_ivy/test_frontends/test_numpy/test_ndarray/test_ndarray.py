@@ -6,6 +6,10 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
+)
 
 
 # argmax
@@ -92,41 +96,6 @@ def test_numpy_ndarray_reshape(
         frontend="numpy",
         class_name="ndarray",
         method_name="reshape",
-    )
-
-
-# add
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ),
-)
-def test_numpy_ndarray_add(
-    dtype_and_x,
-    as_variable,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=[input_dtype[1]],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "value": x[1],
-        },
-        frontend="numpy",
-        class_name="ndarray",
-        method_name="add",
     )
 
 
@@ -844,4 +813,158 @@ def test_numpy_instance_squeeze(
         frontend="numpy",
         class_name="ndarray",
         method_name="squeeze",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.__add__"
+    ),
+)
+def test_numpy_instance_add__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__add__",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.__sub__"
+    ),
+)
+def test_numpy_instance_sub__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__sub__",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2,
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.__mul__"
+    ),
+)
+def test_numpy_instance_mul__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__mul__",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x=_get_first_matrix_and_dtype(),
+    y=_get_second_matrix_and_dtype(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.__matmul__"
+    ),
+)
+def test_numpy_instance_matmul__(
+    x,
+    y,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    dtype1, x1 = x
+    dtype2, x2 = y
+    input_dtype = dtype1 + dtype2
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x1,
+        },
+        all_as_kwargs_np_method={
+            "value": x2,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__matmul__",
     )
