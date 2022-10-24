@@ -284,8 +284,6 @@ def test_randint(
 def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_value=seed_val)
-
-
 # shuffle
 @handle_cmd_line_args
 @given(
@@ -355,8 +353,6 @@ def test_beta(
     instance_method,
     fw,
 ):
-
-
     dtype, alpha_beta = dtype_and_alpha_beta
     if 'float16' in dtype:
         return
