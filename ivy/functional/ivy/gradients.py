@@ -27,6 +27,8 @@ def _arrays_to_float_variables(xs):
         if ivy.is_array(x, exclusive=True):
             if ivy.is_int_dtype(x.dtype):
                 x = x.astype(ivy.default_float_dtype())
+            else:
+                x = ivy.stop_gradient(x)
             return ivy.variable(x)
         return x
 

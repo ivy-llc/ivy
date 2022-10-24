@@ -1,5 +1,4 @@
-from typing import Union, Optional, Tuple, Literal
-from numbers import Number
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 
 
@@ -40,31 +39,6 @@ def max_pool2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
-
-
-def pad(
-    x: tf.Tensor,
-    /,
-    pad_width: tf.Tensor,
-    *,
-    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
-    stat_length: Optional[Union[tf.Tensor, int]] = None,
-    constant_values: Optional[Number] = 0,
-    end_values: Optional[Number] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> tf.Tensor:
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    if mode == "constant":
-        return tf.pad(
-            x,
-            pad_width,
-            mode=mode,
-            constant_values=constant_values,
-        )
-    else:
-        return tf.pad(x, pad_width, mode=mode)
 
 
 def kaiser_window(

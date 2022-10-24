@@ -8,6 +8,7 @@ import torch
 
 # local
 import ivy
+from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -292,5 +293,6 @@ def einsum(
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = _get_promoted_type_of_operands(operands)
     operands = (operand.to(torch.float32) for operand in operands)
-    return torch.einsum(equation, *operands)
+    return torch.einsum(equation, *operands).to(dtype)

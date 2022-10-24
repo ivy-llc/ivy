@@ -206,7 +206,7 @@ this would look like:
    import jax
    import ivy
 
-   graph = ivy.compile_graph(net, x).to_backend('jax')
+   jax_graph = ivy.compile_graph(net, x).to_backend('jax')
    x = jax.numpy.array([1., 2., 3.])
    jax_graph(x)
 
