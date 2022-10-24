@@ -599,6 +599,8 @@ def test_frontend_function(
             # check if passed reference is correctly updated
             kwargs["out"] = out
             ret = frontend_fn(*args, **kwargs)
+            if _is_frontend_array(ret):
+                ret = ret.data
             if is_ret_tuple:
                 flatten_ret = flatten(ret=ret)
                 flatten_out = flatten(ret=out)
@@ -1366,7 +1368,6 @@ def test_frontend_method(
 
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend)
-    backend_returned_scalar = False
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1406,11 +1407,10 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
-        backend_returned_scalar = True
+    if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+        frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+    elif ivy.isscalar(frontend_ret):
         frontend_ret_np_flat = [np.asarray(frontend_ret)]
-    elif frontend == "tensorflow" and not isinstance(frontend_ret, tf.Tensor):
-        frontend_ret_np_flat = [ivy.array(frontend_ret).to_numpy()]
     else:
         # tuplify the frontend return
         if not isinstance(frontend_ret, tuple):
@@ -1420,10 +1420,7 @@ def test_frontend_method(
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
 
-    if backend_returned_scalar:
-        ret_np_flat = ivy.to_numpy([ret])
-    else:
-        ret_np_flat = flatten_and_to_np(ret=ret)
+    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
