@@ -24,6 +24,9 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
 
+    def asin(self, *, out=None):
+        return torch_frontend.asin(self.data, out=out)
+    
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
 
@@ -40,6 +43,9 @@ class Tensor:
 
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
+   
+    def arcsin(self, *, out=None):
+        return torch_frontend.arcsin(self.data, out=out)
 
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
@@ -67,10 +73,14 @@ class Tensor:
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
 
+    def abs_(self):
+        self.data = self.abs()
+        return self.data
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
 
-    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
+    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.ones(size, dtype=dtype, device=device,
                                    requires_grad=requires_grad)
 
@@ -106,6 +116,9 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
+    def arctan(self, *, out=None):
+        return torch_frontend.arctan(self, out=out)
+
     # Special Methods #
     # -------------------#
 
@@ -126,6 +139,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    # Method aliases
+    absolute, absolute_ = abs, abs_
 
 
 # Tensor (alias)
