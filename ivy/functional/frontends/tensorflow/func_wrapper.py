@@ -94,10 +94,33 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))
 
 
-def wrap_raw_ops_alias(fn: callable) -> callable:
-    @functools.wraps(fn)
-    def _wraped_fn(*args, **kwargs):
-        kwargs.update(zip(fn.__code__.co_varnames, args))
-        return fn(**kwargs)
+def map_raw_ops_alias(alias: callable, **function_kwargs):
+    """
+    Mapping the raw_ops function with its respective frontend alias function,
+    as the implementations of raw_ops is way similar to that of frontend functions,
+    except that only arguments are passed as key-word only in raw_ops functions.
 
-    return _wraped_fn
+    Parameters
+    ----------
+    alias:
+        The frontend function that is being referenced to as an alias to the
+        current raw_ops function.
+    functions_kwargs:
+        All inputs to the raw_ops as keyword only arguments.
+
+    Returns
+    -------
+    ret
+        The output of the function after performing the given raw_ops operation.
+    """
+
+    def _wrap_raw_ops_alias(fn: callable) -> callable:
+        @functools.wraps(fn)
+        def _wraped_fn(*args, **kwargs):
+            kwargs.update(zip(fn.__code__.co_varnames, args))
+            return fn(**kwargs)
+
+        return _wraped_fn
+
+    wrapped_function = _wrap_raw_ops_alias(alias)
+    return wrapped_function(**function_kwargs)

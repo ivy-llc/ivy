@@ -4,7 +4,7 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
-    wrap_raw_ops_alias,
+    map_raw_ops_alias,
 )
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 from .. import versions
@@ -28,8 +28,12 @@ def Acosh(*, x, name="Acosh"):
 
 
 def Add(*, x, y, name="Add"):
-    fn = wrap_raw_ops_alias(tf_frontend.math.add)
-    return fn(x=x, y=y, name=name)
+    return map_raw_ops_alias(
+        tf_frontend.math.add,
+        x=x,
+        y=y,
+        name=name,
+    )
 
 
 ArgMax = tf_frontend.math.argmax
