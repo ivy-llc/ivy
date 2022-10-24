@@ -147,8 +147,10 @@ def _generate_shared_test_flags(_given_kwargs: dict, fn_tree: str, fn: callable)
     _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
     for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
         _given_kwargs[flag_key] = st.just(flag_value)
-    for flag in cfg.UNSET_TEST_CONFIG:  # TODO make sure they should be lists
+    for flag in cfg.UNSET_TEST_CONFIG_LISTS:
         _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
+    for flag in cfg.UNSET_TEST_CONFIG_SINGLE:
+        _given_kwargs[flag] = st.booleans()
         # Override with_out to be compatible
     for k in inspect.signature(fn).parameters.keys():
         if k.endswith("out"):

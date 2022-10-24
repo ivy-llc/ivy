@@ -9,7 +9,8 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
 GENERAL_CONFIG_DICT = {}
-UNSET_TEST_CONFIG = []
+UNSET_TEST_CONFIG_LISTS = []
+UNSET_TEST_CONFIG_SINGLE = []
 UNSET_TEST_API_CONFIG = []
 
 TEST_PARAMS_CONFIG = []
@@ -137,8 +138,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
         if not v[0] ^ v[1]:
             if k in ["instance_method", "container", "test_gradients"]:
                 UNSET_TEST_API_CONFIG.append(k)
+            elif k == "with_out":
+                UNSET_TEST_CONFIG_SINGLE.append(k)
             else:
-                UNSET_TEST_CONFIG.append(k)
+                UNSET_TEST_CONFIG_LISTS.append(k)
 
 
 def pytest_addoption(parser):
