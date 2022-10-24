@@ -134,3 +134,26 @@ def smooth_l1_loss(
     ret = reduction(loss)
 
     return ret
+
+def poisson_nll_loss(
+    input,
+    target,
+    log_input: bool = True,
+    full: bool = False,
+    size_average = None,
+    eps: float = 1e-8,
+    reduce = None,
+    reduction: str = "mean",
+):
+    if log_input:
+        loss = ivy.exp(input) - ivy.multiply(target,input)
+    else:
+        loss =input - ivy.multiply(target, ivy.log(input + eps))
+    if full:
+        stirling_term = (
+            target * ivy.log(target) - target + ivy.multiply(0.5, ivy.log(ivy.multiply(2 * ivy.pi, target)))
+        )
+        indices = ivy.where(target <= 1)
+        stirling_term[indices] = 0
+        loss = loss + stirling_term 
+    return _apply_reduction(reduction, size_average, reduce, loss)
