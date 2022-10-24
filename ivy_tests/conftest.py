@@ -12,24 +12,24 @@ from pytest import mark
 from pathlib import Path
 
 
-cache_path = os.getcwd() + "/.hypothesis/examples/"
-r = None
+hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+redis_connect = None
 try:
-    os.makedirs(cache_path)
+    os.makedirs(hypothesis_cache)
 except FileExistsError:
     pass
 
 
 def is_db_available():
-    global r
-    r = redis.Redis.from_url(
+    global redis_connect
+    redis_connect = redis.Redis.from_url(
         url="redis://redis-17011.c259.us-central1-2.gce.cloud.redislabs.com:17011",
         username="general_use",
         password="Hypothesiscache@123",
         max_connections=2,
     )
     try:
-        r.get("b")
+        redis_connect.get("b")
     except redis.exceptions.ConnectionError:
         print("Fallback to DirectoryBasedExamples")
         return False
@@ -69,14 +69,17 @@ def pytest_configure(config):
 
     elif is_db_available():
         print("Use Database in ReadOnly Mode with local caching !")
-        shared = RedisExampleDatabase(r, key_prefix=b"hypothesis-example:")
+        shared = RedisExampleDatabase(redis_connect, key_prefix=b"hypothesis-example:")
         profile_settings["database"] = MultiplexedDatabase(
-            DirectoryBasedExampleDatabase(path=cache_path), ReadOnlyDatabase(shared)
+            DirectoryBasedExampleDatabase(path=hypothesis_cache),
+            ReadOnlyDatabase(shared),
         )
 
     else:
         print("Database unavailable, local caching only !")
-        profile_settings["database"] = DirectoryBasedExampleDatabase(path=cache_path)
+        profile_settings["database"] = DirectoryBasedExampleDatabase(
+            path=hypothesis_cache
+        )
 
     if max_examples:
         profile_settings["max_examples"] = max_examples
