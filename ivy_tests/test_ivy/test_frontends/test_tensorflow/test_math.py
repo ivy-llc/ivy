@@ -1041,10 +1041,13 @@ def test_tensorflow_truediv(
 # ibeta
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=2,
         num_arrays=2,
-        shared_dtype=True,
+        exclude_min=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.ibeta"
