@@ -402,6 +402,7 @@ def array_indices_axis(
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
     disable_random_axis=False,
+    axis_zero=False,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -464,7 +465,10 @@ def array_indices_axis(
     x_dtype = x_dtype[0]
     x = x[0]
     if disable_random_axis:
-        axis = -1
+        if axis_zero:
+            axis = 0
+        else:
+            axis = -1
         batch_dims = 0
         batch_shape = x_shape[0:0]
     else:
@@ -713,6 +717,14 @@ def array_values(
                     width=floats_info[dtype]["width"],
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                )
+            # kind of a hack to not use the calculated max and min values
+            elif allow_inf or allow_nan:
+                float_strategy = st.floats(
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=floats_info[dtype]["width"],
                 )
             else:
                 float_strategy = st.one_of(

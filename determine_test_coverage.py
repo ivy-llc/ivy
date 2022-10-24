@@ -85,7 +85,8 @@ if __name__ == "__main__":
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_name in tqdm(test_names[start:end]):
         os.system(
-            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} --disable-warnings > coverage_output"  # noqa
+            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} "
+            "--disable-warnings > coverage_output"
         )
         os.system("coverage annotate > coverage_output")
         for directory in directories:
@@ -103,7 +104,7 @@ if __name__ == "__main__":
                             if line[0] == ">":
                                 tests[file_name][i].add(
                                     tests["tests_mapping"][test_name]
-                                )  # noqa
+                                )
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
 

@@ -29,9 +29,12 @@ def eigvalsh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
-def solve(x, y):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
-    return ivy.solve(x, y)
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
+def solve(matrix, rhs):
+    matrix, rhs = promote_types_of_tensorflow_inputs(matrix, rhs)
+    return ivy.solve(matrix, rhs)
 
 
 @to_ivy_arrays_and_back
@@ -48,6 +51,9 @@ def slogdet(input, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+)
 def cholesky_solve(chol, rhs, name=None):
     chol, rhs = promote_types_of_tensorflow_inputs(chol, rhs)
     y = ivy.solve(chol, rhs)

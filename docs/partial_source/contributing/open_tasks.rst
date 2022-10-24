@@ -117,7 +117,7 @@ the status of each item according to the symbols(emojis) within the LEGEND secti
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true
    :width: 420
 
-1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
+3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
