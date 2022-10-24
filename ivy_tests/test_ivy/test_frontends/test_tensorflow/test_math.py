@@ -1050,9 +1050,7 @@ def test_tensorflow_truediv(
         fn_name="ivy.functional.frontends.tensorflow.math.ibeta"
     ),
 )
-def test_tensorflow_ibeta(
-    dtype_and_x, as_variable, num_positional_args, native_array
-):
+def test_tensorflow_ibeta(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
