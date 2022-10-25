@@ -2,6 +2,9 @@ API Standards
 =============
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 API standards are standardized application programming interfaces (APIs) which define the function signatures which similar libraries should adhere to for maximal interoperability between those libraries.
 
@@ -13,3 +16,8 @@ The `Array API Standard`_ defines a unified application programming interface (A
 <insert_table>
 
 Therefore, two frameworks which adhere to the standard will still have major differences by virtue of the extra functions they support which are not present in the standard.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!
