@@ -1222,3 +1222,19 @@ def flipud(
         [ 1.,  0.,  0.]])
     """
     return ivy.current_backend().flipud(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def dct(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    n: Optional[int] = None,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    return ivy.current_backend().dct(x, type=type, n=n, norm=norm, out=out)
