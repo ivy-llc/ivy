@@ -172,8 +172,8 @@ class ArrayWithLayersExtensions(abc.ABC):
 
         Parameters
         ----------
-        x
-            Input image *[batch_size,h,w,d_in]*.
+        self
+            Input image *[batch_size,w,d_in]*.
         kernel
             The size of the window for each dimension of the input tensor.
         strides
@@ -182,7 +182,7 @@ class ArrayWithLayersExtensions(abc.ABC):
             "SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
-            "NHWC" or "NCHW". Defaults to "NHWC".
+            "NWC" or "NCW". Defaults to "NWC".
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

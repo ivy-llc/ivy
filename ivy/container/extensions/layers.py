@@ -365,7 +365,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         Parameters
         ----------
         x
-            Container of input image *[batch_size, w, d_in]*.
+            Container of input images *[batch_size, w, d_in]*.
         kernel
             Size of the kernel i.e., the sliding window for each
             dimension of input. *[w]*.
@@ -426,8 +426,8 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        """ivy.Container instance method variant of `ivy.max_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
         to this method with minimal changes.
 
         Parameters
