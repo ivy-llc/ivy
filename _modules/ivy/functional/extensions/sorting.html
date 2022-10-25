@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.array.extensions.sorting &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.functional.extensions.sorting &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -118,7 +118,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>ivy.array.extensions.sorting</li>
+      <li>ivy.functional.extensions.sorting</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -127,51 +127,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for ivy.array.extensions.sorting</h1><div class="highlight"><pre>
+  <h1>Source code for ivy.functional.extensions.sorting</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># local</span>
-
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="ArrayWithSortingExtensions"><a class="viewcode-back" href="../../../../data_classes/array/extensions/sorting/ArrayWithSortingExtensions.html#ivy.array.extensions.sorting.ArrayWithSortingExtensions">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithSortingExtensions</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="c1"># msort</span>
-<div class="viewcode-block" id="ArrayWithSortingExtensions.msort"><a class="viewcode-back" href="../../../../data_classes/array/extensions/sorting/ArrayWithSortingExtensions.html#ivy.array.extensions.sorting.ArrayWithSortingExtensions.msort">[docs]</a>    <span class="k">def</span> <span class="nf">msort</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.msort. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.msort also applies to this method</span>
-<span class="sd">        with minimal changes.</span>
+<span class="c1"># Array API Standard #</span>
+<span class="c1"># -------------------#</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input array.</span>
-<span class="sd">        out</span>
+<div class="viewcode-block" id="msort"><a class="viewcode-back" href="../../../../functional/extensions/sorting/msort.html#ivy.functional.extensions.sorting.msort">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">msort</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a copy of an array sorted along the first axis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        array-like input.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            sorted array of the same type and shape as a</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        sorted array of the same type and shape as a</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; a = ivy.randint(10, size=(2,3))</span>
-<span class="sd">        &gt;&gt;&gt; a.msort()</span>
-<span class="sd">        ivy.array(</span>
-<span class="sd">            [[6, 2, 6],</span>
-<span class="sd">            [8, 9, 6]]</span>
-<span class="sd">            )</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">msort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.randint(10, size=(2,3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.msort(a)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">        [[6, 2, 6],</span>
+<span class="sd">         [8, 9, 6]]</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">msort</span><span class="p">(</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>
