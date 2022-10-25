@@ -1189,12 +1189,14 @@ def test_einops_rearrange(
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
+    floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
     num_positional_args=helpers.num_positional_args(fn_name="einops_reduce"),
 )
 def test_einops_reduce(
     dtype_x,
     pattern_and_axes_lengths,
+    floattypes,
     reduction,
     with_out,
     as_variable,
@@ -1206,7 +1208,7 @@ def test_einops_reduce(
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
-    if (reduction in ["mean", "prod"]) and (dtype not in helpers.get_dtypes("float")):
+    if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
