@@ -190,16 +190,17 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
-    if atol and rtol is None:
-        ret = jnp.sum(singular_values > atol, axis=axis)
-    elif rtol and atol is None:
-        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
-    elif rtol and atol:
-        tol = jnp.max(atol, max_values * rtol)
-        ret = jnp.sum(singular_values > tol, axis=axis)
-    else:
-        ret = jnp.sum(singular_values != 0, axis=axis)
-
+    if atol is None:
+        if rtol is None:
+            ret = jnp.sum(singular_values != 0, axis=axis)
+        else:
+            ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = jnp.sum(singular_values > atol, axis=axis)
+        else:
+            tol = jnp.max(atol, max_values * rtol)
+            ret = jnp.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
         ret = ret.reshape(ret_shape)
     return ret.astype(x.dtype)
