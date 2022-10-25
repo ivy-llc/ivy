@@ -449,6 +449,22 @@ class ArrayWithGeneral(abc.ABC):
         ret
             a numpy array copying all the element of the array ``self``.
 
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [-1  0  1]
+
+        >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [[-1  0  1]
+        [-1  0  1]
+        [ 1  0 -1]]
+
         """
         return ivy.to_numpy(self, copy=copy)
 
