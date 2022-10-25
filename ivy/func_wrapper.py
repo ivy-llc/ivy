@@ -445,7 +445,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)
-                and linalg_k != "namedtuple"
+                and linalg_k.lower() != "namedtuple"
                 and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
