@@ -1129,17 +1129,18 @@ def matrix_transpose(
     Parameters
     ----------
     x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-        ``MxN`` matrices.
+        input array having shape ``(..., M, N)`` and whose innermost two
+        dimensions form ``MxN`` matrices.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a
+        shape that the inputs broadcast to.
 
     Returns
     -------
     ret
         an array containing the transpose for each matrix and having shape
-        ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        ``(..., N, M)``. The returned array must have the same data
+        type as ``x``.
 
 
     This function conforms to the `Array API Standard
@@ -1193,7 +1194,6 @@ def matrix_transpose(
         b: ivy.array([[3., 3.],
                       [4., 5.]])
     }
-
     """
     return current_backend(x).matrix_transpose(x, out=out)
 

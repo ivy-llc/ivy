@@ -1146,39 +1146,38 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-            Transposes a matrix (or a stack of matrices) ``x``.
+        Transposes a matrix (or a stack of matrices) ``x``.
 
-            Parameters
-            ----------
-            x
-                input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-                ``MxN`` matrices.
-            out
-                optional output array, for writing the result to. It must have a shape that the
-                inputs broadcast to.
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
-            Returns
-            -------
-            ret
-                an array containing the transpose for each matrix and having shape
-                ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
 
-            Examples
-            --------
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
 
-            With :code:`ivy.Container` instance method:
-
-            >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
-                          b=ivy.array([[0., 4.], [3., 1.]]))
-            >>> y = ivy.matrix_transpose(x)
-            >>> print(y)
-            {
-                a: ivy.array([[1., 0.],
-                              [1., 3.]]),
-                b: ivy.array([[0., 3.],
-                              [4., 1.]])
-            }
-
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                        b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.Container.static_matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "matrix_transpose",
@@ -1200,39 +1199,38 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-            Transposes a matrix (or a stack of matrices) ``x``.
+        Transposes a matrix (or a stack of matrices) ``x``.
 
-            Parameters
-            ----------
-            x
-                input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-                ``MxN`` matrices.
-            out
-                optional output array, for writing the result to. It must have a shape that the
-                inputs broadcast to.
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
-            Returns
-            -------
-            ret
-                an array containing the transpose for each matrix and having shape
-                ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
 
-            Examples
-            --------
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
 
-            With :code:`ivy.Container` instance method:
-
-            >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
-                          b=ivy.array([[0., 4.], [3., 1.]]))
-            >>> y = ivy.matrix_transpose(x)
-            >>> print(y)
-            {
-                a: ivy.array([[1., 0.],
-                              [1., 3.]]),
-                b: ivy.array([[0., 3.],
-                              [4., 1.]])
-            }
-
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                      b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
         """
         return self.static_matrix_transpose(
             self,

@@ -269,34 +269,33 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-            Transposes a matrix (or a stack of matrices) ``x``.
+        Transposes a matrix (or a stack of matrices) ``x``.
 
-            Parameters
-            ----------
-            x
-                input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-                ``MxN`` matrices.
-            out
-                optional output array, for writing the result to. It must have a shape that the
-                inputs broadcast to.
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
 
-            Returns
-            -------
-            ret
-                an array containing the transpose for each matrix and having shape
-                ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
 
-            Examples
-            --------
+        Examples
+        --------
+        With :class:`ivy.Array` instance inputs:
 
-            With :class:`ivy.Array` instance inputs:
-
-            >>> x = ivy.array([[1., 2.], [0., 3.]])
-            >>> y = ivy.matrix_transpose(x)
-            >>> print(y)
-            ivy.array([[1., 0.],
-                       [2., 3.]])
-
+        >>> x = ivy.array([[1., 2.], [0., 3.]])
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        ivy.array([[1., 0.],
+                   [2., 3.]])
         """
         return ivy.matrix_transpose(self._data, out=out)
 
