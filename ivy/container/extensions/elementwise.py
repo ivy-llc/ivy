@@ -538,6 +538,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         ivy.Container static method variant of ivy.nansum. This method simply wraps
         the function, and so the docstring for ivy.nansum also applies to this method
         with minimal changes.
+        
         Parameters
         ----------
         x
@@ -554,11 +555,13 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
+        
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
+        
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -602,9 +605,11 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         keepdims: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nansum. This method simply
+        """
+        ivy.Container instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to this
         method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -621,11 +626,13 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
+        
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
+        
         Examples
         --------
         With one :class:`ivy.Container` input:
