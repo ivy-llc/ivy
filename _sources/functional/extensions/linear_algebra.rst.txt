@@ -13,4 +13,5 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
+   linear_algebra/diagflat.rst
 
