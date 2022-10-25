@@ -456,22 +456,6 @@ def array_equal(
     >>> print(k)
     False
 
-    With :class:`ivy.Array` instance method:
-
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([1, 0, 1])
-    >>> y = x1.array_equal(x2)
-    >>> print(y)
-    False
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` instance method:
-
-    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
-    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-    >>> y = x1.all_equal(x2)
-    >>> print(y)
-    True
-
     """
     return current_backend(x0).array_equal(x0, x1)
 
@@ -500,29 +484,22 @@ def all_equal(
 
     Examples
     --------
-    With :code:`Number` inputs:
-
-    >>> x1 = 1.2
-    >>> x2 = 1.0
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    False
-
     With :class:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
     >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[ True,  True], [ True,  True]])
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([1, 1, 0, 0, 1, -1])
-    >>> x2 = ivy.native_array([1, 1, 0, 0, 1, -1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> y = ivy.all_equal(x1, x2)
     >>> print(y)
     True
+
+    >>> x1 = ivy.array([0, 0])
+    >>> x2 = ivy.array([0, 0])
+    >>> x3 = ivy.array([1, 0])
+    >>> y = ivy.all_equal(x1, x2, x3, equality_matrix=True)
+    >>> print(y)
+    ivy.array([[ True,  True, False],
+       [ True,  True, False],
+       [False, False,  True]])
 
     With one :class:`ivy.Container` inputs:
 
@@ -548,22 +525,6 @@ def all_equal(
         a: true,
         b: false
     }
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([1, 0, 1])
-    >>> y = x1.all_equal(x2, equality_matrix= False)
-    >>> print(y)
-    False
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` instance method:
-
-    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
-    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-    >>> y = x1.all_equal(x2, equality_matrix= True)
-    >>> print(y)
-    ivy.array([[ True,  True], [ True,  True]])
 
     """
     equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
