@@ -386,13 +386,16 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_max_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> print(ivy.Container.static_max_pool1d(x,2, 2, "VALID"))
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([[[3., 4., 5.]],
+                          [[9., 10., 11.]]]),
+            b: ivy.array([[[4., 5., 6., 7.]],
+                          [[16., 17., 18., 19.]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -451,13 +454,16 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        >>> print(x.max_pool1d(2, 2, "VALID"))
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([[[3., 4., 5.]],
+                          [[9., 10., 11.]]]),
+            b: ivy.array([[[4., 5., 6., 7.]],
+                          [[16., 17., 18., 19.]]])
         }
         """
         return self.static_max_pool1d(

@@ -207,6 +207,20 @@ def max_pool1d(
     also accepts :class:`ivy.Container` instances in place of any of
     the arguments.
 
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, 'SAME'))
+    ivy.array([[[ 4.,  5.,  6.,  7.],
+            [ 8.,  9., 10., 11.]],
+
+           [[16., 17., 18., 19.],
+            [20., 21., 22., 23.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, 'VALID'))
+    ivy.array([[[ 4.,  5.,  6.,  7.]],
+
+       [[16., 17., 18., 19.]]])
     """
     return ivy.current_backend(x).max_pool1d(x,
                                              kernel,
