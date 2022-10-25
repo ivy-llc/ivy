@@ -8185,15 +8185,16 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container static method variant of ivy.trapz. This method simply wraps
         the function, and so the docstring for ivy.trapz also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         y
             The container whose arrays should be integrated.
         x
-            The sample points corresponding to the input array values. 
+            The sample points corresponding to the input array values.
             If x is None, the sample points are assumed to be evenly spaced
-            dx apart. The default is None.            
-        dx 
+            dx apart. The default is None.
+        dx
             The spacing between sample points when x is None. The default is 1.
         axis
             The axis along which to integrate.
@@ -8204,7 +8205,7 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             container including definite integrals of n-dimensional arrays
-            as approximated along a single axis by the trapezoidal rule. 
+            as approximated along a single axis by the trapezoidal rule.
 
         Examples
         --------
@@ -8241,15 +8242,16 @@ class ContainerWithElementwise(ContainerBase):
         """ivy.Container instance method variant of ivy.trapz. This method simply
         wraps the function, and so the docstring for ivy.trapz also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
             The container whose arrays should be integrated.
         x
-            The sample points corresponding to the input array values. 
+            The sample points corresponding to the input array values.
             If x is None, the sample points are assumed to be evenly spaced
-            dx apart. The default is None.            
-        dx 
+            dx apart. The default is None.
+        dx
             The spacing between sample points when x is None. The default is 1.
         axis
             The axis along which to integrate.
@@ -8260,7 +8262,7 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             container including definite integrals of n-dimensional arrays
-            as approximated along a single axis by the trapezoidal rule. 
+            as approximated along a single axis by the trapezoidal rule.
 
         Examples
         --------
