@@ -46,7 +46,9 @@ Frameworks
 .. _`Adam Paszke`: https://github.com/apaszke
 .. _`Dex language`: https://github.com/google-research/dex-lang
 .. _`Haskell`: https://www.haskell.org/
-
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Here we list some of the most prominent frameworks for array computation. These are the individual frameworks which the wrapper frameworks mentioned above generally wrap around and abstract.
 
@@ -128,3 +130,8 @@ With `PyTorch`_ showing clear advantages and gaining in popularity in the Python
 DEX Language
 ------------
 Since 2020, the creator of `PyTorch`_ (and major `JAX`_ contributor) `Adam Paszke`_ has stopped working much on either PyTorch and JAX, and has been instead spending his time working on the `Dex language`_, which looks to combine the clarity and safety of high-level functional languages with the efficiency and parallelism of low-level numerical languages, avoiding the need to compose primitive bulk-array operations. They propose an explicit nested indexing style that mirrors application of functions to arguments. The goal of the project is to explore: type systems for array programming, mathematical program transformations like differentiation and integration, user-directed compilation to parallel hardware, and interactive and incremental numerical programming and visualization. It is quite early and still in an experimental phase, but this framework would provide hugely significant fundamental improvements over all existing frameworks if it reaches a mature stage of development. The language is built on top of `Haskell`_.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!

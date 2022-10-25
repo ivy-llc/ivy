@@ -3609,10 +3609,7 @@ class ContainerBase(dict, abc.ABC):
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
             uniform_indent_wo_overflow_list = list(
-                filter(
-                    None,
-                    uniform_indent_wo_overflow.split("\\n")
-                )
+                filter(None, uniform_indent_wo_overflow.split("\\n"))
             )
             uniform_indent = "\n".join(
                 [
