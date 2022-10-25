@@ -19,12 +19,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
 )
 def test_torch_multinomial(
-        dtype_and_values,
-        num_samples,
-        replace,
-        with_out,
-        num_positional_args,
-        native_array,
+    dtype_and_values,
+    num_samples,
+    replace,
+    with_out,
+    num_positional_args,
+    native_array,
 ):
     input_dtype, value = dtype_and_values
     input = value[0]

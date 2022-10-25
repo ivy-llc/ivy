@@ -86,9 +86,7 @@ def test_tensorflow_sigmoid(
         fn_name="ivy.functional.frontends.tensorflow.keras.activations.tanh"
     ),
 )
-def test_tensorflow_tanh(
-    dtype_and_x, as_variable, num_positional_args, native_array
-):
+def test_tensorflow_tanh(dtype_and_x, as_variable, num_positional_args, native_array):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

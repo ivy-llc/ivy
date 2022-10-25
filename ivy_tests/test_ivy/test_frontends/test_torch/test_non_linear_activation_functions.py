@@ -795,7 +795,7 @@ def test_torch_glu(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.log_softmax"
     ),
@@ -818,7 +818,8 @@ def test_torch_log_softmax(
         fn_tree="nn.functional.log_softmax",
         input=x[0],
         dim=axis,
-        dtype=dtypes,
+        _stacklevel=3,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
 
 

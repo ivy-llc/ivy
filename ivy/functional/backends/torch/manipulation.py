@@ -11,7 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
-from . import version
+from . import backend_version
 
 
 # Array API Standard #
@@ -124,7 +124,7 @@ def squeeze(
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
@@ -146,7 +146,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )
@@ -214,7 +214,7 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, version)
+@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, backend_version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -272,7 +272,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"1.11.0": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0": ("float16",)}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],

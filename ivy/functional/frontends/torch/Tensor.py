@@ -8,16 +8,14 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        if ivy.is_native_array(data):
-            data = ivy.Array(data)
-        self.data = data
+        self.data = ivy.array(data)
 
     def __repr__(self):
         return (
             "ivy.functional.frontends.torch.Tensor(" + str(ivy.to_list(self.data)) + ")"
         )
 
-    # Instance Methoods #
+    # Instance Methods #
     # -------------------#
 
     def reshape(self, shape):
@@ -25,6 +23,9 @@ class Tensor:
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
+
+    def asin(self, *, out=None):
+        return torch_frontend.asin(self.data, out=out)
 
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
@@ -43,6 +44,9 @@ class Tensor:
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
 
+    def arcsin(self, *, out=None):
+        return torch_frontend.arcsin(self.data, out=out)
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
@@ -60,11 +64,64 @@ class Tensor:
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
 
+    def log(self):
+        return ivy.log(self.data)
+
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def amin(self, dim=None, keepdim=False):
+        return torch_frontend.amin(self.data, dim=dim, keepdim=keepdim)
+
+    def abs(self, *, out=None):
+        return torch_frontend.abs(self.data, out=out)
+
+    def abs_(self):
+        self.data = self.abs()
+        return self.data
+
     def contiguous(self, memory_format=torch.contiguous_format):
         return self.data
+
+    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(
+            size, dtype=dtype, device=device, requires_grad=requires_grad
+        )
+
+    def to(self, *args, **kwargs):
+        if len(args) > 0:
+            if isinstance(args[0], ivy.Dtype):
+                return self._to_with_dtype(*args, **kwargs)
+            elif isinstance(args[0], ivy.Device):
+                return self._to_with_device(*args, **kwargs)
+            else:
+                return self._to_with_tensor(*args, **kwargs)
+
+        else:
+            if "tensor" not in kwargs:
+                return self._to_with_device(**kwargs)
+            else:
+                return self._to_with_tensor(**kwargs)
+
+    def _to_with_tensor(
+        self, tensor, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(
+            self.data, dtype=tensor.dtype, device=tensor.device, copy=copy
+        )
+
+    def _to_with_dtype(
+        self, dtype, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, dtype=dtype, copy=copy)
+
+    def _to_with_device(
+        self, device, dtype=None, non_blocking=False, copy=False, *, memory_format=None
+    ):
+        return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
+
+    def arctan(self, *, out=None):
+        return torch_frontend.arctan(self, out=out)
 
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
@@ -89,6 +146,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    # Method aliases
+    absolute, absolute_ = abs, abs_
 
 
 # Tensor (alias)

@@ -63,4 +63,4 @@ With Ivy, we have implemented Modules, Optimizers and Trainers **once** with sim
 
 Hopefully this has given you some idea of the many benefits that a fully unified ML framework could offer 🙂
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

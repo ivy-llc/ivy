@@ -325,8 +325,12 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(x.shape) < 2:
-        return tf.constant(0, dtype=x.dtype)
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return tf.constant(0, dtype=x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return tf.constant(0, dtype=x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -403,16 +407,12 @@ def pinv(
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.pinv(x, rtol)
     return ret
 
 
-pinv.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -597,27 +597,10 @@ def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    if num_rows is None:
-        num_rows = -1
-    if num_cols is None:
-        num_cols = -1
-
-    return tf.linalg.diag(
-        x,
-        name="diag",
-        k=offset,
-        num_rows=num_rows,
-        num_cols=num_rows,
-        padding_value=padding_value,
-        align=align,
-    )
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diag(x, k=k)
 
 
 def vander(

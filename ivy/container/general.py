@@ -1537,7 +1537,14 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-        x: ivy.Container, include_infs=True, leafwise=False
+        self: ivy.Container,
+        /,
+        *,
+        include_infs=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         Determine whether arrays in the container contain any nans, as well as infs
@@ -1549,10 +1556,6 @@ class ContainerWithGeneral(ContainerBase):
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
 
         Returns
         -------
@@ -1560,13 +1563,25 @@ class ContainerWithGeneral(ContainerBase):
             entire container.
 
         """
-        leafwise_res = x.map(lambda x, kc: ivy.has_nans(x, include_infs))
-        if leafwise:
-            return leafwise_res
-        return max([v for k, v in leafwise_res.to_iterator()])
+        return ContainerBase.multi_map_in_static_method(
+            "has_nans",
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
 
     def has_nans(
-        self: ivy.Container, /, *, include_infs=True, leafwise=False
+        self: ivy.Container,
+        /,
+        *,
+        include_infs=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         Determine whether arrays in the container contain any nans, as well as infs
@@ -1576,17 +1591,19 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         include_infs
             Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
 
         Returns
         -------
-            Whether the container has any nans, applied either leafwise or across the
-            entire container.
+            Whether the container has any nans, applied across the entire container.
         """
-        return self.static_has_nans(self, include_infs=include_infs, leafwise=leafwise)
+        return self.static_has_nans(
+            self,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
 
     @staticmethod
     def static_scatter_nd(
@@ -2493,6 +2510,7 @@ class ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2507,6 +2525,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         x
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2527,15 +2547,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :class:`ivy.Container` inputs:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),
         ...                   b=ivy.array([1, -1, 0, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: array([1, 0, 1, 1]),
-            b: array([1, -1, 0, 0])
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),
@@ -2544,26 +2564,14 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0])
-        }
-
-        Examples
-        --------
-        With one :class:`ivy.Container` static method:
-
-        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
-        ...                   b=ivy.array([-1, 0, 1, 1, 1, 0]))
-        >>> y = ivy.Container.static_has_nans(x)
-        >>> print(y)
-        {
-            a: false,
-            b: false
+            b: array([1, 1, -1, 0], dtype=int32)
         }
 
         """
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
             x,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2574,6 +2582,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2588,6 +2597,8 @@ class ContainerWithGeneral(ContainerBase):
         ----------
         self
             input container.
+        copy
+            Whether to copy the input. Default is ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2610,48 +2621,31 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :class:`ivy.Container` instances:
 
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1, 0, 1, 1]))
+        >>> y = x.to_numpy()
+        >>> print(y)
+        {
+            a: array([-1, 0, 1], dtype=int32),
+            b: array([1, 0, 1, 1], dtype=int32)
+        }
+
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
         ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
         >>> y = x.to_numpy()
         >>> print(y)
         {
             a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]],dtype=int32),
+                    [-1, 0, 1],
+                    [1, 0, -1]], dtype=int32),
             b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]]), dtype=int32
-        }
-
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
-        ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]],dtype=int32),
-            b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]]),dtype=int32
-        }
-
-        Examples
-        --------
-        With :class:`ivy.Container` instance method:
-
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),
-        ...                   b=ivy.array([-1, 0, 1, 1]))
-        >>> y = x.has_nans()
-        >>> print(y)
-        {
-            a: false,
-            b: false
+                    [1, 0, 1],
+                    [1, 1, 1]], dtype=int32)
         }
 
         """
         return self.static_to_numpy(
             self,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

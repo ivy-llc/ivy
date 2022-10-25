@@ -12,7 +12,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _parse_ellipsis
-from . import version
+from . import backend_version
 
 torch_scatter = None
 
@@ -48,7 +48,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -110,7 +110,15 @@ def to_list(x: torch.Tensor, /) -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
-        return x.detach().cpu().tolist()
+        if x.dtype is torch.bfloat16:
+            default_dtype = ivy.default_float_dtype(as_native=True)
+            if default_dtype is torch.bfloat16:
+                x = x.to(torch.float32)
+            else:
+                x = x.to(default_dtype)
+            return x.detach().cpu().numpy().astype("bfloat16").tolist()
+        else:
+            return x.detach().cpu().numpy().tolist()
     raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
@@ -251,6 +259,7 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    ivy.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -280,9 +289,9 @@ def multiprocessing(context=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": "bfloat16",
+        "1.11.0 and below": ("bfloat16",),
     },
-    version,
+    backend_version,
 )
 def scatter_flat(
     indices: torch.Tensor,
@@ -346,7 +355,7 @@ def scatter_flat(
             "bfloat16",
         )
     },
-    version,
+    backend_version,
 )
 def scatter_nd(
     indices: torch.Tensor,
