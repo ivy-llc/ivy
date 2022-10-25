@@ -476,8 +476,8 @@ class ContainerWithManipulationExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """ivy.Container static method variant of ivy.top_k. This method simply wraps the
-        function, and so the docstring for ivy.top_k also applies to this method
+        """ivy.Container static method variant of ivy.top_k. This method simply wraps
+        the function, and so the docstring for ivy.top_k also applies to this method
         with minimal changes.
 
         Parameters
