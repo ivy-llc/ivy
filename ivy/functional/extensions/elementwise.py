@@ -229,10 +229,10 @@ def trapz(
     y
         The array that should be integrated.
     x
-        The sample points corresponding to the input array values. 
+        The sample points corresponding to the input array values.
         If x is None, the sample points are assumed to be evenly spaced
-        dx apart. The default is None.            
-    dx 
+        dx apart. The default is None.
+    dx
         The spacing between sample points when x is None. The default is 1.
     axis
         The axis along which to integrate.
@@ -249,13 +249,13 @@ def trapz(
 
     Examples
     --------
-    >>> y = ivy.array([1, 2, 3]) 
+    >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3])
     4.0
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], x=[4, 6, 8])
     8.0
-    >>> y = ivy.array([1, 2, 3]) 
+    >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], dx=2)
     8.0
     """

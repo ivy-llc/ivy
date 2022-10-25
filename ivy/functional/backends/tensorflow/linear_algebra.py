@@ -597,27 +597,10 @@ def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    if num_rows is None:
-        num_rows = -1
-    if num_cols is None:
-        num_cols = -1
-
-    return tf.linalg.diag(
-        x,
-        name="diag",
-        k=offset,
-        num_rows=num_rows,
-        num_cols=num_rows,
-        padding_value=padding_value,
-        align=align,
-    )
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diag(x, k=k)
 
 
 def vander(

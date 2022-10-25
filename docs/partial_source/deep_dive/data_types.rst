@@ -134,7 +134,7 @@ return new type promoted values, respectively.
 For an example of how some of these functions are used,
 the implementations for :func:`ivy.add` in each backend framework are as follows:
 
-# JAX
+JAX:
 
 .. code-block:: python
 
@@ -148,7 +148,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return jnp.add(x1, x2)
 
-# NumPy
+NumPy:
 
 .. code-block:: python
 
@@ -163,7 +163,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return np.add(x1, x2, out=out)
 
-# TensorFlow
+TensorFlow:
 
 .. code-block:: python
 
@@ -177,7 +177,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return tf.experimental.numpy.add(x1, x2)
 
-# PyTorch
+PyTorch:
 
 .. code-block:: python
 
@@ -203,6 +203,31 @@ data types should be promoted, and their own type promoting functions
 in :mod:`ivy/functional/frontends/frontend_name/__init__.py`.
 We should always use these functions in any frontend implementation,
 to ensure we follow exactly the same promotion rules as the frontend framework uses.
+
+It should be noted that data type promotion is only used for unifying data types of inputs
+to a common one for performing various mathematical operations.
+Examples shown above demonstrate the usage of the ``add`` operation.
+As different data types cannot be simply summed, they are promoted to the least common type,
+according to the presented promotion table.
+This ensures that functions always return specific and expected values,
+independently of the specified backend.
+
+However, data promotion is never used for increasing the accuracy or precision of computations.
+This is a required condition for all operations, even if the upcasting can help to avoid numerical instabilities caused by
+underflow or overflow.
+
+Assume that an algorithm is required to compute an inverse of a nearly singular matrix, that is defined in
+``float32`` data type. 
+It is likely that this operation can produce numerical instabilities and generate ``inf`` or ``nan`` values.
+Temporary upcasting the input matrix to ``float64`` for computing an inverse and then downcasting the matrix
+back to ``float32`` may help to produce a stable result.
+However, temporary upcasting and subsequent downcasting can not be performed as this is not expected by the user.
+Whenever the user defines data with a specific data type, they expect a certain memory footprint.
+
+The user expects specific behaviour and memory constraints whenever they specify and use concrete data types,
+and those decisions should be respected.
+Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
+
 
 Arguments in other Functions
 ----------------------------
