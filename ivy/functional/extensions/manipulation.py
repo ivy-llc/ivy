@@ -438,8 +438,8 @@ def rot90(
     k
         Number of times the array is rotated by 90 degrees.
     axes
-        The array is rotated in the plane defined by the axes. 
-        Axes must be different.
+        The array is rotated in the plane defined by the axes. Axes must be
+        different.
     out
         optional output container, for writing the result to. It must have a shape
         that the inputs broadcast to.

@@ -292,7 +292,6 @@ def _get_dtype_values_k_axes_for_rot90(
     min_dim_size=1,
     max_dim_size=10,
 ):
-
     shape = draw(
         helpers.get_shape(
             allow_none=False,
@@ -312,7 +311,6 @@ def _get_dtype_values_k_axes_for_rot90(
         ).filter(lambda axes: abs(axes[0] - axes[1]) != len(shape))
     )
     dtype = draw(st.sampled_from(draw(available_dtypes)))
-
     values = draw(
         helpers.array_values(
             dtype=dtype,
@@ -327,7 +325,6 @@ def _get_dtype_values_k_axes_for_rot90(
             safety_factor_scale="log",
         )
     )
-
     return [dtype], values, k, axes
 
 

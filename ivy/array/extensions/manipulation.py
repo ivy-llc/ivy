@@ -189,8 +189,8 @@ class ArrayWithManipulationExtensions(abc.ABC):
         k
             Number of times the array is rotated by 90 degrees.
         axes
-            The array is rotated in the plane defined by the axes.
-            Axes must be different.
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
         out
             Optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
