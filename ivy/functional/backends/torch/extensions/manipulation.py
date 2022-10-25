@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 import torch
 
 
@@ -61,3 +61,16 @@ def hstack(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.hstack(arrays, out=None)
+
+
+def top_k(
+    x: torch.Tensor,
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    largest: Optional[bool] = True,
+    out: Optional[tuple] = None,
+) -> Tuple[torch.tensor, torch.tensor]:
+    indices, vals = torch.topk(x, k, dim=axis, largest=largest)
+    return indices, vals

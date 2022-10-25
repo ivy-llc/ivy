@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
@@ -414,3 +415,19 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
 
     """
     return ivy.current_backend(arrays[0]).hstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def top_k(
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = None,
+    largest: Optional[bool] = True,
+    out: Optional[tuple] = None,
+) -> Tuple[ivy.Array, ivy.NativeArray]:
+    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)

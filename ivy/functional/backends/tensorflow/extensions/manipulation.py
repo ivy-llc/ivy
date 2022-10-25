@@ -1,4 +1,4 @@
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence, Tuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
@@ -51,3 +51,16 @@ def hstack(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hstack(arrays)
+
+
+def top_k(
+    x: tf.Tensor,
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    largest: Optional[bool] = True,
+    out: Optional[tuple] = None,
+) -> Tuple[tf.tensor, tf.tensor]:
+    indices, vals = tf.math.top_k(x, k=k, sorted=sorted, name=None)
+    return indices, vals

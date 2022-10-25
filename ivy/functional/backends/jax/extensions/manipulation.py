@@ -1,6 +1,10 @@
+# local
 from typing import Optional, Union, Sequence
-from ivy.functional.backends.jax import JaxArray
+import jax
 import jax.numpy as jnp
+
+# local
+from ivy.functional.backends.jax import JaxArray
 
 
 def moveaxis(
@@ -49,3 +53,16 @@ def hstack(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.hstack(arrays)
+
+
+def top_k(
+    x,
+    k,
+    /,
+    *,
+    axis=-1,
+    largest=True,
+    out=None,
+):
+    indices, vals = jax.lax.top_k(x, k)
+    return indices, vals

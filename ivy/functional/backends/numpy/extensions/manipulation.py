@@ -1,5 +1,9 @@
-from typing import Optional, Union, Sequence
+# global
+from typing import Optional, Union, Sequence, Tuple
 import numpy as np
+
+# local
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def moveaxis(
@@ -61,3 +65,26 @@ def hstack(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.hstack(arrays)
+
+
+@_handle_0_dim_output
+def top_k(
+    x: np.ndarray,
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    largest: Optional[bool] = True,
+    out: Optional[tuple] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
+    if not largest:
+        indices = np.argsort(x, axis=axis)
+        indices = np.take(indices, np.arange(k), axis=axis)
+    else:
+        x *= -1
+        indices = np.argsort(x, axis=axis)
+        indices = np.take(indices, np.arange(k), axis=axis)
+        x *= -1
+    val = np.take_along_axis(x, indices, axis=axis)
+    ret = val, indices
+    return ret

@@ -461,3 +461,41 @@ class ContainerWithManipulationExtensions(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_top_k(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = None,
+        largest: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[tuple] = None,
+    ):
+        return ContainerBase.multi_map_in_static_method(
+            "top_k",
+            x,
+            k,
+            axis=axis,
+            largest=largest,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def top_k(
+        self,
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = None,
+        largest: Optional[bool] = True,
+        out: Optional[ivy.Container] = None,
+    ):
+        return self.static_top_k(k, axis=axis, largest=largest, out=out)
