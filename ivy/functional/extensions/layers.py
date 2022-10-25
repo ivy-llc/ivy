@@ -13,7 +13,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    outputs_to_ivy_arrays
+    outputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
 from math import sqrt
@@ -660,6 +660,7 @@ def kaiser_bessel_derived_window(
         data type of the returned array
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
