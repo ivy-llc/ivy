@@ -357,12 +357,7 @@ def test_function(
         raise e
     ivy.unset_backend()
     # gradient test
-    if (
-        test_gradients
-        and not fw == "numpy"
-        and all(as_variable_flags)
-        and not instance_method
-    ):
+    if test_gradients and not fw == "numpy" and not instance_method:
         gradient_test(
             fn_name=fn_name,
             all_as_kwargs_np=all_as_kwargs_np,
@@ -850,9 +845,6 @@ def gradient_test(
         grads_np_from_gt_flat,
         len(grads_np_from_gt_flat),
     )
-
-    if len(grads_np_flat) < 2:
-        return
 
     for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
