@@ -75,7 +75,7 @@ def trapz(
     *,
     x: Optional[np.ndarray] = None,
     dx: Optional[float] = 1.0,
-    axis: Optional[int] = - 1,
+    axis: Optional[int] = -1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.trapz(y, x=x, dx=dx, axis=axis)

@@ -593,7 +593,7 @@ def test_torch_instance_amax(
         class_name="tensor",
         method_name="amax",
     )
-    
+
 
 # abs
 @handle_cmd_line_args
