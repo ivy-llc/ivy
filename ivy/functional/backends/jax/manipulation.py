@@ -195,7 +195,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float32)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         elif (
             jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
             or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
@@ -208,12 +208,13 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float64)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         else:
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
-    return jnp.clip(x, x_min, x_max)
+            x.astype(promoted_type)
+    x = jnp.where(x - x_max > 0, x_max, x)
+    return jnp.where(x - x_min < 0, x_min, x)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)

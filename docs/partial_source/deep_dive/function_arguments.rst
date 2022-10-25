@@ -134,7 +134,7 @@ passed as a keyword for improved understandability of the code. Therefore, given
 general rule for the :code:`shape` and :code:`num` arguments in these functions.
 
 
-Arrays
+Input Arrays
 ------
 
 In each example, we can see that the input arrays have type :code:`Union[ivy.Array, ivy.NativeArray]`

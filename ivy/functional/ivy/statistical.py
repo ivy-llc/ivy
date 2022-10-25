@@ -13,6 +13,21 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+# Helpers #
+# --------#
+
+
+def _get_promoted_type_of_operands(operands):
+    dtype = None
+    for operand in operands:
+        operand_dtype = ivy.as_ivy_dtype(operand.dtype)
+        if dtype is None:
+            dtype = operand_dtype
+        else:
+            dtype = ivy.promote_types(dtype, operand_dtype)
+    return ivy.as_native_dtype(dtype)
+
+
 # Array API Standard #
 # -------------------#
 
