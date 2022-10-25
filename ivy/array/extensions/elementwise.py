@@ -250,9 +250,11 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         keepdims: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nansum. This method simply
+        """
+        ivy.Array instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to
         this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -269,11 +271,13 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
+        
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
+        
         Examples
         --------
         >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
