@@ -468,14 +468,18 @@ class ContainerWithManipulationExtensions(ContainerBase):
         k: int,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: Optional[int] = -1,
         largest: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[tuple] = None,
-    ):
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.top_k. This method simply wraps the
+        function, and so the docstring for ivy.top_k also applies to this method
+        with minimal changes.
+        """
         return ContainerBase.multi_map_in_static_method(
             "top_k",
             x,
@@ -490,12 +494,16 @@ class ContainerWithManipulationExtensions(ContainerBase):
         )
 
     def top_k(
-        self,
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         k: int,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: Optional[int] = -1,
         largest: Optional[bool] = True,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.top_k. This method
+        simply wraps the function, and so the docstring for ivy.top_k
+        also applies to this method with minimal changes.
+        """
         return self.static_top_k(k, axis=axis, largest=largest, out=out)
