@@ -13,5 +13,4 @@ Random
    :maxdepth: -1
    :caption: Random
 
-   random/dirichlet.rst
 
