@@ -260,3 +260,49 @@ def trapz(
     8.0
     """
     return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def float_power(
+    x1: Union[ivy.Array, float, list, tuple],
+    x2: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Raise each base in x1 to the positionally-corresponding power in x2.
+    x1 and x2 must be broadcastable to the same shape.
+    This differs from the power function in that integers, float16, and float32
+    are promoted to floats with a minimum precision of float64 so that the result
+    is always inexact.
+
+    Parameters
+    ----------
+    x1
+        Array-like with elements to raise in power.
+    x2
+        Array-like of exponents. If x1.shape != x2.shape,
+        they must be broadcastable to a common shape
+        (which becomes the shape of the output).            
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The bases in x1 raised to the exponents in x2.
+        This is a scalar if both x1 and x2 are scalars
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> ivy.float_power(x1, 3)
+    ivy.array([1.,    8.,   27.,   64.,  125.])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> x2 = ivy.array([2, 3, 3, 2, 1])
+    >>> ivy.float_power(x1, x2)
+    ivy.array([1.,   8.,  27.,  16.,   5.])
+    """
+    return ivy.current_backend().float_power(x1, x2, out=out)
