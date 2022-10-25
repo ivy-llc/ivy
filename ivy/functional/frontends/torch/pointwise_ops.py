@@ -275,3 +275,8 @@ def div(input, other, *, rounding_mode=None, out=None):
 @to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
+
+@to_ivy_arrays_and_back
+def deg2rad(input, *, out=None,dtype='float32'):
+    input=input.astype(dtype)
+    return input*3.1416/180
