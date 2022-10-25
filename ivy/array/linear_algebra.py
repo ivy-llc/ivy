@@ -153,6 +153,29 @@ class ArrayWithLinearAlgebra(abc.ABC):
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
 
+    def diag(
+        self: ivy.Array,
+        /,
+        *,
+        k: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([[0, 1, 2],
+        >>>                [3, 4, 5],
+        >>>                [6, 7, 8]])
+        >>> x.diag(k=1)
+        ivy.array([1, 5])
+        """
+        return ivy.diag(self._data, k=k, out=out)
+
     def eigh(
         self: ivy.Array,
     ) -> Tuple[ivy.Array]:

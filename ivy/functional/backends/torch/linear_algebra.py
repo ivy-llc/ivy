@@ -423,24 +423,10 @@ def diag(
     x: torch.Tensor,
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[torch.Tensor] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = torch.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += torch.diag(x - padding_value, diagonal=offset)
-
-    return ret
+) -> torch.tensor:
+    return torch.diag(x, diagonal=k)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
