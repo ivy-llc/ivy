@@ -574,7 +574,6 @@ def test_frontend_function(
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
         ret = frontend_fn.__wrapped__(*args, **kwargs)
-        # converting to ivy.array if FrontendArray was returned
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
