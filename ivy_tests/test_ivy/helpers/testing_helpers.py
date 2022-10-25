@@ -137,22 +137,26 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _generate_shared_test_flags(_given_kwargs: dict, fn_tree: str, fn: callable):
+def _generate_shared_test_flags(param_names: list, _given_kwargs: dict, fn_tree: str):
     """
     Generates flags that all tests use.
     Returns
     -------
 
     """
-    _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
+    if "num_positional_args" in param_names:
+        _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
     for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
-        _given_kwargs[flag_key] = st.just(flag_value)
+        if flag_key in param_names:
+            _given_kwargs[flag_key] = st.just(flag_value)
     for flag in cfg.UNSET_TEST_CONFIG["list"]:
-        _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
+        if flag in param_names:
+            _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
     for flag in cfg.UNSET_TEST_CONFIG["flag"]:
-        _given_kwargs[flag] = st.booleans()
+        if flag in param_names:
+            _given_kwargs[flag] = st.booleans()
         # Override with_out to be compatible
-    for k in inspect.signature(fn).parameters.keys():
+    for k in param_names:
         if k.endswith("out"):
             break
     else:
@@ -177,24 +181,31 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 def handle_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy." + fn_tree
-    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
     is_hypothesis_test = len(_given_kwargs) != 0
-    # TODO add support for flexible kwargs based on the function itself.
-    if is_hypothesis_test:
-        _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
-        for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
-            _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
-        for flag in cfg.UNSET_TEST_API_CONFIG["flag"]:
-            _given_kwargs[flag] = st.booleans()
-    supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+    given_kwargs = _given_kwargs
 
     def test_wrapper(test_fn):
+        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+        param_names = inspect.signature(test_fn).parameters.keys()
+        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+
         # No Hypothesis @given is used
         if is_hypothesis_test:
+            __given_kwargs = _generate_shared_test_flags(
+                param_names, given_kwargs, fn_tree
+            )
+            for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
+                if flag in param_names:
+                    __given_kwargs[flag] = st.lists(
+                        st.booleans(), min_size=1, max_size=1
+                    )
+            for flag in cfg.UNSET_TEST_API_CONFIG["flag"]:
+                if flag in param_names:
+                    __given_kwargs[flag] = st.booleans()
 
             def wrapped_test(device, backend_fw, *args, **kwargs):
                 __tracebackhide__ = True
-                wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+                wrapped_hypothesis_test = given(**__given_kwargs)(test_fn)
                 return wrapped_hypothesis_test(
                     fn_name=fn_name,
                     device=device,
@@ -220,14 +231,18 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.frontends." + fn_tree
-    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
     is_hypothesis_test = len(_given_kwargs) != 0
-    if is_hypothesis_test:
-        _given_kwargs = _generate_shared_test_flags(_given_kwargs, fn_tree, callable_fn)
-    supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+    given_kwargs = _given_kwargs
 
     def test_wrapper(test_fn):
+        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+
         if is_hypothesis_test:
+            param_names = inspect.signature(test_fn).parameters.keys()
+            _given_kwargs = _generate_shared_test_flags(
+                param_names, given_kwargs, fn_tree
+            )
 
             def wrapped_test(fixt_frontend_str, *args, **kwargs):
                 __tracebackhide__ = True
