@@ -37,7 +37,7 @@ def trapz(
     *,
     x: Optional[JaxArray] = None,
     dx: Optional[float] = 1.0,
-    axis: Optional[int] = - 1,
+    axis: Optional[int] = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
