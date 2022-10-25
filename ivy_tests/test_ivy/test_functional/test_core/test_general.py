@@ -1317,10 +1317,6 @@ def test_inplace_variables_supported(device):
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
     ),
