@@ -1,4 +1,4 @@
-from typing import Union, Optional, Sequence, Tuple
+from typing import Union, Optional, Sequence, Tuple, NamedTuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
@@ -61,9 +61,7 @@ def top_k(
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
     out: Optional[Tuple[tf.Tensor]] = None,
-) -> Tuple[tf.Tensor]:
-    if axis == -1:
-        indices, vals = tf.math.top_k(x, k=k, sorted=largest)
-    else:
-        pass
-    return indices, vals
+) -> Tuple[tf.Tensor, tf.Tensor]:
+    topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
+    indices, vals = tf.math.top_k(x, k=k, sorted=largest)
+    return topk_res(vals, indices)

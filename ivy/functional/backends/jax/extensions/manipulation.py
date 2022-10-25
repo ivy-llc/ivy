@@ -1,6 +1,5 @@
 # local
-from typing import Optional, Union, Sequence, Tuple
-import jax
+from typing import Optional, Union, Sequence, Tuple, NamedTuple
 import jax.numpy as jnp
 
 # local
@@ -63,6 +62,15 @@ def top_k(
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
     out: Optional[Tuple[JaxArray]] = None,
-) -> Tuple[JaxArray]:
-    indices, vals = jax.lax.top_k(x, k)
-    return indices, vals
+) -> Tuple[JaxArray, JaxArray]:
+    if not largest:
+        indices = jnp.argsort(x, axis=axis)
+        indices = jnp.take(indices, jnp.arange(k), axis=axis)
+    else:
+        x *= -1
+        indices = jnp.argsort(x, axis=axis)
+        indices = jnp.take(indices, jnp.arange(k), axis=axis)
+        x *= -1
+    topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
+    val = jnp.take_along_axis(x, indices, axis=axis)
+    return topk_res(val, indices)
