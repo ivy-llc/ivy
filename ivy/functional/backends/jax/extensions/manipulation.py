@@ -61,7 +61,7 @@ def top_k(
     *,
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
-    out: Optional[Tuple[JaxArray]] = None,
+    out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     if not largest:
         indices = jnp.argsort(x, axis=axis)

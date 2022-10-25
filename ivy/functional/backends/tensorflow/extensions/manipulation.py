@@ -60,7 +60,7 @@ def top_k(
     *,
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
-    out: Optional[Tuple[tf.Tensor]] = None,
+    out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
     if not largest:
         indices = tf.experimental.numpy.argsort(x, axis=axis)

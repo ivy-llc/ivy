@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence, Tuple
+from typing import Optional, Union, Sequence, Tuple, NamedTuple
 import torch
 
 
@@ -70,7 +70,10 @@ def top_k(
     *,
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
-    out: Optional[Tuple[torch.Tensor]] = None,
-) -> Tuple[torch.Tensor]:
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    topk_res = NamedTuple(
+        "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
+    )
     indices, vals = torch.topk(x, k, dim=axis, largest=largest)
-    return indices, vals
+    return topk_res(indices, vals)
