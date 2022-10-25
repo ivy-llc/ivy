@@ -41,6 +41,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
@@ -127,11 +128,147 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.container.extensions.random</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+<span></span><span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
 <div class="viewcode-block" id="ContainerWithRandomExtensions"><a class="viewcode-back" href="../../../../data_classes/container/extensions/random/ContainerWithRandomExtensions.html#ivy.container.extensions.random.ContainerWithRandomExtensions">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithRandomExtensions</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="c1"># dirichlet</span>
+<div class="viewcode-block" id="ContainerWithRandomExtensions.static_dirichlet"><a class="viewcode-back" href="../../../../data_classes/container/extensions/random/ContainerWithRandomExtensions.html#ivy.container.extensions.random.ContainerWithRandomExtensions.static_dirichlet">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_dirichlet</span><span class="p">(</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Container static method variant of ivy.dirichlet. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.dirichlet also</span>
+<span class="sd">        applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alpha</span>
+<span class="sd">            Sequence of floats of length k </span>
+<span class="sd">        size</span>
+<span class="sd">            optional container including ints or tuple of ints, </span>
+<span class="sd">            Output shape for the arrays in the input container. </span>
+<span class="sd">        dtype</span>
+<span class="sd">            output container array data type. If ``dtype`` is ``None``, the output data</span>
+<span class="sd">            type will be the default floating-point data type. Default ``None``</span>
+<span class="sd">        seed</span>
+<span class="sd">            A python integer. Used to create a random seed distribution</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            container including the drawn samples.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; alpha = ivy.Container(a=ivy.array([7,6,5]), \</span>
+<span class="sd">                                  b=ivy.array([8,9,4]))</span>
+<span class="sd">        &gt;&gt;&gt; size = ivy.Container(a=3, b=5)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_dirichlet(alpha, size)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(</span>
+<span class="sd">                [[0.43643127, 0.32325703, 0.24031169],</span>
+<span class="sd">                 [0.34251311, 0.31692529, 0.3405616 ],</span>
+<span class="sd">                 [0.5319725 , 0.22458365, 0.24344385]]</span>
+<span class="sd">                ),</span>
+<span class="sd">            b: ivy.array(</span>
+<span class="sd">                [[0.26588406, 0.61075421, 0.12336174],</span>
+<span class="sd">                 [0.51142915, 0.25041268, 0.23815817],</span>
+<span class="sd">                 [0.64042903, 0.25763214, 0.10193883],</span>
+<span class="sd">                 [0.31624692, 0.46567987, 0.21807321],</span>
+<span class="sd">                 [0.37677699, 0.39914594, 0.22407707]]</span>
+<span class="sd">                )</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;dirichlet&quot;</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithRandomExtensions.dirichlet"><a class="viewcode-back" href="../../../../data_classes/container/extensions/random/ContainerWithRandomExtensions.html#ivy.container.extensions.random.ContainerWithRandomExtensions.dirichlet">[docs]</a>    <span class="k">def</span> <span class="nf">dirichlet</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.dirichlet. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.shuffle also</span>
+<span class="sd">        applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Sequence of floats of length k </span>
+<span class="sd">        size</span>
+<span class="sd">            optional container including ints or tuple of ints, </span>
+<span class="sd">            Output shape for the arrays in the input container. </span>
+<span class="sd">        dtype</span>
+<span class="sd">            output container array data type. If ``dtype`` is ``None``, the output data</span>
+<span class="sd">            type will be the default floating-point data type. Default ``None``</span>
+<span class="sd">        seed</span>
+<span class="sd">            A python integer. Used to create a random seed distribution</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            container including the drawn samples.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; alpha = ivy.Container(a=ivy.array([7,6,5]), \</span>
+<span class="sd">                                  b=ivy.array([8,9,4]))</span>
+<span class="sd">        &gt;&gt;&gt; size = ivy.Container(a=3, b=5)</span>
+<span class="sd">        &gt;&gt;&gt; alpha.dirichlet(size)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(</span>
+<span class="sd">                [[0.43643127, 0.32325703, 0.24031169],</span>
+<span class="sd">                 [0.34251311, 0.31692529, 0.3405616 ],</span>
+<span class="sd">                 [0.5319725 , 0.22458365, 0.24344385]]</span>
+<span class="sd">                ),</span>
+<span class="sd">            b: ivy.array(</span>
+<span class="sd">                [[0.26588406, 0.61075421, 0.12336174],</span>
+<span class="sd">                 [0.51142915, 0.25041268, 0.23815817],</span>
+<span class="sd">                 [0.64042903, 0.25763214, 0.10193883],</span>
+<span class="sd">                 [0.31624692, 0.46567987, 0.21807321],</span>
+<span class="sd">                 [0.37677699, 0.39914594, 0.22407707]]</span>
+<span class="sd">                )</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_dirichlet</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

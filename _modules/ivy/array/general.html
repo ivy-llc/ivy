@@ -41,6 +41,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../related_work.html">Related Work</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../deep_dive.html">Deep Dive</a></li>
@@ -577,6 +578,22 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a numpy array copying all the element of the array ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.to_numpy()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        [-1  0  1]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.to_numpy()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        [[-1  0  1]</span>
+<span class="sd">        [-1  0  1]</span>
+<span class="sd">        [ 1  0 -1]]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>

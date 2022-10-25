@@ -80,7 +80,6 @@ Contents
 * `Background`_
 * `Design`_
 * `Extensions`_
-* `Roadmap`_
 * `Contributing`_
 
 Overview
@@ -287,6 +286,7 @@ Citation
 
    background.rst
    design.rst
+   related_work.rst
    extensions.rst
    contributing.rst
    deep_dive.rst

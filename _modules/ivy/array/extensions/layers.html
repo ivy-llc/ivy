@@ -41,6 +41,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
@@ -276,6 +277,67 @@
 <span class="sd">        [[46, 47]]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">kernel</span><span class="p">,</span>
+            <span class="n">strides</span><span class="p">,</span>
+            <span class="n">padding</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithLayersExtensions.max_pool1d"><a class="viewcode-back" href="../../../../data_classes/array/extensions/layers/ArrayWithLayersExtensions.html#ivy.array.extensions.layers.ArrayWithLayersExtensions.max_pool1d">[docs]</a>    <span class="k">def</span> <span class="nf">max_pool1d</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for `ivy.max_pool1d` also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input image *[batch_size,w,d_in]*.</span>
+<span class="sd">        kernel</span>
+<span class="sd">            The size of the window for each dimension of the input tensor.</span>
+<span class="sd">        strides</span>
+<span class="sd">            The stride of the sliding window for each dimension of input.</span>
+<span class="sd">        padding</span>
+<span class="sd">            &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">            the per-dimension paddings.</span>
+<span class="sd">        data_format</span>
+<span class="sd">            &quot;NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The result of the max pooling operation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.max_pool1d(2, 2, &#39;SAME&#39;))</span>
+<span class="sd">        ivy.array([[[ 4.,  5.,  6.,  7.],</span>
+<span class="sd">                [ 8.,  9., 10., 11.]],</span>
+
+<span class="sd">               [[16., 17., 18., 19.],</span>
+<span class="sd">                [20., 21., 22., 23.]]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.max_pool1d(2, 2, &#39;VALID&#39;))</span>
+<span class="sd">        ivy.array([[[ 4.,  5.,  6.,  7.]],</span>
+
+<span class="sd">           [[16., 17., 18., 19.]]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">kernel</span><span class="p">,</span>
             <span class="n">strides</span><span class="p">,</span>

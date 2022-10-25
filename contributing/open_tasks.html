@@ -44,6 +44,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="setting_up.html">Setting Up</a></li>
@@ -390,11 +391,11 @@ and <code class="code docutils literal notranslate"><span class="pre">NumPy</spa
 for this task.</p>
 <p>A general workflow for these tasks would be:</p>
 <ol class="arabic simple">
-<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extension.py</span></code>,
+<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extensions/[relevant_submodule].py</span></code>,
 sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific
 helper functions to recreate the behaviour. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api">Backend API Guide</a>
 on how this can be done.</p></li>
-<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/extension.py</span></code> simply deferring to
+<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/extensions/[relevant_submodule].py</span></code> simply deferring to
 their backend-specific implementation. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api">Ivy API Guide</a>
 to get a clearer picture of how this must be done.</p></li>
 <li><p>Write tests for the function using the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html">Ivy Tests</a> guide, and make sure they are passing.</p></li>
