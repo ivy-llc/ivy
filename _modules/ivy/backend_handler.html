@@ -390,6 +390,8 @@
             <span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RNG</span><span class="p">)</span>
     <span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
     <span class="n">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -495,6 +497,8 @@
         <span class="n">backend</span> <span class="o">=</span> <span class="n">backend_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># remove last backend from the stack</span>
         <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">del_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">)</span>
         <span class="c1"># the new backend is the backend that was set before the one we just removed</span>
         <span class="c1"># from the stack, or Ivy if there was no previously set backend</span>
         <span class="n">new_backend_dict</span> <span class="o">=</span> <span class="p">(</span>

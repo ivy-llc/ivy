@@ -390,6 +390,52 @@
 <span class="sd">    8.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="float_power"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/float_power.html#ivy.functional.extensions.elementwise.float_power">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">float_power</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Raise each base in x1 to the positionally-corresponding power in x2.</span>
+<span class="sd">    x1 and x2 must be broadcastable to the same shape.</span>
+<span class="sd">    This differs from the power function in that integers, float16, and float32</span>
+<span class="sd">    are promoted to floats with a minimum precision of float64 so that the result</span>
+<span class="sd">    is always inexact.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        Array-like with elements to raise in power.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Array-like of exponents. If x1.shape != x2.shape,</span>
+<span class="sd">        they must be broadcastable to a common shape</span>
+<span class="sd">        (which becomes the shape of the output).            </span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The bases in x1 raised to the exponents in x2.</span>
+<span class="sd">        This is a scalar if both x1 and x2 are scalars</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3, 4, 5]) </span>
+<span class="sd">    &gt;&gt;&gt; ivy.float_power(x1, 3)</span>
+<span class="sd">    ivy.array([1.,    8.,   27.,   64.,  125.])</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3, 4, 5]) </span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([2, 3, 3, 2, 1])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.float_power(x1, x2)</span>
+<span class="sd">    ivy.array([1.,   8.,  27.,  16.,   5.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">float_power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
