@@ -474,8 +474,8 @@ class ContainerWithManipulationExtensions(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[tuple] = None,
-    ) -> ivy.Container:
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
         """ivy.Container static method variant of ivy.top_k. This method simply wraps the
         function, and so the docstring for ivy.top_k also applies to this method
         with minimal changes.
@@ -519,7 +519,7 @@ class ContainerWithManipulationExtensions(ContainerBase):
         )
 
     def top_k(
-        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        self: ivy.Container,
         k: int,
         /,
         *,
@@ -529,8 +529,8 @@ class ContainerWithManipulationExtensions(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[tuple] = None,
-    ) -> ivy.Container:
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
         """ivy.Container instance method variant of ivy.top_k. This method
         simply wraps the function, and so the docstring for ivy.top_k
         also applies to this method with minimal changes.
