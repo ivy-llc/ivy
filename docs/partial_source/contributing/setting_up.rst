@@ -34,6 +34,27 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone --recurse-submodules unifyai/ivy your_folder
 
+A Free Guide To Setting Up
+--------------------------
+
+The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension. You'll hopefully be done with these in no time.
+The steps to be followed are listed below:
+
+#. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
+#. Open Docker desktop, make sure it's running while following the process below. You can close the Docker desktop window afterwards, Docker will continue to run in the background.
+#. Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:
+
+   a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that. In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
+   b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
+   c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
+   d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
+   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name"
+
+**Important Note**
+
+For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
+
 PyCharm
 -------
 
@@ -44,6 +65,12 @@ you should make sure to check whether you are eligible for a
 `free student licence <https://www.jetbrains.com/community/education/#students>`_.
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
+
+**Important Points**
+
+#. Once you don't have a student account, the student license will expire and you won't be able to access PyCharm Professional.
+#. To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.
+#. After the trial expires you have to buy the paid version of PyCharm Professional.
 
 For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
@@ -180,7 +207,7 @@ Windows
 
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
-
+#Review this point only
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
@@ -394,7 +421,7 @@ GitHub Codespaces
 -----------------
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
-
+#Review the important note only
 **Important Note**
 
 There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
