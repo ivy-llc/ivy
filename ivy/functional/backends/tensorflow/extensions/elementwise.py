@@ -69,7 +69,7 @@ def trapz(
     *,
     x: Optional[Union[tf.Tensor, tf.Variable]] = None,
     dx: Optional[float] = 1.0,
-    axis: Optional[int] = - 1,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
