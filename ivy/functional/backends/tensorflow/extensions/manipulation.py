@@ -62,5 +62,8 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor]:
-    indices, vals = tf.math.top_k(x, k=k, sorted=sorted, name=None)
+    if axis == -1:
+        indices, vals = tf.math.top_k(x, k=k, sorted=largest)
+    else:
+        pass
     return indices, vals
