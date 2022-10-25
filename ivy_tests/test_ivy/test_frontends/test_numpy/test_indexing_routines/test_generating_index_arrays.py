@@ -24,11 +24,6 @@ def test_numpy_indices(
     as_variable,
     native_array,
 ):
-    def _test_true_fn(x):
-        return x + x
-
-    def _test_false_fn(x):
-        return x * x
 
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -40,7 +35,5 @@ def test_numpy_indices(
         frontend="numpy",
         fn_tree="numpy.indices",
         pred=pred_cond,
-        true_fun=_test_true_fn,
-        false_fun=_test_false_fn,
         operand=x[0],
     )
