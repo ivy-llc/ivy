@@ -38,7 +38,7 @@ Finally, we discuss how Ivy compares to each of these important works at all lev
 | (g) :ref:`Multi-Vendor Compiler Frameworks` 🖥️💻🔟
 | Executing ML code on a variety of hardware targets
 |
-| (h) :ref:`Vendor-Specific APIs`💻🔢
+| (h) :ref:`Vendor-Specific APIs` 💻🔢
 | Interfacing with specific hardware in an intuitive manner
 |
 | (i) :ref:`Vendor-Specific Compilers` 💻🔟
