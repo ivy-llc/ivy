@@ -593,7 +593,8 @@ def test_frontend_function(
             # pass return value to out argument
             # check if passed reference is correctly updated
             kwargs["out"] = out
-            ret = frontend_fn(*args, **kwargs)
+            # strip the decorator to get the result as an ivy array
+            ret = frontend_fn.__wrapped__(*args, **kwargs)
             if _is_frontend_array(ret):
                 ret = ret.data
             if is_ret_tuple:
