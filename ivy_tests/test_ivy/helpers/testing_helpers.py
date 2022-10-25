@@ -207,9 +207,9 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
                 __tracebackhide__ = True
                 wrapped_hypothesis_test = given(**__given_kwargs)(test_fn)
                 return wrapped_hypothesis_test(
-                    fn_name=fn_name,
-                    device=device,
+                    on_device=device,
                     backend_fw=backend_fw,
+                    fn_name=fn_name,
                     *args,
                     **kwargs
                 )
@@ -244,11 +244,15 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
                 param_names, given_kwargs, fn_tree
             )
 
-            def wrapped_test(fixt_frontend_str, *args, **kwargs):
+            def wrapped_test(device, fixt_frontend_str, *args, **kwargs):
                 __tracebackhide__ = True
                 wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
                 return wrapped_hypothesis_test(
-                    fn_tree=fn_tree, frontend=fixt_frontend_str, *args, **kwargs
+                    on_device=device,
+                    fn_tree=fn_tree,
+                    frontend=fixt_frontend_str,
+                    *args,
+                    **kwargs
                 )
 
         else:

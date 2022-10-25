@@ -8,7 +8,7 @@ from hypothesis import given, assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_test
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
@@ -20,12 +20,11 @@ def _not_too_close_to_zero(x):
 
 
 # abs
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="abs"),
 )
 def test_abs(
     *,
@@ -34,9 +33,11 @@ def test_abs(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -45,10 +46,11 @@ def test_abs(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="abs",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         test_gradients=True,
         x=x[0],
     )

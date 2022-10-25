@@ -70,7 +70,7 @@ def test_function(
     test_values: bool = True,
     test_gradients: bool = False,
     ground_truth_backend: str = "tensorflow",
-    device_: str = "cpu",
+    on_device: str = "cpu",
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
@@ -200,12 +200,12 @@ def test_function(
     )
     if not test_unsupported:
         test_unsupported = check_unsupported_device(
-            fn=fn, input_device=device_, all_as_kwargs_np=all_as_kwargs_np
+            fn=fn, input_device=on_device, all_as_kwargs_np=all_as_kwargs_np
         )
     if not test_unsupported:
         test_unsupported = check_unsupported_device_and_dtype(
             fn=fn,
-            device=device_,
+            device=on_device,
             input_dtypes=input_dtypes,
             all_as_kwargs_np=all_as_kwargs_np,
         )
@@ -401,7 +401,7 @@ def test_frontend_function(
     all_aliases: List[str] = None,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
-    device="cpu",
+    on_device="cpu",
     frontend: str,
     fn_tree: str,
     rtol: float = None,
@@ -518,7 +518,7 @@ def test_frontend_function(
         if not test_unsupported:
             test_unsupported = check_unsupported_device_and_dtype(
                 fn=function,
-                device=device,
+                device=on_device,
                 input_dtypes=input_dtypes,
                 all_as_kwargs_np=all_as_kwargs_np,
             )
