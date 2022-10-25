@@ -17,6 +17,7 @@ import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 # Helpers #
@@ -893,17 +894,28 @@ def test_default(x, default_val):
             with_callable = True
         else:
             x_dtype, x = x
+            x = x[0].tolist() if isinstance(x, list) else x
     else:
         if hasattr(default_val, "__call__"):
             with_callable = True
         else:
             dv_dtype, default_val = default_val
+            default_val = (
+                default_val[0].tolist()
+                if isinstance(default_val, list)
+                else default_val
+            )
 
     truth_val = ivy.to_native(x if x is not None else default_val)
     if with_callable:
         assert ivy.default(x, default_val) == truth_val
     else:
-        assert np.allclose(ivy.default(x, default_val), truth_val)
+        assert_all_close(
+            np.asarray(ivy.default(x, default_val)),
+            np.asarray(truth_val),
+            rtol=1e-3,
+            atol=1e-3,
+        )
 
 
 @handle_cmd_line_args
