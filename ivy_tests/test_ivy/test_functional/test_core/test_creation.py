@@ -25,7 +25,6 @@ def test_native_array(
     with_out,
     instance_method,
     backend_fw,
-    test_gradients,
     fn_name,
     device,
 ):
