@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 import jax
 import jax.numpy as jnp
 
@@ -56,13 +56,13 @@ def hstack(
 
 
 def top_k(
-    x,
-    k,
+    x: JaxArray,
+    k: int,
     /,
     *,
-    axis=-1,
-    largest=True,
-    out=None,
-):
+    axis: Optional[int] = -1,
+    largest: Optional[bool] = True,
+    out: Optional[Tuple[JaxArray]] = None,
+) -> Tuple[JaxArray]:
     indices, vals = jax.lax.top_k(x, k)
     return indices, vals

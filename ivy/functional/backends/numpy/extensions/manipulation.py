@@ -75,8 +75,8 @@ def top_k(
     *,
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
-    out: Optional[tuple] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
+    out: Optional[Tuple[np.ndarray]] = None,
+) -> Tuple[np.ndarray]:
     if not largest:
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)

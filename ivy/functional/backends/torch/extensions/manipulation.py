@@ -70,7 +70,7 @@ def top_k(
     *,
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
-    out: Optional[tuple] = None,
-) -> Tuple[torch.tensor, torch.tensor]:
+    out: Optional[Tuple[torch.Tensor]] = None,
+) -> Tuple[torch.Tensor]:
     indices, vals = torch.topk(x, k, dim=axis, largest=largest)
     return indices, vals
