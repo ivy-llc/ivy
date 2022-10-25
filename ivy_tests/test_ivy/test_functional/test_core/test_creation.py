@@ -6,15 +6,14 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_test
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
 # native_array
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.native_array",
     dtype_and_x_and_cast_dtype=astype_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
 def test_native_array(
     *,
@@ -22,21 +21,25 @@ def test_native_array(
     as_variable,
     num_positional_args,
     native_array,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    test_gradients,
+    fn_name,
     device,
 ):
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="native_array",
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
         dtype=dtype,
         device=device,
