@@ -768,3 +768,18 @@ def test_flipud(
         fn_name="flipud",
         m=np.asarray(m[0], dtype=input_dtype[0]),
     )
+
+
+@st.composite
+def valid_dct(draw):
+    n = draw(st.sampled_from([None, "int"]))
+    norm = draw(st.sampled_from([None, "ortho"]))
+    type = draw(helpers.ints(min_value=1, max_value=4))
+    if n == "int":
+        n = draw(helpers.ints(min_value=1, max_value=20))
+        if n <= 1 and type == 1:
+            n = 2
+    if norm == "ortho" and type == 1:
+        norm = None
+    
+    return type, n, norm
