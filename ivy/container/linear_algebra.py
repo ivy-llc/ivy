@@ -540,6 +540,66 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_diag(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "diag",
+            x,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diag(
+        self: ivy.Container,
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=[[0, 1, 2],
+        >>>                      [3, 4, 5],
+        >>>                      [6, 7, 8]])
+        >>> ivy.diag(x, k=1)
+        {
+            a: ivy.array([1, 5])
+        }
+        """
+        return self.static_diag(
+            self,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def eigh(
         self: ivy.Container,
         /,
