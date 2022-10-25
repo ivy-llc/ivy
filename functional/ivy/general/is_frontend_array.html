@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>inplace_variables_supported &mdash; Ivy 1.0 documentation</title>
+  <title>is_frontend_array &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="supports_inplace_updates" href="supports_inplace_updates.html" />
-    <link rel="prev" title="inplace_arrays_supported" href="inplace_arrays_supported.html" /> 
+    <link rel="next" title="is_array" href="is_array.html" />
+    <link rel="prev" title="ivy.Container.static_is_ivy_array" href="is_ivy_array/static_is_ivy_array_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,7 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_native_array.html">is_native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_array.html">is_ivy_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_frontend_array.html">is_frontend_array</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">is_frontend_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_container.html">is_ivy_container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_array_mode.html">set_array_mode</a></li>
@@ -116,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_types.html">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_arrays_supported.html">inplace_arrays_supported</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">inplace_variables_supported</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supports_inplace_updates.html">supports_inplace_updates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_item.html">get_item</a></li>
@@ -198,9 +198,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../general.html">General</a> &raquo;</li>
-      <li>inplace_variables_supported</li>
+      <li>is_frontend_array</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/general/inplace_variables_supported.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/is_frontend_array.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -208,19 +208,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="inplace-variables-supported">
-<h1>inplace_variables_supported<a class="headerlink" href="#inplace-variables-supported" title="Permalink to this heading"></a></h1>
+  <section id="is-frontend-array">
+<h1>is_frontend_array<a class="headerlink" href="#is-frontend-array" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.inplace_variables_supported">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">inplace_variables_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#inplace_variables_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_variables_supported" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether inplace variables are supported for the current backend
-framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> – (Default value = None)</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Boolean, whether or not inplace variables are supported.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.general.is_frontend_array">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_frontend_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#is_frontend_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_frontend_array" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -236,8 +231,8 @@ framework.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="inplace_arrays_supported.html" class="btn btn-neutral float-left" title="inplace_arrays_supported" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="supports_inplace_updates.html" class="btn btn-neutral float-right" title="supports_inplace_updates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="is_ivy_array/static_is_ivy_array_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_is_ivy_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="is_array.html" class="btn btn-neutral float-right" title="is_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

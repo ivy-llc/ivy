@@ -3739,10 +3739,7 @@
                 <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">local_indent_str</span> <span class="o">+</span> <span class="n">extra_indent</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span>
             <span class="p">)</span>
             <span class="n">uniform_indent_wo_overflow_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="nb">filter</span><span class="p">(</span>
-                    <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">uniform_indent_wo_overflow</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">uniform_indent_wo_overflow</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="n">uniform_indent</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>

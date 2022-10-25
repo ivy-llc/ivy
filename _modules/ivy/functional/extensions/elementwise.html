@@ -359,10 +359,10 @@
 <span class="sd">    y</span>
 <span class="sd">        The array that should be integrated.</span>
 <span class="sd">    x</span>
-<span class="sd">        The sample points corresponding to the input array values. </span>
+<span class="sd">        The sample points corresponding to the input array values.</span>
 <span class="sd">        If x is None, the sample points are assumed to be evenly spaced</span>
-<span class="sd">        dx apart. The default is None.            </span>
-<span class="sd">    dx </span>
+<span class="sd">        dx apart. The default is None.</span>
+<span class="sd">    dx</span>
 <span class="sd">        The spacing between sample points when x is None. The default is 1.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to integrate.</span>
@@ -379,13 +379,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3]) </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.trapz([1,2,3])</span>
 <span class="sd">    4.0</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.trapz([1,2,3], x=[4, 6, 8])</span>
 <span class="sd">    8.0</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3]) </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.trapz([1,2,3], dx=2)</span>
 <span class="sd">    8.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
