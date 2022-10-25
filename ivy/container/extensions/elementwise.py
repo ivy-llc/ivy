@@ -520,7 +520,6 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         """
         return self.static_float_power(self, x2, out=out)
 
-
     @staticmethod
     def static_nansum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],

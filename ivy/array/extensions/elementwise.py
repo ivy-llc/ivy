@@ -241,7 +241,6 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         """
         return ivy.float_power(self._data, x2, out=out)
 
-
     def nansum(
         self: ivy.Array,
         /,
