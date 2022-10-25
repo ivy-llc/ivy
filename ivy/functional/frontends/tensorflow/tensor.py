@@ -15,9 +15,9 @@ class Tensor:
 
     def __repr__(self):
         return (
-                "ivy.functional.frontends.tensorflow.tensor("
-                + str(ivy.to_list(self.data))
-                + ")"
+            "ivy.functional.frontends.tensorflow.tensor("
+            + str(ivy.to_list(self.data))
+            + ")"
         )
 
     # Instance Methods #
