@@ -375,12 +375,8 @@ def test_kaiser_bessel_derived_window(
 # hamming_window
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=(1, 1),
-        min_value=1,
-        max_value=10,
-    ),
+    window_length=helpers.ints(min_value=1, max_value=10),
+    input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
     alpha=st.floats(min_value=1, max_value=5),
     beta=st.floats(min_value=1, max_value=5),
@@ -390,7 +386,8 @@ def test_kaiser_bessel_derived_window(
     ),
 )
 def test_hamming_window(
-    dtype_and_x,
+    window_length,
+    input_dtype,
     periodic,
     alpha,
     beta,
@@ -403,7 +400,6 @@ def test_hamming_window(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -414,7 +410,7 @@ def test_hamming_window(
         instance_method=instance_method,
         fw=fw,
         fn_name="hamming_window",
-        window_length=x[0],
+        window_length=window_length,
         periodic=periodic,
         alpha=alpha,
         beta=beta,
