@@ -216,9 +216,9 @@
 <p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘torch’)</span></code> for example.</p>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function <code class="xref py py-func docutils literal notranslate"><span class="pre">prod()</span></code>  is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
- <span class="nd">to_native_arrays_and_back</span>
- <span class="nd">handle_out_argument</span>
- <span class="nd">handle_nestable</span>
+ <span class="nd">@to_native_arrays_and_back</span>
+ <span class="nd">@handle_out_argument</span>
+ <span class="nd">@handle_nestable</span>
  <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
      <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
      <span class="o">*</span><span class="p">,</span>
@@ -372,8 +372,8 @@ until the user explicitly sets a different backend. The examples can be seen bel
 </div>
 <p>The functions implemented by the backend-specific backend such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.lstm_update()</span></code>, as shown:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/layers.py</span>
-<span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_nestable</span>
+<span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">init_h</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>

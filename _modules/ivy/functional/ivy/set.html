@@ -145,9 +145,9 @@
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all/unique_all_functional.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all/unique_all_functional.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
@@ -390,9 +390,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse/unique_inverse_functional.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse/unique_inverse_functional.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
@@ -493,10 +493,10 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values/unique_values_functional.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values/unique_values_functional.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_values</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -559,9 +559,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts/unique_counts_functional.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts/unique_counts_functional.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>

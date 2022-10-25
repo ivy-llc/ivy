@@ -140,11 +140,11 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="sinc"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/sinc.html#ivy.functional.extensions.elementwise.sinc">[docs]</a><span class="nd">integer_arrays_to_float</span>
-<span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="sinc"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/sinc.html#ivy.functional.extensions.elementwise.sinc">[docs]</a><span class="nd">@integer_arrays_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -216,9 +216,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sinc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="lcm"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/lcm.html#ivy.functional.extensions.elementwise.lcm">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="lcm"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/lcm.html#ivy.functional.extensions.elementwise.lcm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -254,9 +254,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">lcm</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fmod"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/fmod.html#ivy.functional.extensions.elementwise.fmod">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="fmod"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/fmod.html#ivy.functional.extensions.elementwise.fmod">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">fmod</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -295,9 +295,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fmax"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/fmax.html#ivy.functional.extensions.elementwise.fmax">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="fmax"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/fmax.html#ivy.functional.extensions.elementwise.fmax">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -338,9 +338,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="trapz"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/trapz.html#ivy.functional.extensions.elementwise.trapz">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="trapz"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/trapz.html#ivy.functional.extensions.elementwise.trapz">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">trapz</span><span class="p">(</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>

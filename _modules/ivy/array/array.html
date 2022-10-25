@@ -269,22 +269,22 @@
     <span class="c1"># Properties #</span>
     <span class="c1"># ---------- #</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The native array being wrapped in self.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Data type of the array elements&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Hardware device the array data resides on.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transpose of a matrix (or a stack of matrices).</span>
@@ -300,22 +300,22 @@
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Number of array dimensions (axes).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Array dimensions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Number of elements in the array.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transpose of the array.</span>
@@ -332,7 +332,7 @@
     <span class="c1"># Setters #</span>
     <span class="c1"># --------#</span>
 
-    <span class="nd">data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;data must be native array&quot;</span>
@@ -342,7 +342,7 @@
     <span class="c1"># Built-ins #</span>
     <span class="c1"># ----------#</span>
 
-    <span class="nd">classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">__torch_function__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

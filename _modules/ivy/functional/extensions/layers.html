@@ -149,10 +149,10 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
 
 
-<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/vorbis_window.html#ivy.functional.extensions.layers.vorbis_window">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/vorbis_window.html#ivy.functional.extensions.layers.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
     <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -187,10 +187,10 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vorbis_window</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/hann_window.html#ivy.functional.extensions.layers.hann_window">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/hann_window.html#ivy.functional.extensions.layers.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
     <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -232,9 +232,9 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="max_pool2d"><a class="viewcode-back" href="../../../../functional/extensions/layers/max_pool2d.html#ivy.functional.extensions.layers.max_pool2d">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="max_pool2d"><a class="viewcode-back" href="../../../../functional/extensions/layers/max_pool2d.html#ivy.functional.extensions.layers.max_pool2d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">max_pool2d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -295,10 +295,10 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_window.html#ivy.functional.extensions.layers.kaiser_window">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_window.html#ivy.functional.extensions.layers.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
     <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -519,10 +519,10 @@
     <span class="k">return</span> <span class="n">padded</span>
 
 
-<div class="viewcode-block" id="pad"><a class="viewcode-back" href="../../../../functional/extensions/layers/pad.html#ivy.functional.extensions.layers.pad">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="pad"><a class="viewcode-back" href="../../../../functional/extensions/layers/pad.html#ivy.functional.extensions.layers.pad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">pad</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">pad_width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">],</span>
@@ -762,10 +762,10 @@
     <span class="k">return</span> <span class="n">padded</span></div>
 
 
-<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_bessel_derived_window.html#ivy.functional.extensions.layers.kaiser_bessel_derived_window">[docs]</a><span class="nd">outputs_to_ivy_arrays</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_bessel_derived_window.html#ivy.functional.extensions.layers.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
     <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>

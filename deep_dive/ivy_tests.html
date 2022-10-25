@@ -305,7 +305,7 @@ to satisfy, will cause the Hypothesis to fail.</p>
 <p>12. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a> - The second <strong>most</strong> widely used strategy in <em>Ivy tests</em>. This provides a decorator, which permits us
 to form our own strategies for describing data by composing Hypothesis built-in strategies. suppose you need to generate
 a 1-D array or a scaler value, which also generate an index of an element if an array is generated, otherwise None.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">st</span><span class="o">.</span><span class="n">composite</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">array_or_scaler</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
     <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()</span> <span class="o">|</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()))</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
@@ -327,8 +327,8 @@ strategy across our test suite. refer to the Hypothesis docs for more info on th
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
 <p>Once a strategy is initialised the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">handle_cmd_line_args</span>
-<span class="nd">given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">)),</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;abs&quot;</span><span class="p">),</span>
 <span class="p">)</span>
@@ -613,7 +613,7 @@ helpful when we are testing a function with varied number of arguments.</p>
 <h3>Bonus: Hypothesis’ Extended Features<a class="headerlink" href="#bonus-hypothesis-extended-features" title="Permalink to this heading"></a></h3>
 <p>1. <strong>Hypothesis</strong> performs <strong>Automated Test-Case Reduction</strong>. That is, the <strong>given</strong> decorator strives to report the simplest
 set of input values that produce a given error. For the code block below-:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@given</span><span class="p">(</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span>
 <span class="n">input_dtype</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
 <span class="n">as_variable</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
@@ -759,7 +759,7 @@ For example, in the <code class="code docutils literal notranslate"><span class=
 In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
 The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
 For the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we can add the decorator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">example</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
     <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>

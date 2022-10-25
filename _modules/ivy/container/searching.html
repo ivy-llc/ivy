@@ -139,7 +139,7 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithSearching"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithSearching</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithSearching.static_argmax"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argmax">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_argmax"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argmax">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_argmax</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -229,7 +229,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">output_dtype</span><span class="o">=</span><span class="n">output_dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithSearching.static_argmin"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argmin">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_argmin"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argmin">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_argmin</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -315,7 +315,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithSearching.static_nonzero"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_nonzero">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_nonzero"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_nonzero">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_nonzero</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -398,7 +398,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">as_tuple</span><span class="o">=</span><span class="n">as_tuple</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithSearching.static_where"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_where">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_where"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_where">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_where</span><span class="p">(</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -472,7 +472,7 @@
     <span class="c1"># Extra #</span>
     <span class="c1"># ----- #</span>
 
-<div class="viewcode-block" id="ContainerWithSearching.static_argwhere"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argwhere">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_argwhere"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argwhere">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_argwhere</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>

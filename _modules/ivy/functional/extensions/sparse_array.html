@@ -356,38 +356,38 @@
     <span class="c1"># Properties #</span>
     <span class="c1"># -----------#</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">coo_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">csr_crow_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">csr_col_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dense_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span>
 
     <span class="c1"># Setters #</span>
     <span class="c1"># --------#</span>
 
-    <span class="nd">data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="nd">coo_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@coo_indices</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">coo_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
@@ -395,7 +395,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="n">indices</span>
 
-    <span class="nd">csr_crow_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@csr_crow_indices</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">csr_crow_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
         <span class="n">_verify_csr_components</span><span class="p">(</span>
@@ -406,7 +406,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="n">indices</span>
 
-    <span class="nd">csr_col_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@csr_col_indices</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">csr_col_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
         <span class="n">_verify_csr_components</span><span class="p">(</span>
@@ -417,7 +417,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="n">indices</span>
 
-    <span class="nd">values</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@values</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
@@ -425,7 +425,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
 
-    <span class="nd">dense_shape</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@dense_shape</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">dense_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">):</span>
         <span class="n">dense_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
@@ -470,14 +470,14 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">SparseArray</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_native_sparse_array"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/is_native_sparse_array.html#ivy.functional.extensions.sparse_array.is_native_sparse_array">[docs]</a><span class="nd">inputs_to_native_arrays</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="is_native_sparse_array"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/is_native_sparse_array.html#ivy.functional.extensions.sparse_array.is_native_sparse_array">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">is_native_sparse_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">is_native_sparse_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="native_sparse_array"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/native_sparse_array.html#ivy.functional.extensions.sparse_array.native_sparse_array">[docs]</a><span class="nd">inputs_to_native_arrays</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="native_sparse_array"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/native_sparse_array.html#ivy.functional.extensions.sparse_array.native_sparse_array">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">native_sparse_array</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -497,7 +497,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="native_sparse_array_to_indices_values_and_shape"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/native_sparse_array_to_indices_values_and_shape.html#ivy.functional.extensions.sparse_array.native_sparse_array_to_indices_values_and_shape">[docs]</a><span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="native_sparse_array_to_indices_values_and_shape"><a class="viewcode-back" href="../../../../functional/extensions/sparse_array/native_sparse_array_to_indices_values_and_shape.html#ivy.functional.extensions.sparse_array.native_sparse_array_to_indices_values_and_shape">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 </pre></div>

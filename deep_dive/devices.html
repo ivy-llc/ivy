@@ -225,10 +225,10 @@ the argument is listed as required in the backend-specific implementations at
 <p>This is exactly the same as with the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument, as explained in the <a class="reference internal" href="data_types.html#data-types"><span class="std std-ref">Data Types</span></a> section.</p>
 <p>Let’s take a look at the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.zeros()</span></code> as an example.</p>
 <p>The implementation in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/creation.py</span></code> has the following signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">outputs_to_ivy_arrays</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">infer_dtype</span>
-<span class="nd">infer_device</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@infer_dtype</span>
+<span class="nd">@infer_device</span>
 <span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>

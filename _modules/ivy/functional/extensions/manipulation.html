@@ -145,10 +145,10 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/flatten.html#ivy.functional.extensions.manipulation.flatten">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
-<span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/flatten.html#ivy.functional.extensions.manipulation.flatten">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -271,9 +271,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="moveaxis"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/moveaxis.html#ivy.functional.extensions.manipulation.moveaxis">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="moveaxis"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/moveaxis.html#ivy.functional.extensions.manipulation.moveaxis">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">moveaxis</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -313,7 +313,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ndenumerate"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/ndenumerate.html#ivy.functional.extensions.manipulation.ndenumerate">[docs]</a><span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="ndenumerate"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/ndenumerate.html#ivy.functional.extensions.manipulation.ndenumerate">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">ndenumerate</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
@@ -352,7 +352,7 @@
     <span class="k">return</span> <span class="n">_ndenumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ndindex"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/ndindex.html#ivy.functional.extensions.manipulation.ndindex">[docs]</a><span class="nd">handle_exceptions</span>
+<div class="viewcode-block" id="ndindex"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/ndindex.html#ivy.functional.extensions.manipulation.ndindex">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">ndindex</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
@@ -393,9 +393,9 @@
     <span class="k">return</span> <span class="n">_iter_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="heaviside"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/heaviside.html#ivy.functional.extensions.manipulation.heaviside">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="heaviside"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/heaviside.html#ivy.functional.extensions.manipulation.heaviside">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -437,9 +437,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="flipud"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/flipud.html#ivy.functional.extensions.manipulation.flipud">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="flipud"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/flipud.html#ivy.functional.extensions.manipulation.flipud">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">flipud</span><span class="p">(</span>
     <span class="n">m</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -474,9 +474,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vstack"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/vstack.html#ivy.functional.extensions.manipulation.vstack">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="vstack"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/vstack.html#ivy.functional.extensions.manipulation.vstack">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">vstack</span><span class="p">(</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stack arrays in sequence vertically (row wise).</span>
 
@@ -512,9 +512,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="hstack"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/hstack.html#ivy.functional.extensions.manipulation.hstack">[docs]</a><span class="nd">to_native_arrays_and_back</span>
-<span class="nd">handle_out_argument</span>
-<span class="nd">handle_nestable</span>
+<div class="viewcode-block" id="hstack"><a class="viewcode-back" href="../../../../functional/extensions/manipulation/hstack.html#ivy.functional.extensions.manipulation.hstack">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">hstack</span><span class="p">(</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stack arrays in sequence horizotally (column wise).</span>
 

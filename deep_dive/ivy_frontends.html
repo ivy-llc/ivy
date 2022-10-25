@@ -172,7 +172,7 @@
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>On top of the Ivy functional API and backend functional APIs, Ivy has another set of
 framework-specific frontend functional APIs, which play an important role in code
-transpilations, as explained <a href="#id6"><span class="problematic" id="id7">`here`_</span></a>.</p>
+transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
 </section>
 <section id="the-frontend-basics">
@@ -185,13 +185,13 @@ For example, to use ivy’s tensorflow frontend:</p>
 </div></blockquote>
 <hr class="docutils" />
 <p>When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call <a class="reference external" href="https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109">tensorflow.tan</a> rather than <code class="xref py py-func docutils literal notranslate"><span class="pre">tensorflow.math.tan()</span></code>. In this particular case both are fine, and in fact are <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">aliases</a>.</p>
-<p>However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> both exist, while <cite>jax.abs</cite> does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> in our frontend.</p>
+<p>However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> both exist, while <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> in our frontend.</p>
 <p>This would result in <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax</span></code> framework.</p>
 <p>If you accidentally test a function with <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;func_name&gt;&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;lax|numpy&gt;.&lt;func_name&gt;&quot;</span></code>, you will see an error since the wrong frontend function is being tested.</p>
 <p>Therefore, in order to avoid this potential conflict:</p>
 <ul class="simple">
 <li><p>All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;math.tan&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;tan&quot;</span></code> in the frontend test.</p></li>
-<li><p>The <cite>__init__.py</cite> file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> explained above.</p></li>
+<li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">__init__.py</span></code> file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> explained above.</p></li>
 <li><p>You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.</p></li>
 </ul>
 <p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
@@ -274,7 +274,7 @@ sub-category of <code class="xref py py-mod docutils literal notranslate"><span 
 <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
 <p>The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
-according to the <a href="#id8"><span class="problematic" id="id9">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
+according to the <a href="#id6"><span class="problematic" id="id7">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
 the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
 The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other
 examples.</p>
@@ -295,7 +295,7 @@ instances, and so we omit this argument. Again, it has no bearing on input-outpu
 behaviour and so this is not a problem when transpiling between frameworks.</p>
 <p>See the section “Unused Arguments” below for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py</span>
-<span class="nd">from_zero_dim_arrays_to_float</span>
+<span class="nd">@from_zero_dim_arrays_to_float</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
@@ -680,8 +680,8 @@ the handling logic and reduce code redundancy. It is located in the
 <p>This decorator is then added to the numpy frontend functions with the
 <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument. An example of the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
-<span class="nd">handle_numpy_casting</span>
-<span class="nd">to_ivy_arrays_and_back</span>
+<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@to_ivy_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">,</span>
@@ -705,7 +705,7 @@ dtype must be <code class="code docutils literal notranslate"><span class="pre">
 to handle this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/func_wrapper.py</span>
 <span class="k">def</span> <span class="nf">handle_numpy_casting_special</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="nd">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
             <span class="n">casting</span><span class="p">,</span>
@@ -725,8 +725,8 @@ to handle this.</p>
 </div>
 <p>An example function using this is the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isfinite()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/logic/array_type_testing.py</span>
-<span class="nd">handle_numpy_casting_special</span>
-<span class="nd">to_ivy_arrays_and_back</span>
+<span class="nd">@handle_numpy_casting_special</span>
+<span class="nd">@to_ivy_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>

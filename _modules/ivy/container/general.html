@@ -141,7 +141,7 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithGeneral"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithGeneral</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithGeneral.static_is_native_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_native_array">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_is_native_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_native_array">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_native_array</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -249,7 +249,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_is_ivy_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_ivy_array">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_is_ivy_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_ivy_array">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_ivy_array</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -357,7 +357,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_is_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_array">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_is_array"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_array">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_array</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -465,7 +465,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_is_ivy_container"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_ivy_container">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_is_ivy_container"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_is_ivy_container">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_ivy_container</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -563,7 +563,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_clip_vector_norm"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_clip_vector_norm">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_clip_vector_norm"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_clip_vector_norm">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_clip_vector_norm</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">max_norm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -704,7 +704,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_update"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_update">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_update"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_update">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_inplace_update</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -817,7 +817,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_decrement"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_decrement">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_decrement"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_decrement">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_inplace_decrement</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -959,7 +959,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_increment"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_increment">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_inplace_increment"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_inplace_increment">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_inplace_increment</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1101,7 +1101,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_assert_supports_inplace"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_assert_supports_inplace">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_assert_supports_inplace"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_assert_supports_inplace">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_assert_supports_inplace</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1190,7 +1190,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_all_equal"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_all_equal">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_all_equal"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_all_equal">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_all_equal</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
@@ -1368,7 +1368,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_fourier_encode"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_fourier_encode">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_fourier_encode"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_fourier_encode">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_fourier_encode</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">max_freq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1499,7 +1499,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_gather"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_gather">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_gather"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_gather">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gather</span><span class="p">(</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1665,7 +1665,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_has_nans"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_has_nans">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_has_nans"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_has_nans">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_has_nans</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1735,7 +1735,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_scatter_nd"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_scatter_nd">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_scatter_nd"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_scatter_nd">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_scatter_nd</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">updates</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1928,7 +1928,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_scatter_flat"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_scatter_flat">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_scatter_flat"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_scatter_flat">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_scatter_flat</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">updates</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -2053,7 +2053,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_gather_nd"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_gather_nd">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_gather_nd"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_gather_nd">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gather_nd</span><span class="p">(</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -2188,7 +2188,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_einops_reduce"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_reduce">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_einops_reduce"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_reduce">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_einops_reduce</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -2340,7 +2340,7 @@
             <span class="o">**</span><span class="n">axes_lengths</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_einops_repeat"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_repeat">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_einops_repeat"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_repeat">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_einops_repeat</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -2479,7 +2479,7 @@
             <span class="o">**</span><span class="n">axes_lengths</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_value_is_nan"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_value_is_nan">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_value_is_nan"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_value_is_nan">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_value_is_nan</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -2635,7 +2635,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_to_numpy"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_numpy">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_to_numpy"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_numpy">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_to_numpy</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -2813,7 +2813,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_to_scalar"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_scalar">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_to_scalar"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_scalar">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_to_scalar</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -2930,7 +2930,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_to_list"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_list">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_to_list"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_to_list">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_to_list</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -3040,7 +3040,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_stable_divide"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_stable_divide">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_stable_divide"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_stable_divide">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_stable_divide</span><span class="p">(</span>
         <span class="n">numerator</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">denominator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -3233,7 +3233,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_stable_pow"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_stable_pow">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_stable_pow"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_stable_pow">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_stable_pow</span><span class="p">(</span>
         <span class="n">base</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">exponent</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -3341,7 +3341,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_einops_rearrange"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_rearrange">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_einops_rearrange"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_einops_rearrange">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_einops_rearrange</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3448,7 +3448,7 @@
             <span class="o">**</span><span class="n">axes_lengths</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_clip_matrix_norm"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_clip_matrix_norm">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_clip_matrix_norm"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_clip_matrix_norm">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_clip_matrix_norm</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">max_norm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -3590,7 +3590,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_supports_inplace_updates"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_supports_inplace_updates">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_supports_inplace_updates"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_supports_inplace_updates">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_supports_inplace_updates</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -3734,7 +3734,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithGeneral.static_get_num_dims"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_get_num_dims">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithGeneral.static_get_num_dims"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_get_num_dims">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_get_num_dims</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>

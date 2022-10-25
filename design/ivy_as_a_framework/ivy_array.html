@@ -223,16 +223,16 @@ returns <code class="xref py py-class docutils literal notranslate"><span class=
     <span class="c1"># -----------#</span>
 
     <span class="c1"># noinspection PyPep8Naming</span>
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="nd">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 </pre></div>
@@ -275,7 +275,7 @@ Therefore, in this case, we could not claim that the Ivy code was truly framewor
 then the <code class="xref py py-meth docutils literal notranslate"><span class="pre">__setitem__()</span></code> method is defined in the native array class, which is completely outside of our control.</p>
 <p>However, if <code class="code docutils literal notranslate"><span class="pre">x</span></code> is an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance then the <code class="xref py py-meth docutils literal notranslate"><span class="pre">__setitem__()</span></code> method is defined in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which we do have control over.</p>
 <p>Let’s take a look at how that method is implemented in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">_native_wrapper</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_native_wrapper</span>
 <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>

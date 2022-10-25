@@ -140,7 +140,7 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithLayers"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithLayers</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithLayers.static_linear"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_linear">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_linear"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_linear">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_linear</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">weight</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -314,7 +314,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_dropout"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_dropout">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_dropout"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_dropout">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_dropout</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -366,7 +366,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_scaled_dot_product_attention">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_scaled_dot_product_attention">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_scaled_dot_product_attention</span><span class="p">(</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -422,7 +422,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_multi_head_attention"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_multi_head_attention">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_multi_head_attention"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_multi_head_attention">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_multi_head_attention</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">scale</span><span class="p">,</span>
@@ -502,7 +502,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv1d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv1d">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv1d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv1d">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv1d</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -648,7 +648,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv2d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv2d">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv2d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv2d">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv2d</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -794,7 +794,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv1d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv1d_transpose">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv1d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv1d_transpose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv1d_transpose</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -858,7 +858,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv2d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv2d_transpose">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv2d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv2d_transpose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv2d_transpose</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -922,7 +922,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_depthwise_conv2d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_depthwise_conv2d">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_depthwise_conv2d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_depthwise_conv2d">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_depthwise_conv2d</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1064,7 +1064,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv3d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv3d">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv3d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv3d">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv3d</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1124,7 +1124,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_conv3d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv3d_transpose">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_conv3d_transpose"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_conv3d_transpose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_conv3d_transpose</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1188,7 +1188,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithLayers.static_lstm_update"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_lstm_update">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithLayers.static_lstm_update"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_lstm_update">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_lstm_update</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">init_h</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>

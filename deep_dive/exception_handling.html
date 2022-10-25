@@ -219,7 +219,7 @@ This is to reduce repetition and the creation of similar exception classes.</p>
 to handle functions in the <code class="code docutils literal notranslate"><span class="pre">try/except</span></code> block.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/exceptions.py</span>
 <span class="k">def</span> <span class="nf">handle_exceptions</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="nd">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -235,7 +235,7 @@ to handle functions in the <code class="code docutils literal notranslate"><span
 <p>The decorator is then added to each function for wrapping.
 Let’s look at an example of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.all()</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/utility.py</span>
-<span class="nd">handle_exceptions</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -320,7 +320,7 @@ This allows them to be reused and promotes cleaner code.</p>
 </div>
 <p><strong>ivy.set_split_factor</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/device.py</span>
-<span class="nd">handle_exceptions</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span>
     <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

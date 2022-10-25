@@ -139,7 +139,7 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithActivations"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithActivations</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithActivations.static_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_relu">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_relu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_relu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -259,7 +259,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_leaky_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_leaky_relu">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_leaky_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_leaky_relu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_leaky_relu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -385,7 +385,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_gelu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_gelu">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_gelu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_gelu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gelu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -511,7 +511,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_sigmoid"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_sigmoid">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_sigmoid"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_sigmoid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_sigmoid</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -629,7 +629,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softmax">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softmax">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_softmax</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -755,7 +755,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_softplus"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softplus">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_softplus"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softplus">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_softplus</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -901,7 +901,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithActivations.static_log_softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_log_softmax">[docs]</a>    <span class="nd">staticmethod</span>
+<div class="viewcode-block" id="ContainerWithActivations.static_log_softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_log_softmax">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_log_softmax</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
