@@ -17,6 +17,7 @@ import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 # Helpers #
@@ -893,17 +894,28 @@ def test_default(x, default_val):
             with_callable = True
         else:
             x_dtype, x = x
+            x = x[0].tolist() if isinstance(x, list) else x
     else:
         if hasattr(default_val, "__call__"):
             with_callable = True
         else:
             dv_dtype, default_val = default_val
+            default_val = (
+                default_val[0].tolist()
+                if isinstance(default_val, list)
+                else default_val
+            )
 
     truth_val = ivy.to_native(x if x is not None else default_val)
     if with_callable:
         assert ivy.default(x, default_val) == truth_val
     else:
-        assert np.allclose(ivy.default(x, default_val), truth_val)
+        assert_all_close(
+            np.asarray(ivy.default(x, default_val)),
+            np.asarray(truth_val),
+            rtol=1e-3,
+            atol=1e-3,
+        )
 
 
 @handle_cmd_line_args
@@ -1177,12 +1189,14 @@ def test_einops_rearrange(
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
+    floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
     num_positional_args=helpers.num_positional_args(fn_name="einops_reduce"),
 )
 def test_einops_reduce(
     dtype_x,
     pattern_and_axes_lengths,
+    floattypes,
     reduction,
     with_out,
     as_variable,
@@ -1194,7 +1208,7 @@ def test_einops_reduce(
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
-    if (reduction in ["mean", "prod"]) and (dtype not in helpers.get_dtypes("float")):
+    if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,

@@ -913,7 +913,9 @@ def test_function_dtype_versioning(func_and_version, fw):
     for key in func_and_version:
         if key != fw:
             continue
-        var = ivy.get_backend().version
+        var = ivy.get_backend().backend_version
+
+        # key --> framework
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:

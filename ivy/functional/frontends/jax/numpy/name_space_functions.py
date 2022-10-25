@@ -279,6 +279,11 @@ def bitwise_and(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_or(x1, x2):
+    return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -286,3 +291,9 @@ def moveaxis(a, source, destination):
 @to_ivy_arrays_and_back
 def flipud(m):
     return ivy.flipud(m, out=None)
+
+
+@to_ivy_arrays_and_back
+def power(x1, x2):
+    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    return ivy.pow(x1, x2)

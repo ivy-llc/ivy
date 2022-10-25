@@ -29,3 +29,15 @@ def fmax(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fmax(x1, x2)
+
+
+def trapz(
+    y: JaxArray,
+    /,
+    *,
+    x: Optional[JaxArray] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = - 1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.trapz(y, x=x, dx=dx, axis=axis)
