@@ -195,49 +195,19 @@ def test_function(
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
         return
-    test_unsupported = check_unsupported_dtype(
-        fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
+
+    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
+        kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
     )
-    if not test_unsupported:
-        test_unsupported = check_unsupported_device(
-            fn=fn, input_device=on_device, all_as_kwargs_np=all_as_kwargs_np
-        )
-    if not test_unsupported:
-        test_unsupported = check_unsupported_device_and_dtype(
-            fn=fn,
-            device=on_device,
-            input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np,
-        )
-    if test_unsupported:
-        try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-                args_np=args_np,
-                arg_np_vals=arg_np_vals,
-                args_idxs=args_idxs,
-                kwargs_np=kwargs_np,
-                kwarg_np_vals=kwarg_np_vals,
-                kwargs_idxs=kwargs_idxs,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-                container_flags=container_flags,
-            )
-        except Exception:
-            return
-    else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-            args_np=args_np,
-            arg_np_vals=arg_np_vals,
-            args_idxs=args_idxs,
-            kwargs_np=kwargs_np,
-            kwarg_np_vals=kwarg_np_vals,
-            kwargs_idxs=kwargs_idxs,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-            container_flags=container_flags,
-        )
 
     # run either as an instance method or from the API directly
     instance = None
@@ -266,21 +236,10 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=False)
             ivy.prune_nest_at_index(kwargs, instance_idx)
-        if test_unsupported:
-            test_unsupported_function(
-                fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
-            )
-            return
-
         ret, ret_np_flat = get_ret_and_flattened_np_array(
             instance.__getattribute__(fn_name), *args, **kwargs
         )
     else:
-        if test_unsupported:
-            test_unsupported_function(
-                fn=ivy.__dict__[fn_name], args=args, kwargs=kwargs
-            )
-            return
         ret, ret_np_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
@@ -314,46 +273,18 @@ def test_function(
     ivy.set_backend(ground_truth_backend)
     try:
         fn = getattr(ivy, fn_name)
-        test_unsupported = check_unsupported_dtype(
-            fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
+        args, kwargs, _, _, _ = create_args_kwargs(
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwargs_idxs=kwargs_idxs,
+            kwarg_np_vals=kwarg_np_vals,
+            input_dtypes=input_dtypes,
+            as_variable_flags=as_variable_flags,
+            native_array_flags=native_array_flags,
+            container_flags=container_flags,
         )
-        # create args
-        if test_unsupported:
-            try:
-                args, kwargs, _, _, _ = create_args_kwargs(
-                    args_np=args_np,
-                    arg_np_vals=arg_np_vals,
-                    args_idxs=args_idxs,
-                    kwargs_np=kwargs_np,
-                    kwargs_idxs=kwargs_idxs,
-                    kwarg_np_vals=kwarg_np_vals,
-                    input_dtypes=input_dtypes,
-                    as_variable_flags=as_variable_flags,
-                    native_array_flags=native_array_flags,
-                    container_flags=container_flags,
-                )
-            except Exception:
-                ivy.unset_backend()
-                return
-        else:
-            args, kwargs, _, _, _ = create_args_kwargs(
-                args_np=args_np,
-                arg_np_vals=arg_np_vals,
-                args_idxs=args_idxs,
-                kwargs_np=kwargs_np,
-                kwargs_idxs=kwargs_idxs,
-                kwarg_np_vals=kwarg_np_vals,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-                container_flags=container_flags,
-            )
-        if test_unsupported:
-            test_unsupported_function(
-                fn=ivy.__dict__[fn_name], args=args, kwargs=kwargs
-            )
-            ivy.unset_backend()
-            return
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
