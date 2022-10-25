@@ -10,11 +10,11 @@ Graph tracers enable acyclic directed computation graphs to be extracted from fu
 
 tf.Graph
 --------
-The :code:`tf.Graph` class represents an arbitrary `TensorFlow`_ computation, represented as a dataflow graph. It is used by :code:`tf.function`s to represent the function's computations. Each graph contains a set of :code:`tf.Operation` instances, which represent units of computation; and :code:`tf.Tensor` instances, which represent the units of data that flow between operations.
+The :code:`tf.Graph` class represents an arbitrary `TensorFlow`_ computation, represented as a dataflow graph. It is used by :code:`tf.function` to represent the function's computations. Each graph contains a set of :code:`tf.Operation` instances, which represent units of computation; and :code:`tf.Tensor` instances, which represent the units of data that flow between operations.
 
 Jaxpr
 -----
-Conceptually, one can think of `JAX`_ transformations as first trace-specializing the Python which operate on the tensors to be transformed into a small and well-behaved intermediate form that is then interpreted with transformation-specific interpretation rules. It uses the actual Python interpreter to do most of the heavy lifting to distill the essence of the computation into a simple statically-typed expression language with limited higher-order features. That language is the jaxpr language. A :code:`jax.core.Jaxpr` instance represents a function with one or more typed parameters (input variables) and one or more typed results. The results depend only on the input variables; there are no free variables captured from enclosing scopes.
+Conceptually, one can think of `JAX`_ transformations as first trace-specializing the Python function to be transformed into a small and well-behaved intermediate form that is then interpreted with transformation-specific interpretation rules. It uses the actual Python interpreter to do most of the heavy lifting to distill the essence of the computation into a simple statically-typed expression language with limited higher-order features. That language is the jaxpr language. A :code:`jax.core.Jaxpr` instance represents a function with one or more typed parameters (input variables) and one or more typed results. The results depend only on the input variables; there are no free variables captured from enclosing scopes.
 
 torch.jit
 ---------
