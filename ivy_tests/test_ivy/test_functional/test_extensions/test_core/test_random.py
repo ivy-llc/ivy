@@ -68,6 +68,7 @@ def test_dirichlet(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
+        u, v = ivy.array(u), ivy.array(v)
         assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
         assert ivy.all(u >= 0) and ivy.all(u <= 1)
         assert ivy.all(v >= 0) and ivy.all(v <= 1)

@@ -22,7 +22,7 @@ def dirichlet(
     dtype: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     size = size if size is not None else len(alpha)
-    size = tf.constant(size, dtype=tf.int32)
+
     if dtype is None:
         dtype = tf.float64
     else:
