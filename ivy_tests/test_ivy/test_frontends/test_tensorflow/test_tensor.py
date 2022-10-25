@@ -771,11 +771,6 @@ def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
     )
 
 
-# __len__
-@handle_cmd_line_args
-#todo
-
-
 # __rxor__
 @handle_cmd_line_args
 @given(
@@ -973,33 +968,6 @@ def test_tensorflow_instance_invert(dtype_and_x, as_variable, native_array, fw):
         method_name="__invert__",
     )
 
-#__len__
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
-    ),
-)
-def test_tensorflow_instance_len(dtype_and_x, as_variable, native_array, fw):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=[],
-        as_variable_flags_method=[],
-        num_positional_args_method=0,
-        native_array_flags_method=[],
-        all_as_kwargs_np_method={},
-        frontend="tensorflow",
-        class_name="Tensor",
-        method_name="__len__",
-    )
-
 
 # __rmul__
 @handle_cmd_line_args
@@ -1037,14 +1005,14 @@ def test_tensorflow_instance_rmul(dtype_and_x, as_variable, native_array, fw):
 
 @st.composite
 def _array_and_index(
-    draw,
-    *,
-    available_dtypes=helpers.get_dtypes("numeric"),
-    min_num_dims=2,
-    max_num_dims=3,
-    min_dim_size=1,
-    max_dim_size=10,
-    shape=None,
+        draw,
+        *,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=10,
+        shape=None,
 ):
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)

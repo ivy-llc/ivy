@@ -15,9 +15,9 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.tensor("
-            + str(ivy.to_list(self.data))
-            + ")"
+                "ivy.functional.frontends.tensorflow.tensor("
+                + str(ivy.to_list(self.data))
+                + ")"
         )
 
     # Instance Methods #
@@ -133,8 +133,8 @@ class Tensor:
     def __len__(self):
         raise ivy.exceptions.IvyError(
             f"len is not well defined for a symbolic Tensor "
-            f"(*tensor name*). Please call `x.shape` rather than "
-            f"`len(x)` for shape information."
+            f"Please call `x.shape` rather than `len(x)` for "
+            f"shape information."
         )
 
     def __xor__(self, y, name="xor"):
