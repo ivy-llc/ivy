@@ -452,41 +452,41 @@ def rot90(
     With :code:`ivy.Array` input:
     >>> m = ivy.array([[1,2], [3,4]])
     >>> m.rot90()
-    ivy.array([[1, 2],
-               [3, 4]])
+    ivy.array([[2, 4],
+           [1, 3]])
     >>> m = ivy.array([[1,2], [3,4]])
     >>> m.rot90(k=2)
     ivy.array([[4, 3],
-               [2, 1]])
+           [2, 1]])
     >>> m = ivy.array([[[0, 1],\
                         [2, 3]],\
                        [[4, 5],\
                         [6, 7]]])
-    >>> m.rot90(m, k=2, axes=(1,2))
+    >>> m.rot90(k=2, axes=(1,2))
     ivy.array([[[3, 2],
-                [1, 0]],
+            [1, 0]],
 
-               [[7, 6],
-                [5, 4]]])
+           [[7, 6],
+            [5, 4]]])
     With :code:`ivy.NativeArray` input:
     >>> m = ivy.native_array([[1,2], [3,4]])
-    >>> m.rot90()
-    ivy.array([[1, 2],
-               [3, 4]])
+    >>> ivy.rot90(m)
+    ivy.array([[2, 4],
+           [1, 3]])
     >>> m = ivy.native_array([[1,2], [3,4]])
-    >>> m.rot90(k=2)
+    >>> ivy.rot90(m, k=2)
     ivy.array([[4, 3],
-               [2, 1]])
+           [2, 1]])
     >>> m = ivy.native_array([[[0, 1],\
                                [2, 3]],\
                               [[4, 5],\
                                [6, 7]]])
-    >>> m.rot90(m, k=2, axes=(1,2))
+    >>> ivy.rot90(m, k=2, axes=(1,2))
     ivy.array([[[3, 2],
-                [1, 0]],
+            [1, 0]],
 
-               [[7, 6],
-                [5, 4]]])
+           [[7, 6],
+            [5, 4]]])
     With :code:`ivy.Container` input:
     >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
             b=ivy.native_array([[1,2,3,4],\
@@ -495,8 +495,8 @@ def rot90(
                                 [11,12,13,14]]))
     >>> m.rot90()
     {
-        a: ivy.array([[1, 2],
-                      [3, 4]]),
+        a: ivy.array([[2, 4],
+                      [1, 3]]),
         b: (<class ivy.array.array.Array> shape=[4, 4])
     }
     """

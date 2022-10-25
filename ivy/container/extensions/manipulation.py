@@ -508,14 +508,14 @@ class ContainerWithManipulationExtensions(ContainerBase):
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                            b=ivy.native_array([[1,2,3,4],\
-                            [7,8,9,10],\
-                            [3,4,5,6],\
-                            [11,12,13,14]])
+                b=ivy.native_array([[1,2,3,4],\
+                                    [7,8,9,10],\
+                                    [3,4,5,6],\
+                                    [11,12,13,14]]))
         >>> ivy.Container.static_rot90(m)
         {
-            a: ivy.array([[1, 2],
-                          [3, 4]]),
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
             b: (<class ivy.array.array.Array> shape=[4, 4])
         }
         """
@@ -576,14 +576,14 @@ class ContainerWithManipulationExtensions(ContainerBase):
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                            b=ivy.native_array([[1,2,3,4],\
-                            [7,8,9,10],\
-                            [3,4,5,6],\
-                            [11,12,13,14]])
-        >>> ivy.rot90(m)
+                b=ivy.native_array([[1,2,3,4],\
+                                    [7,8,9,10],\
+                                    [3,4,5,6],\
+                                    [11,12,13,14]]))
+        >>> m.rot90()
         {
-            a: ivy.array([[1, 2],
-                          [3, 4]]),
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
             b: (<class ivy.array.array.Array> shape=[4, 4])
         }
         """
