@@ -279,4 +279,4 @@ def flipud(input):
 @to_ivy_arrays_and_back
 def deg2rad(input, *, out=None,dtype='float32'):
     input=input.astype(dtype)
-    return input*3.1416/180
+    return ivy.array(input*3.1416/180,out=out)
