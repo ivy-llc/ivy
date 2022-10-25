@@ -17,6 +17,9 @@ Wrapper Frameworks
 .. _`CuPy`: https://cupy.dev/
 .. _`SciPy`: https://scipy.org/
 .. _`TorchScript`: https://pytorch.org/docs/stable/jit.html
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 There are a variety of wrapper frameworks which wrap around other ML frameworks, enabling these ML frameworks to be switched in and out very easily in the backend, and enabling framework-agnostic code to be written, both for deployment and for training. These wrapper frameworks can be considered as “higher level” than the individual ML frameworks that they wrap, given that they abstract these ML frameworks into the backend, and they typically do not go any lower level than this, often being pure Python projects, delegating all lower level compiler code handling to the frameworks being wrapped.
 
@@ -39,3 +42,8 @@ TensorLy
 NeuroPod
 --------
 `Neuropod`_ is a library that provides a uniform interface to run deep learning models from multiple frameworks in C++ and Python. Neuropod makes it easy for researchers to build models in a framework of their choosing while also simplifying deployment of these models. It currently supports `TensorFlow`_, `PyTorch`_, `TorchScript`_, and `Keras`_. Compared to other wrapper frameworks, NeuroPod is very high level. It wraps entire models which have already been trained, in a manner where the interface to these models is unified. It excels in a setting where multiple networks, which may have been trained in a variety of frameworks, must all act as subsystems performing specific tasks as part of a larger complex system, and the network interfaces in this larger system should be unified. This abstraction enables subsystem networks to be quickly replaced by other networks performing the same role, irrespective of which framework the subsystem is running under the hood.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!
