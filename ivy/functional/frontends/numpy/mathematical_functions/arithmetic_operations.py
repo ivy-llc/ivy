@@ -184,3 +184,24 @@ def floor_divide(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@handle_numpy_casting
+@to_ivy_arrays_and_back
+def reciprocal(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.reciprocal(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
