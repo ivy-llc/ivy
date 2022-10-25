@@ -2251,7 +2251,7 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="diag"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/diag.html#ivy.functional.ivy.linear_algebra.diag">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="diag"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/diag/diag_functional.html#ivy.functional.ivy.linear_algebra.diag">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -2259,22 +2259,75 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">padding_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">align</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RIGHT_LEFT&quot;</span><span class="p">,</span>
-    <span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
-        <span class="n">padding_value</span><span class="o">=</span><span class="n">padding_value</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="n">align</span><span class="p">,</span>
-        <span class="n">num_rows</span><span class="o">=</span><span class="n">num_rows</span><span class="p">,</span>
-        <span class="n">num_cols</span><span class="o">=</span><span class="n">num_cols</span><span class="p">,</span>
-        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-    <span class="p">)</span></div>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of the input array,</span>
+<span class="sd">    or an array with the input array&#39;s elements as diagonals.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        An array with rank &gt;= 1.</span>
+<span class="sd">    k</span>
+<span class="sd">        An integer that controls which diagonal to consider.</span>
+<span class="sd">        Positive value means superdiagonal,</span>
+<span class="sd">        0 refers to the main diagonal,</span>
+<span class="sd">        and negative value means subdiagonal.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        If x is a 1-D array, the function returns a 2-D square array with the elements</span>
+<span class="sd">        of input as diagonals.</span>
+<span class="sd">        If x is a 2-D array, the function returns a 1-D array with the diagonal elements</span>
+<span class="sd">        of x.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x)</span>
+<span class="sd">    ivy.array([0, 4, 8])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x, k=1)</span>
+<span class="sd">    ivy.array([1, 5])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x, k=-1)</span>
+<span class="sd">    ivy.array([3, 7])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(ivy.diag(x))</span>
+<span class="sd">    ivy.array([[0, 0, 0],</span>
+<span class="sd">               [0, 4, 0],</span>
+<span class="sd">               [0, 0, 8]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="vander"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/vander/vander_functional.html#ivy.functional.ivy.linear_algebra.vander">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
