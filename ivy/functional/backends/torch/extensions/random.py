@@ -23,5 +23,6 @@ def dirichlet(
     if seed is not None:
         torch.manual_seed(seed)
     return torch.tensor(
-        torch.distributions.dirichlet.Dirichlet(alpha).rsample(sample_shape=size), dtype=dtype
+        torch.distributions.dirichlet.Dirichlet(alpha).rsample(sample_shape=size),
+        dtype=dtype
     )

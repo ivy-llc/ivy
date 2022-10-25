@@ -45,11 +45,11 @@ class ArrayWithRandomExtensions(abc.ABC):
         Examples
         --------
         >>> alpha = ivy.array([1.0, 2.0, 3.0])
-        >>> ivy.dirichlet(alpha)
+        >>> alpha.dirichlet()
         ivy.array([0.10598304, 0.21537054, 0.67864642])
 
         >>> alpha = ivy.array([1.0, 2.0, 3.0])
-        >>> ivy.dirichlet(alpha, size = (2,3))
+        >>> alpha.dirichlet(size = (2,3))
         ivy.array([[[0.48006698, 0.07472073, 0.44521229],
             [0.55479872, 0.05426367, 0.39093761],
             [0.19531053, 0.51675832, 0.28793114]],
