@@ -626,6 +626,7 @@ class GlobalsDict(dict):
     __delattr__ = dict.__delitem__
 
 
+# defines ivy.globals attribute
 globals = GlobalsDict({
     "backend_stack": backend_stack,
     "default_device_stack": device.default_device_stack,
