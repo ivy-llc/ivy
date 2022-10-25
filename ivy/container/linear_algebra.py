@@ -585,7 +585,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> x = ivy.Container(a=[[0, 1, 2],
         >>>                      [3, 4, 5],
         >>>                      [6, 7, 8]])
-        >>> ivy.diagflat(x, k=1)
+        >>> ivy.diag(x, k=1)
         {
             a: ivy.array([1, 5])
         }

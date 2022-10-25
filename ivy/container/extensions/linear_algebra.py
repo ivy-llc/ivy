@@ -50,7 +50,7 @@ class ContainerWithLinalgExtensions(ContainerBase):
         --------
 
         >>> x = ivy.Container(a=[1,2])
-        >>> ivy.diag(x, k=1)
+        >>> ivy.diagflat(x, k=1)
         {
             a: ivy.array([[0, 1, 0],
                           [0, 0, 2],
