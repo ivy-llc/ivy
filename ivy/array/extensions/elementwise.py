@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -200,3 +200,43 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         8.0
         """
         return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)
+    
+    def float_power(
+        self: Union[ivy.Array, float, list, tuple],
+        x2: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.float_power. This method simply
+        wraps the function, and so the docstring for ivy.float_power also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like with elements to raise in power.
+        x2
+            Array-like of exponents. If x1.shape != x2.shape,
+            they must be broadcastable to a common shape
+            (which becomes the shape of the output).            
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The bases in x1 raised to the exponents in x2.
+            This is a scalar if both x1 and x2 are scalars
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x1.float_power(3)
+        ivy.array([1.,    8.,   27.,   64.,  125.])
+        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x2 = ivy.array([2, 3, 3, 2, 1])
+        >>> x1.float_power(x2)
+        ivy.array([1.,   8.,  27.,  16.,   5.])
+        """
+        return ivy.float_power(self._data, x2, out=out)
