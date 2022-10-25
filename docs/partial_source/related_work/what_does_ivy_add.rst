@@ -17,6 +17,9 @@ What does Ivy Add?
 .. _`OctoML`: https://octoml.ai/
 .. _`Modular`: https://www.modular.com/
 .. _`Apache TVM`: https://tvm.apache.org/
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Python API Standards
 --------------------
@@ -57,3 +60,8 @@ Finally, vendor-specific compilers sit at the very bottom of the stack as far as
 ML Unifying Companies
 ---------------------
 The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section. For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies. Firstly, we are adhering to the `Array API Standard`_ defined by Quansight. In essence they have written the standard and we have implemented it, which is pretty much as complimentary as it gets. Similarly, OctoML makes it easy for anyone to *deploy* their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to *train* their model anywhere. Again very complimentary objectives. Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field. Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversations to and from the user-facing APIs themselves, without diving into any of the lower level details. All of these features are entirely complimentary, and together would form a powerful suite of unifying tools for ML practitioners.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!

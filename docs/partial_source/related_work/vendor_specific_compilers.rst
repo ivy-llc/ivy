@@ -12,7 +12,9 @@ Vendor-Specific Compilers
 .. _`CUDA`: https://developer.nvidia.com/cuda-toolkit
 .. _`GCC`: https://gcc.gnu.org/
 .. _`Microsoft Visual C++ Compiler`: https://docs.microsoft.com/en-us/cpp/
-
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Below the vendor-specific APIs are the vendor specific compilers. As far as modern machine learning practitioners go, these compilers are very rarely interacted with directly. As for our own representation of the ML stack, these compilers are the lowest level building blocks that we consider. Of course, we could talk about assembly languages and byte code, but this is outside the scope of what is really relevant for ML practitioners when considering their software stack.
 
@@ -27,3 +29,8 @@ ICX
 NVCC
 ----
 The `Nvidia CUDA Compiler (NVCC)`_ is a proprietary compiler by `NVIDIA`_ intended for use with `CUDA`_. CUDA code runs on both the CPU and GPU. NVCC separates these two parts and sends host code (the part of code which will be run on the CPU) to a C compiler like `GCC`_ or `Intel C++ Compiler Classic (ICC)`_ or `Microsoft Visual C++ Compiler`_, and sends the device code (the part which will run on the GPU) to the GPU. The device code is further compiled by NVCC. Like `ICX`_, NVCC is also based on `LLVM`_.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!
