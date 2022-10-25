@@ -126,7 +126,7 @@ def max_pool1d(
     if data_format == "NCW":
         x = x.permute(0, 2, 1)
 
-    pad_w = ivy.handle_padding(x.shape[0], strides, kernel, padding)
+    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
     x = np.pad(
         x,
         [
