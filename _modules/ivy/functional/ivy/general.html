@@ -2988,6 +2988,14 @@
 <span class="sd">          [[ 8.,  9.],</span>
 <span class="sd">           [10., 11.]]]])</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 0, 1, 0, 2],</span>
+<span class="sd">    ...                [3, 0, 0, 0, 4],</span>
+<span class="sd">    ...                [0, 5, 0, 6, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[1, 2],[3, 4],[5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.gather(x, y, batch_dims=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[1, 2],[3, 4],[5, 6]])</span>
+
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([0., 1., 2.]),</span>
@@ -3054,6 +3062,11 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.gather_nd(x, y))</span>
 <span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1.], [2., 3.], [4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[0],[1],[1]], dtype=&#39;int32&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.gather_nd(x,y,batch_dims=1)</span>
+<span class="sd">    ivy.array([0., 3., 5.])</span>
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
