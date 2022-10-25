@@ -1042,20 +1042,12 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([7,6,0]), \
-                              b=ivy.array([8,9,4]))
+        >>> x = ivy.Container(a=ivy.array([7, 6, 0]),
+        ...                   b=ivy.array([8, 9, 4]))
         >>> ivy.Container.static_shuffle(x)
         {
             a: ivy.array([7, 0, 6]),
             b: ivy.array([8, 4, 9])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([0,0,0]), \
-                              b=ivy.array([0,0,0]))
-        >>> ivy.Container.static_shuffle(x)
-        {
-            a: ivy.array([0, 0, 0]),
-            b: ivy.array([0s, 0, 0])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1111,9 +1103,9 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([5,2,9]),
-        ...                   b=ivy.array([7,1,6]))
-        >>> x.shuffle()
+        >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
+        ...                   b=ivy.array([7, 1, 6]))
+        >>> ivy.Container.shuffle(x)
         {
             a: ivy.array([9, 5, 2]),
             b: ivy.array([6, 7, 1])

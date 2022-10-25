@@ -545,16 +545,21 @@ def shuffle(
     >>> print(y)
     ivy.array([2, 1, 4, 3, 5])
 
-    >>> x = ivy.array([1,0,5])
-    >>> y = ivy.array([0, 0, 0])
-    >>> z = ivy.shuffle(x, out=y)
+    >>> x = ivy.array([1, 3, 5, 7])
+    >>> y = ivy.shuffle(x, seed=394)
     >>> print(y)
-    ivy.array([0, 5, 1])
+    ivy.array([3, 1, 5, 7])
+
+    >>> x = ivy.array([1, 0, 5])
+    >>> y = ivy.array([0, 0, 0])
+    >>> ivy.shuffle(x, seed=394, out=y)
+    >>> print(y)
+    ivy.array([0, 1, 5])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([5,2,9]),
-    ...                   b=ivy.array([7,1,6]))
+    >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
+    ...                   b=ivy.array([7, 1, 6]))
     >>> y = ivy.shuffle(x)
     >>> print(y)
     {
@@ -562,15 +567,24 @@ def shuffle(
         b: ivy.array([6, 1, 7])
     }
 
-    >>> x = ivy.Container(a=ivy.array([8,2,5]),
-    ...                   b=ivy.array([3,9,0]))
-    >>> y = ivy.Container(a=ivy.array([0,0,0]),
-    ...                   b=ivy.array([0,0,0]))
-    >>> z = ivy.shuffle(x, out=y)
-    >>> print(z)
+    >>> x = ivy.Container(a=ivy.array([7, 4, 5]),
+    ...                   b=ivy.array([9, 8, 2]))
+    >>> y = ivy.Container(a=ivy.array([0, 0, 0]),
+    ...                   b=ivy.array([0, 0, 0]))
+    >>> ivy.shuffle(x, seed=17, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([7, 5, 4]),
+        b: ivy.array([9, 2, 8])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([8, 2, 5]),
+    ...                   b=ivy.array([3, 9, 0]))
+    >>> ivy.shuffle(x, seed=17, out=x)
+    >>> print(x)
     {
         a: ivy.array([2, 8, 5]),
-        b: ivy.array([0, 9, 3])
+        b: ivy.array([3, 0, 9])
     }
     """
     return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
