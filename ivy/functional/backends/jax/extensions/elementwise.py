@@ -51,3 +51,15 @@ def float_power(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.float_power(x1, x2)
+
+
+def nansum(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)

@@ -98,3 +98,15 @@ def float_power(
 
 
 float_power.support_native_out = True
+
+
+def nansum(
+    x: torch.Tensor,
+    /,
+    *,
+    dim: Optional[Union[tuple, int]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nansum(x, dim=dim, keepdim=keepdims, dtype=dtype)

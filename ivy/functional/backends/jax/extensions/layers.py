@@ -297,15 +297,3 @@ def fmax(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fmax(x1, x2)
-
-
-def nansum(
-    input: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.nansum(input, axis=axis, dtype=dtype, keepdims=keepdims, out=out)

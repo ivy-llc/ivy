@@ -102,3 +102,15 @@ def float_power(
 
 
 float_power.support_native_out = True
+
+
+def nansum(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
