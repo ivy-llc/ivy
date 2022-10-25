@@ -295,6 +295,71 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="max_pool1d"><a class="viewcode-back" href="../../../../functional/extensions/layers/max_pool1d.html#ivy.functional.extensions.layers.max_pool1d">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">max_pool1d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 1-D max pool given 3-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_size, w, d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Size of the kernel i.e., the sliding window for each</span>
+<span class="sd">        dimension of input. *[w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">        indicating the per-dimension paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool1d(x, 2, 2, &#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[ 4.,  5.,  6.,  7.],</span>
+<span class="sd">            [ 8.,  9., 10., 11.]],</span>
+
+<span class="sd">           [[16., 17., 18., 19.],</span>
+<span class="sd">            [20., 21., 22., 23.]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool1d(x, 2, 2, &#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[ 4.,  5.,  6.,  7.]],</span>
+
+<span class="sd">       [[16., 17., 18., 19.]]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                             <span class="n">kernel</span><span class="p">,</span>
+                                             <span class="n">strides</span><span class="p">,</span>
+                                             <span class="n">padding</span><span class="p">,</span>
+                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_window.html#ivy.functional.extensions.layers.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>

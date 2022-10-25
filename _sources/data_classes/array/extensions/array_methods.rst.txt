@@ -20,6 +20,7 @@ Array methods
    array_methods/trapz.rst
    array_methods/flatten.rst
    array_methods/max_pool2d.rst
+   array_methods/max_pool1d.rst
    array_methods/pad.rst
    array_methods/moveaxis.rst
    array_methods/heaviside.rst
