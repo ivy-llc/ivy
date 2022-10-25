@@ -132,9 +132,7 @@ class Tensor:
 
     def __len__(self):
         raise ivy.exceptions.IvyError(
-            f"len is not well defined for a symbolic Tensor "
-            f"Please call `x.shape` rather than `len(x)` for "
-            f"shape information."
+            "len is not well defined for a symbolic Tensor. Please call `x.shape` rather than `len(x)` for shape information."
         )
 
     def __xor__(self, y, name="xor"):
