@@ -78,4 +78,5 @@ def top_k(
         x *= -1
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
+    indices = tf.dtypes.cast(indices, tf.int64)
     return topk_res(val, indices)
