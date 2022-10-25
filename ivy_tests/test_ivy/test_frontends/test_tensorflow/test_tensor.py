@@ -1005,14 +1005,14 @@ def test_tensorflow_instance_rmul(dtype_and_x, as_variable, native_array, fw):
 
 @st.composite
 def _array_and_index(
-        draw,
-        *,
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=10,
-        shape=None,
+    draw,
+    *,
+    available_dtypes=helpers.get_dtypes("numeric"),
+    min_num_dims=2,
+    max_num_dims=3,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
 ):
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
