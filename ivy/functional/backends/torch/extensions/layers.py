@@ -1,11 +1,12 @@
 # global
-from typing import Optional, Union, Tuple, Literal, List
-from numbers import Number
+from typing import Optional, Union, Tuple
 import torch
 import math
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def flatten(
@@ -62,7 +63,15 @@ def hann_window(
 hann_window.support_native_out = False
 
 
-# noinspection PyUnresolvedReferences
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -99,45 +108,42 @@ def max_pool2d(
     return res
 
 
-max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
-
-
-def pad(
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def max_pool1d(
     x: torch.Tensor,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
     /,
-    pad_width: Tuple[int],
     *,
-    mode: Optional[Literal["constant", "reflect", "edge", "wrap"]] = "constant",
-    stat_length: Optional[Union[torch.Tensor, int]] = None,
-    constant_values: Optional[Number] = 0,
-    end_values: Optional[Number] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    data_format: str = "NWC",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if x.shape == ():
-        x = x.unsqueeze(0)
-    if isinstance(pad_width, torch.Tensor):
-        pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width.reverse()
-    pad_width_flat: List[int] = list()
-    for pad_width_sec in pad_width:
-        for item in pad_width_sec:
-            pad_width_flat.append(item)
-    if mode == "constant":
-        return torch.nn.functional.pad(
-            x,
-            pad_width_flat,
-            mode=mode,
-            value=constant_values,
-        )
-    else:
-        x = x.unsqueeze(dim=0)
-        if mode == "edge":
-            mode = "replicate"
-        elif mode == "wrap":
-            mode = "circular"
-            x = x.unsqueeze(dim=0)
-        return torch.nn.functional.pad(x, pad_width_flat, mode=mode).squeeze()
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    if data_format == "NWC":
+        x = x.permute(0, 2, 1)
+    x_shape = x.shape[2]
+    pad_w = ivy.handle_padding(x_shape,
+                               strides[0],
+                               kernel[0],
+                               padding)
+    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2],
+                                value=float("-inf"))
+
+    res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
+
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
 
 
 def kaiser_window(

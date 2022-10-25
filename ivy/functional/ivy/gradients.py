@@ -27,6 +27,8 @@ def _arrays_to_float_variables(xs):
         if ivy.is_array(x, exclusive=True):
             if ivy.is_int_dtype(x.dtype):
                 x = x.astype(ivy.default_float_dtype())
+            else:
+                x = ivy.stop_gradient(x)
             return ivy.variable(x)
         return x
 
@@ -73,7 +75,7 @@ def _remove_zeros_and_nones(grads, x, idx=[]):
             idx.pop()
 
         keys = [k for k in x]
-        if len(keys) == 0:
+        if len(keys) == 0 and len(idx) and _check_if_empty(idx):
             ivy.prune_nest_at_index(grads, idx)
     return grads
 

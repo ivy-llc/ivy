@@ -43,3 +43,21 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def vstack(
+    arrays: Sequence[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vstack(arrays)
+
+
+def hstack(
+    arrays: Sequence[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hstack(arrays)

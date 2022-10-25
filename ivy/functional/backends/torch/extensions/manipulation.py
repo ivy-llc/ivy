@@ -43,3 +43,21 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def vstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.vstack(arrays, out=None)
+
+
+def hstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hstack(arrays, out=None)
