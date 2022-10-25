@@ -603,6 +603,7 @@ class ContainerWithLayersExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
@@ -660,6 +661,7 @@ class ContainerWithLayersExtensions(ContainerBase):
             data type of the returned array.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
