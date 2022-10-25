@@ -556,6 +556,57 @@
 <span class="sd">        ivy.Container static method variant of ivy.flip. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.flip also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis (or axes) along which to flip. If axis is None,</span>
+<span class="sd">            all input array axes are flipped. If axis is negative,</span>
+<span class="sd">            axis is counted from the last dimension. If provided more</span>
+<span class="sd">            than one axis, only the specified axes. Default: None.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container having the same data type and</span>
+<span class="sd">            shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_flip(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0, -1]),</span>
+<span class="sd">            b: ivy.array([4, 3, 2])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_flip(x, axis=0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0, -1]),</span>
+<span class="sd">            b: ivy.array([4, 3, 2])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;flip&quot;</span><span class="p">,</span>
@@ -583,6 +634,57 @@
 <span class="sd">        ivy.Container instance method variant of ivy.flip. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.flip also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis (or axes) along which to flip. If axis is None,</span>
+<span class="sd">            all input array axes are flipped. If axis is negative,</span>
+<span class="sd">            axis is counted from the last dimension. If provided</span>
+<span class="sd">            more than one axis, only the specified axes. Default: None.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container having the same data type and</span>
+<span class="sd">            shape as ``self`` and whose elements, relative to ``self``, are reordered.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.flip()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0, -1]),</span>
+<span class="sd">            b: ivy.array([4, 3, 2])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.flip(axis=0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0, -1]),</span>
+<span class="sd">            b: ivy.array([4, 3, 2])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_flip</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
