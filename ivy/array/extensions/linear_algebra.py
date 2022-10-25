@@ -23,7 +23,7 @@ class ArrayWithLinalgExtensions(abc.ABC):
         --------
 
         >>> x = ivy.array([1,2])
-        >>> x.diag(k=1)
+        >>> x.diagflat(k=1)
         ivy.array([[0, 1, 0],
                    [0, 0, 2],
                    [0, 0, 0]])

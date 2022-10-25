@@ -59,14 +59,14 @@ def diagflat(
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
-    >>> ivy.diag(x)
+    >>> ivy.diagflat(x)
     ivy.array([[1, 0, 0, 0],
                [0, 2, 0, 0],
                [0, 0, 3, 0],
                [0, 0, 0, 4]])
 
     >>> x = ivy.array([1,2])
-    >>> ivy.diag(x, k=1)
+    >>> ivy.diagflat(x, k=1)
     ivy.array([[0, 1, 0],
                [0, 0, 2],
                [0, 0, 0]])
