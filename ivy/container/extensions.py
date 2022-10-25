@@ -1184,3 +1184,42 @@ class ContainerWithExtensions(ContainerBase):
         }
         """
         return self.static_flipud(self, out=out)
+
+
+    @staticmethod
+    def static_dct(
+        input: ivy.Container,
+        /,
+        *,
+        type: Optional[int] = 2,
+        n: Optional[int] = None,
+        norm: Optional[str] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "dct",
+            input,
+            type=type,
+            n=n,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dct(
+        self: ivy.Container,
+        /,
+        *,
+        type: Optional[int] = 2,
+        n: Optional[int] = None,
+        norm: Optional[str] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_dct(self, type=type, n=n, norm=norm, out=out)
