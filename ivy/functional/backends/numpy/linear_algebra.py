@@ -150,10 +150,7 @@ def matmul(
         x1 = np.swapaxes(x1, -1, -2)
     if transpose_b is True:
         x2 = np.swapaxes(x2, -1, -2)
-    try:
-        ret = np.matmul(x1, x2, out=out)
-    except ValueError:
-        print(x1.shape, x2.shape)
+    ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
         ret = np.array(ret)
     return ret
