@@ -2858,6 +2858,14 @@ def gather(
           [[ 8.,  9.],
            [10., 11.]]]])
 
+    >>> x = ivy.array([[0, 0, 1, 0, 2],
+    ...                [3, 0, 0, 0, 4],
+    ...                [0, 5, 0, 6, 0]])
+    >>> y = ivy.array([[1, 2],[3, 4],[5, 6]])
+    >>> z = ivy.gather(x, y, batch_dims=1)
+    >>> print(z)
+    ivy.array([[1, 2],[3, 4],[5, 6]])
+
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
@@ -2924,6 +2932,11 @@ def gather_nd(
     >>> y = ivy.array([1])
     >>> print(ivy.gather_nd(x, y))
     ivy.array(1.)
+
+    >>> x = ivy.array([[0., 1.], [2., 3.], [4., 5.]])
+    >>> y = ivy.array([[0],[1],[1]], dtype='int32')
+    >>> z = ivy.gather_nd(x,y,batch_dims=1)
+    ivy.array([0., 3., 5.])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
