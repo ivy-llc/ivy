@@ -9,9 +9,8 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
 GENERAL_CONFIG_DICT = {}
-UNSET_TEST_CONFIG_LISTS = []
-UNSET_TEST_CONFIG_SINGLE = []
-UNSET_TEST_API_CONFIG = []
+UNSET_TEST_CONFIG = {"list": [], "flag": []}
+UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
 
@@ -136,12 +135,14 @@ def process_cl_flags(config) -> Dict[str, bool]:
             GENERAL_CONFIG_DICT[k] = True
         # let hypothesis generate it
         if not v[0] ^ v[1]:
-            if k in ["instance_method", "container", "test_gradients"]:
-                UNSET_TEST_API_CONFIG.append(k)
+            if k in ["instance_method", "test_gradients"]:
+                UNSET_TEST_API_CONFIG["flag"].append(k)
+            elif k == "container":
+                UNSET_TEST_API_CONFIG["list"].append("container_flags")
             elif k == "with_out":
-                UNSET_TEST_CONFIG_SINGLE.append(k)
+                UNSET_TEST_CONFIG["flag"].append(k)
             else:
-                UNSET_TEST_CONFIG_LISTS.append(k)
+                UNSET_TEST_CONFIG["list"].append(k)
 
 
 def pytest_addoption(parser):

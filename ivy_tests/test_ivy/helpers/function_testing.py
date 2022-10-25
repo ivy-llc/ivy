@@ -38,6 +38,11 @@ from .assertions import (
 )
 
 
+# Mock def to stop pytest failing at collecting.
+def handle_cmd_line_args(fn):
+    pass
+
+
 # ToDo, this is temporary until unsupported_dtype is embedded
 # into helpers.get_dtypes
 def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
