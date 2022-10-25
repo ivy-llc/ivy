@@ -28,4 +28,6 @@ Assertions
    assertions/check_fill_value_and_dtype_are_compatible.rst
    assertions/check_gather_input_valid.rst
    assertions/check_gather_nd_input_valid.rst
+   assertions/check_one_way_broadcastable.rst
+   assertions/check_inplace_sizes_valid.rst
 
