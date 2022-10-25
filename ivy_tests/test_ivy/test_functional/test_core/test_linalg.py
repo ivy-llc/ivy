@@ -165,7 +165,56 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 
 
 @st.composite
-def _get_first_matrix_and_dtype(draw):
+def _get_matrices_for_matmul(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_shape = draw(
+        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
+    )
+    transposed_a = draw(st.booleans())
+    if transposed_a:
+        shape_a = tuple(list(batch_shape) + [shared_size, random_size])
+    else:
+        shape_a = tuple(list(batch_shape) + [random_size, shared_size])
+
+    matrix_a = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=shape_a,
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    transposed_b = draw(st.booleans())
+    if transposed_b:
+        shape_b = tuple(list(batch_shape) + [random_size, shared_size])
+    else:
+        shape_b = tuple(list(batch_shape) + [shared_size, random_size])
+
+    matrix_b = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=shape_b,
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    return ([input_dtype], matrix_a, transposed_a, matrix_b, transposed_b)
+
+
+@st.composite
+def _get_matrix_and_dtype(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
@@ -185,41 +234,6 @@ def _get_first_matrix_and_dtype(draw):
         shape = tuple(list(batch_shape) + [shared_size, random_size])
     else:
         shape = tuple(list(batch_shape) + [random_size, shared_size])
-    return (
-        [input_dtype],
-        draw(
-            helpers.array_values(
-                dtype=input_dtype,
-                shape=shape,
-                min_value=2,
-                max_value=5,
-            )
-        ),
-        transposed,
-    )
-
-
-@st.composite
-def _get_second_matrix_and_dtype(draw):
-    # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
-            key="shared_dtype",
-        )
-    )
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
-    )
-    transposed = draw(st.booleans())
-    if transposed:
-        shape = tuple(list(batch_shape) + [random_size, shared_size])
-    else:
-        shape = tuple(list(batch_shape) + [shared_size, random_size])
     return (
         [input_dtype],
         draw(
@@ -334,14 +348,12 @@ def test_matrix_power(
 # matmul
 @handle_cmd_line_args
 @given(
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    x_y=_get_matrices_for_matmul(),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
 def test_matmul(
     *,
-    x,
-    y,
+    x_y,
     as_variable,
     with_out,
     num_positional_args,
@@ -350,10 +362,9 @@ def test_matmul(
     instance_method,
     fw,
 ):
-    input_dtype1, x_1, transpose_a = x
-    input_dtype2, y_1, transpose_b = y
+    input_dtype, matrix_a, transpose_a, matrix_b, transpose_b = x_y
     helpers.test_function(
-        input_dtypes=input_dtype1 + input_dtype2,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -364,8 +375,8 @@ def test_matmul(
         fn_name="matmul",
         rtol_=1e-1,
         atol_=1e-1,
-        x1=x_1,
-        x2=y_1,
+        x1=matrix_a,
+        x2=matrix_b,
         transpose_a=transpose_a,
         transpose_b=transpose_b,
     )
@@ -596,7 +607,7 @@ def test_inv(
 # matrix_transpose
 @handle_cmd_line_args
 @given(
-    dtype_x=_get_first_matrix_and_dtype(),
+    dtype_x=_get_matrix_and_dtype(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_transpose"),
 )
 def test_matrix_transpose(
