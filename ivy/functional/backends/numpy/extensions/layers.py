@@ -365,3 +365,15 @@ def fmax(
 
 
 fmax.support_native_out = True
+
+
+def nansum(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nansum(input, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
