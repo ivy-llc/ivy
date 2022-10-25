@@ -109,7 +109,7 @@ def max_pool1d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCW":
-        x = np.transpose(x, (0, 2, 1))
+        x = jnp.transpose(x, (0, 2, 1))
 
     if isinstance(strides, int):
         strides = (strides,)
@@ -124,7 +124,7 @@ def max_pool1d(
     res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
 
     if data_format == "NCW":
-        res = np.transpose(x, (0, 2, 1))
+        res = jnp.transpose(x, (0, 2, 1))
     return res
 
 

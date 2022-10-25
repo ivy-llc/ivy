@@ -8,6 +8,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+
 def flatten(
     x: torch.Tensor,
     /,
@@ -100,6 +101,7 @@ def max_pool2d(
 
 
 max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
+
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(

@@ -40,6 +40,7 @@ def max_pool2d(
         return tf.transpose(res, (0, 3, 1, 2))
     return res
 
+
 def max_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],

@@ -473,7 +473,6 @@ class ContainerWithLayersExtensions(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def static_kaiser_window(
         window_length: Union[int, ivy.Container],

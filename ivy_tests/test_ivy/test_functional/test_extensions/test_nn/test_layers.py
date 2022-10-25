@@ -203,7 +203,6 @@ def test_max_pool1d(
     fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
-    d=0
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
