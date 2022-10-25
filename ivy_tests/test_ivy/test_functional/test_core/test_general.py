@@ -906,7 +906,7 @@ def test_default(x, default_val):
                 else default_val
             )
 
-    truth_val = x if x is not None else default_val
+    truth_val = ivy.to_native(x if x is not None else default_val)
     if with_callable:
         assert ivy.default(x, default_val) == truth_val
     else:
