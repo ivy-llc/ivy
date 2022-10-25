@@ -504,6 +504,24 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out:
             Optional output tuple, for writing the result to. Must have two Container,
             with a shape that the returned tuple broadcast to.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
+        >>> y = ivy.Container.static_top_k(x, 2)
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([ 2, -1]),
+                indices = ivy.array([1, 0])
+            ],
+            b: [
+                values = ivy.array([5., 4.]),
+                indices = ivy.array([1, 0])
+            ]
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "top_k",
@@ -559,8 +577,26 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out:
             Optional output tuple, for writing the result to. Must have two Container,
             with a shape that the returned tuple broadcast to.
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
+        >>> y = x.top_k(2)
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([ 2, -1]),
+                indices = ivy.array([1, 0])
+            ],
+            b: [
+                values = ivy.array([5., 4.]),
+                indices = ivy.array([1, 0])
+            ]
+        }
         """
         return self.static_top_k(
+            self,
             k,
             axis=axis,
             largest=largest,

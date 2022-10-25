@@ -171,7 +171,7 @@ class ArrayWithManipulationExtensions(abc.ABC):
         return ivy.hstack(self.concat(arrays), out=out)
 
     def top_k(
-        self: Union[ivy.Array, ivy.NativeArray],
+        self: ivy.Array,
         k: int,
         /,
         *,
@@ -200,5 +200,14 @@ class ArrayWithManipulationExtensions(abc.ABC):
         Returns
             ret
                 A named tuple with values and indices of top k elements.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
+        >>> y = x.top_k(2)
+        >>> print(y)
+        top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
         """
         return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
