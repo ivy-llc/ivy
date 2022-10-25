@@ -123,6 +123,9 @@ class Tensor:
     def arctan(self, *, out=None):
         return torch_frontend.arctan(self, out=out)
 
+    def acos(self, *, out=None):
+        return torch_frontend.acos(self.data, out=out)
+
     # Special Methods #
     # -------------------#
 
