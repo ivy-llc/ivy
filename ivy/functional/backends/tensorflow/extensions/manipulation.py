@@ -62,6 +62,20 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
+    if not largest:
+        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.take(
+            indices, tf.experimental.numpy.arange(k), axis=axis
+        )
+        indices = tf.dtypes.cast(indices, tf.int32)
+    else:
+        x *= -1
+        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.take(
+            indices, tf.experimental.numpy.arange(k), axis=axis
+        )
+        indices = tf.dtypes.cast(indices, tf.int32)
+        x *= -1
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
-    indices, vals = tf.math.top_k(x, k=k, sorted=largest)
-    return topk_res(vals, indices)
+    val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
+    return topk_res(val, indices)
