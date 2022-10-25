@@ -742,12 +742,12 @@ def hamming_window(
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
-    if periodic is True:
-        if window_length == 0:
-            return ivy.array([])
-        elif window_length == 1:
-            return ivy.array([1])
-        else:
+    if window_length == 0:
+        return ivy.array([])
+    elif window_length == 1:
+        return ivy.array([1])
+    else:
+        if periodic is True:
             window_length = window_length + 1
             return ivy.array(
                 [alpha - beta * cos((2 * n * pi) / (window_length - 1))
@@ -755,11 +755,6 @@ def hamming_window(
                 dtype=dtype,
                 out=out
             )
-    else:
-        if window_length == 0:
-            return ivy.array([])
-        elif window_length == 1:
-            return ivy.array([1])
         else:
             return ivy.array(
                 [alpha - beta * cos((2 * n * pi) / (window_length - 1))
