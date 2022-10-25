@@ -95,7 +95,7 @@ class ContainerWithSortingExtensions(ContainerBase):
         --------
         >>> a = ivy.Container(x = ivy.randint(10, size=(2,3)),
         ...                   y = ivy.randint(5, size=(2,2))
-        >>> a.argsort()
+        >>> a.msort()
         {
             x: ivy.array(
                 [[6, 2, 6],
