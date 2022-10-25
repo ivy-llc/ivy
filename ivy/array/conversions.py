@@ -14,6 +14,8 @@ import ivy
 
 
 def _to_native(x: Any, inplace: bool = False) -> Any:
+    if ivy.is_frontend_array(x):
+        return _to_native(x.data)
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
