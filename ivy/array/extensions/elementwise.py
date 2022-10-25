@@ -232,11 +232,11 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         Examples
         --------
         >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
-        >>> ivy.float_power(x1, 3)
+        >>> x1.float_power(3)
         ivy.array([1.,    8.,   27.,   64.,  125.])
         >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
         >>> x2 = ivy.array([2, 3, 3, 2, 1])
-        >>> ivy.float_power(x1, x2)
+        >>> x1.float_power(x2)
         ivy.array([1.,   8.,  27.,  16.,   5.])
         """
         return ivy.float_power(self._data, x2, out=out)

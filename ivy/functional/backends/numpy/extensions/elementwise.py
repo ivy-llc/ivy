@@ -95,11 +95,6 @@ def float_power(
         np.float_power(
             x1,
             x2,
-            where=True,
-            casting='same_kind',
-            order='K',
-            dtype=None,
-            subok=True,
             out=out
         ),
         dtype=x1.dtype
