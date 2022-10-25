@@ -8,65 +8,40 @@ import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
 
 
-def safety_factor_linalg(
-    matrix,
-    *,
-    condition_index="high",
-):
+def matrix_is_stable(x, cond_limit=30):
     """
-    Applies safety factor to the condition of a matrix to avoid numerical
-    instabilities in further calculations.
+    Used to avoid numerical instabilities in further computationally heavy
+    calculations.
 
     Parameters
     ----------
     matrix
         The original matrix whose condition number is to be determined.
     condition_index
-        When a condition_index of "high" is used we are testing for a less
-        ill-conditioned matrix which is not too much prone to numerical
-        instabilities.
-
-        When a condition_index of "low" is used we are testing for a
-        well-conditioned matrices.
+        The greater the condition number, the more ill-conditioned the matrix 
+        will be, the more it will be prone to numerical instabilities. 
 
         There is no rule of thumb for what the exact condition number
         should be to consider a matrix ill-conditioned(prone to numerical errors).
-        If the condition number is "1", the matrix is perfectly said to be a
-        well-conditioned matrix which will not be prone to any numerical type
-        of instabilities in further calculations, but that would probably be a
+        But, if the condition number is "1", the matrix is perfectly said to be a
+        well-conditioned matrix which will not be prone to any type of numerical
+        instabilities in further calculations, but that would probably be a
         very simple matrix.
 
-        The "low" condition index checks from "1" till "10" as a matrix can
-        be considered well-condition in this range. This should be used for
-        a very high numerical computational function because it strictly
-        limits the type of matrices we generate.
+        The cond_limit should start with "30", gradually decreasing it according 
+        to our use, lower cond_limit would result in more numerically stable 
+        matrices but more simple matrices.
 
-        The "high" condition index checks from "10" till "30", in this range
-        the matrix is close to multicollinearity and can be considered a
-        little ill-conditioned, going above 30 leads to strong multicollinearity
-        which leads to singularity.
+        The limit should always be in the range "1-30", greater the number greater 
+        the computational instability. Should not increase 30, it leads to strong
+        multicollinearity which leads to singularity.
 
     Returns
     -------
     A bool, either True or False. Which tells whether the matrix is suitable for
     further numerical computations or not.
     """
-    type_casted_matrix = matrix.astype('float64')
-    if condition_index == "high":
-        if np.linalg.cond(type_casted_matrix) == float("inf"):
-            return False
-        elif round(np.linalg.cond(type_casted_matrix)) >= 10 and \
-                round(np.linalg.cond(type_casted_matrix)) <= 30:
-            return True
-        else:
-            return False
-    if condition_index == "low":
-        if np.linalg.cond(type_casted_matrix) == float("inf"):
-            return False
-        elif round(np.linalg.cond(type_casted_matrix)) <= 10:
-            return True
-        else:
-            return False
+    return np.linalg.cond(x.astype('float64')) <= cond_limit
 
 
 def apply_safety_factor(
