@@ -1,5 +1,4 @@
 # local
-from numpy import complex128, complex192, complex64
 import ivy
 from ivy.functional.frontends.torch.Tensor import Tensor
 
@@ -15,9 +14,18 @@ def is_tensor(obj):
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
+
 def is_complex(obj):
-    if ivy.dtype(obj) == complex64 or ivy.dtype(obj) == complex128 or ivy.dtype(obj) == complex192:
-        return Tensor(is_tensor(obj))
+    arr = ivy.asarray(obj)
+    if (
+        ivy.dtype(arr) == ivy.complex64
+        or ivy.dtype(arr) == ivy.complex128
+        or ivy.dtype(arr) == ivy.complex256
+    ):
+        return True
+    else:
+        return False
+
 
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
