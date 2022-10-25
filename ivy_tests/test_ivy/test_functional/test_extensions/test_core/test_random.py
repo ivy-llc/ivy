@@ -16,7 +16,7 @@ import numpy as np
 @handle_cmd_line_args
 @given(
     dtype_and_alpha=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1),
+        available_dtypes=helpers.get_dtypes("float", index=2),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),

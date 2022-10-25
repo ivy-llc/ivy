@@ -13,8 +13,8 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    size = size if not None else len(alpha)
-    dtype = dtype if not None else np.float64
+    size = size if size is not None else len(alpha)
+    dtype = dtype if dtype is not None else np.float64
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.dirichlet(alpha, size=size), dtype=dtype)

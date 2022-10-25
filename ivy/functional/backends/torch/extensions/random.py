@@ -19,9 +19,9 @@ def dirichlet(
     seed: Optional[int] = None,
     dtype: Optional[torch.dtype] = None,
 ) -> torch.Tensor:
-    size = size if not None else len(alpha)
+    size = size if size is not None else len(alpha)
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.Tensor(
-        torch.distributions.dirichlet.Dirichlet(alpha).sample(size), dtype=dtype
+    return torch.tensor(
+        torch.distributions.dirichlet.Dirichlet(alpha).rsample(sample_shape=size), dtype=dtype
     )
