@@ -474,5 +474,29 @@ def mish(
     -------
     ret
         The input array with mish applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, -0.98])
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    ivy.array([-0.3034, -0.3021])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    ivy.array([0.8651, 1.9440, 2.9865])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    {
+        a: ivy.array([1.4034, 0.3752, 0.8651])
+    }
+
     """
     return current_backend(x).mish(x, inplace)
