@@ -428,9 +428,9 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Rotate an array by 90 degrees in the plane specified by axes.
+    """Rotate an array by 90 degrees in the plane specified by axes.
     Rotation direction is from the first towards the second axis.
+
     Parameters
     ----------
     m
@@ -443,26 +443,28 @@ def rot90(
     out
         optional output container, for writing the result to. It must have a shape
         that the inputs broadcast to.
+
     Returns
     -------
     ret
         A rotated view of m.
+
     Examples
     --------
     With :code:`ivy.Array` input:
     >>> m = ivy.array([[1,2], [3,4]])
-    >>> m.rot90()
+    >>> ivy.rot90(m)
     ivy.array([[2, 4],
            [1, 3]])
     >>> m = ivy.array([[1,2], [3,4]])
-    >>> m.rot90(k=2)
+    >>> ivy.rot90(m, k=2)
     ivy.array([[4, 3],
            [2, 1]])
     >>> m = ivy.array([[[0, 1],\
                         [2, 3]],\
                        [[4, 5],\
                         [6, 7]]])
-    >>> m.rot90(k=2, axes=(1,2))
+    >>> ivy.rot90(m, k=2, axes=(1,2))
     ivy.array([[[3, 2],
             [1, 0]],
 
@@ -487,17 +489,6 @@ def rot90(
 
            [[7, 6],
             [5, 4]]])
-    With :code:`ivy.Container` input:
-    >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-            b=ivy.native_array([[1,2,3,4],\
-                                [7,8,9,10],\
-                                [3,4,5,6],\
-                                [11,12,13,14]]))
-    >>> m.rot90()
-    {
-        a: ivy.array([[2, 4],
-                      [1, 3]]),
-        b: (<class ivy.array.array.Array> shape=[4, 4])
-    }
+
     """
     return ivy.current_backend(m).rot90(m, k=k, axes=axes, out=out)

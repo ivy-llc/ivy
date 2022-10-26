@@ -479,6 +479,7 @@ class ContainerWithManipulationExtensions(ContainerBase):
         ivy.Container static method variant of ivy.rot90.
         This method simply wraps the function, and so the docstring for
         ivy.rot90 also applies to this method with minimal changes.
+
         Parameters
         ----------
         m
@@ -501,14 +502,16 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
             Container with a rotated view of m.
+            
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                b=ivy.native_array([[1,2,3,4],\
+                        b=ivy.array([[1,2,3,4],\
                                     [7,8,9,10],\
                                     [3,4,5,6],\
                                     [11,12,13,14]]))
@@ -547,6 +550,7 @@ class ContainerWithManipulationExtensions(ContainerBase):
         ivy.Container static method variant of ivy.rot90.
         This method simply wraps the function, and so the docstring for
         ivy.rot90 also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -569,14 +573,16 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
             Container with a rotated view of input array.
+
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                b=ivy.native_array([[1,2,3,4],\
+                        b=ivy.array([[1,2,3,4],\
                                     [7,8,9,10],\
                                     [3,4,5,6],\
                                     [11,12,13,14]]))

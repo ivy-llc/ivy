@@ -182,6 +182,7 @@ class ArrayWithManipulationExtensions(abc.ABC):
         ivy.Array instance method variant of ivy.rot90.
         This method simply wraps the function, and so the docstring
         for ivy.rot90 also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -194,10 +195,12 @@ class ArrayWithManipulationExtensions(abc.ABC):
         out
             Optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
+
         Returns
         -------
         ret
             Array with a rotated view of input array.
+
         Examples
         --------
         >>> m = ivy.array([[1,2], [3,4]])
@@ -218,5 +221,6 @@ class ArrayWithManipulationExtensions(abc.ABC):
 
                [[7, 6],
                 [5, 4]]])
+
         """
         return ivy.rot90(self._data, k=k, axes=axes, out=out)
