@@ -56,7 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="vendor_specific_compilers.html">Vendor-Specific Compilers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ml_unifying_companies.html">ML-Unifying Companies</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">What does Ivy Add?</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#api-standards">API Standards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api-standards">Python API Standards</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#wrapper-frameworks">Wrapper Frameworks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#frameworks">Frameworks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#graph-tracers">Graph Tracers</a></li>
@@ -158,10 +158,9 @@
              
   <section id="what-does-ivy-add">
 <h1>What does Ivy Add?<a class="headerlink" href="#what-does-ivy-add" title="Permalink to this heading"></a></h1>
-<section id="api-standards">
-<h2>API Standards<a class="headerlink" href="#api-standards" title="Permalink to this heading"></a></h2>
+<section id="python-api-standards">
+<h2>Python API Standards<a class="headerlink" href="#python-api-standards" title="Permalink to this heading"></a></h2>
 <p>Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api">Array API Standard</a>, and we are strongly aligned with their unification vision. Ivy is entirely complimentary to the standard, implementing all of the functions defined by the standard, and populating each of them with implementations supporting a variety of frameworks.</p>
-<p>Further into the future, we have quite lofty ambitions for Ivy to extend beyond the Python realm, and to help build the bedrock of a more general, language-agnostic, purely mathematical standardized Array API. Given that the function signatures at the Array API level are very much mathematically bound, it is certainly possible to define this purely mathematical, language-agnostic Array API, using the Array API Standard as a starting point. In this light, the current release of Ivy would simply be the “Python backend” of Ivy, which itself of course would contain the same framework-specific backends itself, but just pushed one level further down the backend hierarchy. In future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in <em>different</em> languages. For example, transpiling from <a class="reference external" href="https://pytorch.org/">PyTorch</a> to the <a class="reference external" href="https://fluxml.ai/">Flux</a> framework written in <a class="reference external" href="https://julialang.org/">Julia</a> would be a great feature. However, for the time being we are focusing exclusively on Python, in order to mitigate the risk of “biting off more than we can chew”!</p>
 </section>
 <section id="wrapper-frameworks">
 <h2>Wrapper Frameworks<a class="headerlink" href="#wrapper-frameworks" title="Permalink to this heading"></a></h2>
