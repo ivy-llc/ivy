@@ -371,6 +371,12 @@ def unset_backend():
             ivy.del_global_attr("RNG")
         # the new backend is the backend that was set before the one we just removed
         # from the stack, or Ivy if there was no previously set backend
+        if backend_stack:
+            new_backend = backend_stack[-1]
+            if new_backend.current_backend_str() == "numpy":
+                ivy.set_default_device("cpu")
+            elif new_backend.current_backend_str() == "jax":
+                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )
