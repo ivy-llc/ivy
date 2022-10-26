@@ -168,6 +168,7 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    print("=======================================")
     if len(x.shape) == 3:
         if x.shape[-3] == 0:
             return jnp.asarray(0).astype(x.dtype)
@@ -189,12 +190,30 @@ def matrix_rank(
         axis = 1
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
+    print("singular values shape: ", singular_values.shape)
     max_values = jnp.max(singular_values, axis=axis)
+    print("max_values shape: ", max_values.shape)
     if atol is None:
         if rtol is None:
             ret = jnp.sum(singular_values != 0, axis=axis)
         else:
-            ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
+            if isinstance(rtol, float):
+                print("rtol: ", rtol)
+            else:
+                print("rtol shape: ", rtol.shape)
+            print("max_values * rtol shape: ", (max_values * rtol).shape)
+            print("axis = ", axis)
+            max_rtol = max_values * rtol
+            # singular_values = ivy.reshape(singular_values, (2,3))
+            print("max rtol: ", max_rtol)
+            result = ivy.all(element == max_rtol[0] for element in max_rtol)
+            print("Are all elements the same? ", result)
+            if result:  # all elements are same
+                max_rtol = max_rtol[0][0]
+                print("max rtol single value: ", max_rtol)
+            ret = ivy.sum(
+                singular_values > max_rtol, axis=axis
+            )  # adding or removing axis makes no difference
     else:  # atol is not None
         if rtol is None:  # atol is not None, rtol is None
             ret = jnp.sum(singular_values > atol, axis=axis)
