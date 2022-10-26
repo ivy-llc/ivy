@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
@@ -82,3 +82,23 @@ def trapz(
 
 
 trapz.support_native_out = False
+
+
+def float_power(
+    x1: Union[np.ndarray, float, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.asarray(
+        np.float_power(
+            x1,
+            x2,
+            out=out
+        ),
+        dtype=x1.dtype
+    )
+
+
+float_power.support_native_out = True
