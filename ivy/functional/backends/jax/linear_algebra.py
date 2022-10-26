@@ -197,6 +197,7 @@ def matrix_rank(
         if rtol is None:
             ret = jnp.sum(singular_values != 0, axis=axis)
         else:
+            max_rtol = max_values * rtol
             if isinstance(rtol, float) or (
                 not isinstance(rtol, float) and len(rtol) <= 1
             ):
@@ -205,7 +206,7 @@ def matrix_rank(
                 print("rtol shape: ", rtol.shape)
                 print("max_values * rtol shape: ", (max_values * rtol).shape)
                 print("axis = ", axis)
-                max_rtol = max_values * rtol
+
                 # singular_values = ivy.reshape(singular_values, (2,3))
                 print("max rtol: ", max_rtol)
                 result = ivy.all(element == max_rtol[0] for element in max_rtol)
