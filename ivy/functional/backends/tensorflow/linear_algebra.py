@@ -351,12 +351,17 @@ def matrix_rank(
         if rtol is None:
             ret = tf.sum(singular_values != 0, axis=axis)
         else:
-            if isinstance(rtol, float) or (isinstance(rtol, tuple) and len(rtol) <= 1):
+            max_rtol = max_values * rtol
+            if isinstance(rtol, float):
                 print("rtol: ", rtol)
+            elif not isinstance(rtol, float) and rtol.size <= 1:
+                print("rtol array: ", rtol)
             else:
                 max_rtol = max_values * rtol
                 print("max rtol: ", max_rtol)
-                result = tf.all(element == max_rtol[0] for element in max_rtol)
+                result = tf.experimental.numpy.all(
+                    element == max_rtol[0] for element in max_rtol
+                )
                 print("Are all elements the same? ", result)
                 if result:  # all elements are same
                     if max_rtol.dim == 1:
