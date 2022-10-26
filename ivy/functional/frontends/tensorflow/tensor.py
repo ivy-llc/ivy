@@ -128,6 +128,15 @@ class Tensor:
         return y.__rsub__(self.data)
 
     def __truediv__(self, y, name="truediv"):
+        dtype = ivy.dtype(self.data)
+        if dtype in [ivy.uint8, ivy.int8, ivy.uint16, ivy.int16]:
+            return ivy.astype(y, ivy.float32).__rtruediv__(
+                ivy.astype(self.data, ivy.float32)
+            )
+        if dtype in [ivy.uint32, ivy.int32, ivy.uint64, ivy.int64]:
+            return ivy.astype(y, ivy.float64).__rtruediv__(
+                ivy.astype(self.data, ivy.float64)
+            )
         return y.__rtruediv__(self.data)
 
     def __xor__(self, y, name="xor"):
