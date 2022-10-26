@@ -1388,65 +1388,95 @@ def test_cross(
 
 @st.composite
 def _generate_diag_args(draw):
-    x_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5))
+    x_shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        )
+    )
 
-    dtype_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=x_shape,
-        min_value=-1e2,
-        max_value=1e2,
-        #max_dim_size=5,
-        #min_dim_size=1,
-        #min_num_dims=1,
-        #max_num_dims=1,
-    ))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=x_shape,
+            min_value=-1e2,
+            max_value=1e2,
+        )
+    )
 
     offset = draw(helpers.ints(min_value=-5, max_value=5))
 
     dtype = dtype_x[0]
-    #while not isinstance(dtype, (str, ivy.Dtype)):
+    # while not isinstance(dtype, (str, ivy.Dtype)):
     #    dtype = dtype[0]
 
     if dtype == "u":
         print("WHAT")
 
-    dtype_padding_value = draw(helpers.dtype_and_values(
-        available_dtypes=dtype,
-        max_dim_size=1,
-        min_dim_size=1,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_value=-1e2,
-        max_value=1e2,
-    ))
+    dtype_padding_value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype,
+            max_dim_size=1,
+            min_dim_size=1,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=-1e2,
+            max_value=1e2,
+        )
+    )
 
-    align = draw(st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]))
+    align = draw(
+        st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"])
+    )
 
     if offset < 0:
         num_rows_is_negative = draw(st.booleans())
         if num_rows_is_negative:
             num_rows = -1
-            num_cols = draw(st.one_of(st.integers(min_value=-1, max_value=-1), st.integers(min_value=x_shape[0], max_value=12)))
+            num_cols = draw(
+                st.one_of(
+                    st.integers(min_value=-1, max_value=-1),
+                    st.integers(min_value=x_shape[0], max_value=12),
+                )
+            )
         else:
             num_rows_is_as_expected = draw(st.booleans())
             if num_rows_is_as_expected:
                 num_rows = x_shape[0] + abs(offset)
-                num_cols = draw(st.one_of(st.integers(min_value=-1, max_value=-1), st.integers(min_value=x_shape[0], max_value=12)))
+                num_cols = draw(
+                    st.one_of(
+                        st.integers(min_value=-1, max_value=-1),
+                        st.integers(min_value=x_shape[0], max_value=12),
+                    )
+                )
             else:
-                num_rows = draw(st.integers(min_value=x_shape[0] + abs(offset) + 1, max_value=12))
+                num_rows = draw(
+                    st.integers(min_value=x_shape[0] + abs(offset) + 1, max_value=12)
+                )
                 num_cols = draw(st.sampled_from([-1, x_shape[0]]))
     if offset > 0:
         num_cols_is_negative = draw(st.booleans())
         if num_cols_is_negative:
             num_cols = -1
-            num_rows = draw(st.one_of(st.integers(min_value=-1, max_value=-1), st.integers(min_value=x_shape[0], max_value=12)))
+            num_rows = draw(
+                st.one_of(
+                    st.integers(min_value=-1, max_value=-1),
+                    st.integers(min_value=x_shape[0], max_value=12),
+                )
+            )
         else:
             num_cols_is_as_expected = draw(st.booleans())
             if num_cols_is_as_expected:
                 num_cols = x_shape[0] + abs(offset)
-                num_rows = draw(st.one_of(st.integers(min_value=-1, max_value=-1), st.integers(min_value=x_shape[0], max_value=12)))
+                num_rows = draw(
+                    st.one_of(
+                        st.integers(min_value=-1, max_value=-1),
+                        st.integers(min_value=x_shape[0], max_value=12),
+                    )
+                )
             else:
-                num_cols = draw(st.integers(min_value=x_shape[0] + abs(offset) + 1, max_value=12))
+                num_cols = draw(
+                    st.integers(min_value=x_shape[0] + abs(offset) + 1, max_value=12)
+                )
                 num_rows = draw(st.sampled_from([-1, x_shape[0]]))
 
     if offset == 0:
@@ -1459,41 +1489,36 @@ def _generate_diag_args(draw):
 
         if num_rows_is_negative:
             num_rows = -1
-            num_cols = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
+            num_cols = draw(
+                st.integers(min_value=x_shape[0] + abs(offset), max_value=12)
+            )
 
         if num_cols_is_negative:
             num_cols = -1
-            num_rows = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
+            num_rows = draw(
+                st.integers(min_value=x_shape[0] + abs(offset), max_value=12)
+            )
 
         else:
             num_rows_is_as_expected = draw(st.booleans())
             if num_rows_is_as_expected:
                 num_rows = x_shape[0]
-                num_cols = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
+                num_cols = draw(
+                    st.integers(min_value=x_shape[0] + abs(offset), max_value=12)
+                )
             else:
                 num_cols = x_shape[0]
-                num_rows = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
-            #num_rows = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
-            #num_cols = draw(st.integers(min_value=x_shape[0] + abs(offset), max_value=12))
-
-    #fix_rows_length = draw(st.booleans())
-    #if fix_rows_length:
-    #    num_rows = x_shape[0] + abs(offset)
-    #    num_cols = draw(st.one_of(helpers.ints(min_value=-1, max_value=-1), helpers.ints(min_value=num_rows, max_value=12)))
-    #else:
-    #    num_cols = x_shape[0] + abs(offset)
-    #    num_rows = draw(st.one_of(helpers.ints(min_value=-1, max_value=-1), helpers.ints(min_value=num_cols , max_value=12)))
-    #num_rows = draw(st.one_of(st.none(), helpers.ints(min_value=2, max_value=12)))
-    #num_cols = draw(st.one_of(st.none(), helpers.ints(min_value=2, max_value=12)))
+                num_rows = draw(
+                    st.integers(min_value=x_shape[0] + abs(offset), max_value=12)
+                )
 
     return dtype_x, offset, dtype_padding_value, align, num_rows, num_cols
 
 
 @handle_cmd_line_args
-@settings(max_examples=500)
+@settings(max_examples=50000)
 @given(
     args_packet=_generate_diag_args(),
-
     num_positional_args=helpers.num_positional_args(fn_name="diag"),
 )
 def test_diag(
@@ -1505,7 +1530,7 @@ def test_diag(
     container,
     instance_method,
     fw,
-    args_packet
+    args_packet,
 ):
     dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
 
@@ -1533,7 +1558,7 @@ def test_diag(
         num_rows=num_rows,
         num_cols=num_cols,
         atol_=1e-01,
-        rtol_=1/64,
+        rtol_=1 / 64,
     )
 
 
