@@ -9,7 +9,7 @@ class Tensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
-        elif isinstance(data, list):
+        else:
             data = ivy.asarray(data)
         self.data = data
 
@@ -25,6 +25,23 @@ class Tensor:
 
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self.data)
+
+    def set_shape(self, shape):
+        if shape is None:
+            return
+
+        x_shape = self.data.shape
+        if len(x_shape) != len(shape):
+            raise ValueError(
+                f"Tensor's shape {x_shape} is not compatible with supplied shape "
+                f"{shape}."
+            )
+        for i, v in enumerate(x_shape):
+            if v != shape[i] and (shape[i] is not None):
+                raise ValueError(
+                    f"Tensor's shape {x_shape} is not compatible with supplied shape "
+                    f"{shape}."
+                )
 
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
@@ -45,7 +62,7 @@ class Tensor:
         temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
         shape = ivy.shape(temp)
         if shape:
-            raise ivy.exceptions.IvyError(
+            raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
                 "Use a.any() or a.all()"
             )
