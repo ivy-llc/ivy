@@ -137,7 +137,9 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _generate_shared_test_flags(param_names: list, _given_kwargs: dict, fn_tree: str):
+def _generate_shared_test_flags(
+    param_names: list, _given_kwargs: dict, fn_tree: str, fn: callable
+):
     """
     Generates flags that all tests use.
     Returns
@@ -156,7 +158,7 @@ def _generate_shared_test_flags(param_names: list, _given_kwargs: dict, fn_tree:
         if flag in param_names:
             _given_kwargs[flag] = st.booleans()
         # Override with_out to be compatible
-    for k in param_names:
+    for k in inspect.signature(fn).parameters.keys():
         if k.endswith("out"):
             break
     else:
@@ -192,7 +194,7 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
         # No Hypothesis @given is used
         if is_hypothesis_test:
             __given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree
+                param_names, given_kwargs, fn_tree, callable_fn
             )
             for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
                 if flag in param_names:
@@ -241,7 +243,7 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
             _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree
+                param_names, given_kwargs, fn_tree, callable_fn
             )
 
             def wrapped_test(device, fixt_frontend_str, *args, **kwargs):
