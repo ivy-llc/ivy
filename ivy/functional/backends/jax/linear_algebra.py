@@ -168,7 +168,17 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    print("=======================================")
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
     if len(x.shape) == 3:
         if x.shape[-3] == 0:
             return jnp.asarray(0).astype(x.dtype)
@@ -192,36 +202,25 @@ def matrix_rank(
         return jnp.array(0, dtype=x.dtype)
     print("singular values shape: ", singular_values.shape)
     max_values = jnp.max(singular_values, axis=axis)
-    print("max_values shape: ", max_values.shape)
     if atol is None:
         if rtol is None:
             ret = jnp.sum(singular_values != 0, axis=axis)
         else:
-            max_rtol = max_values * rtol
-            if isinstance(rtol, float):
-                print("rtol: ", rtol)
-            elif not isinstance(rtol, float) and rtol.size <= 1:
-                print("rtol array: ", rtol)
-            else:
-                print("rtol shape: ", rtol.shape)
-                print("max_values * rtol shape: ", (max_values * rtol).shape)
-                print("axis = ", axis)
-
-                # singular_values = ivy.reshape(singular_values, (2,3))
-                print("max rtol: ", max_rtol)
-                result = ivy.all(element == max_rtol[0] for element in max_rtol)
-                print("Are all elements the same? ", result)
-                if result:  # all elements are same
-                    if max_rtol.ndim == 1:
-                        max_rtol = max_rtol[0]
-                    elif max_rtol.ndim == 2:
-                        max_rtol = max_rtol[0][0]
-                    elif max_rtol.ndim == 3:
-                        max_rtol = max_rtol[0][0][0]
-                    print("max rtol single value: ", max_rtol)
-            ret = ivy.sum(
-                singular_values > max_rtol, axis=axis
-            )  # adding or removing axis makes no difference
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
     else:  # atol is not None
         if rtol is None:  # atol is not None, rtol is None
             ret = jnp.sum(singular_values > atol, axis=axis)
