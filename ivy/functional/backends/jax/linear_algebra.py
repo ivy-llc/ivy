@@ -200,7 +200,6 @@ def matrix_rank(
         axis = 1
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
-    print("singular values shape: ", singular_values.shape)
     max_values = jnp.max(singular_values, axis=axis)
     if atol is None:
         if rtol is None:
