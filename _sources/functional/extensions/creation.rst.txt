@@ -13,5 +13,4 @@ Creation
    :maxdepth: -1
    :caption: Creation
 
-   creation/triu_indices.rst
 
