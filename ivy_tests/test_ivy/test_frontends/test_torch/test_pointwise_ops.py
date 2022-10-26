@@ -1501,7 +1501,9 @@ def test_torch_flipud(
         fn_tree="flipud",
         input=m[0],
     )
-   
+
+
+# deg2grad
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1530,4 +1532,3 @@ def test_torch_deg2rad(
         input=x[0],
         out=None,
     )
-
