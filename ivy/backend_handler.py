@@ -20,7 +20,6 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        print("REACHED CONTEXT")
         set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
