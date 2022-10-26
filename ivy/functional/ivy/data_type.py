@@ -1525,7 +1525,11 @@ def is_int_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
+                lambda x: (
+                    isinstance(x, (int, np.integer))
+                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                )
+                and not type(x) == bool,
             )
             else False
         )
