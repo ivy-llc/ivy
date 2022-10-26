@@ -198,8 +198,9 @@ class ArrayWithManipulationExtensions(abc.ABC):
             with a shape that the returned tuple broadcast to.
 
         Returns
-            ret
-                A named tuple with values and indices of top k elements.
+        -------
+        ret
+            A named tuple with values and indices of top k elements.
 
         Examples
         --------

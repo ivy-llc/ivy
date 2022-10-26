@@ -504,6 +504,10 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out:
             Optional output tuple, for writing the result to. Must have two Container,
             with a shape that the returned tuple broadcast to.
+        Returns
+        -------
+        ret
+            a container with indices and values.
 
         Examples
         --------
@@ -577,6 +581,12 @@ class ContainerWithManipulationExtensions(ContainerBase):
         out:
             Optional output tuple, for writing the result to. Must have two Container,
             with a shape that the returned tuple broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with indices and values.
+
         Examples
         --------
         With :class:`ivy.Container` input:
