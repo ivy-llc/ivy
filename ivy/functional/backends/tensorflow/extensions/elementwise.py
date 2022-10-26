@@ -1,6 +1,8 @@
 from typing import Union, Optional
 import tensorflow as tf
 from .. import backend_version
+from tensorflow.python.ops.numpy_ops import np_config 
+np_config.enable_numpy_behavior()
 
 
 # local
@@ -83,3 +85,15 @@ def float_power(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.float_power(x1, x2)
+
+
+def exp2(
+    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.cast(
+        tf.experimental.numpy.exp2(x),
+        dtype=x.dtype
+    )
