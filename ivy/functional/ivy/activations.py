@@ -1,6 +1,6 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 import sys
 
 # local
@@ -455,17 +455,37 @@ def log_softmax(
 @handle_exceptions
 def deserialize(
     name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
-) -> Union[ivy.Callable[[Union[ivy.Array, ivy.NativeArray]], ivy.Array], None]:
-    """
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
 
     Parameters
     ----------
     name
+        The name of the activation function.
     custom_objects
+        Optional dictionary listing user-provided activation functions.
 
     Returns
     -------
+    ret
+        Corresponding activation function.
 
+    Examples
+    --------
+    With :str: input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.deserialize(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+
+    With :str and dict: input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.deserialize(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
     """
     if current_backend().__name__.split(".")[-1] == "tensorflow":
         return current_backend().deserialize(name, custom_objects=custom_objects)
