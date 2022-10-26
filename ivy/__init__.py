@@ -1,14 +1,4 @@
 # global
-from typing import Union
-import jax.numpy as jnp
-import jax
-import jaxlib
-from jaxlib.xla_extension import Buffer
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.types.core import Tensor
-from tensorflow.python.framework.tensor_shape import TensorShape
-import torch
 import warnings
 from ivy._version import __version__ as __version__
 
@@ -30,28 +20,24 @@ class Framework:
     pass
 
 
-NativeArray = Union[
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-    np.ndarray,
-    Tensor,
-    torch.Tensor,
-]
+class NativeArray:
+    pass
 
 
-NativeVariable = Union[
-    jax.interpreters.xla._DeviceArray, np.ndarray, Tensor, torch.Tensor
-]
+class NativeVariable:
+    pass
 
 
-NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
+class NativeDevice:
+    pass
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
+class NativeDtype:
+    pass
 
 
-NativeShape = Union[tuple, TensorShape, torch.Size]
+class NativeShape:
+    pass
 
 
 class Container:
@@ -223,11 +209,12 @@ import threading
 
 
 # devices
+# ToDo: add gpu and tpu for valid devices when we test for them
 all_devices = ("cpu", "gpu", "tpu")
 
-valid_devices = all_devices
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # data types
@@ -522,10 +509,6 @@ from .backend_handler import (
     unset_backend,
     backend_stack,
     choose_random_backend,
-    try_import_ivy_jax,
-    try_import_ivy_tf,
-    try_import_ivy_torch,
-    try_import_ivy_numpy,
     clear_backend_stack,
 )
 from . import assertions, backend_handler, func_wrapper, exceptions
@@ -637,6 +620,56 @@ add_ivy_container_instance_methods(
     static=True,
 )
 
+
+class GlobalsDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+
+# defines ivy.globals attribute
+globals = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+    }
+)
+
+
+def set_global_attr(attr_name, attr_val):
+    setattr(globals, attr_name, attr_val)
+
+
+def del_global_attr(attr_name):
+    delattr(globals, attr_name)
+
+
 backend = "none"
 backend_version = "none"
 
@@ -661,16 +694,12 @@ def _sf(x, sig_fig=3):
         return x
     if isinstance(x, complex):
         return complex(x)
-    f = float(
-        np.format_float_positional(
-            x, precision=sig_fig, unique=False, fractional=False, trim="k"
+    if "float" in type(x).__name__:
+        x = float(
+            np.format_float_positional(
+                x, precision=sig_fig, unique=False, fractional=False, trim="k"
+            )
         )
-    )
-    if "uint" in type(x).__name__:
-        f = np.uint(f)
-    elif "int" in type(x).__name__:
-        f = int(f)
-    x = f
     return x
 
 
@@ -696,7 +725,7 @@ def array_significant_figures(sig_figs=None):
         return sig_figs
     global array_significant_figures_stack
     if not array_significant_figures_stack:
-        ret = 3
+        ret = 10
     else:
         ret = array_significant_figures_stack[-1]
     return ret
@@ -749,7 +778,7 @@ def array_decimal_values(dec_vals=None):
         return dec_vals
     global array_decimal_values_stack
     if not array_decimal_values_stack:
-        ret = None
+        ret = 8
     else:
         ret = array_decimal_values_stack[-1]
     return ret

@@ -168,8 +168,23 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.shape[-3] == 0:
-        return jnp.asarray(0).astype(x.dtype)
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return jnp.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -186,16 +201,31 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
-    if atol and rtol is None:
-        ret = jnp.sum(singular_values > atol, axis=axis)
-    elif rtol and atol is None:
-        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
-    elif rtol and atol:
-        tol = jnp.max(atol, max_values * rtol)
-        ret = jnp.sum(singular_values > tol, axis=axis)
-    else:
-        ret = jnp.sum(singular_values != 0, axis=axis)
-
+    if atol is None:
+        if rtol is None:
+            ret = jnp.sum(singular_values != 0, axis=axis)
+        else:
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = jnp.sum(singular_values > atol, axis=axis)
+        else:
+            tol = jnp.max(atol, max_values * rtol)
+            ret = jnp.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
         ret = ret.reshape(ret_shape)
     return ret.astype(x.dtype)
@@ -354,24 +384,10 @@ def diag(
     x: JaxArray,
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[JaxArray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = jnp.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += jnp.diag(x - padding_value, k=offset)
-
-    return ret
+) -> JaxArray:
+    return jnp.diag(x, k=k)
 
 
 def vander(

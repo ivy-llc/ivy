@@ -37,15 +37,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x2
             second input array
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -89,15 +90,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x2
             second input array
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -143,17 +145,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -229,17 +232,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -305,17 +309,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute the cross product.vIf set to -1, the function computes the
             cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -390,17 +395,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -534,6 +540,65 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_diag(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "diag",
+            x,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diag(
+        self: ivy.Container,
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[[0, 1, 2],
+        >>>                      [3, 4, 5],
+        >>>                      [6, 7, 8]])
+        >>> ivy.diag(x, k=1)
+        {
+            a: ivy.array([1, 5])
+        }
+        """
+        return self.static_diag(
+            self,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def eigh(
         self: ivy.Container,
         /,
@@ -643,16 +708,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             innermost two dimensions form square matrices.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output container, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -833,24 +898,27 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            Input array.
+            Input array having shape (..., M, N) and whose innermost two deimensions 
+            form MxN matrices. Should have a floating-point data type.
         ord
-            Order of the norm. Default is 2.
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
+            broadcast correctly against the original x. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -859,6 +927,30 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
+                              b=ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.Container.static_matrix_norm(x, ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
+
+        >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
+        >>> ord = ivy.Container(a=1, b=float('inf'))
+        >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+        >>> k = ivy.Container(a=False, b=True)
+        >>> y = ivy.Container.static_matrix_norm(x, ord=ord, axis=axis, keepdims=k)
+        >>> print(y)
+        {
+            a: ivy.array([4.24, 11.4, 19.2]),
+            b: ivy.array([[[3.7]], 
+                          [[11.2]]])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -895,23 +987,27 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Input array.
+            Container having shape (..., M, N) and whose innermost two dimensions 
+            form MxN matrices. Should have a floating-point data type.
         ord
-            Order of the norm. Default is 2.
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
         keepdims
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
+            broadcast correctly against the original x. Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -921,6 +1017,30 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ret
             Matrix norm of the array at specified axes.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
+                              b=ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        {
+            a: ivy.array(4.2),
+            b: ivy.array(6.)
+        }
+
+        >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
+                              b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
+        >>> ord = ivy.Container(a="nuc", b=ivy.inf)
+        >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
+        >>> k = ivy.Container(a=True, b=False)
+        >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
+        >>> print(y)
+        {
+            a: ivy.array([[[4.24]], 
+                         [[11.4]], 
+                         [[19.2]]]),
+            b: ivy.array([4., 12.])
+        }
         """
         return self.static_matrix_norm(
             self,
@@ -1019,15 +1139,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             (as applied to ``x``).
             Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1101,15 +1222,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             with the floating-point data type determined by :ref:`type-promotion`
             (as applied to ``x``). Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1154,6 +1276,40 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                        b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.Container.static_matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "matrix_transpose",
             x,
@@ -1173,6 +1329,40 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                      b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
+        """
         return self.static_matrix_transpose(
             self,
             key_chains,
@@ -1287,15 +1477,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input array or container having shape (..., M, M) and whose innermost two
             dimensions form square matrices. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1350,15 +1541,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input container having shape (..., M, M) and whose innermost two dimensions
             form square matrices. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1594,15 +1786,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1679,15 +1872,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

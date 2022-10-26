@@ -5,14 +5,14 @@ from collections import namedtuple
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import version
+from . import backend_version
 
 
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": ("float16",),
     },
-    version,
+    backend_version,
 )
 def unique_all(
     x: torch.Tensor,
@@ -61,7 +61,7 @@ def unique_all(
     {
         "1.11.0 and below": ("float16",),
     },
-    version,
+    backend_version,
 )
 def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
@@ -75,7 +75,7 @@ def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     {
         "1.11.0 and below": ("float16",),
     },
-    version,
+    backend_version,
 )
 def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
@@ -91,7 +91,7 @@ def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     {
         "1.11.0 and below": ("float16",),
     },
-    version,
+    backend_version,
 )
 def unique_values(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None

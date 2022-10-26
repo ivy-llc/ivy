@@ -146,7 +146,7 @@ def _get_dtypes(fn, complement=True):
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if "einops" in fn.__name__ and isinstance(v, dict):
+            if isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
 
             ivy.assertions.check_isinstance(v, tuple)
@@ -1122,10 +1122,15 @@ def default_int_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+                input,
+                lambda x: ivy.to_scalar(x) > 9223372036854775807
+                and ivy.to_scalar(x) != ivy.inf,
             ):
                 ret = ivy.uint64
-            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
+            elif ivy.nested_argwhere(
+                input,
+                lambda x: ivy.to_scalar(x) > 2147483647 and ivy.to_scalar(x) != ivy.inf,
+            ):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1258,7 +1263,7 @@ def dtype(
     x
         Tensor for which to get the data type.
     as_native
-        Whether or not to return the dtype in string format. Default is False.
+        Whether or not to return the dtype in string format. Default is ``False``.
 
     Returns
     -------
@@ -1302,7 +1307,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     fn
         The function to check for the supported dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1339,7 +1344,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     fn
         The function to check for the unsupported dtype attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1525,7 +1530,11 @@ def is_int_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
+                lambda x: (
+                    isinstance(x, (int, np.integer))
+                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                )
+                and not type(x) == bool,
             )
             else False
         )
@@ -1590,7 +1599,9 @@ def is_float_dtype(
         return (
             True
             if ivy.nested_argwhere(
-                dtype_in, lambda x: isinstance(x, (float, np.floating))
+                dtype_in,
+                lambda x: isinstance(x, (float, np.floating))
+                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )
