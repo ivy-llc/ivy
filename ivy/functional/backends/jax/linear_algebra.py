@@ -197,7 +197,7 @@ def matrix_rank(
         if rtol is None:
             ret = jnp.sum(singular_values != 0, axis=axis)
         else:
-            if isinstance(rtol, float):
+            if isinstance(rtol, float) or (isinstance(rtol, tuple) and len(rtol) <= 1):
                 print("rtol: ", rtol)
             else:
                 print("rtol shape: ", rtol.shape)
