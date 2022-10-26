@@ -697,7 +697,7 @@ class ContainerBase(dict, abc.ABC):
                         map_nests,
                         assert_identical,
                     )
-                    if ret is not None:
+                    if ret:
                         return_dict[key] = ret
                 elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
                     ret = ivy.nested_multi_map(
@@ -3608,6 +3608,9 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
+            uniform_indent_wo_overflow_list = list(
+                filter(None, uniform_indent_wo_overflow.split("\\n"))
+            )
             uniform_indent = "\n".join(
                 [
                     local_indent_str + extra_indent + " " + s
@@ -3622,7 +3625,7 @@ class ContainerBase(dict, abc.ABC):
                         if (not s[0].isspace() and s[0] != '"')
                         else s
                     )
-                    for s in uniform_indent_wo_overflow.split("\\n")
+                    for s in uniform_indent_wo_overflow_list
                 ]
             )
             indented = uniform_indent
@@ -3797,9 +3800,6 @@ class ContainerBase(dict, abc.ABC):
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
-    def __len__(self):
-        return self.__getattr__("__len__")
-
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
         try:
@@ -3813,7 +3813,7 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     # raise error
                     if not hasattr(v, item):
-                        raise IvyException(
+                        raise AttributeError(
                             "'{}' object has no attribute '{}'".format(
                                 type(v).__module__, item
                             )
