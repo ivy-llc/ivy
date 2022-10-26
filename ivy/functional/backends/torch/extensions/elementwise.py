@@ -100,6 +100,7 @@ def float_power(
 float_power.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
