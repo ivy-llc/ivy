@@ -1038,7 +1038,7 @@ def test_tensorflow_truediv(
     )
     
     
-#pow
+# pow
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(

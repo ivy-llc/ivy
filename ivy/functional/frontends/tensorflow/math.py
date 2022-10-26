@@ -181,7 +181,7 @@ def polyval(coeffs, x, name=None):
 
 
 def pow(x, y, name="pow"):
-    x,y = promote_types_of_tensorflow_inputs(x,y)
+    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.pow(x, y)
 
 
