@@ -163,3 +163,25 @@ def kaiser_window(
         device=None,
         requires_grad=False,
     )
+
+
+def hamming_window(
+    window_length: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    alpha: Optional[float] = 0.54,
+    beta: Optional[float] = 0.46,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hamming_window(
+        window_length,
+        periodic=periodic,
+        alpha=alpha,
+        beta=beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False
+    )

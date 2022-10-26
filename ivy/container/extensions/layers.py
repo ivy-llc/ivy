@@ -813,3 +813,118 @@ class ContainerWithLayersExtensions(ContainerBase):
         return self.static_kaiser_bessel_derived_window(
             self, periodic, beta, dtype=dtype, out=out
         )
+
+    @staticmethod
+    def static_hamming_window(
+        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        periodic: Optional[bool] = True,
+        alpha: Optional[float] = 0.54,
+        beta: Optional[float] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hamming_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.hamming_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container including window lenghts.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        alpha
+            The coefficient alpha in the hamming window equation 
+        beta
+            The coefficient beta in the hamming window equation 
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            The container that includes the Hamming windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_hamming_window(x, periodic=True, alpha=0.2, beta=2)
+        {
+            a: ivy.array([-1.8000,  1.2000,  1.2000]),
+            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hamming_window",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            periodic=periodic,
+            alpha=alpha,
+            beta=beta,
+            dtype=dtype,
+            out=out,
+        )
+
+    def hamming_window(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        periodic: Optional[bool] = True,
+        alpha: Optional[float] = 0.54,
+        beta: Optional[float] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.hamming_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.hamming_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including window lenghts.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        alpha
+            The coefficient alpha in the hamming window equation 
+        beta
+            The coefficient beta in the hamming window equation 
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            The container that includes the Hamming windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5))
+        >>> x.hamming_window(periodic=True, alpha=0.2, beta=2)
+        {
+            a: ivy.array([-1.8000,  1.2000,  1.2000]),
+            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+        }
+        """
+        return self.static_hamming_window(
+            self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
+        )
