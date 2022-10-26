@@ -204,15 +204,12 @@ kld = kl_divergence
 kullback_leibler_divergence = kl_divergence
 
 
+@to_ivy_arrays_and_back
 def log_cosh(y_true, y_pred):
-    y_true, y_pred = promote_types_of_tensorflow_inputs(y_true, y_pred)
+    y_true = ivy.astype(y_true, y_pred.dtype)
     diff = y_pred - y_true
-    logval = ivy.log(2.0)
-    diff, logval = promote_types_of_tensorflow_inputs(diff, logval)
-    return ivy.mean(diff + ivy.softplus(-2.0 * diff) - logval, axis=-1)
-
-
-log_cosh.unsupported_dtypes = ("float16", "float32",)
+    log_val = ivy.astype(ivy.log(2.0), diff.dtype)
+    return ivy.mean(diff + ivy.softplus(-2.0 * diff) - log_val, axis=-1)
 
 
 @to_ivy_arrays_and_back
