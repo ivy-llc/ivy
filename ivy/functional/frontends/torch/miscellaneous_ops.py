@@ -257,3 +257,8 @@ def vander(x, N=None, increasing=False):
 @with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, versions["torch"])
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *operands):
+    return ivy.einsum(equation, *operands)
