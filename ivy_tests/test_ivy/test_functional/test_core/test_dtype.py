@@ -841,9 +841,6 @@ def _composition_2():
                 "float16",
                 "float32",
                 "float64",
-                "complex64",
-                "complex128",
-                "complex256",
             ],
         ),
         (
@@ -862,9 +859,6 @@ def _composition_2():
                 "float16",
                 "float32",
                 "float64",
-                "complex64",
-                "complex128",
-                "complex256",
             ],
         ),
     ],
@@ -877,15 +871,21 @@ def test_function_supported_dtypes(func, expected):
     if "torch" in ivy.current_backend_str():
         exp.remove("float16")
 
-    assert sorted(tuple(exp)) == sorted(res)
+    assert set(tuple(exp)) == set(res)
 
 
 # function_unsupported_dtypes
 @pytest.mark.parametrize(
     "func, expected",
     [
-        (_composition_1, []),
-        (_composition_2, []),
+        (
+            _composition_1,
+            [],
+        ),
+        (
+            _composition_2,
+            [],
+        ),
     ],
 )
 def test_function_unsupported_dtypes(func, expected):
@@ -896,7 +896,7 @@ def test_function_unsupported_dtypes(func, expected):
     if "torch" in ivy.current_backend_str():
         exp.add("float16")
 
-    assert sorted(tuple(exp)) == sorted(res)
+    assert set(tuple(exp)) == set(res)
 
 
 @pytest.mark.parametrize(
@@ -913,7 +913,9 @@ def test_function_dtype_versioning(func_and_version, fw):
     for key in func_and_version:
         if key != fw:
             continue
-        var = ivy.get_backend().version
+        var = ivy.get_backend().backend_version
+
+        # key --> framework
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:

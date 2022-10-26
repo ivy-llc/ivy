@@ -95,11 +95,11 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     ret, frontend_ret = values
     ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
+        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
     ]
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
+        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
     ]
     helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
@@ -114,37 +114,6 @@ def test_frontend_function(*args, where=None, **kwargs):
             _test_frontend_function_ignoring_unitialized(*args, **kwargs)
         else:
             helpers.test_frontend_function(*args, **kwargs)
-
-
-# noinspection PyShadowingNames
-def _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs):
-    where = kwargs["where"]
-    kwargs["test_values"] = False
-    values = helpers.test_frontend_array_instance_method(*args, **kwargs)
-    if values is None:
-        return
-    ret, frontend_ret = values
-    ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
-    ]
-    frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
-    ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
-
-
-# noinspection PyShadowingNames
-def test_frontend_array_instance_method(*args, where=None, **kwargs):
-    if not ivy.exists(where):
-        helpers.test_frontend_array_instance_method(*args, **kwargs)
-    else:
-        kwargs["where"] = where
-        if "out" in kwargs and kwargs["out"] is None:
-            _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs)
-        else:
-            helpers.test_frontend_array_instance_method(*args, **kwargs)
 
 
 # noinspection PyShadowingNames

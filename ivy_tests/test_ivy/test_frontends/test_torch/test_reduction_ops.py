@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         allow_inf=False,
@@ -20,8 +20,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.dist"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
-    p=st.sampled_from([None, st.integers()]),
+    p=helpers.floats(min_value=1.0, max_value=10.0),
 )
 def test_torch_dist(
     dtype_and_input,
@@ -413,7 +412,7 @@ def test_torch_var(
 @handle_cmd_line_args
 @given(
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -444,4 +443,79 @@ def test_torch_min(
         dim=axis,
         keepdim=keepdim,
         out=None,
+    )
+
+
+# moveaxis
+@handle_cmd_line_args
+@given(
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    source=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
+    ),
+    destination=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.moveaxis"
+    ),
+)
+def test_torch_moveaxis(
+    dtype_and_a,
+    source,
+    destination,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+):
+    input_dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="moveaxis",
+        input=a[0],
+        source=source,
+        destination=destination,
     )

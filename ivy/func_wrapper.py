@@ -15,7 +15,7 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes"
+    "with_unsupported_dtypes",
 ]
 
 
@@ -153,6 +153,10 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
+def _is_zero_dim_array(x):
+    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+
+
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -174,14 +178,30 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        # get out arg index
-        out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
-        # check if out is None or out is not present in args and kwargs.
-        out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
-        out_kwargs = "out" in kwargs and kwargs["out"] is None
-        if ret.shape == () and (out_args or out_kwargs):
-            return float(ret)
-        # convert to float from 0 dim
+        data = ret.data
+        if "out" in ivy.arg_names(fn):
+            # get out arg index
+            out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+            # check if out is None or out is not present in args and kwargs.
+            out_args = (
+                out_arg_pos < len(args) and args[out_arg_pos] is None
+            ) or out_arg_pos >= len(args)
+        else:
+            # no out argument accepted by the function
+            out_args = True
+
+        out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
+        if out_args and out_kwargs:
+            if isinstance(data, tuple):
+                # converting every scalar element of the tuple to float
+                data = ivy.copy_nest(data, to_mutable=True)
+                ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
+                ivy.map_nest_at_indices(data, ret_idx, lambda x: float(x))
+                return data
+            else:
+                # converting the scalar to float
+                if _is_zero_dim_array(data):
+                    return float(data)
         return ret
 
     new_fn.zero_dim_arrays_to_float = True
@@ -425,7 +445,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)
-                and linalg_k != "namedtuple"
+                and linalg_k.lower() != "namedtuple"
                 and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
@@ -465,7 +485,7 @@ def _dtype_from_version(dic, version):
     if version in dic:
         return dic[version]
 
-    version_tuple = tuple(map(int, version.split('.')))
+    version_tuple = tuple(map(int, version.split(".")))
 
     # If key is not in the dictionary, check if it's in any range
     # three formats are supported:
@@ -474,13 +494,13 @@ def _dtype_from_version(dic, version):
     # 3. x.y.z to x.y.z
     for key in dic.keys():
         kl = key.split(" ")
-        k1 = tuple(map(int, kl[0].split('.')))
+        k1 = tuple(map(int, kl[0].split(".")))
 
         if "above" in key and k1 <= version_tuple:
             return dic[key]
         if "below" in key and k1 >= version_tuple:
             return dic[key]
-        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split('.'))):
+        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
     # if no version is found, return the last version
@@ -516,6 +536,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
     Creates a wrapper for a dtype or device attribute, which returns the correct
     dtype or device for the current version of the backend.
+
     Parameters
     ----------
     attrib
@@ -548,8 +569,9 @@ with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tu
 with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
 with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
 with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
-with_unsupported_device_and_dtypes = (
-    _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict))
-with_supported_device_and_dtypes = (
-    _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
+    "unsupported_device_and_dtype", dict
+)
+with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
+    "supported_device_and_dtype", dict
 )

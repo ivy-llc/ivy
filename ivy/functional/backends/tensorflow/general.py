@@ -4,10 +4,6 @@ signature.
 
 # global
 from typing import Optional, Union, Sequence, Callable
-
-from ivy.func_wrapper import with_unsupported_dtypes
-
-_round = round
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -15,25 +11,35 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.functional.ivy.general import _parse_ellipsis
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
+_round = round
+
+
+def _parse_index(indices, ndims):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
+    return ind
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -47,6 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
 def array_equal(
     x0: Union[tf.Tensor, tf.Variable],
     x1: Union[tf.Tensor, tf.Variable],
+    /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
@@ -115,6 +122,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -123,9 +133,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -269,6 +281,7 @@ def scatter_flat(
     return res
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -311,7 +324,13 @@ def scatter_nd(
         )
 
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.stack(
             [
@@ -333,7 +352,28 @@ def scatter_nd(
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
             indices = tf.expand_dims(indices, 0)
-
+        if tf.reduce_any(indices < 0):
+            shape = list(shape) if ivy.exists(shape) else list(out.shape)
+            indices = _parse_index(indices, len(shape))
+            indices = [
+                tf.stack(
+                    [
+                        tf.reshape(value, (-1,))
+                        for value in tf.meshgrid(
+                            *[
+                                tf.range(s)
+                                if idx == slice(None, None, None)
+                                else tf.constant([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    axis=-1,
+                )
+                for index in indices
+            ]
+            indices = tf.concat(indices, axis=0)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
@@ -418,7 +458,6 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 

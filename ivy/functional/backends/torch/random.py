@@ -23,11 +23,14 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
+    seed=None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
-    return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
+    if seed:
+        torch.manual_seed(seed)
+    return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
 
 
 def random_normal(
@@ -42,11 +45,12 @@ def random_normal(
 ) -> torch.Tensor:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
-    if seed is not None:
+    dtype = ivy.as_native_dtype(dtype)
+    if seed:
         torch.manual_seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return torch.normal(mean, std, shape, out=out).to(device)
-    return torch.normal(mean, std, out=out).to(device)
+        return torch.normal(mean, std, shape, out=out).type(dtype).to(device)
+    return torch.normal(mean, std, out=out).type(dtype).to(device)
 
 
 random_normal.support_native_out = True
@@ -74,7 +78,7 @@ def multinomial(
             )
             / population_size
         )
-    if seed is not None:
+    if seed:
         torch.manual_seed(seed)
     return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
@@ -99,7 +103,7 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
-    if seed is not None:
+    if seed:
         torch.manual_seed(seed)
     return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
@@ -118,7 +122,7 @@ def shuffle(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     batch_size = x.shape[0]
-    if seed is not None:
+    if seed:
         torch.manual_seed(seed)
     return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 

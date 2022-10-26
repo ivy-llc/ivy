@@ -28,15 +28,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -49,8 +50,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
         >>> y = ivy.Container.static_abs(x)
         >>> print(y)
         {
@@ -88,15 +89,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -109,8 +111,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -2.3]))
+        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -2.3]))
         >>> y = x.abs()
         >>> print(y)
         {
@@ -150,15 +152,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a hyperbolic
             sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -172,8 +175,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
-                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),
+        ...                   b=ivy.array([1., 3., 10.0, 6]))
         >>> y = ivy.Container.static_acosh(x)
         >>> print(y)
         {
@@ -212,15 +215,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a hyperbolic
             sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -234,8 +238,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
-                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),
+        ...                   b=ivy.array([1., 3., 10.0, 6]))
         >>> y = x.acosh()
         >>> print(y)
         {
@@ -274,15 +278,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -341,15 +346,16 @@ class ContainerWithElementwise(ContainerBase):
             second input array or container. Must be compatible with ``x1``
             (see :ref:`broadcasting`). Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         alpha
             scalar multiplier for ``x2``.
         out
@@ -368,8 +374,8 @@ class ContainerWithElementwise(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([[1.1, 2.3, -3.6]])
-        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> z = ivy.Container.static_add(x, y)
         >>> print(z)
         {
@@ -383,10 +389,10 @@ class ContainerWithElementwise(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_add(x, y)
         >>> print(z)
         {
@@ -394,10 +400,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([7, 9, 11])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_add(x, y, alpha=2)
         >>> print(z)
         {
@@ -436,15 +442,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -501,15 +508,16 @@ class ContainerWithElementwise(ContainerBase):
             second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         alpha
             scalar multiplier for ``x2``.
         out
@@ -525,10 +533,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                             b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                             b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
 
         >>> z = x.add(y)
         >>> print(z)
@@ -576,15 +584,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -598,8 +607,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., -0.5, -1.]),\
-                              b=ivy.array([0.1, 0.8, 2.]))
+        >>> x = ivy.Container(a=ivy.array([0., -0.5, -1.]),
+        ...                   b=ivy.array([0.1, 0.8, 2.]))
         >>> y = ivy.Container.static_asin()
         >>> print(y)
         {
@@ -607,8 +616,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.1, 0.927, nan])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\
-                              b=ivy.array([[4, -3, -0.2]))
+        >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),
+        ...                   b=ivy.array([[4, -3, -0.2]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.static_asin(out=y)
         >>> print(y)
@@ -646,15 +655,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -668,8 +678,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 0.5, 1.]),\
-                              b=ivy.array([-4., 0.8, 2.]))
+        >>> x = ivy.Container(a=ivy.array([0., 0.5, 1.]),
+        ...                   b=ivy.array([-4., 0.8, 2.]))
         >>> y = x.asin()
         >>> print(y)
         {
@@ -677,8 +687,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([nan, 0.927, nan])
         }
 
-        >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\
-                              b=ivy.array([-0.85, 0.6, 0.3]))
+        >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),
+        ...                   b=ivy.array([-0.85, 0.6, 0.3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.asin(out=y)
         >>> print(y)
@@ -718,15 +728,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a hyperbolic
             sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -740,8 +751,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),\
-                            b=ivy.array([3.4, -5.3, -0, -2.8]))
+        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),
+        ...                   b=ivy.array([3.4, -5.3, -0, -2.8]))
         >>> y = ivy.Container.static_asinh(x)
         >>> print(y)
         {
@@ -779,15 +790,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a hyperbolic
             sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -801,8 +813,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),\
-                            b=ivy.array([4.5, -2.4, -1.5]))
+        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),
+        ...                   b=ivy.array([4.5, -2.4, -1.5]))
         >>> y = x.asinh()
         >>> print(y)
         {
@@ -840,15 +852,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -901,15 +914,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -969,15 +983,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`). Should have a real-valued
             floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -991,8 +1006,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0]))
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> ivy.Container.static_atan2(x, y)
         {
@@ -1000,10 +1015,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.983, -1.21, 0.])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                              b=ivy.array([4.5, -5.3, -0, -2.3]))
-        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
-                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
+        ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
         >>> z = ivy.Container.static_atan2(x, y)
         >>> print(z)
         {
@@ -1048,15 +1063,16 @@ class ContainerWithElementwise(ContainerBase):
             Must be compatible with ``self`` (see :ref:`broadcasting`).
             Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1070,8 +1086,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                            b=ivy.array([4.5, -5.3, -0]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0]))
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> x.atan2(y)
         {
@@ -1079,10 +1095,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.983, -1.21, 0.])
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                              b=ivy.array([4.5, -5.3, -0, -2.3]))
-        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
-                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+        ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
+        ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
         >>> z = x.atan2(y)
         >>> print(z)
         {
@@ -1122,15 +1138,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a hyperbolic
             sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1183,15 +1200,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent the area of a
             hyperbolic sector. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1250,15 +1268,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1307,15 +1326,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1326,6 +1346,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
+        >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
+        >>> x.bitwise_and(y, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([False, True]),
+            b: ivy.array([False, True])
+        }
         """
         return self.static_bitwise_and(
             self,
@@ -1364,15 +1395,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1421,15 +1453,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1471,15 +1504,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1519,15 +1553,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1569,15 +1604,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1631,15 +1667,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1694,15 +1731,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1727,10 +1765,10 @@ class ContainerWithElementwise(ContainerBase):
 
         With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                            b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_bitwise_or(x, y)
         >>> print(z)
         {
@@ -1770,15 +1808,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1793,10 +1832,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                                b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                                b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.bitwise_or(y)
         >>> print(z)
         {
@@ -1840,15 +1879,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1920,15 +1960,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1987,15 +2028,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2044,15 +2086,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2063,6 +2106,14 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([89]))
+        >>> y = ivy.Container(a = ivy.array([12]))
+        >>> z = x.bitwise_xor(y)
+        >>> print(z)
+        {a:ivy.array([85])}
         """
         return self.static_bitwise_xor(
             self,
@@ -2095,15 +2146,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2143,15 +2195,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2164,8 +2217,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
-                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
         >>> y = x.ceil()
         >>> print(y)
         {
@@ -2204,15 +2257,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle. Should
             have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2236,8 +2290,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.54, 3.76, 1.3])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
         >>> ivy.Container.static_cosh(x, out=y)
         >>> print(y)
@@ -2276,15 +2330,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle. Should
             have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2308,8 +2363,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.54, 3.76, 1.3])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.cosh(x, out=y)
         >>> print(y)
@@ -2353,15 +2408,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2423,15 +2479,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2492,15 +2549,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             May have any data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2547,15 +2605,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             May have any data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2619,15 +2678,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2669,15 +2729,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2720,15 +2781,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2770,15 +2832,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2792,8 +2855,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
-                              b=ivy.array([5.4, -3.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),
+        ...                   b=ivy.array([5.4, -3.2]))
         >>> y = x.expm1()
         >>> print(y)
         {
@@ -2840,15 +2903,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2889,15 +2953,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2910,8 +2975,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
-                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
         >>> y = x.floor()
         >>> print(y)
         {
@@ -2954,15 +3019,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3035,15 +3101,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3115,15 +3182,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3136,10 +3204,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_greater(y,x)
         >>> print(z)
         {
@@ -3184,15 +3252,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3205,10 +3274,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.greater(y)
         >>> print(z)
         {
@@ -3253,15 +3322,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3308,15 +3378,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3358,15 +3429,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3380,8 +3452,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
-                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
+        ...                   b=ivy.array([float('-0'), ivy.nan]))
         >>> y = ivy.Container.static_isfinite(x)
         >>> print(y)
         {
@@ -3418,15 +3490,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3440,8 +3513,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
-                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
+        ...                   b=ivy.array([float('-0'), ivy.nan]))
         >>> y = x.isfinite()
         >>> print(y)
         {
@@ -3479,15 +3552,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3529,15 +3603,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3580,15 +3655,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3630,15 +3706,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3686,15 +3763,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3707,10 +3785,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_less(y,x)
         >>> print(z)
         {
@@ -3754,15 +3832,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3775,10 +3854,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x.less(y)
         >>> print(z)
         {
@@ -3823,15 +3902,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3878,15 +3958,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3952,15 +4033,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3976,9 +4058,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
-                              b=ivy.array([-0., -3.9, float('+inf')]),\
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = ivy.Container.static_log(x)
         >>> print(y)
         {
@@ -4017,15 +4099,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4041,9 +4124,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
-                              b=ivy.array([-0., -3.9, float('+inf')]), \
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = x.log()
         >>> print(y)
         {
@@ -4083,15 +4166,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4151,15 +4235,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4173,8 +4258,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),\
-                            b=ivy.array([4.5, 5.3, 2.3]))
+        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+        ...                   b=ivy.array([4.5, 5.3, 2.3]))
         >>> y = x.log1p()
         >>> print(y)
         {
@@ -4213,15 +4298,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4263,15 +4349,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4314,15 +4401,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4338,9 +4426,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
-                              b=ivy.array([-0., -3.9, float('+inf')]),\
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = ivy.Container.static_log10(x)
         >>> print(y)
         {
@@ -4379,15 +4467,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4403,9 +4492,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
-                              b=ivy.array([-0., -3.9, float('+inf')]), \
-                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+        ...                   c=ivy.array([7.9, 1.1, 1.]))
         >>> y = x.log10()
         >>> print(y)
         {
@@ -4449,15 +4538,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4473,10 +4563,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
-                              b=ivy.array([2., 3., 4.]))
-        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([5., 6., 7.]))
+        >>> x = ivy.Container(a=ivy.array([4., 5., .]),
+        ...                   b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([5., 6., 7.]))
         >>> z = ivy.Container.static_logaddexp(y,x)
         >>> print(z)
         {
@@ -4520,15 +4610,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4543,11 +4634,11 @@ class ContainerWithElementwise(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` input:
-        
-        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
-                              b=ivy.array([2., 3., 4.]))
-        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([5., 6., 7.]))
+
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),
+        ...                   b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([5., 6., 7.]))
         >>> z = ivy.logaddexp(y,x)
         >>> print(z)
         {
@@ -4591,15 +4682,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4616,10 +4708,10 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
-            b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
-            b=ivy.array([False, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
         >>> m = ivy.array([False, True, False, True])
         >>> n = ivy.array([True, False, True, False])
 
@@ -4682,15 +4774,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4707,10 +4800,10 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
-            b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
-            b=ivy.array([False, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
         >>> m = ivy.array([False, True, False, True])
         >>> n = ivy.array([True, False, True, False])
 
@@ -4762,15 +4855,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4811,15 +4905,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4866,15 +4961,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -4887,10 +4983,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([False, False, True]), \
-                            b=ivy.array([True, False, True]))
-        >>> y = ivy.Container(a=ivy.array([False, True, False]), \
-                                b=ivy.array([True, True, False]))
+        >>> x = ivy.Container(a=ivy.array([False, False, True]),
+        ...                   b=ivy.array([True, False, True]))
+        >>> y = ivy.Container(a=ivy.array([False, True, False]),
+        ...                   b=ivy.array([True, True, False]))
         >>> z = ivy.Container.static_logical_or(x, y)
         >>> print(z)
         {
@@ -4934,15 +5030,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5011,15 +5108,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5090,15 +5188,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5156,15 +5255,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5204,31 +5304,62 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        self
+        self (Container)
             input array or container. Should have a real-valued data type.
-        x2
+        x2 (Union[Container, Array, NativeArray])
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
+        key_chains (Optional[Union[List[str], Dict[str, str]]])
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply (bool)
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
+            will be skipped. Default is ``True``.
+        prune_unapplied (bool)
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
+            Default is ``False``.
+        map_sequences (bool)
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out (Optional[Container])
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
+        Return type: Container
 
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container
-            must have a data type determined by :ref:`type-promotion`.
+            a container containing the element-wise products.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
+                               b=ivy.array([3.2, 5., 7.5]))
+        >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
+                               b=ivy.array([5.6, 1.2, 4.2]))
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        {
+            a: ivy.array([25.5, 12.6, 19.5]),
+            b: ivy.array([17.9, 6., 31.5])
+        }
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]),\
+                               b=ivy.array([5., 1.7, 0.1]))
+        >>> x2 = ivy.array([8.3, 3.2, 6.5])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        {
+            a: ivy.array([51.5, 15.4, 14.9]),
+            b: ivy.array([41.5, 5.44, 0.65])
+        }
         """
         return self.static_multiply(
             self,
@@ -5261,15 +5392,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5310,15 +5442,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5365,15 +5498,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             May have any data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5420,15 +5554,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             May have any data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5438,6 +5573,31 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.array([3., 1., 0.9])
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return self.static_not_equal(
             self,
@@ -5470,15 +5630,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5519,15 +5680,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5574,15 +5736,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5629,15 +5792,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5685,17 +5849,19 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         modulus
-            whether to compute the modulus instead of the remainder. Default is True.
+            whether to compute the modulus instead of the remainder.
+            Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5779,17 +5945,19 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         modulus
-            whether to compute the modulus instead of the remainder. Default is True.
+            whether to compute the modulus instead of the remainder.
+            Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5867,15 +6035,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5890,8 +6059,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
-                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = ivy.Container.static_round(x)
         >>> print(y)
         {
@@ -5928,15 +6097,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -5951,8 +6121,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
-                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = x.round()
         >>> print(y)
         {
@@ -5990,15 +6160,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6011,8 +6182,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
-                            b=ivy.array([-14.2, 8.3, 0.1, -0]))
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),
+        ...                   b=ivy.array([-14.2, 8.3, 0.1, -0]))
         >>> y = ivy.Container.static_sign(x)
         >>> print(y)
         {
@@ -6049,15 +6220,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6070,9 +6242,9 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
-                              b=ivy.array([1.5, -0.3, 0]),\
-                              c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
+        ...                   b=ivy.array([1.5, -0.3, 0]),
+        ...                   c=ivy.array([-4.7, -5.4, 7.5]))
         >>> y = x.sign()
         >>> print(y)
         {
@@ -6112,15 +6284,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6134,8 +6307,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
-                              b=ivy.array([4., 5., 6.]))
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),
+        ...                   b=ivy.array([4., 5., 6.]))
         >>> y = ivy.Container.static_sin(x)
         >>> print(y)
         {
@@ -6173,15 +6346,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements are each expressed in radians.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6195,8 +6369,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([-4., -5., -6.]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),
+        ...                   b=ivy.array([-4., -5., -6.]))
         >>> y = x.sin()
         >>> print(y)
         {
@@ -6235,15 +6409,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6265,8 +6440,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.18, -3.63, 0.835])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
         >>> ivy.Container.static_sinh(x, out=y)
         >>> print(y)
@@ -6305,15 +6480,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle.
             Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6335,8 +6511,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.18, -3.63, 0.835])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
-                    b=ivy.array([0.67, -0.98, -3]))
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
+        ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.sinh(out=y)
         >>> print(y)
@@ -6375,15 +6551,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6425,15 +6602,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6476,15 +6654,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6526,15 +6705,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6582,15 +6762,16 @@ class ContainerWithElementwise(ContainerBase):
             second input array or container. Must be compatible with ``x1``
             (see :ref:`broadcasting`). Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         alpha
             optional scalar multiplier for ``x2``.
         out
@@ -6607,10 +6788,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                       b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
-                       b=ivy.array([1, -1, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]),
+        ...                   b=ivy.array([1, -1, 0]))
         >>> z = ivy.Container.static_subtract(x, y)
         >>> print(z)
         {
@@ -6661,15 +6842,16 @@ class ContainerWithElementwise(ContainerBase):
             second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         alpha
             optional scalar multiplier for ``x2``.
         out
@@ -6685,10 +6867,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                       b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
-                       b=ivy.array([1, -1, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]),
+        ...                   b=ivy.array([1, -1, 0]))
         >>> z = x.subtract(y)
         >>> print(z)
         {
@@ -6737,15 +6919,16 @@ class ContainerWithElementwise(ContainerBase):
             input array whose elements are expressed in radians. Should have a
             floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -6797,15 +6980,16 @@ class ContainerWithElementwise(ContainerBase):
             input array whose elements are expressed in radians. Should have a
             floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -6858,15 +7042,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle.
             Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6918,15 +7103,16 @@ class ContainerWithElementwise(ContainerBase):
             input container whose elements each represent a hyperbolic angle.
             Should have a real-valued floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6940,8 +7126,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                              b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
         >>> y = x.tanh()
         >>> print(y)
         {
@@ -6979,15 +7165,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7028,15 +7215,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7078,15 +7266,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container to compute exponential for.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7126,15 +7315,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container to compute exponential for.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7179,15 +7369,16 @@ class ContainerWithElementwise(ContainerBase):
         x2
             The other container or number to compute the minimum against.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
@@ -7238,15 +7429,16 @@ class ContainerWithElementwise(ContainerBase):
         x2
             The other container or number to compute the minimum against.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
@@ -7296,15 +7488,16 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
@@ -7357,15 +7550,16 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
@@ -7412,15 +7606,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7459,15 +7654,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container to compute the element-wise reciprocal for.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7508,15 +7704,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. to be converted from degrees to radians.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7528,15 +7725,15 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_deg2rad(x)
         >>> print(y)
         {
             a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
             b: ivy.array([0., -0.0262, -0.873, nan])
         }
-        
+
         """
         return ContainerBase.multi_map_in_static_method(
             "deg2rad",
@@ -7567,15 +7764,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. to be converted from degrees to radians.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7584,13 +7782,13 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with each element in ``x`` converted from degrees to radians.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:
 
-        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=x.deg2rad()
         >>> print(y)
         {
@@ -7629,15 +7827,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. to be converted from radians to degrees.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7649,15 +7848,15 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
-            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+        ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_rad2deg(x)
         >>> print(y)
         {
             a: ivy.array([0., 5160., 10300., 15500., 20600.]),
             b: ivy.array([0., -85.9, -2860., nan])
         }
-        
+
         """
         return ContainerBase.multi_map_in_static_method(
             "rad2deg",
@@ -7688,15 +7887,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. to be converted from radians to degrees.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7705,13 +7905,13 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with each element in ``x`` converted from radians to degrees.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:
 
-        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
-            b=ivy.native_array([0,-1.5,-50,7.2]))
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),
+        ...                 b=ivy.native_array([0,-1.5,-50,7.2]))
         >>> y=x.rad2deg()
         >>> print(y)
         {
@@ -7755,15 +7955,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7825,15 +8026,16 @@ class ContainerWithElementwise(ContainerBase):
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7889,15 +8091,16 @@ class ContainerWithElementwise(ContainerBase):
         x
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7909,6 +8112,16 @@ class ContainerWithElementwise(ContainerBase):
             if ``x_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
+        ...                   b=ivy.array([7.9, 3.3j, -4.2-5.9j]))
+        >>> z = ivy.Container.static_isreal(x)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "isreal",
@@ -7939,15 +8152,16 @@ class ContainerWithElementwise(ContainerBase):
         self
             input container. Should have a real-valued data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -7959,6 +8173,15 @@ class ContainerWithElementwise(ContainerBase):
             if ``self_i`` is real number and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),\
+                          b=ivy.array([0.0, 3.3j, 1+0j]))
+        >>> x.isreal()
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, True])
+        }
         """
         return self.static_isreal(
             self,
@@ -7968,3 +8191,112 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_trapz(
+        y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trapz. This method simply wraps
+        the function, and so the docstring for ivy.trapz also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        y
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> ivy.Container.static_trapz(y)
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "trapz",
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            x=x,
+            dx=dx,
+            axis=axis,
+            out=out,
+        )
+
+    def trapz(
+        self: ivy.Container,
+        /,
+        *,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.trapz. This method simply
+        wraps the function, and so the docstring for ivy.trapz also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> y.trapz()
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return self.static_trapz(self, x=x, dx=dx, axis=axis, out=out)

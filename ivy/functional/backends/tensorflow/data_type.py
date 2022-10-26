@@ -145,6 +145,9 @@ def broadcast_to(
     return tf.broadcast_to(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("complex64", "complex128")}, backend_version
+)
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = ivy.as_ivy_dtype(from_.dtype)
@@ -168,9 +171,6 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) ->
     if "float16" in from_str and "float16" in to_str:
         return from_str == to_str
     return True
-
-
-can_cast.unsupported_dtypes = ("complex64", "complex128")
 
 
 @_handle_nestable_dtype_info
