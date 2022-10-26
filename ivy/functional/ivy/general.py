@@ -2103,7 +2103,7 @@ def set_tmp_dir(tmp_dr: str) -> None:
 
     To set the temp base to 1e-04
 
-    >>> ivy.set_tmp_dir('/my_tmp')
+    >>> ivy.set_tmp_dir("/my_tmp")
     >>> y = ivy.get_tmp_dir()
     >>> print(y)
     /my_tmp
