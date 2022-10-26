@@ -386,7 +386,6 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -454,7 +453,6 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
