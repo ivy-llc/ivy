@@ -20,6 +20,7 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
+        print("REACHED CONTEXT")
         set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -381,6 +382,15 @@ def unset_backend():
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
+
+        new_backend_str = ivy.current_backend_str()
+        if new_backend_str:
+            new_backend = ivy.get_backend(new_backend_str)
+            if new_backend.current_backend_str() == "numpy":
+                ivy.set_default_device("cpu")
+            elif new_backend.current_backend_str() == "jax":
+                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend
