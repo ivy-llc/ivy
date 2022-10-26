@@ -201,16 +201,16 @@ def matrix_rank(
                 print("rtol: ", rtol)
             else:
                 print("rtol shape: ", rtol.shape)
-            print("max_values * rtol shape: ", (max_values * rtol).shape)
-            print("axis = ", axis)
-            max_rtol = max_values * rtol
-            # singular_values = ivy.reshape(singular_values, (2,3))
-            print("max rtol: ", max_rtol)
-            result = ivy.all(element == max_rtol[0] for element in max_rtol)
-            print("Are all elements the same? ", result)
-            if result:  # all elements are same
-                max_rtol = max_rtol[0][0]
-                print("max rtol single value: ", max_rtol)
+                print("max_values * rtol shape: ", (max_values * rtol).shape)
+                print("axis = ", axis)
+                max_rtol = max_values * rtol
+                # singular_values = ivy.reshape(singular_values, (2,3))
+                print("max rtol: ", max_rtol)
+                result = ivy.all(element == max_rtol[0] for element in max_rtol)
+                print("Are all elements the same? ", result)
+                if result:  # all elements are same
+                    max_rtol = max_rtol[0][0]
+                    print("max rtol single value: ", max_rtol)
             ret = ivy.sum(
                 singular_values > max_rtol, axis=axis
             )  # adding or removing axis makes no difference
