@@ -129,6 +129,13 @@ def check_shape(x1, x2, message=""):
         raise ivy.exceptions.IvyException(message)
 
 
+def check_all_dims_equal_length(x, message=""):
+    for length in x.shape[:-1]:
+        if length != x.shape[0]:
+            message += "all dimensions must be of equal length"
+            raise ivy.exceptions.IvyException(message)
+
+
 # Creation #
 # -------- #
 

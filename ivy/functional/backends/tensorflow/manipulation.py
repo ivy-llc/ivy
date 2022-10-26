@@ -327,3 +327,23 @@ def unstack(
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
+
+
+def fill_diagonal(
+    x: tf.Tensor,
+    value: Union[Number, Sequence],
+    /,
+    *,
+    wrap: Optional[bool] = False,
+) -> tf.Tensor:
+    ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False, message="array must be at least 2-d")
+    if len(x.shape) > 2:
+        ivy.assertions.check_all_dims_equal_length(x, message="if input array has more than 2 dimensions, ")
+
+    if not isinstance(value, Sequence):
+        if not wrap:
+            value = tf.ones(min(x.shape)) * value
+        else:
+            value = tf.ones(x.shape[0]) * value
+
+    return tf.linalg.set_diag(x, value)
