@@ -286,7 +286,8 @@ def test_binary_crossentropy(
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.categorical_crossentropy"
+        fn_name=
+        "ivy.functional.frontends.tensorflow.keras.metrics.categorical_crossentropy"
     ),
 )
 def test_categorical_crossentropy(
@@ -299,7 +300,7 @@ def test_categorical_crossentropy(
     native_array,
     fw,
 ):
-    y_true = ivy.array(y_true, dtype = ivy.float32)
+    y_true = ivy.array(y_true, dtype=ivy.float32)
     dtype, y_pred = dtype_y_pred
 
     # Perform softmax on prediction if it's not a probability distribution.
