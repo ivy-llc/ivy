@@ -209,6 +209,7 @@ import threading
 
 
 # devices
+# ToDo: add gpu and tpu for valid devices when we test for them
 all_devices = ("cpu", "gpu", "tpu")
 
 valid_devices = ("cpu",)
@@ -627,41 +628,38 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals = GlobalsDict({
-    "backend_stack": backend_stack,
-    "default_device_stack": device.default_device_stack,
-
-    "valid_dtypes": valid_dtypes,
-    "valid_numeric_dtypes": valid_numeric_dtypes,
-    "valid_int_dtypes": valid_int_dtypes,
-    "valid_int_dtypes": valid_int_dtypes,
-    "valid_uint_dtypes": valid_uint_dtypes,
-    "valid_complex_dtypes": valid_complex_dtypes,
-    "valid_devices": valid_devices,
-
-    "invalid_dtypes": invalid_dtypes,
-    "invalid_numeric_dtypes": invalid_numeric_dtypes,
-    "invalid_int_dtypes": invalid_int_dtypes,
-    "invalid_float_dtypes": invalid_float_dtypes,
-    "invalid_uint_dtypes": invalid_uint_dtypes,
-    "invalid_complex_dtypes": invalid_complex_dtypes,
-    "invalid_devices": invalid_devices,
-
-    "array_significant_figures_stack": array_significant_figures_stack,
-    "array_decimal_values_stack": array_decimal_values_stack,
-    "warning_level_stack": warning_level_stack,
-
-    "queue_timeout_stack": general.queue_timeout_stack,
-    "array_mode_stack": general.array_mode_stack,
-    "shape_array_mode_stack": general.shape_array_mode_stack,
-    "nestable_mode_stack": general.nestable_mode_stack,
-    "exception_trace_mode_stack": general.exception_trace_mode_stack,
-
-    "default_dtype_stack": data_type.default_dtype_stack,
-    "default_float_dtype_stack": data_type.default_float_dtype_stack,
-    "default_int_dtype_stack": data_type.default_int_dtype_stack,
-    "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
-})
+globals = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+    }
+)
 
 
 def set_global_attr(attr_name, attr_val):
