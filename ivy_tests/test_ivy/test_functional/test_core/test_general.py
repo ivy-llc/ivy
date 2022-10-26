@@ -1352,6 +1352,7 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x - val
@@ -1379,6 +1380,7 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x + val
