@@ -19,7 +19,7 @@ The `Open Neural Network Exchange (ONNX)`_ is a standardized static file format 
 
 NNEF
 ----
-Similar to `ONNX`_, the `Neural Network Exchange Format (NNEF)`_ is also a standardized static file format which fully defines the structure of a neural network and all of its weights, with some support also for training tools. The format was developed and is maintained by the `Khronos Group`_. Overall, NNEF shares a lot of` similarities with ONNX, but has not reached the same level of adoption.
+Similar to `ONNX`_, the `Neural Network Exchange Format (NNEF)`_ is also a standardized static file format which fully defines the structure of a neural network and all of its weights, with some support also for training tools. The format was developed and is maintained by the `Khronos Group`_. Overall, NNEF shares a lot of similarities with ONNX, but has not reached the same level of adoption.
 
 CoreML
 ------
