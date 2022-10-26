@@ -382,9 +382,8 @@ def unset_backend():
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
 
-        new_backend_str = ivy.current_backend_str()
-        if new_backend_str:
-            new_backend = ivy.get_backend(new_backend_str)
+        if backend_stack:
+            new_backend = backend_stack[-1]
             if new_backend.current_backend_str() == "numpy":
                 ivy.set_default_device("cpu")
             elif new_backend.current_backend_str() == "jax":
