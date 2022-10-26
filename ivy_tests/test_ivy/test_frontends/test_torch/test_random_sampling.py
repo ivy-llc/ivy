@@ -46,15 +46,15 @@ def test_torch_multinomial(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("unsigned"),
+        available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(
             helpers.get_shape(
                 min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=1
             ),
             key="shape",
         ),
-        min_value=0,
-        max_value=2**32 - 1,
+        min_value=-(2**63),
+        max_value=2**63 - 1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.manual_seed"

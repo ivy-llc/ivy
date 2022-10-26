@@ -108,10 +108,10 @@ def randint(
     return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
-def seed(*, seed_value: int = 0) -> None:
-    torch.manual_seed(seed_value)
+def seed(*, seed_value: int = 0) -> torch.Generator:
+    random_generator = torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
-    return
+    return random_generator
 
 
 def shuffle(

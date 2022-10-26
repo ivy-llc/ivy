@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from torch import Generator
 
 
 def seed() -> int:
@@ -7,7 +8,8 @@ def seed() -> int:
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
-def manual_seed(seed: int) -> None:
+@to_ivy_arrays_and_back
+def manual_seed(seed: int) -> Generator:
     return ivy.seed(seed_value=seed)
 
 

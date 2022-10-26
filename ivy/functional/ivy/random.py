@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 # local
 import ivy
+from torch import Generator
 from ivy.func_wrapper import (
     infer_dtype,
     infer_device,
@@ -491,7 +492,7 @@ def randint(
 
 @handle_nestable
 @handle_exceptions
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0) -> Optional[Generator]:
     """Sets the seed for random number generation.
 
     Parameters
