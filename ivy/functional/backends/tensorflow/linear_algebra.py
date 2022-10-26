@@ -364,11 +364,11 @@ def matrix_rank(
                 )
                 print("Are all elements the same? ", result)
                 if result:  # all elements are same
-                    if max_rtol.dim == 1:
+                    if tf.experimental.numpy.ndim(max_rtol) == 1:
                         max_rtol = max_rtol[0]
-                    elif max_rtol.dim == 2:
+                    elif tf.experimental.numpy.ndim(max_rtol) == 2:
                         max_rtol = max_rtol[0][0]
-                    elif max_rtol.dim == 3:
+                    elif tf.experimental.numpy.ndim(max_rtol) == 3:
                         max_rtol = max_rtol[0][0][0]
                     print("max rtol single value: ", max_rtol)
             ret = ivy.sum(
