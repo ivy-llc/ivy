@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.container.extensions.creation &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.functional.extensions.creation &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -118,7 +118,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>ivy.container.extensions.creation</li>
+      <li>ivy.functional.extensions.creation</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -127,69 +127,124 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for ivy.container.extensions.creation</h1><div class="highlight"><pre>
+  <h1>Source code for ivy.functional.extensions.creation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">infer_device</span><span class="p">,</span>
+    <span class="n">outputs_to_ivy_arrays</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
 
 
-<div class="viewcode-block" id="ContainerWithCreationExtensions"><a class="viewcode-back" href="../../../../data_classes/container/extensions/creation/ContainerWithCreationExtensions.html#ivy.container.extensions.creation.ContainerWithCreationExtensions">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithCreationExtensions</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithCreationExtensions.static_triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/extensions/creation/ContainerWithCreationExtensions.html#ivy.container.extensions.creation.ContainerWithCreationExtensions.static_triu_indices">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">static_triu_indices</span><span class="p">(</span>
-        <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
-            <span class="s2">&quot;triu_indices&quot;</span><span class="p">,</span>
-            <span class="n">n_rows</span><span class="p">,</span>
-            <span class="n">n_cols</span><span class="p">,</span>
-            <span class="n">k</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<div class="viewcode-block" id="triu_indices"><a class="viewcode-back" href="../../../../functional/extensions/creation/triu_indices.html#ivy.functional.extensions.creation.triu_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@infer_device</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the indices of the upper triangular part of a row by col matrix in a</span>
+<span class="sd">    2-by-N shape (tuple of two N dimensional arrays), where the first row contains</span>
+<span class="sd">    row coordinates of all indices and the second row contains column coordinates.</span>
+<span class="sd">    Indices are ordered based on rows and then columns.  The upper triangular part</span>
+<span class="sd">    of the matrix is defined as the elements on and above the diagonal.  The argument</span>
+<span class="sd">    k controls which diagonal to consider. If k = 0, all elements on and above the main</span>
+<span class="sd">    diagonal are retained. A positive value excludes just as many diagonals above the</span>
+<span class="sd">    main diagonal, and similarly a negative value includes just as many diagonals</span>
+<span class="sd">    below the main diagonal. The main diagonal are the set of indices</span>
+<span class="sd">    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].</span>
 
-<div class="viewcode-block" id="ContainerWithCreationExtensions.triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/extensions/creation/ContainerWithCreationExtensions.html#ivy.container.extensions.creation.ContainerWithCreationExtensions.triu_indices">[docs]</a>    <span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
-        <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_triu_indices</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">n_rows</span><span class="p">,</span>
-            <span class="n">n_cols</span><span class="p">,</span>
-            <span class="n">k</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Primary purpose of this function is to slice an array of shape (n,m). See</span>
+<span class="sd">    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html</span>
+<span class="sd">    for examples</span>
+
+<span class="sd">    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_rows</span>
+<span class="sd">       number of rows in the 2-d matrix.</span>
+<span class="sd">    n_cols</span>
+<span class="sd">       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows</span>
+<span class="sd">    k</span>
+<span class="sd">       number of shifts from the main diagonal. k = 0 includes main diagonal,</span>
+<span class="sd">       k &gt; 0 moves upwards and k &lt; 0 moves downwards</span>
+<span class="sd">    device</span>
+<span class="sd">       device on which to place the created array. Default: ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])</span>
+<span class="sd">        contains row coordinates of all indices and the second subarray (i.e ret[1])</span>
+<span class="sd">        contains columns indices.</span>
+
+<span class="sd">    Function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,1)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 1, 1, 2]),</span>
+<span class="sd">    ivy.array([1, 2, 3, 2, 3, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,-2)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,2,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 1]),</span>
+<span class="sd">    ivy.array([0, 1, 1]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,-4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,-100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
