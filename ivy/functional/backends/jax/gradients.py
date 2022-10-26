@@ -98,7 +98,7 @@ def execute_with_gradients(
     if isinstance(xs, ivy.Container):
         grads = _set_duplicates(grads, duplicate_key_chains)
     grads = ivy.nested_map(
-        grads, lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_ivy_array(x) else x
+        grads, lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x
     )
     grads = _remove_zeros_and_nones(grads, grads)
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
