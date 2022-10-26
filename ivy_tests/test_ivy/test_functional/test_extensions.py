@@ -791,13 +791,15 @@ def valid_dct(draw):
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=1,
+        min_dim_size=2,
         max_dim_size=10,
         shared_dtype=True),
+    dct_args = valid_dct(),
     num_positional_args=helpers.num_positional_args(fn_name="dct"),
 )
 def test_dct(
     dtype_and_x,
+    dct_args,
     as_variable,
     with_out,
     num_positional_args,
@@ -807,6 +809,7 @@ def test_dct(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    type, n, norm = dct_args
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -818,4 +821,7 @@ def test_dct(
         fw=fw,
         fn_name="dct",
         x=x[0],
+        type=type,
+        n=n,
+        norm=norm,
     )
