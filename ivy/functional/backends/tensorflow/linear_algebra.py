@@ -3,7 +3,6 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-# import numpy as np
 import tensorflow as tf
 
 # local
@@ -86,27 +85,16 @@ def diag(
     if num_cols is None:
         num_cols = -1
 
-    # x = np.array(x)
-
-    try:
-        # print("HI")
-        ret = tf.linalg.diag(
-            x,
-            name="diag",
-            k=offset,
-            num_rows=num_rows,
-            num_cols=num_cols,
-            padding_value=padding_value,
-            align=align,
-        )
-
-        if ret is None:
-            print("WHAT")
-        return ret
-
-    except Exception as e:
-        print("Gotcha!")
-        print(e)
+    ret = tf.linalg.diag(
+        x,
+        name="diag",
+        k=offset,
+        num_rows=num_rows,
+        num_cols=num_cols,
+        padding_value=padding_value,
+        align=align,
+    )
+    return ret
 
 
 def diagonal(

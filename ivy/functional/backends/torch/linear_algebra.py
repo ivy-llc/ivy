@@ -429,8 +429,6 @@ def diag(
     num_cols: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ):
-    # Trying to avoid segfaults
-    #x = torch.copy(x)
     if len(x.shape) == 1 and offset == 0 and num_rows <= 1 and num_cols <= 1:
         return x
 
@@ -464,7 +462,6 @@ def diag(
         output_shape[x_rank - 2] = num_rows
         output_shape[x_rank - 1] = num_cols
 
-    #print(tuple(output_shape))
     output_array = torch.full(tuple(output_shape), padding_value, dtype=x.dtype)
     output_array = output_array.to(x.dtype)
 
@@ -476,42 +473,21 @@ def diag(
         )
 
     temp = x - torch.full(x.shape, padding_value).type(x.dtype)
-    diagonal_to_add = torch.diag(
-        temp,
-        diagonal=offset
-    ).type(x.dtype)
+    diagonal_to_add = torch.diag(temp, diagonal=offset).type(x.dtype)
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
-    #diagonal_to_add = diagonal_to_add.type(x.dtype)
     diagonal_to_add = diagonal_to_add.to(x.dtype)
-    #print(x)
-    #print(x.dtype)
-    #print(output_array)
-    #print(output_array.dtype)
-    #print(diagonal_to_add)
-    #print(diagonal_to_add.dtype)
-    #print(max([output_array.shape[0] - diagonal_to_add.shape[0], 0]))
-    #print(max([output_array.shape[1] - diagonal_to_add.shape[1], 0]))
-    #print(torch.nn.functional.pad(
-    #    diagonal_to_add,
-   #     (
-   #         0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0]),
-    #        0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0]),
-    #    ),
-    #    "constant",
-    #    0
-    #))
-    #print(output_array)
+
     output_array += torch.nn.functional.pad(
-    diagonal_to_add,
-    (
-        #0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0]),
-        0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0]),
-        0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0]),
-        #0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0]),
-    ),
-    "constant",
-    0
+        diagonal_to_add,
+        (
+            0,
+            max([output_array.shape[1] - diagonal_to_add.shape[1], 0]),
+            0,
+            max([output_array.shape[0] - diagonal_to_add.shape[0], 0]),
+        ),
+        "constant",
+        0,
     ).type(x.dtype)
     return output_array.type(x.dtype)
 

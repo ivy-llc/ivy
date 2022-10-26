@@ -1406,11 +1406,6 @@ def _generate_diag_args(draw):
     offset = draw(helpers.ints(min_value=-5, max_value=5))
 
     dtype = dtype_x[0]
-    # while not isinstance(dtype, (str, ivy.Dtype)):
-    #    dtype = dtype[0]
-
-    if dtype == "u":
-        print("WHAT")
 
     dtype_padding_value = draw(
         helpers.dtype_and_values(
