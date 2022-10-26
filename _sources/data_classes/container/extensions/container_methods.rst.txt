@@ -13,6 +13,8 @@ Container methods
    :maxdepth: -1
    :caption: Container methods
 
+   container_methods/static_triu_indices.rst
+   container_methods/triu_indices.rst
    container_methods/static_sinc.rst
    container_methods/sinc.rst
    container_methods/static_lcm.rst

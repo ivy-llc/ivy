@@ -2218,13 +2218,25 @@
 
 
 <div class="viewcode-block" id="set_tmp_dir"><a class="viewcode-back" href="../../../../functional/ivy/general/set_tmp_dir.html#ivy.functional.ivy.general.set_tmp_dir">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">set_tmp_dir</span><span class="p">(</span><span class="n">tmp_dr</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">set_tmp_dir</span><span class="p">(</span><span class="n">tmp_dr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set the directory for saving temporary files.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    tmp_dr</span>
+<span class="sd">        The new directory for saving temporary files</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.get_tmp_dir()</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    /tmp</span>
 
+<span class="sd">    To set the temp base to 1e-04</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_tmp_dir(&quot;/my_tmp&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.get_tmp_dir()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    /my_tmp</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">TMP_DIR</span>
     <span class="n">TMP_DIR</span> <span class="o">=</span> <span class="n">tmp_dr</span></div>
