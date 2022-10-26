@@ -1,5 +1,4 @@
 import ivy
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
