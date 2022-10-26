@@ -202,3 +202,24 @@ def as_tensor(
     device=None,
 ):
     return ivy.asarray(data, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def zeros_like_v_0p3p0_to_0p3p1(input, out=None):
+    return ivy.zeros_like(input, out=None)
+
+
+@to_ivy_arrays_and_back
+def zeros_like_v_0p4p0_and_above(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    ret = ivy.zeros_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
