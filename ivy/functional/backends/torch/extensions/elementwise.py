@@ -100,14 +100,13 @@ def float_power(
 float_power.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
     *,
-    dim: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[tuple, int]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nansum(x, dim=dim, keepdim=keepdims, dtype=dtype)
+    return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
