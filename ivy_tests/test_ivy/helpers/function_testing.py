@@ -572,10 +572,8 @@ def test_frontend_function(
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
-        ret = frontend_fn(*args, **kwargs)
-        # converting to ivy.array if FrontendArray was returned
-        if _is_frontend_array(ret):
-            ret = ret.data
+        # strip the decorator to get an Ivy array
+        ret = frontend_fn.__wrapped__(*args, **kwargs)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -593,9 +591,6 @@ def test_frontend_function(
             # pass return value to out argument
             # check if passed reference is correctly updated
             kwargs["out"] = out
-            ret = frontend_fn(*args, **kwargs)
-            if _is_frontend_array(ret):
-                ret = ret.data
             if is_ret_tuple:
                 flatten_ret = flatten(ret=ret)
                 flatten_out = flatten(ret=out)

@@ -98,6 +98,36 @@ def max_pool2d(
     return res
 
 
+def max_pool1d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if data_format == "NCW":
+        x = jnp.transpose(x, (0, 2, 1))
+
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+
+    if data_format == "NCW":
+        res = jnp.transpose(x, (0, 2, 1))
+    return res
+
+
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
