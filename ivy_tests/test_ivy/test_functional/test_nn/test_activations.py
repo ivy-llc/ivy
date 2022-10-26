@@ -1,34 +1,35 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # relu
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="relu"),
 )
 def test_relu(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -36,26 +37,26 @@ def test_relu(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="relu",
+        fn_name=fn_name,
+        on_device=on_device,
         test_gradients=True,
         x=x[0],
     )
 
 
 # leaky_relu
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
 )
 def test_leaky_relu(
@@ -63,12 +64,14 @@ def test_leaky_relu(
     dtype_and_x,
     alpha,
     as_variable,
-    with_out,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -76,11 +79,12 @@ def test_leaky_relu(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="leaky_relu",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -90,8 +94,8 @@ def test_leaky_relu(
 
 
 # gelu
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
@@ -99,19 +103,20 @@ def test_leaky_relu(
         safety_factor_scale="log",
     ),
     approximate=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="gelu"),
 )
 def test_gelu(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
     approximate,
+    as_variable,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -119,11 +124,12 @@ def test_gelu(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="gelu",
+        fn_name=fn_name,
+        on_device=on_device,
         atol_=1e-2,
         rtol_=1e-2,
         test_gradients=True,
@@ -133,26 +139,27 @@ def test_gelu(
 
 
 # sigmoid
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
 )
 def test_sigmoid(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -160,11 +167,12 @@ def test_sigmoid(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="sigmoid",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -173,8 +181,8 @@ def test_sigmoid(
 
 
 # softmax
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.softmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -183,19 +191,20 @@ def test_sigmoid(
         safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
-    num_positional_args=helpers.num_positional_args(fn_name="softmax"),
 )
 def test_softmax(
     *,
     dtype_and_x,
-    as_variable,
     axis,
-    with_out,
+    as_variable,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -203,11 +212,12 @@ def test_softmax(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="softmax",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=True,
@@ -217,8 +227,8 @@ def test_softmax(
 
 
 # softplus
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.softplus",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -226,7 +236,6 @@ def test_softmax(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="softplus"),
     beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
     threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
 )
@@ -236,12 +245,14 @@ def test_softplus(
     beta,
     threshold,
     as_variable,
-    with_out,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -249,11 +260,12 @@ def test_softplus(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="softplus",
+        fn_name=fn_name,
+        on_device=on_device,
         test_gradients=True,
         rtol_=1e-02,
         atol_=1e-02,
@@ -264,8 +276,8 @@ def test_softplus(
 
 
 # log_softmax
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.log_softmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -274,19 +286,20 @@ def test_softplus(
         safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
-    num_positional_args=helpers.num_positional_args(fn_name="log_softmax"),
 )
 def test_log_softmax(
     *,
     dtype_and_x,
-    as_variable,
     axis,
-    with_out,
+    as_variable,
     num_positional_args,
-    container,
-    instance_method,
     native_array,
-    fw,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -294,11 +307,12 @@ def test_log_softmax(
         as_variable_flags=as_variable,
         with_out=with_out,
         native_array_flags=native_array,
-        fw=fw,
+        fw=backend_fw,
         num_positional_args=num_positional_args,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fn_name="log_softmax",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=True,
