@@ -1225,6 +1225,7 @@ def flipud(
 
 
 @to_native_arrays_and_back
+@integer_arrays_to_float
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

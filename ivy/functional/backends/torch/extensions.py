@@ -317,6 +317,8 @@ def dct(
     norm: Optional[str] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
+    if x.dtype not in [torch.float32, torch.float64]:
+        x = x.type(torch.float32)
     if n is not None:
         signal_len = x.shape[-1]
         if n <= signal_len:

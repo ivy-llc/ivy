@@ -337,6 +337,4 @@ def dct(
     norm: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if x.dtype not in [np.float32, np.float64]:
-        x = x.astype(np.float32)
     return fft.dct(x, type=type, n=n, norm=norm)
