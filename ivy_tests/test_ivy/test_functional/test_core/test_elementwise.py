@@ -38,6 +38,7 @@ def test_abs(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -51,7 +52,7 @@ def test_abs(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
     )
 
