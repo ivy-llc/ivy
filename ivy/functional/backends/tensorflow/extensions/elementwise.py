@@ -1,8 +1,6 @@
 from typing import Union, Optional
 import tensorflow as tf
 from .. import backend_version
-from tensorflow.python.ops.numpy_ops import np_config 
-np_config.enable_numpy_behavior()
 
 
 # local
@@ -94,6 +92,6 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cast(
-        tf.experimental.numpy.exp2(x),
+        tf.math.pow(2, x, name=None),
         dtype=x.dtype
     )
