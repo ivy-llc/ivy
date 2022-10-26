@@ -198,10 +198,10 @@ def matrix_rank(
             ret = jnp.sum(singular_values != 0, axis=axis)
         else:
             max_rtol = max_values * rtol
-            if isinstance(rtol, float) or (
-                not isinstance(rtol, float) and len(rtol) <= 1
-            ):
+            if isinstance(rtol, float):
                 print("rtol: ", rtol)
+            elif not isinstance(rtol, float) and rtol.size <= 1:
+                print("rtol array: ", rtol)
             else:
                 print("rtol shape: ", rtol.shape)
                 print("max_values * rtol shape: ", (max_values * rtol).shape)
