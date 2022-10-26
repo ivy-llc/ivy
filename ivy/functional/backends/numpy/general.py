@@ -37,6 +37,8 @@ def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
 
 
 def to_scalar(x: np.ndarray, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
     return x.item()
 
 
