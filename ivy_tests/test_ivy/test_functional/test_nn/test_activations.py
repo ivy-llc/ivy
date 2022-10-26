@@ -305,3 +305,49 @@ def test_log_softmax(
         x=x[0],
         axis=axis,
     )
+
+
+# mish
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    inplace=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="mish"),
+)
+def test_mish(
+    *,
+    dtype_and_x,
+    as_variable,
+    inplace,
+    with_out,
+    num_positional_args,
+    container,
+    instance_method,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        inplace=inplace,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        frontend="torch",
+        fn_name="mish",
+        test_gradients=True,
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x[0],
+    )
+    
