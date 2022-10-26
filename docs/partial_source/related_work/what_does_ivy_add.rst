@@ -17,10 +17,17 @@ What does Ivy Add?
 .. _`OctoML`: https://octoml.ai/
 .. _`Modular`: https://www.modular.com/
 .. _`Apache TVM`: https://tvm.apache.org/
+.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
+.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
+.. _`Flux`: https://fluxml.ai/
+.. _`Julia`: https://julialang.org/
 
-Python API Standards
---------------------
+API Standards
+-------------
 Ivy fully adheres to the `Array API Standard`_, and we are strongly aligned with their unification vision. Ivy is entirely complimentary to the standard, implementing all of the functions defined by the standard, and populating each of them with implementations supporting a variety of frameworks.
+
+Further into the future, we have quite lofty ambitions for Ivy to extend beyond the Python realm, and to help build the bedrock of a more general, language-agnostic, purely mathematical standardized Array API. Given that the function signatures at the Array API level are very much mathematically bound, it is certainly possible to define this purely mathematical, language-agnostic Array API, using the Array API Standard as a starting point. In this light, the current release of Ivy would simply be the "Python backend" of Ivy, which itself of course would contain the same framework-specific backends itself, but just pushed one level further down the backend hierarchy. In future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in *different* languages. For example, transpiling from `PyTorch`_ to the `Flux`_ framework written in `Julia`_ would be a great feature. However, for the time being we are focusing exclusively on Python, in order to mitigate the risk of "biting off more than we can chew"!
 
 Wrapper Frameworks
 ------------------
@@ -56,4 +63,9 @@ Finally, vendor-specific compilers sit at the very bottom of the stack as far as
 
 ML Unifying Companies
 ---------------------
-The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section. For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies. Firstly, we are adhering to the `Array API Standard`_ defined by Quansight. In essence they have written the standard and we have implemented it, which is pretty much as complimentary as it gets. Similarly, OctoML makes it easy for anyone to *deploy* their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to *train* their model anywhere. Again very complimentary objectives. Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field. Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversations to and from the user-facing APIs themselves, without diving into any of the lower level details. All of these features are entirely complimentary, and together would form a powerful suite of unifying tools for ML practitioners.
+The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section. For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies. Firstly, we are adhering to the `Array API Standard`_ defined by Quansight. In essence they have written the standard and we have implemented it, which is pretty much as complementary as it gets. Similarly, OctoML makes it easy for anyone to *deploy* their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to *train* their model anywhere. Again very complementary objectives. Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field. Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversions to and from the user-facing APIs themselves, without diving into any of the lower level details. All of these features are entirely complementary, and together would form a powerful suite of unifying tools for ML practitioners.
+
+**Round Up**
+
+If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_
+or in the `related work forum`_!
