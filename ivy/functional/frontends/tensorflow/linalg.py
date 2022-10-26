@@ -111,6 +111,7 @@ normalize.supported_dtypes = (
 )
 
 
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.9.0 and below": ("float32", "float64")}, versions["tensorflow"]
 )
