@@ -16,7 +16,7 @@ import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_test
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -221,12 +221,11 @@ def test_get_item(
 
 
 # to_numpy
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.to_numpy",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="to_numpy"),
     copy=st.booleans(),
 )
 def test_to_numpy(
@@ -234,27 +233,29 @@ def test_to_numpy(
     copy,
     num_positional_args,
     as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_x
     # torch throws an exception
-    if not copy and fw == "torch":
-        return
+    if backend_fw == "torch":
+        assume(not copy)
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        device_=device,
-        fw=fw,
-        fn_name="to_numpy",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
         copy=copy,
     )
