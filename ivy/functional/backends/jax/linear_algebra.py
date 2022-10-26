@@ -212,11 +212,11 @@ def matrix_rank(
                 result = ivy.all(element == max_rtol[0] for element in max_rtol)
                 print("Are all elements the same? ", result)
                 if result:  # all elements are same
-                    if max_rtol.dim == 1:
+                    if max_rtol.ndim == 1:
                         max_rtol = max_rtol[0]
-                    elif max_rtol.dim == 2:
+                    elif max_rtol.ndim == 2:
                         max_rtol = max_rtol[0][0]
-                    elif max_rtol.dim == 3:
+                    elif max_rtol.ndim == 3:
                         max_rtol = max_rtol[0][0][0]
                     print("max rtol single value: ", max_rtol)
             ret = ivy.sum(
