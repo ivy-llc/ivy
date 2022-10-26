@@ -1122,10 +1122,15 @@ def default_int_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+                input,
+                lambda x: ivy.to_scalar(x) > 9223372036854775807
+                and ivy.to_scalar(x) != ivy.inf,
             ):
                 ret = ivy.uint64
-            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
+            elif ivy.nested_argwhere(
+                input,
+                lambda x: ivy.to_scalar(x) > 2147483647 and ivy.to_scalar(x) != ivy.inf,
+            ):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1594,7 +1599,9 @@ def is_float_dtype(
         return (
             True
             if ivy.nested_argwhere(
-                dtype_in, lambda x: isinstance(x, (float, np.floating))
+                dtype_in,
+                lambda x: isinstance(x, (float, np.floating))
+                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )
