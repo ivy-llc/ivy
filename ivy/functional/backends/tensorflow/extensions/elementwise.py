@@ -91,7 +91,4 @@ def exp2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(
-        tf.math.pow(2, x, name=None),
-        dtype=x.dtype
-    )
+    return tf.math.pow(2, x, name=None)
