@@ -20,14 +20,10 @@ What does Ivy Add?
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
 .. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
-.. _`Flux`: https://fluxml.ai/
-.. _`Julia`: https://julialang.org/
 
-API Standards
--------------
+Python API Standards
+--------------------
 Ivy fully adheres to the `Array API Standard`_, and we are strongly aligned with their unification vision. Ivy is entirely complimentary to the standard, implementing all of the functions defined by the standard, and populating each of them with implementations supporting a variety of frameworks.
-
-Further into the future, we have quite lofty ambitions for Ivy to extend beyond the Python realm, and to help build the bedrock of a more general, language-agnostic, purely mathematical standardized Array API. Given that the function signatures at the Array API level are very much mathematically bound, it is certainly possible to define this purely mathematical, language-agnostic Array API, using the Array API Standard as a starting point. In this light, the current release of Ivy would simply be the "Python backend" of Ivy, which itself of course would contain the same framework-specific backends itself, but just pushed one level further down the backend hierarchy. In future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in *different* languages. For example, transpiling from `PyTorch`_ to the `Flux`_ framework written in `Julia`_ would be a great feature. However, for the time being we are focusing exclusively on Python, in order to mitigate the risk of "biting off more than we can chew"!
 
 Wrapper Frameworks
 ------------------
