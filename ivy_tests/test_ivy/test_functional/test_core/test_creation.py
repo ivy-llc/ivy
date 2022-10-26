@@ -255,8 +255,8 @@ def test_asarray(
 
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=[False],
-        with_out=with_out,
+        as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=[False],
@@ -990,6 +990,7 @@ def test_one_hot(
     )
 
 
+"""
 @handle_cmd_line_args
 @given(
     n_rows=helpers.ints(min_value=0, max_value=10),
@@ -1021,3 +1022,4 @@ def test_triu_indices(
         k=k,
         device=device,
     )
+"""
