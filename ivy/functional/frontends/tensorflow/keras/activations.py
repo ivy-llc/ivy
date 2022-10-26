@@ -128,3 +128,26 @@ selu.supported_dtypes = {
 
 def deserialize(name, custom_objects=None):
     return ivy.deserialize(name, custom_objects=custom_objects)
+
+
+deserialize.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
