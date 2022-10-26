@@ -1,3 +1,4 @@
+
 import numpy as np
 
 def FFT(x):
@@ -8,3 +9,4 @@ def FFT(x):
     X = np.dot(e, x)
     
     return X
+
