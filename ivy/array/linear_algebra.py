@@ -34,7 +34,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -51,7 +51,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         upper
             If True, the result must be the upper-triangular Cholesky factor U. If
             False, the result must be the lower-triangular Cholesky factor L.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -106,7 +106,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the axis (dimension) of x1 and x2 containing the vectors for which to
             compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
-            Default: -1.
+            Default: ``-1``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -130,6 +130,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
     def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        Examples
+        --------
+        >>> x = ivy.array([[2.,4.],[6.,7.]])
+        >>> y = x.det()
+        >>> print(y)
+        ivy.array(-10.)
+        """
         return ivy.det(self._data, out=out)
 
     def diagonal(
@@ -144,6 +152,28 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.diagonal(
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
+
+    def diag(
+        self: ivy.Array,
+        /,
+        *,
+        k: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0, 1, 2],
+        >>>                [3, 4, 5],
+        >>>                [6, 7, 8]])
+        >>> x.diag(k=1)
+        ivy.array([1, 5])
+        """
+        return ivy.diag(self._data, k=k, out=out)
 
     def eigh(
         self: ivy.Array,
@@ -189,6 +219,46 @@ class ArrayWithLinearAlgebra(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array having shape (..., M, N) and whose innermost two dimensions
+            form MxN matrices. Should have a floating-point data type.
+        ord
+            Order of the norm. Default is "fro".
+        axis
+            specifies the axes that hold 2-D matrices. Default: (-2, -1).
+        keepdims
+            If this is set to True, the axes which are normed over are left in
+            the result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
+        >>> y = x.matrix_norm(ord=1)
+        >>> print(y)
+        ivy.array(6.3)
+
+        >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
+        >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
+        >>> print(y)
+        ivy.array([[[ 4.24]],
+                [[11.4 ]]])
+        """
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
         )
@@ -264,8 +334,39 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        *,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance inputs:
+
+        >>> x = ivy.array([[1., 2.], [0., 3.]])
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        ivy.array([[1., 0.],
+                   [2., 3.]])
+        """
         return ivy.matrix_transpose(self._data, out=out)
 
     def outer(

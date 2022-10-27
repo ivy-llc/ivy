@@ -1,4 +1,5 @@
 # local
+
 import ivy
 
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
@@ -20,7 +21,6 @@ def where(cond, x1=None, x2=None, /):
         raise ivy.exceptions.IvyException("where takes either 1 or 3 arguments")
 
 
-@to_ivy_arrays_and_back
 def nonzero(a):
     return ivy.nonzero(a)
 
@@ -50,3 +50,24 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def searchsorted(a, v, side="left", sorter=None):
     return ivy.searchsorted(a, v, side=side, sorter=sorter)
+
+
+@to_ivy_arrays_and_back
+def argwhere(a):
+    return ivy.indices_where(a)
+
+
+@to_ivy_arrays_and_back
+def nanargmax(a, axis=None, keepdims=False):
+    finite_a = ivy.isfinite(a)
+    if ivy.all(finite_a):
+        return ivy.argmax(a, axis=axis, keepdims=keepdims)
+    return ivy.argmax(a[finite_a], axis=axis, keepdims=keepdims)
+
+
+@to_ivy_arrays_and_back
+def nanargmin(a, axis=None, keepdims=False):
+    finite_a = ivy.isfinite(a)
+    if ivy.all(finite_a):
+        return ivy.argmin(a, axis=axis, keepdims=keepdims)
+    return ivy.argmin(a[finite_a], axis=axis, keepdims=keepdims)

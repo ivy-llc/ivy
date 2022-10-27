@@ -85,6 +85,9 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = jnp.take(params, indices, axis)
@@ -105,12 +108,13 @@ def gather(
     return _to_device(result)
 
 
-def gather_nd(
-    params: JaxArray, indices: JaxArray, /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
+def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    num_index_dims = indices_shape[-1]
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
         reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -132,7 +136,37 @@ def gather_nd(
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
-    return _to_device(ret)
+    return ret
+
+
+def gather_nd(
+    params: JaxArray,
+    indices: JaxArray,
+    /,
+    *,
+    batch_dims: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, i)
+            result.append(r)
+        result = jnp.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:

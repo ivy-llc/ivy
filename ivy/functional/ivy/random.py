@@ -98,6 +98,7 @@ def random_uniform(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
+    seed: Optional[int] = None,
 ) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -190,7 +191,7 @@ def random_uniform(
     ivy.array([5. , 7.3])
     """
     return ivy.current_backend().random_uniform(
-        low=low, high=high, shape=shape, device=device, dtype=dtype, out=out
+        low=low, high=high, shape=shape, device=device, dtype=dtype, out=out, seed=seed
     )
 
 
@@ -315,7 +316,7 @@ def multinomial(
     /,
     *,
     batch_size: int = 1,
-    probs: Union[ivy.Array, ivy.NativeArray] = None,
+    probs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     replace: bool = True,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     seed: Optional[int] = None,
@@ -338,7 +339,7 @@ def multinomial(
         The unnormalized probabilities for all elements in population,
         default is uniform *[batch_shape, population_size]*
     replace
-        Whether to replace samples once they've been drawn. Default is True.
+        Whether to replace samples once they've been drawn. Default is ``True``.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
@@ -399,7 +400,6 @@ def multinomial(
     ...                     replace=False)
     >>> print(y)
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
-
     """
     return ivy.current_backend().multinomial(
         population_size,
