@@ -519,3 +519,87 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_float_power(self, x2, out=out)
+
+    @staticmethod
+    def static_exp2(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.exp2. This method simply wraps
+        the function, and so the docstring for ivy.exp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise 2 to the power
+            of input arrays elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=[5, 6, 7])
+        >>> ivy.Container.static_exp2(x)
+        {
+            a: ivy.array([2.,  4.,  8.])
+            b: ivy.array([32., 64., 128.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "exp2",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def exp2(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.exp2. This method simply
+        wraps the function, and so the docstring for ivy.exp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise 2 to the power
+            of input array elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=[5, 6, 7])
+        >>> x.exp2()
+        {
+            a: ivy.array([2.,  4.,  8.])
+            b: ivy.array([32., 64., 128.])
+        }
+        """
+        return self.static_exp2(self, out=out)
