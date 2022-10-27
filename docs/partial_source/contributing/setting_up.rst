@@ -186,7 +186,7 @@ Windows
 
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
-#Review this point only
+   
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
@@ -398,7 +398,7 @@ or on `discord`_ in the `docker channel`_!
 Setting up for Free
 -------------------
 
-PyCharm professional is only free for students, a good alternative would be using Visual Studie Code if you don't have a student account. The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension. You'll hopefully be done with this in no time.
+Visual Studio Code is a recommended free alternative to setting up, especially if you're not eligible for a student license with PyCharm Professional. The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension. You'll hopefully be done with this in no time.
 The steps to be followed are listed below:
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
@@ -420,7 +420,7 @@ GitHub Codespaces
 -----------------
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
-#Review the important note only
+
 **Important Note**
 
 There are several versions of GitHub. If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
