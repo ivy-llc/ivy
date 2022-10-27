@@ -180,9 +180,6 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
     random_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
-    )
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -212,9 +209,6 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
     )
     random_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
     )
     matrix = draw(
         helpers.array_values(
