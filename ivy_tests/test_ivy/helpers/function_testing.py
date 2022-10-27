@@ -33,7 +33,6 @@ from .assertions import (
     value_test,
     test_unsupported_function,
     check_unsupported_dtype,
-    check_unsupported_device,
     check_unsupported_device_and_dtype,
 )
 
@@ -547,7 +546,7 @@ def test_frontend_function(
         elif with_inplace:
             assert not isinstance(ret, tuple)
             assert ivy.is_array(ret)
-            if "inplace" in inspect.getfullargspec(frontend_fn).args:
+            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
                 # set inplace update to be True and check
                 # if returned reference is inputted reference
@@ -556,7 +555,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = frontend_fn(*copy_args, **copy_kwargs)
+                ret_ = frontend_fn.__wrapped__(*copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
