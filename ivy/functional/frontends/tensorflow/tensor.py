@@ -46,6 +46,9 @@ class Tensor:
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
 
+    def __div__(self, x, name="div"):
+        return tf_frontend.math.divide(x, self.data, name=name)
+
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
 
