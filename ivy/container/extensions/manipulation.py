@@ -512,14 +512,15 @@ class ContainerWithManipulationExtensions(ContainerBase):
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
                         b=ivy.array([[1,2,3,4],\
-                                    [7,8,9,10],\
-                                    [3,4,5,6],\
-                                    [11,12,13,14]]))
+                                    [7,8,9,10]]))
         >>> ivy.Container.static_rot90(m)
         {
             a: ivy.array([[2, 4],
                           [1, 3]]),
-            b: (<class ivy.array.array.Array> shape=[4, 4])
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -583,14 +584,15 @@ class ContainerWithManipulationExtensions(ContainerBase):
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
                         b=ivy.array([[1,2,3,4],\
-                                    [7,8,9,10],\
-                                    [3,4,5,6],\
-                                    [11,12,13,14]]))
+                                    [7,8,9,10]]))
         >>> m.rot90()
         {
             a: ivy.array([[2, 4],
                           [1, 3]]),
-            b: (<class ivy.array.array.Array> shape=[4, 4])
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
         }
         """
         return self.static_rot90(
