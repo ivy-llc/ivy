@@ -15,7 +15,7 @@ from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
 from .layers import ContainerWithLayers
-from .linear_algebra import ContainerWithLinearAlgebra
+from .linalg import ContainerWithLinearAlgebra
 from .losses import ContainerWithLosses
 from .manipulation import ContainerWithManipulation
 from .norms import ContainerWithNorms
