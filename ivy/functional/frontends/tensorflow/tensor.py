@@ -10,7 +10,7 @@ class Tensor:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         else:
-            data = ivy.asarray(data)
+            data = ivy.array(data) if not isinstance(data, ivy.Array) else data
         self.data = data
 
     def __repr__(self):
@@ -21,7 +21,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self.data)
