@@ -498,5 +498,12 @@ def mish(
         a: ivy.array([1.4034, 0.3752, 0.8651])
     }
 
+    With :class:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([1.0, 2.0, 3.0])
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    ivy.array([0.8651, 1.9440, 2.9865])
+
     """
     return current_backend(x).mish(x, inplace)
