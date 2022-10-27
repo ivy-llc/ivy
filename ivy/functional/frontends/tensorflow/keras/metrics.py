@@ -138,19 +138,14 @@ def binary_crossentropy(
 
 @to_ivy_arrays_and_back
 def binary_focal_crossentropy(
-        y_true,
-        y_pred,
-        gamma=2.0,
-        from_logits=False,
-        label_smoothing=0.,
-        axis=-1
+    y_true, y_pred, gamma=2.0, from_logits=False, label_smoothing=0.0, axis=-1
 ):
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.asarray(y_true, dtype=y_pred.dtype)
     label_smoothing = ivy.asarray(label_smoothing, dtype=y_pred.dtype)
     gamma = ivy.asarray(gamma, dtype=y_pred.dtype)
 
-    if label_smoothing > 0.:
+    if label_smoothing > 0.0:
         y_true = y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
     if from_logits:
@@ -163,13 +158,13 @@ def binary_focal_crossentropy(
 
     if from_logits:
         zeros = ivy.zeros_like(y_pred, dtype=y_pred.dtype)
-        cond = (y_pred >= zeros)
+        cond = y_pred >= zeros
         relu_logits = ivy.where(cond, y_pred, zeros)
         neg_abs_logits = ivy.where(cond, -y_pred, y_pred)
         bce = ivy.add(relu_logits - y_pred * y_true, ivy.log1p(ivy.exp(neg_abs_logits)))
     else:
         epsilon_ = 1e-7
-        y_pred = ivy.clip(y_pred, epsilon_, 1. - epsilon_)
+        y_pred = ivy.clip(y_pred, epsilon_, 1.0 - epsilon_)
         bce = y_true * ivy.log(y_pred + epsilon_)
         bce += (1 - y_true) * ivy.log(1 - y_pred + epsilon_)
         bce = -bce
