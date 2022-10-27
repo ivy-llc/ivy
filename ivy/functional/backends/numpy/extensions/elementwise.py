@@ -119,3 +119,6 @@ def nansum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+nansum.support_native_out = True
