@@ -73,12 +73,14 @@ Formatting checklist
 
 After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows: 
 
-1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to. An example of this is shown below.
+1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
+   An example of this is shown below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
    :width: 420
 
-Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist. These updates might take a few moments to take effect, so please be patient 🙂.
+Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
+These updates might take a few moments to take effect, so please be patient 🙂.
 
 2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
 
@@ -99,7 +101,8 @@ The PR assignee will then see this comment and address your issues.
 **Notes**: 
 
 1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
-2. The checklist items' statuses should be manually updated by the PR author. It does not automatically run any tests to update them!
+2. The checklist items' statuses should be manually updated by the PR author.
+   It does not automatically run any tests to update them!
 3. Do not edit the checklist text, only the emoji symbols. 😅
 4. Please refrain from using the checkboxes next to checklist items.
 

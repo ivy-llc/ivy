@@ -95,7 +95,8 @@ Using miniconda
 
    b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
-   c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+   c. Choosing "conda environment" from the left panel.
+    Choose existing environment and select the drop down and you should find the path python in the environment.
 If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
 
 
@@ -104,8 +105,9 @@ Using venv
 
 This is a builtin package and doesn't require explicit installation.
 
-#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
-#. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
+#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files.
+#. Create the environment by running the command below with a new environment name.
+   We named it :code:`ivy_dev` like above.
 
     .. code-block:: none
 
@@ -141,7 +143,8 @@ This is a builtin package and doesn't require explicit installation.
 
    b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
-   c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+   c. Choosing "virtualenv environment" from the left panel
+    Choose existing environment and add the path to python.
 The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
 
 Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
@@ -172,19 +175,24 @@ Windows
 
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
-#. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most, it will only require running the command :code:`wsl --install` in powershell admin mode. Visit the link if it doesn't.
+#. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_.
+   For most, it will only require running the command :code:`wsl --install` in powershell admin mode.
+   Visit the link if it doesn't.
 #. Get the latest Docker Image for Ivy by:
 
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
    
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
-#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+#. Open pycharm with your cloned Ivy repository.
+   Add the remote python interpreter by:
 
-   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker
+      Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   d. Choosing "Docker" from the left panel.
+      Type python3 (with the number) in python interpreter path and press ok.
    e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
@@ -212,12 +220,15 @@ MacOS
    b. Opening terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
 
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
-#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+#. Open pycharm with your cloned Ivy repository.
+   Add the remote python interpreter by:
 
-   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker.
+      Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   d. Choosing "Docker" from the left panel.
+      Type python3 (with the number) in python interpreter path and press ok.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -236,7 +247,8 @@ Ubuntu
 ****
 
 
-#. Install Docker by running the commands below one by one in the Linux terminal. You may visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
+#. Install Docker by running the commands below one by one in the Linux terminal.
+   You may visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
 
     .. code-block:: none
 
@@ -279,13 +291,17 @@ Ubuntu
 
    Note: If you get permission related errors please visit the simple steps at `Linux post-installation page <https://docs.docker.com/engine/install/linux-postinstall/>`_.
 
-#. Install Pycharm Professional Version. You may use Ubuntu Software for this.
-#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+#. Install Pycharm Professional Version.
+   You may use Ubuntu Software for this.
+#. Open pycharm with your cloned Ivy repository.
+   Add the remote python interpreter by:
 
-   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker.
+      Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   d. Choosing "Docker" from the left panel.
+      Type python3 (with the number) in python interpreter path and press ok.
 
 For questions, please reach out on `discord`_ in the `docker channel`_!
 
@@ -346,10 +362,14 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
     test_ivy_nn.sh
     test_ivy_stateful.sh
 
-* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory. This runs all tests in :code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all array-api tests for a certain submodule in a certain backend.
-* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory. This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`. Make sure to check the submodule names in the source code before running.
+* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+  This runs all tests in :code:`ivy/ivy_tests`.
+* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
+  This runs all array-api tests for a certain submodule in a certain backend.
+* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+  This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`.
+  Make sure to check the submodule names in the source code before running.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
   :width: 420
@@ -392,11 +412,12 @@ The steps to be followed are listed below:
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 #. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
-#. Open Docker desktop, make sure it's running while following the process below. You can close the Docker desktop window afterwards, Docker will continue to run in the background.
+#. Open Docker desktop, make sure it's running while following the process below.
+   You can close the Docker desktop window afterwards, Docker will continue to run in the background.
 #. Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:
 
    a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that.
-   In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
+      In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
    b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
    c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
    d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.

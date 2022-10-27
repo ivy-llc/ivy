@@ -14,7 +14,7 @@ These are the most important resources when working on Docstrings, Ivy Frontends
 
 **Stack Exchange/ Stack Overflow**
 
-A good platform to search for any sort of information regarding python and ML. 
+A good platform to search for any sort of information regarding python and ML.
 Useful when working on almost any section in the Deep Dive.
 
 **Co-Pilot**
