@@ -80,3 +80,8 @@ def min(input, dim=None, keepdim=False, *, out=None):
             ivy.min(input, axis=dim, keepdims=keepdim),
             ivy.argmin(input, axis=dim, keepdims=keepdim),
         )
+
+
+@to_ivy_arrays_and_back
+def moveaxis(input, source, destination):
+    return ivy.moveaxis(input, source, destination)

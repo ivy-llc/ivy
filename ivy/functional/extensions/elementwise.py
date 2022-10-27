@@ -206,3 +206,138 @@ def fmax(
     ivy.array([ 0,  0,  nan])
     """
     return ivy.current_backend().fmax(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def trapz(
+    y: ivy.Array,
+    /,
+    *,
+    x: Optional[ivy.Array] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Integrate along the given axis using the composite trapezoidal rule.
+    If x is provided, the integration happens in sequence along its elements
+    - they are not sorted..
+
+    Parameters
+    ----------
+    y
+        The array that should be integrated.
+    x
+        The sample points corresponding to the input array values.
+        If x is None, the sample points are assumed to be evenly spaced
+        dx apart. The default is None.
+    dx
+        The spacing between sample points when x is None. The default is 1.
+    axis
+        The axis along which to integrate.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Definite integral of n-dimensional array as approximated along
+        a single axis by the trapezoidal rule. If the input array is a
+        1-dimensional array, then the result is a float. If n is greater
+        than 1, then the result is an n-1 dimensional array.
+
+    Examples
+    --------
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3])
+    4.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], x=[4, 6, 8])
+    8.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], dx=2)
+    8.0
+    """
+    return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def float_power(
+    x1: Union[ivy.Array, float, list, tuple],
+    x2: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Raise each base in x1 to the positionally-corresponding power in x2.
+    x1 and x2 must be broadcastable to the same shape.
+    This differs from the power function in that integers, float16, and float32
+    are promoted to floats with a minimum precision of float64 so that the result
+    is always inexact.
+
+    Parameters
+    ----------
+    x1
+        Array-like with elements to raise in power.
+    x2
+        Array-like of exponents. If x1.shape != x2.shape,
+        they must be broadcastable to a common shape
+        (which becomes the shape of the output).
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The bases in x1 raised to the exponents in x2.
+        This is a scalar if both x1 and x2 are scalars
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
+    >>> ivy.float_power(x1, 3)
+    ivy.array([1.,    8.,   27.,   64.,  125.])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
+    >>> x2 = ivy.array([2, 3, 3, 2, 1])
+    >>> ivy.float_power(x1, x2)
+    ivy.array([1.,   8.,  27.,  16.,   5.])
+    """
+    return ivy.current_backend().float_power(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def exp2(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate 2**p for all p in the input array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3]) 
+    >>> ivy.exp2(x)
+    ivy.array([2.,    4.,   8.])
+    >>> x = [5, 6, 7] 
+    >>> ivy.exp2(x)
+    ivy.array([32.,   64.,  128.])
+    """
+    return ivy.current_backend().exp2(x, out=out)

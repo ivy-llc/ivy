@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
     Sequence,
+    Tuple,
 )
 
 
@@ -294,3 +295,313 @@ class ContainerWithManipulationExtensions(ContainerBase):
         }
         """
         return self.static_flipud(self, out=out)
+
+    def vstack(
+        self: ivy.Container,
+        /,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stack. This method
+        simply wraps the function, and so the docstring for ivy.stack
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.vstack([y])
+        {
+            a: ivy.array([[[0, 1],
+                        [2, 3]],
+                        [[3, 2],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5]],
+                        [[1, 0]]])
+        }
+        """
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
+        return self.static_vstack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_vstack(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.vstack also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
+                              b=ivy.arange(3))
+        >>> ivy.Container.static_vstack(c)
+        {
+            a: ivy.array([[1, 2, 3],
+                          [0, 0, 0]]),
+            b: ivy.array([[0],
+                          [1],
+                          [2]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "vstack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hstack(
+        self: ivy.Container,
+        /,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hstack. This method
+        simply wraps the function, and so the docstring for ivy.hstack
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.hstack([y])
+        {
+            a: ivy.array([[0, 1, 3, 2],
+                          [2, 3, 1, 0]]),
+            b: ivy.array([[4, 5, 1, 0]])
+        }
+        """
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
+        return self.static_hstack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_hstack(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hstack. This method simply wraps the
+        function, and so the docstring for ivy.hstack also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])])
+        >>> ivy.Container.static_hstack(c)
+        {
+            a: ivy.array([1, 2, 3, 0, 0, 0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hstack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_rot90(
+        m: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rot90.
+        This method simply wraps the function, and so the docstring for
+        ivy.rot90 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        m
+            Input array of two or more dimensions.
+        k
+            Number of times the array is rotated by 90 degrees.
+        axes
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with a rotated view of m.
+            
+        Examples
+        --------
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+                        b=ivy.array([[1,2,3,4],\
+                                    [7,8,9,10]]))
+        >>> ivy.Container.static_rot90(m)
+        {
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "rot90",
+            m,
+            k=k,
+            axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def rot90(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rot90.
+        This method simply wraps the function, and so the docstring for
+        ivy.rot90 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array of two or more dimensions.
+        k
+            Number of times the array is rotated by 90 degrees.
+        axes
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with a rotated view of input array.
+
+        Examples
+        --------
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+                        b=ivy.array([[1,2,3,4],\
+                                    [7,8,9,10]]))
+        >>> m.rot90()
+        {
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
+        }
+        """
+        return self.static_rot90(
+            self,
+            k=k,
+            axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

@@ -35,7 +35,6 @@ def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
     xs = _arrays_to_float_variables(xs)
-    xs = ivy.stop_gradient(xs)
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         tape.watch(ivy.to_native(xs))
         func_ret = func(xs)
@@ -63,7 +62,11 @@ def execute_with_gradients(
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
             grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
-    grads = _remove_zeros_and_nones(grads, grads)
+    grads = ivy.nested_map(
+        grads,
+        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        include_derived=True,
+    )
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
     if not retain_grads:
         del tape

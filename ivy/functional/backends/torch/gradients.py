@@ -55,7 +55,6 @@ def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
     xs = _arrays_to_float_variables(xs)
-    xs = ivy.stop_gradient(xs)
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
@@ -108,7 +107,11 @@ def execute_with_gradients(
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
             grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
-    grads = _remove_zeros_and_nones(grads, grads)
+    grads = ivy.nested_map(
+        grads,
+        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        include_derived=True,
+    )
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
     grads = ivy.to_ivy(grads)
     return func_ret, grads
@@ -129,7 +132,7 @@ def value_and_grad(func):
                 else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
             )
             grad = ivy.to_ivy(grad)
-            grad = _remove_zeros_and_nones(grads, grads)
+            grad = _remove_zeros_and_nones(grad, grad)
             return grad
 
         grads = ivy.nested_map(
