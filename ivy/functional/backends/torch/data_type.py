@@ -1,10 +1,13 @@
 # global
-import torch
 from typing import Union, Sequence, List
+
+import torch
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -16,6 +19,8 @@ native_dtype_dict = {
     "float16": torch.float16,
     "float32": torch.float32,
     "float64": torch.float64,
+    "complex64": torch.complex64,
+    "complex128": torch.complex128,
     "bool": torch.bool,
 }
 
@@ -75,6 +80,9 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.broadcast_tensors(*arrays))
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
@@ -83,6 +91,9 @@ def broadcast_to(
     return torch.broadcast_to(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("complex64", "complex128")}, backend_version
+)
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
         from_ = ivy.as_ivy_dtype(from_.dtype)
@@ -155,11 +166,14 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
             torch.float16: "float16",
             torch.float32: "float32",
             torch.float64: "float64",
+            torch.complex64: "complex64",
+            torch.complex128: "complex128",
             torch.bool: "bool",
         }[dtype_in]
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
@@ -187,4 +201,9 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
+
+
+# ToDo:
+# 1. can_cast : Add support for complex64, complex128
