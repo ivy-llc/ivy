@@ -276,7 +276,7 @@ def _array_or_type(draw, float_or_int):
 
 
 # finfo
-# TODO: fix container method
+# TODO: fix jax
 @handle_test(
     fn_tree="functional.ivy.finfo",
     type=_array_or_type("float"),
@@ -305,7 +305,7 @@ def test_finfo(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1011,7 +1011,6 @@ def test_function_dtype_versioning(
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 
@@ -1040,21 +1039,19 @@ def test_function_dtype_versioning_frontend(
     fn_name,
     on_device,
 ):
-    # todo need to devise a method to hack into the versions dict
-    # change stuff before importing. Currently the decorators are executed
-    # as soon as the module is loaded and modifying the dictionary doesn't
-    # help as the attributes have already been assigned
+    fw = backend_fw.current_backend_str()
     for key in func_and_version:
-        if key != backend_fw:
+        if key != fw:
             continue
-        frontend = importlib.import_module("ivy.functional.frontends." + backend_fw)
+        frontend = importlib.import_module("ivy.functional.frontends")
         var = frontend.versions
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:
-                var[backend_fw] = key2
-                print(key2)
-                fn = getattr(frontend, key1)
+                var[fw] = key2
+                fn = getattr(
+                    importlib.import_module("ivy.functional.frontends." + fw), key1
+                )
                 expected = func_and_version[key][key1][key2]
                 res = fn.unsupported_dtypes
                 if res is None:
@@ -1062,7 +1059,6 @@ def test_function_dtype_versioning_frontend(
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 

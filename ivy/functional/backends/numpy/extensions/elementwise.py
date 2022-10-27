@@ -91,14 +91,7 @@ def float_power(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(
-        np.float_power(
-            x1,
-            x2,
-            out=out
-        ),
-        dtype=x1.dtype
-    )
+    return np.asarray(np.float_power(x1, x2, out=out), dtype=x1.dtype)
 
 
 float_power.support_native_out = True
