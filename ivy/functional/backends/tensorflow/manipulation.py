@@ -336,15 +336,15 @@ def fill_diagonal(
     *,
     wrap: Optional[bool] = False,
 ) -> tf.Tensor:
-    ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False,\
-    message="array must be at least 2-d")
+    ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False,
+        message="array must be at least 2-d")
     value = tf.reshape(tf.convert_to_tensor(value, dtype=tf.float32), [-1])
     while x.shape[0] > value.shape[0]:
         value = tf.concat((value, value), 0)
     indices = []
     if len(x.shape) > 2:
-        ivy.assertions.check_all_dims_equal_length(x,\
-        message="if input array has more than 2 dimensions, ")
+        ivy.assertions.check_all_dims_equal_length(x,
+            message="if input array has more than 2 dimensions, ")
         for dim in range(x.shape[0]):
             indices.append([dim for _ in range(len(x.shape))])
     else:

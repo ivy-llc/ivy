@@ -501,7 +501,7 @@ def rot90(
 @handle_exceptions
 def fill_diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
-    value: Union[Number, ivy.Array, ivy.NativeArray],
+    value: Union[Number, Sequence],
     /,
     *,
     wrap: Optional[bool] = False,
@@ -579,4 +579,4 @@ def fill_diagonal(
                    [0, 1, 0]])
 
     """
-    return current_backend(x).fill_diagonal(x, value, wrap=wrap)
+    return ivy.current_backend(x).fill_diagonal(x, value, wrap=wrap)
