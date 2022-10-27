@@ -1,6 +1,7 @@
+import json
 import os
 import re
-import json
+
 from github import Github
 
 

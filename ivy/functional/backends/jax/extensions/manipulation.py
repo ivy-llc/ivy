@@ -1,6 +1,8 @@
-from typing import Optional, Union, Sequence, Tuple
-from ivy.functional.backends.jax import JaxArray
+from typing import Optional, Sequence, Tuple, Union
+
 import jax.numpy as jnp
+
+from ivy.functional.backends.jax import JaxArray
 
 
 def moveaxis(

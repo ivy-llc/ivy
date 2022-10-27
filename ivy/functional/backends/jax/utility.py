@@ -1,6 +1,7 @@
 # global
+from typing import Optional, Sequence, Union
+
 import jax.numpy as jnp
-from typing import Union, Optional, Sequence
 
 # local
 from ivy.functional.backends.jax import JaxArray

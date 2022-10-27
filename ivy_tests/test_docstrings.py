@@ -1,10 +1,11 @@
 # global
-import warnings
 import re
+import sys
+import warnings
 from contextlib import redirect_stdout
 from io import StringIO
+
 import numpy as np
-import sys
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest

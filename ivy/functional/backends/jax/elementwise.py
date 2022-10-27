@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Optional, Union
 
 import jax
 import jax.numpy as jnp

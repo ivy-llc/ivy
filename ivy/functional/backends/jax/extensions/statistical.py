@@ -1,6 +1,8 @@
-from typing import Optional, Union, Tuple
-from ivy.functional.backends.jax import JaxArray
+from typing import Optional, Tuple, Union
+
 import jax.numpy as jnp
+
+from ivy.functional.backends.jax import JaxArray
 
 
 def median(

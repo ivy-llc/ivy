@@ -1,6 +1,7 @@
+from collections import namedtuple
+
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from collections import namedtuple
 
 
 @to_ivy_arrays_and_back

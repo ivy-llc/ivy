@@ -1,15 +1,16 @@
 """Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
+from typing import Optional, Sequence, Union
+
 import torch
-from typing import Optional, Union, Sequence
 
 # local
 import ivy
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
     _check_valid_scale,
+    _randint_check_dtype_and_bound,
 )
 
 # Extra #

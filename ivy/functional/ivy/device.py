@@ -1,29 +1,30 @@
 """Collection of device Ivy functions."""
 
 # global
-import os
-import gc
 import abc
+import gc
 import math
+import os
+from typing import Optional, Tuple
+
 import psutil
 import pynvml
-from typing import Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
     pynvml.nvmlInit()
 except pynvml.NVMLError:
     pass
-from typing import Union, Callable, Iterable, Any
+from typing import Any, Callable, Iterable, Union
 
 # local
 import ivy
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_nestable,
     handle_out_argument,
     to_native_arrays_and_back,
-    handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 default_device_stack = list()
 dev_handles = dict()

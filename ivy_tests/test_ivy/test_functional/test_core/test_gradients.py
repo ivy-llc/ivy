@@ -1,9 +1,10 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import given, strategies as st
-import pytest
 import numpy as np
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy

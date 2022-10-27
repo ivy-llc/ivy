@@ -2,19 +2,21 @@
 signature.
 """
 
-# global
-from typing import Optional, Union, Sequence, Callable
-import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
+
+# global
+from typing import Callable, Optional, Sequence, Union
+
+import numpy as np
 import tensorflow as tf
 
 # local
 import ivy
-from ivy.functional.ivy.general import _parse_ellipsis
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.ivy.general import _parse_ellipsis
 
+from . import backend_version
 
 _round = round
 

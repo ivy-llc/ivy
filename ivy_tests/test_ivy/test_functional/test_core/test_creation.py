@@ -1,7 +1,8 @@
 """Collection of tests for creation functions."""
 
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy

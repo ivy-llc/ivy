@@ -1,6 +1,7 @@
 # global
-import numpy as np
 from typing import Optional
+
+import numpy as np
 
 # local
 import ivy

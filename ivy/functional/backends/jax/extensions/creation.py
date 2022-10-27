@@ -8,7 +8,6 @@ import jaxlib.xla_extension
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 
-
 # Array API Standard #
 # ------------------ #
 

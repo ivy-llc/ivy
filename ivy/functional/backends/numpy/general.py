@@ -1,12 +1,13 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence, Callable
-import numpy as np
-from operator import mul
-from functools import reduce
 import multiprocessing as _multiprocessing
+from functools import reduce
 from numbers import Number
+from operator import mul
+from typing import Callable, Optional, Sequence, Union
+
+import numpy as np
 
 # local
 import ivy

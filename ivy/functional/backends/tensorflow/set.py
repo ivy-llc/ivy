@@ -1,7 +1,8 @@
 # global
-import tensorflow as tf
-from typing import Tuple, Union, Optional
 from collections import namedtuple
+from typing import Optional, Tuple, Union
+
+import tensorflow as tf
 
 
 def unique_all(

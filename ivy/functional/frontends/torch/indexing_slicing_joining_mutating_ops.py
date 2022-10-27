@@ -1,9 +1,9 @@
 # local
-import ivy
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-
 # global
 import math
+
+import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back

@@ -1,8 +1,10 @@
-from typing import Optional, Union, Sequence
-from ivy.functional.backends.jax import JaxArray
-import jax.numpy as jnp
+from typing import Optional, Sequence, Union
+
 import jax
+import jax.numpy as jnp
+
 import ivy
+from ivy.functional.backends.jax import JaxArray
 
 # Extra #
 # ------#

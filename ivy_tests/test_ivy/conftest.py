@@ -1,12 +1,12 @@
 # global
 import os
+from typing import Dict, Tuple, Union
+
 import pytest
-from typing import Dict, Union, Tuple
 
 # local
-from ivy import clear_backend_stack, DefaultDevice
+from ivy import DefaultDevice, clear_backend_stack
 from ivy_tests.test_ivy import helpers
-
 
 MAX_EXAMPLES: int
 

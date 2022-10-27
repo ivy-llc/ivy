@@ -1,6 +1,7 @@
 # global
-import torch
 from typing import Optional
+
+import torch
 
 
 def diagflat(

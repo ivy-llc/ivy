@@ -6,7 +6,6 @@ import jax.numpy as jnp
 import ivy
 from ivy.functional.backends.jax import JaxArray
 
-
 # Array API Standard #
 # ------------------ #
 

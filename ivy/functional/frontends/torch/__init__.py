@@ -1,51 +1,53 @@
 # flake8: noqa
 
-from . import nn
-from . import Tensor
-from .Tensor import tensor
-from . import blas_and_lapack_ops
-from .blas_and_lapack_ops import *
-from . import comparison_ops
-from .comparison_ops import *
-from . import creation_ops
-from .creation_ops import *
-from . import indexing_slicing_joining_mutating_ops
-from .indexing_slicing_joining_mutating_ops import *
-from . import locally_disabling_gradient_computation
-from .locally_disabling_gradient_computation import *
-from . import miscellaneous_ops
-from .miscellaneous_ops import *
-from . import pointwise_ops
-from .pointwise_ops import *
-from . import random_sampling
-from .random_sampling import *
-from . import reduction_ops
-from .reduction_ops import *
-from . import spectral_ops
-from .spectral_ops import *
-from . import tensor_functions
-from .tensor_functions import *
-from . import utilities
-from .utilities import *
+# global
+from numbers import Number
+from typing import Iterable, Tuple, Union
+
 import ivy
 from ivy import (
-    uint8,
+    bfloat16,
+    bool,
+    float16,
+    float32,
+    float64,
     int8,
     int16,
     int32,
     int64,
-    float16,
-    float32,
-    float64,
-    bfloat16,
-    bool,
+    uint8,
 )
 from ivy.exceptions import handle_exceptions
 
-# global
-from numbers import Number
-from typing import Union, Tuple, Iterable
-
+from . import (
+    Tensor,
+    blas_and_lapack_ops,
+    comparison_ops,
+    creation_ops,
+    indexing_slicing_joining_mutating_ops,
+    locally_disabling_gradient_computation,
+    miscellaneous_ops,
+    nn,
+    pointwise_ops,
+    random_sampling,
+    reduction_ops,
+    spectral_ops,
+    tensor_functions,
+    utilities,
+)
+from .blas_and_lapack_ops import *
+from .comparison_ops import *
+from .creation_ops import *
+from .indexing_slicing_joining_mutating_ops import *
+from .locally_disabling_gradient_computation import *
+from .miscellaneous_ops import *
+from .pointwise_ops import *
+from .random_sampling import *
+from .reduction_ops import *
+from .spectral_ops import *
+from .Tensor import tensor
+from .tensor_functions import *
+from .utilities import *
 
 # data type promotion
 torch_promotion_table = {

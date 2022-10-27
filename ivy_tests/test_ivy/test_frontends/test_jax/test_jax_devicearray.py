@@ -1,10 +1,11 @@
 # global
-from hypothesis import given, strategies as st
-
 # local
 import jax.numpy as jnp
-from ivy.functional.frontends.jax.devicearray import DeviceArray
+from hypothesis import given
+from hypothesis import strategies as st
+
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 

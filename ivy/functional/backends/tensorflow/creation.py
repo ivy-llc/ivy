@@ -1,7 +1,7 @@
 # global
 
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import List, Optional, Sequence, Union
 
 import tensorflow as tf
 
@@ -9,14 +9,14 @@ import tensorflow as tf
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_handle_nestable,
+    asarray_infer_device,
+    asarray_to_native_arrays_and_back,
 )
-from . import backend_version
 
+from . import backend_version
 
 # Array API Standard #
 # -------------------#

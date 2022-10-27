@@ -1,5 +1,6 @@
 # global
 import warnings
+
 from ivy._version import __version__ as __version__
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -206,7 +207,6 @@ _MIN_BASE = 1e-5
 
 # local
 import threading
-
 
 # devices
 # ToDo: add gpu and tpu for valid devices when we test for them
@@ -493,31 +493,32 @@ extra_promotion_table = {
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
-from .array import Array, add_ivy_array_instance_methods
-from .array.conversions import *
-from .array import conversions as arr_conversions
-from .container import conversions as cont_conversions
-from .container import (
-    ContainerBase,
-    Container,
-    add_ivy_container_instance_methods,
+from . import (
+    assertions,
+    backend_handler,
+    exceptions,
+    func_wrapper,
+    functional,
+    stateful,
+    verbosity,
 )
+from .array import Array, add_ivy_array_instance_methods
+from .array import conversions as arr_conversions
+from .array.conversions import *
 from .backend_handler import (
+    backend_stack,
+    choose_random_backend,
+    clear_backend_stack,
     current_backend,
     get_backend,
     set_backend,
     unset_backend,
-    backend_stack,
-    choose_random_backend,
-    clear_backend_stack,
 )
-from . import assertions, backend_handler, func_wrapper, exceptions
-from . import functional
+from .container import Container, ContainerBase, add_ivy_container_instance_methods
+from .container import conversions as cont_conversions
 from .functional import *
-from . import stateful
+from .inspection import add_array_specs, fn_array_spec
 from .stateful import *
-from . import verbosity
-from .inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
 

@@ -1,8 +1,10 @@
 # global
 from __future__ import annotations
+
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
+from typing import Callable, List, Optional, Protocol, Sequence, Tuple, TypeVar, Union
+
 import numpy as np
 
 # local
@@ -11,12 +13,12 @@ from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
     infer_device,
     infer_dtype,
-    handle_out_argument,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
-    handle_nestable,
 )
 
 # Helpers #

@@ -1,12 +1,12 @@
 # global
 _round = round
+from typing import Optional, Sequence, Union
+
 import tensorflow as tf
-from typing import Union, Optional, Sequence
 
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
-
 
 # Array API Standard #
 # -------------------#

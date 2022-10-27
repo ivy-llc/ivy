@@ -1,13 +1,14 @@
 # global
-import ivy
 import importlib
-import numpy as np
-from ivy import verbosity
 from typing import Optional
+
+import numpy as np
+
+import ivy
+from ivy import verbosity
 
 # local
 from ivy.func_wrapper import _wrap_function
-
 
 backend_stack = []
 implicit_backend = "numpy"
@@ -108,7 +109,11 @@ def fn_name_from_version_specific_fn_name(name, version):
     -------
         the name of the original function which will then point to the version
         specific function
-
+    Examples
+    --------
+    >>> from ivy.backend_handler import fn_name_from_version_specific_fn_name
+    >>> print(fn_name_from_version_specific_fn_name('sin_v_1_2_3', '1.2.3'))
+    sin
     """
     # TODO: add docstring and tests
     version = str(version)
@@ -149,10 +154,10 @@ def set_backend_to_specific_version(backend):
     backend
         the backend module for which we provide the version support
     Returns
+    -------
         The function doesn't return anything and updates the backend __dict__
         to make the original function name to point to the version specific one
 
-    -------
 
     """
     # TODO: add docstring, functionality and tests

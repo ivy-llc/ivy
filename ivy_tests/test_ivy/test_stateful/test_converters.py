@@ -1,10 +1,10 @@
 """Collection of tests for module converters."""
 
 # global
-import pytest
-import torch.nn
 import haiku as hk
 import jax.numpy as jnp
+import pytest
+import torch.nn
 
 # local
 import ivy

@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, assume
+from hypothesis import assume, given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

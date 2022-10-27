@@ -1,12 +1,13 @@
 # local
-from typing import Optional, Union, Sequence
+from typing import Optional, Sequence, Union
+
 import ivy
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_nestable,
     handle_out_argument,
     to_native_arrays_and_back,
-    handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # dirichlet

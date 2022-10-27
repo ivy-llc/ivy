@@ -8,10 +8,7 @@ versions = {
 # flake8: noqa
 import importlib
 
-from . import jax
-from . import numpy
-from . import tensorflow
-from . import torch
+from . import jax, numpy, tensorflow, torch
 
 
 def fn_name_from_version_specific_fn_name(name, version):

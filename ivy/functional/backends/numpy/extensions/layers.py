@@ -1,8 +1,9 @@
 # global
 import math
 from numbers import Number
+from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
+
 import numpy as np
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
 
 # local
 import ivy

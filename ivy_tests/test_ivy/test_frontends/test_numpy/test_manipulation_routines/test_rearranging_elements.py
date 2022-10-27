@@ -1,9 +1,10 @@
-from hypothesis import given, strategies as st
+import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import numpy as np
 
 
 # roll

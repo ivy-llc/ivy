@@ -1,30 +1,27 @@
 # flake8: noqa
-from . import devicearray
-from .devicearray import DeviceArray
-from . import lax
-from . import nn
-from . import numpy
+# global
+from numbers import Number
+from typing import Iterable, Tuple, Union
 
 import ivy
 from ivy import (
-    uint8,
-    uint16,
-    uint32,
-    uint64,
+    bfloat16,
+    float16,
+    float32,
+    float64,
     int8,
     int16,
     int32,
     int64,
-    float16,
-    float32,
-    float64,
-    bfloat16,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
 )
 from ivy.exceptions import handle_exceptions
 
-# global
-from numbers import Number
-from typing import Union, Tuple, Iterable
+from . import devicearray, lax, nn, numpy
+from .devicearray import DeviceArray
 
 # data type promotion
 jax_promotion_table = {

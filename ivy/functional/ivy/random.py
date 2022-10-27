@@ -5,16 +5,15 @@ from typing import Optional, Union
 
 # local
 import ivy
-from ivy.func_wrapper import (
-    infer_dtype,
-    infer_device,
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
-)
 from ivy.backend_handler import backend_stack
 from ivy.exceptions import handle_exceptions
-
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    infer_device,
+    infer_dtype,
+    to_native_arrays_and_back,
+)
 
 # Helpers #
 # ------- #

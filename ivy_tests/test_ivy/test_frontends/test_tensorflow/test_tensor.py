@@ -1,10 +1,12 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
+
+import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.tensorflow as ivy_tf
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 

@@ -1,12 +1,11 @@
 """Collection of general Ivy compilation functions."""
 
 # global
-from typing import Callable, Any, Union, Sequence, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional, Sequence, Union
 
 # local
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#

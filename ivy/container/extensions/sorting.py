@@ -1,9 +1,10 @@
 # global
-from typing import Optional, List, Union, Dict
+from typing import Dict, List, Optional, Union
+
+import ivy
 
 # local
 from ivy.container.base import ContainerBase
-import ivy
 
 
 class ContainerWithSortingExtensions(ContainerBase):
@@ -28,7 +29,7 @@ class ContainerWithSortingExtensions(ContainerBase):
         a
             array-like or container input.
         out
-            optional output container, for writing the result to. 
+            optional output container, for writing the result to.
 
         Returns
         -------

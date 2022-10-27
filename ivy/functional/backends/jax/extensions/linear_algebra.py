@@ -1,5 +1,7 @@
 from typing import Optional
+
 import jax.numpy as jnp
+
 from ivy.functional.backends.jax import JaxArray
 
 

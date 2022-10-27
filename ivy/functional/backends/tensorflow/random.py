@@ -2,7 +2,7 @@
 signature.
 """
 
-from typing import Optional, Union, Sequence
+from typing import Optional, Sequence, Union
 
 # global
 import tensorflow as tf
@@ -13,11 +13,11 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
     _check_valid_scale,
+    _randint_check_dtype_and_bound,
 )
-from . import backend_version
 
+from . import backend_version
 
 # Extra #
 # ------#

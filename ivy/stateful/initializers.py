@@ -1,10 +1,9 @@
 # global
-from typing import Tuple, Union, Optional
 import abc
+from typing import Optional, Tuple, Union
 
 # local
 import ivy
-
 
 # Initializer #
 # ----------- #

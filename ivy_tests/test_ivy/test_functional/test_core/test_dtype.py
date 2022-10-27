@@ -1,11 +1,13 @@
 """Collection of tests for unified dtype functions."""
 
 # global
-import numpy as np
 import importlib
-import pytest
-from hypothesis import given, strategies as st
 import typing
+
+import numpy as np
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy

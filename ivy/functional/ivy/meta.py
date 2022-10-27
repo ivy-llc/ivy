@@ -1,10 +1,10 @@
 # global
-import ivy
-from ivy.functional.ivy.gradients import gradient_descent_update
-from ivy.exceptions import handle_exceptions
-
 # local
-from typing import Optional, Union, Callable, Tuple, Any
+from typing import Any, Callable, Optional, Tuple, Union
+
+import ivy
+from ivy.exceptions import handle_exceptions
+from ivy.functional.ivy.gradients import gradient_descent_update
 
 # Extra #
 # ------#

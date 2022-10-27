@@ -1,16 +1,16 @@
 # global
 import os
+from pathlib import Path
+
 import redis
-from hypothesis import settings, HealthCheck
+from hypothesis import HealthCheck, settings
 from hypothesis.database import (
+    DirectoryBasedExampleDatabase,
     MultiplexedDatabase,
     ReadOnlyDatabase,
-    DirectoryBasedExampleDatabase,
 )
 from hypothesis.extra.redis import RedisExampleDatabase
 from pytest import mark
-from pathlib import Path
-
 
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
 redis_connect = None

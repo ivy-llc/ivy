@@ -1,9 +1,10 @@
 # global
-import numpy as np
+from typing import List, Sequence, Union
+
 import jax
-import jaxlib
 import jax.numpy as jnp
-from typing import Union, Sequence, List
+import jaxlib
+import numpy as np
 
 # local
 import ivy

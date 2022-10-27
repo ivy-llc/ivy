@@ -1,18 +1,19 @@
 # For Review
 # global
-from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
+
 from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import (
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-)
 from ivy.exceptions import handle_exceptions
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    to_native_arrays_and_back,
+)
 
 
 def _calculate_out_shape(axis, array_shape):

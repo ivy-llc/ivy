@@ -1,6 +1,6 @@
 # global
 import functools
-from typing import Callable, Any
+from typing import Any, Callable
 
 # local
 import ivy

@@ -6,7 +6,6 @@ import torch.nn.functional as tnf
 
 import ivy
 
-
 # Array API Standard #
 # ------------------ #
 

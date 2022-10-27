@@ -1,7 +1,7 @@
 # local
 import ivy
-from ivy.func_wrapper import inputs_to_native_arrays
 from ivy.exceptions import handle_exceptions
+from ivy.func_wrapper import inputs_to_native_arrays
 
 
 # helpers

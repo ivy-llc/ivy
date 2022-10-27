@@ -1,6 +1,7 @@
 # global
-import jax.numpy as jnp
 from typing import Optional
+
+import jax.numpy as jnp
 
 # local
 import ivy

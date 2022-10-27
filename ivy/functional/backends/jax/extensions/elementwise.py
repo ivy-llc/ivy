@@ -1,6 +1,8 @@
 from typing import Optional, Union
-from ivy.functional.backends.jax import JaxArray
+
 import jax.numpy as jnp
+
+from ivy.functional.backends.jax import JaxArray
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -1,13 +1,15 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
+
 import jax.numpy as jnp
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+
 from . import backend_version
 
 

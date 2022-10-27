@@ -1,4 +1,5 @@
-from typing import Optional, Union, Sequence, Tuple
+from typing import Optional, Sequence, Tuple, Union
+
 import torch
 
 

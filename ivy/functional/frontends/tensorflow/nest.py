@@ -1,6 +1,7 @@
 # global
-import ivy
 import tensorflow as tf
+
+import ivy
 
 
 def _is_composite_array(x):

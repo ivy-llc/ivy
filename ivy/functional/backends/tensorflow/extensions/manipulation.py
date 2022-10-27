@@ -1,7 +1,10 @@
-from typing import Union, Optional, Sequence, Tuple
-from ivy.func_wrapper import with_unsupported_dtypes
-from .. import backend_version
+from typing import Optional, Sequence, Tuple, Union
+
 import tensorflow as tf
+
+from ivy.func_wrapper import with_unsupported_dtypes
+
+from .. import backend_version
 
 
 def moveaxis(

@@ -1,11 +1,8 @@
 # local
 import ivy
-
-
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back

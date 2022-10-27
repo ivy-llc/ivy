@@ -1,17 +1,13 @@
 # global
 from __future__ import annotations
 
-from typing import Union, Tuple, Optional
+from typing import Optional, Tuple, Union
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
-from ivy.func_wrapper import (
-    infer_device,
-    outputs_to_ivy_arrays,
-    handle_nestable,
-)
+from ivy.func_wrapper import handle_nestable, infer_device, outputs_to_ivy_arrays
 
 
 @outputs_to_ivy_arrays

@@ -2,15 +2,15 @@
 
 # global
 import os
+from typing import Optional, Union
+
 import jax
-from typing import Union, Optional
 import jaxlib.xla_extension
 
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.device import Profiler as BaseProfiler
-
 
 # Helpers #
 # --------#

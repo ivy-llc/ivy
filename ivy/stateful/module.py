@@ -1,18 +1,17 @@
 """Base class for deriving trainable modules"""
 
 # global
-import os
 import abc
-import ivy.functional.backends.numpy
-import termcolor
-import numpy as np
+import os
 
+import numpy as np
+import termcolor
 
 # local
 import ivy
+import ivy.functional.backends.numpy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
-
 
 # Base #
 # -----#

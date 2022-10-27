@@ -1,9 +1,9 @@
 """Collection of Numpy network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import List, Optional, Tuple, Union
 
+import numpy as np
 
 # local
 import ivy

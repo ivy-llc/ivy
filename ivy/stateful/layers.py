@@ -2,9 +2,8 @@
 
 # local
 import ivy
+from ivy.stateful.initializers import GlorotUniform, Zeros
 from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
-
 
 # Linear #
 # -------#

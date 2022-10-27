@@ -1,11 +1,12 @@
 # global
-import os
-import queue
-import pytest
-import random
-import numpy as np
 import multiprocessing
+import os
 import pickle
+import queue
+import random
+
+import numpy as np
+import pytest
 
 # local
 import ivy

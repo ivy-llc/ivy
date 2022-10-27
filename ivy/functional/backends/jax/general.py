@@ -1,22 +1,23 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import jax
-import numpy as np
-import jax.numpy as jnp
-import jaxlib
+import multiprocessing as _multiprocessing
+from functools import reduce
 from numbers import Number
 from operator import mul
-from functools import reduce
-from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, Callable
-import multiprocessing as _multiprocessing
+from typing import Callable, Iterable, Optional, Sequence, Union
+
+import jax
+import jax.numpy as jnp
+import jaxlib
+import numpy as np
 from haiku._src.data_structures import FlatMapping
+from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
-from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.device import _to_array, _to_device
 
 
 def container_types():

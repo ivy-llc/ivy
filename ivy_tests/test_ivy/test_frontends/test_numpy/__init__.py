@@ -1,6 +1,6 @@
 import numpy
-from ivy_tests.test_ivy.test_frontends import NativeClass
 
+from ivy_tests.test_ivy.test_frontends import NativeClass
 
 numpy_classes_to_ivy_classes = {numpy._NoValue: None}
 

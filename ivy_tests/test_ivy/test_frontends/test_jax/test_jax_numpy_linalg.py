@@ -1,8 +1,9 @@
 # global
 import sys
-import numpy as np
 
-from hypothesis import given, strategies as st
+import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy

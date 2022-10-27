@@ -1,10 +1,12 @@
-from typing import Optional, Union, Tuple, Callable, Literal, Sequence, Any
+import math
 from numbers import Number
-import ivy
-from ivy.functional.backends.jax import JaxArray
+from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
+
 import jax.lax as jlax
 import jax.numpy as jnp
-import math
+
+import ivy
+from ivy.functional.backends.jax import JaxArray
 
 
 def vorbis_window(

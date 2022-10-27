@@ -1,5 +1,7 @@
-from typing import Optional, Union, Sequence
+from typing import Optional, Sequence, Union
+
 import numpy as np
+
 import ivy
 
 

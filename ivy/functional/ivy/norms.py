@@ -2,14 +2,11 @@
 
 
 # local
-from typing import List, Union, Optional
-import ivy
-from ivy.func_wrapper import (
-    inputs_to_ivy_arrays,
-    integer_arrays_to_float,
-)
-from ivy.exceptions import handle_exceptions
+from typing import List, Optional, Union
 
+import ivy
+from ivy.exceptions import handle_exceptions
+from ivy.func_wrapper import inputs_to_ivy_arrays, integer_arrays_to_float
 
 # Extra #
 # ------#

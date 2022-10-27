@@ -1,7 +1,8 @@
 # flake8: noqa
+import json
 import re
 import sys
-import json
+
 from process_issue import Process_issue
 
 

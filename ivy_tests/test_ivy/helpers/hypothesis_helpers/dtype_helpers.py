@@ -1,14 +1,16 @@
 # global
+from typing import Optional
+
 import numpy as np
 from hypothesis import strategies as st
-from typing import Optional
 
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
-from . import number_helpers as nh
-from . import array_helpers as ah
+
 from .. import testing_helpers as th
+from . import array_helpers as ah
+from . import number_helpers as nh
 
 
 @st.composite

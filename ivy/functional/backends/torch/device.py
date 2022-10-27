@@ -1,12 +1,12 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import os
 import importlib
-import torch
+import os
 from typing import Optional, Union
-from torch.profiler import ProfilerActivity
-from torch.profiler import profile
+
+import torch
+from torch.profiler import ProfilerActivity, profile
 
 # local
 import ivy

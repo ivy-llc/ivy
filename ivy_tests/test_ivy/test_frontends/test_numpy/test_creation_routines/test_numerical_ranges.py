@@ -1,10 +1,13 @@
 # global
-from numpy import mgrid as np_mgrid, ogrid as np_ogrid
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
+from numpy import mgrid as np_mgrid
+from numpy import ogrid as np_ogrid
+
+import ivy_tests.test_ivy.helpers as helpers
 
 # local
 from ivy.functional.frontends.numpy import mgrid, ogrid
-import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 

@@ -9,16 +9,16 @@ import shutil
 import sys
 
 import numpy as np
-import pynvml
 import psutil
+import pynvml
 import pytest
-from hypothesis import strategies as st, given, assume
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
 
 # Helpers #
 # ------- #

@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import List, Optional, Sequence, Union
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -12,13 +12,12 @@ from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_handle_nestable,
+    asarray_infer_device,
+    asarray_to_native_arrays_and_back,
 )
-
 
 # Array API Standard #
 # ------------------ #

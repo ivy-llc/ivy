@@ -3,7 +3,8 @@
 from functools import reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Callable, List, Optional, Sequence, Union
+
 import functorch
 import numpy as np
 import torch
@@ -12,6 +13,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _parse_ellipsis
+
 from . import backend_version
 
 torch_scatter = None

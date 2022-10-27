@@ -1,6 +1,7 @@
-import ivy
 import functools
 from typing import Callable
+
+import ivy
 
 
 class IvyException(Exception):

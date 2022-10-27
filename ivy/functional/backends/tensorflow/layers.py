@@ -1,14 +1,15 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Tuple, Union, List, Sequence
+from typing import List, Optional, Sequence, Tuple, Union
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_devices
+from ivy.func_wrapper import with_unsupported_devices, with_unsupported_dtypes
+
 from . import backend_version
 
 

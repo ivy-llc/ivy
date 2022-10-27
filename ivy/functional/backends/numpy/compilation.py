@@ -1,8 +1,8 @@
 """Collection of Numpy compilation functions."""
 
 # global
-from typing import Callable, Any, Union, Sequence, Iterable, Optional
 import logging
+from typing import Any, Callable, Iterable, Optional, Sequence, Union
 
 
 # noinspection PyUnusedLocal

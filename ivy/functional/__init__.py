@@ -1,5 +1,3 @@
-from . import extensions
+from . import extensions, frontends, ivy
 from .extensions import *
-from . import ivy
 from .ivy import *
-from . import frontends

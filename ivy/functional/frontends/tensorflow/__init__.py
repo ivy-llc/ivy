@@ -1,6 +1,15 @@
 # flake8: noqa
 # local
+from numbers import Number
+from typing import Iterable, Tuple, Union
+
+import ivy
 from ivy import (
+    bfloat16,
+    bool,
+    float16,
+    float32,
+    float64,
     int8,
     int16,
     int32,
@@ -9,17 +18,8 @@ from ivy import (
     uint16,
     uint32,
     uint64,
-    float16,
-    float32,
-    float64,
-    bool,
-    bfloat16,
 )
 from ivy.exceptions import handle_exceptions
-import ivy
-from numbers import Number
-from typing import Union, Tuple, Iterable
-
 
 standard_promotion_table = {
     (int8, int8): int8,
@@ -250,18 +250,20 @@ def promote_types_of_tensorflow_inputs(
     return x1, x2
 
 
-from . import tensor
-from .tensor import Tensor
-from . import keras
-from . import linalg
-from . import math
-from . import nest
-from . import nn
-from . import quantization
-from . import random
-from . import raw_ops
-from . import sets
-from . import signal
-from . import sparse
-from . import general_functions
+from . import (
+    general_functions,
+    keras,
+    linalg,
+    math,
+    nest,
+    nn,
+    quantization,
+    random,
+    raw_ops,
+    sets,
+    signal,
+    sparse,
+    tensor,
+)
 from .general_functions import *
+from .tensor import Tensor

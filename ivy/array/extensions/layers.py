@@ -1,7 +1,7 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Iterable, Callable, Literal, Any
 from numbers import Number
+from typing import Any, Callable, Iterable, Literal, Optional, Tuple, Union
 
 # local
 import ivy

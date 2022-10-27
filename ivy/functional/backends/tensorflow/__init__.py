@@ -115,39 +115,35 @@ backend = "tensorflow"
 
 
 # local sub-modules
-from . import activations
-from .activations import *
-from . import compilation
-from .compilation import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
+from . import (
+    activations,
+    compilation,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    extensions,
+    general,
+    gradients,
+    layers,
+)
 from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import extensions
+from . import manipulation, random, searching, set, sorting, statistical, utility
+from .activations import *
+from .compilation import *
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
 from .extensions import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
+from .utility import *

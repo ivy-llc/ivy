@@ -1,16 +1,15 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, Sequence
+from typing import List, Literal, Optional, Sequence, Tuple, Union
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import (
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-)
 from ivy.exceptions import handle_exceptions
-
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    to_native_arrays_and_back,
+)
 
 inf = float("inf")
 

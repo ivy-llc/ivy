@@ -1,13 +1,13 @@
 """Collection of tests for searching functions."""
 
 # Global
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
 
 # Helpers #
 ############

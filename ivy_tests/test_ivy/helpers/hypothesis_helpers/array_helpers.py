@@ -1,16 +1,19 @@
 # global
-import numpy as np
-import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st
-from hypothesis.internal.floats import float_of
 from functools import reduce
 from operator import mul
 
+import hypothesis.extra.numpy as nph
+import numpy as np
+from hypothesis import strategies as st
+from hypothesis.internal.floats import float_of
+
 # local
 import ivy
-from . import general_helpers as gh
-from . import dtype_helpers, number_helpers
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
+
+from . import dtype_helpers
+from . import general_helpers as gh
+from . import number_helpers
 
 
 @st.composite

@@ -1,15 +1,17 @@
 # global
-from copy import deepcopy
-from hypothesis import assume, given, strategies as st
 import math
+from copy import deepcopy
+
 import numpy as np
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
+import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 # local
 from ivy.array import Array
-import ivy
-import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")

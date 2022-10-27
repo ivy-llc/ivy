@@ -1,14 +1,15 @@
 # global
-import tensorflow as tf
 import logging
+
+import tensorflow as tf
 
 # local
 import ivy
 from ivy.functional.ivy.extensions.sparse_array import (
+    _is_coo_not_csr,
+    _is_data_not_indices_values_and_shape,
     _verify_coo_components,
     _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-    _is_coo_not_csr,
 )
 
 

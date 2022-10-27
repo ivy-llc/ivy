@@ -1,10 +1,11 @@
 # global
-from hypothesis import given, strategies as st
+import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import numpy as np
 
 # Helpers #
 # ------- #
@@ -293,5 +294,5 @@ def test_float_power(
         fw=fw,
         fn_name="float_power",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )

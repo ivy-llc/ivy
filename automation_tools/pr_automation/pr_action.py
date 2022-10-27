@@ -1,5 +1,6 @@
-import sys
 import json
+import sys
+
 from process_pr import Process_pr
 
 

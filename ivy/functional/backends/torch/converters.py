@@ -1,8 +1,9 @@
 """Converter from PyTorch Modules to Ivy Modules."""
 
 # global
-import torch
 from collections import OrderedDict
+
+import torch
 
 # local
 import ivy

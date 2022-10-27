@@ -1,12 +1,11 @@
 # global
 
-from typing import Union, Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import tensorflow as tf
 
 # local
 import ivy
-
 
 # Array API Standard #
 # -------------------#

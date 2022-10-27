@@ -1,13 +1,14 @@
 """Collection of tests for Ivy modules."""
 
 # global
-from hypothesis import given, strategies as st
 import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 class TrainableModule(ivy.Module):

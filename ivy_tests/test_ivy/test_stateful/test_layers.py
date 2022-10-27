@@ -2,13 +2,14 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st, assume
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.container import Container
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+import ivy_tests.test_ivy.helpers as helpers
+from ivy.container import Container
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # Helpers #

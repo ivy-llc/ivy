@@ -7,7 +7,6 @@ import pytest
 import ivy
 import ivy.functional.backends.numpy
 
-
 # Tests #
 # ------#
 

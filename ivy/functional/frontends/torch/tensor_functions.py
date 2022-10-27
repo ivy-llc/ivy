@@ -2,7 +2,6 @@
 import ivy
 from ivy.functional.frontends.torch.Tensor import Tensor
 
-
 # TODO: Once the PyTorch Frontend Array Decorators are added,
 #  casting to Tensor before returning should be removed as redundant.
 

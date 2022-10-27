@@ -2,9 +2,9 @@
 import abc
 from typing import Optional, Union
 
-# local
-
 import ivy
+
+# local
 
 
 class ArrayWithSorting(abc.ABC):

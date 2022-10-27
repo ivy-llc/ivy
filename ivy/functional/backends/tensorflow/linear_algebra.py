@@ -1,8 +1,7 @@
 # global
 
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
-
+from typing import List, Literal, NamedTuple, Optional, Sequence, Tuple, Union
 
 import tensorflow as tf
 
@@ -10,8 +9,8 @@ import tensorflow as tf
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 
+from . import backend_version
 
 # Array API Standard #
 # -------------------#

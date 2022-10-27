@@ -1,15 +1,12 @@
-from typing import (
-    Optional,
-    Union,
-    Tuple,
-)
+from typing import Optional, Tuple, Union
+
 import ivy
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_nestable,
     handle_out_argument,
     to_native_arrays_and_back,
-    handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 @to_native_arrays_and_back

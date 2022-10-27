@@ -3,20 +3,20 @@ import ast
 import inspect
 import math
 from numbers import Number
-from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
+from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
+
 import numpy as np
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    inputs_to_native_arrays,
-    handle_nestable,
-)
 from ivy.exceptions import handle_exceptions
-
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    inputs_to_native_arrays,
+    to_native_arrays_and_back,
+)
 
 # Helpers #
 # --------#

@@ -1,7 +1,8 @@
 """Collection of Tensorflow compilation functions."""
 
 # global
-from typing import Callable, Any, Union, Sequence, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional, Sequence, Union
+
 import tensorflow as tf
 
 

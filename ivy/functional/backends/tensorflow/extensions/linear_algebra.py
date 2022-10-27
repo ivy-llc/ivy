@@ -1,4 +1,5 @@
-from typing import Union, Optional
+from typing import Optional, Union
+
 import tensorflow as tf
 
 

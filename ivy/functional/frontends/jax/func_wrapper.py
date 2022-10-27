@@ -2,7 +2,6 @@
 import functools
 from typing import Callable
 
-
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend

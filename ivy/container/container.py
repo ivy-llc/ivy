@@ -4,27 +4,6 @@ import operator
 
 # local
 import ivy
-from .activations import ContainerWithActivations
-from .base import ContainerBase
-from .conversions import ContainerWithConversions
-from .creation import ContainerWithCreation
-from .data_type import ContainerWithDataTypes
-from .device import ContainerWithDevice
-from .elementwise import ContainerWithElementwise
-from .general import ContainerWithGeneral
-from .gradients import ContainerWithGradients
-from .image import ContainerWithImage
-from .layers import ContainerWithLayers
-from .linear_algebra import ContainerWithLinearAlgebra
-from .losses import ContainerWithLosses
-from .manipulation import ContainerWithManipulation
-from .norms import ContainerWithNorms
-from .random import ContainerWithRandom
-from .searching import ContainerWithSearching
-from .set import ContainerWithSet
-from .sorting import ContainerWithSorting
-from .statistical import ContainerWithStatistical
-from .utility import ContainerWithUtility
 from ivy.container.extensions import (
     ContainerWithActivationExtensions,
     ContainerWithConversionExtensions,
@@ -47,6 +26,28 @@ from ivy.container.extensions import (
     ContainerWithStatisticalExtensions,
     ContainerWithUtilityExtensions,
 )
+
+from .activations import ContainerWithActivations
+from .base import ContainerBase
+from .conversions import ContainerWithConversions
+from .creation import ContainerWithCreation
+from .data_type import ContainerWithDataTypes
+from .device import ContainerWithDevice
+from .elementwise import ContainerWithElementwise
+from .general import ContainerWithGeneral
+from .gradients import ContainerWithGradients
+from .image import ContainerWithImage
+from .layers import ContainerWithLayers
+from .linear_algebra import ContainerWithLinearAlgebra
+from .losses import ContainerWithLosses
+from .manipulation import ContainerWithManipulation
+from .norms import ContainerWithNorms
+from .random import ContainerWithRandom
+from .searching import ContainerWithSearching
+from .set import ContainerWithSet
+from .sorting import ContainerWithSorting
+from .statistical import ContainerWithStatistical
+from .utility import ContainerWithUtility
 
 
 class Container(

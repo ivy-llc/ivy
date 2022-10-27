@@ -1,10 +1,11 @@
 """Collection of Ivy loss functions."""
 
 # local
-import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable
+
+import ivy
 from ivy.exceptions import handle_exceptions
+from ivy.func_wrapper import handle_nestable
 
 # Helpers #
 # ------- #

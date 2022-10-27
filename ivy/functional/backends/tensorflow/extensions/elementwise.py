@@ -1,11 +1,12 @@
-from typing import Union, Optional
-import tensorflow as tf
-from .. import backend_version
+from typing import Optional, Union
 
+import tensorflow as tf
+import tensorflow_probability as tfp
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
-import tensorflow_probability as tfp
+
+from .. import backend_version
 
 
 def sinc(

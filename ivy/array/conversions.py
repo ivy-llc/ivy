@@ -3,11 +3,10 @@ instances.
 """
 
 # global
-from typing import Any, Union, Tuple, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 # local
 import ivy
-
 
 # Helpers #
 # --------#

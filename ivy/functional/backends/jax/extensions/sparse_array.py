@@ -1,9 +1,10 @@
 import logging
+
 import ivy
 from ivy.functional.ivy.extensions.sparse_array import (
+    _is_coo_not_csr,
     _verify_coo_components,
     _verify_csr_components,
-    _is_coo_not_csr,
 )
 
 

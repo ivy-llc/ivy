@@ -1,22 +1,15 @@
-from typing import (
-    Optional,
-    Union,
-    Tuple,
-    Iterable,
-    Callable,
-    Literal,
-    Any,
-)
+from math import cos, pi, sqrt
 from numbers import Number
+from typing import Any, Callable, Iterable, Literal, Optional, Tuple, Union
+
 import ivy
-from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
-    outputs_to_ivy_arrays,
-)
 from ivy.exceptions import handle_exceptions
-from math import sqrt, pi, cos
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    outputs_to_ivy_arrays,
+    to_native_arrays_and_back,
+)
 
 
 @to_native_arrays_and_back

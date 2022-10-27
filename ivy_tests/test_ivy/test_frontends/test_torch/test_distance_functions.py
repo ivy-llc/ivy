@@ -1,4 +1,5 @@
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

@@ -1,15 +1,15 @@
 """Collection of tests for unified meta functions."""
 
 # global
-import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
-
 
 # ToDo: replace dict checks for verifying costs with analytic calculations
 

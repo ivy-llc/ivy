@@ -7,22 +7,22 @@ import math
 # global
 from functools import wraps
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import einops
 import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import current_backend, backend_stack
+from ivy.backend_handler import backend_stack, current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
 )
 from ivy.functional.ivy.device import dev
 

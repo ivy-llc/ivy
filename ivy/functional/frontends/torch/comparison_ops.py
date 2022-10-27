@@ -4,13 +4,13 @@ ToDo
 Add allclose(), isclose(), isposinf(), isneginf(), fmax()
 to ivy functional API
 """
+# local
+from collections import namedtuple
+
 # global
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-
-# local
-from collections import namedtuple
 
 
 @to_ivy_arrays_and_back

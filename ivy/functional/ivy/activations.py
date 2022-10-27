@@ -1,18 +1,17 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
-    integer_arrays_to_float,
-)
 from ivy.exceptions import handle_exceptions
-
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_out_argument,
+    integer_arrays_to_float,
+    to_native_arrays_and_back,
+)
 
 # Extra #
 # ------#

@@ -1,7 +1,8 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-from hypothesis import given, assume, strategies as st
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy

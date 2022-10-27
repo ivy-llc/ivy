@@ -2,18 +2,21 @@
 # global
 import copy
 import functools
-import numpy as np
 from operator import mul
 from typing import Optional
 
+import numpy as np
+
 # local
 import ivy
-from .conversions import *
+
 from .activations import ArrayWithActivations
+from .conversions import *
 from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
+from .extensions import *
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -28,7 +31,6 @@ from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
-from .extensions import *
 
 
 class Array(
@@ -300,6 +302,7 @@ class Array(
         self.__dict__ = ivy_array.__dict__
 
         # TODO: what about placement of the array on the right device ?
+        device = ivy.as_dev(state["device_str"])
         # device = backend.as_native_dev(state["device_str"])
         # backend.to_device(self, device)
 
@@ -681,3 +684,9 @@ class Array(
 
     def __iter__(self):
         return iter([to_ivy(i) for i in self._data])
+
+    def __contains__(self, item):
+        return item in self._data
+
+    def __getitem__(self, item):
+        return to_ivy(self._data[item])

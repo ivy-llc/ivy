@@ -1,7 +1,8 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-from hypothesis import given, strategies as st, assume
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy

@@ -1,12 +1,11 @@
 # global
 from numbers import Number
-from typing import Optional, Union, Tuple
+from typing import Optional, Tuple, Union
 
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
 import ivy
-
 
 # Array API Standard #
 # ------------------ #

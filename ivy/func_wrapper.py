@@ -1,8 +1,8 @@
-import ivy
 import functools
 from types import FunctionType
 from typing import Callable
 
+import ivy
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [

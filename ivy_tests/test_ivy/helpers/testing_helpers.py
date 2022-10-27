@@ -1,15 +1,16 @@
 # general
-import pytest
 import gc
 import inspect
-from hypothesis import given, settings, strategies as st
 from typing import Union
 
+import pytest
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 # local
 import ivy
-from .hypothesis_helpers import number_helpers as nh
 
+from .hypothesis_helpers import number_helpers as nh
 
 frontend_fw = None
 cmd_line_args = (
@@ -174,10 +175,7 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
-    from ivy_tests.test_ivy.conftest import (
-        FW_STRS,
-        TEST_BACKENDS,
-    )
+    from ivy_tests.test_ivy.conftest import FW_STRS, TEST_BACKENDS
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())

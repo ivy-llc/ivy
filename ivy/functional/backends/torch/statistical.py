@@ -1,15 +1,15 @@
 # global
 
 torch_scatter = None
-from typing import Union, Optional, Sequence
-
+from typing import Optional, Sequence, Union
 
 import torch
 
 # local
 import ivy
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
+
 from . import backend_version
 
 # Array API Standard #
