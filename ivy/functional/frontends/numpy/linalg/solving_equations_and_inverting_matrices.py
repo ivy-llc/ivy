@@ -5,11 +5,9 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
-version = "numpy"
-
 
 # solve
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def solve(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
