@@ -1123,9 +1123,12 @@ def test_explicit_ivy_framework_handles(device):
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
         lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
@@ -1180,9 +1183,12 @@ def test_einops_rearrange(
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
         lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
