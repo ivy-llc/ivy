@@ -270,3 +270,8 @@ def div(input, other, *, rounding_mode=None, out=None):
             return ivy.floor_divide(input, other, out=out).astype(promoted)
     else:
         return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def flipud(input):
+    return ivy.flipud(input)

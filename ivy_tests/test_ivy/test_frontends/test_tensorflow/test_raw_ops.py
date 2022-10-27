@@ -2159,7 +2159,7 @@ def test_tensorflow_MatrixInverse(
         input=x[0],
         adjoint=adjoint,
         rtol=1e-05,
-        atol=1e-04
+        atol=1e-04,
     )
 
 

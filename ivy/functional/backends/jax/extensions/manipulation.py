@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -31,3 +31,32 @@ def flipud(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
+
+
+def vstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vstack(arrays)
+
+
+def hstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hstack(arrays)
+
+
+def rot90(
+    m: JaxArray,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.rot90(m, k, axes)

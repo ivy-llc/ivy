@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 import torch
 
 
@@ -43,3 +43,32 @@ def flipud(
 
 
 flipud.support_native_out = False
+
+
+def vstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.vstack(arrays, out=None)
+
+
+def hstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hstack(arrays, out=None)
+
+
+def rot90(
+    m: torch.Tensor,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.rot90(m, k, axes)
