@@ -62,3 +62,13 @@ def rot90(
     out: Union[tf.Tensor, tf.Variable] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rot90(m, k, axes)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+def i0(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:    
+    return tf.math.bessel_i0(x, name=None)

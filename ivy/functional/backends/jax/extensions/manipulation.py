@@ -60,3 +60,12 @@ def rot90(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.rot90(m, k, axes)
+
+
+def i0(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.i0(x)

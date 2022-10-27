@@ -72,3 +72,15 @@ def rot90(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.rot90(m, k, axes)
+
+
+def i0(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.i0(x)
+
+
+i0.support_native_out = False

@@ -224,3 +224,22 @@ class ArrayWithManipulationExtensions(abc.ABC):
 
         """
         return ivy.rot90(self._data, k=k, axes=axes, out=out)
+
+    def i0(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.i0. This method simply
+        wraps the function, and so the docstring for ivy.i0 also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3]])
+        >>> x.i0()
+        ivy.array([1.26606588, 2.2795853 , 4.88079259])
+        """
+        return ivy.i0(self._data, out=out)
