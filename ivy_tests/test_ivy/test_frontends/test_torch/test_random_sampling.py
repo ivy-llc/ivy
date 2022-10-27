@@ -53,8 +53,8 @@ def test_torch_multinomial(
             ),
             key="shape",
         ),
-        min_value=-(2**63),
-        max_value=2**63 - 1,
+        min_value=0,
+        max_value=2**32 - 1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.manual_seed"
@@ -74,5 +74,5 @@ def test_torch_manual_seed(
         frontend="torch",
         fn_tree="manual_seed",
         test_values=False,
-        seed=value[0],
+        seed=value[0][0],
     )
