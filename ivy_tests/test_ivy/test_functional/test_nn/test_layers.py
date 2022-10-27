@@ -1,12 +1,12 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-from hypothesis import given, strategies as st, assume
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 # Linear #
 # -------#
@@ -44,24 +44,25 @@ def x_and_linear(draw, dtypes):
 
 
 # linear
-@handle_cmd_line_args
-@given(
+# TODO: Fix container method
+@handle_test(
+    fn_tree="functional.ivy.linear",
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float", full=False),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="linear"),
 )
 def test_linear(
     *,
     dtype_x_weight_bias,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
@@ -70,10 +71,11 @@ def test_linear(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="linear",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
@@ -88,8 +90,9 @@ def test_linear(
 # --------#
 
 # dropout
-@handle_cmd_line_args
-@given(
+# TODO: Fix container method
+@handle_test(
+    fn_tree="functional.ivy.dropout",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -101,7 +104,6 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="dropout"),
 )
 def test_dropout(
     *,
@@ -109,13 +111,14 @@ def test_dropout(
     prob,
     scale,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     ret = helpers.test_function(
@@ -124,15 +127,16 @@ def test_dropout(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="dropout",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         test_values=False,
         x=x[0],
         prob=prob,
         scale=scale,
-        dtype=dtype,
+        dtype=dtype[0],
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
@@ -180,13 +184,10 @@ def x_and_scaled_attention(draw, dtypes):
 
 
 # scaled_dot_product_attention
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.scaled_dot_product_attention",
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float", full=False),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="scaled_dot_product_attention"
+        dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_scaled_dot_product_attention(
@@ -194,12 +195,13 @@ def test_scaled_dot_product_attention(
     dtype_q_k_v_mask_scale,
     as_variable,
     num_positional_args,
-    with_out,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
@@ -208,10 +210,11 @@ def test_scaled_dot_product_attention(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="scaled_dot_product_attention",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
@@ -264,24 +267,25 @@ def x_and_mha(draw, dtypes):
 
 
 # multi_head_attention
-@handle_cmd_line_args
-@given(
+# TODO: fix container method
+@handle_test(
+    fn_tree="functional.ivy.multi_head_attention",
     dtype_mha=x_and_mha(
-        dtypes=helpers.get_dtypes("float", full=False),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x_mha, scale, num_heads, context, mask = dtype_mha
     to_q_fn = lambda x_, v: x_
@@ -291,10 +295,11 @@ def test_multi_head_attention(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="multi_head_attention",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
@@ -432,22 +437,22 @@ def x_and_filters(
 
 
 # conv1d
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv1d",
     x_f_d_df=x_and_filters(dim=1),
-    num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
 )
 def test_conv1d(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -456,10 +461,11 @@ def test_conv1d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv1d",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=True,
@@ -474,35 +480,38 @@ def test_conv1d(
 
 
 # conv1d_transpose
-@handle_cmd_line_args
-@given(
+# TODO: fix container method
+@handle_test(
+    fn_tree="functional.ivy.conv1d_transpose",
     x_f_d_df=x_and_filters(dim=1, transpose=True),
-    num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
 )
 def test_conv1d_transpose(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    fw = backend_fw.current_backend_str()
+    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv1d_transpose",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -519,22 +528,22 @@ def test_conv1d_transpose(
 
 
 # conv2d
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv2d",
     x_f_d_df=x_and_filters(dim=2),
-    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
 )
 def test_conv2d(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -543,10 +552,11 @@ def test_conv2d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv2d",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -561,41 +571,42 @@ def test_conv2d(
 
 
 # conv2d_transpose
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv2d_transpose",
     x_f_d_df=x_and_filters(
         dim=2,
         transpose=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
 )
 def test_conv2d_transpose(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    fw = backend_fw.current_backend_str()
+    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv2d_transpose",
+        fw=backend_fw,
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        device_=device,
+        on_device=on_device,
         test_gradients=True,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
@@ -610,27 +621,28 @@ def test_conv2d_transpose(
 
 
 # depthwise_conv2d
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.depthwise_conv2d",
     x_f_d_df=x_and_filters(
         dim=2,
         depthwise=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
 )
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
-    with_out,
-    num_positional_args,
     as_variable,
+    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
     helpers.test_function(
         input_dtypes=dtype,
@@ -638,10 +650,11 @@ def test_depthwise_conv2d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=fw,
-        fn_name="depthwise_conv2d",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -657,22 +670,22 @@ def test_depthwise_conv2d(
 
 
 # conv3d
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv3d",
     x_f_d_df=x_and_filters(dim=3),
-    num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
 )
 def test_conv3d(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -681,10 +694,11 @@ def test_conv3d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv3d",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -698,39 +712,41 @@ def test_conv3d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
     x_dilations=st.integers(1, 3),
-    num_positional_args=helpers.num_positional_args(fn_name="conv_general_dilated"),
 )
 def test_conv_general_dilated(
     *,
     dims,
     x_f_d_df,
     x_dilations,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    fw = backend_fw.current_backend_str()
+    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv_general_dilated",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -748,39 +764,41 @@ def test_conv_general_dilated(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv_general_transpose",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv_general_transpose"),
 )
 def test_conv_general_transpose(
     *,
     dims,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    fw = backend_fw.current_backend_str()
+    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=fw,
-        fn_name="conv_general_transpose",
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -799,38 +817,40 @@ def test_conv_general_transpose(
 
 
 # conv3d_transpose
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.conv3d_transpose",
     x_f_d_df=x_and_filters(
         dim=3,
         transpose=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
 )
 def test_conv3d_transpose(
     *,
     x_f_d_df,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    fw = backend_fw.current_backend_str()
+    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="conv3d_transpose",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=True,
@@ -912,12 +932,12 @@ def x_and_lstm(draw, dtypes):
 
 
 # lstm
-@handle_cmd_line_args
-@given(
+# TODO: fix container methods
+@handle_test(
+    fn_tree="functional.ivy.lstm_update",
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float", full=False),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm_update(
     *,
@@ -925,10 +945,12 @@ def test_lstm_update(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     (
         dtype,
@@ -943,13 +965,14 @@ def test_lstm_update(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="lstm_update",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-01,
         atol_=1e-01,
         test_gradients=True,
