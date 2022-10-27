@@ -1,6 +1,3 @@
-# global
-import torch
-
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -8,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -16,7 +13,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
@@ -51,7 +48,7 @@ class Tensor:
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
 
-    def float(self, memory_format=torch.preserve_format):
+    def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
 
     def asinh(self, *, out=None):
@@ -80,7 +77,7 @@ class Tensor:
         self.data = self.abs()
         return self.data
 
-    def contiguous(self, memory_format=torch.contiguous_format):
+    def contiguous(self, memory_format=None):
         return self.data
 
     def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
@@ -122,6 +119,9 @@ class Tensor:
 
     def arctan(self, *, out=None):
         return torch_frontend.arctan(self, out=out)
+
+    def acos(self, *, out=None):
+        return torch_frontend.acos(self.data, out=out)
 
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
