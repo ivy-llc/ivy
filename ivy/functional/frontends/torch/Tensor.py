@@ -1,6 +1,3 @@
-# global
-import torch
-
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -8,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -16,7 +13,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
@@ -26,7 +23,7 @@ class Tensor:
 
     def asin(self, *, out=None):
         return torch_frontend.asin(self.data, out=out)
-    
+
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
 
@@ -43,7 +40,11 @@ class Tensor:
 
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
-   
+
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
@@ -51,7 +52,7 @@ class Tensor:
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
 
-    def float(self, memory_format=torch.preserve_format):
+    def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
 
     def asinh(self, *, out=None):
@@ -70,6 +71,9 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def amin(self, dim=None, keepdim=False):
+        return torch_frontend.amin(self.data, dim=dim, keepdim=keepdim)
+
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
 
@@ -77,12 +81,13 @@ class Tensor:
         self.data = self.abs()
         return self.data
 
-    def contiguous(self, memory_format=torch.contiguous_format):
+    def contiguous(self, memory_format=None):
         return self.data
 
     def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
-        return torch_frontend.ones(size, dtype=dtype, device=device,
-                                   requires_grad=requires_grad)
+        return torch_frontend.ones(
+            size, dtype=dtype, device=device, requires_grad=requires_grad
+        )
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
@@ -118,6 +123,9 @@ class Tensor:
 
     def arctan(self, *, out=None):
         return torch_frontend.arctan(self, out=out)
+
+    def acos(self, *, out=None):
+        return torch_frontend.acos(self.data, out=out)
 
     # Special Methods #
     # -------------------#

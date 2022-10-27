@@ -316,7 +316,7 @@ def test_numpy_instance_min(
     native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
-    
+
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         input_dtypes_method=input_dtype,
@@ -602,8 +602,7 @@ def test_numpy_instance_copy(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
-        },
+        all_as_kwargs_np_method={},
         frontend="numpy",
         class_name="ndarray",
         method_name="copy",
@@ -639,8 +638,7 @@ def test_numpy_instance_nonzero(
         all_as_kwargs_np_init={
             "data": a[0],
         },
-        all_as_kwargs_np_method={
-        },
+        all_as_kwargs_np_method={},
         frontend="numpy",
         class_name="ndarray",
         method_name="nonzero",
@@ -676,8 +674,7 @@ def test_numpy_instance_ravel(
         all_as_kwargs_np_init={
             "data": a[0],
         },
-        all_as_kwargs_np_method={
-        },
+        all_as_kwargs_np_method={},
         frontend="numpy",
         class_name="ndarray",
         method_name="ravel",
@@ -895,7 +892,8 @@ def test_numpy_instance_sub__(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.__mul__"
@@ -933,7 +931,8 @@ def test_numpy_instance_mul__(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"), num_arrays=2,
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
     ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.__and__"
@@ -971,7 +970,8 @@ def test_numpy_instance_and__(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"), num_arrays=2,
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
     ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.__or__"
@@ -1009,7 +1009,8 @@ def test_numpy_instance_or__(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"), num_arrays=2,
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
     ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.__xor__"
@@ -1114,8 +1115,7 @@ def test_numpy_instance_copy__(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
-        },
+        all_as_kwargs_np_method={},
         frontend="numpy",
         class_name="ndarray",
         method_name="__copy__",

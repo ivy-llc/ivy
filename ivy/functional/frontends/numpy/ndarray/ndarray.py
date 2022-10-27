@@ -11,10 +11,9 @@ class ndarray:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
-    # -------------------#
+    # Instance Methods #
+    # ---------------- #
 
-    # Add argmax #
     def argmax(
         self,
         /,
@@ -23,7 +22,6 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-
         return np_frontend.argmax(
             self.data,
             axis=axis,
@@ -52,7 +50,7 @@ class ndarray:
             out=out,
             keepdims=keepdims,
             initial=initial,
-            where=where
+            where=where,
         )
 
     def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
@@ -62,20 +60,20 @@ class ndarray:
             out=out,
             keepdims=keepdims,
             initial=initial,
-            where=where
+            where=where,
         )
-    
+
     @property
     def dtype(self):
         return self.data.dtype
 
     def argmin(
-            self,
-            /,
-            *,
-            axis=None,
-            keepdims=False,
-            out=None,
+        self,
+        /,
+        *,
+        axis=None,
+        keepdims=False,
+        out=None,
     ):
 
         return np_frontend.argmin(
@@ -104,10 +102,12 @@ class ndarray:
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self.data, axis=axis, kind=kind, order=order)
 
-    def copy(self, order='C'):
+    def copy(self, order="C"):
         return np_frontend.copy(self.data, order=order)
 
-    def nonzero(self,):
+    def nonzero(
+        self,
+    ):
         return np_frontend.nonzero(self.data)[0]
 
     def ravel(self, order="C"):
@@ -116,7 +116,7 @@ class ndarray:
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
 
-    def searchsorted(self, v, side='left', sorter=None):
+    def searchsorted(self, v, side="left", sorter=None):
         return np_frontend.searchsorted(self.data, v, side=side, sorter=sorter)
 
     def squeeze(self, axis=None):
@@ -145,5 +145,7 @@ class ndarray:
     def __matmul__(self, value, /):
         return np_frontend.matmul(self.data, value)
 
-    def __copy__(self,):
+    def __copy__(
+        self,
+    ):
         return np_frontend.copy(self.data)

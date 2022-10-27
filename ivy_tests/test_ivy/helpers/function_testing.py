@@ -357,12 +357,7 @@ def test_function(
         raise e
     ivy.unset_backend()
     # gradient test
-    if (
-        test_gradients
-        and not fw == "numpy"
-        and all(as_variable_flags)
-        and not instance_method
-    ):
+    if test_gradients and not fw == "numpy" and not instance_method:
         gradient_test(
             fn_name=fn_name,
             all_as_kwargs_np=all_as_kwargs_np,
@@ -577,10 +572,8 @@ def test_frontend_function(
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
-        ret = frontend_fn(*args, **kwargs)
-        # converting to ivy.array if FrontendArray was returned
-        if _is_frontend_array(ret):
-            ret = ret.data
+        # strip the decorator to get an Ivy array
+        ret = frontend_fn.__wrapped__(*args, **kwargs)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -598,7 +591,6 @@ def test_frontend_function(
             # pass return value to out argument
             # check if passed reference is correctly updated
             kwargs["out"] = out
-            ret = frontend_fn(*args, **kwargs)
             if is_ret_tuple:
                 flatten_ret = flatten(ret=ret)
                 flatten_out = flatten(ret=out)
@@ -613,7 +605,7 @@ def test_frontend_function(
         elif with_inplace:
             assert not isinstance(ret, tuple)
             assert ivy.is_array(ret)
-            if "inplace" in inspect.getfullargspec(frontend_fn).args:
+            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
                 # set inplace update to be True and check
                 # if returned reference is inputted reference
@@ -622,7 +614,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = frontend_fn(*copy_args, **copy_kwargs)
+                ret_ = frontend_fn.__wrapped__(*copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -848,9 +840,6 @@ def gradient_test(
         grads_np_from_gt_flat,
         len(grads_np_from_gt_flat),
     )
-
-    if len(grads_np_flat) < 2:
-        return
 
     for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
@@ -1366,7 +1355,6 @@ def test_frontend_method(
 
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend)
-    backend_returned_scalar = False
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1406,11 +1394,10 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
-        backend_returned_scalar = True
+    if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+        frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+    elif ivy.isscalar(frontend_ret):
         frontend_ret_np_flat = [np.asarray(frontend_ret)]
-    elif frontend == "tensorflow" and not isinstance(frontend_ret, tf.Tensor):
-        frontend_ret_np_flat = [ivy.array(frontend_ret).to_numpy()]
     else:
         # tuplify the frontend return
         if not isinstance(frontend_ret, tuple):
@@ -1420,10 +1407,7 @@ def test_frontend_method(
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
 
-    if backend_returned_scalar:
-        ret_np_flat = ivy.to_numpy([ret])
-    else:
-        ret_np_flat = flatten_and_to_np(ret=ret)
+    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1556,7 +1540,7 @@ def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     return args, kwargs
 
 
-def flatten_fw(*, ret, fw):
+def flatten_fw_and_to_np(*, ret, fw):
     """Returns a flattened numpy version of the arrays in ret for a given framework."""
     if not isinstance(ret, tuple):
         ret = (ret,)
@@ -1576,8 +1560,14 @@ def flatten_fw(*, ret, fw):
         ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
-    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [
+            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat
+        ]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     # convert the return to NumPy
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     return ret_np_flat

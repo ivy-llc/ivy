@@ -13,8 +13,10 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    outputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
+from math import sqrt, pi, cos
 
 
 @to_native_arrays_and_back
@@ -161,6 +163,68 @@ def max_pool2d(
     [[46, 47]]]])
     """
     return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+
+
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_out_argument
+def max_pool1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 1-D max pool given 3-D input x.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size, w, d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, 'SAME'))
+    ivy.array([[[ 4.,  5.,  6.,  7.],
+            [ 8.,  9., 10., 11.]],
+
+           [[16., 17., 18., 19.],
+            [20., 21., 22., 23.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, 'VALID'))
+    ivy.array([[[ 4.,  5.,  6.,  7.]],
+
+       [[16., 17., 18., 19.]]])
+    """
+    return ivy.current_backend(x).max_pool1d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -628,3 +692,140 @@ def pad(
                 )
             padded = ivy.moveaxis(padded, 0, -1)
     return padded
+
+
+@outputs_to_ivy_arrays
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kaiser_bessel_derived_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Kaiser bessel derived window with
+    window length window_length and shape beta
+
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+        If True, returns a periodic window suitable for use in spectral analysis.
+        If False, returns a symmetric window suitable for use in filter design.
+    beta
+        a float used as shape parameter for the window.
+    dtype
+        data type of the returned array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Functional Examples
+    -------------------
+    >>> ivy.kaiser_bessel_derived_window(5)
+    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
+
+    >>> ivy.kaiser_derived_window(5, False)
+    ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
+
+    >>> ivy.kaiser_derived_window(5, False, 5)
+    ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
+    """
+    window_length = window_length // 2
+    w = ivy.kaiser_window(window_length + 1, periodic, beta)
+
+    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
+
+    def sum_i_n(n):
+        return sum([w[i] for i in range(0, n + 1)])
+
+    dn_low = [sqrt(sum_i_n(i) / sum_i_N) for i in range(0, window_length)]
+
+    def sum_2N_1_n(n):
+        return sum([w[i] for i in range(0, 2 * window_length - n)])
+
+    dn_mid = [
+        sqrt(sum_2N_1_n(i) / sum_i_N) for i in range(window_length, 2 * window_length)
+    ]
+
+    return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def hamming_window(
+    window_length: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    alpha: Optional[float] = 0.54,
+    beta: Optional[float] = 0.46,
+    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Hamming window with window length window_length
+
+    Parameters
+    ----------
+    window_length
+        an int defining the length of the window.
+    periodic
+         If True, returns a window to be used as periodic function.
+         If False, return a symmetric window.
+    alpha
+        The coefficient alpha in the hamming window equation
+    beta
+        The coefficient beta in the hamming window equation
+    dtype
+        data type of the returned array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    Examples
+    --------
+    >>> ivy.hamming_window(5)
+    ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])
+    >>> ivy.hamming_window(5, periodic=False)
+    ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])
+    >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
+    ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
+    """
+    if window_length == 0:
+        return ivy.array([])
+    elif window_length == 1:
+        return ivy.array([1])
+    else:
+        if periodic is True:
+            window_length = window_length + 1
+            return ivy.array(
+                [
+                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
+                    for n in range(0, window_length)
+                ][:-1],
+                dtype=dtype,
+                out=out,
+            )
+        else:
+            return ivy.array(
+                [
+                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
+                    for n in range(0, window_length)
+                ],
+                dtype=dtype,
+                out=out,
+            )
