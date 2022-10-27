@@ -29,22 +29,6 @@ class ndarray:
             keepdims=keepdims,
         )
 
-    def argmin(
-        self,
-        /,
-        *,
-        axis=None,
-        out=None,
-        keepdims=False,
-    ):
-        return np_frontend.argmin(
-            self.data,
-            axis=axis,
-            out=out,
-            keepdims=keepdims,
-        )
-
-
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
@@ -138,6 +122,16 @@ class ndarray:
 
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
+
+    def sum(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        return np_frontend.sum(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
 
     def __add__(self, value, /):
         return np_frontend.add(self.data, value)

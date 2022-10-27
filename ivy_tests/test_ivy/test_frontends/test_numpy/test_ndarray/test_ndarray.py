@@ -49,43 +49,6 @@ def test_numpy_ndarray_argmax(
     )
 
 
-# argmin
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ),
-)
-def test_numpy_ndarray_argmin(
-        dtype_and_x,
-        as_variable,
-        native_array,
-        fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtype_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=[input_dtype[1]],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "value": x[1],
-        },
-        fw=fw,
-        frontend="numpy",
-        class_name="ndarray",
-        method_name="argmin",
-    )
-
-
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
@@ -847,6 +810,40 @@ def test_numpy_instance_squeeze(
         frontend="numpy",
         class_name="ndarray",
         method_name="squeeze",
+    )
+
+def test_numpy_instance_sum(
+        dtype_x_axis=helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_axis=-1,
+            max_axis=0,
+            min_num_dims=1,
+            force_int_axis=True,
+        ),
+        as_variable,
+        num_positional_args_method,
+        native_array,
+    ):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="sum",
     )
 
 
