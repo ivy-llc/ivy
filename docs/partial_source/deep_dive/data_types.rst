@@ -387,13 +387,28 @@ The decorators take two arguments, a dictionary with the unsupported dtypes mapp
 version of the backend framework and the current version of the backend framework on the user's system. Based on that, 
 the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
 
+For Backend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.expm1(x, out=out)
+
+
+and for frontend functions we add the corresponding framework string as the second argument instead of the version.
+
+For Frontend Functions:
+
+.. code-block:: python
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def trace(input):
+        if "int" in input.dtype:
+            input = input.astype("int64")
+        target_type = "int64" if "int" in input.dtype else input.dtype
+        return ivy.astype(ivy.trace(input), target_type)
 
 
 For compositional functions, the supported and unsupported data types can then be
@@ -502,7 +517,7 @@ We also add the following comment above the :attr:`unsupported_dtypes` attribute
 
     # ToDo: re-add int32 support once
     # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, version)
+    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, backend_version)
 
 Similarly, the following code throws an error for torch version ``1.11.0``
 but not ``1.12.1``.
@@ -520,7 +535,7 @@ In such cases, we can explicitly flag which versions support which data types li
 .. code-block:: python
 
     @with_unsupported_dtypes(
-        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, version
+        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
     )
     def cumsum(
         x: torch.Tensor,
