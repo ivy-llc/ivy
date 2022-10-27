@@ -183,3 +183,17 @@ def hamming_window(
         device=None,
         requires_grad=False,
     )
+
+
+def rfft(
+    x: torch.Tensor,
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.fft.rfft(x, n, norm=norm, out=out)
+
+
+rfft.support_native_out = True

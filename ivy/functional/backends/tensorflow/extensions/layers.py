@@ -1,5 +1,6 @@
 from typing import Union, Optional, Tuple
 import tensorflow as tf
+from math import sqrt
 
 
 def vorbis_window(
@@ -95,3 +96,21 @@ def kaiser_bessel_derived_window(
         return tf.signal.kaiser_bessel_derived_window(
             window_length, beta, dtype, name=None
         )
+
+
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    n: Optional[int] = None,
+    norm: Optional[str] = None,
+    out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if n is None:
+        n = len(x)
+    if norm == 'forward':
+        return tf.signal.rfft(x, n, norm) / n
+    elif norm == 'ortho':
+        return tf.signal.rfft(x, n, norm) / sqrt(n)
+    elif norm is None or norm == 'backward':
+        return tf.signal.rfft(x, n, norm)
+    raise ValueError(f'Invalid norm value {norm}; should be "backward",'
+                     '"ortho" or "forward".')
