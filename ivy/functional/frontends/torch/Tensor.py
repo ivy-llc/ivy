@@ -41,6 +41,10 @@ class Tensor:
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
 
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
