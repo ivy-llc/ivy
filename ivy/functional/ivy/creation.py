@@ -70,7 +70,7 @@ def _ivy_to_native(x):
     else:
         if (
             (isinstance(x, (list, tuple)) and len(x) > 0)
-            or (isinstance(x, np.ndarray) and x.ndim == 1)
+            or (isinstance(x, np.ndarray) and x.size != 0)
         ) and ivy.is_ivy_array(x[0]):
             x = ivy.to_native(x, nested=True)
         elif ivy.is_ivy_array(x):
