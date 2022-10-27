@@ -260,6 +260,8 @@ def set_backend(backend: str):
             backend_stack.append(fw)
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
+    elif backend.current_backend_str() == "jax":
+        ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
@@ -365,8 +367,16 @@ def unset_backend():
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()
+        elif backend.current_backend_str() == "jax":
+            ivy.del_global_attr("RNG")
         # the new backend is the backend that was set before the one we just removed
         # from the stack, or Ivy if there was no previously set backend
+        if backend_stack:
+            new_backend = backend_stack[-1]
+            if new_backend.current_backend_str() == "numpy":
+                ivy.set_default_device("cpu")
+            elif new_backend.current_backend_str() == "jax":
+                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )

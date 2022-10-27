@@ -342,7 +342,6 @@ def zero_fraction(value, name="zero_fraction"):
 def truediv(x, y, name="truediv"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     x_dtype = ivy.dtype(x)
-    assert x_dtype == ivy.dtype(y)
     if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
         return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
