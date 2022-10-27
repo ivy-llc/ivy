@@ -342,3 +342,153 @@ def flipud(
         [ 1.,  0.,  0.]])
     """
     return ivy.current_backend().flipud(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+    """Stack arrays in sequence vertically (row wise).
+
+    Parameters
+    ----------
+    arrays
+        Sequence of arrays to be stacked.
+
+    Returns
+    -------
+    ret
+        The array formed by stacking the given arrays.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([2, 3, 4])
+    >>> ivy.vstack((x, y))
+    ivy.array([[1, 2, 3],
+           [2, 3, 4]])
+    >>> ivy.vstack((x, y, x, y))
+    ivy.array([[1, 2, 3],
+               [2, 3, 4],
+               [1, 2, 3],
+               [2, 3, 4]])
+
+    >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+    >>> print(ivy.vstack(y))
+    ivy.array([[5, 6],
+               [7, 8]])
+
+    """
+    return ivy.current_backend(arrays[0]).vstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+    """Stack arrays in sequence horizotally (column wise).
+
+    Parameters
+    ----------
+    arrays
+        Sequence of arrays to be stacked.
+
+    Returns
+    -------
+    ret
+        The array formed by stacking the given arrays.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([2, 3, 4])
+    >>> ivy.hstack((x, y))
+    ivy.array([1, 2, 3, 2, 3, 4])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([0, 0, 0])
+    >>> ivy.hstack((x, y, x))
+    ivy.array([1, 2, 3, 0, 0, 0, 1, 2, 3])
+    >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+    >>> print(ivy.hstack(y))
+    ivy.array([[5, 6, 7, 8]])
+
+    """
+    return ivy.current_backend(arrays[0]).hstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def rot90(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Rotate an array by 90 degrees in the plane specified by axes.
+    Rotation direction is from the first towards the second axis.
+
+    Parameters
+    ----------
+    m
+        Input array of two or more dimensions.
+    k
+        Number of times the array is rotated by 90 degrees.
+    axes
+        The array is rotated in the plane defined by the axes. Axes must be
+        different.
+    out
+        optional output container, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A rotated view of m.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> m = ivy.array([[1,2], [3,4]])
+    >>> ivy.rot90(m)
+    ivy.array([[2, 4],
+           [1, 3]])
+    >>> m = ivy.array([[1,2], [3,4]])
+    >>> ivy.rot90(m, k=2)
+    ivy.array([[4, 3],
+           [2, 1]])
+    >>> m = ivy.array([[[0, 1],\
+                        [2, 3]],\
+                       [[4, 5],\
+                        [6, 7]]])
+    >>> ivy.rot90(m, k=2, axes=(1,2))
+    ivy.array([[[3, 2],
+            [1, 0]],
+
+           [[7, 6],
+            [5, 4]]])
+    With :code:`ivy.NativeArray` input:
+    >>> m = ivy.native_array([[1,2], [3,4]])
+    >>> ivy.rot90(m)
+    ivy.array([[2, 4],
+           [1, 3]])
+    >>> m = ivy.native_array([[1,2], [3,4]])
+    >>> ivy.rot90(m, k=2)
+    ivy.array([[4, 3],
+           [2, 1]])
+    >>> m = ivy.native_array([[[0, 1],\
+                               [2, 3]],\
+                              [[4, 5],\
+                               [6, 7]]])
+    >>> ivy.rot90(m, k=2, axes=(1,2))
+    ivy.array([[[3, 2],
+            [1, 0]],
+
+           [[7, 6],
+            [5, 4]]])
+
+    """
+    return ivy.current_backend(m).rot90(m, k=k, axes=axes, out=out)
