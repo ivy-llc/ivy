@@ -166,7 +166,7 @@ from . import gradients
 from .gradients import *
 from . import layers
 from .layers import *
-from . import linalg as linalg
+from . import linalg
 from .linalg import *
 from . import manipulation
 from .manipulation import *
