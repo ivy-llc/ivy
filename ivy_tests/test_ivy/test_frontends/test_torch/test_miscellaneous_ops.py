@@ -751,7 +751,6 @@ def test_torch_ravel(
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -760,8 +759,161 @@ def test_torch_ravel(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
         fn_tree="ravel",
         input=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# rot90
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    dims=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+        min_size=2,
+        max_size=2,
+        unique=True,
+        allow_neg=False,
+        force_tuple=True,
+    ),
+    k=st.integers(min_value=-10, max_value=10),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.rot90"
+    ),
+)
+def test_torch_rot90(
+    dtype_and_x, dims, k, as_variable, num_positional_args, native_array
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="rot90",
+        input=x[0],
+        k=k,
+        dims=dims,
+    )
+
+
+# vander
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
+    ),
+    N=st.integers(min_value=0, max_value=5),
+    increasing=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.vander"
+    ),
+)
+def test_torch_vander(
+    dtype_and_x,
+    N,
+    increasing,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="vander",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        N=N,
+        increasing=increasing,
+    )
+
+
+# lcm
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.lcm"
+    ),
+)
+def test_torch_lcm(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="lcm",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# einsum
+@handle_cmd_line_args
+@given(
+    eq_n_op_n_shp=st.sampled_from(
+        [
+            ("ii", (np.arange(25).reshape(5, 5),), ()),
+            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_einsum(
+    eq_n_op_n_shp,
+    dtype,
+    as_variable,
+    with_out,
+    native_array,
+):
+    eq, operands, _ = eq_n_op_n_shp
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    # len(operands) + 1 because of the equation
+    num_positional_args = len(operands) + 1
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="einsum",
+        equation=eq,
+        **kw,
     )

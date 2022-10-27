@@ -1,4 +1,5 @@
 # global
+
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
@@ -6,6 +7,7 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -13,12 +15,22 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+from . import backend_version
 
 
 # Array API Standard #
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def arange(
     start: float,
     /,
@@ -55,12 +67,6 @@ def arange(
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
-
-
-arange.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
 
 
 @asarray_to_native_arrays_and_back
@@ -149,6 +155,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -171,7 +178,7 @@ def eye(
 
         # k=index of the diagonal. A positive value refers to an upper diagonal,
         # a negative value to a lower diagonal, and 0 to the main diagonal.
-        # Default: 0.
+        # Default: ``0``.
         # value of k ranges from -n_rows < k < n_cols
 
         # k=0 refers to the main diagonal
@@ -197,9 +204,6 @@ def eye(
             return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
-
-eye.unsupported_dtypes = ("uint16",)
 
 
 # noinspection PyShadowingNames

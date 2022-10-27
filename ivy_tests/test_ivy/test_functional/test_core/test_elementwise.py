@@ -169,8 +169,8 @@ def test_add(
         instance_method=instance_method,
         fw=fw,
         fn_name="add",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         test_gradients=True,
         x1=x[0],
         x2=x[1],
@@ -1656,8 +1656,9 @@ def pow_helper(draw, available_dtypes=None):
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
-            small_abs_safety_factor=4,
-            large_abs_safety_factor=4,
+            small_abs_safety_factor=12,
+            large_abs_safety_factor=12,
+            safety_factor_scale="log",
         )
     )
     dtype1 = dtype1[0]
@@ -2044,8 +2045,8 @@ def test_subtract(
         fw=fw,
         fn_name="subtract",
         test_gradients=True,
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
@@ -2446,4 +2447,38 @@ def test_trunc_divide(
         test_gradients=True,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# isreal
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isreal"),
+)
+def test_isreal(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isreal",
+        x=x[0],
     )
