@@ -119,3 +119,6 @@ def nansum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
+
+
+nansum.support_native_out = False
