@@ -45,6 +45,12 @@ you should make sure to check whether you are eligible for a
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
 
+**Important Points**
+
+#. Once you don't have a student account, the student license will expire and you won't be able to access PyCharm Professional.
+#. To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.
+#. After the trial expires you have to buy the paid version of PyCharm Professional.
+
 For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
@@ -180,7 +186,7 @@ Windows
 
    a. Running Docker desktop.
    b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
-
+   
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
@@ -306,7 +312,6 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
     </iframe>
 
-
 Setting Up Testing
 ******************
 There are a couple of options to choose from when running ivy tests in PyCharm. To run a single unit test, e.g. `test_abs`,
@@ -389,6 +394,27 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
+
+Setting up for Free
+-------------------
+
+Visual Studio Code is a recommended free alternative to setting up, especially if you're not eligible for a student license with PyCharm Professional. The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension. You'll hopefully be done with this in no time.
+The steps to be followed are listed below:
+
+#. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
+#. Open Docker desktop, make sure it's running while following the process below. You can close the Docker desktop window afterwards, Docker will continue to run in the background.
+#. Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:
+
+   a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that. In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
+   b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
+   c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
+   d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
+   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name"
+
+**Important Note**
+
+For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
 -----------------
