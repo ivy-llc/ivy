@@ -334,7 +334,8 @@ def test_exp2(
         fn_name="exp2",
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
-    
+
+
 # nansum
 @handle_cmd_line_args
 @given(
