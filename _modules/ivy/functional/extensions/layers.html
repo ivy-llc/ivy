@@ -352,12 +352,9 @@
 
 <span class="sd">       [[16., 17., 18., 19.]]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                                             <span class="n">kernel</span><span class="p">,</span>
-                                             <span class="n">strides</span><span class="p">,</span>
-                                             <span class="n">padding</span><span class="p">,</span>
-                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
-                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/extensions/layers/kaiser_window.html#ivy.functional.extensions.layers.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -916,9 +913,9 @@
 <span class="sd">         If True, returns a window to be used as periodic function.</span>
 <span class="sd">         If False, return a symmetric window.</span>
 <span class="sd">    alpha</span>
-<span class="sd">        The coefficient alpha in the hamming window equation </span>
+<span class="sd">        The coefficient alpha in the hamming window equation</span>
 <span class="sd">    beta</span>
-<span class="sd">        The coefficient beta in the hamming window equation </span>
+<span class="sd">        The coefficient beta in the hamming window equation</span>
 <span class="sd">    dtype</span>
 <span class="sd">        data type of the returned array.</span>
 <span class="sd">    out</span>
@@ -946,17 +943,21 @@
         <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)],</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">],</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
             <span class="p">)</span></div>
 </pre></div>
 

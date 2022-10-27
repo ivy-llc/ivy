@@ -603,6 +603,9 @@
 
 <span class="c1"># Gets dtype from a version dictionary</span>
 <span class="k">def</span> <span class="nf">_dtype_from_version</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="c1"># if version is a string, it&#39;s a frontend function</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;versions&quot;</span><span class="p">][</span><span class="n">version</span><span class="p">]</span>
     <span class="c1"># if version is a dict, extract the version</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">version</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span>
