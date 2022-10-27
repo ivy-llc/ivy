@@ -19,9 +19,6 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
-    # Special Methods #
-    # --------------- #
-
     def __add__(self, other):
         return jax_frontend.lax.add(self, other)
 
@@ -39,12 +36,6 @@ class DeviceArray:
 
     def __rmul__(self, other):
         return jax_frontend.lax.mul(other, self)
-
-    def __div__(self, other):
-        return jax_frontend.lax.div(self, other)
-
-    def __rdiv__(self, other):
-        return jax_frontend.lax.div(other, self)
 
     def __mod__(self, other):
         return jax_frontend.numpy.mod(self, other)
