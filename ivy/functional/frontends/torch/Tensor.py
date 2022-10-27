@@ -5,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -13,7 +13,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
