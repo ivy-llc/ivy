@@ -228,10 +228,10 @@ def promote_types_jax(
 
 @handle_exceptions
 def promote_types_of_jax_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
     based on type promotion rules. While passing float or integer values or any
