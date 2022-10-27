@@ -2012,7 +2012,7 @@ def test_tensorflow_RightShift(
 
 
 @st.composite
-def _pow_helper_tf(draw):
+def _pow_helper_shared_dtype(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", full=True),
@@ -2042,7 +2042,7 @@ def _pow_helper_tf(draw):
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_pow_helper_tf(),
+    dtype_and_x=_pow_helper_shared_dtype(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
