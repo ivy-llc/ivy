@@ -58,3 +58,8 @@ def matrix_rank(M):
 @to_ivy_arrays_and_back
 def solve(a, b):
     return ivy.solve(a, b)
+
+
+@to_ivy_arrays_and_back
+def matrix_power(x, n):
+    return ivy.matrix_power(x, n)
