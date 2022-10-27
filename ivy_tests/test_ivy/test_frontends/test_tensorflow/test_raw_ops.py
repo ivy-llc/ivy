@@ -2241,14 +2241,10 @@ def test_tensorflow_Unpack(
         force_int_axis=True,
         min_num_dims=1,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Pack"
-    ),
 )
 def test_tensorflow_Pack(
     dtype_x_axis,
     as_variable,
-    num_positional_args,
     native_array,
 ):
     dtype, x, axis = dtype_x_axis
@@ -2256,7 +2252,7 @@ def test_tensorflow_Pack(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=0,
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.Pack",
