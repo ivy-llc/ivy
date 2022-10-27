@@ -313,7 +313,7 @@ def fill_diagonal(
     wrap: Optional[bool] = False,
 ) -> torch.Tensor:
     ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False,
-        message="array must be at least 2-d")
+                                 message="array must be at least 2-d")
     if isinstance(value, Number):
         value = [value]
     value = torch.Tensor(value).flatten()
@@ -321,7 +321,7 @@ def fill_diagonal(
         value = torch.concat((value, value))
     if len(x.shape) > 2:
         ivy.assertions.check_all_dims_equal_length(x,
-            message="if input array has more than 2 dimensions, ")
+                    message="if input array has more than 2 dimensions, ")
         for dim in range(x.shape[0]):
             idx = [slice(dim, dim + 1)] * len(x.shape)
             x[idx] = value[dim]
@@ -329,8 +329,8 @@ def fill_diagonal(
         for dim in range(x.shape[0]):
             if (dim + 1) % (x.shape[1] + 1) == 0:
                 continue
-            idx = [slice(dim, dim + 1)] +
-                [slice(dim % (x.shape[1] + 1), dim % (x.shape[1] + 1) + 1)]
+            idx = [slice(dim, dim + 1)] +\
+                  [slice(dim % (x.shape[1] + 1), dim % (x.shape[1] + 1) + 1)]
             x[idx] = value[dim - (dim // (x.shape[1] + 1))]
     else:
         for dim in range(min(x.shape)):
