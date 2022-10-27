@@ -23,6 +23,70 @@ inf = float("inf")
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def adjoint(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Transposes the last two dimensions of and conjugates tensor matrix.
+
+    Parameters
+    ----------
+    x
+        Input array. Should be with shape ``[..., M, M]``.
+    out
+        optional output container, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The adjoint (a.k.a. Hermitian transpose a.k.a. conjugate transpose) of
+        matrix.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+     >>> x = ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                      [4 + 4j, 5 + 5j, 6 + 6j]])
+    >>> x.adjoint()
+    ivy.array([[1.-1.j, 4.-4.j],
+       [2.-2.j, 5.-5.j],
+       [3.-3.j, 6.-6.j]])
+
+    With :code:`ivy.NativeArray` input:
+
+     >>> x = ivy.native_array([[1 + 1j, 2 + 2j, 3 + 3j],
+                  [4 + 4j, 5 + 5j, 6 + 6j]])
+    >>> x.adjoint()
+    ivy.array([[1.-1.j, 4.-4.j],
+       [2.-2.j, 5.-5.j],
+       [3.-3.j, 6.-6.j]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                              [4 + 4j, 5 + 5j, 6 + 6j]]),
+                          b=ivy.native_array([[0.+0.j, 1.+1.j],
+                              [2.+2.j, 3.+3.j]]))
+    >>> x.adjoint()
+    {
+        a: (<class ivy.array.array.Array> shape=[4, 4]),
+        b: ivy.array([[1, 0],
+                      [0, 2]])
+    }
+
+    """
+    return current_backend(x).adjoint(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -380,6 +380,10 @@ def vector_norm(
 # ------#
 
 
+def adjoint(x: JaxArray, /, *, out: Optional[ivy.Array] = None) -> JaxArray:
+    return jnp.conjugate(jnp.transpose(x))
+
+
 def diag(
     x: JaxArray,
     /,

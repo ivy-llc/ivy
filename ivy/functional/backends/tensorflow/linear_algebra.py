@@ -595,6 +595,15 @@ def vector_norm(
 # ----- #
 
 
+def adjoint(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.adjoint(x)
+
+
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,

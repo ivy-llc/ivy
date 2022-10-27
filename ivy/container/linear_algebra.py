@@ -120,6 +120,154 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
+    def static_adjoint(
+        x: [ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.adjoint.
+        This method simply wraps the function, and so the docstring for
+        ivy.adjoint also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container, containing arrays which should be with shape
+            ``[..., M, M]``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with output arrays, the adjoint (a.k.a. Hermitian transpose
+            a.k.a. conjugate transpose) of matricies.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                                  [4 + 4j, 5 + 5j, 6 + 6j]]),
+                              b=ivy.native_array([[0.+0.j, 1.+1.j],
+                                  [2.+2.j, 3.+3.j]]))
+        >>> ivy.Container.static_adjoint(x)
+        {
+            a: ivy.array([[1.-1.j, 4.-4.j],
+                          [2.-2.j, 5.-5.j],
+                          [3.-3.j, 6.-6.j]]),
+            b: ivy.array([[0.-0.j, 2.-2.j],
+                          [1.-1.j, 3.-3.j]])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "adjoint",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def adjoint(
+        self: [ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.adjoint.
+        This method simply wraps the function, and so the docstring for
+        ivy.adjoint also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container, containing arrays which should be with shape
+            ``[..., M, M]``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with output arrays, the adjoint (a.k.a. Hermitian transpose
+            a.k.a. conjugate transpose) of matricies.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                                  [4 + 4j, 5 + 5j, 6 + 6j]]),
+                              b=ivy.native_array([[0.+0.j, 1.+1.j],
+                                  [2.+2.j, 3.+3.j]]))
+        >>> y=x.adjoint()
+        >>> print(y)
+        {
+            a: ivy.array([[1.-1.j, 4.-4.j],
+                          [2.-2.j, 5.-5.j],
+                          [3.-3.j, 6.-6.j]]),
+            b: ivy.array([[0.-0.j, 2.-2.j],
+                          [1.-1.j, 3.-3.j]])
+        }
+
+        >>> x= ivy.Container(a=ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                                         [4 + 4j, 5 + 5j, 6 + 6j]]),
+                            b=ivy.array([[0.+0.j, 1.+1.j],
+                                        [2.+2.j, 3.+3.j]]))
+        >>> y=x.adjoint()
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.00613, -0.0154, nan]),
+            b: ivy.array([0., -0.0262, -0.873, nan])
+        }
+
+        """
+        return self.static_adjoint(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_cholesky(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

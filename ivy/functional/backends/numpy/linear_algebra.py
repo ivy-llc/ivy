@@ -333,6 +333,10 @@ def vector_norm(
 # ----- #
 
 
+def adjoint(x: np.ndarray, /, *, out: Optional[ivy.Array] = None) -> np.ndarray:
+    return np.conj(x.T)
+
+
 def diag(
     x: np.ndarray,
     /,

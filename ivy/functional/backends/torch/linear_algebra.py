@@ -419,6 +419,10 @@ vector_norm.support_native_out = True
 # ----- #
 
 
+def adjoint(x: torch.Tensor, /, *, out: Optional[ivy.Array] = None) -> torch.Tensor:
+    return torch.adjoint(x)
+
+
 def diag(
     x: torch.Tensor,
     /,

@@ -30,6 +30,40 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         return ivy.matmul(self._data, x2, out=out)
 
+    def adjoint(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.adjoint.
+        This method simply wraps the function, and so the docstring
+        for ivy.adjoint also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Should be with shape ``[..., M, M]``.
+        out
+            Optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The adjoint (a.k.a. Hermitian transpose a.k.a. conjugate transpose) of
+            matrix.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([[1 + 1j, 2 + 2j, 3 + 3j],
+                      [4 + 4j, 5 + 5j, 6 + 6j]])
+        >>> x.adjoint()
+        ivy.array([[1.-1.j, 4.-4.j],
+           [2.-2.j, 5.-5.j],
+           [3.-3.j, 6.-6.j]])
+
+        """
+        return ivy.adjoint(self._data, out=out)
+
     def cholesky(
         self: ivy.Array,
         /,
@@ -334,9 +368,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array,
-        *,
-        out: Optional[ivy.Array] = None
+        self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
