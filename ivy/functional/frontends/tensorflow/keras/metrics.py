@@ -204,6 +204,14 @@ kullback_leibler_divergence = kl_divergence
 
 
 @to_ivy_arrays_and_back
+def log_cosh(y_true, y_pred):
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    diff = y_pred - y_true
+    log_val = ivy.astype(ivy.log(2.0), diff.dtype)
+    return ivy.mean(diff + ivy.softplus(-2.0 * diff) - log_val, axis=-1)
+
+
+@to_ivy_arrays_and_back
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
 
