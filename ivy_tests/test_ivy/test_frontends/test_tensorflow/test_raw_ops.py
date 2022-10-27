@@ -2236,7 +2236,7 @@ def test_tensorflow_Unpack(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1, max_num_dims=5
     ),
 )
 def test_tensorflow_MatrixDiag(

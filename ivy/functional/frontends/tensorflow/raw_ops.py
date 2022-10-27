@@ -238,7 +238,14 @@ MatrixDeterminant = tf_frontend.linalg.det
 
 @to_ivy_arrays_and_back
 def MatrixDiag(*, diagonal, name="MatrixDiag"):
-    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+    last_dim = diagonal.shape[-1]
+
+    return ivy.astype(
+        ivy.expand_dims(diagonal, axis=-1)
+        .repeat(last_dim, axis=-1)
+        .multiply(ivy.eye(last_dim)),
+        diagonal.dtype,
+    )
 
 
 @to_ivy_arrays_and_back
