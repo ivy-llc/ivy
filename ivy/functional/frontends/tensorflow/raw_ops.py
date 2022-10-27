@@ -27,23 +27,14 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-def Add(*, x, y, name="Add"):
-    return map_raw_ops_alias(
-        tf_frontend.math.add,
-        x=x,
-        y=y,
-        name=name,
-    )
+Add = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.add, kwargs_to_update={"Add": "name"})
+)
 
 
-def ArgMax(*, input, dimension, output_type, name="ArgMax"):
-    return map_raw_ops_alias(
-        tf_frontend.math.argmax,
-        input=input,
-        axis=dimension,
-        output_type=output_type,
-        name=name,
-    )
+ArgMax = map_raw_ops_alias(
+    tf_frontend.math.argmax, kwargs_to_update={"dimension": "axis", "ArgMax": "name"}
+)
 
 
 @to_ivy_arrays_and_back
@@ -116,13 +107,7 @@ def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
 
 
-def Div(*, x, y, name="Div"):
-    return map_raw_ops_alias(
-        tf_frontend.math.divide,
-        x=x,
-        y=y,
-        name=name,
-    )
+Div = map_raw_ops_alias(tf_frontend.math.divide, kwargs_to_update={"Div": "name"})
 
 
 def Diag(*, diagonal, name="Diag"):

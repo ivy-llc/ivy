@@ -1,5 +1,7 @@
 # global
-from typing import Callable
+import copy
+import inspect
+from typing import Callable, Dict
 import functools
 
 # local
@@ -94,7 +96,35 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))
 
 
-def map_raw_ops_alias(alias: callable, **function_kwargs):
+# update kwargs dictionary keys helper
+def update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
+    """A helper function for updating the key-word only arguments dictionary.
+
+    Parameters
+    ----------
+    kwargs
+        A dictionary containing key-word only arguments to be updated.
+
+    to_update
+        The dictionary containing keys to update from raw_ops function the mapping
+        is raw_ops argument name against corresponding tf_frontend argument name.
+
+    Returns
+    -------
+    ret
+        An updated dictionary with new keyword mapping
+    """
+    updated_kwargs = copy.deepcopy(kwargs)
+    for key, val in to_update.items():
+        for k in kwargs.keys():
+            if key == k:
+                temp_key = updated_kwargs[k]
+                del updated_kwargs[k]
+                updated_kwargs[val] = temp_key
+    return updated_kwargs
+
+
+def map_raw_ops_alias(alias: callable, kwargs_to_update: dict = None) -> callable:
     """
     Mapping the raw_ops function with its respective frontend alias function,
     as the implementations of raw_ops is way similar to that of frontend functions,
@@ -105,22 +135,27 @@ def map_raw_ops_alias(alias: callable, **function_kwargs):
     alias:
         The frontend function that is being referenced to as an alias to the
         current raw_ops function.
-    functions_kwargs:
-        All inputs to the raw_ops as keyword only arguments.
+    kwargs_to_update:
+        A dictionary containing key-word args to update to conform with a given
+        raw_ops function
 
     Returns
     -------
     ret
-        The output of the wrapped function passed key-word only arguments as input.
+        A wrapped tf_frontend function to alias a given raw_ops function
+        with to_ivy_array_and_back decorator added
     """
 
-    def _wrap_raw_ops_alias(fn: callable) -> callable:
+    def _wrap_raw_ops_alias(fn: callable, kw_update: Dict) -> callable:
+        fn = inspect.unwrap(fn)
+
         @functools.wraps(fn)
         def _wraped_fn(*args, **kwargs):
+            if kw_update:
+                kwargs = update_kwarg_keys(kwargs, kw_update)
             kwargs.update(zip(fn.__code__.co_varnames, args))
             return fn(**kwargs)
 
         return _wraped_fn
 
-    wrapped_function = _wrap_raw_ops_alias(alias)
-    return wrapped_function(**function_kwargs)
+    return _wrap_raw_ops_alias(alias, kwargs_to_update)
