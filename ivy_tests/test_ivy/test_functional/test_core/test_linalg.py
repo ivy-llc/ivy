@@ -11,6 +11,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+
 @st.composite
 def dtype_value1_value2_axis(
     draw,
@@ -194,6 +195,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
             matrix = np.transpose(matrix)
         return [input_dtype], matrix, transpose
     return [input_dtype], matrix
+
 
 @st.composite
 def _get_second_matrix_and_dtype(draw, *, transpose=False):
