@@ -789,6 +789,8 @@ def valid_dct(draw):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        max_value=65280,
+        min_value=-65280,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
@@ -824,4 +826,6 @@ def test_dct(
         type=type,
         n=n,
         norm=norm,
+        rtol_=1e-3,
+        atol_=1e-1,
     )
