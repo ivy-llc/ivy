@@ -1,5 +1,4 @@
 import ivy
-from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
@@ -28,16 +27,14 @@ def roll(input, shifts, dims=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
-    versions["torch"],
+    "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16")}, versions["torch"]
-)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
@@ -254,7 +251,7 @@ def vander(x, N=None, increasing=False):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, versions["torch"])
+@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, "torch")
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
 

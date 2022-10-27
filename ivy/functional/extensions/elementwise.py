@@ -285,7 +285,7 @@ def float_power(
     x2
         Array-like of exponents. If x1.shape != x2.shape,
         they must be broadcastable to a common shape
-        (which becomes the shape of the output).            
+        (which becomes the shape of the output).
     out
         optional output array, for writing the result to.
 
@@ -297,10 +297,10 @@ def float_power(
 
     Examples
     --------
-    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.float_power(x1, 3)
     ivy.array([1.,    8.,   27.,   64.,  125.])
-    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> x2 = ivy.array([2, 3, 3, 2, 1])
     >>> ivy.float_power(x1, x2)
     ivy.array([1.,   8.,  27.,  16.,   5.])
