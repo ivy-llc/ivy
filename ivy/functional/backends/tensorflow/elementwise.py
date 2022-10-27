@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional
-
 import tensorflow as tf
 
 # local
@@ -161,7 +160,6 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -667,6 +665,17 @@ def erf(
     return tf.math.erf(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -684,14 +693,17 @@ def maximum(
     return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
 
 
-maximum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
 )
-
-
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -707,14 +719,6 @@ def minimum(
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
-
-
-minimum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 @with_unsupported_dtypes(

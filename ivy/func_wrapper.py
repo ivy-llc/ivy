@@ -153,6 +153,10 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
+def _is_zero_dim_array(x):
+    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+
+
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -174,14 +178,30 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        # get out arg index
-        out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
-        # check if out is None or out is not present in args and kwargs.
-        out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
-        out_kwargs = "out" in kwargs and kwargs["out"] is None
-        if ret.shape == () and (out_args or out_kwargs):
-            return float(ret)
-        # convert to float from 0 dim
+        data = ret.data
+        if "out" in ivy.arg_names(fn):
+            # get out arg index
+            out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+            # check if out is None or out is not present in args and kwargs.
+            out_args = (
+                out_arg_pos < len(args) and args[out_arg_pos] is None
+            ) or out_arg_pos >= len(args)
+        else:
+            # no out argument accepted by the function
+            out_args = True
+
+        out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
+        if out_args and out_kwargs:
+            if isinstance(data, tuple):
+                # converting every scalar element of the tuple to float
+                data = ivy.copy_nest(data, to_mutable=True)
+                ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
+                ivy.map_nest_at_indices(data, ret_idx, lambda x: float(x))
+                return data
+            else:
+                # converting the scalar to float
+                if _is_zero_dim_array(data):
+                    return float(data)
         return ret
 
     new_fn.zero_dim_arrays_to_float = True
@@ -425,7 +445,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)
-                and linalg_k != "namedtuple"
+                and linalg_k.lower() != "namedtuple"
                 and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
@@ -453,6 +473,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
+    # if version is a string, it's a frontend function
+    if isinstance(version, str):
+        version = ivy.functional.frontends.__dict__["versions"][version]
     # if version is a dict, extract the version
     if isinstance(version, dict):
         version = version["version"]

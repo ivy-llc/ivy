@@ -216,12 +216,12 @@ def promote_tensorflow_types(
 
 @handle_exceptions
 def promote_types_of_tensorflow_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
     *,
     standard_promotion: bool = False,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
     based on tensorflow-specific type promotion rules. While passing float or
@@ -247,36 +247,21 @@ def promote_types_of_tensorflow_inputs(
     else:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+    return x1, x2
 
 
 from . import tensor
 from .tensor import Tensor
-from . import activations
-from .activations import *
-from . import layers
-from .layers import *
+from . import keras
 from . import linalg
-from .linalg import *
 from . import math
-from .math import *
-from . import metrics
-from .metrics import *
 from . import nest
-from .nest import *
 from . import nn
-from .nn import *
 from . import quantization
-from .quantization import *
 from . import random
-from .random import *
 from . import raw_ops
-from .raw_ops import *
-from . import regularizers
-from .regularizers import *
 from . import sets
-from .sets import *
 from . import signal
-from .signal import *
 from . import sparse
-from .sparse import *
+from . import general_functions
+from .general_functions import *

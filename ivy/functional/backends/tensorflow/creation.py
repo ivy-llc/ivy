@@ -3,16 +3,11 @@
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
-
 import tensorflow as tf
 
 # local
 import ivy
-
-
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
-
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -20,6 +15,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+from . import backend_version
 
 
 # Array API Standard #
@@ -182,7 +178,7 @@ def eye(
 
         # k=index of the diagonal. A positive value refers to an upper diagonal,
         # a negative value to a lower diagonal, and 0 to the main diagonal.
-        # Default: 0.
+        # Default: ``0``.
         # value of k ranges from -n_rows < k < n_cols
 
         # k=0 refers to the main diagonal

@@ -4,7 +4,6 @@
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -87,7 +86,7 @@ def _generate_data_layer_norm(
     values_tuple=_generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float")
     ),
-    epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
+    epsilon=st.floats(min_value=0.01, max_value=0.1),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
 )
 def test_layer_norm(
@@ -113,8 +112,8 @@ def test_layer_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="layer_norm",
-        rtol_=1e-1,
-        atol_=1e-1,
+        rtol_=0.1,
+        atol_=0.5,
         x=x[0],
         normalize_axis=normalize_axis,
         epsilon=epsilon,

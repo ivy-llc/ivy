@@ -212,7 +212,7 @@ def test_numpy_searchsorted(
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argwhere"
-    )
+    ),
 )
 def test_numpy_argwhere(
     dtype_and_x,
@@ -267,7 +267,7 @@ def test_numpy_nanargmax(
         fn_tree="nanargmax",
         a=x[0],
         axis=axis,
-        keepdims=keep_dims
+        keepdims=keep_dims,
     )
 
 
@@ -305,5 +305,5 @@ def test_numpy_nanargmin(
         fn_tree="nanargmin",
         a=x[0],
         axis=axis,
-        keepdims=keep_dims
+        keepdims=keep_dims,
     )
