@@ -19,4 +19,5 @@ Elementwise
    elementwise/fmax.rst
    elementwise/trapz.rst
    elementwise/float_power.rst
+   elementwise/exp2.rst
 
