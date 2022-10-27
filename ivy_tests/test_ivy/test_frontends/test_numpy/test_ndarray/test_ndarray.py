@@ -21,10 +21,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     ),
 )
 def test_numpy_ndarray_argmax(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    fw,
+        dtype_and_x,
+        as_variable,
+        native_array,
+        fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -46,6 +46,43 @@ def test_numpy_ndarray_argmax(
         frontend="numpy",
         class_name="ndarray",
         method_name="argmax",
+    )
+
+
+# argmin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_ndarray_argmin(
+        dtype_and_x,
+        as_variable,
+        native_array,
+        fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtype_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=0,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "value": x[1],
+        },
+        fw=fw,
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="argmin",
     )
 
 
@@ -73,9 +110,9 @@ def dtypes_x_reshape(draw):
     dtypes_x_shape=dtypes_x_reshape(),
 )
 def test_numpy_ndarray_reshape(
-    dtypes_x_shape,
-    as_variable,
-    native_array,
+        dtypes_x_shape,
+        as_variable,
+        native_array,
 ):
     input_dtype, x, shape = dtypes_x_shape
     helpers.test_frontend_method(
@@ -113,10 +150,10 @@ def test_numpy_ndarray_reshape(
     ),
 )
 def test_numpy_ndarray_transpose(
-    array_and_axes,
-    as_variable,
-    num_positional_args,
-    native_array,
+        array_and_axes,
+        as_variable,
+        num_positional_args,
+        native_array,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_method(
@@ -161,12 +198,12 @@ def test_numpy_ndarray_transpose(
     native_array=helpers.array_bools(),
 )
 def test_numpy_ndarray_any(
-    dtype_x_axis,
-    keepdims,
-    where,
-    as_variable,
-    num_positional_args,
-    native_array,
+        dtype_x_axis,
+        keepdims,
+        where,
+        as_variable,
+        num_positional_args,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -220,12 +257,12 @@ def test_numpy_ndarray_any(
     native_array=helpers.array_bools(),
 )
 def test_numpy_ndarray_all(
-    dtype_x_axis,
-    keepdims,
-    where,
-    as_variable,
-    num_positional_args,
-    native_array,
+        dtype_x_axis,
+        keepdims,
+        where,
+        as_variable,
+        num_positional_args,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -272,11 +309,11 @@ def test_numpy_ndarray_all(
     ),
 )
 def test_numpy_instance_argsort(
-    dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_x_axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -309,11 +346,11 @@ def test_numpy_instance_argsort(
     ),
 )
 def test_numpy_instance_min(
-    dtype_x_axis,
-    keepdims,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        keepdims,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -354,12 +391,12 @@ def test_numpy_instance_min(
     ),
 )
 def test_numpy_ndarray_argmin(
-    dtype_x_axis,
-    keepdims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_x_axis,
+        keepdims,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -399,11 +436,11 @@ def test_numpy_ndarray_argmin(
     ),
 )
 def test_numpy_instance_max(
-    dtype_x_axis,
-    keepdims,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        keepdims,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -444,11 +481,11 @@ def test_numpy_instance_max(
     ),
 )
 def test_numpy_instance_cumprod(
-    dtype_x_axis,
-    dtype,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        dtype,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -490,11 +527,11 @@ def test_numpy_instance_cumprod(
     ),
 )
 def test_numpy_instance_cumsum(
-    dtype_x_axis,
-    dtype,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        dtype,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -535,10 +572,10 @@ def test_numpy_instance_cumsum(
     ),
 )
 def test_numpy_instance_sort(
-    dtype_x_axis,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -583,10 +620,10 @@ def test_numpy_instance_sort(
     ),
 )
 def test_numpy_instance_copy(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
 
@@ -619,10 +656,10 @@ def test_numpy_instance_copy(
     ),
 )
 def test_numpy_instance_nonzero(
-    dtype_and_a,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_a,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, a = dtype_and_a
 
@@ -655,10 +692,10 @@ def test_numpy_instance_nonzero(
     ),
 )
 def test_numpy_instance_ravel(
-    dtype_and_a,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_a,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, a = dtype_and_a
 
@@ -695,12 +732,12 @@ def test_numpy_instance_ravel(
     ),
 )
 def test_numpy_instance_repeat(
-    dtype_and_x,
-    repeats,
-    axis,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        repeats,
+        axis,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
 
@@ -740,11 +777,11 @@ def test_numpy_instance_repeat(
     ),
 )
 def test_numpy_instance_searchsorted(
-    dtype_x_v,
-    side,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_v,
+        side,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_x_v
 
@@ -785,10 +822,10 @@ def test_numpy_instance_searchsorted(
     ),
 )
 def test_numpy_instance_squeeze(
-    dtype_x_axis,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_x_axis,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -823,10 +860,10 @@ def test_numpy_instance_squeeze(
     ),
 )
 def test_numpy_instance_add__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -861,10 +898,10 @@ def test_numpy_instance_add__(
     ),
 )
 def test_numpy_instance_sub__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -900,10 +937,10 @@ def test_numpy_instance_sub__(
     ),
 )
 def test_numpy_instance_mul__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -939,10 +976,10 @@ def test_numpy_instance_mul__(
     ),
 )
 def test_numpy_instance_and__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -978,10 +1015,10 @@ def test_numpy_instance_and__(
     ),
 )
 def test_numpy_instance_or__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1017,10 +1054,10 @@ def test_numpy_instance_or__(
     ),
 )
 def test_numpy_instance_xor__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1054,11 +1091,11 @@ def test_numpy_instance_xor__(
     ),
 )
 def test_numpy_instance_matmul__(
-    x,
-    y,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        x,
+        y,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     dtype1, x1 = x
     dtype2, x2 = y
@@ -1096,10 +1133,10 @@ def test_numpy_instance_matmul__(
     ),
 )
 def test_numpy_instance_copy__(
-    dtype_and_x,
-    as_variable,
-    num_positional_args_method,
-    native_array,
+        dtype_and_x,
+        as_variable,
+        num_positional_args_method,
+        native_array,
 ):
     input_dtype, x = dtype_and_x
 
