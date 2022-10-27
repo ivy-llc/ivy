@@ -765,9 +765,15 @@ def test_torch_instance_log(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(),
+    alpha=st.floats(
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
 )
 def test_torch_special_add(
     dtype_and_x,
@@ -804,9 +810,15 @@ def test_torch_special_add(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(),
+    alpha=st.floats(
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
 )
 def test_torch_special_radd(
     dtype_and_x,
@@ -843,9 +855,15 @@ def test_torch_special_radd(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(),
+    alpha=st.floats(
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
 )
 def test_torch_special_sub(
     dtype_and_x,
@@ -882,6 +900,8 @@ def test_torch_special_sub(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
 )
@@ -918,6 +938,8 @@ def test_torch_special_mul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
 )
@@ -955,6 +977,8 @@ def test_torch_special_rmul(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
     rounding_mode=st.sampled_from([None, "trunc", "floor"]),
