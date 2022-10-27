@@ -132,12 +132,10 @@ def max_pool1d(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    pad_w = ivy.handle_padding(x_shape,
-                               strides[0],
-                               kernel[0],
-                               padding)
-    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2],
-                                value=float("-inf"))
+    pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
+    x = torch.nn.functional.pad(
+        x, [pad_w // 2, pad_w - pad_w // 2], value=float("-inf")
+    )
 
     res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
 
@@ -183,5 +181,5 @@ def hamming_window(
         dtype=dtype,
         layout=torch.strided,
         device=None,
-        requires_grad=False
+        requires_grad=False,
     )
