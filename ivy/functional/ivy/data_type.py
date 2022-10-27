@@ -1121,11 +1121,17 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
+            get_scalar = lambda x: ivy.to_scalar(x) if ivy.is_array(x) else x
             if ivy.nested_argwhere(
-                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+                input,
+                lambda x: get_scalar(x) > 9223372036854775807
+                and get_scalar(x) != ivy.inf,
             ):
                 ret = ivy.uint64
-            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
+            elif ivy.nested_argwhere(
+                input,
+                lambda x: get_scalar(x) > 2147483647 and get_scalar(x) != ivy.inf,
+            ):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1525,7 +1531,11 @@ def is_int_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
+                lambda x: (
+                    isinstance(x, (int, np.integer))
+                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                )
+                and not type(x) == bool,
             )
             else False
         )
@@ -1590,7 +1600,9 @@ def is_float_dtype(
         return (
             True
             if ivy.nested_argwhere(
-                dtype_in, lambda x: isinstance(x, (float, np.floating))
+                dtype_in,
+                lambda x: isinstance(x, (float, np.floating))
+                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )

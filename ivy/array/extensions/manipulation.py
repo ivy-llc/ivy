@@ -169,3 +169,58 @@ class ArrayWithManipulationExtensions(abc.ABC):
 
         """
         return ivy.hstack(self.concat(arrays), out=out)
+
+    def rot90(
+        self: ivy.Array,
+        /,
+        *,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.rot90.
+        This method simply wraps the function, and so the docstring
+        for ivy.rot90 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array of two or more dimensions.
+        k
+            Number of times the array is rotated by 90 degrees.
+        axes
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
+        out
+            Optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Array with a rotated view of input array.
+
+        Examples
+        --------
+        >>> m = ivy.array([[1,2], [3,4]])
+        >>> m.rot90()
+        ivy.array([[2, 4],
+               [1, 3]])
+        >>> m = ivy.array([[1,2], [3,4]])
+        >>> m.rot90(k=2)
+        ivy.array([[4, 3],
+               [2, 1]])
+        >>> m = ivy.array([[[0, 1],\
+                            [2, 3]],\
+                           [[4, 5],\
+                            [6, 7]]])
+        >>> m.rot90(k=2, axes=(1,2))
+        ivy.array([[[3, 2],
+                [1, 0]],
+
+               [[7, 6],
+                [5, 4]]])
+
+        """
+        return ivy.rot90(self._data, k=k, axes=axes, out=out)

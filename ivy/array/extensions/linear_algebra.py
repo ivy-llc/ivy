@@ -21,7 +21,6 @@ class ArrayWithLinalgExtensions(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1,2])
         >>> x.diagflat(k=1)
         ivy.array([[0, 1, 0],

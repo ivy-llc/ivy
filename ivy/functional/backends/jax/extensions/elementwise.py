@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -41,3 +41,22 @@ def trapz(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
+
+
+def float_power(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.float_power(x1, x2)
+
+
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.exp2(x)
