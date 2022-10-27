@@ -352,4 +352,3 @@ def test_mish(
         atol_=1e-02,
         x=x[0],
     )
-    
