@@ -772,7 +772,6 @@ def test_torch_instance_log(
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch_special_add(
@@ -817,7 +816,6 @@ def test_torch_special_add(
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch_special_radd(
@@ -862,7 +860,6 @@ def test_torch_special_radd(
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch_special_sub(
