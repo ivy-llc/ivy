@@ -605,7 +605,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-=======
+
     @staticmethod
     def static_diag(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
