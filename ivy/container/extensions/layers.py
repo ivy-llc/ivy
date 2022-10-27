@@ -77,6 +77,10 @@ class ContainerWithLayersExtensions(ContainerBase):
     def flatten(
         self: ivy.Container,
         *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
         out: Optional[ivy.Container] = None,
@@ -111,7 +115,16 @@ class ContainerWithLayersExtensions(ContainerBase):
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
         """
-        return self.static_flatten(self, start_dim=start_dim, end_dim=end_dim, out=out)
+        return self.static_flatten(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            start_dim=start_dim,
+            end_dim=end_dim,
+            out=out,
+        )
 
     @staticmethod
     def static_hann_window(
@@ -175,6 +188,10 @@ class ContainerWithLayersExtensions(ContainerBase):
         periodic: Optional[bool] = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.hann_window. This method simply
@@ -209,7 +226,16 @@ class ContainerWithLayersExtensions(ContainerBase):
             b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
         }
         """
-        return self.static_hann_window(self, periodic, dtype, out=out)
+        return self.static_hann_window(
+            self,
+            periodic,
+            dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
+        )
 
     @staticmethod
     def static_max_pool2d(
@@ -707,7 +733,7 @@ class ContainerWithLayersExtensions(ContainerBase):
 
     @staticmethod
     def static_kaiser_bessel_derived_window(
-        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        window_length: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
         periodic: bool = True,
         beta: float = 12.0,
         *,
@@ -726,7 +752,7 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Parameters
         ----------
-        x
+        window_length
             input container including window lenghts.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
@@ -754,7 +780,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "kaiser_bessel_derived_window",
-            x,
+            window_length,
             periodic,
             beta,
             key_chains=key_chains,
@@ -811,7 +837,15 @@ class ContainerWithLayersExtensions(ContainerBase):
         }
         """
         return self.static_kaiser_bessel_derived_window(
-            self, periodic, beta, dtype=dtype, out=out
+            self,
+            periodic,
+            beta,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
         )
 
     @staticmethod
@@ -928,5 +962,14 @@ class ContainerWithLayersExtensions(ContainerBase):
         }
         """
         return self.static_hamming_window(
-            self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            periodic=periodic,
+            alpha=alpha,
+            beta=beta,
+            dtype=dtype,
+            out=out
         )

@@ -1,10 +1,10 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 
 
@@ -13,44 +13,49 @@ import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis
 
 
 # vorbis_window
-@handle_cmd_line_args
-@given(
+# TODO: Add container and array instance methods
+@handle_test(
+    fn_tree="functional.extensions.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False),
         min_num_dims=1,
         max_num_dims=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="vorbis_window"),
 )
 def test_vorbis_window(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="vorbis_window",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
         dtype=input_dtype,
     )
 
 
 # flatten
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.flatten",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(
@@ -70,18 +75,20 @@ def test_vorbis_window(
         unique=False,
         force_tuple=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="flatten"),
 )
 def test_flatten(
     dtype_and_x,
     axes,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     input_dtypes, x = dtype_and_x
     x = np.asarray(x[0], dtype=input_dtypes[0])
@@ -97,14 +104,16 @@ def test_flatten(
         start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=True,
         num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="flatten",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x,
         start_dim=start_dim,
         end_dim=end_dim,
@@ -112,12 +121,12 @@ def test_flatten(
 
 
 # hann_window
-@handle_cmd_line_args
-@given(
+# TODO: Add array instance methods
+@handle_test(
+    fn_tree="functional.extensions.hann_window",
     window_length=helpers.ints(min_value=1, max_value=10),
     input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="hann_window"),
     dtype=helpers.get_dtypes("float"),
 )
 def test_hann_window(
@@ -125,57 +134,66 @@ def test_hann_window(
     input_dtype,
     periodic,
     dtype,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="hann_window",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         window_length=window_length,
         periodic=periodic,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
         input_dtypes=dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="max_pool2d",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -186,33 +204,37 @@ def test_max_pool2d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="max_pool1d"),
 )
 def test_max_pool1d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
         input_dtypes=dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="max_pool1d",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -224,8 +246,9 @@ def test_max_pool1d(
 
 
 # kaiser_window
-@handle_cmd_line_args
-@given(
+# TODO: Add array instance methods
+@handle_test(
+    fn_tree="functional.extensions.kaiser_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=(1, 1),
@@ -235,36 +258,40 @@ def test_max_pool1d(
     periodic=st.booleans(),
     beta=st.floats(min_value=0, max_value=5),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(fn_name="kaiser_window"),
 )
 def test_kaiser_window(
     dtype_and_x,
     periodic,
     beta,
     dtype,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="kaiser_window",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         window_length=x[0],
         periodic=periodic,
         beta=beta,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -299,8 +326,8 @@ def _pad_helper(draw):
     return dtype, value, pad_width, stat_length, constant_values, end_values
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.pad",
     dtype_and_input_and_other=_pad_helper(),
     mode=st.sampled_from(
         [
@@ -317,20 +344,22 @@ def _pad_helper(draw):
         ]
     ),
     reflect_type=st.sampled_from(["even", "odd"]),
-    num_positional_args=helpers.num_positional_args(fn_name="pad"),
 )
 def test_pad(
     *,
     dtype_and_input_and_other,
     mode,
     reflect_type,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     (
         dtype,
@@ -342,14 +371,16 @@ def test_pad(
     ) = dtype_and_input_and_other
     helpers.test_function(
         input_dtypes=dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="pad",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         ground_truth_backend="numpy",
         input=value[0],
         pad_width=pad_width,
@@ -363,8 +394,9 @@ def test_pad(
 
 
 # kaiser_bessel_derived_window
-@handle_cmd_line_args
-@given(
+# TODO: Add array instance methods
+@handle_test(
+    fn_tree="functional.extensions.kaiser_bessel_derived_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=(1, 1),
@@ -374,53 +406,53 @@ def test_pad(
     periodic=st.booleans(),
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="kaiser_bessel_derived_window"
-    ),
 )
 def test_kaiser_bessel_derived_window(
     dtype_and_x,
     periodic,
     beta,
     dtype,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="kaiser_bessel_derived_window",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         window_length=x[0],
         periodic=periodic,
         beta=beta,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
 # hamming_window
-@handle_cmd_line_args
-@given(
+# TODO: Add array instance methods
+@handle_test(
+    fn_tree="functional.extensions.hamming_window",
     window_length=helpers.ints(min_value=1, max_value=10),
     input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
     alpha=st.floats(min_value=1, max_value=5),
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="hamming_window"
-    ),
 )
 def test_hamming_window(
     window_length,
@@ -429,27 +461,32 @@ def test_hamming_window(
     alpha,
     beta,
     dtype,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="hamming_window",
+        on_device=on_device,
+        test_gradients=test_gradients,
+        fw=backend_fw,
+        fn_name=fn_name,
         window_length=window_length,
         periodic=periodic,
         alpha=alpha,
         beta=beta,
-        dtype=dtype,
+        dtype=dtype[0],
     )
