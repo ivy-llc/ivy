@@ -291,3 +291,9 @@ def moveaxis(a, source, destination):
 @to_ivy_arrays_and_back
 def flipud(m):
     return ivy.flipud(m, out=None)
+
+
+@to_ivy_arrays_and_back
+def power(x1, x2):
+    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    return ivy.pow(x1, x2)
