@@ -1,9 +1,9 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 import ivy
 import numpy as np
 
@@ -13,10 +13,10 @@ import numpy as np
 
 
 # dirichlet
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.dirichlet",
     dtype_and_alpha=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),
@@ -27,35 +27,36 @@ import numpy as np
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
-    num_positional_args=helpers.num_positional_args(fn_name="dirichlet"),
+    seed=st.integers(min_value=0, max_value=100),
 )
 def test_dirichlet(
     dtype_and_alpha,
     size,
     seed,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, alpha = dtype_and_alpha
 
     def call():
         return helpers.test_function(
             input_dtypes=dtype,
+            num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
             with_out=with_out,
-            num_positional_args=num_positional_args,
             native_array_flags=native_array,
-            container_flags=container,
+            container_flags=container_flags,
             instance_method=instance_method,
-            test_values=False,
-            fw=fw,
-            fn_name="dirichlet",
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
             alpha=np.asarray(alpha[0], dtype=dtype[0]),
             size=size,
             seed=seed,

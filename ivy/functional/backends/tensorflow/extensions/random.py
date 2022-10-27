@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 # dirichlet
-@with_unsupported_dtypes({"2.9.1 and below": ("blfoat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float16")}, backend_version)
 def dirichlet(
     alpha: Union[tf.Tensor, tf.Variable, float, Sequence[float]],
     /,

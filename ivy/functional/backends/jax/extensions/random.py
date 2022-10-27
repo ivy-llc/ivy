@@ -3,6 +3,8 @@ from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 # Extra #
 # ------#
@@ -27,6 +29,7 @@ def _getRNG():
 
 
 # dirichlet
+@with_supported_dtypes({"0.3.14 and below": ("float32", "float64")}, backend_version)
 def dirichlet(
     alpha: Union[JaxArray, float, Sequence[float]],
     /,
