@@ -167,12 +167,109 @@ All non-operator special methods are implemented in `ContainerBase`_,
 which is the abstract base class for all containers.
 These special methods include
 `__repr__`_ which controls how the container is printed in the terminal,
-`__getattr__`_ that enables keys in the underlying :code:`dict` to be queried as attributes,
+`__getattr__`_ that primarily enables keys in the underlying :code:`dict` to be queried as attributes,
+whereas if no attribute, item or method is found which matches the name provided on the container
+itself, then the leaves will also be recursively traversed, searching for the attribute. If it turns out
+to be a callable function on the leaves, then it will call the function on each leaf and update the
+leaves with the returned results, for more detailed explanation with examples, see code block below.
 `__setattr__`_ that enables attribute setting to update the underlying :code:`dict`,
 `__getitem__`_ that enables the underlying :code:`dict` to be queried via a chain of keys,
 `__setitem__`_ that enables the underlying :code:`dict` to be set via a chain of keys,
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
+
+.. code-block:: python
+
+    x = ivy.Container(a=ivy.array([0.]), b=ivy.Container(a=ivy.array([[0.]]), b=ivy.array([1., 2., 3.])))
+    print(x.shape)
+    {
+        a: [
+            1
+        ],
+        b: {
+            a: [
+                1,
+                1
+            ],
+            b: [
+                3
+            ]
+        }
+    }
+
+    print(x.ndim)
+    {
+        a: 1,
+        b: {
+            a: 2,
+            b: 1
+        }
+    }
+
+
+    num_dims = x.shape.__len__()
+    print(num_dims)
+    {
+        a: 1,
+        b: {
+            a: 2,
+            b: 1
+        }
+    }
+
+    print(len(x.shape))
+    # doesn't work because Python in low-level C has restriction on return type of `len` to be `int`
+
+    print(num_dims.real)
+    {
+        a: 1,
+        b: {
+            a: 2,
+            b: 1
+        }
+    }
+
+    print(bin(num_dims))
+    # doesn't work because some Python built-in functions have enforce on input argument types
+
+    # external method flexibility enables positional and keyword arguments to be passed into the attribute
+    y = ivy.Container(l1=[1, 2, 3], c1=ivy.Container(l1=[3, 2, 1], l2=[4, 5, 6]))
+
+    print(y.__getattr__("count", 1))
+    {
+        c1: {
+            l1: 1,
+            l2: 0
+        },
+        l1: 1
+    }
+
+    print(y.count(1))
+    # doesn't work since essentially the argument 1 won't be passed to `__getattr__`
+
+    print(y.__getattr__("__add__", [10]))
+    {
+        c1: {
+            l1: [
+                3,
+                2,
+                1,
+                10
+            ],
+            l2: [
+                4,
+                5,
+                6,
+                10
+            ]
+        },
+        l1: [
+            1,
+            2,
+            3,
+            10
+        ]
+    }
 
 As for the special methods which are `implemented`_ in the main :class:`ivy.Container`
 class, they all make calls to the corresponding standard operator functions.

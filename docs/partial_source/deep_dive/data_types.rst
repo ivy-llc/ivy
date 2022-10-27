@@ -134,7 +134,7 @@ return new type promoted values, respectively.
 For an example of how some of these functions are used,
 the implementations for :func:`ivy.add` in each backend framework are as follows:
 
-# JAX
+JAX:
 
 .. code-block:: python
 
@@ -148,7 +148,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return jnp.add(x1, x2)
 
-# NumPy
+NumPy:
 
 .. code-block:: python
 
@@ -163,7 +163,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return np.add(x1, x2, out=out)
 
-# TensorFlow
+TensorFlow:
 
 .. code-block:: python
 
@@ -177,7 +177,7 @@ the implementations for :func:`ivy.add` in each backend framework are as follows
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         return tf.experimental.numpy.add(x1, x2)
 
-# PyTorch
+PyTorch:
 
 .. code-block:: python
 
@@ -203,6 +203,31 @@ data types should be promoted, and their own type promoting functions
 in :mod:`ivy/functional/frontends/frontend_name/__init__.py`.
 We should always use these functions in any frontend implementation,
 to ensure we follow exactly the same promotion rules as the frontend framework uses.
+
+It should be noted that data type promotion is only used for unifying data types of inputs
+to a common one for performing various mathematical operations.
+Examples shown above demonstrate the usage of the ``add`` operation.
+As different data types cannot be simply summed, they are promoted to the least common type,
+according to the presented promotion table.
+This ensures that functions always return specific and expected values,
+independently of the specified backend.
+
+However, data promotion is never used for increasing the accuracy or precision of computations.
+This is a required condition for all operations, even if the upcasting can help to avoid numerical instabilities caused by
+underflow or overflow.
+
+Assume that an algorithm is required to compute an inverse of a nearly singular matrix, that is defined in
+``float32`` data type. 
+It is likely that this operation can produce numerical instabilities and generate ``inf`` or ``nan`` values.
+Temporary upcasting the input matrix to ``float64`` for computing an inverse and then downcasting the matrix
+back to ``float32`` may help to produce a stable result.
+However, temporary upcasting and subsequent downcasting can not be performed as this is not expected by the user.
+Whenever the user defines data with a specific data type, they expect a certain memory footprint.
+
+The user expects specific behaviour and memory constraints whenever they specify and use concrete data types,
+and those decisions should be respected.
+Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
+
 
 Arguments in other Functions
 ----------------------------
@@ -362,13 +387,28 @@ The decorators take two arguments, a dictionary with the unsupported dtypes mapp
 version of the backend framework and the current version of the backend framework on the user's system. Based on that, 
 the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
 
+For Backend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.expm1(x, out=out)
+
+
+and for frontend functions we add the corresponding framework string as the second argument instead of the version.
+
+For Frontend Functions:
+
+.. code-block:: python
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def trace(input):
+        if "int" in input.dtype:
+            input = input.astype("int64")
+        target_type = "int64" if "int" in input.dtype else input.dtype
+        return ivy.astype(ivy.trace(input), target_type)
 
 
 For compositional functions, the supported and unsupported data types can then be
@@ -379,6 +419,10 @@ and
 respectively, which traverse the abstract syntax tree of the compositional function and
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
+
+In order to get the supported and unsupported devices and dtypes for a function, the corresponding documentation
+of that function for that specific framework can be referred. However, sometimes new unsupported dtypes are
+discovered while testing too. So it is suggested to explore it both ways.
 
 It should be noted that :attr:`unsupported_dtypes` is different from
 ``ivy.invalid_dtypes`` which consists of all the data types that every function
@@ -473,7 +517,7 @@ We also add the following comment above the :attr:`unsupported_dtypes` attribute
 
     # ToDo: re-add int32 support once
     # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, version)
+    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, backend_version)
 
 Similarly, the following code throws an error for torch version ``1.11.0``
 but not ``1.12.1``.
@@ -491,7 +535,7 @@ In such cases, we can explicitly flag which versions support which data types li
 .. code-block:: python
 
     @with_unsupported_dtypes(
-        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, version
+        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
     )
     def cumsum(
         x: torch.Tensor,

@@ -1749,7 +1749,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if dim_size is None:
-            dim_size = self.shape[axis]
+            dim_size = self.shared_shape[axis]
         if keepdims:
             # noinspection PyTypeChecker
             return [
@@ -3608,6 +3608,9 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
+            uniform_indent_wo_overflow_list = list(
+                filter(None, uniform_indent_wo_overflow.split("\\n"))
+            )
             uniform_indent = "\n".join(
                 [
                     local_indent_str + extra_indent + " " + s
@@ -3622,7 +3625,7 @@ class ContainerBase(dict, abc.ABC):
                         if (not s[0].isspace() and s[0] != '"')
                         else s
                     )
-                    for s in uniform_indent_wo_overflow.split("\\n")
+                    for s in uniform_indent_wo_overflow_list
                 ]
             )
             indented = uniform_indent
@@ -3798,12 +3801,26 @@ class ContainerBase(dict, abc.ABC):
         return list(super.__dir__(self)) + list(self.keys())
 
     # noinspection PyProtectedMember
-    def __getattr__(self, item):
+    def __getattr__(self, item, *args, **kwargs):
         try:
             ret = dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
-            ret = super.__getattr__(item)
+            ret = ivy.Container()
+            for k, v in self.items():
+                if isinstance(v, ivy.Container):
+                    result = v.__getattr__(item, *args, **kwargs)
+                else:
+                    # raise error
+                    if not hasattr(v, item):
+                        raise AttributeError(
+                            "'{}' object has no attribute '{}'".format(
+                                type(v).__module__, item
+                            )
+                        )
+                    attr = getattr(v, item)
+                    result = attr(*args, **kwargs) if callable(attr) else attr
+                ret.__setitem__(k, result)
         return ret
 
     def __setattr__(self, name, value):
@@ -3978,7 +3995,7 @@ class ContainerBase(dict, abc.ABC):
     # public
 
     @property
-    def shape(self):
+    def shared_shape(self):
         """The shape of the arrays in the container, with None placed in indices which
         are not consistent across arrays.
         """
