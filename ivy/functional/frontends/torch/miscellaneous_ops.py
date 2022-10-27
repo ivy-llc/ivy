@@ -259,3 +259,21 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def einsum(equation, *operands):
     return ivy.einsum(equation, *operands)
+
+
+@to_ivy_arrays_and_back
+def cross(input, other, dim=None, *, out=None):
+    if dim is None:
+        dim = -1
+    input, other = ivy.promote_types_of_inputs(input, other)
+    
+    if dim is not None:
+        return ivy.cross(
+            input,
+            other,
+            axisa=-1,
+            axisb=-1,
+            axisc=-1,
+            axis=dim,
+            out=out
+        )
