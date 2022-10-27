@@ -1,7 +1,7 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -227,8 +227,8 @@ def test_softmax(
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
-    beta=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()),
-    threshold=st.one_of(helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()),
+    beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
+    threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
 )
 def test_softplus(
     *,
@@ -243,6 +243,8 @@ def test_softplus(
     native_array,
     fw,
 ):
+    assume(beta != 0)
+    assume(threshold != 0)
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,

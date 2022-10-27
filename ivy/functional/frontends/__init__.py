@@ -1,16 +1,17 @@
-# flake8: noqa
-from . import numpy
-from . import jax
-from . import torch
-from . import tensorflow
-import importlib
-
-latest_version = {
-    "torch": "1.12",
+versions = {
+    "torch": "1.11.0",
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",
 }
+
+# flake8: noqa
+import importlib
+
+from . import jax
+from . import numpy
+from . import tensorflow
+from . import torch
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -78,8 +79,8 @@ def set_frontend_to_specific_version(frontend):
     try:
         f = importlib.import_module(f)
         f_version = f.__version__
-    except Exception:
-        f_version = latest_version[f]
+    except ImportError:
+        f_version = versions[f]
 
     for i in list(frontend.__dict__):
         if "_v_" in i:
