@@ -1444,35 +1444,3 @@ def zero_pad(
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def fill_diagonal(
-    x: Union[ivy.Array, ivy.NativeArray],
-    value: Union[Number, ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    wrap: Optional[bool] = False,
-) -> ivy.Array:
-    """Replaces values along the diagonal of array and returns new array.
-
-    Parameters
-    ----------
-    x
-        Input array to receive values along diagonal.
-    value
-        Value(s) to be applied along diagonal. If scalar, value is repeated
-    wrap
-        Boolean indicating whether values wrap around tall matrices.
-        Default is ``False``.
-
-    Returns
-    -------
-    ret
-        Input array with diagonal elements replaced by input values.
-
-    """
-    return current_backend(x).fill_diagonal(x, value, wrap=wrap)

@@ -6,6 +6,8 @@ from typing import (
     Sequence,
     Generator,
 )
+from numbers import Number
+
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -386,7 +388,7 @@ def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
 @handle_out_argument
 @handle_nestable
 def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
-    """Stack arrays in sequence horizotally (column wise).
+    """Stack arrays in sequence horizontally (column wise).
 
     Parameters
     ----------
@@ -414,3 +416,89 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
 
     """
     return ivy.current_backend(arrays[0]).hstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+def fill_diagonal(
+    x: Union[ivy.Array, ivy.NativeArray],
+    value: Union[Number, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    wrap: Optional[bool] = False,
+) -> ivy.Array:
+    """Replaces values along the diagonal of input array and returns new
+    array. For arrays of greater than 2 dimensions, array must have same size
+    in all dimensions.
+
+    Parameters
+    ----------
+    x
+        Input array to receive values along diagonal.
+    value
+        Value(s) to be applied along diagonal. If scalar or array-like but of
+        shorter length than required to fill all elements, value is repeated.
+        If array-like and has more than 1 dimension, value is flattened
+        before use.
+    wrap
+        Boolean indicating whether values wrap around tall matrices.
+        Default is ``False``. Wrapping does not occur for matrices of greater
+        than 2 dimensions.
+
+    Returns
+    -------
+    ret
+        Input array with diagonal elements replaced by input values.
+
+    Examples
+    --------
+    >>> x = ivy.array([[0, 0],
+                       [0, 0]])
+    >>> value = 1
+    >>> ivy.fill_diagonal(x, value, wrap=False)
+    ivy.array([[1, 0],
+               [0, 1]])
+
+    >>> x = ivy.array([[[0, 0, 0],
+                        [0, 0, 0],
+                        [0, 0, 0]],
+
+                       [[0, 0, 0],
+                        [0, 0, 0],
+                        [0, 0, 0]],
+
+                       [[0, 0, 0],
+                        [0, 0, 0],
+                        [0, 0, 0]]])
+    >>> value = [1, 2]
+    >>> ivy.fill_diagonal(x, value, wrap=False)
+    x = ivy.array([[[1, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 0]],
+
+                   [[0, 0, 0],
+                    [0, 2, 0],
+                    [0, 0, 0]],
+
+                   [[0, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 1]]])
+
+    >>> x = ivy.array([[0, 0, 0],
+                       [0, 0, 0],
+                       [0, 0, 0],
+                       [0, 0, 0],
+                       [0, 0, 0],
+                       [0, 0, 0]]
+    >>> value = [1, 2, 3, 4]
+    >>> ivy.fill_diagonal(x, value, wrap=True)
+    x = ivy.array([[1, 0, 0],
+                   [0, 2, 0],
+                   [0, 0, 3],
+                   [0, 0, 0],
+                   [4, 0, 0],
+                   [0, 1, 0]])
+
+    """
+    return current_backend(x).fill_diagonal(x, value, wrap=wrap)

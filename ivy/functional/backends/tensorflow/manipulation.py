@@ -336,14 +336,25 @@ def fill_diagonal(
     *,
     wrap: Optional[bool] = False,
 ) -> tf.Tensor:
-    ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False, message="array must be at least 2-d")
+    ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False,\
+    message="array must be at least 2-d")
+    value = tf.reshape(tf.convert_to_tensor(value, dtype=tf.float32), [-1])
+    while x.shape[0] > value.shape[0]:
+        value = tf.concat((value, value), 0)
+    indices = []
     if len(x.shape) > 2:
-        ivy.assertions.check_all_dims_equal_length(x, message="if input array has more than 2 dimensions, ")
-
-    if not isinstance(value, Sequence):
-        if not wrap:
-            value = tf.ones(min(x.shape)) * value
+        ivy.assertions.check_all_dims_equal_length(x,\
+        message="if input array has more than 2 dimensions, ")
+        for dim in range(x.shape[0]):
+            indices.append([dim for _ in range(len(x.shape))])
+    else:
+        if wrap:
+            for dim in range(x.shape[0]):
+                if dim % (x.shape[1] + 1) == x.shape[1]:
+                    continue
+                indices.append([dim, dim % (x.shape[1] + 1)])
         else:
-            value = tf.ones(x.shape[0]) * value
-
-    return tf.linalg.set_diag(x, value)
+            for dim in range(min(x.shape)):
+                indices.append([dim, dim])
+    value = value[:len(indices)]
+    return tf.tensor_scatter_nd_update(x, indices, value)
