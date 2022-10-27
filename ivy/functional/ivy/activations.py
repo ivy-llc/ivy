@@ -456,15 +456,12 @@ def log_softmax(
 @handle_nestable
 @handle_exceptions
 def mish(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    inplace: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, inplace: bool = False
 ) -> ivy.Array:
     """
     Applies the Mish function, element-wise.
-    Mish: A Self Regularized Non-Monotonic 
-    Neural Activation Function - 
+    Mish: A Self Regularized Non-Monotonic
+    Neural Activation Function -
     https://arxiv.org/abs/1908.08681.
     Parameters
     ----------
@@ -477,6 +474,7 @@ def mish(
 
     Examples
     --------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1.0, -0.98])
@@ -499,7 +497,7 @@ def mish(
     }
 
     With :class:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([1.0, 2.0, 3.0])
     >>> y = ivy.mish(x)
     >>> print(y)
