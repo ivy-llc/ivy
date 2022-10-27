@@ -222,12 +222,9 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     """
-    return ivy.current_backend(x).max_pool1d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).max_pool1d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -786,9 +783,9 @@ def hamming_window(
          If True, returns a window to be used as periodic function.
          If False, return a symmetric window.
     alpha
-        The coefficient alpha in the hamming window equation 
+        The coefficient alpha in the hamming window equation
     beta
-        The coefficient beta in the hamming window equation 
+        The coefficient beta in the hamming window equation
     dtype
         data type of the returned array.
     out
@@ -816,15 +813,19 @@ def hamming_window(
         if periodic is True:
             window_length = window_length + 1
             return ivy.array(
-                [alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)][:-1],
+                [
+                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
+                    for n in range(0, window_length)
+                ][:-1],
                 dtype=dtype,
-                out=out
+                out=out,
             )
         else:
             return ivy.array(
-                [alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)],
+                [
+                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
+                    for n in range(0, window_length)
+                ],
                 dtype=dtype,
-                out=out
+                out=out,
             )

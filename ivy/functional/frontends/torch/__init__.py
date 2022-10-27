@@ -1,5 +1,5 @@
 # flake8: noqa
-from .. import versions
+
 from . import nn
 from . import Tensor
 from .Tensor import tensor
