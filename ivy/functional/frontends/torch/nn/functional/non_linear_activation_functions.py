@@ -260,3 +260,19 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
     return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions["torch"])
+def batch_norm(
+    input,
+    running_mean,
+    running_var,
+    weight=None,
+    bias=None,
+    training=False,
+    momentum=0.1,
+    eps=1e-5,
+):
+    return ivy.batch_norm(
+        input, weight, bias, running_mean, running_var, training, momentum, eps
+    )

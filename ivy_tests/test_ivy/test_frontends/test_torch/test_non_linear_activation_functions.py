@@ -1178,3 +1178,37 @@ def test_torch_layer_norm(
         bias=bias[0],
         eps=1e-12,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axis=_generate_data_layer_norm(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.batch_norm"
+    ),
+)
+def test_torch_batch_norm(
+    dtype_x_and_axis,
+    num_positional_args,
+    as_variable,
+    native_array,
+):
+    dtype, x, axis, weight, bias, new_std = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.batch_norm",
+        rtol=1e-1,
+        atol=1e-1,
+        input=x[0],
+        normalized_shape=axis,
+        weight=weight[0],
+        bias=bias[0],
+        eps=1e-5,
+    )
