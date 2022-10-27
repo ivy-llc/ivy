@@ -812,18 +812,13 @@ def test_numpy_instance_squeeze(
         method_name="squeeze",
     )
 
+
 def test_numpy_instance_sum(
-        dtype_x_axis=helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_axis=-1,
-            max_axis=0,
-            min_num_dims=1,
-            force_int_axis=True,
-        ),
+        dtype_x_axis,
         as_variable,
         num_positional_args_method,
-        native_array,
-    ):
+        native_array
+):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
