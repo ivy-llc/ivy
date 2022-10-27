@@ -30,7 +30,6 @@ class ndarray:
             out=out,
             keepdims=keepdims,
         )
-
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
@@ -122,7 +121,9 @@ class ndarray:
 
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
-
+    #Add astype instance method
+    def astype(self,dtype,order="K",casting="unsafe",subok=True,copy=True):
+        return np_frontend.astype(self.data,dtype=dtype,order=order,casting=casting,subok=subok,copy=copy)
     def __add__(self, value, /):
         return np_frontend.add(self.data, value)
 
