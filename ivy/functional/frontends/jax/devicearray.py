@@ -7,7 +7,7 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
