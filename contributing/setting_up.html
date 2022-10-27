@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#more-detailed-hypothesis-logs">More Detailed Hypothesis Logs</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-for-free">Setting up for Free</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#github-codespaces">GitHub Codespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
 </ul>
@@ -186,6 +187,12 @@ you should make sure to check whether you are eligible for a
 <a class="reference external" href="https://www.jetbrains.com/community/education/#students">free student licence</a>.
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!</p>
+<p><strong>Important Points</strong></p>
+<ol class="arabic simple">
+<li><p>Once you don’t have a student account, the student license will expire and you won’t be able to access PyCharm Professional.</p></li>
+<li><p>To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.</p></li>
+<li><p>After the trial expires you have to buy the paid version of PyCharm Professional.</p></li>
+</ol>
 <p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>!</p>
 </section>
 <section id="virtual-environments-no-docker">
@@ -475,9 +482,30 @@ This is because PyCharm by default turns off headers and summary’s while runni
 </ol>
 <p>Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:</p>
 <a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" style="width: 420px;" /></a>
-<p>For questions, please reach out on the <a href="#id6"><span class="problematic" id="id7">`setting up discussion`_</span></a>
+<p>For questions, please reach out on the <a href="#id7"><span class="problematic" id="id8">`setting up discussion`_</span></a>
 or on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
 </section>
+</section>
+<section id="setting-up-for-free">
+<h2>Setting up for Free<a class="headerlink" href="#setting-up-for-free" title="Permalink to this heading"></a></h2>
+<p>Visual Studio Code is a recommended free alternative to setting up, especially if you’re not eligible for a student license with PyCharm Professional. The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension. You’ll hopefully be done with this in no time.
+The steps to be followed are listed below:</p>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
+<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">Visual Studio Code here</a></p></li>
+<li><p>Open Docker desktop, make sure it’s running while following the process below. You can close the Docker desktop window afterwards, Docker will continue to run in the background.</p></li>
+<li><p>Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:</p>
+<ol class="loweralpha simple">
+<li><p>At the bottom right a window will pop up asking for “Dev Containers” extension, install that. In case the window doesn’t pop up, search for the “Dev Containers” extension in the Visual Studio Code and install that.</p></li>
+<li><p>Install the “Docker” extension for Visual Studio Code, you’ll easily find that searching “docker” in the extensions tab.</p></li>
+<li><p>Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to ” &gt;&lt; ” overlapped on each other.</p></li>
+<li><p>Clicking on that will open a bar at the top which will give you an option “Open Folder in Container…”, click on that.</p></li>
+<li><p>You’ll be inside the container now, where you can locally run the tests that you’ve modified by running the command, “pytest test_file_path::test_fn_name”</p></li>
+</ol>
+</li>
+</ol>
+<p><strong>Important Note</strong></p>
+<p>For windows users, the file path should be entered with “/” (forward-slashes), for other OS it would be the regular “\” (back-slashes).</p>
 </section>
 <section id="github-codespaces">
 <h2>GitHub Codespaces<a class="headerlink" href="#github-codespaces" title="Permalink to this heading"></a></h2>
