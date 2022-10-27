@@ -46,7 +46,22 @@ def execute_with_gradients(
         y = ret_values[0]
     else:
         y = ret_values
-    grad_func = lambda y: tape.gradient(y, ivy.to_native(xs))
+
+    def grad_func(y):
+        grads_ = ivy.nested_map(
+            xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
+        )
+        grads = tape.gradient(y, ivy.to_native(xs))
+        if isinstance(grads, ivy.Container):
+            grads = grads.from_flat_list(
+                ivy.nested_multi_map(
+                    lambda x, y: x[0] if x[1] is None else x[1], [grads_, grads]
+                )
+            )
+        else:
+            grads = grads_ if grads is None else grads
+        return grads
+
     if isinstance(y, ivy.NativeArray):
         grads = ivy.to_ivy(grad_func(y))
     else:
