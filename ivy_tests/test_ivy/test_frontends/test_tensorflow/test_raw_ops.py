@@ -2243,15 +2243,11 @@ def test_tensorflow_Unpack(
         ]
     ),
     on_off_dtype=helpers.onehot_values_on_off_dtype(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.OneHot"
-    ),
 )
 def test_tensorflow_OneHot(
     dtype_indices_depth_axis,
     on_off_dtype,
     as_variable,
-    num_positional_args,
     native_array,
 ):
     input_dtype, indices, depth, axis = dtype_indices_depth_axis
@@ -2261,7 +2257,7 @@ def test_tensorflow_OneHot(
         input_dtypes=input_dtype + [dtype],
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=0,
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.OneHot",
