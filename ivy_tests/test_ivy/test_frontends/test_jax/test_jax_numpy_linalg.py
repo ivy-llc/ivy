@@ -498,3 +498,4 @@ def test_jax_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_a
         rcond=rtol,
         a=x[0],
     )
+    
