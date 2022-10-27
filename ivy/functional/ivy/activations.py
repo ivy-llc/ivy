@@ -463,10 +463,14 @@ def mish(
     Mish: A Self Regularized Non-Monotonic
     Neural Activation Function -
     https://arxiv.org/abs/1908.08681.
+    
     Parameters
     ----------
-    Input Array.
+    x
+        Input Array.
     inplace
+        Set true to perform inplace operations on x.
+        
     Returns
     -------
     ret
@@ -474,7 +478,6 @@ def mish(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1.0, -0.98])
