@@ -57,6 +57,8 @@ Container methods
    container_methods/static_hstack.rst
    container_methods/static_rot90.rst
    container_methods/rot90.rst
+   container_methods/static_top_k.rst
+   container_methods/top_k.rst
    container_methods/static_dirichlet.rst
    container_methods/dirichlet.rst
    container_methods/static_msort.rst
