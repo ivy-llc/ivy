@@ -384,7 +384,7 @@ def nansum(
         in which it is returned.
     
     Examples
-    -------------------
+    --------
     >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
     >>> ivy.nansum(a)
     10.0
