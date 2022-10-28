@@ -1592,6 +1592,5 @@ def test_jax_lax_cumprod(
         a=x[0],
         axis=axis,
         dtype=input_dtype[0],
-        out=None
+        out=None,
     )
-
