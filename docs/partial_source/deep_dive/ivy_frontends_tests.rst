@@ -501,7 +501,7 @@ Code example for alias function:
     def greater(input, other, *, out=None):
         input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         return ivy.greater(input, other, out=out
-    
+
 
     gt = greater
 
