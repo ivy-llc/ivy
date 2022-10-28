@@ -278,12 +278,11 @@
 <span class="sd">    ----------</span>
 <span class="sd">    backend</span>
 <span class="sd">        the backend module for which we provide the version support</span>
+
 <span class="sd">    Returns</span>
-<span class="sd">        The function doesn&#39;t return anything and updates the backend __dict__</span>
-<span class="sd">        to make the original function name to point to the version specific one</span>
-
 <span class="sd">    -------</span>
-
+<span class="sd">        The function doesn&#39;t return anything and updates the backend __dict__</span>
+<span class="sd">        to make the original function name to point to the version specific one.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: add docstring, functionality and tests</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -332,7 +331,6 @@
 <span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.current_backend(x))</span>
 <span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">implicit_backend</span>
     <span class="c1"># if a global backend has been set with set_backend then this will be returned</span>
@@ -371,7 +369,6 @@
 <span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(native))</span>
 <span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_backend_dict</span><span class="p">,</span>
@@ -408,31 +405,25 @@
 
 
 <div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../backend_handler/set_numpy_backend.html#ivy.backend_handler.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../backend_handler/set_jax_backend.html#ivy.backend_handler.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../backend_handler/set_tensorflow_backend.html#ivy.backend_handler.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets TensorFlow to be the global backend. equivalent to</span>
-<span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`</span>
+<span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../backend_handler/set_torch_backend.html#ivy.backend_handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
 
 
@@ -466,7 +457,6 @@
 <span class="sd">    &gt;&gt;&gt; ivy_jax = ivy.get_backend()</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy_jax)</span>
 <span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy. Currently</span>
     <span class="c1">#  all backend-agnostic implementations returned in this module will still</span>
@@ -518,7 +508,6 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(x))</span>
 <span class="sd">    &lt;class&#39;tensorflow.python.framework.ops.EagerTensor&#39;&gt;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># if the backend stack is empty, nothing is done and we just return `None`</span>
