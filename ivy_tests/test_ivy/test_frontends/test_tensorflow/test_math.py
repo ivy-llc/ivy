@@ -1065,4 +1065,4 @@ def test_tensorflow_pow(
         x=x[0],
         y=x[1],
     )
-
+    
