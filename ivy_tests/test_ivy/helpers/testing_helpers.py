@@ -180,6 +180,8 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 # Decorators
 
+possible_fixtures = ["backend_fw", "on_device"]
+
 
 def handle_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy." + fn_tree
@@ -205,17 +207,26 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
                 if flag in param_names:
                     __given_kwargs[flag] = st.booleans()
 
-            def wrapped_test(device, backend_fw, *args, **kwargs):
+            def wrapped_test(*args, **kwargs):
                 __tracebackhide__ = True
                 wrapped_hypothesis_test = given(**__given_kwargs)(test_fn)
-                return wrapped_hypothesis_test(
-                    on_device=device,
-                    backend_fw=backend_fw,
-                    fn_name=fn_name,
-                    *args,
-                    **kwargs
-                )
+                if "fn_name" in param_names:  # TODO find a better way to do this
+                    return wrapped_hypothesis_test(fn_name=fn_name, *args, **kwargs)
+                else:
+                    return wrapped_hypothesis_test(*args, **kwargs)
 
+            params_objs = []
+            for param in possible_fixtures:
+                if param in param_names:
+                    params_objs.append(
+                        inspect.Parameter(
+                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
+                        )
+                    )
+
+            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
+                parameters=params_objs
+            )
         else:
             wrapped_test = test_fn
 
