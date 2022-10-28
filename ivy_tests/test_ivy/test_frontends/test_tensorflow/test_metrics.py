@@ -309,62 +309,85 @@ def _binary_focal_args(draw):
     shape = st.tuples(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
     common_float_dtype = helpers.get_dtypes("float", full=False)
 
-    from_logits = draw(helpers.dtype_and_values(
-        available_dtypes=draw(helpers.get_dtypes("bool")),
-        shape=(1,)
-    ))
+    from_logits = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("bool")), shape=(1,)
+        )
+    )
 
     if from_logits[0]:
-        min_value = -10.
-        max_value = 10.
+        min_value = -10.0
+        max_value = 10.0
     else:
-        min_value = 0.
-        max_value = 1.
+        min_value = 0.0
+        max_value = 1.0
 
-    dtype_y_true = draw(helpers.dtype_and_values(
-        available_dtypes=draw(helpers.get_dtypes("integer")),
-        min_value=0,
-        max_value=2,
-        exclude_max=True,
-        shape=draw(st.shared(shape, key="shape"))
-    ))
-    dtype_y_pred = draw(helpers.dtype_and_values(
-        dtype=draw(st.shared(common_float_dtype, key='float_dtype')),
-        min_value=min_value,
-        max_value=max_value,
-        shape=draw(st.shared(shape, key="shape"))
-    ))
-    dtype_label_smoothing = draw(helpers.dtype_and_values(
-        dtype=draw(st.shared(common_float_dtype, key='float_dtype')),
-        min_value=0.,
-        max_value=1.,
-        exclude_min=False,
-        exclude_max=False,
-        shape=(1,)
-    ))
-    dtype_gamma = draw(helpers.dtype_and_values(
-        dtype=draw(st.shared(common_float_dtype, key='float_dtype')),
-        min_value=0.,
-        max_value=10.,
-        shape=(1,)
-    ))
+    dtype_y_true = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("integer")),
+            min_value=0,
+            max_value=2,
+            exclude_max=True,
+            shape=draw(st.shared(shape, key="shape")),
+        )
+    )
+    dtype_y_pred = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=min_value,
+            max_value=max_value,
+            shape=draw(st.shared(shape, key="shape")),
+        )
+    )
+    dtype_label_smoothing = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=0.0,
+            max_value=1.0,
+            exclude_min=False,
+            exclude_max=False,
+            shape=(1,),
+        )
+    )
+    dtype_gamma = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=0.0,
+            max_value=10.0,
+            shape=(1,),
+        )
+    )
     # attr = Tidx:type, default = DT_INT32, allowed = [DT_INT32, DT_INT64] > [Op:Mean]
-    dtype_axis = draw(helpers.dtype_and_values(
-        available_dtypes=[ivy.int32, ivy.int64],
-        min_value=-len(draw(st.shared(shape, key="shape"))),
-        max_value=len(draw(st.shared(shape, key="shape"))),
-        shape=(1,)
-    ))
+    dtype_axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=[ivy.int32, ivy.int64],
+            min_value=-len(draw(st.shared(shape, key="shape"))),
+            max_value=len(draw(st.shared(shape, key="shape"))),
+            shape=(1,),
+        )
+    )
     dtype_true, y_true = dtype_y_true
     dtype_pred, y_pred = dtype_y_pred
     dtype_gamma, gamma = dtype_gamma
     dtype_from_logits, from_logits = from_logits
     dtype_label_smoothing, label_smoothing = dtype_label_smoothing
     dtype_axis, axis = dtype_axis
-    dtypes = [dtype_true[0], dtype_pred[0], dtype_gamma[0],
-              dtype_from_logits[0], dtype_label_smoothing[0], dtype_axis[0]]
-    values = [y_true[0], y_pred[0], gamma[0],
-              from_logits[0], label_smoothing[0], axis[0]]
+    dtypes = [
+        dtype_true[0],
+        dtype_pred[0],
+        dtype_gamma[0],
+        dtype_from_logits[0],
+        dtype_label_smoothing[0],
+        dtype_axis[0],
+    ]
+    values = [
+        y_true[0],
+        y_pred[0],
+        gamma[0],
+        from_logits[0],
+        label_smoothing[0],
+        axis[0],
+    ]
     return dtypes, values
 
 
@@ -374,14 +397,12 @@ def _binary_focal_args(draw):
     binary_focal_args=_binary_focal_args(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow."
-                "keras.metrics.binary_focal_crossentropy"
-    )
+        "keras.metrics.binary_focal_crossentropy"
+    ),
 )
 def test_binary_focal_crossentropy(
-        binary_focal_args,
-        as_variable,
-        num_positional_args,
-        native_array):
+    binary_focal_args, as_variable, num_positional_args, native_array
+):
     dtypes, values = binary_focal_args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -396,7 +417,7 @@ def test_binary_focal_crossentropy(
         gamma=values[2],
         from_logits=values[3],
         label_smoothing=values[4],
-        axis=values[5]
+        axis=values[5],
     )
 
 

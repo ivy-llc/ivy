@@ -66,26 +66,40 @@ def execute_with_gradients(
         y = ret_values
 
     def grad_func(y):
-        if isinstance(xs, ivy.Container):
-            grads = xs.from_flat_list(
-                list(
-                    torch.autograd.grad(
-                        [y],
-                        [v for k, v in xs.to_iterator()],
-                        retain_graph=True,
-                        create_graph=retain_grads,
-                        allow_unused=True,
+        grads_ = ivy.nested_map(
+            xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
+        )
+        try:
+            if isinstance(xs, ivy.Container):
+                grads = xs.from_flat_list(
+                    list(
+                        torch.autograd.grad(
+                            [y],
+                            [v for k, v in xs.to_iterator()],
+                            retain_graph=True,
+                            create_graph=retain_grads,
+                            allow_unused=True,
+                        )
                     )
                 )
-            )
-        else:
-            grads = torch.autograd.grad(
-                y,
-                xs,
-                retain_graph=True,
-                create_graph=retain_grads,
-                allow_unused=True,
-            )[0]
+                if isinstance(grads, ivy.Container):
+                    grads = ivy.nested_map(
+                        grads, lambda x: 0 if x is None else x, include_derived=True
+                    )
+                    grads += grads_
+                else:
+                    grads = grads_ if grads is None else grads
+            else:
+                grads = torch.autograd.grad(
+                    y,
+                    xs,
+                    retain_graph=True,
+                    create_graph=retain_grads,
+                    allow_unused=True,
+                )[0]
+                grads = grads_ if grads is None else grads
+        except RuntimeError:
+            grads = grads_
         return grads
 
     if isinstance(y, ivy.NativeArray):

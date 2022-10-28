@@ -41,6 +41,10 @@ class Tensor:
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
 
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
@@ -130,7 +134,7 @@ class Tensor:
         return torch_frontend.add(self, other, alpha=alpha)
 
     def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(other, self, alpha=alpha)
+        return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
         return torch_frontend.mul(self, other)

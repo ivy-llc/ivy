@@ -113,30 +113,30 @@ def fn_name_from_version_specific_fn_name(name, version):
     # TODO: add docstring and tests
     version = str(version)
     if version.find("+") != -1:
-        version = int(version[: version.index("+")].replace(".", ""))
+        version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
-        version = int(version.replace(".", ""))
+        version = tuple(map(int, version.split(".")))
     if "_to_" in name:
         i = name.index("_v_")
         e = name.index("_to_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         version_end = name[e + 4 :]
-        version_end = int(version_end.replace("p", ""))
-        if version in range(version_start, version_end + 1):
+        version_end = tuple(map(int, version_end.split("p")))
+        if version_start <= version <= version_end:
             return name[0:i]
     elif "_and_above" in name:
         i = name.index("_v_")
         e = name.index("_and_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         if version >= version_start:
             return name[0:i]
     else:
         i = name.index("_v_")
         e = name.index("_and_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         if version <= version_start:
             return name[0:i]
 
@@ -275,6 +275,35 @@ def set_backend(backend: str):
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
+
+
+def set_numpy_backend():
+    """
+    Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`
+    """
+    set_backend("numpy")
+
+
+def set_jax_backend():
+    """
+    Sets JAX to be the global backend. equivalent to `ivy.set_backend("jax")`
+    """
+    set_backend("jax")
+
+
+def set_tensorflow_backend():
+    """
+    Sets TensorFlow to be the global backend. equivalent to
+    `ivy.set_backend("tensorflow")`
+    """
+    set_backend("tensorflow")
+
+
+def set_torch_backend():
+    """
+    Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`
+    """
+    set_backend("torch")
 
 
 def get_backend(backend: Optional[str] = None):
