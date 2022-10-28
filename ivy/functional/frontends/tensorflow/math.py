@@ -351,5 +351,5 @@ def truediv(x, y, name="truediv"):
 
 
 @to_ivy_arrays_and_back
-def lbeta(a, b, name="lbeta"):
-    return ivy.log(ivy.beta(a, b))
+def lbeta(x, name="lbeta"):
+    return ivy.log(ivy.beta(0, 1, shape=x.shape))
