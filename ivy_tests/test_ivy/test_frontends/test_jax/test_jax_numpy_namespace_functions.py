@@ -1555,5 +1555,5 @@ def test_jax_numpy_bincount(
         x=x[0],
         weights=None,
         minlength=0,
-        length=None
+        length=None,
     )
