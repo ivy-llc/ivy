@@ -1006,3 +1006,4 @@ def test_tensorflow_instance_pow(dtype_and_x, as_variable, native_array, fw):
         class_name="Tensor",
         method_name="__pow__",
     )
+
