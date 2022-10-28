@@ -1238,4 +1238,32 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the 1D Discrete Cosine Tranformation of a given signal
+
+    Parameters
+    ----------
+    x
+        The input signal.
+    type
+        The type of the dct. Must be 1, 2, 3 or 4.
+    n
+        The lenght of the transform. If n is less than the input signal lenght, 
+        then x is truncated, if n is larger then x is zero-padded.
+    norm
+        The type of normalization to be applied. Must be either None or "ortho".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array containing the transformed input.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    """
     return ivy.current_backend().dct(x, type=type, n=n, norm=norm, out=out)
