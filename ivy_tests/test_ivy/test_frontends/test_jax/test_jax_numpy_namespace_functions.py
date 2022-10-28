@@ -1507,56 +1507,45 @@ def test_jax_numpy_power(
     )
 
 
-######################################################################
 # arange
 @handle_cmd_line_args
-# @given(
-#     dtype_and_x=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("int"), 
-#         num_arrays=2, 
-#         shared_dtype=True
-#     ),
-#     num_positional_args=helpers.num_positional_args(
-#         fn_name="ivy.functional.frontends.jax.numpy.arange"
-#     ),
-# )
 @given(
-    bounds=helpers.get_bounds(
-        dtype=helpers.get_dtypes("numeric")
-    ),
-    step=helpers.floats(
-        min_value=0,
-        exclude_min=True,
-    ),
-    dtypes=helpers.get_dtypes(
+    start=helpers.floats(min_value=0,max_value=10,exclude_max=True),
+    stop=helpers.floats(min_value=10,max_value=100),
+    step=helpers.floats(min_value=0,max_value=1,exclude_min=True),
+    dtype=helpers.get_dtypes(
         "numeric",
+        none=True, 
         full=False,
-        none=True,
     ),
+    # dtype_and_x=helpers.dtype_and_values(
+    #     available_dtypes=helpers.get_dtypes("numeric"), num_arrays=3, shared_dtype=True
+    # ), 
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.arange"
     ),
 )
 def test_jax_numpy_arange(
-    bounds,
+    start,
+    stop,
     step,
-    dtypes,
+    dtype,
+    # dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
 ):
+    # input_dtype, x = dtype_and_x
+    # start, stop, step = x
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="numpy.arange",
-        start=bounds[0],
-        stop=bounds[1],
+        start=start,
+        stop=stop,
         step=step,
-        dtype=dtypes[0],
     )
