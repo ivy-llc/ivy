@@ -17,6 +17,10 @@ Backend handler
    backend_handler/set_backend_to_specific_version.rst
    backend_handler/current_backend.rst
    backend_handler/set_backend.rst
+   backend_handler/set_numpy_backend.rst
+   backend_handler/set_jax_backend.rst
+   backend_handler/set_tensorflow_backend.rst
+   backend_handler/set_torch_backend.rst
    backend_handler/get_backend.rst
    backend_handler/unset_backend.rst
    backend_handler/clear_backend_stack.rst

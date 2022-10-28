@@ -20,4 +20,5 @@ Layers
    layers/kaiser_window.rst
    layers/pad.rst
    layers/kaiser_bessel_derived_window.rst
+   layers/hamming_window.rst
 
