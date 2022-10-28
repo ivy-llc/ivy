@@ -308,4 +308,3 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     ret = ivy.array(ret)
     ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
     return ret
-

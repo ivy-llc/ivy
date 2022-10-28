@@ -333,10 +333,10 @@ def exp2(
 
     Examples
     --------
-    >>> x = ivy.array([1, 2, 3]) 
+    >>> x = ivy.array([1, 2, 3])
     >>> ivy.exp2(x)
     ivy.array([2.,    4.,   8.])
-    >>> x = [5, 6, 7] 
+    >>> x = [5, 6, 7]
     >>> ivy.exp2(x)
     ivy.array([32.,   64.,  128.])
     """
