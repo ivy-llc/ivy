@@ -276,3 +276,92 @@ def test_hstack(
         fn_name="hstack",
         arrays=m,
     )
+
+
+@st.composite
+def _get_dtype_values_k_axes_for_rot90(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    k = draw(helpers.ints(min_value=-4, max_value=4))
+    axes = draw(
+        st.lists(
+            helpers.ints(min_value=-len(shape), max_value=len(shape) - 1),
+            min_size=2,
+            max_size=2,
+            unique=True,
+        ).filter(lambda axes: abs(axes[0] - axes[1]) != len(shape))
+    )
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+    values = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=min_value,
+            max_value=max_value,
+            allow_inf=allow_inf,
+            exclude_min=exclude_min,
+            exclude_max=exclude_max,
+            large_abs_safety_factor=72,
+            small_abs_safety_factor=72,
+            safety_factor_scale="log",
+        )
+    )
+    return [dtype], values, k, axes
+
+
+# rot90
+@handle_cmd_line_args
+@given(
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="rot90"),
+)
+def test_rot90(
+    dtype_m_k_axes,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, m, k, axes = dtype_m_k_axes
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="rot90",
+        m=m,
+        k=k,
+        axes=tuple(axes),
+    )

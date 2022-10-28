@@ -95,3 +95,15 @@ def float_power(
 
 
 float_power.support_native_out = True
+
+
+def exp2(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp2(x, out=out)
+
+
+exp2.support_native_out = True

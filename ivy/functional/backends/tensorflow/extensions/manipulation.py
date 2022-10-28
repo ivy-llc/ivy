@@ -1,4 +1,4 @@
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence, Tuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
@@ -51,3 +51,14 @@ def hstack(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hstack(arrays)
+
+
+def rot90(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Union[tf.Tensor, tf.Variable] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rot90(m, k, axes)
