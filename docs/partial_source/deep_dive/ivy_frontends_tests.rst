@@ -492,6 +492,21 @@ Alias functions
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
 Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`
 
+Code example for alias function:
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/torch/comparison_ops.py
+    @to_ivy_arrays_and_back
+    def greater(input, other, *, out=None):
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.greater(input, other, out=out
+    
+
+    gt = greater
+
+* As you can see the :func:`torch_frontend.gt` is an alias to :func:`torch_frontend.greater` and below is how we update the unit test of :func:`torch_frontend.greater` to test the alias function as well.
+
 **PyTorch**
 
 .. code-block:: python
