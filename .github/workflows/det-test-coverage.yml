@@ -17,8 +17,9 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
+           pip install pydriller tqdm
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 0
+           python determine_test_coverage.py 0
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
@@ -48,8 +49,9 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
+           pip install pydriller tqdm
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 1
+           python determine_test_coverage.py 1
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
@@ -79,8 +81,9 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
+           pip install pydriller tqdm
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 2
+           python determine_test_coverage.py 2
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
@@ -110,8 +113,9 @@ jobs:
 
        - name: Determine Test Coverage
          run: |
+           pip install pydriller tqdm
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 determine_test_coverage.py 3
+           python determine_test_coverage.py 3
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
