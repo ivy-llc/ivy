@@ -2253,3 +2253,4 @@ def test_tensorflow_Sigmoid(dtype_and_x, as_variable, native_array):
         fn_tree="raw_ops.Sigmoid",
         x=x[0],
     )
+
