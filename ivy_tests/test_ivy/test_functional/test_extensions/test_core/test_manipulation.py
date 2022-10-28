@@ -5,7 +5,7 @@ from hypothesis import given, strategies as st
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_test
 
 
 # Helpers #
@@ -13,8 +13,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # moveaxis
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -59,39 +59,42 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_size=1,
         force_int=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="moveaxis"),
 )
 def test_moveaxis(
     dtype_and_a,
     source,
     destination,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, a = dtype_and_a
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="moveaxis",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         a=a[0],
         source=source,
         destination=destination,
     )
 
 
-@handle_cmd_line_args
-@given(
+# ndenumerate
+@handle_test(
+    fn_tree="functional.extensions.ndenumerate",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -105,8 +108,9 @@ def test_ndenumerate(dtype_and_x):
         assert index1 == index2 and x1 == x2
 
 
-@handle_cmd_line_args
-@given(
+# ndindex
+@handle_test(
+    fn_tree="functional.extensions.ndindex",
     dtype_x_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -120,8 +124,8 @@ def test_ndindex(dtype_x_shape):
 
 
 # heaviside
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.heaviside",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -133,37 +137,39 @@ def test_ndindex(dtype_x_shape):
         num_arrays=2,
         shared_dtype=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="heaviside"),
 )
 def test_heaviside(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="heaviside",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=x[0],
         x2=x[0],
     )
 
 
 # flipud
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.flipud",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -173,35 +179,38 @@ def test_heaviside(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="flipud"),
 )
 def test_flipud(
     dtype_and_m,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="flipud",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         m=m[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# vstack
+@handle_test(
+    fn_tree="functional.extensions.vstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -212,35 +221,38 @@ def test_flipud(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="vstack"),
 )
 def test_vstack(
     dtype_and_m,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="vstack",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         arrays=m,
     )
 
 
-@handle_cmd_line_args
-@given(
+# hstack
+@handle_test(
+    fn_tree="functional.extensions.hstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -251,29 +263,31 @@ def test_vstack(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="hstack"),
 )
 def test_hstack(
     dtype_and_m,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="hstack",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         arrays=m,
     )
 
@@ -329,8 +343,8 @@ def _get_dtype_values_k_axes_for_rot90(
 
 
 # rot90
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -338,29 +352,31 @@ def _get_dtype_values_k_axes_for_rot90(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="rot90"),
 )
 def test_rot90(
     dtype_m_k_axes,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="rot90",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         m=m,
         k=k,
         axes=tuple(axes),
