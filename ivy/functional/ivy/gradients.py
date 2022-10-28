@@ -62,7 +62,7 @@ def _check_if_empty(idxs):
 def _remove_zeros_and_nones(grads, x, idx=[]):
     if ivy.is_array(x):
         abs_val = ivy.abs(x)
-        if ivy.all(abs_val.astype("float64") < 1e-10):
+        if ivy.all(abs_val.astype("float64") < 1e-10) and len(idx):
             ivy.prune_nest_at_index(grads, idx)
         return grads
     if x is None:
