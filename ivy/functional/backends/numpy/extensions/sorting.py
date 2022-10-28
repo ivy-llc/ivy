@@ -5,10 +5,7 @@ from typing import Optional, Union
 
 # msort
 def msort(
-    a: Union[np.ndarray, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.msort(a)
 
