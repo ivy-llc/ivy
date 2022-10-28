@@ -97,8 +97,8 @@ def random_uniform(
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[ivy.Array] = None,
     seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -122,8 +122,10 @@ def random_uniform(
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
     dtype
-         output array data type. If ``dtype`` is ``None``, the output array data
-         type will be the default floating-point data type. Default ``None``
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
