@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=1,
         max_dim_size=3,
         min_value=-100,
-        max_value=100
+        max_value=100,
     ),
 )
 def test_msort(
