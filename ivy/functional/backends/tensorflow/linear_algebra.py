@@ -556,6 +556,8 @@ def vecdot(
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    else:
+        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 

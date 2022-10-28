@@ -112,17 +112,17 @@ Push
 Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:
 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push.png?raw=true
    :alt: Push
 
 Clicking on the yellow dot (🟡) (which changes to a tick (✔) or cross (❌), when the tests have been completed) yields a view of the test-suite results as shown below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push-2.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push-2.png?raw=true
    :alt: Test-Suite
 
 Click on the "Details" link corresponding to the failing tests, in order to identify the cause of the failure. It redirects to the Actions Tab, showing details of the failure, as shown below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/push-3.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push-3.png?raw=true
    :alt: Workflow Result
 
 Click on the corresponding section, as given below, in order to see the logs of the failing tests:
@@ -140,7 +140,7 @@ Pull Request
 In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:
 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/19_continuous_integration/pull-request1.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/pull-request1.png?raw=true
    :alt: PR Test-Suite
 
 Clicking on the "Details" link redirects to the Action Log. The rest of the procedure remains the same as given in the Push section above.
