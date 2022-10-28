@@ -242,14 +242,6 @@ def test_can_cast(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=backend_fw,
-        on_device=on_device,
-        fn_name=fn_name,
         from_=x[0],
         to=to_dtype[0],
     )
@@ -323,7 +315,7 @@ def test_finfo(
 
 
 # iinfo
-# TODO: fix container method
+# TODO: fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.iinfo",
     type=_array_or_type("int"),
@@ -334,9 +326,7 @@ def test_iinfo(
     as_variable,
     num_positional_args,
     native_array,
-    container_flags,
     with_out,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -424,10 +414,6 @@ def test_result_type(
 def test_as_ivy_dtype(
     *,
     input_dtype,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.as_ivy_dtype(input_dtype)
     if isinstance(input_dtype, str):
@@ -538,7 +524,6 @@ def test_dtype(
     native_array,
     container_flags,
     with_out,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -582,7 +567,6 @@ def test_dtype_bits(
     native_array,
     container_flags,
     with_out,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -769,7 +753,6 @@ def test_promote_types(
     native_array,
     container_flags,
     with_out,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -810,7 +793,6 @@ def test_type_promote_arrays(
     as_variable,
     num_positional_args,
     native_array,
-    container_flags,
     with_out,
     instance_method,
     backend_fw,
@@ -876,10 +858,6 @@ def test_default_int_dtype(
     *,
     dtype_x,
     native_array,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     int_dtype, x = dtype_x
     res = ivy.default_int_dtype(
@@ -929,10 +907,6 @@ def test_function_supported_dtypes(
     *,
     func,
     expected,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.function_supported_dtypes(func)
     exp = set.intersection(set(expected), set(ivy.valid_dtypes))
@@ -954,10 +928,6 @@ def test_function_unsupported_dtypes(
     *,
     func,
     expected,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.function_unsupported_dtypes(func)
     exp = set.union(set(expected), set(ivy.invalid_dtypes))
@@ -988,10 +958,7 @@ def test_function_unsupported_dtypes(
 def test_function_dtype_versioning(
     *,
     func_and_version,
-    with_out,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     for key in func_and_version:
         if key != backend_fw:
@@ -1031,14 +998,10 @@ def test_function_dtype_versioning(
         ],
     ),
 )
-
 def test_function_dtype_versioning_frontend(
     *,
     func_and_version,
-    with_out,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     fw = backend_fw.current_backend_str()
     for key in func_and_version:
@@ -1072,10 +1035,7 @@ def test_function_dtype_versioning_frontend(
 def test_invalid_dtype(
     *,
     dtype_in,
-    with_out,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.invalid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()
@@ -1104,10 +1064,6 @@ def test_invalid_dtype(
 def test_unset_default_dtype(
     *,
     dtype,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     stack_size_before = len(ivy.default_dtype_stack)
     ivy.set_default_dtype(dtype)
@@ -1148,10 +1104,6 @@ def test_unset_default_float_dtype(
 def test_unset_default_int_dtype(
     *,
     dtype,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     stack_size_before = len(ivy.default_int_dtype_stack)
     ivy.set_default_int_dtype(dtype)
@@ -1170,10 +1122,7 @@ def test_unset_default_int_dtype(
 def test_valid_dtype(
     *,
     dtype_in,
-    with_out,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.valid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()

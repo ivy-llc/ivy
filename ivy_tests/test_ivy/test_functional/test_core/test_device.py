@@ -125,10 +125,7 @@ def test_as_ivy_dev(
     array_shape,
     dtype,
     as_variable,
-    with_out,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     assume(not (backend_fw == "torch" and "int" in dtype))
 
@@ -165,9 +162,6 @@ def test_as_native_dev(
     array_shape,
     dtype,
     as_variable,
-    with_out,
-    backend_fw,
-    fn_name,
     on_device,
 ):
     # TODO: should be replaced with the helpers.dtype_values function
@@ -236,7 +230,6 @@ def test_to_device(
     as_variable,
     with_out,
     backend_fw,
-    fn_name,
     on_device,
 ):
     assume(not (backend_fw == "torch" and "int" in dtype))
@@ -315,10 +308,6 @@ def test_split_func_call(
     chunk_size,
     axis,
     as_variable,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     # inputs
     shape = tuple(array_shape)
@@ -367,9 +356,6 @@ def test_split_func_call_with_cont_input(
     chunk_size,
     axis,
     as_variable,
-    with_out,
-    backend_fw,
-    fn_name,
     on_device,
 ):
     shape = tuple(array_shape)
@@ -463,9 +449,6 @@ def test_profiler(
 def test_num_ivy_arrays_on_dev(
     *,
     num,
-    with_out,
-    backend_fw,
-    fn_name,
     on_device,
 ):
     arrays = [
@@ -484,9 +467,6 @@ def test_num_ivy_arrays_on_dev(
 def test_get_all_ivy_arrays_on_dev(
     *,
     num,
-    with_out,
-    backend_fw,
-    fn_name,
     on_device,
 ):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
@@ -504,9 +484,6 @@ def test_print_all_ivy_arrays_on_dev(
     *,
     num,
     attr_only,
-    with_out,
-    backend_fw,
-    fn_name,
     on_device,
 ):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
@@ -622,10 +599,6 @@ def test_function_supported_devices(
     *,
     func,
     expected,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.function_supported_devices(func)
     exp = set(expected)
@@ -643,10 +616,6 @@ def test_function_unsupported_devices(
     *,
     func,
     expected,
-    with_out,
-    backend_fw,
-    fn_name,
-    on_device,
 ):
     res = ivy.function_unsupported_devices(func)
     exp = set(expected)
