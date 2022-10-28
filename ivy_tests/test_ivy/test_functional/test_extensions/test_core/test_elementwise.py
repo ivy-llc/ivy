@@ -293,7 +293,7 @@ def test_float_power(
         fw=fw,
         fn_name="float_power",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
