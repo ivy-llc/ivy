@@ -1,10 +1,10 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # Helpers #
@@ -53,35 +53,37 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="median"),
 )
 def test_median(
     *,
     dtype_x_axis,
     keep_dims,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="median",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         input=x[0],
         axis=axis,
         keepdims=keep_dims,
