@@ -450,5 +450,8 @@ class ArrayWithExtensions(abc.ABC):
 
         Examples
         --------
+        >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
+        >>> x.dct(type=2, n=None, norm='ortho')
+        ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
         """
         return ivy.dct(self._data, type=type, n=n, norm=norm, out=out)
