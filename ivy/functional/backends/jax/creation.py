@@ -58,7 +58,11 @@ def asarray(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(obj, ivy.NativeArray) and not dtype:
-        dtype = obj.dtype
+        if copy is True:
+            dtype = obj.dtype
+            return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+        else:
+            return _to_device(obj, device=device)
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
         dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
