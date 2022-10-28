@@ -1,5 +1,5 @@
 # global
-from typing import Optional, List
+from typing import Optional, List, Union
 import abc
 
 # local
@@ -14,14 +14,14 @@ class ArrayWithNorms(abc.ABC):
         normalized_idxs: List[int],
         /,
         *,
+        weight: Optional[Union[ivy.Array, float]] = None,
+        bias: Optional[Union[ivy.Array, float]] = None,
         epsilon: float = ivy._MIN_BASE,
-        scale: float = None,
-        offset: float = None,
         new_std: float = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps 
+        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
 
@@ -31,13 +31,14 @@ class ArrayWithNorms(abc.ABC):
             Input array
         normalized_idxs
             Indices to apply the normalization to.
+        weight
+            Learnable gamma variables for elementwise post-multiplication,
+            default is ``None``.
+        bias
+            Learnable beta variables for elementwise post-addition, default is ``None``.
         epsilon
             small constant to add to the denominator, use global ivy._MIN_BASE by
             default.
-        scale
-            Learnable gamma variables for post-multiplication, default is None.
-        offset
-            Learnable beta variables for post-addition, default is None.
         new_std
             The standard deviation of the new normalized values. Default is 1.
         out
@@ -51,23 +52,23 @@ class ArrayWithNorms(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
-                           [0.1047,  0.5886,  1.2732], \
-                           [0.7696, -1.7024, -2.2518]])
-        >>> norm = x.layer_norm([0, 1], epsilon=0.001, \
-                                new_std=1.5, offset=0.5, scale=0.5)
+        >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
+        ...                   [0.1047,  0.5886,  1.2732],
+        ...                   [0.7696, -1.7024, -2.2518]])
+        >>> norm = x.layer_norm([0, 1], epsilon=0.001,
+        ...                     new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
         >>> print(norm)
-        ivy.array([[ 0.576,  0.292,  1.33 ],
-                   [ 0.581,  0.891,  1.33 ],
-                   [ 1.01 , -0.579, -0.931]])
+        ivy.array([[ 0.826, -0.178, 0.981 ],
+                   [ 0.831,  0.421, 0.981 ],
+                   [ 1.26 , -1.05 , -1.28 ]])
 
         """
         return ivy.layer_norm(
             self,
             normalized_idxs,
+            weight=weight,
+            bias=bias,
             epsilon=epsilon,
-            scale=scale,
-            offset=offset,
             new_std=new_std,
             out=out,
         )

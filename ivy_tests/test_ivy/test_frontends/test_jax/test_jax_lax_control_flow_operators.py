@@ -24,7 +24,6 @@ def test_jax_cond(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     def _test_true_fn(x):
         return x + x
@@ -39,7 +38,6 @@ def test_jax_cond(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.cond",
         pred=pred_cond,
@@ -65,7 +63,6 @@ def test_jax_map(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     def _test_map_fn(x):
         return x + x
@@ -77,7 +74,6 @@ def test_jax_map(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.map",
         f=_test_map_fn,
@@ -103,7 +99,6 @@ def test_jax_switch(
     num_positional_args,
     as_variable,
     native_array,
-    fw,
 ):
     def _test_branch_1(x):
         return x + x
@@ -118,7 +113,6 @@ def test_jax_switch(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="jax",
         fn_tree="lax.switch",
         index=index,

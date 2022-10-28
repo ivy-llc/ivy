@@ -24,7 +24,7 @@ class IvyNotImplementedException(NotImplementedError):
         super().__init__(message)
 
 
-class IvyError(IndexError, ValueError, IvyException):
+class IvyError(IndexError, ValueError, AttributeError, IvyException):
     def __init__(self, *messages):
         self._default = [
             "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
@@ -55,10 +55,16 @@ def handle_exceptions(fn: Callable) -> Callable:
         """
         try:
             return fn(*args, **kwargs)
-        except (IndexError, ValueError) as e:
-            raise ivy.exceptions.IvyError(fn.__name__, str(e))
+        except (IndexError, ValueError, AttributeError) as e:
+            if ivy.get_exception_trace_mode():
+                raise ivy.exceptions.IvyError(fn.__name__, str(e))
+            else:
+                raise ivy.exceptions.IvyError(fn.__name__, str(e)) from None
         except Exception as e:
-            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+            if ivy.get_exception_trace_mode():
+                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+            else:
+                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e)) from None
 
     new_fn.handle_exceptions = True
     return new_fn

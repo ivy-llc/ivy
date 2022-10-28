@@ -83,7 +83,7 @@ class ArrayWithActivations(abc.ABC):
         return ivy.sigmoid(self._data, out=out)
 
     def softmax(
-        self: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: Optional[int] = None,
@@ -94,6 +94,21 @@ class ArrayWithActivations(abc.ABC):
         function, and so the docstring for ivy.softmax also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input array.
+        axis
+            the axis or axes along which the softmax should be computed
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the softmax unit function applied element-wise.
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0, 1.0])
@@ -101,7 +116,7 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(self._data, axis=axis, out=out)
+        return ivy.softmax(x, axis=axis, out=out)
 
     def softplus(
         self: ivy.Array,
@@ -119,20 +134,14 @@ class ArrayWithActivations(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-0.3461, -0.6491])
-        >>> y = x.softplus()
-        >>> print(y)
-        ivy.array([0.535, 0.42 ])
-
-        >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = x.softplus(beta=0.5)
         >>> print(y)
         ivy.array([1.22, 1.09])
 
         >>> x = ivy.array([1.31, 2., 2.])
-        >>> x.softplus(threshold=2)
+        >>> y = x.softplus(threshold=2, out=x)
         >>> print(x)
-        ivy.array([1.31, 2.  , 2.  ])
-
+        ivy.array([1.55, 2.13, 2.13])
         """
         return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
 

@@ -61,9 +61,9 @@ Type and Shape Checking
 **Q:** What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic
 sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of `dex`_.
 
-**A:**  The checks performed during graph compilation will remain backend-specific. The function :code:`ivy.compile`
-wraps the backend compilation methods, for example :code:`jax.jit`, :code:`tf.function`, :code:`torch.jit.script` and
-:code:`torch.jit.trace`. For some backends, shape-checking will be performed during the compilation phase and for others
+**A:**  The checks performed during graph compilation will remain backend-specific. The function :func:`ivy.compile`
+wraps the backend compilation functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and
+:func:`torch.jit.trace`. For some backends, shape-checking will be performed during the compilation phase and for others
 it will not.
 
 GPU handling

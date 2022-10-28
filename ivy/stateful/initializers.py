@@ -1,7 +1,10 @@
-# local
-from typing import Tuple, Union
-import ivy
+# global
+from typing import Tuple, Union, Optional
 import abc
+
+# local
+import ivy
+
 
 # Initializer #
 # ----------- #
@@ -22,9 +25,9 @@ class Initializer(abc.ABC):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ) -> ivy.Array:
         """
         Create internal variables for the layer
@@ -53,7 +56,7 @@ class Initializer(abc.ABC):
 
 
 class Constant(Initializer):
-    def __init__(self, constant):
+    def __init__(self, constant: float):
         """
         Constant initializer, will fill in all values with the value of `constant`.
 
@@ -68,9 +71,9 @@ class Constant(Initializer):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ) -> ivy.Array:
         return ivy.variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
@@ -117,7 +120,7 @@ class Uniform(Initializer):
               This is useful when training using forward-propogation.
             - `fan_sum` sets `fan` to the sum of the number of input features and
               output features of this neuron.
-            - `fan_sum` sets `fan` to the average of the number of input features and
+            - `fan_avg` sets `fan` to the average of the number of input features and
               output features of this neuron.
         power
             Sets the drop-off factor for the calculated `fan`.

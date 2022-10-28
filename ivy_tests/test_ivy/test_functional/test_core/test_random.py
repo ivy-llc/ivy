@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
+    seed=helpers.ints(min_value=0, max_value=100),
 )
 def test_random_uniform(
     dtype_and_low,
@@ -43,28 +44,38 @@ def test_random_uniform(
     instance_method,
     fw,
     device,
+    seed,
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=low_dtype + high_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        test_values=False,
-        fw=fw,
-        fn_name="random_uniform",
-        low=low[0],
-        high=high[0],
-        shape=None,
-        dtype=dtype[0],
-        device=device,
-    )
+
+    def call():
+        return helpers.test_function(
+            input_dtypes=low_dtype + high_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            test_values=False,
+            fw=fw,
+            fn_name="random_uniform",
+            low=low[0],
+            high=high[0],
+            shape=None,
+            dtype=dtype[0],
+            device=device,
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt2 = call()
+        assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+
     for (u, v) in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
@@ -89,12 +100,14 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
     dtype_and_mean,
     dtype_and_std,
     dtype,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -106,23 +119,31 @@ def test_random_normal(
 ):
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=mean_dtype + std_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        test_values=False,
-        fw=fw,
-        fn_name="random_normal",
-        mean=mean[0],
-        std=std[0],
-        shape=None,
-        dtype=dtype[0],
-        device=device,
-    )
+
+    def call():
+        return helpers.test_function(
+            input_dtypes=mean_dtype + std_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            test_values=False,
+            fw=fw,
+            fn_name="random_normal",
+            mean=mean[0],
+            std=std[0],
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+            device=device,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -157,10 +178,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -173,28 +196,40 @@ def test_multinomial(
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
-    ret = helpers.test_function(
-        input_dtypes=[prob_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="multinomial",
-        test_values=False,
-        ground_truth_backend="numpy",
-        population_size=population_size,
-        num_samples=num_samples,
-        batch_size=batch_size,
-        probs=probs[0] if probs is not None else probs,
-        replace=replace,
-        device=device,
-    )
+
+    def call():
+        return helpers.test_function(
+            input_dtypes=prob_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            fw=fw,
+            fn_name="multinomial",
+            test_values=False,
+            ground_truth_backend="numpy",
+            population_size=population_size,
+            num_samples=num_samples,
+            batch_size=batch_size,
+            probs=probs[0] if probs is not None else probs,
+            replace=replace,
+            seed=seed,
+            device=device,
+        )
+
+    ret = call()
+
     if not ivy.exists(ret):
         return
+
     ret_np, ret_from_np = ret
+    if seed:
+        ret_np1, ret_from_np1 = call()
+
+        assert ivy.any(ret_np == ret_np1)
+
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for (u, v) in zip(ret_np, ret_from_np):
@@ -229,10 +264,12 @@ def _gen_randint_data(draw):
 @handle_cmd_line_args
 @given(
     dtype_low_high=_gen_randint_data(),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
     dtype_low_high,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -243,23 +280,31 @@ def test_randint(
     device,
 ):
     dtype, low, high = dtype_low_high
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        test_values=False,
-        fw=fw,
-        fn_name="randint",
-        low=low,
-        high=high,
-        shape=None,
-        dtype=dtype[0],
-        device=device,
-    )
+
+    def call():
+        return helpers.test_function(
+            input_dtypes=dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            test_values=False,
+            fw=fw,
+            fn_name="randint",
+            low=low,
+            high=high,
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+            device=device,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
@@ -286,10 +331,12 @@ def test_seed(seed_val):
         min_num_dims=1,
         min_dim_size=2,
     ),
+    seed=helpers.ints(min_value=0, max_value=100),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
 )
 def test_shuffle(
     dtype_and_x,
+    seed,
     as_variable,
     with_out,
     num_positional_args,
@@ -299,19 +346,27 @@ def test_shuffle(
     fw,
 ):
     dtype, x = dtype_and_x
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        test_values=False,
-        fw=fw,
-        fn_name="shuffle",
-        x=x[0],
-    )
+
+    def call():
+        return helpers.test_function(
+            input_dtypes=dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container,
+            instance_method=instance_method,
+            test_values=False,
+            fw=fw,
+            fn_name="shuffle",
+            x=x[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):

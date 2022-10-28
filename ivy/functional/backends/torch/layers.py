@@ -1,17 +1,29 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
 
+from typing import List, Optional, Tuple, Union, Sequence
+
 # global
 import torch
-from typing import List, Optional, Tuple, Union, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def _out_shape(x, strides, pad, dilations, filters):
     return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,
@@ -46,12 +58,15 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
 )
-
-
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
     x,
@@ -110,12 +125,15 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
 )
-
-
 # noinspection PyUnresolvedReferences
 def conv2d(
     x: torch.Tensor,
@@ -165,12 +183,15 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
 )
-
-
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
     x: torch.Tensor,
@@ -204,8 +225,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -249,9 +270,7 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = ("float16", "bfloat16")
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -300,12 +319,7 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 # noinspection PyUnresolvedReferences
 def conv3d(
     x: torch.Tensor,
@@ -360,9 +374,15 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_dtypes = ("float16",)
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
     x: torch.Tensor,
@@ -460,9 +480,15 @@ def conv3d_transpose(
     return res
 
 
-conv3d_transpose.unsupported_dtypes = ("float16", "bfloat16")
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def conv_general_dilated(
     x: torch.Tensor,
     filters: torch.Tensor,
@@ -533,9 +559,15 @@ def conv_general_dilated(
     return res
 
 
-conv_general_dilated.unsupported_dtypes = ("float16", "bfloat16")
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def conv_general_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
@@ -547,6 +579,7 @@ def conv_general_transpose(
     output_shape=None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -586,7 +619,7 @@ def conv_general_transpose(
         _out_shape(
             x.shape[i + 2],
             strides[i],
-            pad_specific[i],
+            padding_list[i],
             dilations[i],
             filters.shape[i + 2],
         )
@@ -602,6 +635,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[:, :, :-1]
@@ -614,6 +648,7 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :]
@@ -628,16 +663,14 @@ def conv_general_transpose(
             padding_list,
             dilation=dilations,
             output_padding=output_padding,
+            groups=feature_group_count,
         )
         if not_valid_pad[0]:
             res = res[..., :-1, :, :]
         if not_valid_pad[1]:
             res = res[..., :, :-1, :]
-        if not_valid_pad[1]:
+        if not_valid_pad[2]:
             res = res[..., :, :, :-1]
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
-
-
-conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")

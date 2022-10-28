@@ -1,6 +1,7 @@
 # global
 import abc
-from typing import Optional, Union
+from numbers import Number
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -13,6 +14,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -26,11 +28,13 @@ class ArrayWithSearching(abc.ABC):
             input array. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Default  None.
+            the maximum value of the flattened array. Deafult: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
+        output_dtype
+            Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
             the appropriate shape and dtype.
@@ -44,7 +48,9 @@ class ArrayWithSearching(abc.ABC):
             the default array index data type.
 
         """
-        return ivy.argmax(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.argmax(
+            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        )
 
     def argmin(
         self: ivy.Array,
@@ -52,6 +58,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -71,6 +78,8 @@ class ArrayWithSearching(abc.ABC):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
+        dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
         out
             if axis is None, a zero-dimensional array containing the index of the first
             occurrence of the minimum value; otherwise, a non-zero-dimensional array
@@ -84,9 +93,18 @@ class ArrayWithSearching(abc.ABC):
             axis.
 
         """
-        return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.argmin(
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
 
-    def nonzero(self: ivy.Array, /) -> ivy.Array:
+    def nonzero(
+        self: ivy.Array,
+        /,
+        *,
+        as_tuple: bool = True,
+        size: Optional[int] = None,
+        fill_value: Number = 0,
+    ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -96,6 +114,19 @@ class ArrayWithSearching(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        as_tuple
+            if True, the output is returned as a tuple of indices, one for each
+            dimension of the input, containing the indices of the true elements in that
+            dimension. If False, the coordinates are returned in a (N, ndim) array,
+            where N is the number of true elements. Default = True.
+        size
+            if specified, the function will return an array of shape (size, ndim).
+            If the number of non-zero elements is fewer than size, the remaining
+            elements will be filled with fill_value. Default = None.
+        fill_value
+            when size is specified and there are fewer than size number of elements,
+            the remaining elements in the output array will be filled with fill_value.
+            Default = 0.
 
         Returns
         -------
@@ -103,7 +134,9 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the non-zero values.
 
         """
-        return ivy.nonzero(self._data)
+        return ivy.nonzero(
+            self._data, as_tuple=as_tuple, size=size, fill_value=fill_value
+        )
 
     def where(
         self: ivy.Array,

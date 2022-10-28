@@ -28,13 +28,13 @@ class IvyModule(ivy.Module):
         )
         ivy.Module.__init__(self, device=device, devices=devices)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         return self._native_params
 
-    def _build(self):
+    def _build(self, *args, **kwargs):
         self._native_module = ivy.default(
             lambda: self._native_module,
-            lambda: self._native_module_class(*self._args, **self._kwargs),
+            lambda: self._native_module_class(*args, **kwargs),
             with_callable=True,
         )
         self._native_params = ivy.Container(

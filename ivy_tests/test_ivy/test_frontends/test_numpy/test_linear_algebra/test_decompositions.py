@@ -30,7 +30,6 @@ def test_numpy_cholesky(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     x = x[0]
@@ -43,7 +42,6 @@ def test_numpy_cholesky(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linalg.cholesky",
         rtol=1e-02,
@@ -74,7 +72,6 @@ def test_numpy_qr(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -83,7 +80,6 @@ def test_numpy_qr(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linalg.qr",
         rtol=1e-02,
@@ -97,34 +93,33 @@ def test_numpy_qr(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.svd"
     ),
-    fm=st.booleans(),
 )
 def test_numpy_svd(
     dtype_and_x,
-    fm,
     as_variable,
     native_array,
     num_positional_args,
-    fw,
 ):
     dtype, x = dtype_and_x
+    x = x[0]
+    x = (
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="linalg.svd",
-        a=x[0],
-        full_matrices=fm,
+        rtol=1e-02,
+        a=x,
     )

@@ -13,7 +13,7 @@ class LayerNorm(Module):
         /,
         *,
         epsilon: float = ivy._MIN_BASE,
-        elementwise_affine=True,
+        elementwise_affine: bool = True,
         new_std: float = 1.0,
         device=None,
         v=None,
@@ -30,7 +30,7 @@ class LayerNorm(Module):
             small constant to add to the denominator,
             use global ivy._MIN_BASE by default.
         elementwise_affine
-            Whether to include learnable affine parameters, default is True.
+            Whether to include learnable affine parameters, default is ``True``.
         new_std
             The standard deviation of the new normalized values. Default is 1.
         device
@@ -44,21 +44,21 @@ class LayerNorm(Module):
         self._epsilon = epsilon
         self._elementwise_affine = elementwise_affine
         self._new_std = new_std
-        self._scale_shape = normalized_shape
-        self._offset_shape = normalized_shape
-        self._scale_init = Ones()
-        self._offset_init = Zeros()
+        self._weight_shape = normalized_shape
+        self._bias_shape = normalized_shape
+        self._weight_init = Ones()
+        self._bias_init = Zeros()
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer"""
         if self._elementwise_affine:
             return {
-                "scale": self._scale_init.create_variables(
-                    self._scale_shape, device, dtype=dtype
+                "weight": self._weight_init.create_variables(
+                    self._weight_shape, device, dtype=dtype
                 ),
-                "offset": self._offset_init.create_variables(
-                    self._offset_shape, device, dtype=dtype
+                "bias": self._bias_init.create_variables(
+                    self._bias_shape, device, dtype=dtype
                 ),
             }
         return {}
@@ -76,13 +76,12 @@ class LayerNorm(Module):
         -------
         ret
             The outputs following the layer normalization operation.
-
         """
         return ivy.layer_norm(
             inputs,
             self._normalized_idxs,
             epsilon=self._epsilon,
-            scale=self.v.scale if self._elementwise_affine else None,
-            offset=self.v.offset if self._elementwise_affine else None,
+            weight=self.v.weight if self._elementwise_affine else None,
+            bias=self.v.bias if self._elementwise_affine else None,
             new_std=self._new_std,
         )

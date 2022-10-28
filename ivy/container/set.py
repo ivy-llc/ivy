@@ -54,8 +54,8 @@ class ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.unique_counts. This method simply 
-        wraps the function, and so the docstring for ivy.unique_counts also applies 
+        ivy.Container static method variant of ivy.unique_counts. This method simply
+        wraps the function, and so the docstring for ivy.unique_counts also applies
         to this method with minimal changes.
 
         Parameters
@@ -64,15 +64,16 @@ class ContainerWithSet(ContainerBase):
             input container. If ``x`` has more than one dimension, the function must
             flatten ``x`` and return the unique elements of the flattened array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -89,8 +90,8 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
-                              b=ivy.array([1,2,1,3,4,1,3]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = ivy.static_unique_counts(x)
         >>> print(y)
         {
@@ -127,15 +128,16 @@ class ContainerWithSet(ContainerBase):
             input container. If ``x`` has more than one dimension, the function must
             flatten ``x`` and return the unique elements of the flattened array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -152,9 +154,10 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
-        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
-                              b=ivy.array([1,2,1,3,4,1,3]))
+        With :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_counts()
         >>> print(y)
         {
@@ -249,15 +252,16 @@ class ContainerWithSet(ContainerBase):
              input container. If ``x`` has more than one dimension, the function must
              flatten ``x`` and return the unique elements of the flattened array.
         key_chains
-             The key-chains to apply or not apply the method to. Default is None.
+             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
              If True, the method will be applied to key_chains, otherwise key_chains
-             will be skipped. Default is True.
+             will be skipped. Default is ``True``.
         prune_unapplied
              Whether to prune key_chains for which the function was not applied.
-             Default is False.
+             Default is ``False``.
         map_sequences
-             Whether to also map method to sequences (lists, tuples). Default is False.
+             Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -275,8 +279,8 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
-        ... b=ivy.array([7,6,4,5,6,3,2]))
+        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),
+        ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()
         >>> print(y)
              {
