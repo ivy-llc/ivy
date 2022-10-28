@@ -168,8 +168,12 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.shape[-3] == 0:
-        return jnp.asarray(0).astype(x.dtype)
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return jnp.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -354,24 +358,10 @@ def diag(
     x: JaxArray,
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[JaxArray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = jnp.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += jnp.diag(x - padding_value, k=offset)
-
-    return ret
+) -> JaxArray:
+    return jnp.diag(x, k=k)
 
 
 def vander(

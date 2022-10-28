@@ -900,7 +900,13 @@ def eye(
 
     """
     return current_backend().eye(
-        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+        n_rows,
+        n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 

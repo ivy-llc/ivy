@@ -16,6 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def dtype_value1_value2_axis(
     draw,
     available_dtypes,
+    abs_smallest_val=None,
     min_value=None,
     max_value=None,
     allow_inf=False,
@@ -55,6 +56,7 @@ def dtype_value1_value2_axis(
                 helpers.array_values(
                     dtype=dtype,
                     shape=shape,
+                    abs_smallest_val=abs_smallest_val,
                     min_value=min_value,
                     max_value=max_value,
                     allow_inf=allow_inf,
@@ -853,8 +855,8 @@ def test_tensordot(
         instance_method=instance_method,
         fw=fw,
         fn_name="tensordot",
-        rtol_=5e-1,
-        atol_=5e-1,
+        rtol_=0.8,
+        atol_=0.8,
         x1=x1,
         x2=x2,
         axes=axis,
@@ -904,8 +906,8 @@ def test_trace(
         instance_method=instance_method,
         fw=fw,
         fn_name="trace",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x[0],
         offset=offset,
         axis1=axis1,
@@ -1350,8 +1352,10 @@ def test_cholesky(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
-        large_abs_safety_factor=48,
-        small_abs_safety_factor=48,
+        min_value=-1e10,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
@@ -1383,63 +1387,6 @@ def test_cross(
         x1=x1,
         x2=x2,
         axis=axis,
-    )
-
-
-@handle_cmd_line_args
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-    dtype_offset=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        max_num_dims=1,
-        min_num_dims=1,
-        min_dim_size=1,
-    ),
-    dtype_padding_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-    align=st.sampled_from(["RIGHT_LEFT", "RIGHT_RIGHT", "LEFT_LEFT", "LEFT_RIGHT"]),
-    num_rows=helpers.ints(min_value=1),
-    num_cols=helpers.ints(min_value=1),
-    num_positional_args=helpers.num_positional_args(fn_name="diag"),
-)
-def test_diag(
-    *,
-    dtype_x,
-    dtype_offset,
-    dtype_padding_value,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    align,
-    num_rows,
-    num_cols,
-):
-    x_dtype, x = dtype_x
-    offset_dtype, offset = dtype_offset
-    padding_value_dtype, padding_value = dtype_padding_value
-    helpers.test_function(
-        input_dtypes=x_dtype + offset_dtype + padding_value_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="diag",
-        x=x,
-        offset=offset,
-        padding_value=padding_value,
-        align=align,
-        num_rows=num_rows,
-        num_cols=num_cols,
     )
 
 
@@ -1490,16 +1437,57 @@ def test_diagonal(
     )
 
 
+# diag
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
+    k=helpers.ints(min_value=-49, max_value=49),
+    num_positional_args=helpers.num_positional_args(fn_name="diag"),
+)
+def test_diag(
+    *,
+    dtype_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    k,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="diag",
+        x=x[0],
+        k=k,
+    )
+
+
 # vander
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
-            helpers.ints(min_value=1, max_value=3),
+            helpers.ints(min_value=1, max_value=10),
         ),
     ),
-    N=st.integers(min_value=1, max_value=3),
+    N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vander"),
 )

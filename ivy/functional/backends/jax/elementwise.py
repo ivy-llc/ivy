@@ -103,7 +103,6 @@ def bitwise_right_shift(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
 
@@ -183,7 +182,7 @@ def floor_divide(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jax.numpy.floor_divide(x1, x2)
+    return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
 
 
 def greater(
@@ -357,7 +356,7 @@ def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.sign(x)
+    return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 
 def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -35,6 +35,17 @@ def _compute_cost_and_update_grads(
             else variables.prune_key_chains(outer_v, ignore_none=True),
             retain_grads=False,
         )
+        var = (
+            variables.at_key_chains(outer_v, ignore_none=True)
+            if keep_outer_v
+            else variables.prune_key_chains(outer_v, ignore_none=True)
+        )
+        inner_grads = ivy.Container(
+            {
+                k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
+                for k, v in var.to_iterator()
+            }
+        )
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
         if average_across_steps_or_final:
@@ -84,6 +95,19 @@ def _train_task(
             if keep_innver_v
             else variables.prune_key_chains(inner_v, ignore_none=True),
             retain_grads=order > 1,
+        )
+        var = (
+            variables.at_key_chains(inner_v, ignore_none=True)
+            if keep_innver_v
+            else variables.prune_key_chains(inner_v, ignore_none=True)
+        )
+        inner_update_grads = ivy.Container(
+            {
+                k: ivy.zeros_like(v)
+                if k not in inner_update_grads
+                else inner_update_grads[k]
+                for k, v in var.to_iterator()
+            }
         )
         if batched:
             inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
@@ -459,7 +483,7 @@ def fomaml_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     rets = _train_tasks(
         batch,
         inner_batch_fn,
@@ -546,7 +570,7 @@ def reptile_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     # noinspection PyTypeChecker
     rets = _train_tasks(
         batch,
@@ -670,9 +694,9 @@ def maml_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     unique_outer = outer_v is not None
-    cost, grads, *rets = ivy.execute_with_gradients(
+    func_ret, grads = ivy.execute_with_gradients(
         lambda v: _train_tasks(
             batch,
             inner_batch_fn,
@@ -698,9 +722,16 @@ def maml_step(
         if keep_outer_v
         else variables.prune_key_chains(outer_v, ignore_none=True),
     )
+    if isinstance(func_ret, tuple):
+        grads = grads["0"] if "0" in grads else grads
+        cost = func_ret[0]
+        rest = func_ret[1]
+    else:
+        cost = func_ret
+        rest = ()
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    return cost, grads.sum(axis=0), *rets
+    return cost, grads.sum(axis=0), rest
 
 
 maml_step.computes_gradients = True

@@ -53,6 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
 def array_equal(
     x0: Union[tf.Tensor, tf.Variable],
     x1: Union[tf.Tensor, tf.Variable],
+    /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
@@ -280,6 +281,7 @@ def scatter_flat(
     return res
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -350,7 +352,8 @@ def scatter_nd(
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
             indices = tf.expand_dims(indices, 0)
-        if tf.reduce_any(indices == -1):
+        if tf.reduce_any(indices < 0):
+            shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, len(shape))
             indices = [
                 tf.stack(
@@ -455,7 +458,6 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = ("bfloat16",)
 scatter_nd.support_native_out = True
 
 

@@ -2,8 +2,10 @@
 import ivy
 from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.assertions.check_all_or_any_fn(
         clip_value_min,
