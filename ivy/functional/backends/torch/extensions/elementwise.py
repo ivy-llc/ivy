@@ -91,10 +91,19 @@ def float_power(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.tensor(
-        torch.float_power(x1, x2, out=out),
-        dtype=x1.dtype
-    )
+    return torch.tensor(torch.float_power(x1, x2, out=out), dtype=x1.dtype)
 
 
 float_power.support_native_out = True
+
+
+def exp2(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp2(x, out=out)
+
+
+exp2.support_native_out = True
