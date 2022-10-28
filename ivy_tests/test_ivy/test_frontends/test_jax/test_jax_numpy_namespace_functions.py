@@ -669,12 +669,12 @@ def test_jax_numpy_dot(
     eq_n_op=st.sampled_from(
         [
             (
-                    "ii",
-                    np.arange(25).reshape(5, 5),
+                "ii",
+                np.arange(25).reshape(5, 5),
             ),
             (
-                    "ii->i",
-                    np.arange(25).reshape(5, 5),
+                "ii->i",
+                np.arange(25).reshape(5, 5),
             ),
             ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
         ]
@@ -682,7 +682,7 @@ def test_jax_numpy_dot(
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_numpy_einsum(
-        eq_n_op, dtype, with_out, as_variable, native_array, fw, device
+    eq_n_op, dtype, with_out, as_variable, native_array, fw, device
 ):
     kw = {}
     i = 0
@@ -920,7 +920,7 @@ def test_jax_numpy_sin(
     ),
 )
 def test_jax_numpy_floor(
-        dtype_and_x, dtype, as_variable, with_out, num_positional_args, native_array
+    dtype_and_x, dtype, as_variable, with_out, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
