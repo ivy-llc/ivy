@@ -297,3 +297,15 @@ def flipud(m):
 def power(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0, *, length=None):
+    x_list = []
+    for i in range(x.shape[0]):
+        x_list.append(int(x[i]))
+    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    ret = ivy.array(ret)
+    ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
+    return ret
+
