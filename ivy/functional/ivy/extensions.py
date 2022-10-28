@@ -1270,5 +1270,31 @@ def dct(
     >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
     >>> ivy.dct(x, type=2, n=None, norm='ortho')
     ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+                         b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+    >>> ivy.dct(x, type=2, n=None, norm='ortho')
+    {
+        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
+                    -0.406]),
+        b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0., 
+                    -0.0507])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64], dtype=ivy.float32),
+                    b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8], dtype=ivy.float32))
+    >>> container_n = ivy.Container(a=None, b=4)
+    >>> container_type = ivy.Container(a=2, b=1)
+    >>> container_norm = ivy.Container(a="ortho", b=None)
+    >>> ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
+    {
+        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
+                    -0.406]),
+        b: ivy.array([15., -4., 0., -1.])
+    }
     """
     return ivy.current_backend().dct(x, type=type, n=n, norm=norm, out=out)
