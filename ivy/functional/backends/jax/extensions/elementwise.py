@@ -60,3 +60,13 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.gcd(x1, x2)
