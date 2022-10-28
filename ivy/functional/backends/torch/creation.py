@@ -76,6 +76,7 @@ def arange(
 arange.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
