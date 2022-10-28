@@ -1,8 +1,8 @@
 import ivy
 import functools
+from  functools import lru_cache
 from types import FunctionType
 from typing import Callable
-
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
@@ -43,10 +43,9 @@ def _get_first_array(*args, **kwargs):
 
 # Array Handling #
 # ---------------#
-
-
 def inputs_to_native_arrays(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com = compile("functools.wraps(fn)","func_wrapper.py","eval")
+    @eval(data_com)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
@@ -86,9 +85,10 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
     new_fn.inputs_to_native_arrays = True
     return new_fn
 
-
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com1 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com1)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.NativeArray` instances in both the positional and keyword
@@ -122,9 +122,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     new_fn.inputs_to_ivy_arrays = True
     return new_fn
 
-
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com2 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com2)
     def new_fn(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.NativeArray` instances in
@@ -158,7 +159,9 @@ def _is_zero_dim_array(x):
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com3 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com3)
     def new_fn(*args, **kwargs):
         """
         Calls the function, and then converts all 0 dimensional array instances in
@@ -221,7 +224,9 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
 
 
 def infer_dtype(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com4 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com4)
     def new_fn(*args, dtype=None, **kwargs):
         """
         Determines the correct `dtype`, and then calls the function with the `dtype`
@@ -252,9 +257,10 @@ def infer_dtype(fn: Callable) -> Callable:
     new_fn.infer_dtype = True
     return new_fn
 
-
 def integer_arrays_to_float(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com5 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com5)
     def new_fn(*args, **kwargs):
         """
         Promotes all the integer array inputs passed to the function both
@@ -293,9 +299,10 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
 # Device Handling #
 # ----------------#
 
-
 def infer_device(fn: Callable) -> Callable:
-    @functools.wraps(fn)
+    data_com6 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com6)
     def new_fn(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
@@ -330,11 +337,12 @@ def infer_device(fn: Callable) -> Callable:
 # Inplace Update Handling #
 # ------------------------#
 
-
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
 
-    @functools.wraps(fn)
+    data_com7 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com7)
     def new_fn(*args, out=None, **kwargs):
         """
         Calls `fn` with the `out` argument handled correctly for performing an inplace
@@ -381,7 +389,9 @@ def handle_out_argument(fn: Callable) -> Callable:
 def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
-    @functools.wraps(fn)
+    data_com8 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
+
+    @eval(data_com8)
     def new_fn(*args, **kwargs):
         """
         Calls `fn` with the *nestable* property of the function correctly handled.
@@ -419,8 +429,6 @@ def handle_nestable(fn: Callable) -> Callable:
 
 
 # Functions #
-
-
 def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
@@ -534,7 +542,6 @@ def _versioned_attribute_factory(attribute_function, base):
 
     return VersionedAttributes()
 
-
 def _dtype_device_wrapper_creator(attrib, t):
     """
     Creates a wrapper for a dtype or device attribute, which returns the correct
@@ -552,7 +559,6 @@ def _dtype_device_wrapper_creator(attrib, t):
     A wrapper function for the attribute.
 
     """
-
     def _wrapper_outer(version_dict, version):
         def _wrapped(func):
             val = _versioned_attribute_factory(
@@ -578,3 +584,4 @@ with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
 with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
     "supported_device_and_dtype", dict
 )
+
