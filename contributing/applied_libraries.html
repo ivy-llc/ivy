@@ -148,18 +148,17 @@
 <h1>Applied Libraries<a class="headerlink" href="#applied-libraries" title="Permalink to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
-<p>Helping to contribute towards the ivy libraries requires a slightly more complex
-setup than is needed for contributing to ivy alone. For instance, <a class="reference external" href="https://lets-unify.ai/robot/">Ivy Robot</a>
-depends on <a class="reference external" href="https://lets-unify.ai/mech/">Mech</a>, <a class="reference external" href="https://lets-unify.ai/vision/">Vision</a> and <a class="reference external" href="https://github.com/unifyai/demo-utils">Demo Utils</a>. Thus, the related repositories
-have to be pulled into the same local folder, and <a class="reference external" href="https://github.com/unifyai/ivy">Ivy</a> must also be pulled into
-this same folder.</p>
+<p>Helping to contribute towards the ivy libraries requires a slightly more complex setup than is needed for contributing to ivy alone.
+For instance, <a class="reference external" href="https://lets-unify.ai/robot/">Ivy Robot</a> depends on <a class="reference external" href="https://lets-unify.ai/mech/">Mech</a>, <a class="reference external" href="https://lets-unify.ai/vision/">Vision</a> and <a class="reference external" href="https://github.com/unifyai/demo-utils">Demo Utils</a>.
+Thus, the related repositories have to be pulled into the same local folder, and <a class="reference external" href="https://github.com/unifyai/ivy">Ivy</a> must also be pulled into this same folder.</p>
 <p>To have a better grasp, let’s look at an example for Ivy Robot in the next section!</p>
 </section>
 <section id="example-ivy-robot">
 <h2>Example - Ivy Robot<a class="headerlink" href="#example-ivy-robot" title="Permalink to this heading"></a></h2>
 <p><strong>Directory Tree</strong></p>
-<p>1. Due to dependencies, the related Ivy repositories have to be placed in the same
-local directory:</p>
+<ol class="arabic simple">
+<li><p>Due to dependencies, the related Ivy repositories have to be placed in the same local directory:</p></li>
+</ol>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>|-- your-local-dir
 |   |-- ivy
 |   |-- mech
@@ -220,8 +219,8 @@ python3 -m pip install --user -e .
 </pre></div>
 </div>
 <p>(repeat for all repositories)</p>
-<p><strong>NOTE:</strong> In develop mode, packages are linked to their local directory. Therefore,
-changes or edits are reflected immediately when in use.</p>
+<p><strong>NOTE:</strong> In develop mode, packages are linked to their local directory.
+Therefore, changes or edits are reflected immediately when in use.</p>
 </div></blockquote>
 </li>
 <li><p>To use:</p>
@@ -253,9 +252,8 @@ docker build -t my-robot .
 <blockquote>
 <div><p>docker run –rm -it -v <cite>pwd</cite>/ivy:/ivy -v <cite>pwd</cite>/mech:/mech -v <cite>pwd</cite>/vision:/vision -v <cite>pwd</cite>/robot:/robot -v <cite>pwd</cite>/demo-utils:/demo-utils my-robot python3</p>
 </div></blockquote>
-<p><strong>NOTE:</strong> Mounting allows the docker container to use local folder as volumes, thus
-reflecting the local changes or edits made. Users are not required to rebuild
-the docker image after every change.</p>
+<p><strong>NOTE:</strong> Mounting allows the docker container to use local folder as volumes, thus reflecting the local changes or edits made.
+Users are not required to rebuild the docker image after every change.</p>
 </div></blockquote>
 </li>
 </ol>
@@ -264,15 +262,11 @@ the docker image after every change.</p>
 <li><p>For <strong>PyCharm</strong>, configurations are saved in the <code class="code docutils literal notranslate"><span class="pre">.idea</span></code> folder (part of the ivy repo).</p></li>
 <li><p>For <strong>VSCode</strong>, configurations can be found in the <code class="code docutils literal notranslate"><span class="pre">.devcontainer</span></code> folder (not part of the ivy repo).</p></li>
 </ol>
-<p><strong>NOTE:</strong> To use development container in VSCode, the extension “Remote - Containers”
-needs to be installed.</p>
-<p><strong>NOTE:</strong> When using GitHub Codespaces, the <code class="code docutils literal notranslate"><span class="pre">mounts</span></code> config in
-<code class="code docutils literal notranslate"><span class="pre">.devcontainer/devcontainer.json</span></code> is not supported.</p>
+<p><strong>NOTE:</strong> To use development container in VSCode, the extension “Remote - Containers” needs to be installed.</p>
+<p><strong>NOTE:</strong> When using GitHub Codespaces, the <code class="code docutils literal notranslate"><span class="pre">mounts</span></code> config in <code class="code docutils literal notranslate"><span class="pre">.devcontainer/devcontainer.json</span></code> is not supported.</p>
 <p><strong>Round Up</strong></p>
-<p>These examples should hopefully give you a good understanding of what is required
-when developing the Ivy applied libraries.</p>
-<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>,
-<a class="reference external" href="https://discord.com/channels/799879767196958751/982725464110034944">pre-commit channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114789642080317">pip packages channel</a> or <a href="#id1"><span class="problematic" id="id2">`other channel`_</span></a>, depending on the question!</p>
+<p>These examples should hopefully give you a good understanding of what is required when developing the Ivy applied libraries.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/982725464110034944">pre-commit channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114789642080317">pip packages channel</a> or <a href="#id1"><span class="problematic" id="id2">`other channel`_</span></a>, depending on the question!</p>
 </section>
 </section>
 

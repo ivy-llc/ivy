@@ -16,11 +16,9 @@ Applied Libraries
 Introduction
 ------------
 
-Helping to contribute towards the ivy libraries requires a slightly more complex
-setup than is needed for contributing to ivy alone. For instance, `Ivy Robot`_
-depends on `Mech`_, `Vision`_ and `Demo Utils`_. Thus, the related repositories
-have to be pulled into the same local folder, and `Ivy`_ must also be pulled into
-this same folder.
+Helping to contribute towards the ivy libraries requires a slightly more complex setup than is needed for contributing to ivy alone.
+For instance, `Ivy Robot`_ depends on `Mech`_, `Vision`_ and `Demo Utils`_.
+Thus, the related repositories have to be pulled into the same local folder, and `Ivy`_ must also be pulled into this same folder.
 
 To have a better grasp, let's look at an example for Ivy Robot in the next section!
 
@@ -29,8 +27,7 @@ Example - Ivy Robot
 
 **Directory Tree**
 
-1. Due to dependencies, the related Ivy repositories have to be placed in the same
-local directory:
+1. Due to dependencies, the related Ivy repositories have to be placed in the same local directory:
 
 .. code-block:: none
 
@@ -94,8 +91,8 @@ local directory:
 
     (repeat for all repositories)
 
-    **NOTE:** In develop mode, packages are linked to their local directory. Therefore,
-    changes or edits are reflected immediately when in use.
+    **NOTE:** In develop mode, packages are linked to their local directory.
+    Therefore, changes or edits are reflected immediately when in use.
 
 4. To use:
 
@@ -125,9 +122,8 @@ local directory:
 
         docker run --rm -it -v `pwd`/ivy:/ivy -v `pwd`/mech:/mech -v `pwd`/vision:/vision -v `pwd`/robot:/robot -v `pwd`/demo-utils:/demo-utils my-robot python3
 
-    **NOTE:** Mounting allows the docker container to use local folder as volumes, thus
-    reflecting the local changes or edits made. Users are not required to rebuild
-    the docker image after every change.
+    **NOTE:** Mounting allows the docker container to use local folder as volumes, thus reflecting the local changes or edits made.
+    Users are not required to rebuild the docker image after every change.
 
 **IDE Development**
 
@@ -135,16 +131,12 @@ local directory:
 
 2. For **VSCode**, configurations can be found in the :code:`.devcontainer` folder (not part of the ivy repo).
 
-**NOTE:** To use development container in VSCode, the extension "Remote - Containers"
-needs to be installed.
+**NOTE:** To use development container in VSCode, the extension "Remote - Containers" needs to be installed.
 
-**NOTE:** When using GitHub Codespaces, the :code:`mounts` config in
-:code:`.devcontainer/devcontainer.json` is not supported.
+**NOTE:** When using GitHub Codespaces, the :code:`mounts` config in :code:`.devcontainer/devcontainer.json` is not supported.
 
 **Round Up**
 
-These examples should hopefully give you a good understanding of what is required
-when developing the Ivy applied libraries.
+These examples should hopefully give you a good understanding of what is required when developing the Ivy applied libraries.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_, `pip packages channel`_ or `other channel`_, depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ or `other channel`_, depending on the question!
