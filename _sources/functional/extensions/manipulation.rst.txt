@@ -21,5 +21,4 @@ Manipulation
    manipulation/flipud.rst
    manipulation/vstack.rst
    manipulation/hstack.rst
-   manipulation/rot90.rst
 
