@@ -920,7 +920,7 @@ def test_jax_numpy_sin(
     ),
 )
 def test_jax_numpy_floor(
-        dtype_and_x, dtype, as_variable, with_out, num_positional_args, native_array
+    dtype_and_x, dtype, as_variable, with_out, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
