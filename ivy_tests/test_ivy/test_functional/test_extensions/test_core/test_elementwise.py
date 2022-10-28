@@ -1,9 +1,9 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 import numpy as np
 
 # Helpers #
@@ -11,44 +11,46 @@ import numpy as np
 
 
 # sinc
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.sinc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sinc"),
 )
 def test_sinc(
     *,
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="sinc",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
 
 
 # lcm
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.lcm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -59,38 +61,41 @@ def test_sinc(
         max_value=100,
         allow_nan=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lcm"),
 )
 def test_lcm(
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="lcm",
-        test_gradients=True,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_gradients=test_gradients,
         x1=x[0],
         x2=x[1],
     )
 
 
 # fmod
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.fmod",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -102,37 +107,39 @@ def test_lcm(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fmod"),
 )
 def test_fmod(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="fmod",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=x[0],
         x2=x[0],
     )
 
 
 # fmax
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=-10,
@@ -145,41 +152,44 @@ def test_fmod(
         max_dim_size=3,
         allow_nan=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fmax"),
 )
 def test_fmax(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="fmax",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=x[0],
         x2=x[0],
     )
 
 
 # trapz
+# TODO: add container methods
 @st.composite
 def _either_x_dx(draw):
     rand = (draw(st.integers(min_value=0, max_value=1)),)
     if rand == 0:
         either_x_dx = draw(
-            helpers.dtype_and_x(
+            helpers.dtype_and_values(
                 avaliable_dtypes=st.shared(
                     helpers.get_dtypes("float"), key="trapz_dtype"
                 ),
@@ -199,8 +209,8 @@ def _either_x_dx(draw):
         return rand, either_x_dx
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.trapz",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
         min_value=-100,
@@ -214,18 +224,19 @@ def _either_x_dx(draw):
         force_int_axis=True,
     ),
     rand_either=_either_x_dx(),
-    num_positional_args=helpers.num_positional_args(fn_name="trapz"),
 )
 def test_trapz(
     dtype_values_axis,
     rand_either,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, y, axis = dtype_values_axis
     rand, either_x_dx = rand_either
@@ -238,16 +249,15 @@ def test_trapz(
         dx = either_x_dx
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        rtol_=1e-2,
-        atol_=1e-2,
-        fw=fw,
-        fn_name="trapz",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -256,8 +266,8 @@ def test_trapz(
 
 
 # float_power
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.float_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -269,37 +279,39 @@ def test_trapz(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="float_power"),
 )
 def test_float_power(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="float_power",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
 # exp2
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.exp2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -309,28 +321,30 @@ def test_float_power(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="exp2"),
 )
 def test_exp2(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="exp2",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
