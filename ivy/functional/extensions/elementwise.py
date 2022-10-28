@@ -383,7 +383,7 @@ def nansum(
         A new array holding the result is returned unless out is specified,
         in which it is returned.
     
-    Functional Examples
+    Examples
     -------------------
     >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
     >>> ivy.nansum(a)
