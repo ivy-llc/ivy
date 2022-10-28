@@ -11,10 +11,9 @@ class ndarray:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
-    # -------------------#
+    # Instance Methods #
+    # ---------------- #
 
-    # Add argmax #
     def argmax(
         self,
         /,
@@ -23,7 +22,6 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-
         return np_frontend.argmax(
             self.data,
             axis=axis,

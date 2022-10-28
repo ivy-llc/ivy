@@ -54,6 +54,17 @@ def hstack(
     return jnp.hstack(arrays)
 
 
+def rot90(
+    m: JaxArray,
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.rot90(m, k, axes)
+
+
 def top_k(
     x: JaxArray,
     k: int,
