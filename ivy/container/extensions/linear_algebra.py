@@ -48,7 +48,6 @@ class ContainerWithLinalgExtensions(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=[1,2])
         >>> ivy.diagflat(x, k=1)
         {

@@ -2,22 +2,13 @@
 
 from typing import Union, List, Optional, Sequence
 
-
 import numpy as np
 import torch
 from torch import Tensor
 
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
-
-
-from . import backend_version
-
-# noinspection PyProtectedMember
-
-
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -25,6 +16,10 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+from . import backend_version
+
+
+# noinspection PyProtectedMember
 
 
 # Array API Standard #
@@ -101,8 +96,12 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if isinstance(obj, torch.Tensor) and dtype is None:
-        dtype = obj.dtype
+        if copy is True:
+            return obj.clone().detach().to(device)
+        else:
+            return obj.to(device) if obj.device != device else obj
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         if dtype is None:
             dtype = ivy.default_dtype(item=obj, as_native=True)
@@ -142,9 +141,11 @@ def asarray(
             return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
 
     if copy is True:
-        return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
+        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
+        return ret.to(device) if ret.device != device else ret
     else:
-        return torch.as_tensor(obj, dtype=dtype).to(device)
+        ret = torch.as_tensor(obj, dtype=dtype)
+        return ret.to(device) if ret.device != device else ret
 
 
 def empty(

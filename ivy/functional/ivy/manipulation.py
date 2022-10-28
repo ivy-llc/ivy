@@ -298,36 +298,6 @@ def flip(
     >>> print(y)
     ivy.array([2., 1., 0.])
 
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    ...                   b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.flip(x)
-    >>> print(y)
-    {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
-    }
-
-    Instance Method Examples
-    ------------------------
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.flip()
-    >>> print(y)
-    ivy.array([2., 1., 0.])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.flip()
-    >>> print(y)
-    {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
-    }
-
     """
     return current_backend(x).flip(x, axis=axis, out=out)
 
