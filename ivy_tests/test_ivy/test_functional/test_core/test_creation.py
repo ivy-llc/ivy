@@ -7,7 +7,6 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.helpers.assertions import check_unsupported_dtype
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
@@ -381,59 +380,84 @@ def test_eye(
     )
 
 
+@st.composite
+def dtype_x_frameworks(draw, min_num_dims, max_num_dims, min_dim_size, max_dim_size):
+    initial_framework = draw(st.sampled_from(["numpy", "jax", "tensorflow", "torch"]))
+    target_framework = draw(st.sampled_from(["numpy", "jax", "tensorflow", "torch"]))
+
+    if initial_framework == "torch" or target_framework == "torch":
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=[
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "uint8",
+                    "float16",
+                    "float32",
+                    "float64",
+                ],
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+    elif initial_framework == "numpy" or target_framework == "numpy":
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=[
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "float16",
+                    "float32",
+                    "float64",
+                ],
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+    else:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                min_num_dims=min_num_dims,
+                max_num_dims=max_dim_size,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+    dtype, x = dtype_and_x
+    return dtype, x, initial_framework, target_framework
+
+
 # __dlpack__ and to_dlpack
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    # ivy_array_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
-    target_framework=st.sampled_from(["numpy", "jax", "tensorflow", "torch"]),
-)
-# def test_to_dlpack(*, dtype_and_x, ivy_array_framework, target_framework):
-def test_to_dlpack(*, dtype_and_x, target_framework, fw):
-    if target_framework == fw:
-        return
-    dtype, x = dtype_and_x
-    print("====================================dtype", dtype)
-    # ivy.set_backend(ivy_array_framework)
-    # fn = getattr(ivy, "to_dlpack")
-    test_unsupported = check_unsupported_dtype(
-        fn=ivy.to_dlpack, input_dtypes=dtype, all_as_kwargs_np={}
+    dtype_x_frameworks=dtype_x_frameworks(
+        min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=5
     )
-    if test_unsupported:
-        print(
-            "============================================Test unsupported, ",
-            test_unsupported,
-        )
-        return
-    ivy_array = ivy.array(
-        x[0]
-    )  # invoking the class method __dlpack__ which in turn calls to_dlpack
+)
+def test_to_dlpack(*, dtype_x_frameworks):
+    _, x, initial_framework, target_framework = dtype_x_frameworks
+    ivy.set_backend(initial_framework)
+    ivy_array = ivy.array(x[0])
     ivy_np_array = ivy.to_numpy(ivy_array)
     native_array = ivy_array.to_native()
     ivy.set_backend(target_framework)
-    test_unsupported = check_unsupported_dtype(
-        fn=ivy.from_dlpack, input_dtypes=dtype, all_as_kwargs_np={}
-    )
-    if test_unsupported:
-        print(
-            "++++++++++++++++++++++++++++++++++\
-            ============================================Test unsupported, ",
-            test_unsupported,
-        )
-        return
     target_array = ivy.from_dlpack(native_array)
     helpers.assert_all_close(ivy.to_numpy(target_array), ivy_np_array)
     ivy.unset_backend()
-    # ivy.unset_backend()
+    ivy.unset_backend()
 
 
 # from_dlpack
