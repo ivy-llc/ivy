@@ -157,12 +157,13 @@ def _generate_shared_test_flags(
     for flag in cfg.UNSET_TEST_CONFIG["flag"]:
         if flag in param_names:
             _given_kwargs[flag] = st.booleans()
-        # Override with_out to be compatible
-    for k in inspect.signature(fn).parameters.keys():
-        if k.endswith("out"):
-            break
-    else:
-        _given_kwargs["with_out"] = st.just(False)
+    # Override with_out to be compatible
+    if "with_out" in param_names:
+        for k in inspect.signature(fn).parameters.keys():
+            if k.endswith("out"):
+                break
+        else:
+            _given_kwargs["with_out"] = st.just(False)
     return _given_kwargs
 
 
