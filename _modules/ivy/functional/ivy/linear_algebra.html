@@ -2468,6 +2468,35 @@
 <span class="sd">    ret</span>
 <span class="sd">        Skew-symmetric matrix *[batch_shape,3,3]*.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2,3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vector_to_skew_symmetric_matrix(x)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">        [[ 0, -3,  2],</span>
+<span class="sd">         [ 3,  0, -1],</span>
+<span class="sd">         [-2,  1,  0]]</span>
+<span class="sd">         )</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2,3],</span>
+<span class="sd">    &gt;&gt;&gt;                [3,4,5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6,7,8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vector_to_skew_symmetric_matrix(x)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">        [[[ 0, -3,  2],</span>
+<span class="sd">          [ 3,  0, -1],</span>
+<span class="sd">          [-2,  1,  0]],</span>
+
+<span class="sd">         [[ 0, -5,  4],</span>
+<span class="sd">          [ 5,  0, -3],</span>
+<span class="sd">          [-4,  3,  0]],</span>
+
+<span class="sd">         [[ 0, -8,  7],</span>
+<span class="sd">          [ 8,  0, -6],</span>
+<span class="sd">          [-7,  6,  0]]]</span>
+<span class="sd">          )</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
