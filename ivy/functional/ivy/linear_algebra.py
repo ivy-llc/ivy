@@ -2338,6 +2338,35 @@ def vector_to_skew_symmetric_matrix(
     ret
         Skew-symmetric matrix *[batch_shape,3,3]*.
 
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    
+    >>> x = ivy.array([1,2,3])
+    >>> ivy.vector_to_skew_symmetric_matrix(x)
+    ivy.array(
+        [[ 0, -3,  2],
+         [ 3,  0, -1],
+         [-2,  1,  0]]
+         )
+
+    >>> x = ivy.array([[1,2,3],
+    >>>                [3,4,5],
+    >>>                [6,7,8]])
+    >>> ivy.vector_to_skew_symmetric_matrix(x)
+    ivy.array(
+        [[[ 0, -3,  2],
+          [ 3,  0, -1],
+          [-2,  1,  0]],
+
+         [[ 0, -5,  4],
+          [ 5,  0, -3],
+          [-4,  3,  0]],
+
+         [[ 0, -8,  7],
+          [ 8,  0, -6],
+          [-7,  6,  0]]]
+          )
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
