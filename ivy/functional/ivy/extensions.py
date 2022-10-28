@@ -1265,5 +1265,10 @@ def dct(
 
     Examples
     --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
+    >>> ivy.dct(x, type=2, n=None, norm='ortho')
+    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
     """
     return ivy.current_backend().dct(x, type=type, n=n, norm=norm, out=out)
