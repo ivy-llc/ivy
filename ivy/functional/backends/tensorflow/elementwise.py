@@ -642,13 +642,13 @@ def trunc(
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(
-                x, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+                x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )
             ret = tf.tensor_scatter_nd_update(
                 ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
             )
         else:
-            ret = (tf.math.floor if ret > 0 else tf.math.ceil)(ret)
+            ret = (tf.math.floor if ret >= 0 else tf.math.ceil)(ret)
     return ret
 
 
