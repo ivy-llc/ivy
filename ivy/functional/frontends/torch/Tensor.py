@@ -5,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -13,7 +13,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
@@ -40,6 +40,10 @@ class Tensor:
 
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
+
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
 
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
