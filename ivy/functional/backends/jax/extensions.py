@@ -290,9 +290,9 @@ def dct(
     x: JaxArray,
     /,
     *,
-    type: Optional[int] = 2,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
-    norm: Optional[str] = None,
+    norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if n is not None:

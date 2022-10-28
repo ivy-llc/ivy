@@ -230,9 +230,9 @@ def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    type: Optional[int] = 2,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
-    norm: Optional[str] = None,
+    norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     if x.dtype not in [tf.float32, tf.float64]:

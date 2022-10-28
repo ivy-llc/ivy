@@ -332,9 +332,9 @@ def dct(
     x: np.ndarray,
     /,
     *,
-    type: Optional[int] = 2,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
-    norm: Optional[str] = None,
+    norm: Optional[Literal["ortho"]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return fft.dct(x, type=type, n=n, norm=norm)
