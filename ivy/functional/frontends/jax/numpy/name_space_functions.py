@@ -132,12 +132,12 @@ def dot(a, b, *, precision=None):
 
 @to_ivy_arrays_and_back
 def einsum(
-        subscripts,
-        *operands,
-        out=None,
-        optimize="optimal",
-        precision=None,
-        _use_xeinsum=False
+    subscripts,
+    *operands,
+    out=None,
+    optimize="optimal",
+    precision=None,
+    _use_xeinsum=False
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -286,11 +286,6 @@ def bitwise_not(x):
 @to_ivy_arrays_and_back
 def bitwise_or(x1, x2):
     return ivy.bitwise_or(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def bitwise_xor(x1, x2):
-    return ivy.bitwise_xor(x1, x2)
 
 
 @to_ivy_arrays_and_back
