@@ -2318,6 +2318,9 @@ def inplace_update(
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
+inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+
 @handle_nestable
 @handle_exceptions
 @inputs_to_ivy_arrays
