@@ -1585,59 +1585,30 @@ class ContainerWithElementwise(ContainerBase):
     @staticmethod
     def static_cos(
         x: ivy.Container,
-        /,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cos.
-        This method simply wraps the function, and so the docstring for
-        ivy.cos also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container whose elements are each expressed in radians.
-            Should have a floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a container containing the cosine of each element in ``x``. The returned
-            container must have a floating-point data type determined by
-            :ref:`type-promotion`.
-
+        ivy.Container static method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
         Examples
         --------
-        With :class:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        With one :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
+                              b=ivy.array([4., 5., 6.]))
         >>> y = ivy.Container.static_cos(x)
         >>> print(y)
         {
-            a: ivy.array([1., 0.54, 0.54]),
-            b: ivy.array([0.54, 1., 0.96])
+            a: ivy.array([0.540, -0.416, -0.990]),
+            b: ivy.array([-0.654, 0.284, 0.960])
         }
         """
-        return ivy.ContainerBase.multi_map_in_static_method(
+        return ContainerBase.multi_map_in_static_method(
             "cos",
             x,
             key_chains=key_chains,
@@ -1646,6 +1617,7 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
 
     def cos(
         self: ivy.Container,
@@ -1673,11 +1645,11 @@ class ContainerWithElementwise(ContainerBase):
         """
         return self.static_cos(
             self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
         )
 
     @staticmethod
