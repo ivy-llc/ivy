@@ -44,6 +44,8 @@ def pytest_configure(config):
     if deadline:
         profile_settings["deadline"] = deadline
 
+    profile_settings["max_examples"] = 100
+    profile_settings["deadline"] = 500_000
     settings.register_profile("test-profile", **profile_settings, print_blob=True)
     settings.load_profile("test-profile")
 

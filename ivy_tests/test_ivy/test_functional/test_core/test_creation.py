@@ -402,12 +402,17 @@ def test_to_dlpack(*, dtype_and_x, target_framework, fw):
     if target_framework == fw:
         return
     dtype, x = dtype_and_x
+    print("====================================dtype", dtype)
     # ivy.set_backend(ivy_array_framework)
     # fn = getattr(ivy, "to_dlpack")
     test_unsupported = check_unsupported_dtype(
         fn=ivy.to_dlpack, input_dtypes=dtype, all_as_kwargs_np={}
     )
     if test_unsupported:
+        print(
+            "============================================Test unsupported, ",
+            test_unsupported,
+        )
         return
     ivy_array = ivy.array(
         x[0]
@@ -419,6 +424,11 @@ def test_to_dlpack(*, dtype_and_x, target_framework, fw):
         fn=ivy.from_dlpack, input_dtypes=dtype, all_as_kwargs_np={}
     )
     if test_unsupported:
+        print(
+            "++++++++++++++++++++++++++++++++++\
+            ============================================Test unsupported, ",
+            test_unsupported,
+        )
         return
     target_array = ivy.from_dlpack(native_array)
     helpers.assert_all_close(ivy.to_numpy(target_array), ivy_np_array)
