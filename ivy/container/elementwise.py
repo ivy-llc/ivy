@@ -1657,47 +1657,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cos.
-        This method simply wraps the function, and so the docstring for
-        ivy.cos also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container whose elements are each expressed in radians.
-            Should have a floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a container containing the cosine of each element in ``self``.
-            The returned container must have a floating-point data type
-            determined by :ref:`type-promotion`.
-
+        ivy.Container instance method variant of ivy.cos. This method simply wraps the
+        function, and so the docstring for ivy.cos also applies to this method
+        with minimal changes.
         Examples
         --------
-        With :class:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([-4., -5., -6.]))
         >>> y = x.cos()
         >>> print(y)
         {
-            a: ivy.array([1., 0.54, 0.54]),
-            b: ivy.array([0.54, 1., 0.96])
+            a: ivy.array([0.540, -0.416, -0.990]),
+            b: ivy.array([-0.654, 0.284, 0.960])
         }
         """
         return self.static_cos(

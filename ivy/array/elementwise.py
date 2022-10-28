@@ -578,37 +578,12 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.cos. This method simply wraps the
         function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array whose elements are each expressed in radians. Should have a
-            floating-point data type.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing the cosine of each element in ``self``. The returned
-            array must have a floating-point data type determined by
-            :ref:`type-promotion`.
-
         Examples
         --------
-        With :class:`ivy.Array` input:
-
-        >>> x = ivy.array([1., 0., 2.,])
+        >>> x = ivy.array([0., 1., 2., 3.])
         >>> y = x.cos()
         >>> print(y)
-        ivy.array([0.54, 1., -0.416])
-
-        >>> x = ivy.array([-3., 0., 3.])
-        >>> y = ivy.zeros(3)
-        >>> ivy.cos(x, out=y)
-        >>> print(y)
-        ivy.array([-0.99,  1.  , -0.99])
+        ivy.array([1., 0.540, -0.416, -0.990])
         """
         return ivy.cos(self._data, out=out)
 

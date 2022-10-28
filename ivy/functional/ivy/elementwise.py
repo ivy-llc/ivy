@@ -1632,43 +1632,40 @@ def cos(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cos.html>`_  # noqa
-    in the standard.
-
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sin.html>`_ in the standard.
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
     Examples
     --------
-    With :class:`ivy.Array` input:
-
+    With :code:`ivy.Array` input:
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([1., 0.54, -0.416])
-
-    >>> x = ivy.array([4., 0., -6.])
-    >>> y = ivy.zeros(3)
+    ivy.array([1., 0.540, -0.416])
+    >>> x = ivy.array([0., 1.2, -2.3, 3.6])
+    >>> y = ivy.zeros(4)
     >>> ivy.cos(x, out=y)
     >>> print(y)
-    ivy.array([-0.654, 1., 0.96])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.array([1., 0., 2.])
+    ivy.array([1, 0.362, -0.666, -0.897])
+    >>> x = ivy.array([[1., 2., 3.], [-4., -5., -6.]])
+    >>> ivy.cos(x, out=x)
+    >>> print(x)
+    ivy.array([[0.540, -0.416, -0.990],
+               [-0.654, 0.286, 0.960]])
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([0., 1.2, -2.3, 3.6])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([0.54 , 1., -0.416])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    ivy.array([1, 0.362, -0.666, -0.897])
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\
+                          b=ivy.array([-4., -5., -6., -7.]))
     >>> y = ivy.cos(x)
     >>> print(y)
     {
-        a: ivy.array([1., 0.54, 0.54]),
-        b: ivy.array([0.54, 1., 0.96])
+        a: ivy.array([1., 0.540, -0.416, -0.990]),
+        b: ivy.array([-0.654, 0.286, 0.960, 0.754])
     }
     """
     return ivy.current_backend(x).cos(x, out=out)
