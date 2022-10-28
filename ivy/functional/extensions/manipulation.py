@@ -414,3 +414,81 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
 
     """
     return ivy.current_backend(arrays[0]).hstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def rot90(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Rotate an array by 90 degrees in the plane specified by axes.
+    Rotation direction is from the first towards the second axis.
+
+    Parameters
+    ----------
+    m
+        Input array of two or more dimensions.
+    k
+        Number of times the array is rotated by 90 degrees.
+    axes
+        The array is rotated in the plane defined by the axes. Axes must be
+        different.
+    out
+        optional output container, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A rotated view of m.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> m = ivy.array([[1,2], [3,4]])
+    >>> ivy.rot90(m)
+    ivy.array([[2, 4],
+           [1, 3]])
+    >>> m = ivy.array([[1,2], [3,4]])
+    >>> ivy.rot90(m, k=2)
+    ivy.array([[4, 3],
+           [2, 1]])
+    >>> m = ivy.array([[[0, 1],\
+                        [2, 3]],\
+                       [[4, 5],\
+                        [6, 7]]])
+    >>> ivy.rot90(m, k=2, axes=(1,2))
+    ivy.array([[[3, 2],
+            [1, 0]],
+
+           [[7, 6],
+            [5, 4]]])
+    With :code:`ivy.NativeArray` input:
+    >>> m = ivy.native_array([[1,2], [3,4]])
+    >>> ivy.rot90(m)
+    ivy.array([[2, 4],
+           [1, 3]])
+    >>> m = ivy.native_array([[1,2], [3,4]])
+    >>> ivy.rot90(m, k=2)
+    ivy.array([[4, 3],
+           [2, 1]])
+    >>> m = ivy.native_array([[[0, 1],\
+                               [2, 3]],\
+                              [[4, 5],\
+                               [6, 7]]])
+    >>> ivy.rot90(m, k=2, axes=(1,2))
+    ivy.array([[[3, 2],
+            [1, 0]],
+
+           [[7, 6],
+            [5, 4]]])
+
+    """
+    return ivy.current_backend(m).rot90(m, k=k, axes=axes, out=out)

@@ -277,6 +277,35 @@ def set_backend(backend: str):
     ivy.locks["backend_setter"].release()
 
 
+def set_numpy_backend():
+    """
+    Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`
+    """
+    set_backend("numpy")
+
+
+def set_jax_backend():
+    """
+    Sets JAX to be the global backend. equivalent to `ivy.set_backend("jax")`
+    """
+    set_backend("jax")
+
+
+def set_tensorflow_backend():
+    """
+    Sets TensorFlow to be the global backend. equivalent to
+    `ivy.set_backend("tensorflow")`
+    """
+    set_backend("tensorflow")
+
+
+def set_torch_backend():
+    """
+    Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`
+    """
+    set_backend("torch")
+
+
 def get_backend(backend: Optional[str] = None):
     """Returns Ivy's backend for `backend` if specified, or if it isn't specified it
     returns the Ivy backend associated with the current globally set backend.
@@ -371,6 +400,12 @@ def unset_backend():
             ivy.del_global_attr("RNG")
         # the new backend is the backend that was set before the one we just removed
         # from the stack, or Ivy if there was no previously set backend
+        if backend_stack:
+            new_backend = backend_stack[-1]
+            if new_backend.current_backend_str() == "numpy":
+                ivy.set_default_device("cpu")
+            elif new_backend.current_backend_str() == "jax":
+                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )

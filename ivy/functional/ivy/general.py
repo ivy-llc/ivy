@@ -2088,13 +2088,25 @@ def get_tmp_dir():
 
 
 @handle_exceptions
-def set_tmp_dir(tmp_dr):
+def set_tmp_dir(tmp_dr: str) -> None:
     """Set the directory for saving temporary files.
 
     Parameters
     ----------
     tmp_dr
+        The new directory for saving temporary files
+    Examples
+    --------
+    >>> x = ivy.get_tmp_dir()
+    >>> print(x)
+    /tmp
 
+    To set the temp base to 1e-04
+
+    >>> ivy.set_tmp_dir("/my_tmp")
+    >>> y = ivy.get_tmp_dir()
+    >>> print(y)
+    /my_tmp
     """
     global TMP_DIR
     TMP_DIR = tmp_dr
