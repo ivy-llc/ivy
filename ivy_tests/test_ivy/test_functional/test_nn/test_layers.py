@@ -44,7 +44,6 @@ def x_and_linear(draw, dtypes):
 
 
 # linear
-# TODO: Fix container method
 @handle_test(
     fn_tree="functional.ivy.linear",
     dtype_x_weight_bias=x_and_linear(
@@ -90,7 +89,6 @@ def test_linear(
 # --------#
 
 # dropout
-# TODO: Fix container method
 @handle_test(
     fn_tree="functional.ivy.dropout",
     dtype_and_x=helpers.dtype_and_values(
@@ -267,7 +265,6 @@ def x_and_mha(draw, dtypes):
 
 
 # multi_head_attention
-# TODO: fix container method
 @handle_test(
     fn_tree="functional.ivy.multi_head_attention",
     dtype_mha=x_and_mha(
@@ -480,7 +477,6 @@ def test_conv1d(
 
 
 # conv1d_transpose
-# TODO: fix container method
 @handle_test(
     fn_tree="functional.ivy.conv1d_transpose",
     x_f_d_df=x_and_filters(dim=1, transpose=True),
@@ -932,7 +928,6 @@ def x_and_lstm(draw, dtypes):
 
 
 # lstm
-# TODO: fix container methods
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
     dtype_lstm=x_and_lstm(

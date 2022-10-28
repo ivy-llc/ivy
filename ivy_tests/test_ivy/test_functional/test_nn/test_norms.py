@@ -1,11 +1,11 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
@@ -81,25 +81,26 @@ def _generate_data_layer_norm(
     return dtype, values, axis, weight_values, bias_values, new_std_values
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.layer_norm",
     values_tuple=_generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float")
     ),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
-    num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
 )
 def test_layer_norm(
     *,
     values_tuple,
     epsilon,
-    num_positional_args,
     as_variable,
-    with_out,
+    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x, normalize_axis, weight, bias, new_std = values_tuple
     helpers.test_function(
@@ -108,10 +109,11 @@ def test_layer_norm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="layer_norm",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=0.1,
         atol_=0.5,
         x=x[0],
