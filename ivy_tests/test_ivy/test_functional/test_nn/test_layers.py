@@ -62,6 +62,7 @@ def test_linear(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
@@ -78,7 +79,7 @@ def test_linear(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x,
         weight=weight,
         bias=bias,
@@ -200,6 +201,7 @@ def test_scaled_dot_product_attention(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
@@ -216,7 +218,7 @@ def test_scaled_dot_product_attention(
         ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         q=q,
         k=k,
         v=v,
@@ -283,6 +285,7 @@ def test_multi_head_attention(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x_mha, scale, num_heads, context, mask = dtype_mha
     to_q_fn = lambda x_, v: x_
@@ -300,7 +303,7 @@ def test_multi_head_attention(
         ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x_mha,
         scale=scale,
         num_heads=num_heads,
@@ -450,6 +453,7 @@ def test_conv1d(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -465,7 +469,7 @@ def test_conv1d(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -493,6 +497,7 @@ def test_conv1d_transpose(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -510,7 +515,7 @@ def test_conv1d_transpose(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -540,6 +545,7 @@ def test_conv2d(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -555,7 +561,7 @@ def test_conv2d(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -586,6 +592,7 @@ def test_conv2d_transpose(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -603,7 +610,7 @@ def test_conv2d_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -636,6 +643,7 @@ def test_depthwise_conv2d(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -653,7 +661,7 @@ def test_depthwise_conv2d(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         # tensorflow does not support dilations > 1 and stride > 1
         ground_truth_backend="jax",
         x=x,
@@ -682,6 +690,7 @@ def test_conv3d(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
@@ -697,7 +706,7 @@ def test_conv3d(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -728,6 +737,7 @@ def test_conv_general_dilated(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -745,7 +755,7 @@ def test_conv_general_dilated(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -780,6 +790,7 @@ def test_conv_general_transpose(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -797,7 +808,7 @@ def test_conv_general_transpose(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
         ground_truth_backend="jax",
         x=x,
@@ -832,6 +843,7 @@ def test_conv3d_transpose(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
@@ -849,7 +861,7 @@ def test_conv3d_transpose(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         ground_truth_backend="jax",
         x=x,
         filters=filters,
@@ -946,6 +958,7 @@ def test_lstm_update(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     (
         dtype,
@@ -970,7 +983,7 @@ def test_lstm_update(
         on_device=on_device,
         rtol_=1e-01,
         atol_=1e-01,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x_lstm,
         init_h=init_h,
         init_c=init_c,

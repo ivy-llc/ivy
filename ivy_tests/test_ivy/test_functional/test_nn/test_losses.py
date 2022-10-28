@@ -48,6 +48,7 @@ def test_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -65,7 +66,7 @@ def test_cross_entropy(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         axis=axis,
@@ -114,6 +115,7 @@ def test_binary_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -130,7 +132,7 @@ def test_binary_cross_entropy(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         epsilon=epsilon,
@@ -181,6 +183,7 @@ def test_sparse_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
@@ -195,6 +198,7 @@ def test_sparse_cross_entropy(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         axis=axis,

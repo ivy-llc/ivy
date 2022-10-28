@@ -30,6 +30,7 @@ def test_relu(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -43,7 +44,7 @@ def test_relu(
         instance_method=instance_method,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
     )
 
@@ -72,6 +73,7 @@ def test_leaky_relu(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -87,7 +89,7 @@ def test_leaky_relu(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         alpha=alpha,
     )
@@ -117,6 +119,7 @@ def test_gelu(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -132,7 +135,7 @@ def test_gelu(
         on_device=on_device,
         atol_=1e-2,
         rtol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         approximate=approximate,
     )
@@ -160,6 +163,7 @@ def test_sigmoid(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -175,7 +179,7 @@ def test_sigmoid(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
     )
 
@@ -205,6 +209,7 @@ def test_softmax(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -220,7 +225,7 @@ def test_softmax(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         axis=axis,
     )
@@ -253,6 +258,7 @@ def test_softplus(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     assume(beta != 0)
     assume(threshold != 0)
@@ -268,7 +274,7 @@ def test_softplus(
         instance_method=instance_method,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=test_gradients,
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
@@ -302,6 +308,7 @@ def test_log_softmax(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -317,7 +324,7 @@ def test_log_softmax(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         axis=axis,
     )
