@@ -1238,7 +1238,7 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the 1D Discrete Cosine Tranformation of a given signal
+    """Computes the 1D Discrete Cosine Tranformation of a given signal.
 
     Parameters
     ----------

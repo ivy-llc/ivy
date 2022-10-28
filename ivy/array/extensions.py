@@ -414,3 +414,41 @@ class ArrayWithExtensions(abc.ABC):
             [ 1.,  0.,  0.]])
         """
         return ivy.flipud(self._data, out=out)
+
+
+    def dct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Optional[Literal[1, 2, 3, 4]] = 2,
+        n: Optional[int] = None,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.dct. This method simply
+        wraps the function, and so the docstring for ivy.dct also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The lenght of the transform. If n is less than the input signal lenght, 
+            then x is truncated, if n is larger then x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        """
+        return ivy.dct(self._data, type=type, n=n, norm=norm, out=out)
