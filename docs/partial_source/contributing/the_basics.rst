@@ -190,17 +190,17 @@ With Browser:
 
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file, or view the revision history of a single line within a file.
 
-    .. image:: content/git_blame_1.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_1.png?raw=true
        :width: 420
 
 This view can be toggled from the option in left vertical pane, or from the "blame" icon in top-right, as highlighted above.
 
-    .. image:: content/git_blame_2.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_2.png?raw=true
        :width: 420
 
 Each time you click the highlighted icon, the previous revision information for that line is shown, including who committed the change and when this happened.
 
-    .. image:: content/git_blame_3.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_3.png?raw=true
        :width: 420
 
 Whenever starting a discussion or creating an issue, you are very welcome to tag members of the Ivy team using "@", selecting the person you think would most suitable to interact with, based on the information gained from the above steps.
@@ -347,13 +347,13 @@ With Docker
 #. With PyCharm (With or without docker):
     #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
         
-        .. image:: content/pytest_button_pycharm.png
+        .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
            :width: 420
         
     #. Testing can be done for the entire project, individual submodules, individual files and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
         
-        .. image:: content/pytest_with_pycharm.png
+        .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
            :width: 420
         
 
