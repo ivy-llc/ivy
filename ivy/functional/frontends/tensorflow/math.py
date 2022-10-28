@@ -181,6 +181,10 @@ def polyval(coeffs, x, name=None):
 
 
 def pow(x, y, name="pow"):
+    if not (isinstance(x, int) or isinstance(x, float)):
+        x=x.data
+    if not (isinstance(y, int) or isinstance(y, float)):
+        y=y.data
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.pow(x, y)
 
