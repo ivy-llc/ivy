@@ -235,6 +235,6 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if x.dtype not in [tf.float32, tf.float64]:
+    if x.dtype not in (tf.float32, tf.float64):
         x = tf.cast(x, tf.float32)
     return tf.signal.dct(x, type=type, n=n, norm=norm)

@@ -317,6 +317,8 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
+    if norm not in (None, "ortho"):
+        raise ValueError("Norm must be either None or 'ortho'")
     if x.dtype not in [torch.float32, torch.float64]:
         x = x.type(torch.float32)
     if n is not None:
@@ -330,6 +332,8 @@ def dct(
     axis_dim_float = torch.tensor(axis_dim, dtype=x.dtype)
 
     if type == 1:
+        if norm:
+            raise ValueError("Normalization not supported for type-I DCT")
         x = torch.concat([x, x.flip(-1)[..., 1:-1]], dim=-1)
         dct_out = torch.real(torch.fft.rfft(x, dim=-1))
         return dct_out

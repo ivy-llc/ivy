@@ -295,6 +295,8 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if norm not in (None, "ortho"):
+        raise ValueError("Norm must be either None or 'ortho'")
     if n is not None:
         signal_len = x.shape[-1]
         if n <= signal_len:
@@ -306,6 +308,8 @@ def dct(
     axis_dim_float = jnp.array(axis_dim, dtype=x.dtype)
 
     if type == 1:
+        if norm:
+            raise ValueError("Normalization not supported for type-I DCT")
         x = jnp.concatenate([x, x[..., -2:0:-1]])
         dct_out = jnp.real(jnp.fft.rfft(x))
         return dct_out
