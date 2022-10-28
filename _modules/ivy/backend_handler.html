@@ -407,6 +407,35 @@
     <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../backend_handler/set_numpy_backend.html#ivy.backend_handler.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../backend_handler/set_jax_backend.html#ivy.backend_handler.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../backend_handler/set_tensorflow_backend.html#ivy.backend_handler.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets TensorFlow to be the global backend. equivalent to</span>
+<span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../backend_handler/set_torch_backend.html#ivy.backend_handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../backend_handler/get_backend.html#ivy.backend_handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `backend` if specified, or if it isn&#39;t specified it</span>
 <span class="sd">    returns the Ivy backend associated with the current globally set backend.</span>

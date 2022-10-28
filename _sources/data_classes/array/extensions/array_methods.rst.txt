@@ -19,6 +19,7 @@ Array methods
    array_methods/fmax.rst
    array_methods/trapz.rst
    array_methods/float_power.rst
+   array_methods/exp2.rst
    array_methods/flatten.rst
    array_methods/max_pool2d.rst
    array_methods/max_pool1d.rst
@@ -29,6 +30,7 @@ Array methods
    array_methods/flipud.rst
    array_methods/vstack.rst
    array_methods/hstack.rst
+   array_methods/rot90.rst
    array_methods/dirichlet.rst
    array_methods/msort.rst
    array_methods/median.rst
