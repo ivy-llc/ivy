@@ -81,7 +81,8 @@ class Tensor:
         return tf_frontend.raw_ops.GreaterEqual(x=self.data, y=y.data, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        return Tensor(self.data.__getitem__(slice_spec))
+        ret = ivy.get_item(self.data, slice_spec)
+        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
