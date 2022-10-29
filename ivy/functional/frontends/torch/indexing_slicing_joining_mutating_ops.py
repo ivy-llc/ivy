@@ -94,3 +94,8 @@ def tile(input, dims):
     else:
         res = ivy.tile(input, reps=dims, out=None)
     return res
+
+
+@to_ivy_arrays_and_back
+def unsqueeze(input, dim=0):
+    return ivy.expand_dims(input, axis=dim)
