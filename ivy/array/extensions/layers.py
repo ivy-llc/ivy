@@ -269,6 +269,7 @@ class ArrayWithLayersExtensions(abc.ABC):
         *,
         type: Optional[Literal[1, 2, 3, 4]] = 2,
         n: Optional[int] = None,
+        axis: Optional[int] = -1,
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -301,4 +302,4 @@ class ArrayWithLayersExtensions(abc.ABC):
         >>> x.dct(type=2, norm="ortho")
         ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
         """
-        return ivy.dct(self._data, type=type, n=n, norm=norm, out=out)
+        return ivy.dct(self._data, type=type, n=n, axis=axis, norm=norm, out=out)
