@@ -1,6 +1,6 @@
 # global
 from typing import Union, Optional
-
+import numpy as np
 import jax
 import jax.numpy as jnp
 
@@ -10,13 +10,14 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    # jnp.where is used for consistent gradients
-    return jnp.where(x != 0, jnp.absolute(x), 0)
+    return jnp.absolute(x)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccos(x)
 
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
 
 def acosh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccosh(x)
