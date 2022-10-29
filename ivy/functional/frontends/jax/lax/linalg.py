@@ -33,3 +33,4 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+    
