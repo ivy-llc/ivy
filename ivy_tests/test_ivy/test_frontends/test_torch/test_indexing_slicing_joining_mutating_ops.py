@@ -127,7 +127,7 @@ def test_torch_concat(
 @handle_cmd_line_args
 @given(
     params_indices_others=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
+        array_dtypes=helpers.get_dtypes("valid"),
         indices_dtypes=["int64"],
         min_num_dims=1,
         max_num_dims=5,
