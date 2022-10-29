@@ -1,6 +1,6 @@
 # global
 from typing import Union, Optional
-
+import numpy as np
 import torch
 
 # local
@@ -14,6 +14,8 @@ def _cast_for_unary_op(x):
         x = torch.tensor(x)
     return x
 
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
 
 def add(
     x1: Union[float, torch.Tensor],
