@@ -145,6 +145,9 @@ class Tensor:
     def view_as(self, other):
         return self.view(other.shape)
 
+    def detach(self):
+        return self.new_tensor(self.data, requires_grad=False)
+
     # Special Methods #
     # -------------------#
 
