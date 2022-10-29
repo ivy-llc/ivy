@@ -87,6 +87,8 @@ def where(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if x1 == None and x2 == None:
+        return np.where(condition)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.where(condition, x1, x2).astype(x1.dtype)
 
