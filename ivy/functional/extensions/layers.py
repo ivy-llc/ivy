@@ -854,7 +854,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The lenght of the transform. If n is less than the input signal lenght, 
+        The lenght of the transform. If n is less than the input signal lenght,
         then x is truncated, if n is larger then x is zero-padded.
     norm
         The type of normalization to be applied. Must be either None or "ortho".
@@ -903,14 +903,14 @@ def dct(
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64], dtype=ivy.float32),
-    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8], dtype=ivy.float32))
+    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
     >>> container_n = ivy.Container(a=9, b=4)
     >>> container_type = ivy.Container(a=2, b=1)
     >>> container_norm = ivy.Container(a="ortho", b=None)
     >>> ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
     {
-        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9, 
+        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
                     -5.89]),
         b: ivy.array([15., -4., 0., -1.])
     }

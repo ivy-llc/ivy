@@ -931,7 +931,6 @@ class ContainerWithLayersExtensions(ContainerBase):
             self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
         )
 
-
     @staticmethod
     def static_dct(
         x: ivy.Container,
@@ -957,8 +956,8 @@ class ContainerWithLayersExtensions(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght, 
-            then x is truncated, if n is larger then x is zero-padded.
+            The lenght of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
         out
@@ -977,22 +976,22 @@ class ContainerWithLayersExtensions(ContainerBase):
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> ivy.Container.static_dct(x, type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
+            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
                         -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0., 
+            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
                         -0.0507])
         }
-        
+
         With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([  8, 16,  24,  32,   40,   48,   56,   64]),
         ...                   b=ivy.array([11., 54, 23., 13., 255., 255., 132., 182.]))
-        >>> container_n = ivy.Container(a=9, b=5)
-        >>> container_type = ivy.Container(a=2, b=4)
-        >>> container_norm = ivy.Container(a="ortho", b=None)
-        >>> ivy.Container.static_dct(x, type=container_type, n=container_n, norm=container_norm)
+        >>> n = ivy.Container(a=9, b=5)
+        >>> type = ivy.Container(a=2, b=4)
+        >>> norm = ivy.Container(a="ortho", b=None)
+        >>> ivy.Container.static_dct(x, type=type, n=n, norm=norm)
         {
-            a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9, 
+            a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
                         -5.89]),
             b: ivy.array([242., -253., 286., -515., 467.])
         }
@@ -1030,7 +1029,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght, 
+            The lenght of the transform. If n is less than the input signal lenght,
             then x is truncated, if n is larger then x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -1048,9 +1047,9 @@ class ContainerWithLayersExtensions(ContainerBase):
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> x.dct(type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
+            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
                         -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0., 
+            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
                         -0.0507])
         }
         """

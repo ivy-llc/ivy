@@ -263,7 +263,6 @@ class ArrayWithLayersExtensions(abc.ABC):
             **kwargs,
         )
 
-
     def dct(
         self: ivy.Array,
         /,
@@ -284,8 +283,8 @@ class ArrayWithLayersExtensions(abc.ABC):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght, 
-            then x is truncated, if n is larger then x is zero-padded.
+            The lenght of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
         out
@@ -302,9 +301,4 @@ class ArrayWithLayersExtensions(abc.ABC):
         >>> x.dct(type=2, norm="ortho")
         ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
         """
-        return ivy.dct(
-            self._data, 
-            type=type, 
-            n=n, 
-            norm=norm, 
-            out=out)
+        return ivy.dct(self._data, type=type, n=n, norm=norm, out=out)
