@@ -226,11 +226,16 @@ def dct(
     *,
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
+    axis: Optional[int] = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
+    if axis != -1 and type != 2:
+        new_dims = list(range(len(x.shape)))
+        new_dims[axis], new_dims[-1] = new_dims[-1], axis
+        x = jnp.transpose(x, new_dims)
     if n is not None:
         signal_len = x.shape[-1]
         if n <= signal_len:
@@ -244,12 +249,11 @@ def dct(
     if type == 1:
         if norm:
             raise ValueError("Normalization not supported for type-I DCT")
-        x = jnp.concatenate([x, x[..., -2:0:-1]])
+        x = jnp.concatenate([x, x[..., -2:0:-1]], axis=-1)
         dct_out = jnp.real(jnp.fft.rfft(x))
-        return dct_out
 
     elif type == 2:
-        dct_out = jax.scipy.fft.dct(x, type=2, n=n, norm=norm)
+        dct_out = jax.scipy.fft.dct(x, type=2, n=n, axis=axis, norm=norm)
         return dct_out
     
     elif type == 3:
@@ -268,13 +272,15 @@ def dct(
         )
         dct_out = jnp.real(
             jnp.fft.irfft(scale * jlax.complex(x, real_zero), n=2 * axis_dim)
-        )
-        return dct_out[..., :axis_dim]
+        )[..., :axis_dim]
 
     elif type == 4:
-        dct_2 = dct(x, type=2, n=2 * axis_dim, norm=None)
+        dct_2 = jax.scipy.fft.dct(x, type=2, n=2 * axis_dim, norm=None)
         dct_out = dct_2[..., 1::2]
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
-        return dct_out
+
+    if axis != -1 and type != 2:
+        dct_out = jnp.transpose(dct_out, new_dims)
+    return dct_out
         
