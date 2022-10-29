@@ -149,13 +149,19 @@ class ndarray:
     ):
         return np_frontend.copy(self.data)
 
-    def __neg__(self,):
+    def __neg__(
+        self,
+    ):
         return np_frontend.negative(self.data)
 
-    def __pos__(self,):
+    def __pos__(
+        self,
+    ):
         return np_frontend.positive(self.data)
 
-    def __bool__(self,):
+    def __bool__(
+        self,
+    ):
         if isinstance(self.data, int):
             return self.data != 0
 
