@@ -1335,3 +1335,85 @@ def test_torch_instance_view_as(
         class_name="tensor",
         method_name="view_as",
     )
+
+
+# unsqueeze
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_instance_unsqueeze(
+    dtype_value,
+    dim,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dim": dim,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="unsqueeze",
+    )
+
+
+# unsqueeze_
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_instance_unsqueeze_(
+    dtype_value,
+    dim,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dim": dim,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="unsqueeze_",
+    )
