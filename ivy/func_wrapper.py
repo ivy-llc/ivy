@@ -1,9 +1,10 @@
 import ivy
 import functools
-from  functools import lru_cache
+from time import perf_counter
 from types import FunctionType
 from typing import Callable
 
+t1_start = perf_counter()
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
@@ -40,12 +41,14 @@ def _get_first_array(*args, **kwargs):
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
 
+def compile_function(fn:Callable) -> Callable:
+    data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval")
+    return eval(data_comp)
 
 # Array Handling #
 # ---------------#
 def inputs_to_native_arrays(fn: Callable) -> Callable:
-    data_com = compile("functools.wraps(fn)","func_wrapper.py","eval")
-    @eval(data_com)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
@@ -86,9 +89,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
     return new_fn
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
-    data_com1 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com1)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.NativeArray` instances in both the positional and keyword
@@ -123,9 +124,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
-    data_com2 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com2)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.NativeArray` instances in
@@ -159,9 +158,7 @@ def _is_zero_dim_array(x):
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
-    data_com3 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com3)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Calls the function, and then converts all 0 dimensional array instances in
@@ -224,9 +221,7 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
 
 
 def infer_dtype(fn: Callable) -> Callable:
-    data_com4 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com4)
+    @compile_function(fn)
     def new_fn(*args, dtype=None, **kwargs):
         """
         Determines the correct `dtype`, and then calls the function with the `dtype`
@@ -258,9 +253,7 @@ def infer_dtype(fn: Callable) -> Callable:
     return new_fn
 
 def integer_arrays_to_float(fn: Callable) -> Callable:
-    data_com5 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com5)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Promotes all the integer array inputs passed to the function both
@@ -300,9 +293,7 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
 # ----------------#
 
 def infer_device(fn: Callable) -> Callable:
-    data_com6 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com6)
+    @compile_function(fn)
     def new_fn(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
@@ -340,9 +331,7 @@ def infer_device(fn: Callable) -> Callable:
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
 
-    data_com7 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com7)
+    @compile_function(fn)
     def new_fn(*args, out=None, **kwargs):
         """
         Calls `fn` with the `out` argument handled correctly for performing an inplace
@@ -389,9 +378,7 @@ def handle_out_argument(fn: Callable) -> Callable:
 def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
-    data_com8 = compile("functools.wraps(fn)", "func_wrapper.py", "eval")
-
-    @eval(data_com8)
+    @compile_function(fn)
     def new_fn(*args, **kwargs):
         """
         Calls `fn` with the *nestable* property of the function correctly handled.
@@ -585,3 +572,6 @@ with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
     "supported_device_and_dtype", dict
 )
 
+t1_stop = perf_counter()
+
+endtime =print(t1_stop - t1_start)
