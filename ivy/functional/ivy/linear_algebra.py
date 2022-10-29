@@ -1155,8 +1155,8 @@ def matrix_rank(
     ivy.array([2., 1.])
 
     With :code: 'ivy.Container' inputs:
-    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
-                            b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), \
+                          b = ivy.array([[1., 0.], [0., 0.]]))
     >>> ivy.matrix_rank(x)
     {
         a:ivy.array(2.),
@@ -1175,22 +1175,24 @@ def matrix_rank(
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Transposes a matrix (or a stack of matrices) ``x``.
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
     x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-        ``MxN`` matrices.
+        input array having shape ``(..., M, N)`` and whose innermost two
+        dimensions form ``MxN`` matrices.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a
+        shape that the inputs broadcast to.
 
     Returns
     -------
     ret
         an array containing the transpose for each matrix and having shape
-        ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        ``(..., N, M)``. The returned array must have the same data
+        type as ``x``.
 
 
     This function conforms to the `Array API Standard
@@ -1202,6 +1204,48 @@ def matrix_transpose(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: 'ivy.Array' inputs:
+
+    >>> x = ivy.array([[0., 2.], [1., 3.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[0., 1.],
+               [2., 3.]])
+
+    >>> x = ivy.array([[1., 4.], [2., 5.], [3., 1.]])
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.matrix_transpose(x, out=y)
+    ivy.array([[1., 2., 3.],
+               [4., 5., 1.]])
+
+    >>> x = ivy.array([[2., 3.], [1., 2.]])
+    >>> ivy.matrix_transpose(x, out=x)
+    ivy.array([[2., 1.],
+       [3., 2.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[0., 1.],
+               [1., 2.],
+               [2., 3.]])
+
+    With :code: 'ivy.Container' inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1.], [0., 2.]]), \
+                          b=ivy.array([[3., 4.], [3., 5.]]))
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0.],
+                      [1., 2.]]),
+        b: ivy.array([[3., 3.],
+                      [4., 5.]])
+    }
     """
     return current_backend(x).matrix_transpose(x, out=out)
 
@@ -2129,22 +2173,75 @@ def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[ivy.Array] = None,
-):
-    return current_backend(x).diag(
-        x,
-        offset=offset,
-        padding_value=padding_value,
-        align=align,
-        num_rows=num_rows,
-        num_cols=num_cols,
-        out=out,
-    )
+) -> ivy.Array:
+    """Returns the specified diagonals of the input array,
+    or an array with the input array's elements as diagonals.
+
+    Parameters
+    ----------
+    x
+        An array with rank >= 1.
+    k
+        An integer that controls which diagonal to consider.
+        Positive value means superdiagonal,
+        0 refers to the main diagonal,
+        and negative value means subdiagonal.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        If x is a 1-D array, the function returns a 2-D square array with the elements
+        of input as diagonals.
+        If x is a 2-D array, the function returns a 1-D array with the diagonal elements
+        of x.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x)
+    ivy.array([0, 4, 8])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x, k=1)
+    ivy.array([1, 5])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x, k=-1)
+    ivy.array([3, 7])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(ivy.diag(x))
+    ivy.array([[0, 0, 0],
+               [0, 4, 0],
+               [0, 0, 8]])
+    """
+    return current_backend(x).diag(x, k=k, out=out)
 
 
 @to_native_arrays_and_back
