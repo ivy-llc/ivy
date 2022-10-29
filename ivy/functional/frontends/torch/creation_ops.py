@@ -78,6 +78,22 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
 
 
 @to_ivy_arrays_and_back
+def zeros_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    ret = ivy.zeros_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def arange(
     end,  # torch doesn't have a default for this.
     start=0,
