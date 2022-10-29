@@ -285,6 +285,6 @@ def deg2rad(input, *, out=None):
         into float if the dtype of the array is integer.
     """
 
-    if('int' in input.dtype):
+    if 'int' in input.dtype:
         input = input.astype('float32') 
     return ivy.array(input * 3.1416 / 180, out=out)
