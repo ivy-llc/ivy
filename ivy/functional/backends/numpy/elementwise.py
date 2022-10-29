@@ -65,6 +65,11 @@ asin.support_native_out = True
 
 
 @_handle_0_dim_output
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
+
+
+@_handle_0_dim_output
 def asinh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arcsinh(x, out=out)
 
