@@ -229,7 +229,7 @@ def cumprod(
     if not (exclusive or reverse):
         return torch.cumprod(x, axis, dtype=dtype, out=out)
     elif exclusive and reverse:
-        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
         x = torch.transpose(x, axis, -1)
         x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = torch.transpose(x, axis, -1)
@@ -240,7 +240,7 @@ def cumprod(
         x = torch.cumprod(x, -1, dtype=dtype)
         return torch.transpose(x, axis, -1)
     elif reverse:
-        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
         return torch.flip(x, dims=(axis,))
 
 
@@ -268,7 +268,7 @@ def cumsum(
         dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
             x = torch.transpose(x, axis, -1)
             x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = torch.transpose(x, axis, -1)
@@ -279,8 +279,10 @@ def cumsum(
             x = torch.cumsum(x, -1, dtype=dtype)
             res = torch.transpose(x, axis, -1)
         else:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
+            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
             res = torch.flip(x, dims=(axis,))
+        if ivy.exists(out):
+            return ivy.inplace_update(out, res)
         return res
     return torch.cumsum(x, axis, dtype=dtype, out=out)
 
