@@ -938,6 +938,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         *,
         type: Optional[Literal[1, 2, 3, 4]] = 2,
         n: Optional[int] = None,
+        axis: Optional[int] = -1,
         norm: Optional[Literal["ortho"]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1001,6 +1002,7 @@ class ContainerWithLayersExtensions(ContainerBase):
             x,
             type=type,
             n=n,
+            axis=axis,
             norm=norm,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1015,6 +1017,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         *,
         type: Optional[Literal[1, 2, 3, 4]] = 2,
         n: Optional[int] = None,
+        axis: Optional[int] = -1,
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1053,4 +1056,4 @@ class ContainerWithLayersExtensions(ContainerBase):
                         -0.0507])
         }
         """
-        return self.static_dct(self, type=type, n=n, norm=norm, out=out)
+        return self.static_dct(self, type=type, n=n, axis=axis, norm=norm, out=out)
