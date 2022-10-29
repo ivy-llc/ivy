@@ -1,8 +1,8 @@
 import ivy
 import functools
-from time import perf_counter
 from types import FunctionType
 from typing import Callable
+
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
@@ -41,7 +41,7 @@ def _get_first_array(*args, **kwargs):
     return arr
 
 def compile_function(fn:Callable) -> Callable:
-    data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval",0,False,-1)
+    data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval",0,False,1)
     return eval(data_comp)
 
 # Array Handling #
@@ -570,3 +570,4 @@ with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
 with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
     "supported_device_and_dtype", dict
 )
+
