@@ -361,17 +361,17 @@ def count_nonzero(
     Parameters
     ----------
     a
-        The array for which to count non-zeros.
+        array for which to count non-zeros.
     axis
-        Axis or tuple of axes along which to count non-zeros. Default is
+        optional axis or tuple of axes along which to count non-zeros. Default is
         None, meaning that non-zeros will be counted along a flattened
         version of the input array.
     keepdims
-        If this is set to True, the axes that are counted are left in the
+        optional, if this is set to True, the axes that are counted are left in the
         result as dimensions with size one. With this option, the result
         will broadcast correctly against the input array.
     dtype
-        The output dtype. Default is of type integer.
+        optional output dtype. Default is of type integer.
     out
         optional output array, for writing the result to.
 
@@ -389,9 +389,9 @@ def count_nonzero(
     >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
     >>> ivy.count_nonzero(a, axis=0)
     ivy.array([1, 2, 2, 2])
-    >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
+    >>> a = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> ivy.count_nonzero(a, axis=(0,1), keepdims=True)
-    ivy.array([[7]])
+    ivy.array([[[3, 4]]])
     """
     return ivy.current_backend().count_nonzero(
         a, axis=axis, keepdims=keepdims, dtype=dtype, out=out

@@ -628,15 +628,25 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         a
             container with the base input arrays.
         axis
-            Axis or tuple of axes along which to count non-zeros. Default is
+            optional axis or tuple of axes along which to count non-zeros. Default is
             None, meaning that non-zeros will be counted along a flattened
             version of the input array.
         keepdims
-            If this is set to True, the axes that are counted are left in the
+            optional, if this is set to True, the axes that are counted are left in the
             result as dimensions with size one. With this option, the result
             will broadcast correctly against the input array.
         dtype
-            The output dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to.
 
@@ -660,7 +670,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
                         b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
         >>> ivy.Container.static_count_nonzero(x, axis=0)
         {
-            a: ivy.array([3, 4]),
+            a: ivy.array([1, 2, 2, 2]),
             b: ivy.array([[1, 2],
                           [2, 2]])
         }
@@ -668,8 +678,8 @@ class ContainerWithElementWiseExtensions(ContainerBase):
                         b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
         >>> ivy.Container.static_count_nonzero(x, axis=(0,1), keepdims=True)
         {
-            a: ivy.array(7),
-            b: ivy.array(7)
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -707,15 +717,26 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         self
             container with the base input arrays.
         axis
-            Axis or tuple of axes along which to count non-zeros. Default is
+            optional axis or tuple of axes along which to count non-zeros. Default is
             None, meaning that non-zeros will be counted along a flattened
             version of the input array.
         keepdims
-            If this is set to True, the axes that are counted are left in the
+            optional, if this is set to True, the axes that are counted are left in the
             result as dimensions with size one. With this option, the result
             will broadcast correctly against the input array.
         dtype
-            The output dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``
         out
             optional output container, for writing the result to.
 
@@ -728,12 +749,27 @@ class ContainerWithElementWiseExtensions(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                               b=[5, 6, 7])
+       >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
         >>> x.count_nonzero()
         {
-            a: ivy.array([2.,  4.,  8.])
-            b: ivy.array([32., 64., 128.])
+            a: ivy.array(7),
+            b: ivy.array(7)
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=0)
+        {
+            a: ivy.array([1, 2, 2, 2]),
+            b: ivy.array([[1, 2],
+                          [2, 2]])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        {
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
         }
         """
         return self.static_count_nonzero(

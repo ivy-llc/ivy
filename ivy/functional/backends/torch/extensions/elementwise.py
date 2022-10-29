@@ -130,7 +130,7 @@ def count_nonzero(
     if not keepdims:
         return x
     if isinstance(axis, tuple):
-        for d in axis:
+        for d in sorted(axis, reverse=True):
             x = x.unsqueeze(d)
         return x
     return x.unsqueeze(axis)

@@ -290,17 +290,17 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         Parameters
         ----------
         self
-            The input array for which to count non-zeros.
+            input array for which to count non-zeros.
         axis
-            Axis or tuple of axes along which to count non-zeros. Default is
+            optional axis or tuple of axes along which to count non-zeros. Default is
             None, meaning that non-zeros will be counted along a flattened
             version of the input array.
         keepdims
-            If this is set to True, the axes that are counted are left in the
+            optional, if this is set to True, the axes that are counted are left in the
             result as dimensions with size one. With this option, the result
             will broadcast correctly against the input array.
         dtype
-            The output dtype
+            optional output dtype. Default is of type integer.
         out
             optional output array, for writing the result to.
 
@@ -312,16 +312,16 @@ class ArrayWithElementWiseExtensions(abc.ABC):
 
         Examples
         --------
-        >>> y = ivy.array([1, 2, 3])
-        >>> ivy.trapz(y)
-        4.0
-        >>> y = ivy.array([1, 2, 3])
-        >>> x = ivy.array([4, 6, 8])
-        >>> ivy.trapz(y, x=x)
-        8.0
-        >>> y = ivy.array([1, 2, 3])
-        >>> ivy.trapz(y, dx=2)
-        8.0
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.count_nonzero()
+        ivy.array(3)
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=0)
+        ivy.array([[1, 2],
+               [2, 2]])
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        ivy.array([[[3, 4]]])
         """
         return ivy.count_nonzero(
             self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
