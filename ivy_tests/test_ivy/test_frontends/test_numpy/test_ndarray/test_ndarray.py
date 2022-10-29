@@ -99,7 +99,7 @@ def test_numpy_ndarray_reshape(
     )
 
     
-#resize
+# resize
 handle_cmd_line_args
 given(
     dtype_and_x=helpers.dtype_and_values(
@@ -111,6 +111,8 @@ given(
         fn_name="ivy.functional.frontends.numpy.resize"
     ),
 )
+
+
 def test_numpy_resize(
     dtype_and_x,
     dtype,
