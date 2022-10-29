@@ -278,7 +278,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,

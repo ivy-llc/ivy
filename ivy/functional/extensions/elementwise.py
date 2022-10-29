@@ -351,7 +351,7 @@ def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[int, ivy.Array]] = None,
