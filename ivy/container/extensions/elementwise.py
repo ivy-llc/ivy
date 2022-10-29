@@ -708,9 +708,10 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.count_nonzero. This method simply
-        wraps the function, and so the docstring for ivy.count_nonzero also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.count_nonzero. This method
+        simply wraps the function, and so the docstring for ivy.count_nonzero also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
