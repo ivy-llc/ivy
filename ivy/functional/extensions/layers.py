@@ -842,6 +842,7 @@ def dct(
     *,
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
+    axis: Optional[int] = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -856,6 +857,8 @@ def dct(
     n
         The lenght of the transform. If n is less than the input signal lenght,
         then x is truncated, if n is larger then x is zero-padded.
+    axis
+        The axis to compute the DCT along.
     norm
         The type of normalization to be applied. Must be either None or "ortho".
     out
@@ -915,4 +918,4 @@ def dct(
         b: ivy.array([15., -4., 0., -1.])
     }
     """
-    return ivy.current_backend().dct(x, type=type, n=n, norm=norm, out=out)
+    return ivy.current_backend().dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
