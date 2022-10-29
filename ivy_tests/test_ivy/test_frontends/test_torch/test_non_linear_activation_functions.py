@@ -487,7 +487,7 @@ def test_torch_celu(
     ),
     with_inplace=st.booleans(),
 )
-def test_torch_celu(
+def test_torch_mish(
     dtype_and_input,
     with_inplace,
     as_variable,
