@@ -218,3 +218,12 @@ def as_tensor(
     device=None,
 ):
     return ivy.asarray(data, dtype=dtype, device=device)
+
+
+def from_numpy(
+    data
+):
+    return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
+
+
+from_numpy.supported_dtypes = ("ndarray",)
