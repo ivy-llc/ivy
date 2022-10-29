@@ -61,5 +61,19 @@ def solve(a, b):
 
 
 @to_ivy_arrays_and_back
-def matrix_power(x, n):
-    return ivy.matrix_power(x, n)
+def norm(x, ord=None, axis=None, keepdims=False):
+    if type(axis) in [list, tuple] and len(axis) == 2:
+        return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+    return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
+    

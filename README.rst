@@ -72,7 +72,6 @@ Contents
 * `Background`_
 * `Design`_
 * `Extensions`_
-* `Roadmap`_
 * `Contributing`_
 
 Overview
@@ -252,28 +251,12 @@ Extensions
 | (b) **Builder [page coming soon!]** ✅
 | :code:`ivy.Trainer`, :code:`ivy.Dataset`, :code:`ivy.Dataloader` and other helpful classes and functions for creating training workflows in only a few lines of code
 
-Roadmap
--------
-
-| We strongly welcome and encourage contributions from the community as we take on this important journey towards ML framework unification. These posts will explain exactly how you can get involved 🙂
-|
-| (a) **Standardize [page coming soon!]** 🚧
-| Align Ivy with the `Consortium for Python Data API Standards <https://data-apis.org>`_
-|
-| (b) **Front-Ends [page coming soon!]** 🚧
-| Create backend-specific front-ends for each supported ML framework
-|
-| (c) **Transpiler [page coming soon!]** 🚧
-| Verify code conversions work for each back-end and front-end combo
-|
-| (d) **Ecosystem [page coming soon!]** 🚧
-| Add multi-framework support to popular repos with a few lines changed
-
 Contributing
 ------------
 
 Join our community as a code contributor, and help accelerate our journey to unify all ML frameworks!
-Find out more in our `Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide!
+Check out all of our open tasks, and find out more info in our
+`Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide!
 
 Citation
 --------

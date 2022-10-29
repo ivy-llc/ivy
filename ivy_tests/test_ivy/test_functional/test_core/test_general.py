@@ -17,6 +17,7 @@ import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 # Helpers #
@@ -893,17 +894,28 @@ def test_default(x, default_val):
             with_callable = True
         else:
             x_dtype, x = x
+            x = x[0].tolist() if isinstance(x, list) else x
     else:
         if hasattr(default_val, "__call__"):
             with_callable = True
         else:
             dv_dtype, default_val = default_val
+            default_val = (
+                default_val[0].tolist()
+                if isinstance(default_val, list)
+                else default_val
+            )
 
     truth_val = ivy.to_native(x if x is not None else default_val)
     if with_callable:
         assert ivy.default(x, default_val) == truth_val
     else:
-        assert np.allclose(ivy.default(x, default_val), truth_val)
+        assert_all_close(
+            np.asarray(ivy.default(x, default_val)),
+            np.asarray(truth_val),
+            rtol=1e-3,
+            atol=1e-3,
+        )
 
 
 @handle_cmd_line_args
@@ -1111,9 +1123,12 @@ def test_explicit_ivy_framework_handles(device):
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
         lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
@@ -1168,21 +1183,26 @@ def test_einops_rearrange(
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
-        lambda x: ivy.array([x[1][0].tolist()]).shape[2] % 2 == 0
-        and ivy.array([x[1][0].tolist()]).shape[3] % 2 == 0
+        lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
+        and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
+    floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
     num_positional_args=helpers.num_positional_args(fn_name="einops_reduce"),
 )
 def test_einops_reduce(
     dtype_x,
     pattern_and_axes_lengths,
+    floattypes,
     reduction,
     with_out,
     as_variable,
@@ -1194,7 +1214,7 @@ def test_einops_reduce(
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
-    if (reduction in ["mean", "prod"]) and (dtype not in helpers.get_dtypes("float")):
+    if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
@@ -1303,10 +1323,6 @@ def test_inplace_variables_supported(device):
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1337,11 +1353,14 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e05,
+        max_value=1e05,
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x - val
@@ -1364,11 +1383,14 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e05,
+        max_value=1e05,
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x + val

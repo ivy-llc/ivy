@@ -188,6 +188,39 @@ def test_torch_zeros(
     )
 
 
+# zeros_like
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.zeros_like"
+    ),
+)
+def test_torch_zeros_like(
+    dtype_and_x,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=[False],
+        device=device,
+        frontend="torch",
+        fn_tree="zeros_like",
+        input=input[0],
+        dtype=dtypes[0],
+        requires_grad=requires_grad,
+    )
+
+
 @handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
