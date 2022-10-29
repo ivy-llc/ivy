@@ -591,29 +591,6 @@ def beta(
     ret
         Returns an array with the given shape filled with random values sampled from
         a beta distribution.
-
-    Examples
-    --------
-    >>> y = ivy.beta(0.5, 0.5, shape=(1,1))
-    >>> print(y)
-    ivy.array([[0.5]])
-
-    >>> y = ivy.beta(0.5, 0.5, shape=(2, 2), device='cpu')
-    >>> print(y)
-    ivy.array([[0.5,0.5],[0.5,0.5]])
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> ivy.beta(0.5, 0.5, shape=(3,), out=x)
-    >>> print(x)
-    ivy.array([0.5, 0.5, 0.5])
-
-    >>> y = ivy.zeros((3, 3))
-    >>> ivy.beta(0.5, 0.5, shape=(3, 3), device='cpu', out=y)
-    >>> print(y)
-    ivy.array([[0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5]])
-
     """
     return ivy.current_backend().beta(
         a, b, shape=shape, device=device, dtype=dtype, seed=seed, out=out
