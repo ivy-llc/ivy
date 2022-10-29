@@ -455,7 +455,21 @@ def test_hamming_window(
 
 @st.composite
 def valid_dct(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shared_dtype=True,
+        )
+    )
+    dims_len = len(x[0].shape)
     n = draw(st.sampled_from([None, "int"]))
+    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
     if n == "int":
@@ -464,28 +478,16 @@ def valid_dct(draw):
             n = 2
     if norm == "ortho" and type == 1:
         norm = None
-
-    return type, n, norm
+    return dtype, x, type, n, axis, norm
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        max_value=65280,
-        min_value=-65280,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shared_dtype=True,
-    ),
-    dct_args=valid_dct(),
+    dtype_x_and_args=valid_dct(),
     num_positional_args=helpers.num_positional_args(fn_name="dct"),
 )
 def test_dct(
-    dtype_and_x,
-    dct_args,
+    dtype_x_and_args,
     as_variable,
     with_out,
     num_positional_args,
@@ -493,9 +495,8 @@ def test_dct(
     container,
     instance_method,
     fw,
-):
-    input_dtype, x = dtype_and_x
-    type, n, norm = dct_args
+):  
+    input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -509,6 +510,7 @@ def test_dct(
         x=x[0],
         type=type,
         n=n,
+        axis=axis,
         norm=norm,
         rtol_=1e-3,
         atol_=1e-1,
