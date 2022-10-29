@@ -136,12 +136,13 @@ def var(
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
-        return tf.cast(
+        return ivy.astype(
             tf.math.multiply(
                 tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
                 size / (size - correction),
             ),
             x.dtype,
+            copy=False,
         )
 
 
