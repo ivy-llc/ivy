@@ -48,6 +48,9 @@ class Tensor:
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
+    def atan(self, *, out=None):
+        return torch_frontend.atan(self.data, out=out)
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
