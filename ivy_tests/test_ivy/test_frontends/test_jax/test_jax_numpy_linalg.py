@@ -487,7 +487,8 @@ def test_jax_norm(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_power"
     ),
 )
-def test_jax_numpy_matrix_power(dtype_and_x, n, as_variable, native_array, num_positional_args):
+def test_jax_numpy_matrix_power(dtype_and_x, n, as_variable, 
+    native_array, num_positional_args):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
