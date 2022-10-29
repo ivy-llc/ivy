@@ -487,6 +487,68 @@ This function requires us to create extra functions for generating :code:`shape`
 * We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :func:`torch.full` supports :code:`out` so we generate :code:`with_out`.
 
+Alias functions
+^^^^^^^^^^^^^^^
+Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
+Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`
+
+Code example for alias function:
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/torch/comparison_ops.py
+    @to_ivy_arrays_and_back
+    def greater(input, other, *, out=None):
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.greater(input, other, out=out
+
+
+    gt = greater
+
+* As you can see the :func:`torch_frontend.gt` is an alias to :func:`torch_frontend.greater` and below is how we update the unit test of :func:`torch_frontend.greater` to test the alias function as well.
+
+**PyTorch**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_comparison_ops.py
+    @handle_cmd_line_args
+    @given(
+        dtype_and_inputs=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=2,
+            allow_inf=False,
+            shared_dtype=True,
+        ),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.torch.greater"
+        ),
+    )
+    def test_torch_greater(
+        dtype_and_inputs,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+    ):
+        input_dtype, inputs = dtype_and_inputs
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            has_aliases=True,
+            all_aliases=["gt"],
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            frontend="torch",
+            fn_tree="greater",
+            input=inputs[0],
+            other=inputs[1],
+            out=None,
+        )
+
+* We added a list of all aliases to the :code:`greater` function with a full namespace path such that when we are testing the original function we will test for the alias as well.
+* During the frontend implementation, if a new alias is introduced you only need to go to the test function of the original frontend function and add that alias to :code:`all_aliases` argument in the :func:`test_frontend_function` helper with its full namespace.
 
 Frontend Instance Method Tests
 ------------------------------

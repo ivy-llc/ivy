@@ -44,9 +44,9 @@ if __name__ == "__main__":
             for line in added:
                 top = -1
                 bottom = -1
-                if line - 1 < len(tests_file):
+                if 0 <= line - 1 < len(tests_file):
                     top = tests_file[line - 1]
-                if line + 1 < len(tests_file):
+                if 0 <= line + 1 < len(tests_file):
                     bottom = tests_file[line + 1]
                 tests_line = set()
                 if top != -1 and bottom != -1:

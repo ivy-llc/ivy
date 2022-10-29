@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Literal,
     Iterable,
+    Any,
 )
 from numbers import Number
 
@@ -343,6 +344,140 @@ class ContainerWithLayersExtensions(ContainerBase):
         )
 
     @staticmethod
+    def static_max_pool1d(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel: Union[int, Tuple[int]],
+        strides: Union[int, Tuple[int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.max_pool1d. This method simply
+        wraps the function, and so the docstring for ivy.max_pool1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container of input images *[batch_size, w, d_in]*.
+        kernel
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(ivy.Container.static_max_pool1d(x,2, 2, "VALID"))
+        {
+            a: ivy.array([[[3., 4., 5.]],
+                          [[9., 10., 11.]]]),
+            b: ivy.array([[[4., 5., 6., 7.]],
+                          [[16., 17., 18., 19.]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "max_pool1d",
+            x,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def max_pool1d(
+        self: ivy.Container,
+        kernel: Union[int, Tuple[int]],
+        strides: Union[int, Tuple[int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of `ivy.max_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container of input images *[batch_size, w, d_in]*.
+        kernel
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(x.max_pool1d(2, 2, "VALID"))
+        {
+            a: ivy.array([[[3., 4., 5.]],
+                          [[9., 10., 11.]]]),
+            b: ivy.array([[[4., 5., 6., 7.]],
+                          [[16., 17., 18., 19.]]])
+        }
+        """
+        return self.static_max_pool1d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_kaiser_window(
         window_length: Union[int, ivy.Container],
         periodic: bool = True,
@@ -460,10 +595,10 @@ class ContainerWithLayersExtensions(ContainerBase):
 
     @staticmethod
     def static_pad(
-        x: ivy.Container,
+        input: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -491,6 +626,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.pad. This method simply
@@ -499,7 +635,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "pad",
-            x,
+            input,
             pad_width,
             mode=mode,
             stat_length=stat_length,
@@ -511,13 +647,14 @@ class ContainerWithLayersExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
         )
 
     def pad(
         self: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        pad_width: Union[Iterable[Tuple[int]], int],
         mode: Optional[
             Union[
                 Literal[
@@ -545,6 +682,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.pad. This method simply
@@ -564,4 +702,231 @@ class ContainerWithLayersExtensions(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            **kwargs,
+        )
+
+    @staticmethod
+    def static_kaiser_bessel_derived_window(
+        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        periodic: bool = True,
+        beta: float = 12.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.kaiser_bessel_derived_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.kaiser_bessel_derived_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container including window lenghts.
+        periodic
+            If True, returns a periodic window suitable for use in spectral analysis.
+            If False, returns a symmetric window suitable for use in filter design.
+        beta
+            a float used as shape parameter for the window.
+        dtype
+            data type of the returned array.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Kaiser Bessel Derived windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_kaiser_bessel_derived_window(x, True, 5)
+        {
+            a: ivy.array([0.70710677, 0.70710677]),
+            b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "kaiser_bessel_derived_window",
+            x,
+            periodic,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    def kaiser_bessel_derived_window(
+        self: ivy.Container,
+        periodic: bool = True,
+        beta: float = 12.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.kaiser_bessel_derived_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.kaiser_bessel_derived_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including window lenghts.
+        periodic
+            If True, returns a periodic window suitable for use in spectral analysis.
+            If False, returns a symmetric window suitable for use in filter design.
+        beta
+            a float used as shape parameter for the window.
+        dtype
+            data type of the returned array.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Kaiser Bessel Derived windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5))
+        >>> x.kaiser_bessel_derived_window(True, 5)
+        {
+            a: ivy.array([0.70710677, 0.70710677]),
+            b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
+        }
+        """
+        return self.static_kaiser_bessel_derived_window(
+            self, periodic, beta, dtype=dtype, out=out
+        )
+
+    @staticmethod
+    def static_hamming_window(
+        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        periodic: Optional[bool] = True,
+        alpha: Optional[float] = 0.54,
+        beta: Optional[float] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hamming_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.hamming_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container including window lenghts.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        alpha
+            The coefficient alpha in the hamming window equation
+        beta
+            The coefficient beta in the hamming window equation
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Hamming windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_hamming_window(x, periodic=True, alpha=0.2, beta=2)
+        {
+            a: ivy.array([-1.8000,  1.2000,  1.2000]),
+            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hamming_window",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            periodic=periodic,
+            alpha=alpha,
+            beta=beta,
+            dtype=dtype,
+            out=out,
+        )
+
+    def hamming_window(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        periodic: Optional[bool] = True,
+        alpha: Optional[float] = 0.54,
+        beta: Optional[float] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.hamming_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.hamming_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including window lenghts.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        alpha
+            The coefficient alpha in the hamming window equation
+        beta
+            The coefficient beta in the hamming window equation
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the Hamming windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5))
+        >>> x.hamming_window(periodic=True, alpha=0.2, beta=2)
+        {
+            a: ivy.array([-1.8000,  1.2000,  1.2000]),
+            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+        }
+        """
+        return self.static_hamming_window(
+            self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
         )

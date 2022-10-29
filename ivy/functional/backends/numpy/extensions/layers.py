@@ -2,7 +2,7 @@
 import math
 from numbers import Number
 import numpy as np
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal
+from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
 
 # local
 import ivy
@@ -107,14 +107,82 @@ def max_pool2d(
     return res
 
 
+def max_pool1d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(kernel, tuple):
+        kernel = kernel[0]
+
+    if data_format == "NCW":
+        x = x.permute(0, 2, 1)
+
+    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_w = (x_shape[1] - kernel) // strides + 1
+    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides,
+        x.strides[1],
+        x.strides[2],
+    )
+
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    res = sub_matrices.max(axis=(2))
+
+    if data_format == "NCW":
+        return res.permute(0, 2, 1)
+    return res
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if periodic is False:
+        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+kaiser_window.support_native_out = False
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
 def pad(
-    x: np.ndarray,
-    /,
+    input: np.ndarray,
     pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
+    /,
     *,
     mode: Optional[
         Union[
@@ -139,55 +207,46 @@ def pad(
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     out: Optional[np.ndarray] = None,
+    **kwargs: Optional[Any],
 ) -> np.ndarray:
+    if callable(mode):
+        return np.pad(
+            _flat_array_to_1_dim_array(input),
+            pad_width,
+            mode=mode,
+            **kwargs,
+        )
     if mode in ["maximum", "mean", "median", "minimum"]:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             stat_length=stat_length,
         )
     elif mode == "constant":
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             constant_values=constant_values,
         )
     elif mode == "linear_ramp":
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             end_values=end_values,
         )
     elif mode in ["reflect", "symmetric"]:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             reflect_type=reflect_type,
         )
     else:
         return np.pad(
-            _flat_array_to_1_dim_array(x),
+            _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
         )
-
-
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if periodic is False:
-        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
-    else:
-        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
-
-
-kaiser_window.support_native_out = False

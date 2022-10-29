@@ -135,7 +135,6 @@ class Array(
         else:
             self._post_repr = ")"
         self.backend = ivy.current_backend_str()
-        self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
     # ---------- #
@@ -199,11 +198,6 @@ class Array(
         """
         ivy.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
-
-    @property
-    def is_variable(self) -> bool:
-        """Determine whether the array is a trainable variable or not."""
-        return self._is_variable
 
     # Setters #
     # --------#

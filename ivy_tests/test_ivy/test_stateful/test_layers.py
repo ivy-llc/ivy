@@ -527,6 +527,7 @@ def test_conv1d_transpose_layer(
 
 
 # # conv2d
+@handle_cmd_line_args
 @given(
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(),
     weight_initializer=_sample_initializer(),

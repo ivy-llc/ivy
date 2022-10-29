@@ -4,7 +4,7 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
-from .. import versions
+
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
@@ -358,9 +358,7 @@ def TruncateDiv(*, x, y, name="TruncateDiv"):
     return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
-)
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def Unpack(*, value, num, axis=0, name="Unpack"):
     return ivy.unstack(value, axis=axis)[:num]
@@ -383,3 +381,8 @@ def Pow(*, x, y, name="Pow"):
 
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
+
+
+@to_ivy_arrays_and_back
+def Sigmoid(x, name="Sigmoid"):
+    return ivy.sigmoid(x)

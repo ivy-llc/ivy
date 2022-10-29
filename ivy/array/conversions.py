@@ -13,7 +13,11 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any, inplace: bool = False) -> Any:
+def _to_native(
+    x: Any, inplace: bool = False, ignore_frontend_arrays: bool = False
+) -> Any:
+    if ivy.is_frontend_array(x) and not ignore_frontend_arrays:
+        return _to_native(x.data)
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
@@ -135,6 +139,7 @@ def args_to_native(
     *args: Iterable[Any],
     include_derived: Dict[type, bool] = None,
     cont_inplace: bool = False,
+    ignore_frontend_arrays: bool = False,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """Returns args and keyword args in their native backend framework form for all
@@ -161,9 +166,17 @@ def args_to_native(
 
     """
     native_args = ivy.nested_map(
-        args, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+        args,
+        lambda x: _to_native(
+            x, inplace=cont_inplace, ignore_frontend_arrays=ignore_frontend_arrays
+        ),
+        include_derived,
     )
     native_kwargs = ivy.nested_map(
-        kwargs, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+        kwargs,
+        lambda x: _to_native(
+            x, inplace=cont_inplace, ignore_frontend_arrays=ignore_frontend_arrays
+        ),
+        include_derived,
     )
     return native_args, native_kwargs
