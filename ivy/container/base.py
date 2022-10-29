@@ -3018,7 +3018,7 @@ class ContainerBase(dict, abc.ABC):
 
     def __deepcopy__(self, memo):
         return self.deep_copy()
-    
+
     def map(
         self,
         func,
