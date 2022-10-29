@@ -127,11 +127,30 @@ class Tensor:
     def acos(self, *, out=None):
         return torch_frontend.acos(self.data, out=out)
 
+    def new_tensor(
+        self,
+        data,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(data) if dtype is None else dtype
+        _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
     # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
+
+    def __getitem__(self, query):
+        ret = ivy.get_item(self.data, query)
+        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __radd__(self, other, *, alpha=1):
         return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
