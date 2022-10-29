@@ -146,7 +146,7 @@ class Tensor:
         return self.view(other.shape)
 
     def detach(self):
-        return self.new_tensor(self.data, requires_grad=False)
+        return ivy.stop_gradient(self.data, preserve_type=False)
 
     # Special Methods #
     # -------------------#
