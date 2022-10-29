@@ -1271,29 +1271,40 @@ def dct(
     >>> ivy.dct(x, type=2, n=None, norm='ortho')
     ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
 
+    >>> x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],
+    ...                [40.5, 48.6, 56.7, 64.8]])
+    >>> y = ivy.zeros((2, 4), dtype=ivy.float32)
+    >>> ivy.dct(x, type=1, n=None, norm=None, out=y)
+    >>> print(y)
+    ivy.array([[ 1.22e+02, -3.24e+01,  1.91e-06, -8.10e+00],
+               [ 3.16e+02, -3.24e+01,  3.81e-06, -8.10e+00]])
+
+    >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+    >>> ivy.dct(x, type=4, n=None, norm=None, out=x)
+    >>> print(x)
+    ivy.array([ 279. , -280. ,  128. , -115. ,   83.7,  -79.5,   69.8,  -68.7])
+
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
-                         b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
-    >>> ivy.dct(x, type=2, n=None, norm='ortho')
+    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+    >>> ivy.dct(x, type=3, n=None, norm='ortho')
     {
-        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
-                    -0.406]),
-        b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0., 
-                    -0.0507])
+        a: ivy.array([79.5, -70.4, 30., -23.6, 13.9, -10.1, 5.2, -1.95]),
+        b: ivy.array([9.94, -8.8, 3.75, -2.95, 1.74, -1.26, 0.65, -0.244])
     }
 
     With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64], dtype=ivy.float32),
-                    b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8], dtype=ivy.float32))
-    >>> container_n = ivy.Container(a=None, b=4)
+    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8], dtype=ivy.float32))
+    >>> container_n = ivy.Container(a=9, b=4)
     >>> container_type = ivy.Container(a=2, b=1)
     >>> container_norm = ivy.Container(a="ortho", b=None)
     >>> ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
     {
-        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., 
-                    -0.406]),
+        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9, 
+                    -5.89]),
         b: ivy.array([15., -4., 0., -1.])
     }
     """
