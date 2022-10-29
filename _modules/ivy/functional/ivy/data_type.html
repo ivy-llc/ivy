@@ -1870,12 +1870,24 @@
 
 <div class="viewcode-block" id="set_default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_int_dtype.html#ivy.functional.ivy.data_type.set_default_int_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">set_default_int_dtype</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Summary.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets the &#39;int_dtype&#39; as the default data type.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    int_dtype</span>
+<span class="sd">        The integer data type to be set as the default.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class: `ivy.Dtype` input:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_int_dtype(ivy.intDtype(&quot;int64&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype()</span>
+<span class="sd">    &#39;int64&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_int_dtype(ivy.intDtype(&quot;int32&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype()</span>
+<span class="sd">    &#39;int32&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">int_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">))</span>
     <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
