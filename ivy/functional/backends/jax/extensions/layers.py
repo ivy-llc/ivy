@@ -283,4 +283,3 @@ def dct(
     if axis != -1 and type != 2:
         dct_out = jnp.transpose(dct_out, new_dims)
     return dct_out
-        
