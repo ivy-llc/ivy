@@ -284,6 +284,7 @@ def deg2rad(input, *, out=None):
         so the result returns integer number. That's why the input array is converted 
         into float if the dtype of the array is integer.
     """
+
     if('int' in input.dtype):
-       input=input.astype('float32') 
-    return ivy.array(input*3.1416/180,out=out)
+        input = input.astype('float32') 
+    return ivy.array(input * 3.1416 / 180, out=out)
