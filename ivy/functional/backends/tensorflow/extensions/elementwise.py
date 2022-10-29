@@ -1,4 +1,5 @@
 from typing import Union, Optional
+import numpy as np
 import tensorflow as tf
 from .. import backend_version
 
@@ -7,6 +8,8 @@ from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
 
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
 
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
