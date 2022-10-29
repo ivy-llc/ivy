@@ -96,6 +96,9 @@ def float_power(
 
 float_power.support_native_out = True
 
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
+
 
 def exp2(
     x: Union[np.ndarray, float, list, tuple],
