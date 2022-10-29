@@ -145,11 +145,6 @@ def elu_(input, alpha=1.0):
 
 
 @to_ivy_arrays_and_back
-def mish(input, inplace=False):
-    return ivy.mish(input, inplace)
-
-
-@to_ivy_arrays_and_back
 def celu(input, alpha=1.0, inplace=False):
     prod = ivy.multiply(
         alpha,
@@ -161,6 +156,18 @@ def celu(input, alpha=1.0, inplace=False):
     ret = ivy.add(
         ivy.maximum(0, input),
         ivy.minimum(0, prod),
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+@to_ivy_arrays_and_back
+def mish(input, inplace=False):
+    ret = ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
     )
     if inplace:
         ivy.inplace_update(input, ret)
