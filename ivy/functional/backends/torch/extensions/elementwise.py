@@ -1,7 +1,7 @@
 # global
 from typing import Optional, Union
 import torch
-
+import numpy as np
 # local
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -21,6 +21,8 @@ def lcm(
 
 lcm.support_native_out = True
 
+def floor(x: float, /, *, out: float = None) -> float:
+    return np.floor(x, out=out)
 
 def fmod(
     x1: torch.Tensor,
