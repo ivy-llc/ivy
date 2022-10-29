@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
@@ -107,3 +107,23 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+@_handle_0_dim_output
+def count_nonzero(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if dtype is None:
+        return np.count_nonzero(x, axis=tuple(axis), keepdims=keepdims)
+    return np.array(
+        np.count_nonzero(x, axis=tuple(axis), keepdims=keepdims), dtype=dtype
+    )
+
+
+count_nonzero.support_native_out = False
