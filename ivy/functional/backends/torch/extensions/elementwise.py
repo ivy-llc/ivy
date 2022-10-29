@@ -118,14 +118,22 @@ def count_nonzero(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
         return torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
 
+    x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
-        return _dtype_count_nonzero(a, axis, dtype)
-    return _dtype_count_nonzero(a, axis, dtype).unsqueeze(axis)
+        return x
+    if isinstance(axis, tuple):
+        for d in axis:
+            x = x.unsqueeze(d)
+        return x
+    return x.unsqueeze(axis)
 
 
 count_nonzero.support_native_out = False

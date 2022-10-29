@@ -119,11 +119,11 @@ def count_nonzero(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if dtype is None:
-        return np.count_nonzero(x, axis=tuple(axis), keepdims=keepdims)
-    return np.array(
-        np.count_nonzero(x, axis=tuple(axis), keepdims=keepdims), dtype=dtype
-    )
+        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
 
 
 count_nonzero.support_native_out = False

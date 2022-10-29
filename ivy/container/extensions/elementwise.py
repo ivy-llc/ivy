@@ -606,7 +606,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
 
     @staticmethod
     def static_count_nonzero(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -625,7 +625,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
 
         Parameters
         ----------
-        x
+        a
             container with the base input arrays.
         axis
             Axis or tuple of axes along which to count non-zeros. Default is
@@ -674,7 +674,7 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "count_nonzero",
-            x,
+            a,
             axis=axis,
             keepdims=keepdims,
             dtype=dtype,

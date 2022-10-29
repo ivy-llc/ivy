@@ -336,25 +336,48 @@ def test_exp2(
     )
 
 
+@st.composite
+def _get_dtype_values_axis_for_count_nonzero(
+    draw,
+    in_available_dtypes,
+    out_available_dtypes,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    input_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes(in_available_dtypes),
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            valid_axis=True,
+        )
+    )
+    axis = draw(st.one_of(st.just(axis), st.none()))
+    output_dtype = draw(helpers.get_dtypes(out_available_dtypes))
+    return [input_dtype, output_dtype], values, axis
+
+
 # count_nonzero
 @handle_cmd_line_args
 @given(
-    dtype_and_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
+        in_available_dtypes="numeric",
+        out_available_dtypes="numeric",
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
         max_dim_size=10,
-        valid_axis=True,
     ),
     keepdims=st.booleans(),
-    output_dtype=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(fn_name="count_nonzero"),
 )
 def test_count_nonzero(
-    dtype_and_x_axis,
+    dtype_values_axis,
     keepdims,
-    output_dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -363,10 +386,9 @@ def test_count_nonzero(
     instance_method,
     fw,
 ):
-    input_dtype, x, axis = dtype_and_x_axis
-    axis = st.sampled_from([axis, None])
+    i_o_dtype, a, axis = dtype_values_axis
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=i_o_dtype[0],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -375,8 +397,8 @@ def test_count_nonzero(
         instance_method=instance_method,
         fw=fw,
         fn_name="count_nonzero",
-        x=x,
+        a=a,
         axis=axis,
         keepdims=keepdims,
-        dtype=output_dtype,
+        dtype=i_o_dtype[1],
     )
