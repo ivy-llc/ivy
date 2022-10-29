@@ -99,40 +99,47 @@ def test_numpy_ndarray_reshape(
     )
 
     
-# resize
-@handle_cmd_line_args
-@given(
+#resize
+handle_cmd_line_args
+given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.resize"
     ),
 )
-def test_numpy_ndarray_resize(
+def test_numpy_resize(
     dtype_and_x,
+    dtype,
+    where,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtype_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=[input_dtype[1]],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
-            "value": x[1],
-        },
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        class_name="ndarray",
-        method_name="resize",
+        fn_tree="resize",
+        x=x[0],
+        where=where,
+        dtype=dtype[0],
     )
     
     
