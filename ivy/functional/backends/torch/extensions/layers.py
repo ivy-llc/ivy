@@ -191,6 +191,7 @@ def dct(
     *,
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
+    axis: Optional[int] = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
@@ -198,6 +199,8 @@ def dct(
         raise ValueError("Norm must be either None or 'ortho'")
     if x.dtype not in [torch.float32, torch.float64]:
         x = x.type(torch.float32)
+    if axis != -1:
+        x = torch.transpose(x, axis, -1)
     if n is not None:
         signal_len = x.shape[-1]
         if n <= signal_len:
@@ -213,7 +216,6 @@ def dct(
             raise ValueError("Normalization not supported for type-I DCT")
         x = torch.concat([x, x.flip(-1)[..., 1:-1]], dim=-1)
         dct_out = torch.real(torch.fft.rfft(x, dim=-1))
-        return dct_out
 
     elif type == 2:
         scale = 2.0 * torch.exp(
@@ -229,7 +231,6 @@ def dct(
             # vectorising scaling factors
             sf = torch.nn.functional.pad(n1.unsqueeze(0), (0, axis_dim - 1), value=n2)
             dct_out = sf * dct_out
-        return dct_out
 
     elif type == 3:
         if norm == "ortho":
@@ -239,7 +240,6 @@ def dct(
             x = x * sf
         else:
             x = x * axis_dim_float
-
         scale = 2.0 * torch.exp(
             torch.complex(
                 real_zero, torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
@@ -247,12 +247,14 @@ def dct(
         )
         dct_out = torch.real(
             torch.fft.irfft(scale * torch.complex(x, real_zero), n=2 * axis_dim)
-        )
-        return dct_out[..., :axis_dim]
+        )[..., :axis_dim]
 
     elif type == 4:
         dct_2 = dct(x, type=2, n=2 * axis_dim, norm=None)
         dct_out = dct_2[..., 1::2]
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * torch.rsqrt(axis_dim_float)
-        return dct_out
+
+    if axis != -1:
+        dct_out = torch.transpose(dct_out, axis, -1)
+    return dct_out

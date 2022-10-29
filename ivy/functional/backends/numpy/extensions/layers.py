@@ -335,7 +335,7 @@ def dct(
     *,
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
-    axis: Optional[int]= -1,
+    axis: Optional[int] = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
