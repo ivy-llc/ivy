@@ -145,6 +145,13 @@ class Tensor:
     def view_as(self, other):
         return self.view(other.shape)
 
+    def unsqueeze(self, dim):
+        return torch_frontend.unsqueeze(self, dim)
+
+    def unsqueeze_(self, dim):
+        self.data = self.unsqueeze(dim)
+        return self.data
+
     # Special Methods #
     # -------------------#
 
