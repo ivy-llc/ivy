@@ -278,7 +278,7 @@ def cumsum(
             x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = torch.cumsum(x, -1, dtype=dtype)
             res = torch.transpose(x, axis, -1)
-        elif reverse:
+        else:
             x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
             res = torch.flip(x, dims=(axis,))
         return res
@@ -294,5 +294,5 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (operand.to(torch.float32) for operand in operands)
+    operands = (ivy.astype(operand, torch.float32, copy=False) for operand in operands)
     return torch.einsum(equation, *operands).to(dtype)
