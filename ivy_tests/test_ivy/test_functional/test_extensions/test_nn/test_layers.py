@@ -464,8 +464,9 @@ def valid_dct(draw):
             n = 2
     if norm == "ortho" and type == 1:
         norm = None
-    
+
     return type, n, norm
+
 
 @handle_cmd_line_args
 @given(
@@ -477,8 +478,9 @@ def valid_dct(draw):
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=10,
-        shared_dtype=True),
-    dct_args = valid_dct(),
+        shared_dtype=True,
+    ),
+    dct_args=valid_dct(),
     num_positional_args=helpers.num_positional_args(fn_name="dct"),
 )
 def test_dct(
