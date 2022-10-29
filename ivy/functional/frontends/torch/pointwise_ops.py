@@ -75,7 +75,9 @@ def subtract(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.subtract(input, other * alpha, out=out)
 
+
 sub = subtract
+
 
 @to_ivy_arrays_and_back
 def exp(input, *, out=None):
