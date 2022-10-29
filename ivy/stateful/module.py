@@ -1142,3 +1142,26 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
+
+    # Instance Methods #
+    # ---------------- #
+
+    def to_torch_module(self, args=None, kwargs=None):
+        """
+        Convert a trainable ivy.Module instance to an instance of a trainable torch
+        module.
+
+        Parameters
+        ----------
+        self
+            trainable ivy.Module instance
+
+        Returns
+        -------
+        ret
+            The new trainable torch module instance.
+
+        """
+        return ivy.functional.backends.torch.to_torch_module(
+            self, args=args, kwargs=kwargs
+        )
