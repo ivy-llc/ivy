@@ -98,6 +98,7 @@ def test_numpy_ndarray_reshape(
         method_name="reshape",
     )
 
+    
 # resize
 @st.composite
 def dtypes_x_resize(draw):
@@ -146,6 +147,7 @@ def test_numpy_ndarray_resize(
         class_name="ndarray",
         method_name="resize",
     )
+    
     
 # transpose
 @handle_cmd_line_args
