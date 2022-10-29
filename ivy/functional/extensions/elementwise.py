@@ -355,7 +355,7 @@ def count_nonzero(
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[int, ivy.Array]] = None,
-) -> Union[int, ivy.Array]:
+) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
     Parameters

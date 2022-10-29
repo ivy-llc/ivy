@@ -282,7 +282,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         keepdims: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
-    ) -> Union[int, ivy.Array]:
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.count_nonzero. This method simply
         wraps the function, and so the docstring for ivy.count_nonzero also applies to
         this method with minimal changes.
