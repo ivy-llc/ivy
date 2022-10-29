@@ -155,7 +155,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -200,7 +200,7 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
