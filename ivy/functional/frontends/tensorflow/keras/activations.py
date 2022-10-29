@@ -1,6 +1,8 @@
 import ivy
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def hard_sigmoid(x):
     dtype_in = x.dtype
     point_two = ivy.full(x.shape, 0.2)
@@ -12,42 +14,52 @@ def hard_sigmoid(x):
     return x
 
 
+@to_ivy_arrays_and_back
 def linear(x):
     return ivy.array(x)
 
 
+@to_ivy_arrays_and_back
 def relu(x):
     return ivy.relu(x)
 
 
+@to_ivy_arrays_and_back
 def tanh(x):
     return ivy.tanh(x)
 
 
+@to_ivy_arrays_and_back
 def sigmoid(x):
     return ivy.sigmoid(x)
 
 
+@to_ivy_arrays_and_back
 def softmax(x, axis=-1):
     return ivy.softmax(x, axis=axis)
 
 
+@to_ivy_arrays_and_back
 def gelu(x, approximate=False):
     return ivy.gelu(x, approximate=approximate)
 
 
+@to_ivy_arrays_and_back
 def softplus(x):
     return ivy.softplus(x)
 
 
+@to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
 
+@to_ivy_arrays_and_back
 def swish(x):
     return ivy.multiply(x, ivy.sigmoid(x))
 
 
+@to_ivy_arrays_and_back
 def elu(x, alpha=1.0):
     zeros = ivy.zeros_like(x, dtype=ivy.dtype(x))
     ones = ivy.ones_like(x, dtype=ivy.dtype(x))
@@ -84,6 +96,7 @@ elu.supported_dtypes = {
 }
 
 
+@to_ivy_arrays_and_back
 def selu(x):
     alpha = 1.6732632423543772848170429916717
     scale = ivy.astype(ivy.array(1.0507009873554804934193349852946), ivy.dtype(x))

@@ -21,7 +21,6 @@ def where(cond, x1=None, x2=None, /):
         raise ivy.exceptions.IvyException("where takes either 1 or 3 arguments")
 
 
-@to_ivy_arrays_and_back
 def nonzero(a):
     return ivy.nonzero(a)
 
