@@ -142,6 +142,9 @@ class Tensor:
         _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
+    def view_as(self, other):
+        return self.view(other.shape)
+
     # Special Methods #
     # -------------------#
 
