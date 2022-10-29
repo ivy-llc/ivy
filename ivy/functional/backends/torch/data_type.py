@@ -61,12 +61,8 @@ def astype(
     x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            return x.clone()
-    else:
-        if x.dtype == dtype:
-            return x
+    if x.dtype == dtype:
+        return x.clone() if copy else x
     return x.to(dtype)
 
 
