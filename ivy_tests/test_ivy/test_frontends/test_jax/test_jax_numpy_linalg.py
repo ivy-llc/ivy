@@ -366,6 +366,9 @@ def test_jax_numpy_matrix_rank(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale='log',
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
         shape=helpers.ints(min_value=2, max_value=6).map(lambda x: tuple([x, x]))
     ),
     n=helpers.ints(min_value=-10, max_value=10),
