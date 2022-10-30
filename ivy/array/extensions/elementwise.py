@@ -200,7 +200,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         8.0
         """
         return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)
-    
+
     def float_power(
         self: Union[ivy.Array, float, list, tuple],
         x2: Union[ivy.Array, float, list, tuple],
@@ -219,7 +219,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         x2
             Array-like of exponents. If x1.shape != x2.shape,
             they must be broadcastable to a common shape
-            (which becomes the shape of the output).            
+            (which becomes the shape of the output).
         out
             optional output array, for writing the result to.
 
@@ -231,12 +231,45 @@ class ArrayWithElementWiseExtensions(abc.ABC):
 
         Examples
         --------
-        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x1.float_power(3)
         ivy.array([1.,    8.,   27.,   64.,  125.])
-        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x2 = ivy.array([2, 3, 3, 2, 1])
         >>> x1.float_power(x2)
         ivy.array([1.,   8.,  27.,  16.,   5.])
         """
         return ivy.float_power(self._data, x2, out=out)
+
+    def exp2(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.exp2. This method simply
+        wraps the function, and so the docstring for ivy.exp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.exp2()
+        ivy.array([2.,    4.,   8.])
+        >>> x = [5, 6, 7]
+        >>> x.exp2()
+        ivy.array([32.,   64.,  128.])
+        """
+        return ivy.exp2(self._data, out=out)
