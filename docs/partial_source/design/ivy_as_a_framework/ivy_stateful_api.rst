@@ -460,4 +460,4 @@ By changing only a couple of lines, we can use this optimizer to train our netwo
 
 That should hopefully be enough to get you started with Ivy’s stateful API 😊
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

@@ -476,6 +476,39 @@ def test_torch_celu(
     )
 
 
+# mish
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.mish"
+    ),
+    with_inplace=st.booleans(),
+)
+def test_torch_mish(
+    dtype_and_input,
+    with_inplace,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=with_inplace,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.mish",
+        input=input[0],
+    )
+
+
 # selu
 @handle_cmd_line_args
 @given(
@@ -795,7 +828,7 @@ def test_torch_glu(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.log_softmax"
     ),
@@ -818,7 +851,8 @@ def test_torch_log_softmax(
         fn_tree="nn.functional.log_softmax",
         input=x[0],
         dim=axis,
-        dtype=dtypes,
+        _stacklevel=3,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
 
 
