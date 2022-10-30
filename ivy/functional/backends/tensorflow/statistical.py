@@ -197,4 +197,4 @@ def einsum(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
     operands = (ivy.astype(operand, tf.float32, copy=False) for operand in operands)
-    return tf.cast(tf.einsum(equation, *operands), dtype)
+    return ivy.astype(tf.einsum(equation, *operands), dtype, copy=False)
