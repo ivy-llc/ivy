@@ -4,27 +4,10 @@ import jax.numpy as jnp
 import jax
 import ivy
 
+from ivy.functional.backends.jax.random import RNG, _setRNG, _getRNG
+
 # Extra #
-# ------#
-
-
-class RNGWrapper:
-    def __init__(self):
-        self.key = jax.random.PRNGKey(0)
-
-
-RNG = RNGWrapper()
-
-
-def _setRNG(key):
-    global RNG
-    RNG.key = key
-
-
-def _getRNG():
-    global RNG
-    return RNG.key
-
+# ----- #
 
 # dirichlet
 def dirichlet(

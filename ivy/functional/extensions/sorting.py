@@ -14,6 +14,7 @@ from ivy.exceptions import handle_exceptions
 # Array API Standard #
 # -------------------#
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -47,6 +48,4 @@ def msort(
          [8, 9, 6]]
         )
     """
-    return ivy.current_backend().msort(
-        a, out=out
-    )
+    return ivy.current_backend().msort(a, out=out)

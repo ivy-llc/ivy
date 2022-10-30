@@ -155,7 +155,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -200,7 +200,7 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -297,3 +297,21 @@ def flipud(m):
 def power(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0, *, length=None):
+    x_list = []
+    for i in range(x.shape[0]):
+        x_list.append(int(x[i]))
+    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    ret = ivy.array(ret)
+    ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def cumprod(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumprod(a, axis, dtype=dtype, out=out)

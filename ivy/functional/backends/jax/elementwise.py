@@ -10,7 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.absolute(x)
+    # jnp.where is used for consistent gradients
+    return jnp.where(x != 0, jnp.absolute(x), 0)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
