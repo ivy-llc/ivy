@@ -1,4 +1,6 @@
 # local
+import torch.onnx.symbolic_opset9
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
@@ -144,6 +146,9 @@ class Tensor:
 
     def view_as(self, other):
         return self.view(other.shape)
+
+    def expand(self, *sizes):
+        return ivy.broadcast_to(self.data, shape=sizes)
 
     # Special Methods #
     # -------------------#
