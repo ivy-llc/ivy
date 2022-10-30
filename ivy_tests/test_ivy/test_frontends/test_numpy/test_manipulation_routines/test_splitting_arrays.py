@@ -34,5 +34,5 @@ def test_numpy_split(
         fn_tree="split",
         ary=ary[0],
         axis=axis,
-        indices_or_sections = indices_or_sections[0],
+        indices_or_sections=indices_or_sections[0],
     )
