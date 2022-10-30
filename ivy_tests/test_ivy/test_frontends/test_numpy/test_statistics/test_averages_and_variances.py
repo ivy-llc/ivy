@@ -68,6 +68,16 @@ def test_numpy_mean(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=statistical_dtype_values(function="var"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.var"
+    ),
+    keep_dims=st.booleans(),
+)
 def test_numpy_var(
     dtype_and_a,
     dtype,

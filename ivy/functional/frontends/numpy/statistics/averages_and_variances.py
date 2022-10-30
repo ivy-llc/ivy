@@ -7,14 +7,14 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
 def mean(
-    x,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    dtype=None,
-    where=True,
+        x,
+        /,
+        *,
+        axis=None,
+        keepdims=False,
+        out=None,
+        dtype=None,
+        where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:
@@ -26,8 +26,8 @@ def mean(
 
     return ret
 
-def var(a,/, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
 
+def var(a, /, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
@@ -36,18 +36,21 @@ def var(a,/, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=T
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
 var.unsupported_dtypes = {"torch": ("float16",)}
+
 
 @from_zero_dim_arrays_to_float
 def nanmean(
-    a,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    dtype=None,
-    where=True,
+        a,
+        /,
+        *,
+        axis=None,
+        keepdims=False,
+        out=None,
+        dtype=None,
+        where=True,
 ):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
