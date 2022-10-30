@@ -9,8 +9,9 @@ def seed() -> int:
 
 
 @to_ivy_arrays_and_back
-def manual_seed(seed: int) -> Generator:
-    return ivy.seed(seed_value=seed)
+def manual_seed(seed: int):
+    ivy.seed(seed_value=seed)
+    return Generator()
 
 
 @to_ivy_arrays_and_back
