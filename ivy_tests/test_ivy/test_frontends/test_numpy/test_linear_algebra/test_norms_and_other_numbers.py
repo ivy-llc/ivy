@@ -131,3 +131,27 @@ def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_ar
         fn_tree="linalg.slogdet",
         a=x[0],
     )
+
+# trace
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.linalg.trace"
+    )
+)
+def test_numpy_trace(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="linalg.trace",
+        a=np.array(x, dtype=dtype)
+    )
