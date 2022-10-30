@@ -72,6 +72,23 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
+    x = ivy.array(input)
+    if keepdims is None:
+        keepdims = False
+    zero = ivy.zeros(ivy.shape(x), dtype=x.dtype)
+    return ivy.astype(
+        ivy.sum(
+            ivy.astype(ivy.not_equal(x, zero), ivy.int64),
+            axis=axis,
+            keepdims=keepdims,
+        ),
+        dtype,
+        copy=False,
+    )
+
+
+@to_ivy_arrays_and_back
 def min(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
