@@ -20,4 +20,5 @@ Elementwise
    elementwise/trapz.rst
    elementwise/float_power.rst
    elementwise/exp2.rst
+   elementwise/nansum.rst
 

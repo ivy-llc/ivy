@@ -732,7 +732,140 @@
 <span class="sd">            b: ivy.array([32., 64., 128.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_exp2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_exp2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithElementWiseExtensions.static_nansum"><a class="viewcode-back" href="../../../../data_classes/container/extensions/elementwise/ContainerWithElementWiseExtensions.html#ivy.container.extensions.elementwise.ContainerWithElementWiseExtensions.static_nansum">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_nansum</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.nansum. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for ivy.nansum also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            Input array.</span>
+<span class="sd">        axis</span>
+<span class="sd">            Axis or axes along which the sum is computed.</span>
+<span class="sd">            The default is to compute the sum of the flattened array.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            The type of the returned array and of the accumulator in</span>
+<span class="sd">            which the elements are summed. By default, the dtype of input is used.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are reduced are left</span>
+<span class="sd">            in the result as dimensions with size one.</span>
+<span class="sd">        out</span>
+<span class="sd">            Alternate output array in which to place the result.</span>
+<span class="sd">            The default is None.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A new array holding the result is returned unless out is specified,</span>
+<span class="sd">            in which it is returned.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\</span>
+<span class="sd">                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_nansum(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: 27,</span>
+<span class="sd">            b: 7.0</span>
+<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_nansum(x, axis=0)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([13, 9, 5]),</span>
+<span class="sd">            b: ivy.array([1., 4., 2.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_nansum(x, axis=1)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([21, 6]),</span>
+<span class="sd">            b: ivy.array([7., 0.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;nansum&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithElementWiseExtensions.nansum"><a class="viewcode-back" href="../../../../data_classes/container/extensions/elementwise/ContainerWithElementWiseExtensions.html#ivy.container.extensions.elementwise.ContainerWithElementWiseExtensions.nansum">[docs]</a>    <span class="k">def</span> <span class="nf">nansum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.nansum. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.nansum also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input container including arrays.</span>
+<span class="sd">        axis</span>
+<span class="sd">            Axis or axes along which the sum is computed.</span>
+<span class="sd">            The default is to compute the sum of the flattened array.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            The type of the returned array and of the accumulator in</span>
+<span class="sd">            which the elements are summed. By default, the dtype of input is used.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are reduced are left</span>
+<span class="sd">            in the result as dimensions with size one.</span>
+<span class="sd">        out</span>
+<span class="sd">            Alternate output array in which to place the result.</span>
+<span class="sd">            The default is None.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A new array holding the result is returned unless out is specified,</span>
+<span class="sd">            in which it is returned.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\</span>
+<span class="sd">                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))</span>
+<span class="sd">        &gt;&gt;&gt; x.nansum(axis=0)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([13, 9, 5]),</span>
+<span class="sd">            b: ivy.array([1., 4., 2.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; x.nansum(axis=1)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([21, 6]),</span>
+<span class="sd">            b: ivy.array([7., 0.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_nansum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>
