@@ -35,7 +35,10 @@ def slogdet(a):
     return ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
 
 # trace
+
+
 def trace(a):
     return ivy.trace(a)
 
-trace.unsupported_dtypes = ("float16",)
+
+trace.unsupported_dtypes = ('float16', )
