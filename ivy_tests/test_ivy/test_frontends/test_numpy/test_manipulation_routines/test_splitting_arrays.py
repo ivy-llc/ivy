@@ -23,8 +23,9 @@ def test_numpy_split(
     as_variable,
     num_positional_args,
     native_array,
+    xs_n_input_dtypes_n_unique_idx,
 ):
-    indices_or_sections, ary, axis = dtype_x_axis
+    indices_or_sections, ary, axis, input_dtypes = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         as_variable_flags=as_variable,
         input_dtypes=input_dtypes,
