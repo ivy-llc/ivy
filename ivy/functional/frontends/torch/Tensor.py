@@ -148,6 +148,9 @@ class Tensor:
     def view_as(self, other):
         return self.view(other.shape)
 
+    def detach(self):
+        return ivy.stop_gradient(self.data, preserve_type=False)
+
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
 
