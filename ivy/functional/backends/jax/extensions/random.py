@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import jax
 import ivy
 
-from ivy.functional.backends.jax.random import _setRNG, _getRNG
+from ivy.functional.backends.jax.random import RNG, _setRNG, _getRNG  # noqa
 
 # Extra #
 # ----- #
