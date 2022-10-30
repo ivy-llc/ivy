@@ -137,13 +137,14 @@ def binary_crossentropy(
 
 
 @to_ivy_arrays_and_back
-<<<<<<< HEAD
 def categorical_crossentropy(
         y_true, y_pred, from_logits=False, label_smoothing=0.0):
     if from_logits:
         y_pred = ivy.softmax(y_pred)
     return ivy.mean(ivy.categorical_cross_entropy(y_true, y_pred, label_smoothing))
-=======
+
+
+@to_ivy_arrays_and_back
 def binary_focal_crossentropy(
     y_true, y_pred, gamma=2.0, from_logits=False, label_smoothing=0.0, axis=-1
 ):
@@ -177,7 +178,6 @@ def binary_focal_crossentropy(
         bce = -bce
     bfce = focal_factor * bce
     return ivy.mean(bfce, axis=ivy.to_scalar(axis))
->>>>>>> upstream/master
 
 
 @to_ivy_arrays_and_back
