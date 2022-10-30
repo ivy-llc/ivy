@@ -5,6 +5,8 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
+from ivy.func_wrapper import with_unsupported_dtypes
+
 
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
@@ -100,6 +102,10 @@ def Cosh(*, x, name="cosh"):
 Div = tf_frontend.math.divide
 
 
+def Diag(*, diagonal, name="Diag"):
+    return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
+
+
 Cumprod = tf_frontend.math.cumprod
 
 
@@ -139,6 +145,11 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def Gather(*, params, indices, validate_indices=None, name="Gather"):
+    return ivy.gather(params, indices, axis=0, batch_dims=0)
 
 
 @to_ivy_arrays_and_back
@@ -217,6 +228,10 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
+def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
+    return ivy.inv(input, adjoint=adjoint)
+
+
 MatrixDeterminant = tf_frontend.linalg.det
 
 
@@ -282,6 +297,11 @@ def RightShift(*, x, y, name="RightShift"):
 
 
 @to_ivy_arrays_and_back
+def Round(*, x, name="Round"):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
@@ -338,6 +358,12 @@ def TruncateDiv(*, x, y, name="TruncateDiv"):
     return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def Unpack(*, value, num, axis=0, name="Unpack"):
+    return ivy.unstack(value, axis=axis)[:num]
+
+
 @to_ivy_arrays_and_back
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
@@ -348,5 +374,15 @@ def Mean(*, input, axis, keep_dims=False, name="Mean"):
     return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
+@to_ivy_arrays_and_back
+def Pow(*, x, y, name="Pow"):
+    return ivy.pow(x, y)
+
+
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
+
+
+@to_ivy_arrays_and_back
+def Sigmoid(x, name="Sigmoid"):
+    return ivy.sigmoid(x)
