@@ -158,8 +158,7 @@ def test_tensorflow_binary_accuracy(
     ),
     from_logits=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name=
-        "ivy.functional.frontends.tensorflow.keras.metrics.sparse_categorical_crossentropy"  # noqa
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.sparse_categorical_crossentropy"  # noqa
     ),
 )
 def test_sparse_categorical_crossentropy(
@@ -304,6 +303,7 @@ def test_binary_crossentropy(
         label_smoothing=label_smoothing,
     )
 
+
 # categorical_crossentropy
 @handle_cmd_line_args
 @given(
@@ -319,8 +319,7 @@ def test_binary_crossentropy(
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     num_positional_args=helpers.num_positional_args(
-        fn_name=
-        "ivy.functional.frontends.tensorflow.keras.metrics.categorical_crossentropy"
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.categorical_crossentropy"
     ),
 )
 def test_categorical_crossentropy(
@@ -354,6 +353,7 @@ def test_categorical_crossentropy(
         from_logits=from_logits,
         label_smoothing=label_smoothing,
     )
+
 
 @st.composite
 def _binary_focal_args(draw):
