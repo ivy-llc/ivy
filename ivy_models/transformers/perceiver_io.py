@@ -98,13 +98,13 @@ class PerceiverIO(ivy.Module):
 
         self._get_cross_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
-                self._spec.latent_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
-                self._spec.attn_dropout, input_dim, device=self._spec.device), context_dim=input_dim, epsilon=1e-5,
+                self._spec.latent_dim, num_heads=self._spec.num_cross_att_heads, head_dim=self._spec.cross_head_dim,
+                dropout_rate=self._spec.attn_dropout, context_dim=input_dim, device=self._spec.device), context_dim=input_dim, epsilon=1e-5,
             device=self._spec.device)
         self._get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
-                self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim,
-                self._spec.attn_dropout, device=self._spec.device), epsilon=1e-5, device=self._spec.device)
+                self._spec.latent_dim, num_heads=self._spec.num_self_att_heads, head_dim=self._spec.latent_head_dim,
+                dropout_rate=self._spec.attn_dropout, device=self._spec.device), epsilon=1e-5, device=self._spec.device)
         self._get_fc = lambda: PreNorm(
             self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout, device=self._spec.device),
             epsilon=1e-5, device=self._spec.device)
@@ -120,7 +120,7 @@ class PerceiverIO(ivy.Module):
             self._layers.append(layer)
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
-            self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.latent_dim,
+            self._spec.queries_dim, num_heads=self._spec.num_cross_att_heads, head_dim=self._spec.latent_dim,
             context_dim=self._spec.latent_dim), context_dim=self._spec.latent_dim, epsilon=1e-5)
         self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim, device=self._spec.device), epsilon=1e-5)\
             if self._spec.with_decoder else None
@@ -167,7 +167,7 @@ class PerceiverIO(ivy.Module):
             if not ivy.exists(self._spec.max_fourier_freq):
                 self._spec.max_fourier_freq = ivy.array(data_shape, dtype='float32')
             enc_pos = ivy.fourier_encode(
-                pos_flat, self._spec.max_fourier_freq, self._spec.num_fourier_freq_bands, True, flatten=True)
+                pos_flat, self._spec.max_fourier_freq, num_bands=self._spec.num_fourier_freq_bands, linear=True, flatten=True)
             enc_pos = ivy.einops_repeat(enc_pos, '... -> b ...', b=flat_batch_size)
             data = ivy.concat([data, enc_pos], axis=-1)
 
