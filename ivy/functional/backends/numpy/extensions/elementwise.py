@@ -122,3 +122,15 @@ def nansum(
 
 
 nansum.support_native_out = True
+
+
+def isposinf(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
