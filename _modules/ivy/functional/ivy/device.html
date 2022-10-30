@@ -551,6 +551,13 @@
 <span class="sd">    device</span>
 <span class="sd">        The device string to convert to native device handle.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.clear_mem_on_dev(device)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
