@@ -36,4 +36,5 @@ def test_numpy_indices(
         fn_tree="numpy.indices",
         pred=pred_cond,
         operand=x[0],
+        sparse=False,
     )
