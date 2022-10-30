@@ -74,7 +74,6 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
             else:
                 self._post_repr = ")"
             self.framework_str = ivy.current_backend_str()
-            self._is_variable = ivy.is_variable(self._data)
 
         # Properties #
         # -----------#

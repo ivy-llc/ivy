@@ -10,7 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.absolute(x)
+    # jnp.where is used for consistent gradients
+    return jnp.where(x != 0, jnp.absolute(x), 0)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -356,9 +357,7 @@ def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    if x == -0 or x == +0:
-        return jnp.sign(0)
-    return jnp.sign(x)
+    return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 
 def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

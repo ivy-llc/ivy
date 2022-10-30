@@ -101,13 +101,9 @@ def diag(
     diag_len = max(min(num_rows, num_cols) - abs(offset) + 1, 1)
 
     if len(x) < diag_len:
-        x = np.array(
-            list(x) + [padding_value] * max((diag_len - len(x), 0))
-        )
+        x = np.array(list(x) + [padding_value] * max((diag_len - len(x), 0)))
 
-    diagonal_to_add = np.diag(
-        x - np.full_like(x, padding_value), k=offset
-    )
+    diagonal_to_add = np.diag(x - np.full_like(x, padding_value), k=offset)
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     output_array += np.pad(
@@ -119,7 +115,6 @@ def diag(
         mode="constant",
     )
     return output_array.astype(x.dtype)
-
 
 
 def diagonal(
@@ -356,6 +351,7 @@ def tensordot(
 
 
 @_handle_0_dim_output
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: np.ndarray,
     /,
@@ -368,7 +364,6 @@ def trace(
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.unsupported_dtypes = ("float16", "bfloat16")
 trace.support_native_out = True
 
 

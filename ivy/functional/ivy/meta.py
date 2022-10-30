@@ -483,7 +483,7 @@ def fomaml_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     rets = _train_tasks(
         batch,
         inner_batch_fn,
@@ -570,7 +570,7 @@ def reptile_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     # noinspection PyTypeChecker
     rets = _train_tasks(
         batch,
@@ -694,7 +694,7 @@ def maml_step(
 
     """
     if num_tasks is None:
-        num_tasks = batch.shape[0]
+        num_tasks = batch.shared_shape[0]
     unique_outer = outer_v is not None
     func_ret, grads = ivy.execute_with_gradients(
         lambda v: _train_tasks(

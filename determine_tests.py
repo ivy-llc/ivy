@@ -1,6 +1,6 @@
 import pickle  # noqa
 from pydriller import Repository
-import os
+import os  # noqa
 import bz2
 import _pickle as cPickle
 
@@ -19,7 +19,10 @@ if __name__ == "__main__":
         diff_index = ref_commit.diff(commit._c_object, create_patch=True)
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
-            file_name = file.new_path + ",cover"
+            try:
+                file_name = file.new_path + ",cover"
+            except:  # noqa
+                continue
             if file_name not in tests.keys():
                 continue
             tests_file = tests[file_name]
@@ -31,16 +34,19 @@ if __name__ == "__main__":
             deleted = deleted.difference(updated)
             # Now Update the Tests and compute the tests to run
             for line in deleted:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
             for line in sorted(deleted, reverse=True):
                 if line < len(tests_file):
                     del tests_file[line]
             for line in added:
                 top = -1
                 bottom = -1
-                if line - 1 < len(tests_file):
+                if 0 <= line - 1 < len(tests_file):
                     top = tests_file[line - 1]
-                if line + 1 < len(tests_file):
+                if 0 <= line + 1 < len(tests_file):
                     bottom = tests_file[line + 1]
                 tests_line = set()
                 if top != -1 and bottom != -1:
@@ -53,27 +59,27 @@ if __name__ == "__main__":
             tests[file_name] = tests_file
             # Now Compute the Tests to Run
             for line in updated:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
             for line in added:
-                tests_to_run.update(tests_file[line])
+                tests_file_line = tests_file[line]
+                if len(tests_file_line) >= 100:
+                    continue
+                tests_to_run.update(tests_file_line)
         break
 
     with bz2.BZ2File("tests.pbz2", "w") as f:
         cPickle.dump(tests, f)
 
-    # with open("tests_to_run", "w") as f:
-    #     for test in tests_to_run:
-    #         f.write(test + "\n")
-
-    # Run Tests
-    failed = False
+    print("----- Determined Tests -----")
+    print(len(tests_to_run))
     for test_index in tests_to_run:
-        test = tests["index_mapping"][test_index]
-        ret = os.system(
-            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test}'  # noqa
-        )
-        if ret != 0:
-            failed = True
+        print(tests["index_mapping"][test_index])
+    print("----------------------------")
 
-    if failed:
-        exit(1)
+    with open("tests_to_run", "w") as f:
+        for test_index in tests_to_run:
+            test = tests["index_mapping"][test_index]
+            f.write(test + "\n")
