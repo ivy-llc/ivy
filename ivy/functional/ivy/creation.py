@@ -7,7 +7,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy import to_ivy, to_native
+from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -59,6 +59,25 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     return new_fn
 
 
+def _ivy_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if (
+        isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple))
+    ) or (isinstance(x, np.ndarray) and x.ndim > 1):
+        for i, item in enumerate(x):
+            x[i] = _ivy_to_native(item)
+    else:
+        if (
+            (isinstance(x, (list, tuple)) and len(x) > 0)
+            or (isinstance(x, np.ndarray) and x.ndim >= 1 and x.size != 0)
+        ) and ivy.is_ivy_array(x[0]):
+            x = ivy.to_native(x, nested=True)
+        elif ivy.is_ivy_array(x):
+            x = ivy.to_native(x)
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -70,11 +89,8 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
         # and the checks to see if we can avoid it are cheap
-        nested = (
-            isinstance(args[0], (list, tuple))
-            and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple)))
-        ) or (isinstance(args[0], np.ndarray) and args[0].ndim == 1)
-        new_args = (to_native(args[0], nested=nested),) + args[1:]
+        new_arg = _ivy_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
         if dtype is not None:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
@@ -900,7 +916,13 @@ def eye(
 
     """
     return current_backend().eye(
-        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+        n_rows,
+        n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 

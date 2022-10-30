@@ -2706,11 +2706,16 @@ def multiply(
     ----------
     x1
         first input array. Should have a numeric data type.
+
     x2
-        second input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
-        Should have a numeric data type.
+        second input array. Should have a numeric data type.
+        Must be compatible with ``x1``
+        The condition for compatibility is Broadcasting :  ``x1.shape!=x2.shape`` .
+        The arrays must be boradcastble to get a common shape for the output.
+
+
     out
-        optional output array, for writing the result to. It must have a shape that the
+        optional output array, for writing the array result to. It must have a shape that the
         inputs broadcast to.
 
 
@@ -2721,7 +2726,7 @@ def multiply(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
+    instances in place of any of the arguments.
 
     Returns
     -------
@@ -2729,6 +2734,31 @@ def multiply(
         an array containing the element-wise products. The returned array must have a
         data type determined by :ref:`Type Promotion Rules`.
 
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([3., 5., 7.])
+    >>> x2 = ivy.array([4., 6., 8.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([12., 30., 56.])
+
+    With :class:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1., 3., 9.])
+    >>> x2 = ivy.native_array([4., 7.2, 1.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([ 4. , 21.6,  9. ])
+
+    With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([8., 6., 7.])
+    >>> x2 = ivy.native_array([1., 2., 3.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([ 8., 12., 21.])
     """
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
@@ -4218,8 +4248,8 @@ def negative(
 @handle_nestable
 @handle_exceptions
 def not_equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     *,
     out: Optional[ivy.Array] = None,
