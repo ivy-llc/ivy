@@ -195,7 +195,7 @@ def x_and_mha(draw):
     mask_shape = (num_queries, num_keys)
     x_mha = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=inputs_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -203,7 +203,7 @@ def x_and_mha(draw):
     )
     context = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=context_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -211,7 +211,7 @@ def x_and_mha(draw):
     )
     mask = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=mask_shape,
             min_value=0.0999755859375,
             max_value=1,
@@ -276,7 +276,6 @@ def test_multi_head_attention_layer(
         with_to_kv_fn,
         with_to_out_fn,
     ) = dtype_mha
-    input_dtype = [input_dtype] * 3
     as_variable = [as_variable] * 3
     native_array = [native_array] * 3
     container = [container] * 3
