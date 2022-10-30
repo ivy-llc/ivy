@@ -1,7 +1,9 @@
 # local
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def empty(
     size,
     *,
@@ -19,6 +21,7 @@ def empty(
     return ret
 
 
+@to_ivy_arrays_and_back
 def full(
     size,
     fill_value,
@@ -37,6 +40,7 @@ def full(
     return ret
 
 
+@to_ivy_arrays_and_back
 def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
     ret = ivy.ones(shape=size, dtype=dtype, device=device, out=out)
     if requires_grad:
@@ -44,10 +48,12 @@ def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def ones_like_v_0p3p0_to_0p3p1(input, out=None):
     return ivy.ones_like(input, out=None)
 
 
+@to_ivy_arrays_and_back
 def ones_like_v_0p4p0_and_above(
     input,
     *,
@@ -63,6 +69,7 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
+@to_ivy_arrays_and_back
 def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     ret = ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
     if requires_grad:
@@ -70,6 +77,23 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     return ret
 
 
+@to_ivy_arrays_and_back
+def zeros_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    ret = ivy.zeros_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def arange(
     end,  # torch doesn't have a default for this.
     start=0,
@@ -87,6 +111,7 @@ def arange(
     return ret
 
 
+@to_ivy_arrays_and_back
 def range(
     end,  # torch doesn't have a default for this.
     start=0,
@@ -103,6 +128,7 @@ def range(
     return ret
 
 
+@to_ivy_arrays_and_back
 def linspace(
     start,
     end,
@@ -120,6 +146,7 @@ def linspace(
     return ret
 
 
+@to_ivy_arrays_and_back
 def logspace(
     start,
     end,
@@ -140,6 +167,7 @@ def logspace(
     return ret
 
 
+@to_ivy_arrays_and_back
 def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
@@ -149,6 +177,7 @@ def eye(
     return ret
 
 
+@to_ivy_arrays_and_back
 def empty_like(
     input,
     *,
@@ -164,6 +193,7 @@ def empty_like(
     return ret
 
 
+@to_ivy_arrays_and_back
 def full_like(
     input,
     fill_value,
@@ -180,6 +210,7 @@ def full_like(
     return ret
 
 
+@to_ivy_arrays_and_back
 def as_tensor(
     data,
     *,
@@ -187,3 +218,12 @@ def as_tensor(
     device=None,
 ):
     return ivy.asarray(data, dtype=dtype, device=device)
+
+
+def from_numpy(
+    data
+):
+    return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
+
+
+from_numpy.supported_dtypes = ("ndarray",)

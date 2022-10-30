@@ -60,7 +60,7 @@ def to_device(
 # since if we use to_device, it will return ivy.array which is not desirable
 def _to_device(x, device=None):
     if device is not None:
-        cur_dev = as_ivy_dev(dev(x))
+        cur_dev = as_native_dev(dev(x))
         if cur_dev != device:
             x = jax.device_put(x, as_native_dev(device))
     return x
