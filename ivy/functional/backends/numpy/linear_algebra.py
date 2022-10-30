@@ -334,7 +334,7 @@ def vector_norm(
 
 
 def adjoint(x: np.ndarray, /, *, out: Optional[ivy.Array] = None) -> np.ndarray:
-    return np.conj(x.T)
+    return np.conj(x.transpose(list(range(x.ndim - 2)) + [x.ndim - 1, x.ndim - 2]))
 
 
 def diag(

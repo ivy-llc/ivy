@@ -381,7 +381,9 @@ def vector_norm(
 
 
 def adjoint(x: JaxArray, /, *, out: Optional[ivy.Array] = None) -> JaxArray:
-    return jnp.conjugate(jnp.transpose(x))
+    return jnp.conjugate(
+        jnp.transpose(x, list(range(x.ndim - 2)) + [x.ndim - 1, x.ndim - 2])
+    )
 
 
 def diag(
