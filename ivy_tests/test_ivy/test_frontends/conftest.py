@@ -6,7 +6,7 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 
 @pytest.fixture(autouse=True)
 def run_around_tests(
-    request, device, backend_fw, fixt_frontend_str, compile_graph, implicit
+    request, on_device, backend_fw, fixt_frontend_str, compile_graph, implicit
 ):
     try:
         test_globals.setup_frontend_test(
@@ -16,6 +16,6 @@ def run_around_tests(
         test_globals.teardown_frontend_test()
         raise RuntimeError(f"Setting up test for {request.function} failed.") from e
     with backend_fw.use:
-        with DefaultDevice(device):
+        with DefaultDevice(on_device):
             yield
     test_globals.teardown_frontend_test()

@@ -31,9 +31,7 @@ from ivy.functional.backends.torch.general import (
 
 from .assertions import (
     value_test,
-    test_unsupported_function,
     check_unsupported_dtype,
-    check_unsupported_device_and_dtype,
 )
 
 
@@ -421,19 +419,11 @@ def test_frontend_function(
         # fn_name = fn_tree[split_index + 1:]
         # fn_module = fn_tree[:split_index]
         # frontend_fn = importlib.import_module(fn_module).__dict__[fn_name]
-        *frontend_submods, fn_name = fn_tree.split(".")
-        frontend_module = f"ivy.functional.frontends.{frontend}"
-
-        # Getting function attributes when we have function tree such as
-        # nn.functional etc
-        len_frontend_submods = len(frontend_submods)
-        if len_frontend_submods > 0:
-            frontend_module += "." + ".".join(frontend_submods)
-
-        function_module = importlib.import_module(frontend_module)
-
-        function = getattr(function_module, fn_name)
-        return function, function_module, fn_name, frontend_submods
+        split_index = fn_tree.rfind(".")
+        fn_mod, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
+        function_module = importlib.import_module(fn_mod)
+        function = function_module.__dict__[fn_name]
+        return function, function_module, fn_name, fn_mod
 
     function, function_module, fn_name, frontend_submods = _get_function(
         fn_tree=fn_tree
@@ -441,55 +431,25 @@ def test_frontend_function(
 
     # check for unsupported dtypes in backend framework
     def _test_backend_unsupported():
-        test_unsupported = check_unsupported_dtype(
-            fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
+        args, kwargs, _, _, _ = create_args_kwargs(
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
+            input_dtypes=input_dtypes,
+            as_variable_flags=as_variable_flags,
+            native_array_flags=native_array_flags,
         )
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(
+            *args, **kwargs
+        )  # ToDo, probably redundant?
+        return args, kwargs, args_ivy, kwargs_ivy
 
-        if not test_unsupported:
-            test_unsupported = check_unsupported_device_and_dtype(
-                fn=function,
-                device=on_device,
-                input_dtypes=input_dtypes,
-                all_as_kwargs_np=all_as_kwargs_np,
-            )
+    args, kwargs, args_ivy, kwargs_ivy = _test_backend_unsupported()
 
-        # create args
-        if test_unsupported:
-            try:
-                args, kwargs, _, _, _ = create_args_kwargs(
-                    args_np=args_np,
-                    arg_np_vals=arg_np_vals,
-                    args_idxs=args_idxs,
-                    kwargs_np=kwargs_np,
-                    kwarg_np_vals=kwarg_np_vals,
-                    kwargs_idxs=kwargs_idxs,
-                    input_dtypes=input_dtypes,
-                    as_variable_flags=as_variable_flags,
-                    native_array_flags=native_array_flags,
-                )
-                args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
-            except Exception:
-                return
-        else:
-            args, kwargs, _, _, _ = create_args_kwargs(
-                args_np=args_np,
-                arg_np_vals=arg_np_vals,
-                args_idxs=args_idxs,
-                kwargs_np=kwargs_np,
-                kwarg_np_vals=kwarg_np_vals,
-                kwargs_idxs=kwargs_idxs,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-            )
-            args_ivy, kwargs_ivy = ivy.args_to_ivy(
-                *args, **kwargs
-            )  # ToDo, probably redundant?
-        return test_unsupported, args, kwargs, args_ivy, kwargs_ivy
-
-    test_unsupported, args, kwargs, args_ivy, kwargs_ivy = _test_backend_unsupported()
-
-    def _test_frontend_function(test_unsupported, args, kwargs, args_ivy, kwargs_ivy):
+    def _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy):
         # frontend function
         frontend_fn = getattr(function_module, fn_name)
 
@@ -505,16 +465,12 @@ def test_frontend_function(
             args = ivy.nested_map(args, fn=conv, include_derived=True)
             kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
-        # run from the Ivy API directly
-        if test_unsupported:
-            test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
-            return
         # Make copy for arguments for functions that might use
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
-        ret = frontend_fn.__wrapped__(*args, **kwargs)
+        ret = frontend_fn.__wrapped__(*args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -581,14 +537,6 @@ def test_frontend_function(
         # temporarily set frontend framework as backend
         ivy.set_backend(frontend)
         try:
-            # check for unsupported dtypes in frontend framework
-            function = getattr(function_module, fn_name)
-            test_unsupported = check_unsupported_dtype(
-                fn=function,
-                input_dtypes=input_dtypes,
-                all_as_kwargs_np=all_as_kwargs_np,
-            )
-
             # create frontend framework args
             args_frontend = ivy.nested_map(
                 args_np,
@@ -621,16 +569,7 @@ def test_frontend_function(
             )
 
             # compute the return via the frontend framework
-            frontend_fw = importlib.import_module(
-                ".".join([frontend] + frontend_submods)
-            )
-            if test_unsupported:
-                test_unsupported_function(
-                    fn=frontend_fw.__dict__[fn_name],
-                    args=args_frontend,
-                    kwargs=kwargs_frontend,
-                )
-                return
+            frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
             frontend_ret = frontend_fw.__dict__[fn_name](
                 *args_frontend, **kwargs_frontend
             )
@@ -668,19 +607,18 @@ def test_frontend_function(
         )
 
     # Call the frontend testing function
-    _test_frontend_function(test_unsupported, args, kwargs, args_ivy, kwargs_ivy)
+    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
-    if all_aliases:
+    if all_aliases is not None:
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_module, fn_name, frontend_submods = _get_function(
-                fn_tree=alias
+                fn_tree=fn_tree
             )
 
             # testing unsupported in that backend
             (
-                test_unsupported,
                 args,
                 kwargs,
                 args_ivy,
@@ -688,9 +626,7 @@ def test_frontend_function(
             ) = _test_backend_unsupported()
 
             # calling the testing function
-            _test_frontend_function(
-                test_unsupported, args, kwargs, args_ivy, kwargs_ivy
-            )
+            _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
 
 # Method testing
