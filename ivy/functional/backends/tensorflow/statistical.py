@@ -5,6 +5,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 
 
 # Array API Standard #
@@ -135,12 +136,13 @@ def var(
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
-        return tf.cast(
+        return ivy.astype(
             tf.math.multiply(
                 tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
                 size / (size - correction),
             ),
             x.dtype,
+            copy=False,
         )
 
 
@@ -193,4 +195,6 @@ def einsum(
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.einsum(equation, *operands)
+    dtype = _get_promoted_type_of_operands(operands)
+    operands = (ivy.astype(operand, tf.float32, copy=False) for operand in operands)
+    return tf.cast(tf.einsum(equation, *operands), dtype)

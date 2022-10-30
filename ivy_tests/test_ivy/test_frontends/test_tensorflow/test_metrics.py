@@ -190,6 +190,38 @@ def test_sparse_categorical_crossentropy(
     )
 
 
+# log_cosh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.log_cosh"
+    ),
+)
+def test_tensorflow_log_cosh(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.log_cosh",
+        y_true=x[0],
+        y_pred=x[1],
+    )
+
+
 # mean_absolute_error
 @handle_cmd_line_args
 @given(
@@ -213,6 +245,7 @@ def test_tensorflow_mean_absolute_error(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["keras.metrics.mae"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
@@ -271,6 +304,7 @@ def test_binary_crossentropy(
     )
 
 
+<<<<<<< HEAD
 # categorical_crossentropy
 @handle_cmd_line_args
 @given(
@@ -309,10 +343,115 @@ def test_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, dtype],
+=======
+@st.composite
+def _binary_focal_args(draw):
+    shape = st.tuples(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
+    common_float_dtype = helpers.get_dtypes("float", full=False)
+
+    from_logits = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("bool")), shape=(1,)
+        )
+    )
+
+    if from_logits[0]:
+        min_value = -10.0
+        max_value = 10.0
+    else:
+        min_value = 0.0
+        max_value = 1.0
+
+    dtype_y_true = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("integer")),
+            min_value=0,
+            max_value=2,
+            exclude_max=True,
+            shape=draw(st.shared(shape, key="shape")),
+        )
+    )
+    dtype_y_pred = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=min_value,
+            max_value=max_value,
+            shape=draw(st.shared(shape, key="shape")),
+        )
+    )
+    dtype_label_smoothing = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=0.0,
+            max_value=1.0,
+            exclude_min=False,
+            exclude_max=False,
+            shape=(1,),
+        )
+    )
+    dtype_gamma = draw(
+        helpers.dtype_and_values(
+            dtype=draw(st.shared(common_float_dtype, key="float_dtype")),
+            min_value=0.0,
+            max_value=10.0,
+            shape=(1,),
+        )
+    )
+    # attr = Tidx:type, default = DT_INT32, allowed = [DT_INT32, DT_INT64] > [Op:Mean]
+    dtype_axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=[ivy.int32, ivy.int64],
+            min_value=-len(draw(st.shared(shape, key="shape"))),
+            max_value=len(draw(st.shared(shape, key="shape"))),
+            shape=(1,),
+        )
+    )
+    dtype_true, y_true = dtype_y_true
+    dtype_pred, y_pred = dtype_y_pred
+    dtype_gamma, gamma = dtype_gamma
+    dtype_from_logits, from_logits = from_logits
+    dtype_label_smoothing, label_smoothing = dtype_label_smoothing
+    dtype_axis, axis = dtype_axis
+    dtypes = [
+        dtype_true[0],
+        dtype_pred[0],
+        dtype_gamma[0],
+        dtype_from_logits[0],
+        dtype_label_smoothing[0],
+        dtype_axis[0],
+    ]
+    values = [
+        y_true[0],
+        y_pred[0],
+        gamma[0],
+        from_logits[0],
+        label_smoothing[0],
+        axis[0],
+    ]
+    return dtypes, values
+
+
+# binary_focal_crossentropy
+@handle_cmd_line_args
+@given(
+    binary_focal_args=_binary_focal_args(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow."
+        "keras.metrics.binary_focal_crossentropy"
+    ),
+)
+def test_binary_focal_crossentropy(
+    binary_focal_args, as_variable, num_positional_args, native_array
+):
+    dtypes, values = binary_focal_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+>>>>>>> upstream/master
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+<<<<<<< HEAD
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.categorical_crossentropy",
@@ -320,6 +459,16 @@ def test_categorical_crossentropy(
         y_pred=y_pred,
         from_logits=from_logits,
         label_smoothing=label_smoothing,
+=======
+        frontend="tensorflow",
+        fn_tree="keras.metrics.binary_focal_crossentropy",
+        y_true=values[0],
+        y_pred=values[1],
+        gamma=values[2],
+        from_logits=values[3],
+        label_smoothing=values[4],
+        axis=values[5],
+>>>>>>> upstream/master
     )
 
 
@@ -410,6 +559,7 @@ def test_tensorflow_kl_divergence(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["keras.metrics.kld"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
@@ -472,6 +622,7 @@ def test_tensorflow_mean_squared_error(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["keras.metrics.mse"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
@@ -504,6 +655,7 @@ def test_tensorflow_mean_absolute_percentage_error(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["keras.metrics.mape"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
@@ -597,6 +749,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["keras.metrics.msle"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="tensorflow",
