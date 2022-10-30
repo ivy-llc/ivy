@@ -603,3 +603,136 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_nansum(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nansum. This method simply wraps
+        the function, and so the docstring for ivy.nansum also applies to this method
+        with minimal changes.
+        
+        Parameters
+        ----------
+        x
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> ivy.Container.static_nansum(x)
+        {
+            a: 27,
+            b: 7.0
+        }
+        >>> ivy.Container.static_nansum(x, axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> ivy.Container.static_nansum(x, axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nansum",
+            x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nansum(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to this
+        method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> x.nansum(axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> x.nansum(axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return self.static_nansum(
+            self, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
