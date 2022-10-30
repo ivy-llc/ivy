@@ -5,19 +5,16 @@ from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_frontend_test
 
 
 # add
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.add"
     ),
 )
 def test_jax_lax_add(
@@ -25,6 +22,9 @@ def test_jax_lax_add(
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -33,8 +33,9 @@ def test_jax_lax_add(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="jax",
-        fn_tree="lax.add",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
