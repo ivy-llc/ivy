@@ -11,10 +11,9 @@ class ndarray:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
-    # -------------------#
+    # Instance Methods #
+    # ---------------- #
 
-    # Add argmax #
     def argmax(
         self,
         /,
@@ -23,7 +22,6 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-
         return np_frontend.argmax(
             self.data,
             axis=axis,
@@ -150,3 +148,47 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self.data)
+
+    def __neg__(
+        self,
+    ):
+        return np_frontend.negative(self.data)
+
+    def __pos__(
+        self,
+    ):
+        return np_frontend.positive(self.data)
+
+    def __bool__(
+        self,
+    ):
+        if isinstance(self.data, int):
+            return self.data != 0
+
+        temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
+        shape = ivy.shape(temp)
+        if shape:
+            raise ValueError(
+                "The truth value of an array with more than one element is ambiguous. "
+                "Use a.any() or a.all()"
+            )
+
+        return temp != 0
+
+    def __ne__(self, value, /):
+        return np_frontend.not_equal(self.data, value)
+
+    def __eq__(self, value, /):
+        return ivy.array(np_frontend.equal(self.data, value), dtype=ivy.bool)
+
+    def __ge__(self, value, /):
+        return np_frontend.greater_equal(self.data, value)
+
+    def __gt__(self, value, /):
+        return np_frontend.greater(self.data, value)
+
+    def __le__(self, value, /):
+        return np_frontend.less_equal(self.data, value)
+
+    def __lt__(self, value, /):
+        return np_frontend.less(self.data, value)

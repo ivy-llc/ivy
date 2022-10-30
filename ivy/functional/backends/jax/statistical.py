@@ -116,9 +116,8 @@ def var(
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if isinstance(correction, int):
-        return jnp.asarray(
-            jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        ).astype(x.dtype)
+        ret = jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+        return ivy.astype(ret, x.dtype, copy=False)
     if x.size == 0:
         return jnp.asarray(float("nan"))
     size = 1
@@ -126,11 +125,9 @@ def var(
         size *= x.shape[a]
     if size == correction:
         size += 0.0001  # to avoid division by zero in return
-    return jnp.asarray(
-        jnp.multiply(
-            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-            size / jnp.abs(size - correction),
-        )
+    return jnp.multiply(
+        jnp.var(x, axis=axis, keepdims=keepdims, out=out),
+        size / jnp.abs(size - correction),
     ).astype(x.dtype)
 
 
