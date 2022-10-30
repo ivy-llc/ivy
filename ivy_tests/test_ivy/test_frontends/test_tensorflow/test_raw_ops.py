@@ -2012,7 +2012,7 @@ def test_tensorflow_RightShift(
 
 
 @st.composite
-def _pow_helper_tf(draw):
+def _pow_helper_shared_dtype(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", full=True),
@@ -2042,7 +2042,7 @@ def _pow_helper_tf(draw):
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_pow_helper_tf(),
+    dtype_and_x=_pow_helper_shared_dtype(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
@@ -2230,4 +2230,26 @@ def test_tensorflow_Unpack(
         value=x[0],
         num=x[0].shape[axis],
         axis=axis,
+    )
+
+
+# Sigmoid
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Sigmoid(dtype_and_x, as_variable, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Sigmoid",
+        x=x[0],
     )
