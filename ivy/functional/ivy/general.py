@@ -1562,6 +1562,7 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_rearrange(
@@ -1592,14 +1593,14 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
-    x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
-    ret = ivy.array(ret)
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_reduce(
@@ -1655,10 +1656,8 @@ def einops_reduce(
         b: ivy.array([-1.4, 6.21])
     }
     """
-    dtype = x.dtype
-    x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
-    ret = ivy.array(ret, dtype=dtype)
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -1668,6 +1667,7 @@ def einops_reduce(
 einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_repeat(
@@ -1723,10 +1723,8 @@ def einops_repeat(
     }
 
     """
-    x = ivy.to_native(x)
     ret = einops.repeat(x, pattern, **axes_lengths)
-    ret = ivy.array(ret)
-
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -2316,6 +2314,9 @@ def inplace_update(
 
     """
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
+
+
+inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_nestable

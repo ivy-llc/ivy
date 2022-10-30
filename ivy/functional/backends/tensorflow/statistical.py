@@ -136,12 +136,13 @@ def var(
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
-        return tf.cast(
+        return ivy.astype(
             tf.math.multiply(
                 tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
                 size / (size - correction),
             ),
             x.dtype,
+            copy=False,
         )
 
 
@@ -195,5 +196,5 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (tf.cast(operand, tf.float32) for operand in operands)
+    operands = (ivy.astype(operand, tf.float32, copy=False) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)

@@ -51,3 +51,12 @@ def float_power(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.float_power(x1, x2)
+
+
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.exp2(x)

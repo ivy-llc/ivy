@@ -1121,15 +1121,16 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
+            get_scalar = lambda x: ivy.to_scalar(x) if ivy.is_array(x) else x
             if ivy.nested_argwhere(
                 input,
-                lambda x: ivy.to_scalar(x) > 9223372036854775807
-                and ivy.to_scalar(x) != ivy.inf,
+                lambda x: get_scalar(x) > 9223372036854775807
+                and get_scalar(x) != ivy.inf,
             ):
                 ret = ivy.uint64
             elif ivy.nested_argwhere(
                 input,
-                lambda x: ivy.to_scalar(x) > 2147483647 and ivy.to_scalar(x) != ivy.inf,
+                lambda x: get_scalar(x) > 2147483647 and get_scalar(x) != ivy.inf,
             ):
                 ret = ivy.int64
             else:
@@ -1739,12 +1740,24 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'int_dtype' as the default data type.
 
     Parameters
     ----------
     int_dtype
+        The integer data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
+    >>> ivy.default_int_dtype()
+    'int64'
+
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int32"))
+    >>> ivy.default_int_dtype()
+    'int32'
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
