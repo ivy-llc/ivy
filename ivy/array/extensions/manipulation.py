@@ -224,3 +224,46 @@ class ArrayWithManipulationExtensions(abc.ABC):
 
         """
         return ivy.rot90(self._data, k=k, axes=axes, out=out)
+
+    def top_k(
+        self: ivy.Array,
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = None,
+        largest: Optional[bool] = True,
+        out: Optional[tuple] = None,
+    ) -> Tuple[ivy.Array, ivy.NativeArray]:
+        """ivy.Array instance method variant of ivy.top_k. This method simply
+        wraps the function, and so the docstring for ivy.top_k also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The array to compute top_k for.
+        k
+            Number of top elements to retun must not exceed the array size.
+        axis
+            The axis along which we must return the top elements default value is 1.
+        largest
+            If largest is set to False we return k smallest elements of the array.
+        out:
+            Optional output tuple, for writing the result to. Must have two arrays,
+            with a shape that the returned tuple broadcast to.
+
+        Returns
+        -------
+        ret
+            A named tuple with values and indices of top k elements.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
+        >>> y = x.top_k(2)
+        >>> print(y)
+        top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
+        """
+        return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
