@@ -9,6 +9,11 @@ import math
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+# TODO rearrange code to expose this strategy
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
+    _solve_get_dtype_and_data,
+)
+
 
 # Acos
 @handle_cmd_line_args
@@ -2230,6 +2235,32 @@ def test_tensorflow_Unpack(
         value=x[0],
         num=x[0].shape[axis],
         axis=axis,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_solve_get_dtype_and_data(),
+    adjoint=st.booleans(),
+)
+def test_tensorflow_MatrixSolve(
+    dtype_and_x,
+    adjoint,
+    as_variable,
+    native_array,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatrixSolve",
+        matrix=xs[0],
+        rhs=xs[1],
+        adjoint=adjoint,
     )
 
 

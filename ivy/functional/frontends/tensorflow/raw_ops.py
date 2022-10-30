@@ -235,6 +235,9 @@ def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
 MatrixDeterminant = tf_frontend.linalg.det
 
 
+MatrixSolve = tf_frontend.linalg.solve
+
+
 @to_ivy_arrays_and_back
 def Max(*, input, axis, keep_dims=False, name="Max"):
     return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)

@@ -167,12 +167,14 @@ def _solve_get_dtype_and_data(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=_solve_get_dtype_and_data(),
+    adjoint=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.linalg.solve"
     ),
 )
 def test_tensorflow_solve(
     dtype_and_x,
+    adjoint,
     as_variable,
     num_positional_args,
     native_array,
@@ -186,10 +188,9 @@ def test_tensorflow_solve(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.solve",
-        rtol=1e-3,
-        atol=1e-3,
         matrix=xs[0],
         rhs=xs[1],
+        adjoint=adjoint,
     )
 
 

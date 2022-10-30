@@ -30,8 +30,10 @@ def eigvalsh(tensor, name=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
-def solve(matrix, rhs):
+def solve(matrix, rhs, adjoint=False, name=None):
     matrix, rhs = promote_types_of_tensorflow_inputs(matrix, rhs)
+    if adjoint:
+        return ivy.solve(ivy.adjoint(matrix), rhs)
     return ivy.solve(matrix, rhs)
 
 
