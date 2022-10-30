@@ -158,7 +158,8 @@ def test_tensorflow_binary_accuracy(
     ),
     from_logits=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.metrics.sparse_categorical_crossentropy"  # noqa
+        fn_name=
+        "ivy.functional.frontends.tensorflow.keras.metrics.sparse_categorical_crossentropy"  # noqa
     ),
 )
 def test_sparse_categorical_crossentropy(
@@ -303,8 +304,6 @@ def test_binary_crossentropy(
         label_smoothing=label_smoothing,
     )
 
-
-<<<<<<< HEAD
 # categorical_crossentropy
 @handle_cmd_line_args
 @given(
@@ -343,7 +342,19 @@ def test_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, dtype],
-=======
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.categorical_crossentropy",
+        y_true=y_true,
+        y_pred=y_pred,
+        from_logits=from_logits,
+        label_smoothing=label_smoothing,
+    )
+
 @st.composite
 def _binary_focal_args(draw):
     shape = st.tuples(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
@@ -446,20 +457,10 @@ def test_binary_focal_crossentropy(
     dtypes, values = binary_focal_args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
->>>>>>> upstream/master
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-<<<<<<< HEAD
-        fw=fw,
-        frontend="tensorflow",
-        fn_tree="keras.metrics.categorical_crossentropy",
-        y_true=y_true,
-        y_pred=y_pred,
-        from_logits=from_logits,
-        label_smoothing=label_smoothing,
-=======
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_focal_crossentropy",
         y_true=values[0],
@@ -468,7 +469,6 @@ def test_binary_focal_crossentropy(
         from_logits=values[3],
         label_smoothing=values[4],
         axis=values[5],
->>>>>>> upstream/master
     )
 
 
