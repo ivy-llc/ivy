@@ -50,6 +50,9 @@ class Tensor:
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
+    def atan(self, *, out=None):
+        return torch_frontend.atan(self.data, out=out)
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
@@ -149,6 +152,16 @@ class Tensor:
 
     def expand(self, *sizes):
         return ivy.broadcast_to(self.data, shape=sizes)
+
+    def detach(self):
+        return ivy.stop_gradient(self.data, preserve_type=False)
+
+    def unsqueeze(self, dim):
+        return torch_frontend.unsqueeze(self, dim)
+
+    def unsqueeze_(self, dim):
+        self.data = self.unsqueeze(dim)
+        return self.data
 
     # Special Methods #
     # -------------------#
