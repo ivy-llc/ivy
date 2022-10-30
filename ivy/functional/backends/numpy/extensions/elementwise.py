@@ -122,3 +122,19 @@ def nansum(
 
 
 nansum.support_native_out = True
+
+
+def isclose(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+isclose.support_native_out = False

@@ -103,6 +103,19 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.nansum(
-        x, axis=axis, dtype=dtype, keepdims=keepdims
+    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
+def isclose(
+    a: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
     )
