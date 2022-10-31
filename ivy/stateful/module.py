@@ -1149,25 +1149,6 @@ class Module(abc.ABC):
     # Methods #
     # ------- #
 
-    @staticmethod
-    def static_to_torch_module(x):
-        """
-        Convert a trainable ivy.Module instance to an instance of a trainable torch
-        module.
-
-        Parameters
-        ----------
-        self
-            trainable ivy.Module instance
-
-        Returns
-        -------
-        ret
-            The new trainable torch module instance.
-
-        """
-        return NewTorchModule(x)
-
     def to_torch_module(self):
         """
         Convert a trainable ivy.Module instance to an instance of a trainable torch
@@ -1184,27 +1165,8 @@ class Module(abc.ABC):
             The new trainable torch module instance.
 
         """
-        return self.static_to_torch_module(self)
+        return NewTorchModule(self)
 
-    # @staticmethod
-    # def static_to_keras_model(x):
-    #     """
-    #     Convert a trainable ivy.Module instance to an instance of a trainable torch
-    #     module.
-    #
-    #     Parameters
-    #     ----------
-    #     self
-    #         trainable ivy.Module instance
-    #
-    #     Returns
-    #     -------
-    #     ret
-    #         The new trainable torch module instance.
-    #
-    #     """
-    #     return NewKerasModel(x)
-    #
     # def to_keras_model(self):
     #     """
     #     Convert a trainable ivy.Module instance to an instance of a trainable torch
