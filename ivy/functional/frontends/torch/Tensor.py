@@ -201,6 +201,12 @@ class Tensor:
         _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
+    def unfold(self, dimension, size, step):
+        slices = []
+        for i in range(0, self.data.shape[dimension] - size + 1, step):
+            slices.append(self.data[i : i + size])
+        return ivy.stack(slices)
+
     # Special Methods #
     # -------------------#
 

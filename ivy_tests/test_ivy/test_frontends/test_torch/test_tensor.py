@@ -1684,3 +1684,67 @@ def test_torch_instance_expand(
         class_name="tensor",
         method_name="expand",
     )
+
+
+@st.composite
+def _unfold_args(draw):
+    values_dtype, values, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            force_int_axis=True,
+            shape=draw(
+                helpers.get_shape(
+                    allow_none=False,
+                    min_num_dims=1,
+                    min_dim_size=1,
+                )
+            ),
+            ret_shape=True,
+        )
+    )
+    size = draw(
+        st.integers(
+            min_value=1,
+            max_value=len(shape[axis] - 1),
+        )
+    )
+    step = draw(
+        st.integers(
+            min_value=1,
+            max_value=size,
+        )
+    )
+    return values_dtype, values, axis, size, step
+
+
+# unfold
+@handle_cmd_line_args
+@given(
+    dtype_values_args=_unfold_args(),
+)
+def test_torch_instance_unfold(
+    dtype_values_args, size, step, as_variable, native_array
+):
+    input_dtype, x, axis, size, step = dtype_values_args
+    print(axis, size, step)
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=3,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dimension": axis,
+            "size": size,
+            "step": step,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="unfold",
+    )
