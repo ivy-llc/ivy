@@ -3,6 +3,8 @@
 # global
 import os
 import abc
+import haiku as hk
+from haiku._src.data_structures import FlatMapping
 import ivy.functional.backends.numpy
 import termcolor
 import numpy as np
@@ -1142,3 +1144,130 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
+
+    # Converters #
+    # -----------#
+
+    def from_hk_model(
+        self,
+        native_module=None,
+        native_module_class=None,
+        args=None,
+        kwargs=None,
+        device=None,
+        devices=None,
+        inplace_update=False,
+    ):
+        """
+        Convert a Haiku module to an Ivy module.
+
+        Parameters
+        ----------
+        self
+            ivy.Module instance
+        native_module
+            The module in the native framework to convert, required if
+            native_module_class is not given.
+            Default is ``None``.
+        native_module_class
+            The class of the native module, required if native_module is not given.
+            Default is ``None``.
+        args
+            Positional arguments to pass to the native module class.
+            Default is ``None``.
+        kwargs
+            Key-word arguments to pass to the native module class. Default is ``None``.
+        device
+            The device on which to create module variables. Default is ``None``.
+        devices
+            The devices on which to create module variables. Default is ``None``.
+        inplace_update
+            For backends with dedicated variable classes, whether to update these
+            inplace. Default is ``False``.
+
+        Returns
+        -------
+        ret
+            The new trainable ivy.Module instance.
+
+        """
+        args = ivy.default(args, [])
+        kwargs = ivy.default(kwargs, {})
+
+        if not ivy.exists(native_module):
+            ivy.assertions.check_exists(
+                native_module_class,
+                message="native_module_class must be specified if "
+                + "native_module is None",
+            )
+
+            def forward_fn(*a, **kw):
+                model = native_module_class(*args, **kwargs)
+                return model(*a, **kw)
+
+            native_module = hk.transform(forward_fn)
+
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+
+        def _hk_flat_map_to_dict(hk_flat_map):
+            ret_dict = dict()
+            for k, v in hk_flat_map.items():
+                new_k = k.replace("/", "|")
+                if isinstance(v, FlatMapping):
+                    ret_dict[new_k] = _hk_flat_map_to_dict(v)
+                else:
+                    ret_dict[new_k] = v
+            return ret_dict
+
+        def _dict_to_hk_flat_map(dict_in):
+            ret_flat_map = dict()
+            for k, v in dict_in.items():
+                new_k = k.replace("|", "/")
+                if isinstance(v, dict):
+                    ret_flat_map[new_k] = _dict_to_hk_flat_map(v)
+                else:
+                    ret_flat_map[new_k] = v
+            return FlatMapping(ret_flat_map)
+
+        def _create_variables(self, device, dtype):
+            return self._hk_params
+
+        def _build(self, *args, **kwargs):
+            args, kwargs = ivy.args_to_native(*args, **kwargs)
+            # noinspection PyUnresolvedReferences
+            params_hk = self._native_module.init(ivy.RNG, *args, **kwargs)
+            params_dict = _hk_flat_map_to_dict(params_hk)
+            self._hk_params = ivy.Container(params_dict)
+            param_iterator = self._hk_params.to_iterator()
+            _, param0 = next(param_iterator)
+            self._dev = ivy.as_ivy_dev(param0.device())
+
+        def _forward(self, *a, **kw):
+            a, kw = ivy.args_to_native(*a, **kw)
+            params_hk = _dict_to_hk_flat_map(self.v.to_dict())
+            ret = self._native_module.apply(params_hk, None, *a, **kw)
+            if isinstance(ret, tuple):
+                return ivy.args_to_native(*ret)
+            return ivy.to_native(ret)
+
+        self._create_variables = _create_variables.__get__(self, self.__class__)
+        self._build = _build.__get__(self, self.__class__)
+        self._forward = _forward.__get__(self, self.__class__)
+        ivy.Module.__init__(
+            self, build_mode=self._build_mode, device=device, devices=devices
+        )
+        return self
+
+    def to_hk_model(self):
+        return HaikuModel(self)
+
+
+class HaikuModel(hk.Module):
+    def __init__(self, ivy_module, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._ivy_module = ivy_module
+
+    def __call__(self, *a, **kw):
+        return self._ivy_module(*a, **kw)
