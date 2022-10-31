@@ -142,6 +142,7 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container</span> <span class="kn">import</span> <span class="n">Container</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_get_first_array</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 
 
 <span class="c1"># Base #</span>
@@ -1271,7 +1272,50 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">built</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span>
+
+    <span class="c1"># Methods #</span>
+    <span class="c1"># ------- #</span>
+
+<div class="viewcode-block" id="Module.to_torch_module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.to_torch_module">[docs]</a>    <span class="k">def</span> <span class="nf">to_torch_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a trainable ivy.Module instance to an instance of a trainable torch</span>
+<span class="sd">        module.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            trainable ivy.Module instance</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new trainable torch module instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">NewTorchModule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="NewTorchModule"><a class="viewcode-back" href="../../../stateful/module/NewTorchModule.html#ivy.stateful.module.NewTorchModule">[docs]</a><span class="k">class</span> <span class="nc">NewTorchModule</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="NewTorchModule.__init__"><a class="viewcode-back" href="../../../stateful/module/NewTorchModule.html#ivy.stateful.module.NewTorchModule.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_module</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ivy_module</span> <span class="o">=</span> <span class="n">ivy_module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_variables</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">kc</span><span class="p">:</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy_module</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="NewTorchModule.forward"><a class="viewcode-back" href="../../../stateful/module/NewTorchModule.html#ivy.stateful.module.NewTorchModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="s2">&quot;Backend must be torch when converting Ivy Module to Torch Module.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy_module</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span><span class="o">.</span><span class="n">to_native</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

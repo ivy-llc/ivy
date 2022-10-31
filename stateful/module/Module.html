@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Converters" href="../converters.html" />
+    <link rel="next" title="NewTorchModule" href="NewTorchModule.html" />
     <link rel="prev" title="Module" href="../module.html" /> 
 </head>
 
@@ -92,6 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../module.html">Module</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NewTorchModule.html">NewTorchModule</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">Converters</a></li>
@@ -374,6 +375,21 @@ which all nested key-chains flattened. Default is <code class="docutils literal 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.module.Module.to_torch_module">
+<span class="sig-name descname"><span class="pre">to_torch_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.to_torch_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.Module.to_torch_module" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a trainable ivy.Module instance to an instance of a trainable torch
+module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – trainable ivy.Module instance</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable torch module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.module.Module.track_submod_call_order">
 <span class="sig-name descname"><span class="pre">track_submod_call_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.track_submod_call_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.Module.track_submod_call_order" title="Permalink to this definition"></a></dt>
 <dd><p>Tracks the order in which the submodules are called.</p>
@@ -428,7 +444,7 @@ which all nested key-chains flattened. Default is <code class="docutils literal 
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../module.html" class="btn btn-neutral float-left" title="Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../converters.html" class="btn btn-neutral float-right" title="Converters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="NewTorchModule.html" class="btn btn-neutral float-right" title="NewTorchModule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
