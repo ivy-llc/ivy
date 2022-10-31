@@ -13,7 +13,8 @@ import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 import torch
-import tensorflow as tf
+
+# import tensorflow as tf
 
 
 # Base #
@@ -1167,7 +1168,7 @@ class Module(abc.ABC):
         """
         return NewTorchModule(x)
 
-    def to_torch_module(self, args=None, kwargs=None):
+    def to_torch_module(self):
         """
         Convert a trainable ivy.Module instance to an instance of a trainable torch
         module.
@@ -1184,6 +1185,43 @@ class Module(abc.ABC):
 
         """
         return self.static_to_torch_module(self)
+
+    # @staticmethod
+    # def static_to_keras_model(x):
+    #     """
+    #     Convert a trainable ivy.Module instance to an instance of a trainable torch
+    #     module.
+    #
+    #     Parameters
+    #     ----------
+    #     self
+    #         trainable ivy.Module instance
+    #
+    #     Returns
+    #     -------
+    #     ret
+    #         The new trainable torch module instance.
+    #
+    #     """
+    #     return NewKerasModel(x)
+    #
+    # def to_keras_model(self):
+    #     """
+    #     Convert a trainable ivy.Module instance to an instance of a trainable torch
+    #     module.
+    #
+    #     Parameters
+    #     ----------
+    #     self
+    #         trainable ivy.Module instance
+    #
+    #     Returns
+    #     -------
+    #     ret
+    #         The new trainable torch module instance.
+    #
+    #     """
+    #     return self.static_to_keras_model(self)
 
 
 class NewTorchModule(torch.nn.Module):
@@ -1204,13 +1242,13 @@ class NewTorchModule(torch.nn.Module):
         return self._ivy_module(*a, **kw).to_native()
 
 
-class NewKerasModel(tf.keras.Model):
-    def __init__(self, ivy_module):
-        self._ivy_module = ivy_module
-
-        super().__init__()
-
-    def call(self, *a, **kw):
-        # TODO: check if it's tf
-        # TODO: check if it is compatible with tf grad and optimizer
-        return self._ivy_module(*a, **kw)
+# class NewKerasModel(tf.keras.Model):
+#     def __init__(self, ivy_module):
+#         self._ivy_module = ivy_module
+#
+#         super().__init__()
+#
+#     def call(self, training=None, *a, **kw):
+#         # TODO: check if it's tf
+#         # TODO: check if it is compatible with tf grad and optimizer
+#         return self._ivy_module(*a, **kw)
