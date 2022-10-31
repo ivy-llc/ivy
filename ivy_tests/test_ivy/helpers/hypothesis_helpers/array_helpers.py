@@ -928,4 +928,4 @@ def onehot_values_on_off_dtype(draw):
         )
     )
     [on_value, off_value] = value[0]
-    return on_value, off_value, dtype[0]
+    return on_value, off_value, dtype

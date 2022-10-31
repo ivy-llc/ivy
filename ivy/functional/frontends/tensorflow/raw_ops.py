@@ -283,6 +283,9 @@ def OneHot(*, indices, depth, on_value, off_value, axis=-1, name="OneHot"):
     )
 
 
+OneHot.supported_dtypes = ("int32", "int64", "uint8")
+
+
 @to_ivy_arrays_and_back
 def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)

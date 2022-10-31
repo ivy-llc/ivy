@@ -2254,7 +2254,7 @@ def test_tensorflow_OneHot(
     on_value, off_value, dtype = on_off_dtype
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype + [dtype],
+        input_dtypes=input_dtype + dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=0,

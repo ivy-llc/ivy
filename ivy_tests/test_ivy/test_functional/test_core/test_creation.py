@@ -855,5 +855,5 @@ def test_one_hot(
         on_value=on_value,
         off_value=off_value,
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
