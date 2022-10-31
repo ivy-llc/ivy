@@ -10,6 +10,8 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_variable(
         x: ivy.Container,
+        /,
+        *,
         key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -65,6 +67,8 @@ class ContainerWithGradients(ContainerBase):
 
     def variable(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
