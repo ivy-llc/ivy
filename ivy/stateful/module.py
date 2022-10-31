@@ -1167,24 +1167,6 @@ class Module(abc.ABC):
         """
         return NewTorchModule(self)
 
-    # def to_keras_model(self):
-    #     """
-    #     Convert a trainable ivy.Module instance to an instance of a trainable torch
-    #     module.
-    #
-    #     Parameters
-    #     ----------
-    #     self
-    #         trainable ivy.Module instance
-    #
-    #     Returns
-    #     -------
-    #     ret
-    #         The new trainable torch module instance.
-    #
-    #     """
-    #     return self.static_to_keras_model(self)
-
 
 class NewTorchModule(torch.nn.Module):
     def __init__(self, ivy_module, *args, **kwargs):
@@ -1202,15 +1184,3 @@ class NewTorchModule(torch.nn.Module):
 
     def forward(self, *a, **kw):
         return self._ivy_module(*a, **kw).to_native()
-
-
-# class NewKerasModel(tf.keras.Model):
-#     def __init__(self, ivy_module):
-#         self._ivy_module = ivy_module
-#
-#         super().__init__()
-#
-#     def call(self, training=None, *a, **kw):
-#         # TODO: check if it's tf
-#         # TODO: check if it is compatible with tf grad and optimizer
-#         return self._ivy_module(*a, **kw)
