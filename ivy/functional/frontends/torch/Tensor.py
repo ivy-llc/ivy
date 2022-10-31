@@ -1,5 +1,4 @@
 # local
-import torch.onnx.symbolic_opset9
 
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
