@@ -115,29 +115,3 @@ def to_ivy_module(
         *args,
         **kwargs
     )
-
-
-class NewTorchModule(torch.nn.Module):
-    def __init__(self, ivy_module, *args, **kwargs):
-        super().__init__()
-
-        self._ivy_module = ivy_module
-        self._args = args
-        self._kwargs = kwargs
-
-    def forward(self, *a, **kw):
-        # a, kw = ivy.args_to_native(*a, **kw)
-        # self._update_v(self.v)
-        ret = self._ivy_module(*a, **kw)
-        # if isinstance(ret, tuple):
-        #     return ivy.args_to_native(*ret) # TODO: check if it's torch
-        # return ivy.to_native(ret) # TODO: check if it's torch
-        return ret  # TODO: check if it's torch
-
-
-def to_torch_module(ivy_module, args=None, kwargs=None):
-    if isinstance(ivy_module._native_module, torch.nn.Module):
-        return ivy_module._native_module
-    args = ivy.default(args, [])
-    kwargs = ivy.default(kwargs, {})
-    return NewTorchModule(ivy_module, *args, **kwargs)

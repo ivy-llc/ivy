@@ -12,6 +12,7 @@ import numpy as np
 import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
+import torch
 
 
 # Base #
@@ -1143,8 +1144,27 @@ class Module(abc.ABC):
     def built(self):
         return self._built
 
-    # Instance Methods #
-    # ---------------- #
+    # Methods #
+    # ------- #
+
+    @staticmethod
+    def static_to_torch_module(x):
+        """
+        Convert a trainable ivy.Module instance to an instance of a trainable torch
+        module.
+
+        Parameters
+        ----------
+        self
+            trainable ivy.Module instance
+
+        Returns
+        -------
+        ret
+            The new trainable torch module instance.
+
+        """
+        return
 
     def to_torch_module(self, args=None, kwargs=None):
         """
@@ -1162,6 +1182,22 @@ class Module(abc.ABC):
             The new trainable torch module instance.
 
         """
-        return ivy.functional.backends.torch.to_torch_module(
-            self, args=args, kwargs=kwargs
-        )
+        return self.static_to_torch_module(self)
+
+
+class NewTorchModule(torch.nn.Module):
+    def __init__(self, ivy_module, *args, **kwargs):
+        super().__init__()
+
+        self._ivy_module = ivy_module
+        self._args = args
+        self._kwargs = kwargs
+
+    def forward(self, *a, **kw):
+        # a, kw = ivy.args_to_native(*a, **kw)
+        # self._update_v(self.v)
+        ret = self._ivy_module(*a, **kw)
+        # if isinstance(ret, tuple):
+        #     return ivy.args_to_native(*ret) # TODO: check if it's torch
+        # return ivy.to_native(ret) # TODO: check if it's torch
+        return ret  # TODO: check if it's torch
