@@ -83,11 +83,10 @@ def execute_with_gradients(
                     )
                 )
                 if isinstance(grads, ivy.Container):
-                    grads = grads.from_flat_list(
-                        ivy.nested_multi_map(
-                            lambda x, y: x[0] if x[1] is None else x[1], [grads_, grads]
-                        )
+                    grads = ivy.nested_map(
+                        grads, lambda x: 0 if x is None else x, include_derived=True
                     )
+                    grads += grads_
                 else:
                     grads = grads_ if grads is None else grads
             else:
