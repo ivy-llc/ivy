@@ -88,3 +88,15 @@ def top_k(
     )
     indices, vals = torch.topk(x, k, dim=axis, largest=largest)
     return topk_res(indices, vals)
+
+
+def fliplr(
+    m: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.fliplr(m)
+
+
+fliplr.support_native_out = False
