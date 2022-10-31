@@ -1,7 +1,7 @@
 # global
 import abc
 from numbers import Number
-from typing import Optional, Union, List
+from typing import Any, Optional, Union, List
 
 # local
 import ivy
@@ -320,8 +320,26 @@ class ArrayWithCreation(abc.ABC):
         """
         return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
 
+    def to_dlpack(self: ivy.Array) -> Any:
+        """
+        ivy.Array instance method variant of ivy.to_dlpack. This method simply wraps
+        the function, and so the docstring for ivy.to_dlpack also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            a PyCapsule object containing a reference to the data in ``self``.
+        """
+        return ivy.to_dlpack(self)
+
     def from_dlpack(
-        self: ivy.Array,
+        self: Union[ivy.Array, ivy.NativeArray],
         /,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -405,8 +423,8 @@ class ArrayWithCreation(abc.ABC):
         depth: int,
         /,
         *,
-        on_value: Union[Number] = None,
-        off_value: Union[Number] = None,
+        on_value: Optional[Number] = 1,
+        off_value: Optional[Number] = 0,
         axis: Optional[int] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Union[ivy.Device, ivy.NativeDevice] = None,
