@@ -124,7 +124,7 @@ def update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
     return updated_kwargs
 
 
-def map_raw_ops_alias(alias: callable, kwargs_to_update: dict = None) -> callable:
+def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
     """
     Mapping the raw_ops function with its respective frontend alias function,
     as the implementations of raw_ops is way similar to that of frontend functions,
