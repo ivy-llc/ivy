@@ -1,7 +1,7 @@
 # global
 
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Any, Union, List, Optional, Sequence
 
 import tensorflow as tf
 
@@ -14,6 +14,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 from . import backend_version
 
@@ -206,6 +207,12 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(
+    x: Union[tf.Tensor, tf.Variable],
+) -> Any:
+    return tf.experimental.dlpack.to_dlpack(x)
+
+
 # noinspection PyShadowingNames
 def from_dlpack(
     x: Union[tf.Tensor, tf.Variable],
@@ -213,8 +220,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
-    return tf.experimental.dlpack.from_dlpack(dlcapsule)
+    capsule = _get_pycapsule_from_array_object(x)
+    return tf.experimental.dlpack.from_dlpack(capsule)
 
 
 def full(
