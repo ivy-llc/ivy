@@ -77,6 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="creation/linspace.html">linspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/full.html">full</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/to_dlpack.html">to_dlpack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/from_dlpack.html">from_dlpack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/native_array.html">native_array</a></li>
@@ -1013,6 +1014,29 @@ instances in place of any of the arguments.</p>
 <span class="go">       [1, 1, 1]])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.creation.to_dlpack">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_dlpack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#to_dlpack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.to_dlpack" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a PyCapsule object pointing to the data in the input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>x</em>) – input (array) object.</p></li>
+<li><p><strong>out</strong> – optional output parameter to return the Pycapsule object to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Returns a Pycapsule object that contains a reference to the data in x.</p>
+</dd>
+</dl>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">

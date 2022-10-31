@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ivy.from_dlpack" href="from_dlpack/from_dlpack_functional.html" />
-    <link rel="prev" title="full" href="full.html" /> 
+    <link rel="prev" title="ivy.Array.to_dlpack" href="to_dlpack/to_dlpack_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -76,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="full.html">full</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_dlpack.html">to_dlpack</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">from_dlpack</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="from_dlpack/from_dlpack_functional.html">ivy.from_dlpack</a></li>
 <li class="toctree-l3"><a class="reference internal" href="from_dlpack/from_dlpack_array.html">ivy.Array.from_dlpack</a></li>
@@ -208,7 +209,7 @@ method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array.</p></li>
+<li><p><strong>self</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
 </ul>
@@ -255,7 +256,7 @@ the inputs broadcast to.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="full.html" class="btn btn-neutral float-left" title="full" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="to_dlpack/to_dlpack_array.html" class="btn btn-neutral float-left" title="ivy.Array.to_dlpack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="from_dlpack/from_dlpack_functional.html" class="btn btn-neutral float-right" title="ivy.from_dlpack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

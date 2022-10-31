@@ -31,6 +31,7 @@ Creation
    creation/linspace.rst
    creation/meshgrid.rst
    creation/full.rst
+   creation/to_dlpack.rst
    creation/from_dlpack.rst
    creation/copy_array.rst
    creation/native_array.rst
