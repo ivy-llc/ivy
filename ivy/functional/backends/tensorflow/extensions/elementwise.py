@@ -97,6 +97,4 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.nansum(
-        x, axis=axis, dtype=dtype, keepdims=keepdims
-    )
+    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
