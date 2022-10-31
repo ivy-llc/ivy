@@ -1640,16 +1640,18 @@ def test_torch_instance_new_empty(dtype_and_x, size, as_variable, native_array):
         frontend="torch",
         class_name="tensor",
         method_name="new_empty",
+    )
 
 
 @st.composite
 def _expand_helper(draw):
     shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
     shape1, shape2 = shape
-    dtype_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        shape=shape1
-    ))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid", full=True), shape=shape1
+        )
+    )
     dtype, x = dtype_x
     return dtype, x, shape1
 
@@ -1667,6 +1669,10 @@ def test_torch_instance_expand(
     input_dtype, x, shape = dtype_x_shape
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
             "data": x[0],
         },
         input_dtypes_method=input_dtype,
