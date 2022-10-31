@@ -2,17 +2,7 @@
 from __future__ import annotations
 import functools
 from numbers import Number
-from typing import (
-    Any,
-    Union,
-    Tuple,
-    Optional,
-    List,
-    Sequence,
-    Callable,
-    Protocol,
-    TypeVar,
-)
+from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
 import numpy as np
 
 # local
@@ -20,16 +10,10 @@ import ivy
 from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
-from ivy.backend_handler import (
-    current_backend,
-    _determine_backend_from_args,
-    _backend_dict,
-)
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
     handle_out_argument,
-    inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
@@ -1234,33 +1218,6 @@ def full(
     )
 
 
-@inputs_to_native_arrays
-@handle_nestable
-@handle_exceptions
-def to_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> Any:
-    """Returns a PyCapsule object pointing to the data in the input array.
-
-    Parameters
-    ----------
-    x object
-        input (array) object.
-    out
-        optional output parameter to return the Pycapsule object to.
-
-    Returns
-    -------
-    ret
-        Returns a Pycapsule object that contains a reference to the data in x.
-
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    """
-    return current_backend(x).to_dlpack(x)
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1301,10 +1258,6 @@ def from_dlpack(
     instances in place of any of the arguments.
 
     """
-    # if ivy.current_backend_str() == 'numpy':
-    #     x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x)
-    #     return current_backend(x).from_dlpack(x_with_dlpack, out=out)
-
     return current_backend(x).from_dlpack(x, out=out)
 
 
@@ -1567,16 +1520,3 @@ def logspace(
     return current_backend(start).logspace(
         start, stop, num, base=base, axis=axis, dtype=dtype, device=device, out=out
     )
-
-
-def _get_pycapsule_from_array_object(x):
-    input_backend = _determine_backend_from_args(x).__name__
-    try:
-        for backend, module_name in _backend_dict.items():
-            if input_backend == module_name:
-                ivy.set_backend(backend)
-                capsule = ivy.to_dlpack(ivy.asarray(x))
-                ivy.unset_backend()
-                return capsule
-    except Exception:
-        print(x, " does not belong to the supported frameworks")
