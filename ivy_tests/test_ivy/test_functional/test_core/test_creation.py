@@ -384,24 +384,20 @@ def test_eye(
 
 
 @st.composite
-def dtype_x_frameworks(draw, available_dtypes=None):
-    initial_framework_str = draw(
-        st.sampled_from(["numpy", "jax", "tensorflow", "torch"])
-    )
+def dtype_x_framework(draw, available_dtypes=None):
+    # initial framework set by handle_cmd_line_args
+    initial_framework_dtypes = draw(helpers.get_dtypes("numeric"))
     target_framework_str = draw(
         st.sampled_from(["numpy", "jax", "tensorflow", "torch"])
     )
 
-    initial_framework = import_module(_backend_dict[initial_framework_str])
     target_framework = import_module(_backend_dict[target_framework_str])
     if available_dtypes is None:
         available_dtypes = list(
-            set(initial_framework.valid_numeric_dtypes).intersection(
+            set(initial_framework_dtypes).intersection(
                 set(target_framework.valid_numeric_dtypes)
             )
         )
-        if "bfloat16" in available_dtypes:
-            available_dtypes.remove("bfloat16")
 
     dtype_and_x = draw(
         helpers.dtype_and_values(
@@ -413,31 +409,21 @@ def dtype_x_frameworks(draw, available_dtypes=None):
         )
     )
     dtype, x = dtype_and_x
-    return dtype, x, initial_framework_str, target_framework_str
+    return dtype, x, target_framework_str
 
 
 # __dlpack__ and to_dlpack
-# @handle_cmd_line_args
-@given(dtype_x_frameworks=dtype_x_frameworks())
-def test_to_dlpack(*, dtype_x_frameworks):
-    dtype, x, initial_framework_str, target_framework_str = dtype_x_frameworks
-    ivy.set_backend(initial_framework_str)
+@handle_cmd_line_args
+@given(dtype_x_frameworks=dtype_x_framework())
+def test_to_dlpack(*, dtype_x_framework):
+    _, x, target_framework_str = dtype_x_framework
     initial_array = ivy.array(x[0])
-    # if dtype[0] == 'bfloat16':
-    #     initial_np_array = initial_array.astype(ivy.float64).to_numpy()
-    # else:
     initial_np_array = initial_array.to_numpy()
     native_array = initial_array.to_native()
     ivy.set_backend(target_framework_str)
     target_array = ivy.from_dlpack(native_array)
-    # if dtype[0] == 'bfloat16':
-    #     target_np_array = target_array.astype(ivy.float64).to_numpy()
-    #     # target_np_array = ivy.to_numpy(target_array.astype(ivy.float64))
-    # else:
     target_np_array = target_array.to_numpy()
     helpers.assert_all_close(target_np_array, initial_np_array)
-    # helpers.assert_all_close(target_array, initial_np_array)
-    ivy.unset_backend()
     ivy.unset_backend()
 
 
