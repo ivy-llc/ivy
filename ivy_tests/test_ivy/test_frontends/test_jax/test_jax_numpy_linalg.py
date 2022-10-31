@@ -459,9 +459,53 @@ def test_jax_norm(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
+
         fn_tree="numpy.linalg.norm",
         x=x[0],
         ord=ord_param,
         axis=axis,
         keepdims=keepdims,
     )
+    
+    
+# matrix_power
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_power"
+    ),
+)
+def test_jax_numpy_matrix_power(
+    dtype_and_x, 
+    n, 
+    as_variable, 
+    native_array, 
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend="jax",
+        fn_tree="numpy.linalg.matrix_power",
+        a=np.asarray(x[0], dtype=dtype[0]),
+        n=n,
+    )
+    

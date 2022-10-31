@@ -71,3 +71,8 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)

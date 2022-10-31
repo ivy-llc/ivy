@@ -76,6 +76,9 @@ def subtract(input, other, *, alpha=1, out=None):
     return ivy.subtract(input, other * alpha, out=out)
 
 
+sub = subtract
+
+
 @to_ivy_arrays_and_back
 def exp(input, *, out=None):
     return ivy.exp(input, out=out)

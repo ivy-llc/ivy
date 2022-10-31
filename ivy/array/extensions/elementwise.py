@@ -273,3 +273,54 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([32.,   64.,  128.])
         """
         return ivy.exp2(self._data, out=out)
+
+    def nansum(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to
+        this method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+        >>> ivy.nansum(a)
+        10.0
+        >>> ivy.nansum(a, axis=0)
+        ivy.array([2.1, 5.8, 2.1])
+        >>> ivy.nansum(a, axis=1)
+        ivy.array([5.5, 4.5])
+        """
+        return ivy.nansum(
+            self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )

@@ -334,3 +334,49 @@ def test_exp2(
         fn_name="exp2",
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# nansum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        min_axes_size=1,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="nansum"),
+    keep_dims=st.booleans(),
+)
+def test_nansum(
+    dtype_x_axis,
+    keep_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="nansum",
+        input=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
