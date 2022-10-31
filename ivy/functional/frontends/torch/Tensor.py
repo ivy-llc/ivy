@@ -1,4 +1,5 @@
 # local
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
@@ -41,8 +42,15 @@ class Tensor:
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
 
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
+
+    def atan(self, *, out=None):
+        return torch_frontend.atan(self.data, out=out)
 
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
@@ -123,17 +131,57 @@ class Tensor:
     def acos(self, *, out=None):
         return torch_frontend.acos(self.data, out=out)
 
+    def new_tensor(
+        self,
+        data,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(data) if dtype is None else dtype
+        _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def view_as(self, other):
+        return self.view(other.shape)
+
+    def expand(self, *sizes):
+        return ivy.broadcast_to(self.data, shape=sizes)
+
+    def detach(self):
+        return ivy.stop_gradient(self.data, preserve_type=False)
+
+    def unsqueeze(self, dim):
+        return torch_frontend.unsqueeze(self, dim)
+
+    def unsqueeze_(self, dim):
+        self.data = self.unsqueeze(dim)
+        return self.data
+
+    def dim(self):
+        return self.data.ndim
+
+    ndimension = dim
+
     # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    def __getitem__(self, query):
+        ret = ivy.get_item(self.data, query)
+        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+
     def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(other, self, alpha=alpha)
+        return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
