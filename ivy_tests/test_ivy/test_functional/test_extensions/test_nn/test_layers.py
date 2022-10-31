@@ -268,17 +268,20 @@ def test_kaiser_window(
     )
 
 
-def _st_tuples_or_int(n_pairs):
+def _st_tuples_or_int(n_pairs, exclude_zero=False):
+    min_val = 0
+    if exclude_zero:
+        min_val = 1
     return st.one_of(
         hypothesis_helpers.tuples(
             st.tuples(
-                st.integers(min_value=0, max_value=4),
-                st.integers(min_value=0, max_value=4),
+                st.integers(min_value=min_val, max_value=4),
+                st.integers(min_value=min_val, max_value=4),
             ),
             min_size=n_pairs,
             max_size=n_pairs,
         ),
-        helpers.ints(min_value=1, max_value=4),
+        helpers.ints(min_value=min_val, max_value=4),
     )
 
 
@@ -296,7 +299,7 @@ def _pad_helper(draw):
     if type(pad_width) is tuple:
         if (len(pad_width) == 1):
             pad_width = pad_width[0]
-    stat_length = draw(_st_tuples_or_int(ndim))
+    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
     if type(stat_length) is tuple:
         if (len(stat_length) == 1):
             stat_length = stat_length[0]
