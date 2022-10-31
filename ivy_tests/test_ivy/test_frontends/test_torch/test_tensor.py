@@ -1539,13 +1539,119 @@ def test_torch_instance_ndimension(dtype_and_x, as_variable, native_array):
 
 
 @st.composite
+def _fill_value_and_size(
+    draw,
+    *,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    if isinstance(min_dim_size, st._internal.SearchStrategy):
+        min_dim_size = draw(min_dim_size)
+    if isinstance(max_dim_size, st._internal.SearchStrategy):
+        max_dim_size = draw(max_dim_size)
+
+    available_dtypes = draw(helpers.get_dtypes("numeric"))
+    dtype = draw(
+        helpers.array_dtypes(
+            num_arrays=1,
+            available_dtypes=available_dtypes,
+        )
+    )
+    array = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(1,),
+        )
+    )
+    dtype.append("int32")
+    size = draw(
+        st.shared(
+            helpers.get_shape(
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            ),
+            key="shape",
+        )
+    )
+    fill_value = draw(helpers.ints())
+
+    return dtype, [array, size, fill_value]
+
+
+# new_full
+@handle_cmd_line_args
+@given(dtype_and_x=_fill_value_and_size(max_num_dims=3))
+def test_torch_instance_new_full(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=[input_dtype[0]],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=2,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "size": x[1],
+            "fill_value": x[2],
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="new_full",
+    )
+
+
+# new_empty (not actually intuitive for testing)
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    size=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_torch_instance_new_empty(dtype_and_x, size, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=[input_dtype[0]],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x,
+        },
+        input_dtypes_method=[ivy.int32],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "size": size,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="new_empty",
+    )
+
+
+@st.composite
 def _expand_helper(draw):
     shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
     shape1, shape2 = shape
-    dtype_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        shape=shape1
-    ))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid", full=True), shape=shape1
+        )
+    )
     dtype, x = dtype_x
     return dtype, x, shape1
 
