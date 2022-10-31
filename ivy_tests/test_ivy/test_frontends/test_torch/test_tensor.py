@@ -222,6 +222,39 @@ def test_torch_instance_arcsin(
     )
 
 
+# atan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_atan(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=["float64"] + input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="atan",
+    )
+
+
 # sin_
 @handle_cmd_line_args
 @given(
@@ -1185,4 +1218,264 @@ def test_torch_instance_acos(
         frontend="torch",
         class_name="tensor",
         method_name="acos",
+    )
+
+
+# new_tensor
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    )
+)
+def test_torch_instance_new_tensor(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=[input_dtype[0]],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "data": x[1],
+            "dtype": input_dtype[1],
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="new_tensor",
+    )
+
+
+@st.composite
+def _array_and_index(
+    draw,
+    *,
+    available_dtypes=helpers.get_dtypes("numeric"),
+    min_num_dims=1,
+    max_num_dims=3,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+):
+    if isinstance(min_dim_size, st._internal.SearchStrategy):
+        min_dim_size = draw(min_dim_size)
+    if isinstance(max_dim_size, st._internal.SearchStrategy):
+        max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    assert available_dtypes is not None, "Unspecified dtype or available_dtypes."
+    dtype = draw(
+        helpers.array_dtypes(
+            num_arrays=1,
+            available_dtypes=available_dtypes,
+        )
+    )
+    dtype.append("int32")
+
+    if shape is not None:
+        if not isinstance(shape, (tuple, list)):
+            shape = draw(shape)
+    else:
+        shape = draw(
+            st.shared(
+                helpers.get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=max_num_dims,
+                    min_dim_size=min_dim_size,
+                    max_dim_size=max_dim_size,
+                ),
+                key="shape",
+            )
+        )
+
+    array = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+        )
+    )
+
+    index = tuple([draw(helpers.ints(min_value=0, max_value=_ - 1)) for _ in shape])
+    index = index if len(index) != 0 else index[0]
+    return dtype, [array, index]
+
+
+# __getitem__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
+)
+def test_torch_instance_getitem(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    data = x[0]
+    index = x[1]
+    helpers.test_frontend_method(
+        input_dtypes_init=[input_dtype[0]],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={"data": data},
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={"query": index},
+        frontend="torch",
+        class_name="tensor",
+        method_name="__getitem__",
+    )
+
+
+# view_as
+@handle_cmd_line_args
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_view_as(
+    dtype_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="view_as",
+    )
+
+
+# unsqueeze
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_instance_unsqueeze(
+    dtype_value,
+    dim,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dim": dim,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="unsqueeze",
+    )
+
+
+# unsqueeze_
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_instance_unsqueeze_(
+    dtype_value,
+    dim,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dim": dim,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="unsqueeze_",
+    )
+
+
+# detach
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+    )
+)
+def test_torch_instance_detach(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="detach",
     )
