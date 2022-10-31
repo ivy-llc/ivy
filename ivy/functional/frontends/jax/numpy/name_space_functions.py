@@ -305,6 +305,11 @@ def power(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def arange(start, stop=None, step=None, dtype=None):
+    return ivy.arange(start, stop, step=step, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
