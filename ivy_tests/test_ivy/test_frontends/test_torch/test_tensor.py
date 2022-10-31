@@ -2,6 +2,7 @@
 import ivy
 import torch
 from hypothesis import assume, given, strategies as st
+import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1534,4 +1535,46 @@ def test_torch_instance_ndimension(dtype_and_x, as_variable, native_array):
         frontend="torch",
         class_name="tensor",
         method_name="ndimension",
+    )
+
+
+@st.composite
+def _expand_helper(draw):
+    shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
+    shape1, shape2 = shape
+    dtype_x = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=shape1
+    ))
+    dtype, x = dtype_x
+    return dtype, x, shape1
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_shape=_expand_helper(),
+)
+def test_torch_instance_expand(
+    dtype_x_shape,
+    as_variable,
+    native_array,
+):
+
+    input_dtype, x, shape = dtype_x_shape
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=len(shape),
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={str(i): s for i, s in enumerate(shape)},
+        frontend="torch",
+        class_name="tensor",
+        method_name="expand",
     )
