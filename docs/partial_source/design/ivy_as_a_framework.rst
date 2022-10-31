@@ -37,4 +37,4 @@ You may choose from the following upcoming discussions or click next.
 
 Hopefully this has given you a good idea of how Ivy can be used as a fully-fledged ML framework.
 
-Please reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

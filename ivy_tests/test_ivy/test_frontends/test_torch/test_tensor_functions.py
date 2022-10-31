@@ -57,7 +57,7 @@ def test_torch_numel(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="numel",
-        input=ivy.asarray(x),
+        input=ivy.asarray(x[0]),
     )
 
 
@@ -86,7 +86,7 @@ def test_torch_is_floating_point(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="is_floating_point",
-        input=ivy.asarray(x),
+        input=ivy.asarray(x[0]),
     )
 
 
@@ -117,5 +117,5 @@ def test_torch_is_nonzero(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="is_nonzero",
-        input=ivy.asarray(x),
+        input=ivy.asarray(x[0]),
     )

@@ -366,6 +366,8 @@ class Conv1D(Module):
         filter_size,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         data_format="NWC",
@@ -413,12 +415,10 @@ class Conv1D(Module):
         self._filter_size = filter_size
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            (filter_size, input_channels, output_channels)
-            if data_format == "NWC"
-            else (input_channels, output_channels, self._filter_size)
+        self._w_shape = (filter_size, input_channels, output_channels)
+        self._b_shape = (
+            (1, 1, output_channels) if data_format == "NWC" else (1, output_channels, 1)
         )
-        self._b_shape = (1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._data_format = data_format
@@ -448,7 +448,11 @@ class Conv1D(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
@@ -488,6 +492,8 @@ class Conv1DTranspose(Module):
         filter_size,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         output_shape=None,
@@ -538,12 +544,10 @@ class Conv1DTranspose(Module):
         self._filter_size = filter_size
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            (filter_size, input_channels, output_channels)
-            if data_format == "NWC"
-            else (input_channels, output_channels, filter_size)
+        self._w_shape = (filter_size, input_channels, output_channels)
+        self._b_shape = (
+            (1, 1, output_channels) if data_format == "NWC" else (1, output_channels, 1)
         )
-        self._b_shape = (1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._output_shape = output_shape
@@ -572,7 +576,11 @@ class Conv1DTranspose(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
@@ -612,6 +620,8 @@ class Conv2D(Module):
         filter_shape,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         data_format="NHWC",
@@ -658,12 +668,12 @@ class Conv2D(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._b_shape = (
+            (1, 1, 1, output_channels)
             if data_format == "NHWC"
-            else [input_channels, output_channels] + filter_shape
+            else (1, output_channels, 1, 1)
         )
-        self._b_shape = (1, 1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._data_format = data_format
@@ -692,7 +702,11 @@ class Conv2D(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
@@ -731,6 +745,8 @@ class Conv2DTranspose(Module):
         filter_shape,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         output_shape=None,
@@ -780,12 +796,12 @@ class Conv2DTranspose(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._b_shape = (
+            (1, 1, 1, output_channels)
             if data_format == "NHWC"
-            else [input_channels, output_channels] + filter_shape
+            else (1, output_channels, 1, 1)
         )
-        self._b_shape = (1, 1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._output_shape = output_shape
@@ -815,7 +831,11 @@ class Conv2DTranspose(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
@@ -854,6 +874,8 @@ class DepthwiseConv2D(Module):
         filter_shape,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         data_format="NHWC",
@@ -898,12 +920,12 @@ class DepthwiseConv2D(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            filter_shape + [num_channels]
+        self._w_shape = filter_shape + [num_channels]
+        self._b_shape = (
+            (1, 1, 1, num_channels)
             if data_format == "NHWC"
-            else [num_channels] + filter_shape
+            else (1, num_channels, 1, 1)
         )
-        self._b_shape = (1, 1, num_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._data_format = data_format
@@ -932,7 +954,11 @@ class DepthwiseConv2D(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._num_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._num_channels,
+                self._num_channels,
+                dtype=dtype,
             ),
         }
 
@@ -971,6 +997,8 @@ class Conv3D(Module):
         filter_shape,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         data_format="NDHWC",
@@ -1017,12 +1045,12 @@ class Conv3D(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._b_shape = (
+            (1, 1, 1, 1, output_channels)
             if data_format == "NDHWC"
-            else [input_channels, output_channels] + filter_shape
+            else (1, output_channels, 1, 1, 1)
         )
-        self._b_shape = (1, 1, 1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._data_format = data_format
@@ -1051,7 +1079,11 @@ class Conv3D(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
@@ -1090,6 +1122,8 @@ class Conv3DTranspose(Module):
         filter_shape,
         strides,
         padding,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         output_shape=None,
@@ -1175,7 +1209,11 @@ class Conv3DTranspose(Module):
                 dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels, dtype=dtype
+                self._b_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
         }
 
