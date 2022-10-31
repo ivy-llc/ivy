@@ -142,8 +142,8 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: dict = None) -> callabl
     Returns
     -------
     ret
-        A decorated tf_frontend function to alias a given raw_ops function
-        with to_ivy_array_and_back decorator added
+        A decorated tf_frontend function to alias a given raw_ops function.
+        Only accepting key-word only arguments.
     """
 
     def _wrap_raw_ops_alias(fn: callable, kw_update: Dict) -> callable:
