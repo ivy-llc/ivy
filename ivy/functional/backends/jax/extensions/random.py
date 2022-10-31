@@ -4,26 +4,10 @@ import jax.numpy as jnp
 import jax
 import ivy
 
+from ivy.functional.backends.jax.random import RNG, _setRNG, _getRNG  # noqa
+
 # Extra #
-# ------#
-
-
-class RNGWrapper:
-    def __init__(self):
-        self.key = jax.random.PRNGKey(0)
-
-
-RNG = RNGWrapper()
-
-
-def _setRNG(key):
-    global RNG
-    RNG.key = key
-
-
-def _getRNG():
-    global RNG
-    return RNG.key
+# ----- #
 
 
 # dirichlet
@@ -36,7 +20,6 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    RNG, rng_input = jax.random.split(_getRNG())
     if seed is not None:
         rng_input = jax.random.PRNGKey(seed)
     else:

@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=1,
         max_dim_size=3,
         min_value=-100,
-        max_value=100
+        max_value=100,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="msort"),
 )
