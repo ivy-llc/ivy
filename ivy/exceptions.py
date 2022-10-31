@@ -2,6 +2,14 @@ import ivy
 import functools
 from typing import Callable
 
+import os
+import types
+import traceback
+
+
+_frontend_truncated_stack_traces = "ivy/functional/frontends"
+_ivy_truncated_stack_traces = "ivy/"
+
 
 class IvyException(Exception):
     def __init__(self, message):
@@ -57,14 +65,38 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
             if ivy.get_exception_trace_mode():
-                raise ivy.exceptions.IvyError(fn.__name__, str(e))
+                msg = filter_traceback(e.__traceback__, "ivy/functional/frontends")
+                raise ivy.exceptions.IvyError(fn.__name__, str(msg))
             else:
                 raise ivy.exceptions.IvyError(fn.__name__, str(e)) from None
         except Exception as e:
             if ivy.get_exception_trace_mode():
-                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+                tb = filter_traceback(e.__traceback__, "ivy/functional/backends")
+                exp = ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+                exp.__traceback__ = tb
+                raise exp
             else:
-                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e)) from None
+                tb = filter_traceback(e.__traceback__, "ivy/functional/backends")
+                exp = ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+                exp.__traceback__ = tb
+                raise exp from None
 
     new_fn.handle_exceptions = True
     return new_fn
+
+
+def filter_traceback(tb, with_filter):
+    out = None
+    # Scan the traceback and collect relevant frames.
+    frames = list(traceback.walk_tb(tb))
+    for f, lineno in reversed(frames):
+        if path_contains(f.f_code.co_filename, with_filter):
+            out = types.TracebackType(
+                out, f, f.f_lasti, lineno
+            )  # pytype: disable=wrong-arg-count
+    return out
+
+
+def path_contains(path, string_to_match):
+    path = os.path.abspath(path)
+    return string_to_match in path
