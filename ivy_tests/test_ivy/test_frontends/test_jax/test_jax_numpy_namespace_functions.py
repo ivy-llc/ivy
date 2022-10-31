@@ -1511,7 +1511,10 @@ def test_jax_numpy_power(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=3, shape=(1,), shared_dtype=True,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=3,
+        shape=(1,),
+        shared_dtype=True,
     ), 
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.arange"
