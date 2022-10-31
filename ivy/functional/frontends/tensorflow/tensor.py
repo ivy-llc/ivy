@@ -161,10 +161,6 @@ class Tensor:
         return y.__rtruediv__(self.data)
 
     def __len__(self):
-        # raise ivy.exceptions.IvyError(
-        #     "len is not well defined for a symbolic Tensor. Please call `x.shape` "
-        #     "rather than `len(x)` for shape information. "
-        # )
         return len(self.data)
 
     def __xor__(self, y, name="xor"):

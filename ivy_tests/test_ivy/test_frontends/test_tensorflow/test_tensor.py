@@ -1185,7 +1185,8 @@ def test_tensorflow_instance_set_shape(dtype_and_x, as_variable, native_array, f
         method_name="set_shape",
     )
 
-#__len__
+
+# __len__
 @handle_cmd_line_args
 @given(
     dtype_and_x=_array_and_shape(
