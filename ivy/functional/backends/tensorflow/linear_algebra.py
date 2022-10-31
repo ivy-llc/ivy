@@ -232,12 +232,9 @@ def matmul(
         elif len(x2.shape) == 1 and len(x1.shape) >= 2:
             x2 = tf.expand_dims(x2, axis=1)
             x2_padded = True
-        else:
-            ret = tf.matmul(x1, x2)
-            return tf.cast(ret, dtype=dtype_from)
         ret = tf.matmul(x1, x2)
 
-    ret = tf.cast(ret, dtype=dtype_from)
+    ret = ivy.astype(ret, dtype_from, copy=False)
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:
