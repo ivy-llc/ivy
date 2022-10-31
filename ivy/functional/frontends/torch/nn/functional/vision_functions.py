@@ -85,15 +85,25 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
+def _pad_handle_padding_shape(padding, n):
+    if type(padding) is tuple:
+        if type(padding[0]) is tuple:  # case nested tuples
+            padding = ivy.flip(ivy.array(list(padding)), axis=0)
+            padding = tuple([tuple(x) for x in padding])
+        elif len(padding) == 1:  # case scalar
+            padding = (padding[0], padding[0])  
+        else:  # case flat tuple like torch input
+            padding = tuple([(padding[i], padding[i + 1])
+                             for i in range(int(len(padding) / 2) - 1, -1, -1)])
+    while len(padding) < n:
+        padding = ((0, 0),) + padding
+    return padding
+
+
 @to_ivy_arrays_and_back
 def pad(input, padding, mode='constant' , value=0):
     ivy.assertions.check_torch_pad_input_valid(padding)    
-    if type(padding) is tuple:
-        if len(padding) == 1:
-            padding = padding[0]  # tuple of shape (1,) to scalar
-        else:  # TODO: handle nested tuples
-            padding = [(padding[i], padding[i + 1])
-                       for i in range(int(len(padding) / 2))]
+    padding = _pad_handle_padding_shape(padding, input.ndim)
     if mode is 'constant':
         return ivy.pad(input, padding, mode='constant', constant_values=value) 
     elif mode is 'reflect':
