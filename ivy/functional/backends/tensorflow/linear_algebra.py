@@ -233,7 +233,8 @@ def matmul(
             x2 = tf.expand_dims(x2, axis=1)
             x2_padded = True
         else:
-            return tf.matmul(x1, x2)
+            ret = tf.matmul(x1, x2)
+            return tf.cast(ret, dtype=dtype_from)
         ret = tf.matmul(x1, x2)
 
     ret = tf.cast(ret, dtype=dtype_from)
