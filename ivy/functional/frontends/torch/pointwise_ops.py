@@ -278,3 +278,14 @@ def div(input, other, *, rounding_mode=None, out=None):
 @to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(input, *, out=None):
+    """if all element of array is integer, dtype of array becomes integer,
+    so the result returns integer number. That's why the input array is converted 
+    into float if the dtype of the array is integer.
+    """
+    if 'int' in input.dtype:
+        input = input.astype('float32') 
+    return ivy.array(input * 3.1416 / 180, out=out)
