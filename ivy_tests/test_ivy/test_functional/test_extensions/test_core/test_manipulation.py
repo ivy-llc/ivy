@@ -421,12 +421,7 @@ def test_top_k(
 @given(
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-100,
-        max_value=100,
         min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="fliplr"),
 )
