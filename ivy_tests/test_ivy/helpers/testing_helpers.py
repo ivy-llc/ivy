@@ -4,7 +4,6 @@ import gc
 import inspect
 from hypothesis import given, settings, strategies as st
 from typing import Union
-import sys
 
 
 # local
@@ -232,15 +231,3 @@ def handle_cmd_line_args(test_fn):
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
-
-
-def get_callable_functions(
-    module_name: str,
-):
-    module = sys.modules[module_name]
-    fn_list = list()
-    for fn_name in dir(module):
-        obj = getattr(module, fn_name)
-        if callable(obj):
-            fn_list.append(fn_name)
-    return fn_list
