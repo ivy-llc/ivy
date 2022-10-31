@@ -1409,6 +1409,7 @@ def test_torch_mul(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["multiply"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -1464,4 +1465,40 @@ def test_torch_div(
         other=x[1],
         rounding_mode=rounding_mode,
         out=None,
+    )
+
+
+# flipud
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.flipud"
+    ),
+)
+def test_torch_flipud(
+    dtype_and_m,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="flipud",
+        input=m[0],
     )

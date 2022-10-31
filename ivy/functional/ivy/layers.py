@@ -654,7 +654,7 @@ def conv1d(
         padding,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 
@@ -711,7 +711,7 @@ def conv1d_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 
@@ -833,7 +833,7 @@ def conv2d(
         padding,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 
@@ -890,7 +890,7 @@ def conv2d_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 
@@ -1023,7 +1023,7 @@ def depthwise_conv2d(
         padding,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 
@@ -1093,7 +1093,7 @@ def conv3d(
         padding,
         data_format=data_format,
         dilations=dilations,
-        out=out
+        out=out,
     )
 
 

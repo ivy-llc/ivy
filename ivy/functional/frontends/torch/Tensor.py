@@ -1,6 +1,3 @@
-# global
-import torch
-
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -8,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 class Tensor:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -16,13 +13,16 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
+
+    def asin(self, *, out=None):
+        return torch_frontend.asin(self.data, out=out)
 
     def sin(self, *, out=None):
         return torch_frontend.sin(self.data, out=out)
@@ -41,11 +41,21 @@ class Tensor:
     def cos(self, *, out=None):
         return torch_frontend.cos(self.data, out=out)
 
+    def cos_(self):
+        self.data = self.cos()
+        return self.data
+
+    def arcsin(self, *, out=None):
+        return torch_frontend.arcsin(self.data, out=out)
+
+    def atan(self, *, out=None):
+        return torch_frontend.atan(self.data, out=out)
+
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
         return self.data
 
-    def float(self, memory_format=torch.preserve_format):
+    def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
 
     def asinh(self, *, out=None):
@@ -64,15 +74,23 @@ class Tensor:
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self.data, dim=dim, keepdim=keepdim)
 
+    def amin(self, dim=None, keepdim=False):
+        return torch_frontend.amin(self.data, dim=dim, keepdim=keepdim)
+
     def abs(self, *, out=None):
         return torch_frontend.abs(self.data, out=out)
 
-    def contiguous(self, memory_format=torch.contiguous_format):
+    def abs_(self):
+        self.data = self.abs()
         return self.data
 
-    def new_ones(self, size, * , dtype=None, device=None, requires_grad=False):
-        return torch_frontend.ones(size, dtype=dtype, device=device,
-                                   requires_grad=requires_grad)
+    def contiguous(self, memory_format=None):
+        return self.data
+
+    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.ones(
+            size, dtype=dtype, device=device, requires_grad=requires_grad
+        )
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
@@ -106,14 +124,52 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
+    def arctan(self, *, out=None):
+        return torch_frontend.arctan(self, out=out)
+
+    def acos(self, *, out=None):
+        return torch_frontend.acos(self.data, out=out)
+
+    def new_tensor(
+        self,
+        data,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(data) if dtype is None else dtype
+        _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def view_as(self, other):
+        return self.view(other.shape)
+
+    def detach(self):
+        return ivy.stop_gradient(self.data, preserve_type=False)
+
+    def unsqueeze(self, dim):
+        return torch_frontend.unsqueeze(self, dim)
+
+    def unsqueeze_(self, dim):
+        self.data = self.unsqueeze(dim)
+        return self.data
+
     # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    def __getitem__(self, query):
+        ret = ivy.get_item(self.data, query)
+        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+
     def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(other, self, alpha=alpha)
+        return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
         return torch_frontend.mul(self, other)
@@ -126,6 +182,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    # Method aliases
+    absolute, absolute_ = abs, abs_
 
 
 # Tensor (alias)

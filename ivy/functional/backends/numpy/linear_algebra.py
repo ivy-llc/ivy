@@ -337,25 +337,10 @@ def diag(
     x: np.ndarray,
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[np.ndarray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-    ret = np.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    # On the diagonal there will be
-    # 1 * padding_value + x_i - padding_value == x_i
-    ret += np.diag(x - padding_value, k=offset)
-
-    return ret
+) -> np.ndarray:
+    return np.diag(x, k=k)
 
 
 def vander(
