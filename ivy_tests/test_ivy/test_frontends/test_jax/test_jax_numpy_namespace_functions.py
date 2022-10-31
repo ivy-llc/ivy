@@ -1368,6 +1368,69 @@ def test_jax_numpy_bitwise_or_int(
     )
 
 
+# bitwise_xor
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.bitwise_xor"
+    ),
+)
+def test_jax_numpy_bitwise_xor_bool(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.bitwise_xor",
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=1,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.bitwise_xor"
+    ),
+)
+def test_jax_numpy_bitwise_xor_int(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.bitwise_xor",
+        x1=x[0][0],
+        x2=x[0][1],
+    )
+
+
 # moveaxis
 @handle_cmd_line_args
 @given(
@@ -1504,4 +1567,158 @@ def test_jax_numpy_power(
         fn_tree="numpy.power",
         x1=x[0],
         x2=x[1],
+    )
+
+
+# arange
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=3,
+        shape=(1,),
+        shared_dtype=True,
+    ), 
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.arange"
+    ),
+)
+def test_jax_numpy_arange(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    start, stop, step = values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.arange",
+        start=start,
+        stop=stop,
+        step=step,
+        dtype=dtype,
+    )
+
+
+# bincount
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=1,
+        max_value=2,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    dtype_and_w=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.bincount"
+    ),
+)
+def test_jax_numpy_bincount(
+    dtype_and_x,
+    dtype_and_w,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.bincount",
+        x=x[0],
+        weights=None,
+        minlength=0,
+        length=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.cumprod"
+    ),
+)
+def test_jax_lax_cumprod(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.cumprod",
+        a=x[0],
+        axis=axis,
+        dtype=input_dtype[0],
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.trunc"
+    ),
+)
+def test_jax_numpy_trunc(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.trunc",
+        x=x[0],
     )

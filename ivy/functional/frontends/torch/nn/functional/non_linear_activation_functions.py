@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from .. import versions
+
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -164,6 +164,18 @@ def celu(input, alpha=1.0, inplace=False):
 
 
 @to_ivy_arrays_and_back
+def mish(input, inplace=False):
+    ret = ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
 
@@ -283,7 +295,7 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions["torch"])
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:

@@ -10,7 +10,7 @@ class Tensor:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         else:
-            data = ivy.asarray(data)
+            data = ivy.array(data) if not isinstance(data, ivy.Array) else data
         self.data = data
 
     def __repr__(self):
@@ -21,7 +21,7 @@ class Tensor:
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self.data)
@@ -81,7 +81,8 @@ class Tensor:
         return tf_frontend.raw_ops.GreaterEqual(x=self.data, y=y.data, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        return Tensor(self.data.__getitem__(slice_spec))
+        ret = ivy.get_item(self.data, slice_spec)
+        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
@@ -131,6 +132,9 @@ class Tensor:
 
     def __ror__(self, x, name="ror"):
         return tf_frontend.raw_ops.LogicalOr(x=x, y=self.data, name=name)
+
+    def __rpow__(self, x, name="rpow"):
+        return tf_frontend.raw_ops.Pow(x=x, y=self.data, name=name)
 
     def __rsub__(self, x, name="rsub"):
         return tf_frontend.math.subtract(x, self.data, name=name)
