@@ -1231,12 +1231,12 @@ class NewTorchModule(torch.nn.Module):
         self._set_variables()
 
     def _set_variables(self):
-        submods = self._ivy_module.sub_mods()
-        vars_idx = ivy.nested_argwhere(submods, ivy.is_ivy_array)
-        vars = ivy.multi_index_nest(submods, vars_idx)
-        vars = ivy.nested_map(vars, lambda x: torch.nn.Parameter(ivy.to_native(x)))
-        for idx, var in enumerate(vars):
-            self._parameters["var{}".format(idx)] = var
+        self._parameters = {
+            kc: v
+            for kc, v in self._ivy_module.v.map(
+                lambda x, kc: torch.nn.Parameter(ivy.to_native(x))
+            ).to_iterator()
+        }
 
     def forward(self, *a, **kw):
         return self._ivy_module(*a, **kw).to_native()
