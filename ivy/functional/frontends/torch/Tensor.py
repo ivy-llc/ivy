@@ -207,6 +207,9 @@ class Tensor:
             slices.append(self.data[i : i + size])
         return ivy.stack(slices)
 
+    def long(self, memory_format=None):
+        return ivy.astype(self.data, ivy.int64)
+
     # Special Methods #
     # -------------------#
 
@@ -231,6 +234,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def __mod__(self, other):
+        return ivy.remainder(self, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
