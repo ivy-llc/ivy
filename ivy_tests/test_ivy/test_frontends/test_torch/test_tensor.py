@@ -1542,7 +1542,7 @@ def test_torch_instance_ndimension(dtype_and_x, as_variable, native_array):
 def _expand_helper(draw):
     shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
     shape1, shape2 = shape
-    dtype_x= draw(helpers.dtype_and_values(
+    dtype_x = draw(helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=shape1
     ))
