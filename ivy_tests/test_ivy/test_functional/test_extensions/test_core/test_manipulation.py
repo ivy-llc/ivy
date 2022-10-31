@@ -420,7 +420,7 @@ def test_top_k(
 @handle_cmd_line_args
 @given(
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="fliplr"),
