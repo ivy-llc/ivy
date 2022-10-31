@@ -386,3 +386,8 @@ def Relu6(features, name="Relu6"):
 @to_ivy_arrays_and_back
 def Sigmoid(x, name="Sigmoid"):
     return ivy.sigmoid(x)
+
+
+@to_ivy_arrays_and_back
+def Softplus(features, name="Softplus"):
+    return ivy.softplus(features)
