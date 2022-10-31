@@ -1642,6 +1642,7 @@ def test_torch_instance_new_empty(dtype_and_x, size, as_variable, native_array):
         method_name="new_empty",
 
 
+@st.composite
 def _expand_helper(draw):
     shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
     shape1, shape2 = shape
