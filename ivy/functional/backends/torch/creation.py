@@ -1,6 +1,6 @@
 # global
 
-from typing import Any, Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence
 
 import numpy as np
 import torch
@@ -15,12 +15,12 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    _get_pycapsule_from_array_object,
 )
 from . import backend_version
 
 
 # noinspection PyProtectedMember
+
 
 # Array API Standard #
 # -------------------#
@@ -240,13 +240,9 @@ def eye(
 eye.support_native_out = True
 
 
-def to_dlpack(x: torch.Tensor) -> Any:
-    return x.__dlpack__()
-
-
-def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
-    capsule = _get_pycapsule_from_array_object(x)
-    return torch.utils.dlpack.from_dlpack(capsule)
+def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    x = x.detach() if x.requires_grad else x
+    return torch.utils.dlpack.from_dlpack(x)
 
 
 def full(
