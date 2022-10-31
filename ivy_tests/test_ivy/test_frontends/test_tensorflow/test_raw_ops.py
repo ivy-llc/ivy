@@ -2236,7 +2236,7 @@ def test_tensorflow_Unpack(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
