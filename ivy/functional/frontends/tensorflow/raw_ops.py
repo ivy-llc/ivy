@@ -249,9 +249,6 @@ def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
 
-# @with_unsupported_dtypes(
-#     {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
-# )
 MatrixDeterminant = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.linalg.det, kwargs_to_update={"MatrixDeterminant": "name"}
@@ -445,6 +442,8 @@ def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
 
 
-@to_ivy_arrays_and_back
-def Sigmoid(x, name="Sigmoid"):
-    return ivy.sigmoid(x)
+Sigmoid = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.keras.activations.sigmoid, kwargs_to_update={"Sigmoid": "name"}
+    )
+)
