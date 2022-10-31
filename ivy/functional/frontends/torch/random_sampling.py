@@ -11,7 +11,7 @@ def seed() -> int:
 @to_ivy_arrays_and_back
 def manual_seed(seed: int):
     ivy.seed(seed_value=seed)
-    return Generator(seed)
+    return Generator().manual_seed(seed)
 
 
 @to_ivy_arrays_and_back
