@@ -330,3 +330,8 @@ def cumprod(a, axis=0, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def trunc(x):
     return ivy.trunc(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x):
+    return ivy.ceil(x)
