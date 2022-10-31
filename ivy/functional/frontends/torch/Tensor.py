@@ -162,6 +162,11 @@ class Tensor:
         self.data = self.unsqueeze(dim)
         return self.data
 
+    def dim(self):
+        return self.data.ndim
+
+    ndimension = dim
+
     # Special Methods #
     # -------------------#
 
@@ -176,7 +181,7 @@ class Tensor:
         return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
