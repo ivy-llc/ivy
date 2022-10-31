@@ -286,7 +286,10 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
         end += dim_length
     i = 0
     value = ivy.asarray(value, dtype=input.dtype)
-    if len(value.shape) > 1:
+    # below fixes error where there wasn't enought values in the for loop
+    if len(value.shape) == 1 and (end - start > 0): 
+        value = [value.to_list(), ] * (end - start)
+    elif len(value.shape) > 1:
         value = ivy.flatten(value)
     for ind in ivy.ndindex(input.shape):
         if (ind[0] < end) and (ind[0] >= start):
@@ -414,10 +417,11 @@ def _set_wrap_both(padded, width_pair):
 def _to_pairs(x, n):
     if ivy.isscalar(x):
         return ((x, x),) * n
-    elif ivy.asarray(x).shape == (2,):
+    # below fixes some errors where ivy.asarray(tuple) was failing
+    elif ivy.asarray(list(x)).shape == (2,):
         return ((x[0], x[1]),) * n
     ivy.assertions.check_equal(
-        ivy.asarray(x).shape,
+        ivy.asarray(list(x)).shape,
         (n, 2),
         message="values should be an integer or an iterable "
         "of ndim pairs where ndim is the number of "

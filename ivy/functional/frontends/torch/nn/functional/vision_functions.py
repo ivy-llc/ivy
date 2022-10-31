@@ -83,3 +83,27 @@ def pixel_unshuffle(input, downscale_factor):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 3, 5, 2, 4)), (b, oc, oh, ow)
     )
+
+
+@to_ivy_arrays_and_back
+def pad(input, padding, mode='constant' , value=0):
+    ivy.assertions.check_torch_pad_input_valid(padding)    
+    if type(padding) is tuple:
+        if len(padding) == 1:
+            padding = padding[0]  # tuple of shape (1,) to scalar
+        else:  # TODO: handle nested tuples
+            padding = [(padding[i], padding[i + 1])
+                       for i in range(int(len(padding) / 2))]
+    if mode is 'constant':
+        return ivy.pad(input, padding, mode='constant', constant_values=value) 
+    elif mode is 'reflect':
+        return ivy.pad(input, padding, mode='reflect', reflect_type='even')
+    elif mode is 'replicate':
+        return ivy.pad(input, padding, mode='edge')
+    elif mode is 'circular':
+        return ivy.pad(input, padding, mode='wrap')
+    else:
+        raise ivy.exceptions.IvyException(
+            ("mode '{}' must be in "
+             + "['constant', 'reflect', 'replicate', 'circular']").format(mode)
+        )

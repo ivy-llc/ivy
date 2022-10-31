@@ -1,5 +1,5 @@
 from hypothesis import given, assume, strategies as st
-
+import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -79,4 +79,63 @@ def test_torch_pixel_unshuffle(
         fn_tree="nn.functional.pixel_unshuffle",
         input=input,
         downscale_factor=factor,
+    )
+
+
+@st.composite
+def _pad_helper(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+        )
+    )
+    m = len(shape)
+    n = draw(helpers.ints(min_value=1, max_value=max(1, m)))
+    padding = draw(hypothesis_helpers.tuples(
+        st.tuples(
+            st.integers(min_value=1, max_value=4),
+            st.integers(min_value=1, max_value=4),
+        ),
+        min_size=n,
+        max_size=n,
+    ))
+    if type(padding) is tuple: 
+        if (len(padding) == 1):
+            padding = padding[0]
+    value = draw(helpers.ints(min_value=0, max_value=4))
+    return dtype, input[0], padding, value
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input_and_other=_pad_helper(),
+    mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.pad"
+    ),
+)
+def test_torch_pad(
+    *,
+    dtype_and_input_and_other,
+    mode,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    dtype, input, padding, value = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.pad",
+        input=input,
+        padding=padding,
+        mode=mode,
+        value=value,
     )

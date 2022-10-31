@@ -214,3 +214,20 @@ def check_inplace_sizes_valid(var, data):
                 data.shape, var.shape
             )
         )
+
+
+# Torch Frontend
+def check_torch_pad_input_valid(padding):
+    if type(padding) is tuple:
+        if len(padding) is not 1:
+            if len(padding) % 2 is not 0:
+                raise ivy.exceptions.IvyException(
+                    "Tuple padding length {} must be even".format(
+                        len(padding))
+                )
+            if len(padding) > 6:
+                raise ivy.exceptions.IvyException(
+                    'Padding length {} must be 1, 2, 4, or 6'.format(
+                        len(padding)
+                    )
+                )
