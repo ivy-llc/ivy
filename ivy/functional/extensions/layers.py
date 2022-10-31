@@ -284,20 +284,18 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
         end = dim_length
     elif end < 0:
         end += dim_length
-    i = 0
     value = ivy.asarray(value, dtype=input.dtype)
-    # below fixes error where there wasn't enough `value` to unpack in for loop
-    if len(value.shape) == 1 and (end - start > 0):
-        value = [value.to_list(), ] * (end - start)
-    elif len(value.shape) > 1:
+    if len(value.shape) > 1:
         value = ivy.flatten(value)
     for ind in ivy.ndindex(input.shape):
         if (ind[0] < end) and (ind[0] >= start):
             if len(value.shape) >= 1:
-                input[ind] = value[i]
+                if len(ind) == 1:
+                    input[ind] = value[0]
+                else:
+                    input[ind] = value[ind[-1]]
             else:
                 input[ind] = value
-            i += 1
     return input
 
 
@@ -417,7 +415,6 @@ def _set_wrap_both(padded, width_pair):
 def _to_pairs(x, n):
     if ivy.isscalar(x):
         return ((x, x),) * n
-    # below fixes some errors where ivy.asarray(tuple) was failing
     elif ivy.asarray(list(x)).shape == (2,):
         return ((x[0], x[1]),) * n
     ivy.assertions.check_equal(
@@ -696,6 +693,9 @@ def pad(
                 )
             padded = ivy.moveaxis(padded, 0, -1)
     return padded
+
+
+pad.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @outputs_to_ivy_arrays

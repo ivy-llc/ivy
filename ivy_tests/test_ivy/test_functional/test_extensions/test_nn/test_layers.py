@@ -287,37 +287,7 @@ def _st_tuples_or_int(n_pairs, exclude_zero=False):
 
 @st.composite
 def _pad_helper(draw):
-    dtype, input, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            ret_shape=True,
-            min_num_dims=1,
-        )
-    )
-    ndim = len(shape)
-    pad_width = draw(_st_tuples_or_int(ndim))
-    if type(pad_width) is tuple:
-        if (len(pad_width) == 1):
-            pad_width = pad_width[0]
-    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
-    if type(stat_length) is tuple:
-        if (len(stat_length) == 1):
-            stat_length = stat_length[0]
-    constant_values = draw(_st_tuples_or_int(ndim))
-    if type(constant_values) is tuple:
-        if (len(constant_values) == 1):
-            constant_values = constant_values[0]
-    end_values = draw(_st_tuples_or_int(ndim))
-    if type(end_values) is tuple:
-        if (len(end_values) == 1):
-            end_values = end_values[0]
-    return dtype, input[0], pad_width, stat_length, constant_values, end_values
-
-
-@handle_cmd_line_args
-@given(
-    dtype_and_input_and_other=_pad_helper(),
-    mode=st.sampled_from(
+    mode = draw(st.sampled_from(
         [
             "constant",
             "edge",
@@ -330,14 +300,31 @@ def _pad_helper(draw):
             "symmetric",
             "wrap",
         ]
-    ),
+    ))
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+        )
+    )
+    ndim = len(shape)
+    pad_width = draw(_st_tuples_or_int(ndim))
+    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
+    constant_values = draw(_st_tuples_or_int(ndim))
+    end_values = draw(_st_tuples_or_int(ndim))
+    return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
     num_positional_args=helpers.num_positional_args(fn_name="pad"),
 )
 def test_pad(
     *,
     dtype_and_input_and_other,
-    mode,
     reflect_type,
     as_variable,
     with_out,
@@ -354,6 +341,7 @@ def test_pad(
         stat_length,
         constant_values,
         end_values,
+        mode
     ) = dtype_and_input_and_other
     helpers.test_function(
         input_dtypes=dtype,
