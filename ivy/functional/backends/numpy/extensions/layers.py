@@ -2,7 +2,6 @@
 import math
 from numbers import Number
 import numpy as np
-from scipy import fft
 from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
 
 # local
@@ -339,4 +338,30 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return fft.dct(x, type=type, n=n, axis=axis, norm=norm)
+    if norm not in (None, "ortho"):
+        raise ValueError("Norm must be either None or 'ortho'")
+    if axis < 0:
+        axis = axis + len(x.shape)
+    if n is not None:
+        signal_len = x.shape[axis]
+        if n <= signal_len:
+            local_idx = [slice(None)] * len(x.shape)
+            local_idx[axis] = slice(None, n)
+            x = x[tuple(local_idx)]
+        else:
+            pad_idx = [[0, 0] for _ in range(len(x.shape))]
+            pad_idx[axis][1] = n - signal_len
+            x = np.pad(x, pad_idx)
+    real_zero = np.array(0.0, dtype=x.dtype)
+    axis_dim = x.shape[axis]
+    axis_dim_float = np.array(axis_dim, dtype=x.dtype)
+    cast_final = True if x.dtype != np.float64 else False
+
+    if type == 1:
+        if norm:
+            raise ValueError("Normalization not supported for type-I DCT")
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(-2, 0, -1)
+        x = np.concatenate([x, x[tuple(axis_idx)]], axis=axis)
+        dct_out = np.real(np.fft.rfft(x, axis=axis))
+        return dct_out
