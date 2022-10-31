@@ -33,3 +33,7 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+
+
+def qr(x, /, *, mode= "reduced"):
+    return ivy.qr(x, mode=mode)
