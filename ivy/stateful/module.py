@@ -13,6 +13,7 @@ import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 import torch
+import tensorflow as tf
 
 
 # Base #
@@ -1164,7 +1165,7 @@ class Module(abc.ABC):
             The new trainable torch module instance.
 
         """
-        return
+        return NewTorchModule(x)
 
     def to_torch_module(self, args=None, kwargs=None):
         """
@@ -1188,16 +1189,28 @@ class Module(abc.ABC):
 class NewTorchModule(torch.nn.Module):
     def __init__(self, ivy_module, *args, **kwargs):
         super().__init__()
-
         self._ivy_module = ivy_module
-        self._args = args
-        self._kwargs = kwargs
+        self._set_variables()
+
+    def _set_variables(self):
+        submods = self._ivy_module.sub_mods()
+        vars_idx = ivy.nested_argwhere(submods, ivy.is_ivy_array)
+        vars = ivy.multi_index_nest(submods, vars_idx)
+        vars = ivy.nested_map(vars, lambda x: torch.nn.Parameter(ivy.to_native(x)))
+        for idx, var in enumerate(vars):
+            self._parameters["var{}".format(idx)] = var
 
     def forward(self, *a, **kw):
-        # a, kw = ivy.args_to_native(*a, **kw)
-        # self._update_v(self.v)
-        ret = self._ivy_module(*a, **kw)
-        # if isinstance(ret, tuple):
-        #     return ivy.args_to_native(*ret) # TODO: check if it's torch
-        # return ivy.to_native(ret) # TODO: check if it's torch
-        return ret  # TODO: check if it's torch
+        return self._ivy_module(*a, **kw).to_native()
+
+
+class NewKerasModel(tf.keras.Model):
+    def __init__(self, ivy_module):
+        self._ivy_module = ivy_module
+
+        super().__init__()
+
+    def call(self, *a, **kw):
+        # TODO: check if it's tf
+        # TODO: check if it is compatible with tf grad and optimizer
+        return self._ivy_module(*a, **kw)
