@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
     ),
 )
@@ -34,7 +34,7 @@ def test_numpy_ndarray_max(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        input_dtypes_method=[input_dtype[0]],
+        input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
@@ -44,6 +44,7 @@ def test_numpy_ndarray_max(
         class_name="ndarray",
         method_name="max",
     )
+
 
 # argmax
 @handle_cmd_line_args

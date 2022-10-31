@@ -17,9 +17,8 @@ class ndarray:
 
     # max
     def max(self, axis=None, out=None, keepdims=False, inital=None, where=True):
-        
-        return np_frontend.max(
-            self.data, 
+        return np_frontend.amax(
+            self.data,
             axis=axis, 
             out=out,
             keepdims=keepdims,
