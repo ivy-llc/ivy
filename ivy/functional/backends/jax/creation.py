@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Any, Union, Optional, List, Sequence
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -17,6 +17,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 
 
@@ -121,8 +122,12 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
+def to_dlpack(x: JaxArray) -> Any:
+    return jax.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    capsule = jax.dlpack.to_dlpack(x)
+    capsule = _get_pycapsule_from_array_object(x)
     return jax.dlpack.from_dlpack(capsule)
 
 

@@ -112,6 +112,7 @@ def test_layer_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="layer_norm",
+        test_gradients=True,
         rtol_=0.1,
         atol_=0.5,
         x=x[0],
