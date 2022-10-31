@@ -315,3 +315,8 @@ def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.uint8
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def trunc(x):
+    return ivy.trunc(x)
