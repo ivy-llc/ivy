@@ -14,8 +14,6 @@ from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 import torch
 
-# import tensorflow as tf
-
 
 # Base #
 # -----#
@@ -1183,4 +1181,8 @@ class NewTorchModule(torch.nn.Module):
         }
 
     def forward(self, *a, **kw):
+        if ivy.current_backend_str() != "torch":
+            raise ivy.exceptions.IvyException(
+                "Backend must be torch when converting Ivy Module to Torch Module."
+            )
         return self._ivy_module(*a, **kw).to_native()
