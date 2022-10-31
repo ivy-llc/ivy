@@ -325,6 +325,17 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
     if len(x.shape) == 3:
         if x.shape[-3] == 0:
             return tf.constant(0, dtype=x.dtype)
@@ -349,41 +360,46 @@ def matrix_rank(
     max_values = tf.math.reduce_max(singular_values, axis=axis)
     if atol is None:
         if rtol is None:
-            ret = tf.sum(singular_values != 0, axis=axis)
+            ret = ivy.sum(singular_values != 0, axis=axis)
         else:
-            max_rtol = max_values * rtol
-            if isinstance(rtol, float):
-                print("rtol: ", rtol)
-            elif not isinstance(rtol, float) and rtol.size <= 1:
-                print("rtol array: ", rtol)
-            else:
-                max_rtol = max_values * rtol
-                print("max rtol: ", max_rtol)
-                result = tf.experimental.numpy.all(
-                    element == max_rtol[0] for element in max_rtol
+            try:
+                max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
+                    rtol, dtype=tf.float32
                 )
-                print("Are all elements the same? ", result)
-                if result:  # all elements are same
-                    if tf.experimental.numpy.ndim(max_rtol) == 1:
-                        max_rtol = max_rtol[0]
-                    elif tf.experimental.numpy.ndim(max_rtol) == 2:
-                        max_rtol = max_rtol[0][0]
-                    elif tf.experimental.numpy.ndim(max_rtol) == 3:
-                        max_rtol = max_rtol[0][0][0]
-                    print("max rtol single value: ", max_rtol)
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
+                        rtol, dtype=tf.float32
+                    )
+            if not isinstance(rtol, float) and tf.size(rtol) > 1:
+                if ivy.all(
+                    tf.math.equal(
+                        max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
+                    )
+                ):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and tf.size(max_values) > 1:
+                if ivy.all(
+                    tf.math.equal(max_values, tf.fill(max_values.shape, max_values[0]))
+                ):
+                    max_rtol = dim_reduction(max_rtol)
             ret = ivy.sum(
-                singular_values > max_rtol, axis=axis
-            )  # adding or removing axis makes no difference
+                tf.cast(singular_values, dtype=tf.float32)
+                > tf.cast(max_rtol, dtype=tf.float32),
+                axis=axis,
+            )
     else:  # atol is not None
         if rtol is None:  # atol is not None, rtol is None
-            ret = tf.sum(singular_values > atol, axis=axis)
+            ret = ivy.sum(singular_values > atol, axis=axis)
         else:
-            tol = tf.max(atol, max_values * rtol)
-            ret = tf.sum(singular_values > tol, axis=axis)
-
+            tol = tf.experimental.numpy.max(atol, max_values * rtol)
+            ret = ivy.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
-        ret = tf.reshape(ret, ret_shape)
-    return tf.cast(ret, x.dtype)
+        ret = ivy.reshape(ret, ret_shape)
+    return ivy.astype(ret, x.dtype)
 
 
 @with_unsupported_dtypes(
