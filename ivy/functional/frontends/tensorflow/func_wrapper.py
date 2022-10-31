@@ -142,18 +142,18 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: dict = None) -> callabl
     Returns
     -------
     ret
-        A wrapped tf_frontend function to alias a given raw_ops function
+        A decorated tf_frontend function to alias a given raw_ops function
         with to_ivy_array_and_back decorator added
     """
 
     def _wrap_raw_ops_alias(fn: callable, kw_update: Dict) -> callable:
+        # removing decorators from frontend function
         fn = inspect.unwrap(fn)
 
-        @functools.wraps(fn)
-        def _wraped_fn(*args, **kwargs):
+        def _wraped_fn(**kwargs):
+            # update kwargs dictionary keys
             if kw_update:
                 kwargs = update_kwarg_keys(kwargs, kw_update)
-            kwargs.update(zip(fn.__code__.co_varnames, args))
             return fn(**kwargs)
 
         return _wraped_fn

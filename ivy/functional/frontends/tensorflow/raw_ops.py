@@ -32,8 +32,11 @@ Add = to_ivy_arrays_and_back(
 )
 
 
-ArgMax = map_raw_ops_alias(
-    tf_frontend.math.argmax, kwargs_to_update={"dimension": "axis", "ArgMax": "name"}
+ArgMax = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.argmax,
+        kwargs_to_update={"dimension": "axis", "ArgMax": "name"},
+    )
 )
 
 
@@ -107,22 +110,19 @@ def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
 
 
-Div = map_raw_ops_alias(tf_frontend.math.divide, kwargs_to_update={"Div": "name"})
+Div = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.divide, kwargs_to_update={"Div": "name"})
+)
 
 
+@to_ivy_arrays_and_back
 def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
 
-def Cumprod(*, x, axis, exclusive=False, reverse=False, name="Cumprod"):
-    return map_raw_ops_alias(
-        tf_frontend.math.cumprod,
-        x=x,
-        axis=axis,
-        exclusive=exclusive,
-        reverse=reverse,
-        name=name,
-    )
+Cumprod = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.cumprod, kwargs_to_update={"Cumprod": "name"})
+)
 
 
 @to_ivy_arrays_and_back
@@ -249,39 +249,46 @@ def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
 
-@with_unsupported_dtypes(
-    {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+# @with_unsupported_dtypes(
+#     {"2.9.0 and below": ("float16", "bfloat16")}, versions["tensorflow"]
+# )
+MatrixDeterminant = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.linalg.det, kwargs_to_update={"MatrixDeterminant": "name"}
+    )
 )
-def MatrixDeterminant(*, input, name="MatrixDeterminant"):
-    return map_raw_ops_alias(
-        tf_frontend.linalg.det,
-        input=input,
-        name=name,
+
+
+Max = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.reduce_max,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+            "Max": "name",
+        },
     )
+)
 
 
-@to_ivy_arrays_and_back
-def Max(*, input, axis, keep_dims=False, name="Max"):
-    return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
-
-
-def Maximum(*, x, y, name="Maximum"):
-    return map_raw_ops_alias(
+Maximum = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
         tf_frontend.math.maximum,
-        a=x,
-        b=y,
-        name=name,
+        kwargs_to_update={"x": "a", "y": "b", "Maximum": "name"},
     )
+)
 
 
-def Min(*, input, axis, keep_dims=False, name="Min"):
-    return map_raw_ops_alias(
+Min = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
         tf_frontend.math.reduce_min,
-        input_tensor=input,
-        axis=axis,
-        keepdims=keep_dims,
-        name=name,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+            "Min": "name",
+        },
     )
+)
 
 
 @to_ivy_arrays_and_back
@@ -289,21 +296,14 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Mul(*, x, y, name="Mul"):
-    return map_raw_ops_alias(
-        tf_frontend.math.multiply,
-        x=x,
-        y=y,
-        name=name,
-    )
+Mul = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.multiply, kwargs_to_update={"Mul": "name"})
+)
 
 
-def Neg(*, x, name="Neg"):
-    return map_raw_ops_alias(
-        tf_frontend.math.negative,
-        x=x,
-        name=name,
-    )
+Neg = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.negative, kwargs_to_update={"Neg": "name"})
+)
 
 
 @to_ivy_arrays_and_back
@@ -328,11 +328,12 @@ def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
 
 
-def Relu(*, features, name="Relu"):
-    return map_raw_ops_alias(
+Relu = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
-        x=features,
+        kwargs_to_update={"features": "x", "Relu": "name"},
     )
+)
 
 
 @to_ivy_arrays_and_back
@@ -375,13 +376,9 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-def Sub(*, x, y, name="Sub"):
-    return map_raw_ops_alias(
-        tf_frontend.math.subtract,
-        x=x,
-        y=y,
-        name=name,
-    )
+Sub = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.subtract, kwargs_to_update={"Sub": "name"})
+)
 
 
 @to_ivy_arrays_and_back
@@ -389,12 +386,9 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
     return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-def Tan(*, x, name="Tan"):
-    return map_raw_ops_alias(
-        tf_frontend.math.tan,
-        x=x,
-        name=name,
-    )
+Tan = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.tan, kwargs_to_update={"Tan": "name"})
+)
 
 
 @to_ivy_arrays_and_back
@@ -408,15 +402,9 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
-def Cumsum(*, x, axis, exclusive=False, reverse=False, name="Cumsum"):
-    return map_raw_ops_alias(
-        tf_frontend.math.cumsum,
-        x=x,
-        axis=axis,
-        exclusive=exclusive,
-        reverse=reverse,
-        name=name,
-    )
+Cumsum = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.cumsum, kwargs_to_update={"Cumsum": "name"})
+)
 
 
 @to_ivy_arrays_and_back
@@ -435,14 +423,16 @@ def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
 
 
-def Mean(*, input, axis, keep_dims=False, name="Mean"):
-    return map_raw_ops_alias(
+Mean = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
         tf_frontend.math.reduce_mean,
-        input_tensor=input,
-        axis=axis,
-        keepdims=keep_dims,
-        name=name,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+            "Mean": "name",
+        },
     )
+)
 
 
 @to_ivy_arrays_and_back
@@ -450,6 +440,7 @@ def Pow(*, x, y, name="Pow"):
     return ivy.pow(x, y)
 
 
+@to_ivy_arrays_and_back
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
 
