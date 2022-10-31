@@ -1,6 +1,5 @@
 # global
 from hypothesis import given, strategies as st
-import ivy
 
 # local
 import numpy as np
@@ -358,7 +357,8 @@ def test_pad(
         stat_length=stat_length,
         constant_values=constant_values,
         end_values=end_values,
-        reflect_type=reflect_type
+        reflect_type=reflect_type,
+        out=None
     )
 
 
