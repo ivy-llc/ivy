@@ -442,8 +442,7 @@ def test_torch_var(
 @handle_cmd_line_args
 @given(
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        valid_axis=True
+        available_dtypes=helpers.get_dtypes("numeric"), valid_axis=True
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.count_nonzero"
@@ -597,12 +596,12 @@ def test_torch_moveaxis(
     keepdim=st.booleans(),
 )
 def test_torch_max(
-        dtype_input_axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        keepdim,
-        with_out,
+    dtype_input_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    keepdim,
+    with_out,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(

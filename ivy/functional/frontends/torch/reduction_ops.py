@@ -75,9 +75,9 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 def count_nonzero(input, dim=None):
     zero = ivy.zeros_like(input)
     return ivy.sum(
-            ivy.astype(ivy.not_equal(input, zero), ivy.int64),
-            axis=dim,
-        )
+        ivy.astype(ivy.not_equal(input, zero), ivy.int64),
+        axis=dim,
+    )
 
 
 @to_ivy_arrays_and_back
