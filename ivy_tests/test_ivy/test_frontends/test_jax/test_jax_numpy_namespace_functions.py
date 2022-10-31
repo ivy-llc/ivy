@@ -1570,6 +1570,42 @@ def test_jax_numpy_power(
     )
 
 
+# arange
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=3,
+        shape=(1,),
+        shared_dtype=True,
+    ), 
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.arange"
+    ),
+)
+def test_jax_numpy_arange(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    start, stop, step = values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.arange",
+        start=start,
+        stop=stop,
+        step=step,
+        dtype=dtype,
+    )
+
+
 # bincount
 @handle_cmd_line_args
 @given(
