@@ -86,20 +86,28 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
-    if (
-        ivy.is_array(x)
-        and get_num_dims(x) == 0
-        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
-    ):
+    native_dtype = ivy.as_native_dtype(x.dtype)
+    default_float_dtype_str = ivy.default_float_dtype(as_native=False)
+    if ivy.is_array(x) and get_num_dims(x) == 0 and native_dtype is tf.bfloat16:
         x = tf.expand_dims(x, 0)
         if copy:
-            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
+            return np.squeeze(
+                np.array(tf.convert_to_tensor(x).astype(default_float_dtype_str)), 0
+            )
         else:
-            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
+            return np.squeeze(
+                np.asarray(tf.convert_to_tensor(x).astype(default_float_dtype_str)), 0
+            )
     if copy:
-        return np.array(tf.convert_to_tensor(x))
+        if native_dtype is tf.bfloat16:
+            return np.array(tf.convert_to_tensor(x)).astype(default_float_dtype_str)
+        else:
+            return np.array(tf.convert_to_tensor(x))
     else:
-        return np.asarray(tf.convert_to_tensor(x))
+        if native_dtype is tf.bfloat16:
+            return np.asarray(tf.convert_to_tensor(x)).astype(default_float_dtype_str)
+        else:
+            return np.asarray(tf.convert_to_tensor(x))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
