@@ -141,7 +141,8 @@ class Tensor:
         layout=None,
         pin_memory=False
     ):
-        dtype = ivy.dtype(data) if dtype is None else dtype
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
         _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
@@ -166,6 +167,39 @@ class Tensor:
         return self.data.ndim
 
     ndimension = dim
+
+    def new_full(
+        self,
+        size,
+        fill_value,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.full(size, fill_value, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def new_empty(
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.empty(size, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
 
     # Special Methods #
     # -------------------#
