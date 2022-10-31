@@ -61,6 +61,8 @@ Container methods
    container_methods/rot90.rst
    container_methods/static_top_k.rst
    container_methods/top_k.rst
+   container_methods/static_fliplr.rst
+   container_methods/fliplr.rst
    container_methods/static_dirichlet.rst
    container_methods/dirichlet.rst
    container_methods/static_msort.rst

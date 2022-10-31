@@ -267,6 +267,44 @@ method with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.extensions.container_methods.fliplr">
+<span class="sig-prename descclassname"><span class="pre">ivy.container.extensions.container_methods.</span></span><span class="sig-name descname"><span class="pre">fliplr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions/container_methods.html#fliplr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.container_methods.fliplr" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.fliplr. This method simply
+wraps the function, and so the docstring for ivy.fliplr also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – the container with arrays to be flipped. Arrays must be at least 2-D.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – container including arrays corresponding to the input container’s array
+with elements order reversed along axis 1.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]),                        b=ivy.array([[1, 2, 3],[4, 5, 6]]))
+&gt;&gt;&gt; m.fliplr()
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[0, 0, 1],</dt><dd><p>[0, 2, 0],
+[3, 0, 0]]),</p>
+</dd>
+<dt>b: ivy.array([[3, 2, 1],</dt><dd><p>[6, 5, 4]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.extensions.container_methods.flipud">
 <span class="sig-prename descclassname"><span class="pre">ivy.container.extensions.container_methods.</span></span><span class="sig-name descname"><span class="pre">flipud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/extensions/container_methods.html#flipud"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.extensions.container_methods.flipud" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.flipud. This method simply
@@ -1108,6 +1146,30 @@ with minimal changes.</p>
 <span class="go">}]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.extensions.container_methods.static_fliplr">
+<span class="sig-prename descclassname"><span class="pre">ivy.container.extensions.container_methods.</span></span><span class="sig-name descname"><span class="pre">static_fliplr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ivy.container.extensions.container_methods.static_fliplr" title="Permalink to this definition"></a></dt>
+<dd><p>staticmethod(function) -&gt; method</p>
+<p>Convert a function to be a static method.</p>
+<p>A static method does not receive an implicit first argument.
+To declare a static method, use this idiom:</p>
+<blockquote>
+<div><dl>
+<dt>class C:</dt><dd><p>&#64;staticmethod
+def f(arg1, arg2, …):</p>
+<blockquote>
+<div><p>…</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>It can be called either on the class (e.g. C.f()) or on an instance
+(e.g. C().f()). Both the class and the instance are ignored, and
+neither is passed implicitly as the first argument to the method.</p>
+<p>Static methods in Python are similar to those found in Java or C++.
+For a more advanced concept, see the classmethod builtin.</p>
 </dd></dl>
 
 <dl class="py function">
