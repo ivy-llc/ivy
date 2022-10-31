@@ -76,6 +76,7 @@ def test_concat(
         instance_method=instance_method,
         fw=fw,
         fn_name="concat",
+        test_gradients=True,
         xs=xs,
         axis=unique_idx,
     )
@@ -120,6 +121,7 @@ def test_expand_dims(
         instance_method=instance_method,
         fw=fw,
         fn_name="expand_dims",
+        test_gradients=True,
         x=value[0],
         axis=axis,
     )
@@ -164,6 +166,7 @@ def test_flip(
         instance_method=instance_method,
         fw=fw,
         fn_name="flip",
+        test_gradients=True,
         x=value[0],
         axis=axis,
     )
@@ -211,6 +214,7 @@ def test_permute_dims(
         instance_method=instance_method,
         fw=fw,
         fn_name="permute_dims",
+        test_gradients=True,
         x=value[0],
         axes=permutation,
     )
@@ -251,6 +255,7 @@ def test_reshape(
         instance_method=instance_method,
         fw=fw,
         fn_name="reshape",
+        test_gradients=True,
         x=value[0],
         shape=reshape,
     )
@@ -342,6 +347,7 @@ def test_roll(
         instance_method=instance_method,
         fw=fw,
         fn_name="roll",
+        test_gradients=True,
         x=value[0],
         shift=shift_val,
         axis=axis,
@@ -393,6 +399,7 @@ def test_squeeze(
         instance_method=instance_method,
         fw=fw,
         fn_name="squeeze",
+        test_gradients=True,
         x=value[0],
         axis=axis,
     )
@@ -448,6 +455,7 @@ def test_stack(
         instance_method=instance_method,
         fw=fw,
         fn_name="stack",
+        test_gradients=True,
         arrays=arrays,
         axis=axis,
     )
@@ -499,6 +507,7 @@ def test_clip(
         instance_method=instance_method,
         fw=fw,
         fn_name="clip",
+        test_gradients=True,
         x=x_list,
         x_min=min_val,
         x_max=max_val,
@@ -556,6 +565,7 @@ def test_constant_pad(
         instance_method=instance_method,
         fw=fw,
         fn_name="constant_pad",
+        test_gradients=True,
         x=value[0],
         pad_width=pad_width,
         value=constant,
@@ -643,6 +653,7 @@ def test_repeat(
         instance_method=instance_method,
         fw=fw,
         fn_name="repeat",
+        test_gradients=True,
         x=value[0],
         repeats=repeat,
         axis=axis,
@@ -728,6 +739,7 @@ def test_split(
         instance_method=instance_method,
         fw=fw,
         fn_name="split",
+        test_gradients=True,
         x=value[0],
         num_or_size_splits=num_or_size_splits,
         axis=axis,
@@ -775,6 +787,7 @@ def test_swapaxes(
         instance_method=instance_method,
         fw=fw,
         fn_name="swapaxes",
+        test_gradients=True,
         x=value[0],
         axis0=axis0,
         axis1=axis1,
@@ -834,6 +847,7 @@ def test_tile(
         instance_method=instance_method,
         fw=fw,
         fn_name="tile",
+        test_gradients=True,
         x=value[0],
         reps=repeat_list[0],
     )
@@ -867,6 +881,7 @@ def test_zero_pad(
         instance_method=instance_method,
         fw=fw,
         fn_name="zero_pad",
+        test_gradients=True,
         x=value[0],
         pad_width=pad_width,
     )
@@ -908,6 +923,7 @@ def test_unstack(
         instance_method=instance_method,
         fw=fw,
         fn_name="unstack",
+        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=keepdims,

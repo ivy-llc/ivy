@@ -519,7 +519,7 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()
