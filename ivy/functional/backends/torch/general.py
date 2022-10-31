@@ -85,11 +85,12 @@ def to_numpy(
         if copy:
             if x.dtype is torch.bfloat16:
                 default_dtype = ivy.default_float_dtype(as_native=True)
+                default_dtype_str = ivy.default_float_dtype(as_native=False)
                 if default_dtype is torch.bfloat16:
                     x = x.to(torch.float32)
                 else:
                     x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
+                return x.detach().cpu().numpy().astype(default_dtype_str)
             return x.detach().cpu().numpy()
         else:
             raise ivy.exceptions.IvyException(
@@ -259,6 +260,7 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    ivy.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native

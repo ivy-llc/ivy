@@ -20,9 +20,9 @@ NativeSparseArray = torch.Tensor
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
@@ -100,7 +100,6 @@ def closest_valid_dtype(type):
 
 backend = "torch"
 
-
 # local sub-modules
 from . import activations
 from .activations import *
@@ -116,8 +115,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -140,3 +137,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import extensions
+from .extensions import *

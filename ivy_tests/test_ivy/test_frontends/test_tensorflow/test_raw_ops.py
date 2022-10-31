@@ -1,4 +1,5 @@
 # global
+import sys
 import ivy
 from hypothesis import given, assume, strategies as st
 import numpy as np
@@ -1397,10 +1398,7 @@ def test_tensorflow_Cumprod(
     ),
 )
 def test_tensorflow_Gather(
-    params_indices_others,
-    num_positional_args,
-    as_variable,
-    native_array
+    params_indices_others, num_positional_args, as_variable, native_array
 ):
     dtypes, params, indices = params_indices_others
     helpers.test_frontend_function(
@@ -1413,7 +1411,7 @@ def test_tensorflow_Gather(
         fn_tree="raw_ops.Gather",
         params=params,
         indices=indices,
-        validate_indices=True
+        validate_indices=True,
     )
 
 
@@ -2014,7 +2012,7 @@ def test_tensorflow_RightShift(
 
 
 @st.composite
-def _pow_helper_tf(draw):
+def _pow_helper_shared_dtype(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", full=True),
@@ -2044,7 +2042,7 @@ def _pow_helper_tf(draw):
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_pow_helper_tf(),
+    dtype_and_x=_pow_helper_shared_dtype(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Pow"
     ),
@@ -2133,6 +2131,40 @@ def test_tensorflow_TruncateDiv(
 
 @handle_cmd_line_args
 @given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    adjoint=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.MatrixInverse"
+    ),
+)
+def test_tensorflow_MatrixInverse(
+    dtype_x,
+    adjoint,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatrixInverse",
+        input=x[0],
+        adjoint=adjoint,
+        rtol=1e-05,
+        atol=1e-04,
+    )
+
+
+@handle_cmd_line_args
+@given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -2168,5 +2200,56 @@ def test_tensorflow_Round(dtype_and_x, as_variable, native_array):
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.Round",
+        x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Unpack(
+    dtype_x_axis,
+    as_variable,
+    native_array,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Unpack",
+        value=x[0],
+        num=x[0].shape[axis],
+        axis=axis,
+    )
+
+
+# Sigmoid
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Sigmoid(dtype_and_x, as_variable, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Sigmoid",
         x=x[0],
     )
