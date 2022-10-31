@@ -89,6 +89,8 @@ def _pad_helper(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
+            min_value=-1e05,
+            max_value=1e05
         )
     )
     m = len(shape)
@@ -101,6 +103,8 @@ def _pad_helper(draw):
         min_size=n,
         max_size=n,
     ))
+    if type(padding[0]) is tuple:
+        padding = sum(padding, ())
     if type(padding) is tuple: 
         if (len(padding) == 1):
             padding = padding[0]
@@ -112,9 +116,6 @@ def _pad_helper(draw):
 @given(
     dtype_and_input_and_other=_pad_helper(),
     mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.pad"
-    ),
 )
 def test_torch_pad(
     *,
@@ -122,7 +123,6 @@ def test_torch_pad(
     mode,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
 ):
     dtype, input, padding, value = dtype_and_input_and_other

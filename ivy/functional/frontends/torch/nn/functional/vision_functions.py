@@ -93,7 +93,7 @@ def _pad_handle_padding_shape(padding, n):
         elif len(padding) == 1:  # case scalar
             padding = (padding[0], padding[0])  
         else:  # case flat tuple like torch input
-            padding = tuple([(padding[i], padding[i + 1])
+            padding = tuple([(padding[i * 2], padding[i * 2 + 1])
                              for i in range(int(len(padding) / 2) - 1, -1, -1)])
     while len(padding) < n:
         padding = ((0, 0),) + padding
@@ -102,8 +102,8 @@ def _pad_handle_padding_shape(padding, n):
 
 @to_ivy_arrays_and_back
 def pad(input, padding, mode='constant' , value=0):
-    ivy.assertions.check_torch_pad_input_valid(padding)    
-    padding = _pad_handle_padding_shape(padding, input.ndim)
+    ivy.assertions.check_torch_pad_input_valid(padding)   
+    padding = _pad_handle_padding_shape(padding, len(input.shape))
     if mode is 'constant':
         return ivy.pad(input, padding, mode='constant', constant_values=value) 
     elif mode is 'reflect':
