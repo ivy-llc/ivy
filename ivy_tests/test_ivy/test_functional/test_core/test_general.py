@@ -919,8 +919,7 @@ def test_default(x, default_val):
         )
 
 
-@handle_cmd_line_args
-def test_cache_fn(device):
+def test_cache_fn(on_device):
     def func():
         return ivy.random_uniform()
 
