@@ -173,7 +173,7 @@ def test_dropout1d(
     device,
 ):
     dtype, x = dtype_and_x
-    ret = helpers.test_function(
+    ret, gt_ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -188,12 +188,13 @@ def test_dropout1d(
         prob=prob,
         training=training,
         data_format = data_format,
-        ground_truth_backend='tensorflow'
+        return_flat_np_arrays=True,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
-    for u in ret:
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
-        assert u.shape == x[0].shape
+        assert u.shape == v.shape == w.shape
 
 
 # Attention #
