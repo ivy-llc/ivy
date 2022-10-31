@@ -58,7 +58,7 @@ def test_jax_numpy_eig(dtype_and_x, as_variable, native_array, num_positional_ar
         fn_tree="numpy.linalg.eig",
         rtol=1e-04,
         atol=1e-04,
-        a=np.asarray(x[0], dtype=dtype[0]),
+        a=x[0],
     )
 
 
