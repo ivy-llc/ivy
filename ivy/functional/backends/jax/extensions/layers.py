@@ -232,54 +232,63 @@ def dct(
 ) -> JaxArray:
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
-    if axis != -1 and type != 2:
-        new_dims = list(range(len(x.shape)))
-        new_dims[axis], new_dims[-1] = new_dims[-1], axis
-        x = jnp.transpose(x, new_dims)
+    if axis < 0:
+        axis = axis + len(x.shape)
     if n is not None:
-        signal_len = x.shape[-1]
+        signal_len = x.shape[axis]
         if n <= signal_len:
-            x = x[..., :n]
+            local_idx = [slice(None)] * len(x.shape)
+            local_idx[axis] = slice(None, n)
+            x = x[local_idx]
         else:
-            x = jnp.pad(x, (0, n - signal_len))
+            pad_idx = [[0, 0] for _ in range(len(x.shape))]
+            pad_idx[axis][1] = n - signal_len
+            x = jnp.pad(x, pad_idx)
     real_zero = jnp.array(0.0, dtype=x.dtype)
-    axis_dim = x.shape[-1]
+    axis_dim = x.shape[axis]
     axis_dim_float = jnp.array(axis_dim, dtype=x.dtype)
 
     if type == 1:
         if norm:
             raise ValueError("Normalization not supported for type-I DCT")
-        x = jnp.concatenate([x, x[..., -2:0:-1]], axis=-1)
-        dct_out = jnp.real(jnp.fft.rfft(x))
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(-2, 0, -1)
+        x = jnp.concatenate([x, x[tuple(axis_idx)]], axis=axis)
+        dct_out = jnp.real(jnp.fft.rfft(x, axis=axis))
+        return dct_out
 
     elif type == 2:
         dct_out = jax.scipy.fft.dct(x, type=2, n=n, axis=axis, norm=norm)
         return dct_out
     
     elif type == 3:
-        if norm == "ortho":
-            n1 = jnp.sqrt(axis_dim_float)
-            n2 = n1 * jnp.sqrt(0.5)
-            sf = jnp.pad(jnp.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
-            x = x * sf
-        else:
-            x = x * axis_dim_float
-
+        scale_dims = [1] * len(x.shape)
+        scale_dims[axis] = axis_dim
         scale = 2.0 * jnp.exp(
             jlax.complex(
                 real_zero, jnp.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
             )
-        )
+        ).reshape(scale_dims)
+        if norm == "ortho":
+            n1 = jnp.sqrt(axis_dim_float)
+            n2 = n1 * jnp.sqrt(0.5)
+            sf = jnp.pad(jnp.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
+            x = x * sf.reshape(scale_dims)
+        else:
+            x = x * axis_dim_float
+
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(None, axis_dim)
         dct_out = jnp.real(
-            jnp.fft.irfft(scale * jlax.complex(x, real_zero), n=2 * axis_dim)
-        )[..., :axis_dim]
+            jnp.fft.irfft(scale * jlax.complex(x, real_zero), n=2 * axis_dim, axis=axis)
+        )[tuple(axis_idx)]
+        return dct_out
 
     elif type == 4:
-        dct_2 = jax.scipy.fft.dct(x, type=2, n=2 * axis_dim, norm=None)
-        dct_out = dct_2[..., 1::2]
+        dct_2 = jax.scipy.fft.dct(x, type=2, n=2 * axis_dim, axis=axis, norm=None)
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(1, None, 2)
+        dct_out = dct_2[tuple(axis_idx)]
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
-
-    if axis != -1 and type != 2:
-        dct_out = jnp.transpose(dct_out, new_dims)
     return dct_out
