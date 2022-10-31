@@ -171,7 +171,6 @@ def test_dropout_layer(
 def x_and_mha(draw):
     dtype = draw(helpers.get_dtypes("float",
                                     full=False).filter(lambda x : x != ['float16']))
-    print(dtype)
     with_to_q_fn = draw(st.booleans())
     with_to_kv_fn = draw(st.booleans())
     with_to_out_fn = draw(st.booleans())
