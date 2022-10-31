@@ -8,3 +8,7 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
     window_length, beta = promote_types_of_tensorflow_inputs(window_length, beta)
     return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)
 
+
+kaiser_window.supported_dtypes = (
+    "float32", "float64", "float16", "bfloat16"
+)
