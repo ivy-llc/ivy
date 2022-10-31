@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -19,8 +19,8 @@ from ivy_tests.test_ivy.helpers import handle_test
 # ------------#
 
 # fomaml step unique vars
-@handle_test(fn_tree="functional.ivy.fomaml_step")
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
@@ -167,8 +167,8 @@ def test_fomaml_step_unique_vars(
 
 
 # fomaml step shared vars
-@handle_test(fn_tree="functional.ivy.fomaml_step")
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
@@ -333,8 +333,8 @@ def test_fomaml_step_shared_vars(
 
 
 # fomaml step overlapping vars
-@handle_test(fn_tree="functional.ivy.fomaml_step")
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
