@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Any, Union, Optional, List, Sequence
 
 import numpy as np
 
@@ -13,8 +13,11 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _get_pycapsule_from_array_object,
 )
 from .data_type import as_native_dtype
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 # Array API Standard #
@@ -110,8 +113,24 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
+def to_dlpack(x: np.ndarray) -> Any:
+    return x.__dlpack__()
+
+
+class _Add_dlpack_attribute_to_tensor_object:
+    def __init__(self, input, capsule):
+        self.input = input
+        self.capsule = capsule
+
+    def __dlpack__(self):
+        return self.capsule
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    return np.from_dlpack(x)
+    capsule = _get_pycapsule_from_array_object(x)
+    x_with_dlpack = _Add_dlpack_attribute_to_tensor_object(x, capsule)
+    return np.from_dlpack(x_with_dlpack)
 
 
 def full(
