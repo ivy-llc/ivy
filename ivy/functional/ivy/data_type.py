@@ -917,21 +917,38 @@ def default_float_dtype(
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+       (Default value = None) Number or array for inferring default float
+       dtype.
     float_dtype
-
+       (Default value = None) float type to be returned as default.
     as_native
-         (Default value = None)
+         (Default value = None) Whether to return the default float dtype as
+         native dtype.
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global default
-        float dtype.
+        Return the input float dtype if provided, otherwise return the global
+        default float dtype.
+
+    Examples
+    --------
+    >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.default_int_dtype(input=4294.967346)
+    'float32'
+
+    >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float16"))
+    'float16'
+
+    >>> x = ivy.array([9.8,8.9], dtype="float32")
+    >>> ivy.default_float_dtype(input=x)
+    'float32'
     """
     if ivy.exists(float_dtype):
         if as_native is True:
