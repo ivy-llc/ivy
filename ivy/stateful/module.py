@@ -1239,7 +1239,7 @@ class HaikuIvyModule(Module):
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
-        ivy.Module.__init__(self, build_mode="on_call", device=device, devices=devices)
+        ivy.Module.__init__(self, build_mode="on_init", device=device, devices=devices)
 
     def _create_variables(self, device, dtype):
         return self._hk_params
