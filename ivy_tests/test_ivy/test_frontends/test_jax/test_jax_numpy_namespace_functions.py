@@ -1578,7 +1578,7 @@ def test_jax_numpy_power(
         num_arrays=3,
         shape=(1,),
         shared_dtype=True,
-    ), 
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.arange"
     ),
@@ -1697,19 +1697,13 @@ def test_jax_lax_cumprod(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.trunc"
     ),
 )
 def test_jax_numpy_trunc(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array
+    dtype_and_x, as_variable, with_out, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
