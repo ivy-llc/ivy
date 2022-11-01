@@ -57,7 +57,7 @@ def test_diagflat(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-        shared_dtype=True
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="kron"),
 )
