@@ -329,6 +329,7 @@ def test_torch_mean(
         out=None,
     )
 
+
 # median
 @handle_cmd_line_args
 @given(
