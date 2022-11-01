@@ -66,7 +66,9 @@ def array_dtypes(
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
+def get_dtypes(
+    draw, kind, index=0, full=True, none=False, key=None, prune_function=True
+):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -122,13 +124,14 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
         valid_dtypes = backend_dtypes
 
     # TODO, do this in a better way...
-    valid_dtypes = tuple(
-        set(valid_dtypes).intersection(
-            test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
-                test_globals.CURRENT_BACKEND().backend
-            ]["cpu"]
+    if prune_function:
+        valid_dtypes = tuple(
+            set(valid_dtypes).intersection(
+                test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+                    test_globals.CURRENT_BACKEND().backend
+                ]["cpu"]
+            )
         )
-    )
     if none:
         valid_dtypes += (None,)
     if full:
