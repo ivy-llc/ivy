@@ -329,6 +329,32 @@ def test_torch_mean(
         out=None,
     )
 
+# median
+@handle_cmd_line_args
+@given(
+    dtype_and_x=statistical_dtype_values(function="median"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.median"
+    )
+)
+def test_torch_median(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="median",
+        input=x[0],
+    )
+
 
 @handle_cmd_line_args
 @given(
@@ -567,12 +593,12 @@ def test_torch_moveaxis(
     keepdim=st.booleans(),
 )
 def test_torch_max(
-    dtype_input_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    keepdim,
-    with_out,
+        dtype_input_axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        keepdim,
+        with_out,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
