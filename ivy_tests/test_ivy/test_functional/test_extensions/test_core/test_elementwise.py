@@ -351,8 +351,8 @@ def test_exp2(
 
 
 # nansum
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.nansum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -365,19 +365,21 @@ def test_exp2(
         allow_neg_axes=False,
         min_axes_size=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="nansum"),
     keep_dims=st.booleans(),
 )
 def test_nansum(
+    *,
     dtype_x_axis,
     keep_dims,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -386,10 +388,11 @@ def test_nansum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="nansum",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         input=x[0],
         axis=axis,
         keepdims=keep_dims,
