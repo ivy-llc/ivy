@@ -89,7 +89,7 @@ def top_k(
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
         x *= -1
-        indices = np.argsort(x, axis=axis)
+        indices = np.argsort(x, axis=axis)[..., -1:]
         indices = np.take(indices, np.arange(k), axis=axis)
         x *= -1
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
