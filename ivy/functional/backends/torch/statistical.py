@@ -297,4 +297,4 @@ def einsum(
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
     operands = (ivy.astype(operand, torch.float32, copy=False) for operand in operands)
-    return torch.einsum(equation, *operands).to(dtype)
+    return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
