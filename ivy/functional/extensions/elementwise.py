@@ -396,3 +396,42 @@ def nansum(
     return ivy.current_backend().nansum(
         x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],    
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the greatest common divisor of |x1| and |x2|.
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise gcd of |x1| and |x2|.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([1.,    1.,   3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([1.,   2.,  1.])
+    """
+    return ivy.current_backend().gcd(x1, x2, out=out)

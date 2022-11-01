@@ -141,7 +141,8 @@ class Tensor:
         layout=None,
         pin_memory=False
     ):
-        dtype = ivy.dtype(data) if dtype is None else dtype
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
         _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
@@ -167,6 +168,48 @@ class Tensor:
 
     ndimension = dim
 
+    def new_full(
+        self,
+        size,
+        fill_value,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.full(size, fill_value, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def new_empty(
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.empty(size, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def unfold(self, dimension, size, step):
+        slices = []
+        for i in range(0, self.data.shape[dimension] - size + 1, step):
+            slices.append(self.data[i : i + size])
+        return ivy.stack(slices)
+
+    def long(self, memory_format=None):
+        return ivy.astype(self.data, ivy.int64)
+
     # Special Methods #
     # -------------------#
 
@@ -191,6 +234,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def __mod__(self, other):
+        return ivy.remainder(self, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
