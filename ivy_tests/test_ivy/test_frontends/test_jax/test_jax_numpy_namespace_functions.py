@@ -1757,26 +1757,6 @@ def test_jax_numpy_float_power(
     )
 
 
-
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.cumsum"
-    ),
-)
-def test_jax_numpy_cumsum(
-    dtype_x_axis,
-
-
 # cumsum
 @handle_cmd_line_args
 @given(
@@ -1851,4 +1831,3 @@ def test_jax_numpy_heaviside(
         x1=x[0],
         x2=x[0],
     )
-
