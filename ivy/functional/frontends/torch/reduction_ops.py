@@ -55,6 +55,7 @@ def sum(input, dim=None, keepdim=False, *, out=None):
 def mean(input, dim, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
+
 @to_ivy_arrays_and_back
 def median(input):
     return ivy.median(input)
