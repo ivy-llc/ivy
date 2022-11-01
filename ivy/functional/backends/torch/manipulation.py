@@ -323,7 +323,7 @@ def fill_diagonal(
         ivy.assertions.check_all_dims_equal_length(
             x,
             message="if input array has more than 2 dimensions, ",
-            )
+        )
         for dim in range(x.shape[0]):
             idx = [slice(dim, dim + 1)] * len(x.shape)
             x[idx] = value[dim]

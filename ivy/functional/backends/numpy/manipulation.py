@@ -249,6 +249,6 @@ def fill_diagonal(
         ivy.assertions.check_all_dims_equal_length(
             x,
             message="if input array has more than 2 dimensions, ",
-            )
+        )
     np.fill_diagonal(x, value, wrap)
     return x
