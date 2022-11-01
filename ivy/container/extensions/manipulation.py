@@ -461,3 +461,303 @@ class ContainerWithManipulationExtensions(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_rot90(
+        m: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rot90.
+        This method simply wraps the function, and so the docstring for
+        ivy.rot90 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        m
+            Input array of two or more dimensions.
+        k
+            Number of times the array is rotated by 90 degrees.
+        axes
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with a rotated view of m.
+            
+        Examples
+        --------
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+                        b=ivy.array([[1,2,3,4],\
+                                    [7,8,9,10]]))
+        >>> ivy.Container.static_rot90(m)
+        {
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "rot90",
+            m,
+            k=k,
+            axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def rot90(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rot90.
+        This method simply wraps the function, and so the docstring for
+        ivy.rot90 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array of two or more dimensions.
+        k
+            Number of times the array is rotated by 90 degrees.
+        axes
+            The array is rotated in the plane defined by the axes. Axes must be
+            different.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with a rotated view of input array.
+
+        Examples
+        --------
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+                        b=ivy.array([[1,2,3,4],\
+                                    [7,8,9,10]]))
+        >>> m.rot90()
+        {
+            a: ivy.array([[2, 4],
+                          [1, 3]]),
+            b: ivy.array([[4, 10],
+                          [3, 9],
+                          [2, 8],
+                          [1, 7]])
+        }
+        """
+        return self.static_rot90(
+            self,
+            k=k,
+            axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_top_k(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = -1,
+        largest: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """ivy.Container static method variant of ivy.top_k. This method simply wraps
+        the function, and so the docstring for ivy.top_k also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The container to compute top_k for.
+        k
+            Number of top elements to retun must not exceed the array size.
+        axis
+            The axis along which we must return the top elements default value is 1.
+        largest
+            If largest is set to False we return k smallest elements of the array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``
+        out:
+            Optional output tuple, for writing the result to. Must have two Container,
+            with a shape that the returned tuple broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with indices and values.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
+        >>> y = ivy.Container.static_top_k(x, 2)
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([ 2, -1]),
+                indices = ivy.array([1, 0])
+            ],
+            b: [
+                values = ivy.array([5., 4.]),
+                indices = ivy.array([1, 0])
+            ]
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "top_k",
+            x,
+            k,
+            axis=axis,
+            largest=largest,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def top_k(
+        self: ivy.Container,
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = -1,
+        largest: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """ivy.Container instance method variant of ivy.top_k. This method
+        simply wraps the function, and so the docstring for ivy.top_k
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container to compute top_k for.
+        k
+            Number of top elements to retun must not exceed the array size.
+        axis
+            The axis along which we must return the top elements default value is 1.
+        largest
+            If largest is set to False we return k smallest elements of the array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``
+        out:
+            Optional output tuple, for writing the result to. Must have two Container,
+            with a shape that the returned tuple broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with indices and values.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
+        >>> y = x.top_k(2)
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([ 2, -1]),
+                indices = ivy.array([1, 0])
+            ],
+            b: [
+                values = ivy.array([5., 4.]),
+                indices = ivy.array([1, 0])
+            ]
+        }
+        """
+        return self.static_top_k(
+            self,
+            k,
+            axis=axis,
+            largest=largest,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

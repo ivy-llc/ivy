@@ -572,10 +572,8 @@ def test_frontend_function(
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
-        ret = frontend_fn(*args, **kwargs)
-        # converting to ivy.array if FrontendArray was returned
-        if _is_frontend_array(ret):
-            ret = ret.data
+        # strip the decorator to get an Ivy array
+        ret = frontend_fn.__wrapped__(*args, **kwargs)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -593,9 +591,6 @@ def test_frontend_function(
             # pass return value to out argument
             # check if passed reference is correctly updated
             kwargs["out"] = out
-            ret = frontend_fn(*args, **kwargs)
-            if _is_frontend_array(ret):
-                ret = ret.data
             if is_ret_tuple:
                 flatten_ret = flatten(ret=ret)
                 flatten_out = flatten(ret=out)
@@ -610,7 +605,7 @@ def test_frontend_function(
         elif with_inplace:
             assert not isinstance(ret, tuple)
             assert ivy.is_array(ret)
-            if "inplace" in inspect.getfullargspec(frontend_fn).args:
+            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
                 # set inplace update to be True and check
                 # if returned reference is inputted reference
@@ -619,7 +614,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = frontend_fn(*copy_args, **copy_kwargs)
+                ret_ = frontend_fn.__wrapped__(*copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_

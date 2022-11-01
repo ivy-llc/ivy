@@ -426,3 +426,313 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_fmax(self, x2, out=out)
+
+    @staticmethod
+    def static_float_power(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.float_power. This method simply wraps
+        the function, and so the docstring for ivy.float_power also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            container with the base input arrays.
+        x2
+            container with the exponent input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with base arrays raised to the powers
+            of exponents arrays, element-wise .
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([2, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
+        >>> ivy.Container.static_float_power(x1, x2)
+        {
+            a: ivy.array([1,  8,  3])
+            b: ivy.array([1, 1])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "float_power",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def float_power(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.float_power. This method simply
+        wraps the function, and so the docstring for ivy.float_power also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        x2
+            container with the exponent input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with base arrays raised to the powers
+            of exponents arrays, element-wise .
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([2, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
+        >>> x1.float_power(x2)
+        {
+            a: ivy.array([1,  8,  3])
+            b: ivy.array([1, 1])
+        }
+        """
+        return self.static_float_power(self, x2, out=out)
+
+    @staticmethod
+    def static_exp2(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.exp2. This method simply wraps
+        the function, and so the docstring for ivy.exp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise 2 to the power
+            of input arrays elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=[5, 6, 7])
+        >>> ivy.Container.static_exp2(x)
+        {
+            a: ivy.array([2.,  4.,  8.])
+            b: ivy.array([32., 64., 128.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "exp2",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def exp2(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.exp2. This method simply
+        wraps the function, and so the docstring for ivy.exp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise 2 to the power
+            of input array elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=[5, 6, 7])
+        >>> x.exp2()
+        {
+            a: ivy.array([2.,  4.,  8.])
+            b: ivy.array([32., 64., 128.])
+        }
+        """
+        return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_nansum(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nansum. This method simply wraps
+        the function, and so the docstring for ivy.nansum also applies to this method
+        with minimal changes.
+        
+        Parameters
+        ----------
+        x
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> ivy.Container.static_nansum(x)
+        {
+            a: 27,
+            b: 7.0
+        }
+        >>> ivy.Container.static_nansum(x, axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> ivy.Container.static_nansum(x, axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nansum",
+            x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nansum(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to this
+        method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> x.nansum(axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> x.nansum(axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return self.static_nansum(
+            self, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )

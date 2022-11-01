@@ -5,6 +5,8 @@ import math
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def flatten(
@@ -61,7 +63,15 @@ def hann_window(
 hann_window.support_native_out = False
 
 
-# noinspection PyUnresolvedReferences
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -98,7 +108,40 @@ def max_pool2d(
     return res
 
 
-max_pool2d.unsupported_dtypes = ("bfloat16", "float16")
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def max_pool1d(
+    x: torch.Tensor,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    if data_format == "NWC":
+        x = x.permute(0, 2, 1)
+    x_shape = x.shape[2]
+    pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
+    x = torch.nn.functional.pad(
+        x, [pad_w // 2, pad_w - pad_w // 2], value=float("-inf")
+    )
+
+    res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
+
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
 
 
 def kaiser_window(
@@ -113,6 +156,28 @@ def kaiser_window(
         window_length,
         periodic,
         beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False,
+    )
+
+
+def hamming_window(
+    window_length: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    alpha: Optional[float] = 0.54,
+    beta: Optional[float] = 0.46,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hamming_window(
+        window_length,
+        periodic=periodic,
+        alpha=alpha,
+        beta=beta,
         dtype=dtype,
         layout=torch.strided,
         device=None,

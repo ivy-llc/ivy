@@ -229,10 +229,10 @@ def trapz(
     y
         The array that should be integrated.
     x
-        The sample points corresponding to the input array values. 
+        The sample points corresponding to the input array values.
         If x is None, the sample points are assumed to be evenly spaced
-        dx apart. The default is None.            
-    dx 
+        dx apart. The default is None.
+    dx
         The spacing between sample points when x is None. The default is 1.
     axis
         The axis along which to integrate.
@@ -249,14 +249,150 @@ def trapz(
 
     Examples
     --------
-    >>> y = ivy.array([1, 2, 3]) 
+    >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3])
     4.0
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], x=[4, 6, 8])
     8.0
-    >>> y = ivy.array([1, 2, 3]) 
+    >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], dx=2)
     8.0
     """
     return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def float_power(
+    x1: Union[ivy.Array, float, list, tuple],
+    x2: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Raise each base in x1 to the positionally-corresponding power in x2.
+    x1 and x2 must be broadcastable to the same shape.
+    This differs from the power function in that integers, float16, and float32
+    are promoted to floats with a minimum precision of float64 so that the result
+    is always inexact.
+
+    Parameters
+    ----------
+    x1
+        Array-like with elements to raise in power.
+    x2
+        Array-like of exponents. If x1.shape != x2.shape,
+        they must be broadcastable to a common shape
+        (which becomes the shape of the output).
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The bases in x1 raised to the exponents in x2.
+        This is a scalar if both x1 and x2 are scalars
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
+    >>> ivy.float_power(x1, 3)
+    ivy.array([1.,    8.,   27.,   64.,  125.])
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
+    >>> x2 = ivy.array([2, 3, 3, 2, 1])
+    >>> ivy.float_power(x1, x2)
+    ivy.array([1.,   8.,  27.,  16.,   5.])
+    """
+    return ivy.current_backend().float_power(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def exp2(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate 2**p for all p in the input array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.exp2(x)
+    ivy.array([2.,    4.,   8.])
+    >>> x = [5, 6, 7]
+    >>> ivy.exp2(x)
+    ivy.array([32.,   64.,  128.])
+    """
+    return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nansum(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the sum of array elements over a given axis treating
+    Not a Numbers (NaNs) as zero.
+    
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis or axes along which the sum is computed.
+        The default is to compute the sum of the flattened array.
+    dtype
+        The type of the returned array and of the accumulator in
+        which the elements are summed. By default, the dtype of input is used.
+    keepdims
+        If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+        
+    Returns
+    -------
+    ret
+        A new array holding the result is returned unless out is specified,
+        in which it is returned.
+    
+    Examples
+    --------
+    >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+    >>> ivy.nansum(a)
+    10.0
+    >>> ivy.nansum(a, axis=0)
+    ivy.array([2.1, 5.8, 2.1])
+    >>> ivy.nansum(a, axis=1)
+    ivy.array([5.5, 4.5])
+    """
+    return ivy.current_backend().nansum(
+        x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
