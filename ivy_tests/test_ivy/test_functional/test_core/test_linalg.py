@@ -320,7 +320,7 @@ def test_matrix_power(
         fn_name="matrix_power",
         rtol_=1e-1,
         atol_=1e-1,
-        x=x,
+        x=x[0],
         n=n,
     )
 

@@ -843,9 +843,9 @@ class ContainerWithLayersExtensions(ContainerBase):
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
         alpha
-            The coefficient alpha in the hamming window equation 
+            The coefficient alpha in the hamming window equation
         beta
-            The coefficient beta in the hamming window equation 
+            The coefficient beta in the hamming window equation
         dtype
             data type of the returned arrays.
         out
@@ -905,14 +905,14 @@ class ContainerWithLayersExtensions(ContainerBase):
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
         alpha
-            The coefficient alpha in the hamming window equation 
+            The coefficient alpha in the hamming window equation
         beta
-            The coefficient beta in the hamming window equation 
+            The coefficient beta in the hamming window equation
         dtype
             data type of the returned arrays.
         out
             optional output container, for writing the result to.
-            
+
         Returns
         -------
         ret

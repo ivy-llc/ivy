@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
@@ -492,3 +493,148 @@ def rot90(
 
     """
     return ivy.current_backend(m).rot90(m, k=k, axes=axes, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def top_k(
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = None,
+    largest: Optional[bool] = True,
+    out: Optional[tuple] = None,
+) -> Tuple[ivy.Array, ivy.NativeArray]:
+    """Returns the `k` largest elements of the given input array along a given axis.
+
+    Parameters
+    ----------
+    x
+        The array to compute top_k for.
+    k
+        Number of top elements to retun must not exceed the array size.
+    axis
+        The axis along which we must return the top elements default value is 1.
+    largest
+        If largest is set to False we return k smallest elements of the array.
+    out:
+        Optional output tuple, for writing the result to. Must have two arrays inside,
+        with a shape that the returned tuple broadcast to.
+
+    Returns
+    -------
+    ret
+        A named tuple with values and indices of top k elements.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
+    >>> y = ivy.top_k(x, 2)
+    >>> print(y)
+    top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
+
+    >>> x = ivy.array([[-2., 3., 4., 0.], [-8., 0., -1., 2.]])
+    >>> y = ivy.top_k(x, 2, axis=1, largest=False)
+    >>> print(y)
+    top_k(values=ivy.array([[-2.,  0.],[-8., -1.]]),
+    ...   indices=ivy.array([[0, 3],[0, 2]]))
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([2., 1., -3., 5., 9., 0., -4])
+    >>> y = ivy.top_k(x, 3)
+    >>> print(y)
+    top_k(values=ivy.array([9., 5., 2.]), indices=ivy.array([4, 3, 0]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
+    >>> y = ivy.top_k(2)
+    >>> print(y)
+    {
+        a: [
+            values = ivy.array([ 2, -1]),
+            indices = ivy.array([1, 0])
+        ],
+        b: [
+            values = ivy.array([5., 4.]),
+            indices = ivy.array([1, 0])
+        ]
+    }
+    """
+    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fliplr(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Flip array in the left/right direction.
+    Flip the entries in each column in the left/right direction.
+    Columns are preserved, but appear in a different order than before.
+
+    Parameters
+    ----------
+    m
+        The array to be flipped. Must be at least 2-D.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array corresponding to input array with elements
+        order reversed along axis 1.
+
+    Examples
+    --------
+    >>> m = ivy.diag([1, 2, 3])
+    >>> ivy.fliplr(m)
+    ivy.array([[0, 0, 1],
+           [0, 2, 0],
+           [3, 0, 0]])
+    """
+    return ivy.current_backend().fliplr(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def i0(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Bessel i0 function of x element-wise.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    out
+        optional output array, for writing the result to.
+    
+    Returns
+    -------
+    ret
+        Array with the modified Bessel function
+        evaluated at each of the elements of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.i0(x)
+    ivy.array([1.26606588, 2.2795853 , 4.88079259])
+    """
+    return ivy.current_backend(x).i0(x, out=out)

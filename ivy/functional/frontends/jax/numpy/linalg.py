@@ -14,6 +14,11 @@ def det(a):
 
 
 @to_ivy_arrays_and_back
+def eig(a):
+    return ivy.eig(a)
+
+
+@to_ivy_arrays_and_back
 def eigh(a, UPLO="L", symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added
@@ -71,3 +76,8 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
