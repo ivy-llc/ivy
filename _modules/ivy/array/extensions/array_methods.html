@@ -776,6 +776,28 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="kron"><a class="viewcode-back" href="../../../../data_classes/array/extensions/array_methods/kron.html#ivy.array.extensions.array_methods.kron">[docs]</a><span class="k">def</span> <span class="nf">kron</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.kron.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.kron also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([1,2])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([3,4])</span>
+<span class="sd">    &gt;&gt;&gt; a.diagflat(b)</span>
+<span class="sd">    ivy.array([3, 4, 6, 8])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <span class="c1">#ivy.array.extensions.manipulation</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
@@ -1082,6 +1104,38 @@
 <span class="sd">    ivy.array([[0, 0, 1],</span>
 <span class="sd">           [0, 2, 0],</span>
 <span class="sd">           [3, 0, 0]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="i0"><a class="viewcode-back" href="../../../../data_classes/array/extensions/array_methods/i0.html#ivy.array.extensions.array_methods.i0">[docs]</a><span class="k">def</span> <span class="nf">i0</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.i0. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.i0 also applies</span>
+<span class="sd">    to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    out</span>
+<span class="sd">        Optional output, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Array with modified Bessel function of the first kind, order 0.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3]])</span>
+<span class="sd">    &gt;&gt;&gt; x.i0()</span>
+<span class="sd">    ivy.array([1.26606588, 2.2795853 , 4.88079259])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 

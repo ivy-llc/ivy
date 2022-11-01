@@ -27,6 +27,7 @@ Array methods
    array_methods/max_pool1d.rst
    array_methods/pad.rst
    array_methods/diagflat.rst
+   array_methods/kron.rst
    array_methods/moveaxis.rst
    array_methods/heaviside.rst
    array_methods/flipud.rst
@@ -35,6 +36,7 @@ Array methods
    array_methods/rot90.rst
    array_methods/top_k.rst
    array_methods/fliplr.rst
+   array_methods/i0.rst
    array_methods/dirichlet.rst
    array_methods/msort.rst
    array_methods/median.rst
