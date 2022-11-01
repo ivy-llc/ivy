@@ -7,7 +7,6 @@ from typing import (
     Generator,
 )
 from numbers import Number
-
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -511,6 +510,7 @@ def top_k(
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """Returns the `k` largest elements of the given input array along a given axis.
+
     Parameters
     ----------
     x
@@ -524,28 +524,36 @@ def top_k(
     out:
         Optional output tuple, for writing the result to. Must have two arrays inside,
         with a shape that the returned tuple broadcast to.
+
     Returns
     -------
     ret
         A named tuple with values and indices of top k elements.
+
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
     >>> y = ivy.top_k(x, 2)
     >>> print(y)
     top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
+
     >>> x = ivy.array([[-2., 3., 4., 0.], [-8., 0., -1., 2.]])
     >>> y = ivy.top_k(x, 2, axis=1, largest=False)
     >>> print(y)
     top_k(values=ivy.array([[-2.,  0.],[-8., -1.]]),
     ...   indices=ivy.array([[0, 3],[0, 2]]))
+
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([2., 1., -3., 5., 9., 0., -4])
     >>> y = ivy.top_k(x, 3)
     >>> print(y)
     top_k(values=ivy.array([9., 5., 2.]), indices=ivy.array([4, 3, 0]))
+
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
     >>> y = ivy.top_k(2)
     >>> print(y)
@@ -575,17 +583,20 @@ def fliplr(
     """Flip array in the left/right direction.
     Flip the entries in each column in the left/right direction.
     Columns are preserved, but appear in a different order than before.
+
     Parameters
     ----------
     m
         The array to be flipped. Must be at least 2-D.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Array corresponding to input array with elements
         order reversed along axis 1.
+
     Examples
     --------
     >>> m = ivy.diag([1, 2, 3])
@@ -607,6 +618,7 @@ def i0(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Bessel i0 function of x element-wise.
+
     Parameters
     ----------
     x
@@ -619,6 +631,7 @@ def i0(
     ret
         Array with the modified Bessel function
         evaluated at each of the elements of x.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 3])
