@@ -100,3 +100,15 @@ def fliplr(
 
 
 fliplr.support_native_out = False
+
+
+def i0(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.i0(x, out=out)
+
+
+i0.support_native_out = True
