@@ -109,6 +109,21 @@ def exp2(
 exp2.support_native_out = True
 
 
+def nansum(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
+
+
+nansum.support_native_out = False
+
+
 def gcd(
     x1: Union[torch.Tensor, int, list, tuple],
     x2: Union[torch.Tensor, float, list, tuple],

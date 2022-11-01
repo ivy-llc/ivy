@@ -109,6 +109,21 @@ def exp2(
 exp2.support_native_out = True
 
 
+def nansum(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+nansum.support_native_out = True
+
+
 def gcd(
     x1: Union[np.ndarray, int, list, tuple],
     x2: Union[np.ndarray, float, list, tuple],
