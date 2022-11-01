@@ -1526,52 +1526,6 @@ def _generate_diag_args(draw):
     return dtype_x, offset, dtype_padding_value, align, num_rows, num_cols
 
 
-@handle_cmd_line_args
-@given(
-    args_packet=_generate_diag_args(),
-    num_positional_args=helpers.num_positional_args(fn_name="diag"),
-)
-def test_diag(
-    *,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    args_packet,
-):
-    dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
-
-    x_dtype, x = dtype_x
-    padding_value_dtype, padding_value = dtype_padding_value
-    padding_value = padding_value[0][0]
-
-    assume("float16" not in x_dtype)
-    assume("bfloat16" not in x_dtype)
-
-    helpers.test_function(
-        input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="diag",
-        x=x[0],
-        offset=offset,
-        padding_value=padding_value,
-        align=align,
-        num_rows=num_rows,
-        num_cols=num_cols,
-        atol_=1e-01,
-        rtol_=1 / 64,
-    )
-
-
 # diagonal
 @handle_cmd_line_args
 @given(
