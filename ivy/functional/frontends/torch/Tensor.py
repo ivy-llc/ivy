@@ -236,7 +236,7 @@ class Tensor:
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
     def __mod__(self, other):
-        return ivy.remainder(self, other)
+        return ivy.remainder(self.data, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
