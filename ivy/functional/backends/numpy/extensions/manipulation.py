@@ -89,9 +89,33 @@ def top_k(
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
         x *= -1
-        indices = np.argsort(x, axis=axis)
+        indices = np.argsort(x, axis=axis)[..., -1:]
         indices = np.take(indices, np.arange(k), axis=axis)
         x *= -1
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
+
+
+def fliplr(
+    m: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fliplr(m)
+
+
+fliplr.support_native_out = False
+
+
+def i0(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.i0(x)
+
+
+i0.support_native_out = False

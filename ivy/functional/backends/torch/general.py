@@ -85,12 +85,11 @@ def to_numpy(
         if copy:
             if x.dtype is torch.bfloat16:
                 default_dtype = ivy.default_float_dtype(as_native=True)
-                default_dtype_str = ivy.default_float_dtype(as_native=False)
                 if default_dtype is torch.bfloat16:
                     x = x.to(torch.float32)
                 else:
                     x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype(default_dtype_str)
+                return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
             raise ivy.exceptions.IvyException(

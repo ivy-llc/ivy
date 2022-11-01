@@ -38,6 +38,30 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
     )
 
 
+# eig
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.eig"
+    ),
+)
+def test_jax_numpy_eig(dtype_and_x, as_variable, native_array, num_positional_args):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.eig",
+        rtol=1e-04,
+        atol=1e-04,
+        a=x[0],
+    )
+
+
 # eigh
 @handle_cmd_line_args
 @given(
@@ -459,15 +483,14 @@ def test_jax_norm(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-
         fn_tree="numpy.linalg.norm",
         x=x[0],
         ord=ord_param,
         axis=axis,
         keepdims=keepdims,
     )
-    
-    
+
+
 # matrix_power
 @handle_cmd_line_args
 @given(
@@ -488,10 +511,10 @@ def test_jax_norm(
     ),
 )
 def test_jax_numpy_matrix_power(
-    dtype_and_x, 
-    n, 
-    as_variable, 
-    native_array, 
+    dtype_and_x,
+    n,
+    as_variable,
+    native_array,
     num_positional_args,
 ):
     dtype, x = dtype_and_x
@@ -508,4 +531,3 @@ def test_jax_numpy_matrix_power(
         a=np.asarray(x[0], dtype=dtype[0]),
         n=n,
     )
-    
