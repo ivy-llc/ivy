@@ -128,6 +128,10 @@ class Tensor:
     def arctan(self, *, out=None):
         return torch_frontend.arctan(self, out=out)
 
+    def arctan_(self, *, out=None):
+        self.data = self.arctan()
+        return self.data
+
     def acos(self, *, out=None):
         return torch_frontend.acos(self.data, out=out)
 
