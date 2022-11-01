@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence, Tuple
+from typing import Optional, Union, Sequence, Tuple, NamedTuple
 import torch
 
 
@@ -72,6 +72,34 @@ def rot90(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.rot90(m, k, axes)
+
+
+def top_k(
+    x: torch.Tensor,
+    k: int,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    largest: Optional[bool] = True,
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    topk_res = NamedTuple(
+        "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
+    )
+    indices, vals = torch.topk(x, k, dim=axis, largest=largest)
+    return topk_res(indices, vals)
+
+
+def fliplr(
+    m: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.fliplr(m)
+
+
+fliplr.support_native_out = False
 
 
 def i0(

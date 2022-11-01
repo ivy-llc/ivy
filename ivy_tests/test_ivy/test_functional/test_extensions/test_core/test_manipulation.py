@@ -367,6 +367,90 @@ def test_rot90(
     )
 
 
+# top_k
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_dim_size=4,
+        max_dim_size=10,
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    k=helpers.ints(min_value=1, max_value=4),
+    largest=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="top_k"),
+)
+def test_top_k(
+    dtype_and_x,
+    axis,
+    k,
+    largest,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="top_k",
+        x=x[0],
+        k=k,
+        axis=axis,
+        largest=largest,
+        out=None,
+    )
+
+
+# fliplr
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="fliplr"),
+)
+def test_fliplr(
+    dtype_and_m,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="fliplr",
+        m=m[0],
+    )
+
+
+# i0
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(

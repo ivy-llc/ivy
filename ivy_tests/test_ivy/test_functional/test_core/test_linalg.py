@@ -167,7 +167,7 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 
 
 @st.composite
-def _get_first_matrix_and_dtype(draw):
+def _get_first_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
@@ -178,22 +178,27 @@ def _get_first_matrix_and_dtype(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [random_size, shared_size]),
+            shape=tuple([random_size, shared_size]),
             min_value=2,
             max_value=5,
         )
     )
+    if transpose is True:
+        transpose = draw(st.booleans())
+        if transpose:
+            matrix = np.transpose(matrix)
+        return [input_dtype], matrix, transpose
+    return [input_dtype], matrix
 
 
 @st.composite
-def _get_second_matrix_and_dtype(draw):
+def _get_second_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
@@ -204,18 +209,23 @@ def _get_second_matrix_and_dtype(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [shared_size, random_size]),
+            shape=tuple([random_size, shared_size]),
             min_value=2,
             max_value=5,
         )
     )
+    if transpose is True:
+        transpose = draw(st.booleans())
+        if transpose:
+            matrix = np.transpose(matrix)
+        return [input_dtype], matrix, transpose
+    return [input_dtype], matrix
 
 
 # vector_to_skew_symmetric_matrix
@@ -318,8 +328,8 @@ def test_matrix_power(
 # matmul
 @handle_cmd_line_args
 @given(
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    x=_get_first_matrix_and_dtype(transpose=True),
+    y=_get_second_matrix_and_dtype(transpose=True),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
 def test_matmul(
@@ -334,8 +344,8 @@ def test_matmul(
     instance_method,
     fw,
 ):
-    input_dtype1, x_1 = x
-    input_dtype2, y_1 = y
+    input_dtype1, x_1, transpose_a = x
+    input_dtype2, y_1, transpose_b = y
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         as_variable_flags=as_variable,
@@ -350,6 +360,8 @@ def test_matmul(
         atol_=1e-1,
         x1=x_1,
         x2=y_1,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
     )
 
 
