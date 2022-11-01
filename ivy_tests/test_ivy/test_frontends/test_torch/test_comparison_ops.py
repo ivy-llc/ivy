@@ -805,6 +805,8 @@ def test_torch_kthvalue(
 
 
 # topk
+# TODO: add value test after the stable sorting is added to torch
+# https://github.com/pytorch/pytorch/issues/88184
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -848,4 +850,5 @@ def test_torch_topk(
         dim=dim,
         largest=largest,
         out=None,
+        test_values=False,
     )
