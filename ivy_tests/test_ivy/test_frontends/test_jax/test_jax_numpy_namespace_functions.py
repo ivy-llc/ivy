@@ -1757,6 +1757,27 @@ def test_jax_numpy_float_power(
     )
 
 
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.cumsum"
+    ),
+)
+def test_jax_numpy_cumsum(
+    dtype_x_axis,
+
+
+# cumsum
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
@@ -1792,3 +1813,42 @@ def test_jax_numpy_cumsum(
         dtype=input_dtype[0],
         out=None,
     )
+
+
+# heaviside
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.heaviside"
+    ),
+)
+def test_jax_numpy_heaviside(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.heaviside",
+        x1=x[0],
+        x2=x[0],
+    )
+

@@ -345,3 +345,7 @@ def cumsum(a, axis=0, dtype=None, out=None):
 
 
 cumproduct = cumprod
+
+
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)
