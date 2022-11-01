@@ -333,7 +333,9 @@ def test_torch_mean(
 # median
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="median"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.median"
     )
@@ -344,7 +346,7 @@ def test_torch_median(
     num_positional_args,
     native_array,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
