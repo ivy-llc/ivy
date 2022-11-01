@@ -617,3 +617,4 @@ def test_torch_max(
         keepdim=keepdim,
         out=None,
     )
+
