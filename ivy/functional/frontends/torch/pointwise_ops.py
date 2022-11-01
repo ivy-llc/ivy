@@ -212,6 +212,12 @@ def logical_xor(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_xor(input, other, out=out)
 
+@to_ivy_arrays_and_back
+def round(input, *, decimals=0, out=None):
+    m = ivy.full(input.shape, 10 ** decimals)
+    upscale = ivy.multiply(input, m, out=out)
+    rounded = ivy.round(upscale, out=out)
+    return ivy.divide(rounded, m, out=out)
 
 @to_ivy_arrays_and_back
 def ceil(input, *, out=None):
