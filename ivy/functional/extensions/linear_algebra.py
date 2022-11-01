@@ -110,4 +110,4 @@ def kron(
     >>> ivy.kron(a, b)
     ivy.array([3, 4, 6, 8])
     """
-    return current_backend().kron(a, b, out=out)
+    return current_backend(a, b).kron(a, b, out=out)
