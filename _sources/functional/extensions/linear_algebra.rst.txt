@@ -14,5 +14,4 @@ Linear algebra
    :caption: Linear algebra
 
    linear_algebra/diagflat.rst
-   linear_algebra/kron.rst
 

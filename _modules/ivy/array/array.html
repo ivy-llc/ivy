@@ -366,6 +366,10 @@
     <span class="k">def</span> <span class="nf">__array_namespace__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span>
 
+    <span class="k">def</span> <span class="nf">__array_api_version__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">api_version</span> <span class="o">=</span> <span class="s2">&quot;2021.12&quot;</span>
+        <span class="k">return</span> <span class="n">api_version</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sig_fig</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_significant_figures</span><span class="p">()</span>
         <span class="n">dec_vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_decimal_values</span><span class="p">()</span>
