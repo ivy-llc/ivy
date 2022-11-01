@@ -404,3 +404,21 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     if bias is not None:
         return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2, 3, 4)))
     return ret
+
+
+@to_ivy_arrays_and_back
+def cross(input, other, dim=None, *, out=None):
+    if dim is None:
+        dim = -1
+    input, other = ivy.promote_types_of_inputs(input, other)
+
+    if dim is not None:
+        return ivy.cross(
+            input,
+            other,
+            axisa=-1,
+            axisb=-1,
+            axisc=-1,
+            axis=dim,
+            out=out
+        )
