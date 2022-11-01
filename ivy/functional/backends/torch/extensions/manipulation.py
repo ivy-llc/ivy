@@ -91,7 +91,7 @@ def top_k(
         indices = torch.take(indices, torch.arange(k), dim=axis)
     else:
         x *= -1
-        indices = torch.argsort(x, axis=axis, stable=True)
+        indices = torch.argsort(x, dim=axis, stable=True)
         indices = torch.take(indices, torch.arange(k), dim=axis)
         x *= -1
     val = torch.gather(x, axis, indices)
