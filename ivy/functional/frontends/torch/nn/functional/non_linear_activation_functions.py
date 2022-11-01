@@ -164,6 +164,18 @@ def celu(input, alpha=1.0, inplace=False):
 
 
 @to_ivy_arrays_and_back
+def mish(input, inplace=False):
+    ret = ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
 

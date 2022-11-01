@@ -418,9 +418,7 @@ def test_kaiser_bessel_derived_window(
     alpha=st.floats(min_value=1, max_value=5),
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="hamming_window"
-    ),
+    num_positional_args=helpers.num_positional_args(fn_name="hamming_window"),
 )
 def test_hamming_window(
     window_length,

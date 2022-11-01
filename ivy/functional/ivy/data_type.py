@@ -1740,12 +1740,24 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'int_dtype' as the default data type.
 
     Parameters
     ----------
     int_dtype
+        The integer data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
+    >>> ivy.default_int_dtype()
+    'int64'
+
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int32"))
+    >>> ivy.default_int_dtype()
+    'int32'
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
