@@ -11,3 +11,13 @@ def diagflat(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.diagflat(x, k=k)
+
+
+def kron(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.kron(a, b)
