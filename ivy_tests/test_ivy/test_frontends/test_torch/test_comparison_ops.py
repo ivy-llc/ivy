@@ -846,6 +846,6 @@ def test_torch_topk(
         input=input[0],
         k=k,
         dim=dim,
-        largest=True,
+        largest=largest,
         out=None,
     )

@@ -1,9 +1,3 @@
-"""
-ToDo
-----
-Add allclose(), isclose(), isposinf(), isneginf(), fmax()
-to ivy functional API
-"""
 # global
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
