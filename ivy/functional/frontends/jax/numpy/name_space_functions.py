@@ -338,5 +338,14 @@ def float_power(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+cumproduct = cumprod
+
+
 def heaviside(x1, x2):
     return ivy.heaviside(x1, x2)
