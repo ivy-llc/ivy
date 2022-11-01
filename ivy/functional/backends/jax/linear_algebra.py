@@ -379,6 +379,7 @@ def vector_norm(
 # Extra #
 # ------#
 
+
 def vander(
     x: JaxArray,
     /,
