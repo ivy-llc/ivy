@@ -236,7 +236,8 @@ class Array(
     def __array_namespace__(self, api_version=None):
         return ivy
 
-    def __array_api_version__(self, api_version="2021.12"):
+    def __array_api_version__(self):
+        api_version = "2021.12"
         return api_version
 
     def __repr__(self):
