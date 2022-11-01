@@ -79,6 +79,6 @@ def gcd(
     x2: Union[JaxArray, float, list, tuple],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.gcd(x1, x2)
