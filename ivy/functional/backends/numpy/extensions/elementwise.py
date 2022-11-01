@@ -129,7 +129,7 @@ def gcd(
     x2: Union[np.ndarray, float, list, tuple],
     /,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.gcd(x1, x2, out=out)
 
