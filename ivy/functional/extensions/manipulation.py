@@ -605,3 +605,36 @@ def fliplr(
            [3, 0, 0]])
     """
     return ivy.current_backend().fliplr(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def i0(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Bessel i0 function of x element-wise.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    out
+        optional output array, for writing the result to.
+    
+    Returns
+    -------
+    ret
+        Array with the modified Bessel function
+        evaluated at each of the elements of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.i0(x)
+    ivy.array([1.26606588, 2.2795853 , 4.88079259])
+    """
+    return ivy.current_backend(x).i0(x, out=out)
