@@ -943,7 +943,7 @@ def constant_pad(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Pads an array with a constant value.
-
+ 
     Parameters
     ----------
     x
@@ -957,19 +957,49 @@ def constant_pad(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-
+ 
     Returns
     -------
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
-
-
+ 
+ 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
+ 
+    Functional Examples
+    -------------------
+ 
+    With :class:`ivy.Array` input:
+ 
+    >>> x = ivy.array([1, 2, 3, 4, 5])
+    >>> print(ivy.constant_pad(x, pad_width = (2, 3), value = (4, 6)))
+    ivy.array([4, 4, 1, ..., 6, 6, 6])
+ 
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> print(ivy.constant_pad(x, pad_width = (2, 3), value = (8, 0)))
+    ivy.array([[8 8 8 8 0 0 0],
+                [8 8 8 8 0 0 0],
+                [8 8 1 2 0 0 0],
+                [8 8 3 4 0 0 0],
+                [8 8 0 0 0 0 0],
+                [8 8 0 0 0 0 0],
+                [8 8 0 0 0 0 0]])
+ 
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> print(ivy.constant_pad(x, pad_width = ((3, 2), (2, 3)), value = (4, 6)))
+    ivy.array([[4 4 4 4 6 6 6],
+                [4 4 4 4 6 6 6],
+                [4 4 4 4 6 6 6],
+                [4 4 1 2 6 6 6],
+                [4 4 3 4 6 6 6],
+                [4 4 6 6 6 6 6],
+                [4 4 6 6 6 6 6]])
+ 
     """
     return current_backend(x).constant_pad(x, pad_width, value, out=out)
+
 
 
 @to_native_arrays_and_back
