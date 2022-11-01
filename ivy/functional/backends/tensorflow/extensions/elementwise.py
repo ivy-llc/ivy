@@ -103,9 +103,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.nansum(
-        x, axis=axis, dtype=dtype, keepdims=keepdims
-    )
+    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 @with_unsupported_dtypes(
@@ -116,6 +114,6 @@ def gcd(
     x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.gcd(x1, x2)
