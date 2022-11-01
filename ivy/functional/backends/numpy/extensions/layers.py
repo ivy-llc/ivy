@@ -412,3 +412,12 @@ def dct(
             np.fft.irfft(scale * x, n=2 * axis_dim, axis=axis)
         )[tuple(axis_idx)]
         return dct_out
+
+    elif type == 4:
+        dct_2 = dct(x, type=2, n=2 * axis_dim, axis=axis, norm=None)
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(1, None, 2)
+        dct_out = dct_2[tuple(axis_idx)]
+        if norm == "ortho":
+            dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
+    return dct_out
